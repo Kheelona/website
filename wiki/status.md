@@ -14,7 +14,7 @@ founder asked for the full website with animation on **betawebsite.kheelona.com*
 After the build: Phase 6 QA, push `beta`, founder runbook (architecture §15.4), **Gate B** on beta, merge to `main`.
 **Account:** apoorva@kheelona.com (since 00:00 2026-10-14). **Branch:** `reset/website-v2`, not pushed.
 **RESUME FROM [build runbook](engineering/build-runbook.md) §4.** **Waves 1-4 closed** (verify 4570 tests; e2e red only on
-`/stories/*` until wave 5, ruled). **Wave 5 closed at M1** (2026-10-14: full `verify:e2e` ruled; V7, V8; JS budget re-based on Lighthouse 92-98 mobile; see log). **Wave 6 closed at M2** (2026-10-14: batches `cb55153` and 6b; verify 5983 tests; `verify:e2e` 1485 passed after one flaky test made robust; Lighthouse ≥ 90 on every page, see log). **Wave 7 merged** (2026-10-14, `4a05b92`: legacy code and 11 packages retired; verify 5177 tests; build green). **Next: wave 8** (7.1 full QA on L and LP), then 7.2 beta, 7.3 Gate B.
+`/stories/*` until wave 5, ruled). **Wave 5 closed at M1** (2026-10-14: full `verify:e2e` ruled; V7, V8; JS budget re-based on Lighthouse 92-98 mobile; see log). **Wave 6 closed at M2** (2026-10-14: batches `cb55153` and 6b; verify 5983 tests; `verify:e2e` 1485 passed after one flaky test made robust; Lighthouse ≥ 90 on every page, see log). **Wave 7 merged** (2026-10-14, `4a05b92`). **Wave 8 (7.1) round 1 done** (e2e 1486 passed; QA: no S1/S2; CMO: 4 blocking, all small); founder answered D056; **fix batch 7.1a-f next**, then 7.2 beta, 7.3 Gate B.
 **Incident 2026-10-12:** a push meant for `beta` landed on `main` (`24e92e3`, vercel.json only; production
 healthy; [lessons](engineering/lessons.md)). `beta` exists on GitHub (builds nothing yet); **beta domains attached to branch `beta`** (founder, done).
 **Done before wave 1:** dev tools pinned (Playwright 1.63.0, axe 4.12.1, Lighthouse 13.4.1, jscpd 5.3.2,
@@ -24,7 +24,7 @@ next/og RCE, high image SSRF, ISR cache poisoning; floors raised in test/depende
 no Supabase, Razorpay or email (the code refuses store keys there, task 2.10); Meta, GA4, Ahrefs off; PostHog
 env=beta; noindex. Founder's only step (the two domains, architecture §15.4) is done.
 
-**Waiting on the founder:** all build questions answered (D054, D055, 2026-10-14); new, not blocking: G16 Karnataka seal, G17 refund wording, G18 one CSP host. Still to come: F4 spec values before
+**Waiting on the founder:** all build questions answered (D054, D055, 2026-10-14); G16-G17 answered (D056); G18 one CSP host open; to-do: Meta automatic events off in Events Manager (D056). Still to come: F4 spec values before
 Gate B (rows without one come off the page), the setup light's colour, the C6 listing names; to-dos: WhatsApp calls (D032), provider contracts vs the Home safety line,
 GST/HSN, app fixes (D044), section D checks (C1, C2, C4, C11, C12, C15, C18); the beta QA bypass secret (task 7.2).
 

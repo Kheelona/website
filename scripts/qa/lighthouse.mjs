@@ -54,8 +54,9 @@ const THRESHOLD = 0.9;
 const PORT = Number(process.env.KH_E2E_PORT ?? 3456);
 /** Beacons blocked on lp-tags, so nothing is delivered (test plan §4.4). GA4's www.google.com host and the Meta Pixel's
  *  OpenBridge gateway (and its run.app fallback) since 2026-10-14: M1's runs reached production without them
- *  (tracking-inventory §14a; D054). */
-const BLOCKED = ["*google-analytics.com/g/collect*", "*analytics.google.com/g/collect*", "*facebook.com/tr*", "*/ingest/e/*", "*/ingest/s/*", "*/ingest/i/*", "*/ingest/batch*", "*analytics.ahrefs.com/api/*", "*www.google.com/g/collect*", "*.on.aws/events*", "*.run.app/events*"];
+ *  (tracking-inventory §14a; D054). The tags' own diagnostic calls (googletagmanager.com/td and /a, the pixel's
+ *  connect.facebook.net//log/error) since task 7.1 (QA-003, 2026-10-14). */
+const BLOCKED = ["*google-analytics.com/g/collect*", "*analytics.google.com/g/collect*", "*facebook.com/tr*", "*/ingest/e/*", "*/ingest/s/*", "*/ingest/i/*", "*/ingest/batch*", "*analytics.ahrefs.com/api/*", "*www.google.com/g/collect*", "*.on.aws/events*", "*.run.app/events*", "*googletagmanager.com/td*", "*googletagmanager.com/a?*", "*connect.facebook.net/*log/error*"];
 /** Best Practices audits allowed to fail on tag-loading profiles (B10, N18). "inspector-issues"
  *  counts as allowed only when bestPracticesFailures() finds nothing in it but third-party-cookie
  *  issues; any other issue renames it, so it is never allowed. On lp-tags only, "errors-in-console"

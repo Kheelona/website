@@ -1532,6 +1532,56 @@ waits; it may run in any later wave before wave 8, alone with its own files.
   placeholders or drafts remain and its list goes to the founder; CMO built-page pass on every page,
   including the reviews that did not run before approval.
 
+### Wave 8 round 1: results and fixes (2026-10-14)
+
+Round 1 of 7.1 ran on `a5124aa`: `verify:e2e` 1486 passed, 0 failed (the 21 stand-in store tests run separately: 283
+passed); the QA agent's checks ([results](../qa/results-2026-10-14.md), [defects](../qa/defects.md)): no S1 or S2, three
+S3 in the QA tools, two S4 ruled; three CMO built-page reviews ([A](../qa/cmo-review-built-a-2026-10-14.md),
+[B](../qa/cmo-review-built-b-2026-10-14.md), [C](../qa/cmo-review-built-c-2026-10-14.md)): A and C 2 blocking each,
+B none. The founder answered the reviews' questions ([D056](../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md)).
+Rulings by the main session: QA-003 fixed at once (the Lighthouse block list); QA-004, the plan's wording follows the
+original site (test plan §5.2 row 18); QA-005, the footer's "Grievance officer" links to `/contact#grievance` (7.1a);
+CMO A M9 (laptop safety-card line length) and the test ideas (A M11, B T1, B T2) wait until after Gate B; CMO C m6
+(the store dead end's words) stays as built (D054 item 7); CMO C m7 (a chargeback how-to line) goes on the Gate B list
+(a new legal line). The fixes, built in parallel (each task's reviews per D052):
+
+- **7.1a Chrome and interaction (builder; high).** A B1: the trust line's and help line's invisible 12 px tap
+  extensions overlap (`src/components/ui/HelpLine/help-line.css`, `src/components/ui/TrustLine/trust-line.css`): 24 px
+  (`--space-5`) between a trust line and a help line below it, no extension on wrapped or inline links (the help line
+  at 360, `/setup`'s "Stuck?" paragraph); a tap-area test on the first phone screens; the frozen mockup has the same
+  defect, so return a deviation row. C B1: the WhatsApp bubble never covers a price on the store or `/e/<tier>`
+  (`WhatsAppFloat.tsx` store selector, plus `.ks-agree` and an open store FAQ in `test/e2e/chrome.spec.ts`
+  `NEVER_COVERED`, with a 360/390/412 scroll sweep proven red against today's selector). B m5: under reduced motion
+  the bubble waits for the buy bar to fade before it drops (`src/motion/motion.css`). A M1: smooth scrolling only
+  after the first load, so a hash landing does not glide (`motion.css`, `src/app/layout.tsx`). A M2: Home's "See all
+  questions" lands at the FAQ heading after a client navigation. A M10: the `/team` quote's "AS" badge under the
+  founder photos (`team.ts`). C m8: the trust row's links land on their anchors (`src/content/en-IN/trust.ts`; each
+  anchor must exist). QA-005. Owns those files and their tests, and the deviation rows for them.
+- **7.1b Copy fixes (copywriter fix mode, CMO, builder; high).** Copy pages first: `meet-kheelu.md` (the films
+  heading "Real families, in their own homes.", D056 item 2; the sources line in Home's short form, A M6), `safety.md`
+  (A M4: the open FAQ's "follow below"), `stories.md` (B m1/A M5: the screen-time topic line), `home.md` (the FAQ's
+  refund timing "reaches you within 7 working days", D056 item 4; the age-3 advice in one wording, A M8), `terms.md`
+  (section 8's refund timing, D056 item 4), `setup.md` (the age-3 line, A M8). Then the modules (`products/kheelu/page.ts`,
+  `FilmsStrip.stories.tsx`, `pages/safety.ts`, `stories/topics.ts`, `faqs.ts`, `legal/terms.ts`, `policies.ts`'s comment,
+  `pages/setup.ts`), B m2 (the hub's empty sixth cell at 900 px and up, `TopicSection/topic-section.css`), and the
+  parity rules for every changed approved line (deviation rows returned; V9 amended under the `stories` key).
+- **7.1c Store fixes (copywriter fix mode, CMO, builder; high).** Copy pages `store.md` and `store-confirmation.md`
+  first: C m1 (the refused event link's words, per reason, presentation-side over the frozen `tiers.ts` text), C m4
+  (the `/thanks` "cannot open" state: the WhatsApp button and the call number), C m5 (the `/thanks` tab title on the
+  no-order states). Then: C m2 (the age band on `/e/<tier>`), C m3 (`/e/<tier>` without keys renders the store's
+  not-configured state, without the payments line), and the in-app browser note switched on (D056 item 3; deviation
+  V4 retired). Checkout logic frozen (ADR-013): presentation files with their signatures, never a contract fixture.
+- **7.1d The related-guide ring (copywriter fix mode, CMO, builder; normal).** CMO B m3's ring (the table in review B):
+  14 slot changes across 10 articles, every article three related guides out and three in, the three mockup guides'
+  lists unchanged, no head photo shared across a link (5.20a); copy pages' related folds first, then the modules.
+- **7.1e QA tools (builder; normal).** QA-001: `test/e2e/support/lp.ts` lets redirect-followed requests and page-close
+  beacons skip the probe's routing: route at the DNS level to a local proxy that forwards nothing off the machine.
+  QA-002: `tracking-probe.spec.ts` can never see PostHog (posthog-js drops `navigator.webdriver` browsers): after QA-001,
+  the probe runs as a non-webdriver Chromium. Nothing may reach production at any step.
+- **7.1f Share images for the guides (builder; normal).** B m4: each of the 20 guides gets a 1200 × 630 share image cut
+  from its head photo by the asset pipeline (task 1.5 item 3), set as the module's `meta.og` and the BlogPosting image;
+  `og.png` stays the default elsewhere. Touches only the `meta` of each article module (7.1d edits the related lists).
+
 ## Wave 9: beta deploy and beta QA (after wave 8)
 
 ### 7.2 Beta deploy and beta QA (main session, founder, QA)

@@ -369,7 +369,7 @@ either fails, the fallback is a local TLS-terminating proxy with a trusted test 
 | 15 | `$autocapture.cta` | every chilli button carries a registered value; the set per page equals §7; `home-arc` and `compare` appear nowhere | HogQL counts by `cta` with `env=beta` after QA's sweep | HogQL by `cta` after launch |
 | 16-16a | `$exception`, `$web_vitals`, `$rageclick`, `$dead_click`; GeoIP | | appear with `env=beta` | appear within a day; country not one location |
 | 17 | Replay starts on store `/`, never on `/thanks` | | recorder loads on betastore `/`, not on `/thanks` (with control) | same on store.kheelona.com |
-| 18 | `/thanks` autocapture suppressed | container has `ph-no-capture ph-mask` in every branch | no `$autocapture` with page text on `/thanks` | same |
+| 18 | `/thanks` autocapture suppressed | container has `ph-no-capture ph-mask` in every branch that prints order data (paid, confirming, address); the two no-order states ("We need your link again.", "We cannot open that order right now.") print none and carry no mask, as on the original site (QA-004, main-session ruling 2026-10-14) | no `$autocapture` with page text on `/thanks` | same |
 | 19 | `purchase_confirmed` | unit test | one per beta purchase, `env=beta`, `source webhook`, campaign keys, `$process_person_profile false` | one per `purchase` |
 | 20 | `/ingest`, `/ingest-assets` rewrites, trailing slash kept | not verifiable on `next start` (lessons §1) | `GET /ingest/e/` answers 400 on both beta hosts and direct (control) | same on apex and store |
 | 21 | Edge cookies | curl on L with Host headers | curl on beta hosts (cookies on `.kheelona.com`) | curl tagged landings on apex, store, a trailing-slash URL |

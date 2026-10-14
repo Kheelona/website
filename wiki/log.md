@@ -796,3 +796,19 @@ passed, 0 skipped**. The other skips are the known ones (V5's `/thanks` parity, 
 QA agent covers). Three CMO reviewers started on the built pages: A conversion pages (`/`, product, AI toys, safety,
 team, contact, setup, 404), B the journal (hub and 20 guides), C the legal pages and the store host. The QA agent is
 still running.
+
+## [2026-10-14 09:03] qa | Wave 8 round 1 reported; D056: the founder answers the reviews' questions; fix batch planned
+QA agent ([results](qa/results-2026-10-14.md), [defects](qa/defects.md)): nothing in the site fails; no S1 or S2.
+Tracking parity on LP passes every row it can prove (GA4 `G-7LMKSFEXZ9` and Meta `1051265191046395` exact; ViewContent
+exact; the B11 events carry field names and codes only; nothing reached production: every beacon answered locally);
+redirect matrix 256 of 256; checkout invariants all pass; CLS with fonts delayed 0.0001-0.038; the production
+placeholder scan refuses exactly the four legal drafts. S3: QA-001 and QA-002 (the LP probe can leak redirect-followed
+and page-close requests; PostHog drops webdriver browsers) and QA-003 (three tag diagnostic calls missing from the
+Lighthouse block list: fixed now). S4 ruled: QA-004 (plan wording follows the original site), QA-005 (the footer link
+to `/contact#grievance`). CMO built-page reviews: A (conversion pages) 2 blocking (overlapping tap areas on the first
+phone screens; "Seven families" uncounted), 11 minor; B (journal) pass, 5 minor; C (legal and store) 2 blocking (the
+WhatsApp bubble over store prices at 412; the delete limit's reach), 10 minor. V11's Meta region text corrected to the
+build's ("The United States and other countries"). The founder answered eight questions in two rounds:
+**[D056](decisions/D056-founder-answers-built-page-reviews-2026-10-14.md)** (delete limit left as is; "Real families";
+the in-app note on; refund "reaches you"; keep the Karnataka emblem and the Kheelona+ line; no examples note; the
+founder turns Meta's automatic events off). Fix batch 7.1a-7.1f in [tasks](engineering/tasks.md) "Wave 8 round 1".
