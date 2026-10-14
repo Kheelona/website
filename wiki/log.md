@@ -889,3 +889,14 @@ The founder answered its three questions (D059). Next: wave i of 8b.2 (8b.2a, 8b
 8b.2a (the four claim-bearing guides per D058; copy groups, worktree `w8b-8b.2a`, ports 3620/6220), 8b.2b (the sync,
 validator and source switch; 3621/6221), 8b.2c (VideoEmbed and the frame-src patch, a frozen file through a reviewed
 diff; 3622/6222). 8b.1 still running (`wf_c359ee74-7a4`).
+
+## [2026-10-14 13:52] deploy | `beta` pushed: Vercel deployed it behind Vercel login; CI's `npm ci` needed one lock entry; the live `main` has open security alerts (G25)
+The founder refreshed the gh login (`apoorva262` now has the `workflow` scope; a first try approved as `apoorvakheelona`
+failed). `git push origin reset/website-v2:refs/heads/beta` (fast-forward from `24e92e3`): `c2e0f1d`, then `82b9444`;
+`main` untouched (`8c4718a`). Vercel: "Deployment has completed"; `betawebsite` and `betastore.kheelona.com` answer 302 to
+Vercel's login (no bypass secret here yet). CI (`verify.yml`) failed at `npm ci`: npm 11.12 on the runner refused the
+lock ("Missing: @emnapi/runtime@1.11.3"; sharp's wasm build needs it; npm 11.6 here does not check). Fixed by adding
+that one entry from the registry's metadata (`82b9444`, proven with npm 11.12.1 `npm ci --dry-run`, macOS and Linux).
+Dependabot on `main` (production): 1 critical, 4 high, 9 medium, 3 low; every critical and high is a package the rebuild
+already has fixed (next 16.3.8, sharp 0.35.5, source-map-js 1.2.2): open question G25, for Aman to patch `main` now.
+This push published `wiki/` and `design-system/` to the public repo for the first time (D010; checks in the 12:06 entry).
