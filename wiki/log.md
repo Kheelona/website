@@ -1011,3 +1011,15 @@ three-then-two layout at 1024 px and up (`/safety` 1440 grew 118 px); the visual
 touched sections and the guards 1254 passed; Playwright on safety, ai-toys, meet-kheelu, privacy and terms 570 passed
 plus the re-run 65 passed. Diff since `ac68650` scanned: no secret, only aman@kheelona.com and the help@example.org
 fixture; design-system/ intact (643 files); no mockup or checkout-contract file touched. Next: push `beta`.
+
+## [2026-10-15 01:20] deploy | `beta` pushed `d79299d`: CI green; Vercel's deployment failed; beta still serves `ac68650`
+`git push origin reset/website-v2:refs/heads/beta` (fast-forward `ac68650..d79299d`, with `origin/main`'s history since
+8b.3). CI `verify` success (run 38622684581). Vercel: "Deployment has failed" 48 s after it started
+(`dpl_7vU3JqKQVFr1e9rsP6MfMDUBiQ5T`); GitHub records no reason, the build log is only in the Vercel dashboard, the
+browser extension is not connected, and the Vercel CLI is the founder's (never run). Ruled out locally: package.json,
+the lock, vercel.json and next.config.ts are unchanged since `ac68650`; `npm run build` with `VERCEL=1
+VERCEL_ENV=preview VERCEL_GIT_COMMIT_REF=beta` and no other variables passes (journal-sync 20 posts pass;
+journal-pages 20 pages; SITE_ENV beta); no Node-24-only API in src or scripts (.nvmrc 24); the proxy bundles no
+journal data. New on Vercel in this push: step 15 now checks a real snapshot and postbuild step 20 checks 20 pages
+(before 8b.2e both printed "no snapshot yet"). A failed deployment is not aliased, so both beta hosts keep `ac68650`.
+This log commit goes to `beta` too, to see whether the failure repeats.
