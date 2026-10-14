@@ -24,6 +24,7 @@ sources:
   - ../../qa/cmo-review-articles-5.17-2026-10-14.md (M11, M12, M16; applied by task 5.20a, see the foot of this page)
   - ../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md (N1: the one alt for tara-01, "touching its chin")
   - ../../engineering/tasks.md (5.20, the screen-time photo pool) and ../../engineering/assets.md (§1, the pool photos' other uses)
+  - ../../qa/cmo-review-built-b-2026-10-14.md (m3, the related ring; applied by task 7.1d to fold 11, see the foot of this page)
 ---
 
 # Story: The gentle way off the phone
@@ -57,7 +58,7 @@ sources:
 | Card (hub, unchanged) | Title "The gentle way off the phone: a seven-day plan"; summary "A week-long plan to cut a young child's screen time without turning your home into a battlefield." ([stories §2](stories.md#fold-2--screen-time-screen-time), card 4) |
 | Byline line | The Kheelona team · First published 28 Jul 2026 · 3 min read (byline: question 1) |
 | Dates | `published` 2026-07-28 (live, unchanged); `updated` 2026-10-13, the rewrite's date (main-session ruling at the wave 5 part C merge, as task 5.6 set it for the three approved guides) |
-| Related | `screen-time-and-tantrums`, `busy-hands-no-screens`, `what-to-look-for-in-a-safe-ai-toy` (the stub's, the safe-AI-toy guide in the removed 3-6-9-12 guide's place: task 6.5, D053; fold 11) |
+| Related | `screen-time-and-tantrums`, `busy-hands-no-screens`, `screen-free-does-not-mean-silent` (CMO B m3's ring, task 7.1d; fold 11) |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 9 ("Kheelu" → `/products/kheelu`) |
 | Template settings | `close: "journal"` (pre-order close and sticky bar); breadcrumb topic "Screen time" (`/stories#screen-time`) |
@@ -292,21 +293,23 @@ age limits; the author byline becomes "The Kheelona team" (question 1).
 >
 > - Screen time and tantrums: what is actually happening
 > - Busy hands, no screens
-> - What to look for in a safe AI toy
+> - Screen-free does not mean silent
 
-| Title (card title, from each module) | Real URL |
+| Title (card title, from each module, as the hub prints it) | Real URL |
 |---|---|
 | Screen time and tantrums: what is actually happening | `/stories/screen-time-and-tantrums` |
 | Busy hands, no screens | `/stories/busy-hands-no-screens` |
-| What to look for in a safe AI toy | `/stories/what-to-look-for-in-a-safe-ai-toy` |
+| Screen-free does not mean silent | `/stories/screen-free-does-not-mean-silent` |
 
-Text links only (no photos), so the page keeps one DS child. The list is the stub's with one change (task 6.5,
-[D053](../../decisions/D053-remove-the-3-6-9-12-article.md)): the 3-6-9-12 guide left the journal, and the safe-AI-toy
-guide takes its place, third. The guides the removed one offered (busy hands, the safe-AI-toy guide and the data-law
-guide) each need one more incoming link, and the screen-time guides this list does not name already have three; it
-already offers busy hands, so it takes the safe-AI-toy guide, and every guide keeps three related guides and three
-incoming links (`articles.test.ts`). Its head photo (`tara-02`) is not this page's (`tara-01`), so no linked guide
-shares a head photo (task 5.20a's rule).
+Text links only (no photos), so the page keeps one DS child. The list is the related ring of
+[CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md), finding m3 (task 7.1d): the first two stay, and
+the screen-free toys guide takes third place from the safe-AI-toy guide, which task 6.5 had put in the removed
+3-6-9-12 guide's place ([D053](../../decisions/D053-remove-the-3-6-9-12-article.md)). Why each: the tantrums guide is
+for the moment the screen goes off (fold 7 links it too); busy hands gives set-ups for the slots the plan replaces
+(fold 6 links it too); the screen-free toys guide shows a home full of talk without a screen, the "someone to talk to"
+of week 2. The safe-AI-toy guide keeps three incoming links from the AI guides under the same ring. Every guide keeps
+three related guides and three incoming links (`articles.test.ts:100-113`), and none of the three shares this page's
+head photo (`tara-01`): tantrums `kabir-03`, busy hands `ira-02`, screen-free `ira-02` (task 5.20a's rule).
 
 ---
 
@@ -394,7 +397,8 @@ None.
 | Parents read every conversation in the parent app | [claims §1](../../product/claims.md#1-confirmed-by-the-founder) ([D017](../../decisions/D017-live-behaviour-claims-confirmed.md)); [facts, parent app](../../product/facts.md#parent-app) |
 | Not a toy for children under 3 | [facts, age](../../product/facts.md#age); [content boundary](../content-boundary.md) (never imply under 3); as on the [learning-toys guide](story-learning-toys-for-a-three-year-old.md#fold-12--where-kheelu-fits-the-one-in-text-product-link) |
 | A grown-up nearby at 3 | [D041](../../decisions/D041-gate-a-round-1.md) ("Age 3" row) |
-| Card title and summary, related list, dates | `src/content/en-IN/stories/articles/the-gentle-way-off-the-phone.ts` (stub); [stories §2](stories.md#fold-2--screen-time-screen-time) card 4; live dates `src/lib/stories-expansion.ts:74-75` |
+| Card title and summary, dates | `src/content/en-IN/stories/articles/the-gentle-way-off-the-phone.ts` (stub); [stories §2](stories.md#fold-2--screen-time-screen-time) card 4; live dates `src/lib/stories-expansion.ts:74-75` |
+| Related list (fold 11) and its titles | [CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md) m3, the ring table (task 7.1d); titles: each guide's card title as the hub prints it (`src/content/en-IN/stories/hub.ts:116-119` reads it from the guide's module; [stories §2](stories.md#fold-2--screen-time-screen-time) cards 3, 5 and 6) |
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block) and [phone sticky bar](home.md#phone-sticky-bar) sources ([D028](../../decisions/D028-price-wording.md), [D041](../../decisions/D041-gate-a-round-1.md), [D023](../../decisions/D023-new-order-delivery.md), [D021](../../decisions/D021-returns-policy.md), [D032](../../decisions/D032-grievance-block-and-call-line.md)) |
 | Cut live lines | `src/lib/stories-expansion.ts:82-88` (unsourced generalisations; "genuinely", DS `01-writing.md:26`) |
 | Photo | DS `03-cast.md:117` (Tara 01, "Feelings … hero shots"; Tara is 5½, `03-cast.md:12`); task 5.20's screen-time pool ([tasks](../../engineering/tasks.md), 5.20); used on no other page ([assets §1](../../engineering/assets.md#1-design-system-assets-used-by-the-approved-pages)); file checked by eye 2026-10-14 |
@@ -425,3 +429,27 @@ and nothing else in the Copy blocks changed. No new research statement was added
    its alt, now the photo's one alt, says "touching its chin" (was "touching its nose"; the finger is below the nose).
 4. **Notes kept true:** read time about 660 words (3 min, unchanged); the keyword table's alt and density rows; the
    Sources table's AAP and Photo rows; the front matter's sources.
+
+## Changes after approval (task 7.1d)
+
+[CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md), finding m3 (which folds in
+[CMO 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M6), rebalances the journal's related ring: 14 slot changes
+across 10 guides ([tasks](../../engineering/tasks.md), 7.1d). On this page only fold 11's list changed.
+
+1. **Fold 11, related guides (m3).** Was: "Screen time and tantrums: what is actually happening", "Busy hands, no
+   screens", "What to look for in a safe AI toy". Now: "Screen time and tantrums: what is actually happening", "Busy
+   hands, no screens", "Screen-free does not mean silent". Why: m3's ring, row "the-gentle-way (26)": the safe-AI-toy
+   guide, task 6.5's swap for the removed 3-6-9-12 guide (D053), leaves a screen-time plan's next steps, and the
+   screen-free toys guide keeps all three on the plan's subject. The safe-AI-toy guide gains its incoming links from
+   the hard-questions and should-kids guides instead. The titles are each guide's card title, as the hub prints them.
+2. **Checked against the whole ring after m3:** every guide has three related guides and three incoming links; this
+   page is linked from the screen-time, tantrums and busy-hands guides; no guide it links to, or that links to it,
+   shares its head photo (`tara-01`). Linking to two guides that share `ira-02` (busy hands, screen-free) breaks no
+   rule: neither links to the other.
+3. **Notes kept true:** the At a glance "Related" row, fold 11's table and note, the Sources table (the related list
+   now has its own row), the front matter's sources. No other Copy block changed: the body (about 660 words, 3 min),
+   title, meta, keyword placements (the new title carries neither the primary nor "Kheelu", so the density row stands),
+   the in-text links of folds 4, 6 and 7, and the research sources are as approved. No placeholder.
+4. **For the builder:** `the-gentle-way-off-the-phone.ts:26` becomes `related: ["screen-time-and-tantrums",
+   "busy-hands-no-screens", "screen-free-does-not-mean-silent"]`, and the header note's words on the safe-AI-toy guide
+   (lines 10-12) follow.

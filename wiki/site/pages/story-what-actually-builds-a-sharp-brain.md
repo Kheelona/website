@@ -21,6 +21,10 @@ sources:
   - ../../qa/cmo-review-articles-5.19-2026-10-14.md (rounds 1 and 2: no finding on this page; R2-3 ruled at the merge, no change)
   - ../../qa/cmo-review-articles-5.18-2026-10-14.md (M13: one alt per photo across the journal; the alt of ira-04)
   - ../../engineering/tasks.md (§4.9 and 5.20: the part C rulings, "D025 reading: as written"; the 5.20 subsection, item 2 and the photo pools)
+  - ../../qa/cmo-review-built-b-2026-10-14.md (m3, the related ring, row "sharp-brain (27)"; applied by task 7.1d to fold 9, see the foot of this page)
+  - ../../qa/cmo-review-related-ring-7.1d-2026-10-14.md (B1: this page's row of the ring, missed in the first 7.1d pass)
+  - ../pages/story-why-three-to-six-are-the-years-that-matter-most.md (fold 4's in-text link to this page; its related list)
+  - "src/content/en-IN/stories/articles/*.ts (each guide's related line and head photo import, read in the w8-7.1d worktree 2026-10-14, for the ring and photo checks in fold 9)"
 ---
 
 # Story: What actually builds a sharp brain in the early years
@@ -279,15 +283,26 @@ with its age limits. This fold holds no brain line; the nearest is fold 5.
 >
 > - How children learn by talking
 > - Learning toys for a 3-year-old, skill by skill
-> - Screen-free does not mean silent
+> - Why the early years matter most
 
-| Title (each guide's own card title, rendered from its module) | Real URL |
+| Title (each guide's own card title, rendered from its module, as the hub prints it) | Real URL |
 |---|---|
 | How children learn by talking | `/stories/how-children-learn-by-talking` |
 | Learning toys for a 3-year-old, skill by skill | `/stories/learning-toys-for-a-three-year-old` |
-| Screen-free does not mean silent | `/stories/screen-free-does-not-mean-silent` |
+| Why the early years matter most | `/stories/why-three-to-six-are-the-years-that-matter-most` |
 
-The stub's related list, unchanged.
+- Text links only; titles render from each module's card. The list is the related ring of
+  [CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md), finding m3, row "sharp-brain (27)" (task 7.1d;
+  [ring review](../../qa/cmo-review-related-ring-7.1d-2026-10-14.md) B1): the first two stay, and the early-years
+  guide takes third place from the screen-free toys guide.
+- Why: the early-years guide tells the same subject from the years' side (its card: "the ordinary things that fill
+  them well: talk, play and sleep"), and its fold 4 already links here in the text, so the two guides now point at
+  each other. The Overlap note above still holds: that guide owns the why, this one the how.
+- The ring: every guide keeps three related guides and three incoming links (`articles.test.ts:100-113`). This page is
+  linked from the early-years, learning-toys and learn-by-talking guides; screen-free keeps three incoming links
+  (screen time, gentle way, early years).
+- Photos: none of the three shares this page's head photo (`ira-04`): learn by talking `kabir-04`, learning toys
+  `myra-04`, early years `tara-04` (task 5.20a's rule). Fold 1's note stands.
 
 ---
 
@@ -374,7 +389,8 @@ None.
 | Brain wording: a searched topic, never what Kheelu does; no brain line beside Kheelu | [D016](../../decisions/D016-brain-wording.md); [claims §4](../../product/claims.md#4-retired-or-banned-wording) row 15; [voice rules 2-4](../../brand/voice.md#voice-rules-from-the-positioning) |
 | Not a toy for children under 3; a grown-up nearby at 3 | [facts, age](../../product/facts.md#age); [content boundary](../content-boundary.md); [D041](../../decisions/D041-gate-a-round-1.md) ("Age 3" row) |
 | Cut lines ("sleep ... gets filed", "3 to 6 need ten to thirteen hours", "one of the few things reliably shown", "planning, memory, and self-control get their reps") | [source verification C43, C44](../../research/source-verification.md#3-every-claim) caveats; [age-band review](../../product/age-band-review.md) row 47 |
-| Card title and summary, related list, first-published date | `src/content/en-IN/stories/articles/what-actually-builds-a-sharp-brain.ts` (stub); [stories.md fold 5](stories.md#fold-5--learning-and-play-learning); `src/lib/stories-expansion.ts:145` |
+| Card title and summary, first-published date | `src/content/en-IN/stories/articles/what-actually-builds-a-sharp-brain.ts` (stub); [stories.md fold 5](stories.md#fold-5--learning-and-play-learning); `src/lib/stories-expansion.ts:145` |
+| Related list (fold 9) and its titles | [CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md) m3, the ring table (task 7.1d; [ring review](../../qa/cmo-review-related-ring-7.1d-2026-10-14.md) B1); titles: each guide's card title as the hub prints it (`src/content/en-IN/stories/hub.ts:116-119` reads it from the guide's module; [stories.md](stories.md) fold 3 card 4, fold 5 cards 1 and 3) |
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block) and [phone sticky bar](home.md#phone-sticky-bar) sources ([D028](../../decisions/D028-price-wording.md), [D041](../../decisions/D041-gate-a-round-1.md), [D023](../../decisions/D023-new-order-delivery.md), [D021](../../decisions/D021-returns-policy.md), [D032](../../decisions/D032-grievance-block-and-call-line.md)) |
 | Photo | DS `03-cast.md:11, 37-43, 115` (Ira, 5; confidence and creativity); file checked by eye 2026-10-13 |
 | Alt of the head photo (task 5.20c) | The how-to-get-your-child-talking guide's alt for `ira-04`, word for word ([story-how-to-get-your-child-talking.md](story-how-to-get-your-child-talking.md) fold 1); [CMO review 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M13 |
@@ -400,3 +416,30 @@ added or changed. Founder questions P21 to P23 do not touch this page.
 
 **For the builder:** the module `what-actually-builds-a-sharp-brain.ts` takes the new alt in the same commit
 (`ai-safety-and-learning.test.tsx` reads the alt from fold 1); `updated` stays 2026-10-13.
+
+## Changes after approval (task 7.1d)
+
+[CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md), finding m3 (which folds in
+[CMO 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M6), rebalances the journal's related ring: 14 slot changes
+across 10 guides ([tasks](../../engineering/tasks.md), 7.1d). This page's row was missed in the first 7.1d pass, and
+the [ring review](../../qa/cmo-review-related-ring-7.1d-2026-10-14.md) (B1) asked for it. On this page only fold 9's
+list changed.
+
+1. **Fold 9, related guides (m3).** Was: "How children learn by talking", "Learning toys for a 3-year-old, skill by
+   skill", "Screen-free does not mean silent" (the stub's list). Now: "How children learn by talking", "Learning toys
+   for a 3-year-old, skill by skill", "Why the early years matter most". Why: m3's ring, row "sharp-brain (27)": the
+   early-years guide covers the same talk, play and sleep from the years' side, and it already links here in its text.
+   Without this row, the screen-free toys guide would have four incoming links. The titles are each guide's card
+   title, as the hub prints them.
+2. **Checked against the whole ring after m3:** every guide has three related guides and three incoming links; this
+   page is linked from the early-years, learning-toys and learn-by-talking guides; no guide it links to, or that links
+   to it, shares its head photo (`ira-04`), so fold 1's note stands.
+3. **Notes kept true:** fold 9's table and notes, the Sources table (the related list now has its own row), the front
+   matter's sources. No other Copy block changed: the body (about 680 words, 3 min), title, meta, H1, keyword
+   placements and every source marker are as approved. The new title carries no "brain" and no "Kheelu", so the
+   density row stands (if the related titles count in `<main>`, the list grows from 18 to 19 words). No brain line
+   comes near the product line. No placeholder.
+4. **For the builder:** `what-actually-builds-a-sharp-brain.ts:27` becomes `related: ["how-children-learn-by-talking",
+   "learning-toys-for-a-three-year-old", "why-three-to-six-are-the-years-that-matter-most"]`, and the header note's
+   "the related list and first-published date are the stub's" (lines 9-10) follows. Same commit as the other nine
+   modules.

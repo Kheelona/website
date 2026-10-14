@@ -1,7 +1,7 @@
 ---
 title: "Story: What to look for in a safe AI toy (/stories/what-to-look-for-in-a-safe-ai-toy): page copy, Gate A draft"
 type: page-copy
-updated: 2026-10-11
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - ../strategy.md (§1 safety order, §3.3, §4.1 keep for v1, §5 /stories/* row, §7)
@@ -17,6 +17,8 @@ sources:
   - ../../decisions/D017, D018, D019, D020, D026, D035, D036, D038, D041, D043
   - "src/lib/stories.ts:122-156 at tag archive/pre-reset-2026-10-10 (the live article); working tree read 2026-10-11, src/ unmodified per git status"
   - design-system/project/03-cast.md:118; assets/Kheelu/README.md; 01-writing.md:19-26,111-113 (read-only)
+  - ../../qa/cmo-review-built-b-2026-10-14.md (m3, the related ring: this page's list unchanged, its incoming links change; task 7.1d, see the foot of this page)
+  - ../../qa/cmo-review-related-ring-7.1d-2026-10-14.md (n2: fold 4's stale link note, fixed; see the foot of this page)
 ---
 
 # Story: What to look for in a safe AI toy
@@ -158,7 +160,8 @@ data-law guide (its legal wording goes through the founder's review, [source ver
 - Six questions as `h3`s (or an `FAQ`-style list with all items open: they are read, not hunted). Each maps to a
   finding: data in private spaces, inappropriate replies, parent visibility, data handling, age, attachment
   (excerpt C16 press release:28-32).
-- Links: `/stories/ai-toys-and-indias-data-law` → `stories.html#ai-and-safety` (not rewritten yet);
+- Links: `/stories/ai-toys-and-indias-data-law` → `stories.html#ai-and-safety` (the frozen mockup points to the hub
+  topic; the guide itself was rewritten in task 5.19);
   `/ai-toys-for-kids-in-india` → `ai-toys-for-kids-in-india.html`.
 - Deliberately not asked: "is it used to train AI?". Kheelona's own model trains on voice and transcripts by
   default, disclosed on `/terms` and `/privacy` only ([D035](../../decisions/D035-model-training-opt-out.md));
@@ -350,3 +353,25 @@ None.
 | Replaced live lines | [claims §4.1](../../product/claims.md#41-the-retired-microphone-wording) rows 11-13; [claims §4](../../product/claims.md#4-retired-or-banned-wording) ("stays in your region"); [age-band review](../../product/age-band-review.md) row 37 |
 | Published date 28 Jul 2026; live byline | `src/lib/stories.ts:128-129` |
 | Photo | DS `03-cast.md:118`; `assets/Kheelu/README.md` (belly unit); files checked by eye 2026-10-11 |
+
+## Changes after approval (task 7.1d)
+
+**No change to this page's Copy or to fold 7.** [CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md),
+finding m3, rebalances the journal's related ring (14 slot changes across 10 guides;
+[tasks](../../engineering/tasks.md), 7.1d) and keeps the three approved mockup guides' related lists as they are. Fold 7
+still offers "The hard questions parents ask about AI toys", "Should kids use AI? An honest answer from people who build
+it" and "What India's data law asks of a toy that listens", in that order, as `story-what-to-look-for-in-a-safe-ai-toy.html`
+shows them (`articles.test.ts:347-348`); each is the guide's card title, as the hub prints it.
+
+What the ring changes is which guides link here. The busy-hands and gentle-way guides no longer do (busy hands had it
+from the legacy ring; gentle way took it in task 6.5, when the 3-6-9-12 guide left, D053); the hard-questions and
+should-kids guides now list it first,
+and with the data-law guide that makes three incoming links (`articles.test.ts:100-113`). None of the three shares
+this page's head photo (`tara-02`): hard questions `tara-03`, should kids `kabir-02`, data law `ira-01` (task 5.20a's
+rule). No module change for this page.
+
+**One stale note fixed** ([ring review](../../qa/cmo-review-related-ring-7.1d-2026-10-14.md) n2, from before this
+task). Fold 4's link note said the data-law link goes to the hub topic because that guide was "not rewritten yet". It
+now says the frozen mockup points to the hub topic, and the guide itself was rewritten in task 5.19
+(`mockup/story-what-to-look-for-in-a-safe-ai-toy.html:97`; [the data-law page](story-ai-toys-and-indias-data-law.md)).
+A note only: fold 4's Copy and the fold 7 "Mockup link" column are unchanged.

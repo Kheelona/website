@@ -20,6 +20,7 @@ sources:
   - test/guards/banned-phrases.data.ts (every Copy block checked against it)
   - design-system/project/03-cast.md:15, 119; 01-writing.md:111-113 (read-only)
   - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: M9, M11 fixed in round 2; M8 held, question 5)
+  - ../../qa/cmo-review-built-b-2026-10-14.md (m3, the related ring; applied in task 7.1d, see the foot of this page)
 ---
 
 # Story: The hard questions parents ask about AI toys
@@ -53,7 +54,7 @@ sources:
 | Read time | 4 min (about 890 words in the article, headings included, close excluded; words ÷ 200, rounded, as `readingMinutes` in `src/lib/stories.ts:184-186` and the 5.6 pages) |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 4 ("Kheelu" → `/products/kheelu`, `meet-kheelu.html`) |
-| Module values kept from the stub | Card title and summary (hub copy, `stories.md` fold 4); `related` (three, below); `published` 2026-09-11; `updated` as the main session's note for task 5.19 directs (the 5.6 modules set it to the rewrite's date) |
+| Module values kept from the stub | Card title and summary (hub copy, `stories.md` fold 4); `related` (three, below; since task 7.1d the CMO's ring, not the stub's); `published` 2026-09-11; `updated` as the main session's note for task 5.19 directs (the 5.6 modules set it to the rewrite's date) |
 | Page settings | Template parity; `close: "journal"`, so the shell shows the phone buy bar; `active: "stories"`, chrome on |
 
 **Overlap** ([keyword map §4.3](../../research/keyword-map.md#43-overlap-and-cannibalisation-flags), high risk
@@ -310,17 +311,24 @@ B3 answer, before any reassurance.
 
 > **H2:** Related guides
 >
+> - What to look for in a safe AI toy
 > - Does a three-year-old need an AI tutor?
-> - Why the early years matter most
-> - How children learn by talking
+> - What India's data law asks of a toy that listens
 
-| Title (each guide's own card) | Real URL | Mockup link |
-|---|---|---|
-| Does a three-year-old need an AI tutor? | `/stories/does-a-three-year-old-need-an-ai-tutor` | `stories.html#ai-and-safety` |
-| Why the early years matter most | `/stories/why-three-to-six-are-the-years-that-matter-most` | `stories.html#learning` |
-| How children learn by talking | `/stories/how-children-learn-by-talking` | `stories.html#talking` |
+| Title (each guide's own card) | Real URL | Mockup link | Why it is linked |
+|---|---|---|---|
+| What to look for in a safe AI toy | `/stories/what-to-look-for-in-a-safe-ai-toy` | `story-what-to-look-for-in-a-safe-ai-toy.html` | What child-safety groups found, worry by worry, and the page the B3 answer comes from (Overlap, above). Fold 4 already points to it in the text; the list repeats it as the first next step. New in task 7.1d |
+| Does a three-year-old need an AI tutor? | `/stories/does-a-three-year-old-need-an-ai-tutor` | `stories.html#ai-and-safety` | The AI question at age 3, about learning rather than play. Kept from the stub |
+| What India's data law asks of a toy that listens | `/stories/ai-toys-and-indias-data-law` | `stories.html#ai-and-safety` | "What happens to the data", this page's secondary: the law behind fold 5's data answers, which that guide owns (What changed, above). New in task 7.1d |
 
-- The stub's `related` list, unchanged; the titles render from each module's card (`relatedGuides`), never typed.
+- The ring from [CMO review B](../../qa/cmo-review-built-b-2026-10-14.md) m3 (its table, `:223-234`; task 7.1d), in
+  its order; the titles render from each module's card (`relatedGuides`), never typed, as the hub prints them
+  ([stories.md](stories.md) fold 4).
+- Out: "Why the early years matter most" and "How children learn by talking", two learning guides, which the review
+  found off-topic next steps after the maker's answers (m3, `hard-questions-390-motion-06.jpg`). Early years keeps
+  three incoming links (learn by talking, busy hands, sharp brain), and learn by talking keeps three (early years,
+  bilingual, sharp brain).
+- No two linked guides share a head photo: `tara-03` here; `tara-02`, `myra-04` and `ira-01` on the three guides.
 
 ---
 
@@ -420,7 +428,8 @@ questions below.)
 
 | Claim | Source |
 |---|---|
-| H1, lead (hub card, word for word); related list; published 11 Sep 2026; live byline | `stories.md` fold 4; stub module; `src/lib/stories-expansion.ts:488-490` |
+| H1, lead (hub card, word for word); published 11 Sep 2026; live byline | `stories.md` fold 4; stub module; `src/lib/stories-expansion.ts:488-490` |
+| Related list (fold 9), its order and titles | [CMO review B](../../qa/cmo-review-built-b-2026-10-14.md) m3, the ring table (`:223-234`); [tasks](../../engineering/tasks.md) 7.1d; titles as the hub cards print them, [stories.md](stories.md) fold 4 |
 | Common Sense Media advice: 5 and under, extreme caution 6 to 12, "smart toys with voice-based interactions" | [source verification C16](../../research/source-verification.md#c16--common-sense-media-on-ai-toys); excerpt `C16-common-sense-press-release-2026-01-22.md:22-25`; owner [age-band review §4](../../product/age-band-review.md#4-common-sense-media-and-the-3-to-7-band); cite in full: working default B3 |
 | B3 answer (first three sentences) | [safe-AI-toy page](story-what-to-look-for-in-a-safe-ai-toy.md#fold-5--how-kheelu-is-built-against-each-worry-the-one-in-text-product-link), fold 5 paragraph 1 (draft for the founder's signature, its question 1) |
 | "create emotional attachment by design"; "cannot reliably distinguish AI from real people" | `C16-common-sense-press-release-2026-01-22.md:28`; `C16-common-sense-ai-toys-risk-assessment.md:37-38` |
@@ -461,3 +470,27 @@ questions below.)
   this page needs (it advises a grown-up nearby at 3) and none of the AI guides' pool photos has. The CMO keeps it, with the bedtime
   glow noted for the founder at Gate B ([CMO review, for the founder's eye](../../qa/cmo-review-articles-5.19-2026-10-14.md#for-the-founders-eye-at-gate-b-no-change-asked)).
   D025: none needed (the main session's ruling at the wave 5 part C merge, R2-3).
+
+## Changes after approval (task 7.1d)
+
+- **Fold 9, the related guides** ([CMO review B](../../qa/cmo-review-built-b-2026-10-14.md) m3, the ring table at
+  `:223-234`; [tasks](../../engineering/tasks.md) 7.1d). Was: "Does a three-year-old need an AI tutor?", "Why the
+  early years matter most", "How children learn by talking". Now: "What to look for in a safe AI toy", "Does a
+  three-year-old need an AI tutor?", "What India's data law asks of a toy that listens". Why: the review found this
+  page sending readers to two learning guides after the maker's answers (`hard-questions-390-motion-06.jpg`). The
+  CMO's rebalanced ring keeps three related guides out and three in for every guide (`articles.test.ts:109-113`),
+  leaves the three mockup guides' lists unchanged, and links no two guides that share a head photo. Titles are the hub
+  cards' ([stories.md](stories.md) fold 4).
+- **One thing to know:** the safe-AI-toy guide is now both fold 4's in-text link and the first related guide, so a
+  parent meets it twice on this page. That is the ring as the CMO drew it; dropping it from the list would need
+  another guide to give up one of its slots.
+- **Notes kept true:** fold 9's table (now with a "why" column) and notes; the At a glance row on module values; the
+  Sources table (the related list has its own row now); the front matter's sources. No other Copy block changed.
+- **What does not change:** the read time (4 min: about 890 words, and even counted the eight extra title words keep it
+  under 4.5 minutes) and the keyword table. The new titles bring `<main>` to about 958 words (still "about 950": the
+  primary at about 0.6%, "Kheelu" at about 1.7%) and carry no keyword, no "Kheelu" and no banned word; the one "safe" is
+  the safe-AI-toy guide's own title, which fold 4 already carries. No placeholder.
+- **For the builder:** `questions-parents-ask-about-ai-toys.ts:33`, `related: ["what-to-look-for-in-a-safe-ai-toy",
+  "does-a-three-year-old-need-an-ai-tutor", "ai-toys-and-indias-data-law"]`, and the module's header note if it
+  describes the list, in the same commit as the other nine modules. Touch nothing else in the module: task 7.1f edits
+  its `meta`.
