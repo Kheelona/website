@@ -2,18 +2,26 @@ import { render, screen, within } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { approvedDetailsFoldHtml, runApprovedTabScript, tabStates } from "@/components/ui/Tabs/approved-tabs.test-support";
+import { runApprovedTabScript, tabStates } from "@/components/ui/Tabs/approved-tabs.test-support";
 import { buildOffer } from "@/lib/offer/offer";
+import { CLAIM_FIXES, editsBeforeClaimFixes } from "../../../../test/e2e/support/deviations";
 import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 import { ProductDetails } from "./ProductDetails";
-import { PRODUCT_DETAILS } from "./ProductDetails.stories";
+import { PRODUCT_DETAILS, PRODUCT_DETAILS_OPEN } from "./ProductDetails.stories";
 
 /* ProductDetails (tasks 3.4 and 3.5): the product page's fold 7 (meet-kheelu.html), section id="specs": the three
    panels (specs, in the box, safety) on ui/Tabs beside the declarations card, open facts shown as placeholders. Tabs as
    approved (P1 default; N21 corrected): the server sends the DS Tabs markup the mockup serves (tab row hidden, panels
    stacked under their headings), and the island makes tabs of it as the approved page's own script does
    (mockup/pages/meet-kheelu.html:397-439). Both states are compared with the approved fold: the served markup with
-   the mockup file as it is, the tabbed one with the mockup after its script ran. */
+   the mockup file as it is, the tabbed one with the mockup after its script ran.
+
+   The mockup is frozen (D046), so the fold it is held to is the approved page with the route's accepted changes applied
+   first, as the product page's own test applies them (task 8b.1d): its earlier rules (the founder's page facts, task 6.7:
+   the F4 rows and lines hidden, the parent app's phones filled; task 7.1b's copy fixes), then task 8b.1's claim fixes
+   (D058; deviations.md V27: the Microphone and Parent app rows and the Safety tab's first line in the live team's
+   code-checked words). The story data is the product page's own fold 7, so the stories print what the site prints. */
 
 const offer = buildOffer("token");
 /* The mockup names its split mk-details, which the store page also uses for a different block (mapping §6.2), so the
@@ -27,18 +35,25 @@ function served(ui: ReactElement): Element {
   return host.firstElementChild!;
 }
 
-/** The approved fold after the approved page's own tab script ran on it. */
+const SLUG = "meet-kheelu";
+/** The approved fold 7 through the route's accepted changes (see above), as the server sends it: before any script ran. */
+function approvedFold(): Element {
+  const main = withFacts(withFacts(mockupFold(SLUG, "main"), editsBeforeClaimFixes(SLUG)), CLAIM_FIXES[SLUG].edits);
+  return main.querySelector("section#specs")!;
+}
+
+/** That fold after the approved page's own tab script ran on it. */
 function approvedTabbed(): Element {
-  const doc = document.implementation.createHTMLDocument("meet-kheelu");
-  doc.body.innerHTML = approvedDetailsFoldHtml();
+  const doc = document.implementation.createHTMLDocument(SLUG);
+  doc.body.innerHTML = approvedFold().outerHTML;
   runApprovedTabScript(doc);
   return doc.querySelector("section#specs")!;
 }
 
 describe("ProductDetails: the approved fold", () => {
-  it("serves the markup and words of meet-kheelu.html fold 7 as the mockup serves it, tab row included", () => {
+  it("serves the markup and words of meet-kheelu.html fold 7, through its accepted changes, as the mockup serves it, tab row included", () => {
     const section = served(<ProductDetails {...PRODUCT_DETAILS} offer={offer} />);
-    const mockup = mockupFold("meet-kheelu", "section#specs");
+    const mockup = approvedFold();
     expect(skeleton(section, OPTIONS)).toBe(skeleton(mockup, OPTIONS));
     expect(tabStates(section)).toBe(tabStates(mockup));
     expect(words(section)).toBe(words(mockup));
@@ -93,9 +108,9 @@ describe("ProductDetails: parts", () => {
     expect(panels[0].querySelector("dl")!.className).toBe("ks-specs");
     expect(panels[1].querySelector("ul")!.className).toBe("ks-ticks");
     expect(panels.map((p) => p.textContent)).toEqual([
-      expect.stringContaining("Charger[PLACEHOLDER F4: charger type and its BIS registration number]"),
+      expect.stringContaining("Parent app"),
       expect.stringContaining("Quick-start card"),
-      expect.stringContaining("Battery safety: [PLACEHOLDER F4: battery safety certification]"),
+      expect.stringContaining("Toy-safety certification (BIS)"),
     ]);
   });
 
@@ -111,11 +126,21 @@ describe("ProductDetails: parts", () => {
   });
 
   it("shows every open fact visibly, in place", () => {
-    const section = served(<ProductDetails {...PRODUCT_DETAILS} offer={offer} />);
+    const section = served(<ProductDetails {...PRODUCT_DETAILS_OPEN} offer={offer} />);
     const marks = [...section.querySelectorAll(".ks-placeholder")].map((m) => m.textContent);
-    expect(marks).toContain("[PLACEHOLDER F4: size and weight]");
-    expect(marks).toContain("[PLACEHOLDER: which phones the parent app runs on]");
-    expect(marks).toHaveLength(9);
+    expect(marks).toEqual([
+      "[PLACEHOLDER F4: size and weight]",
+      "[PLACEHOLDER F4: battery safety certification]",
+      "[PLACEHOLDER F4: net quantity]",
+    ]);
+    const size = [...section.querySelectorAll("dt")].find((dt) => dt.textContent === "Size and weight")!;
+    expect(size.nextElementSibling!.textContent).toBe("[PLACEHOLDER F4: size and weight]");
+  });
+
+  it("prints no open fact as the product page passes it: an F4 row waits off the page (D054 item 19)", () => {
+    const section = served(<ProductDetails {...PRODUCT_DETAILS} offer={offer} />);
+    expect(section.querySelectorAll(".ks-placeholder")).toHaveLength(0);
+    expect(section.textContent).not.toMatch(/PLACEHOLDER/);
   });
 
   it("prints the MRP from the offer, the same in both modes, in the declarations card", () => {

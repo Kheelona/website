@@ -2,7 +2,9 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import type { BrowserContext, Page, TestInfo } from "@playwright/test";
 import { describeFindings, runAxe } from "./support/axe";
+import { CLAIM_FIXES, editsBeforeClaimFixes } from "./support/deviations";
 import { expect, forceMotionEnd, hideForParity, test, type OpenOptions } from "./support/fixtures";
+import type { FactEdit } from "./support/page-facts";
 import { CHUNK_MAX_DIFF_RATIO } from "./support/parity";
 import { mockupUrl } from "./support/routes";
 import { APPROVED_WIDTHS, AXE_VIEWPORTS, VIEWPORTS, type Viewport } from "./support/viewports";
@@ -23,6 +25,11 @@ import { APPROVED_WIDTHS, AXE_VIEWPORTS, VIEWPORTS, type Viewport } from "./supp
  *   - with JavaScript the product fold matches the approved page's tabbed fold at 360, 390 and 1440: section#specs of
  *     mockup/meet-kheelu.html (its script run) is the golden for each tab selected, and the story's section may
  *     differ in at most CHUNK_MAX_DIFF_RATIO of its pixels (the visual-parity standard, SPA 1).
+ *
+ * The ProductDetails stories print the product page's own fold 7 (task 8b.1d), so wherever the approved page is the
+ * golden it is opened with the route's accepted changes applied first (`withRouteFixes`), as the route's unit tests
+ * apply them to the frozen mockup (D046): the founder's page facts and task 7.1b's copy fixes, then task 8b.1's claim
+ * fixes (D058; deviations.md V16, V17, V27).
  *
  * It runs in the "storybook" project (STORY_SPECS) and opens stories from that project's baseURL. To run it alone on
  * a static build:
@@ -46,6 +53,46 @@ function storybook(info: TestInfo): string {
 }
 
 const storyUrl = (story: string) => `${storybook(test.info())}/iframe.html?id=${story}&viewMode=story`;
+
+/** The product page's accepted changes since Gate A, in the two passes its unit test applies them (page.test.tsx): its
+ *  earlier rules (page facts, copy fixes), then its claim fixes. */
+const PRODUCT_FIXES: readonly (readonly FactEdit[])[] = [editsBeforeClaimFixes("meet-kheelu"), CLAIM_FIXES["meet-kheelu"].edits];
+
+/**
+ * Applies PRODUCT_FIXES to the open approved page's <main>, in the browser, as test/support/mockup-facts.ts `withFacts`
+ * applies an edit list to a clone (one pass per list): each edit takes the first element its selector matches whose
+ * words are its `was` and that no earlier edit of its pass used, then changes it, or the element around it that `scope`
+ * names. An edit that finds nothing fails the test, so the golden is never the frozen page by accident.
+ */
+async function withRouteFixes(page: Page): Promise<void> {
+  await page.evaluate((passes) => {
+    const main = document.querySelector("main");
+    if (!main) throw new Error("the approved page has no <main>");
+    const words = (el: Element) => (el.textContent ?? "").replace(/\s+/g, " ").trim();
+    const markup = (html: string) => {
+      const template = document.createElement("template");
+      template.innerHTML = html;
+      return Array.from(template.content.childNodes);
+    };
+    for (const edits of passes) {
+      const used = new Set<Element>();
+      for (const edit of edits) {
+        const match = Array.from(main.querySelectorAll(edit.at)).find((el) => !used.has(el) && words(el) === edit.was);
+        if (!match) throw new Error(`no unused ${edit.at} reads "${edit.was}" on the approved page`);
+        used.add(match);
+        const target = edit.scope ? match.closest(edit.scope) : match;
+        if (!target) throw new Error(`"${edit.was}" sits in no ${edit.scope}`);
+        if (edit.now === null) target.remove();
+        else if (edit.inner) target.replaceChildren(...markup(edit.now));
+        else if (edit.now === "") {
+          const before = target.previousSibling;
+          if (before?.nodeType === Node.TEXT_NODE) before.textContent = (before.textContent ?? "").replace(/\s+$/, "");
+          target.remove();
+        } else target.replaceWith(...markup(edit.now));
+      }
+    }
+  }, PRODUCT_FIXES);
+}
 
 async function frames(page: Page, n: number): Promise<void> {
   await page.evaluate((count) => new Promise<void>((done) => {
@@ -199,6 +246,7 @@ test.describe("tabs: without JavaScript", () => {
       const context = await harness.context(vp, { javaScriptEnabled: false });
       const mockup = await context.newPage();
       await mockup.goto(mockupUrl("meet-kheelu"), { waitUntil: "load" });
+      await withRouteFixes(mockup);
       await mockup.evaluate(() => document.fonts.ready.then(() => undefined));
       // The approved page shows its tab row above the stacked panels here (the DS display rule beats `hidden`); the build
       // hides it (tabs.css). Every panel moves down by the same amount, so their places relative to the first are compared.
@@ -301,6 +349,7 @@ test.describe("tabs: the product fold matches the approved tabbed fold", () => {
       const mockup = await mockupContext.newPage();
       await mockup.goto(mockupUrl("meet-kheelu"), { waitUntil: "load" });
       await mockup.locator("#specs .kh-tabs.is-tabs").waitFor({ state: "attached" });
+      await withRouteFixes(mockup);
       await hideForParity(mockup);
       await forceMotionEnd(mockup);
       await mockup.addStyleTag({ content: ".kh-buybar { display: none !important; }" });

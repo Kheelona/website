@@ -2,7 +2,10 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it } from "vitest";
 import type { ArticlePart, ProseBlock, VideoBlock } from "@/content/types";
+import { ARTICLE_CLAIM_FIXES } from "../../../../test/e2e/support/deviations";
+import type { PageFacts } from "../../../../test/e2e/support/page-facts";
 import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 import { ArticleBody } from "./ArticleBody";
 import { LATE_TALKERS_BODY, LEARNING_TOYS_BODY, SAFE_AI_TOY_BODY, SOURCE_LABEL, VIDEO_LABEL } from "./ArticleBody.stories";
 
@@ -21,6 +24,17 @@ const ARTICLES = [
 const SLOTS = ".mk-answer, .mk-sources";
 const OPTIONS = { skip: SLOTS, drop: /^(?:ks-type-.*|ks-src--article)$/ };
 
+/** An approved article's reading column through its accepted changes since Gate A, as approved-articles.test.tsx reads
+ *  it (task 8b.1d): the frozen mockup (D046) with the article's claim fixes applied first (deviations.ts
+ *  ARTICLE_CLAIM_FIXES: the safe-AI-toy guide's, D058, deviations.md V37), and its in-text link to the data-law guide
+ *  read as the copy page's real URL (copy page fold 4, "Links"; the mockup links the hub's topic). The other two
+ *  approved articles have neither, so theirs is the mockup's column as it is. */
+function approvedColumn(slug: string): Element {
+  const fold = mockupFold(slug, ".mk-story-body").cloneNode(true) as Element;
+  fold.querySelectorAll('.mk-part a[href="stories.html#ai-and-safety"]').forEach((a) => a.setAttribute("href", "/stories/ai-toys-and-indias-data-law"));
+  return withFacts(fold, (ARTICLE_CLAIM_FIXES as Readonly<Record<string, PageFacts>>)[slug]?.edits ?? []);
+}
+
 const BELLY = { src: { src: "/belly.png", width: 389, height: 397 } as StaticImageData, alt: "Kheelu’s tummy unit up close." };
 const VIDEO: VideoBlock = { kind: "video", provider: "youtube", videoId: "M7lc1UVf-VE", title: "Setting up Kheelu", caption: "Press play to [set it up](/setup)." };
 const one = (blocks: readonly ProseBlock[], extra: Partial<ArticlePart> = {}) => (
@@ -29,15 +43,19 @@ const one = (blocks: readonly ProseBlock[], extra: Partial<ArticlePart> = {}) =>
 const column = (c: HTMLElement) => c.querySelector(".ks-prose")!;
 
 describe("ArticleBody: the approved reading column", () => {
-  it.each(ARTICLES)("%s: markup equals the mockup's prose column", (slug, blocks) => {
+  it.each(ARTICLES)("%s: markup equals the mockup's prose column, through its accepted changes", (slug, blocks) => {
     const { container } = render(<ArticleBody blocks={blocks} sourceLabel={SOURCE_LABEL} />);
-    const mockup = mockupFold(slug, ".mk-story-body");
-    expect(skeleton(container.firstElementChild!, OPTIONS)).toBe(skeleton(mockup, OPTIONS));
+    expect(skeleton(container.firstElementChild!, OPTIONS)).toBe(skeleton(approvedColumn(slug), OPTIONS));
   });
 
-  it.each(ARTICLES)("%s: words equal the mockup's, markers included", (slug, blocks) => {
+  it.each(ARTICLES)("%s: words equal the mockup's through its accepted changes, markers included", (slug, blocks) => {
     const { container } = render(<ArticleBody blocks={blocks} sourceLabel={SOURCE_LABEL} />);
-    expect(words(container.firstElementChild!)).toBe(words(mockupFold(slug, ".mk-story-body"), { skip: SLOTS }));
+    expect(words(container.firstElementChild!)).toBe(words(approvedColumn(slug), { skip: SLOTS }));
+  });
+
+  it("holds the safe-AI-toy guide to its claim fixes: the frozen column with them is not the mockup's own", () => {
+    const slug = "story-what-to-look-for-in-a-safe-ai-toy";
+    expect(words(approvedColumn(slug), { skip: SLOTS })).not.toBe(words(mockupFold(slug, ".mk-story-body"), { skip: SLOTS }));
   });
 
   it("is a div section holding the one reading column, with the body type steps instead of pixel sizes", () => {
