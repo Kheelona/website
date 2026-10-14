@@ -184,7 +184,8 @@ Page files stay thin: import the content module, `getOffer()`, export `metadata`
 offer.ts cta.ts delivery.ts policies.ts seller.ts trust.ts navigation.ts organization.ts films.ts faqs.ts routes.ts
 products/kheelu/product.ts      products/kheelu/page.ts      products/index.ts
 pages/home.ts safety.ts ai-toys-for-kids-in-india.ts team.ts setup.ts contact.ts not-found.ts
-stories/topics.ts stories/hub.ts (slug lists only) stories/articles/<slug>.ts (21; each with card, related, dates)
+stories/posts.generated.json (the journal snapshot, never hand-edited) stories/journal.ts (the registry)
+stories/topics.ts stories/photos.ts stories/hub.ts (slug lists only) stories/articles/index.ts (page copy; re-exports)
 legal/privacy.ts terms.ts refund.ts shipping.ts
 store/store-page.ts confirmation.ts event-page.ts partner-page.ts in-app-note.ts
 campaigns/index.ts (empty registry)
@@ -201,7 +202,7 @@ Every amount is a `{price:…}` token; every unknown fact a `{ph:…}` placehold
 | A new page | `src/content/en-IN/pages/<slug>.ts` + a thin `src/app/(site)/<slug>/page.tsx` + a line in `routes.ts` | only if the URL plan allows (strategy §4) |
 | A campaign landing page | `src/content/en-IN/campaigns/<slug>.ts` + one registry line | no new component |
 | A product | `src/content/en-IN/products/<slug>/` + one registry line | checkout tiers are a founder decision |
-| A story | `src/content/en-IN/stories/articles/<slug>.ts` + its slug in `routes.ts` and the hub topic | `published` and `updated` written from git history when the article changes (stored, not computed at build) |
+| A story | a post in the admin dashboard; after Gate B the prebuild sync writes it into `src/content/en-IN/stories/posts.generated.json` (until then the committed snapshot is the journal; [journal pipeline](journal-pipeline.md) §9.1) | its route, sitemap, hub row and close follow from the post and its topic; a new block kind needs the dashboard's node, the contract, the adapter and the validator together |
 | A price or amount | never: use `{price:…}`; a new amount goes in the money block of `src/config/site.ts` only by founder decision | |
 | A policy number (days, months, hours) | `src/content/en-IN/policies.ts` | owner page [policies](../product/policies.md) first |
 | A tracking event or CTA value | `src/lib/tracking/events.ts` or `cta.ts` | parity test; `/privacy` in the same commit if a tool changes |
@@ -235,7 +236,7 @@ agrees a new one.
 | `safety.html` | `/safety` | `pages/safety.ts` | `PageTemplate` | HeroSection `answer` · TrustSection `facts` (D020 order, in full) · TrustSection `never` · FeatureSplit `app-screens` (one screen, controls) · FeatureSplit `pair` (retention, certification) · FaqSection · CloseSection (`finale`) | yes | 5.3 |
 | `ai-toys-for-kids-in-india.html` | `/ai-toys-for-kids-in-india` | `pages/ai-toys-for-kids-in-india.ts` | `PageTemplate` | HeroSection `answer` · StepsSection `checks` (five checks) · TrustSection `meets` · FeatureSplit `photo` (plush or robot) · FaqSection `photo` · SourcesSection `inline` · CloseSection `guide` (`finale`) | yes | 5.4 |
 | `stories.html` | `/stories` | `stories/hub.ts`, `stories/topics.ts` | `PageTemplate` | HeroSection `hub` (topic tags) · TopicSection × 4 · CloseSection `journal` (`finale`) | yes | 5.5 |
-| `story-learning-toys-for-a-three-year-old.html` | `/stories/learning-toys-for-a-three-year-old` | `stories/articles/<slug>.ts` | `ArticleTemplate` | ArticleHead (crumbs, byline) · AnswerSection · ArticleBody · SourcesSection · RelatedGuides · CloseSection `journal` | yes | 5.6 |
+| `story-learning-toys-for-a-three-year-old.html` | `/stories/learning-toys-for-a-three-year-old` | the journal post (`stories/posts.generated.json` through `journal.ts`) | `ArticleTemplate` | ArticleHead (crumbs, byline) · AnswerSection · ArticleBody · SourcesSection · RelatedGuides · CloseSection `journal` | yes | 5.6 |
 | `story-what-to-look-for-in-a-safe-ai-toy.html` | `/stories/what-to-look-for-in-a-safe-ai-toy` | same | `ArticleTemplate` | same | yes | 5.6 |
 | `story-talking-toys-and-late-talkers.html` | `/stories/talking-toys-and-late-talkers` | same | `ArticleTemplate` | same, with the D025 disclaimer; close RelatedGuides `keep` (no CTA, B5) | no | 5.6 |
 | (template) the 18 other articles | `/stories/<slug>` | same | `ArticleTemplate` | as the template | per article | 5.17-5.19 |

@@ -18,7 +18,7 @@ export { articleMeta } from "./article-page";
 const TITLE_ID = "story-title";
 
 export interface ArticleTemplateProps {
-  /** The article module (src/content/en-IN/stories/articles/<slug>.ts). */
+  /** The article, from the journal registry (src/content/en-IN/stories/journal.ts). */
   readonly article: Article;
   /** The live offer: the close's price sentence, and any amount in the text. */
   readonly offer: Offer;

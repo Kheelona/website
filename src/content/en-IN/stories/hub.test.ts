@@ -22,11 +22,6 @@ import { topics } from "./topics";
 
 const hub = new DOMParser().parseFromString(readRepoFile("mockup/stories.html"), "text/html");
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
-/* A stub's open body (articles/stub.ts), built in pieces: the production placeholder scan (task 2.9)
-   refuses the inline token anywhere in src/, and stub.ts goes once every guide is rewritten, so this
-   test neither spells the token nor imports it (articles.test.ts proves the two agree). */
-const REWRITE_PENDING = "{" + "ph:" + "ARTICLE rewrite pending}";
-
 /** A guide as the founder approved it (until 8b.2e: its own module). */
 const article = (slug: ArticleSlug): Article => approvedArticle(slug);
 
@@ -76,21 +71,16 @@ describe.each(hubTopics.map((g) => [g.topic, g] as const))("topic %s, as the app
     expect(norm(card?.querySelector("a")?.textContent)).toContain(`${a.head.readMinutes} min read`);
   });
 
-  it("lists the other guides in order; a guide still waiting for its rewrite carries the hub's card words", async () => {
+  it("lists as many other guides as the approved hub", async () => {
     /* The approved row of a guide that has left the journal is not the build's (D053: the 3-6-9-12 card; deviations V9). */
     const rows = Array.from(section.querySelectorAll("li.kh-listitem")).filter((li) => !li.matches(STORIES_REMOVED_CARD.selector));
     const shown = rows.map((li) => ({
       title: norm(li.querySelector(".kh-listitem__title")?.textContent),
       summary: norm(li.querySelector(".kh-listitem__sub")?.textContent),
     }));
+    /* Every guide is rewritten (task 8b.2e: no stub is left), so a row may carry its keyword-map title (stories.md,
+       notes on the cards); the rows' words are held by the hub's page test, their number here. */
     expect(group.slugs).toHaveLength(shown.length);
-    const cards = await Promise.all(group.slugs.map(article));
-    cards.forEach((a, i) => {
-      /* A rewritten guide may take its keyword-map title (stories.md, notes on the cards), so only
-         the guides still waiting are held to the hub's words here. */
-      if (!JSON.stringify(a.body).includes(REWRITE_PENDING)) return;
-      expect({ title: toPlainText(a.card.title), summary: toPlainText(a.card.summary) }, a.slug).toEqual(shown[i]);
-    });
   });
 });
 

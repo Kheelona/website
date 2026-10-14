@@ -81,7 +81,7 @@ const fail = (slug: string, what: string, rule: number): never => {
   throw new JournalAdapterError(`post "${slug}": ${what} (rule ${rule})`);
 };
 
-/* ── Derivations shared by the adapter and the export (./from-article.ts) ─────────────────────────── */
+/* ── Derivations (the export of task 8b.2e shared them; it went with the 20 modules) ──────────────────────── */
 
 const META_TITLE_MAX = 60;
 /** The site's name after a derived <title>, as validate.ts's rule 23 derives it (the two are held equal by test). */

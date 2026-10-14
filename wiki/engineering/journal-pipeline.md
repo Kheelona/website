@@ -676,6 +676,22 @@ grep rule, catalogue rows in the same commit). Waves: **i** = 8b.2a, 8b.2b, 8b.2
   and add an `articleMeta` test for an uploaded cover (8b.2d's review); the ruled listed set (8b.2d above) is the
   "ruled list" of this task's acceptance for read times and no-wrap spans; keep `getArticle` exported from
   `articles/index.ts` (`ArticleBody.stories.tsx` renders the safe-AI-toy guide through it, task 8b.1b).
+- **Merged 2026-10-14** (`3b1e070`, run `wf_e07be4c1-904`; review passed in round 1): the snapshot and `journal.ts`
+  in one commit, every consumer on the registry, the article tests on the approved export
+  (`test/fixtures/journal/approved/`), the 20 modules and `from-article.ts` deleted, `Article.meta.og` typed. Rendered
+  words, the hub, `llms.txt` and `pricing.md` equal before and after except the ruled list.
+- **Rulings made at the wave iii merge (main session, 2026-10-14):** (1) added to the ruled list, all inert: the
+  sitemap lists the 20 article URLs in slug order and the sticky bar's `paths` prop (RSC payload) lists article paths
+  in slug order (the same sets; `ARTICLE_SLUGS` follows the snapshot, and ADR-014 removes the hand-kept list); two React
+  text separators (`<!-- -->`) on two guides; the unused `.shrink` utility no longer generated. (2) Article parity once
+  a writer edits: while `JOURNAL_SOURCE` is `"snapshot"`, `journal.test.ts` holds the committed file equal to the
+  approved export, so any change to a guide's words is a deliberate, reviewed commit. At the flip (8b.2g) the
+  template's proof is the unit tests on the approved export and the block-kind fixtures, which stay; the flip commit
+  scopes the e2e text and visual parity of the three mockup guides and the snapshot-equals-export test to
+  `"snapshot"`, and the 8b.2g runbook says so. (3) `journal.ts` parses the snapshot with no banned-phrase list
+  (§8.1 layer 2, vocabulary only): claims are checked by prebuild step 15 on every build and by verify
+  (`journal.test.ts`, `test/guards/journal-snapshot.test.ts`); `src/` never imports `test/`. (4) Comment fixes in
+  files outside its Owns done by the main session at the merge.
 
 ### 8b.2f The backend pack and the dry run (main session with Aman; after 8b.2e)
 
@@ -684,6 +700,15 @@ grep rule, catalogue rows in the same commit). Waves: **i** = 8b.2a, 8b.2b, 8b.2
 - **Acceptance:** each B-item done or dated; zero refusals, or each refusal resolved through Q1.
 
 ### 8b.2g After Gate B: import, check, flip (Aman, main session, founder; risk normal)
+
+- **Before the flip (from 8b.2e's review, 2026-10-14):** a 21st post turns `npm run verify` red in 14 places today.
+  By design: equality with the approved export, the incoming-link ring and the adapter's warning for an empty
+  `related`. To loosen first: the count pins (`journal.test.ts` and `test/guards/journal-snapshot.test.ts`
+  `toHaveLength(20)`, `generated-icons.test.ts` 20 cards and 13 heads, `routes.test.ts` "the 20 articles",
+  `stories/[slug]/page.test.tsx` "exactly the 20", `share-cards.test.ts` "20 guides") speak of `APPROVED_POSTS` or
+  "at least"; `articles.test.ts`' first-published rule applies only where `LEGACY_DATES.has(slug)`; `hub.test.ts`'s
+  exact equality becomes "the hub's own lists first, each topic's unlisted posts after, newest first";
+  `test/e2e/support/routes.ts` imports `redirectedSlugs` from `to-article.ts` instead of restating it.
 
 - **Acceptance:** the import done (B5); `--check` exits 0; the flip commit (`JOURNAL_SOURCE = "api"`) merged with the
   founder's OK; the first production build log shows the sync with 20 posts unchanged; a test upload (if Q2 = R2)
@@ -758,6 +783,10 @@ To pass on as written. Nothing here changes the API's address, its envelope or a
 | Uploads: unknown dimensions, a redirecting image host, a child's photo without consent | required size, `maximumRedirects: 0`, a local check of the first upload (8b.2g), Q2 |
 
 ## 16. For the main session: pages and rules to update
+
+**Done 2026-10-14** (wave i merge `24d7631`: structure §1, architecture §10 and §14; wave iii merge: architecture
+§5.4, §6.1, §9.2, §17, structure §3.3, §4, §5, `.claude/rules/content.md`, and `.claude/rules/journal.md` as proposed
+below).
 
 - **architecture.md:** §5.4 (a story is a published post), §6.1 (the stories row: the snapshot, journal.ts, photos.ts),
   §9.2 (BlogPosting dates from the post), §10 (uploads and video stills), §14 (the prebuild step 15, postbuild 20, the

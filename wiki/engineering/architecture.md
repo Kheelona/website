@@ -321,10 +321,12 @@ Each becomes a component once (kickoff §3, decision 1):
 The brief's test (§6) holds by construction: `PageTemplate` renders `page.sections`, a discriminated
 union of section configs; a new campaign page is a content module plus a line in the campaign registry
 (route `src/app/(site)/lp/[slug]/page.tsx`, `dynamicParams = false`, empty at launch); a new product is a
-module in `content/en-IN/products/` (route `products/[slug]`); a new story is a module in
-`content/en-IN/stories/articles/` plus its slug in `routes.ts` and a topic list. `test/scalability.test.tsx`
+module in `content/en-IN/products/` (route `products/[slug]`); a new story is a post in the journal snapshot
+(`stories/posts.generated.json`, from the admin dashboard since task 8b.2e, [ADR-014](adr/ADR-014-journal-from-the-dashboard.md)):
+its route, sitemap entry, hub row and sticky bar follow from the post and its topic. `test/scalability.test.tsx`
 (task 4.1) renders a fixture campaign page and a fixture product page from content alone, and
-`test/scalability-article.test.tsx` (task 4.2) renders a fixture article.
+`test/scalability-article.test.tsx` (task 4.2; since 8b.2e) publishes nine fixture posts into a mocked snapshot and
+renders each as a whole page.
 
 ## 6. Content model
 
@@ -347,7 +349,7 @@ Decision: [ADR-004](adr/ADR-004-content-model.md). Folder detail: [structure §3
 | `films.ts` | The seven films: id, chip, caption, duration, poster, video URL, alt, loading | [D040](../decisions/D040-films-move-to-new-site.md) |
 | `faqs.ts` | Every FAQ item once, by id; pages reference ids, so the same answer never exists twice | page copy |
 | `pages/<slug>.ts` | One per marketing page: meta (title, description per mode, OG image and alt), sections | `site/pages/<slug>.md` |
-| `stories/topics.ts`, `stories/hub.ts`, `stories/articles/<slug>.ts` | Topic groups and the hub as **slug lists only**; one module per article with its blocks, sources, `related` slugs (three, so every article keeps three incoming links), `card` (title and summary the hub shows), and stored `published` and `updated` dates (written from git history when the article changes, never computed at build: Vercel's clone may be shallow) | stories copy |
+| `stories/posts.generated.json`, `stories/journal.ts`, `stories/topics.ts`, `stories/photos.ts`, `stories/hub.ts`, `stories/articles/index.ts` | Since task 8b.2e ([ADR-014](adr/ADR-014-journal-from-the-dashboard.md), [journal pipeline](journal-pipeline.md)): the journal is the snapshot of the dashboard's posts (words, blocks, sources, three `related` slugs, card title and summary, stored `published` and `updated` dates), never hand-edited; `journal.ts` is the registry (each post through the adapter, `src/lib/journal/to-article.ts`); `topics.ts` holds the four topics with their close and D025 line, `photos.ts` the DS photo table, `hub.ts` the hub's featured and order overrides as **slug lists only**; `articles/index.ts` keeps the article page copy and re-exports the registry | the dashboard post; stories copy for the approved export (`test/fixtures/journal/approved/`) |
 | `legal/<slug>.ts` | Privacy, terms, refund, shipping: summary, contents, parts, sections; `status: draft \| approved`; `approvedOn` | legal copy; founder approval (D029) |
 | `store/*.ts` | Store page, confirmation, event and partner pages, in-app note (with `enabled`: on since task 7.1c, D056 item 3) | store copy |
 | `routes.ts` | The URL plan: every indexable route, its content module, sitemap priority, nav and footer membership | [url map](../site/url-map.md), strategy §4 |
@@ -550,7 +552,7 @@ link may preview the old image).
 | `/` | FAQPage (the six Home answers plus fold 4's "What is Kheelu?", as [home copy](../site/pages/home.md) fold 8 says; wave-4 close); the Product node lives on the product page only |
 | `/products/kheelu` | Product + Offer (+ return policy, shipping details, warranty), FAQPage |
 | `/safety`, `/ai-toys-for-kids-in-india` | FAQPage (on `/safety` also fold 2's four facts, as [safety copy](../site/pages/safety.md) says; wave-4 close) |
-| `/stories/<slug>` | BlogPosting (headline, description, image, `datePublished`, `dateModified` from the module's stored dates, author, publisher), BreadcrumbList (visible crumbs) |
+| `/stories/<slug>` | BlogPosting (headline, description, image, `datePublished`, `dateModified` from the post's stored dates, author, publisher), BreadcrumbList (visible crumbs) |
 | `/setup` | HowTo (from the same steps) |
 | `/team` | `AboutPage` (as live, `team/page.tsx:120-131` at the tag; description = fold 2's answer; Organization `memberOf` stays proof-gated) |
 | `/contact` | `ContactPage` (as live, `contact/page.tsx:69-79` at the tag), pointing at the Organization node |
@@ -1059,7 +1061,7 @@ order container; store noindex; inputs at 16 px or more; no `<video>` before pla
 
 | Feature | Where it plugs in |
 |---|---|
-| Hindi (and other languages) | `src/content/hi-IN/` with the same types; a `[locale]` route segment and `hreflang` later; the Devanagari font subset covers only the Devanagari text in the site today, so Hindi content re-runs `node scripts/assets/build-fonts.mjs` (a guard in `generated-css.test.ts` names any uncovered character) |
+| Hindi (and other languages) | `src/content/hi-IN/` with the same types; a `[locale]` route segment and `hreflang` later; the Devanagari font subset covers only the Devanagari text in the site today, so Hindi content re-runs `node scripts/assets/build-fonts.mjs` (a guard in `generated-css.test.ts` names any uncovered character); a Hindi journal needs the dashboard to hold locales first (journal pipeline §16) |
 | More products | `src/content/en-IN/products/<slug>/`; route `products/[slug]` exists; checkout tiers are the store's (founder decision when it comes) |
 | Campaign landing pages | `src/content/en-IN/campaigns/<slug>.ts` and the `lp/[slug]` route (empty registry at launch) |
 | Accounts and login | none in v1 (brief §2); the store host and API routes are where it would attach |

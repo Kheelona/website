@@ -6,7 +6,7 @@ import { articles } from "@/content/en-IN/stories/articles";
 import { articleMeta } from "@/layouts/ArticleTemplate/ArticleTemplate";
 import { buildOffer } from "@/lib/offer/offer";
 
-/* The stories route (task 4.2; structure §3.1): one page per article of the URL plan, each its module through the
+/* The stories route (task 4.2; structure §3.1): one page per article of the URL plan, each its journal post through the
  * article template, with the live offer; every other slug stops at the router (dynamicParams = false), so an unknown
  * guide is the real 404 and never a thrown one (test/not-found-ssr.test.ts, lessons §1). */
 
@@ -34,7 +34,7 @@ describe("/stories/[slug]", () => {
     expect(SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "")).not.toMatch(/\bnotFound\b/);
   });
 
-  it("takes each article's metadata from its module", async () => {
+  it("takes each article's metadata from its journal post", async () => {
     const { generateMetadata } = await import("./page");
     for (const slug of ARTICLE_SLUGS) expect(await generateMetadata(params(slug)), slug).toEqual(articleMeta(articles[slug]));
   });
