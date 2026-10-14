@@ -27,13 +27,18 @@ import { storeNotFound, type StorePanelCopy } from "@/content/en-IN/store/event-
  *  A partner's `mark` opens the panel a step above the heading: an app-private
  *  component has no stylesheet of its own (the compose manifest reads ui,
  *  sections, chrome and layouts), so that one step is the DS-mapped utility
- *  `mb-5` (space-5; architecture §4.2). Server component. */
+ *  `mb-5` (space-5; architecture §4.2). Since task 6.3 the store page's own
+ *  not-configured state is this panel as well, with its approved words
+ *  (store.md, "Store not switched on"): its WhatsApp button as `action`, its
+ *  note as `note`. Server component. */
 export function NotFoundPanel({
   copy = storeNotFound.panel,
   title = copy.title,
   body = copy.body,
   cta = true,
   mark,
+  action,
+  note,
 }: {
   /** The state's words: the dead end's by default. */
   copy?: StorePanelCopy;
@@ -44,22 +49,34 @@ export function NotFoundPanel({
   cta?: boolean;
   /** A partner's lockup above the heading (the partner page, B29). */
   mark?: ReactNode;
+  /** A page's own action in place of the button to the pre-order page (the store page without keys: its WhatsApp
+   *  button, where a button to the store would lead back to the same words). */
+  action?: ReactNode;
+  /** A page's own muted line in place of the WhatsApp line (the store page without keys: its note, which follows its
+   *  WhatsApp button). */
+  note?: string;
 }) {
   return (
     <Section labelledBy={copy.titleId}>
       <Container>
         {mark ? <div className="mb-5">{mark}</div> : null}
         <Heading level={1} id={copy.titleId} title={title} lead={body} />
-        {cta ? (
+        {action ? (
+          <Actions>{action}</Actions>
+        ) : cta ? (
           <Actions>
             <Button href="/">{copy.action}</Button>
           </Actions>
         ) : null}
         {/* "Or" only reads as a second option when there is a first one. */}
         <p className="kh-body-s ks-muted ks-store-closed">
-          {cta ? `${copy.help.or} ` : ""}
-          <a href={SUPPORT_WHATSAPP_HREF}>{cta ? copy.help.link : copy.help.linkAlone}</a>{" "}
-          {copy.help.tail}
+          {note ?? (
+            <>
+              {cta ? `${copy.help.or} ` : ""}
+              <a href={SUPPORT_WHATSAPP_HREF}>{cta ? copy.help.link : copy.help.linkAlone}</a>{" "}
+              {copy.help.tail}
+            </>
+          )}
         </p>
       </Container>
     </Section>

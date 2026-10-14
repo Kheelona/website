@@ -91,6 +91,23 @@ describe("NotFoundPanel, the store's panel", () => {
     expect(document.querySelector("p.ks-store-closed")!.textContent).toContain("with your order number");
   });
 
+  /* Task 6.3 (6.1's follow-up): the store page's own not-configured state is this panel too, with its approved words
+     (store.md, "Store not switched on"): its WhatsApp button in the button's place, its note as the muted line. */
+  it("takes a page's own action in the button's place and its own note as the muted line", () => {
+    render(
+      <NotFoundPanel
+        copy={eventPage.notConfigured}
+        action={<a href={SUPPORT_WHATSAPP_HREF}>Message us on WhatsApp</a>}
+        note="We will reserve one for you by hand in the meantime."
+      />,
+    );
+    const actions = document.querySelector(".kh-section__actions")!;
+    expect(within(actions as HTMLElement).getByRole("link", { name: "Message us on WhatsApp" })).toHaveAttribute("href", SUPPORT_WHATSAPP_HREF);
+    expect(screen.queryByRole("link", { name: "Pre-order at the usual price" })).toBeNull();
+    expect(actions.nextElementSibling!.matches("p.kh-body-s.ks-muted.ks-store-closed")).toBe(true);
+    expect(actions.nextElementSibling!.textContent).toBe("We will reserve one for you by hand in the meantime.");
+  });
+
   it("opens with a partner's mark when given one, before the heading, set a step apart", () => {
     const { container } = render(<NotFoundPanel mark={<span data-mark="partner">Partner</span>} />);
     const inner = container.querySelector(".kh-container")!;

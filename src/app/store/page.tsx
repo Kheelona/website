@@ -12,19 +12,19 @@ import { StorePaymentsLine } from "@/components/sections/store/StorePaymentsLine
 import { StoreTop } from "@/components/sections/store/StoreTop/StoreTop";
 import { Button } from "@/components/ui/Button/Button";
 import { InAppBrowserNote } from "@/components/ui/InAppBrowserNote/InAppBrowserNote";
-import { Heading } from "@/components/ui/Heading/Heading";
-import { Actions, Container, Section } from "@/components/ui/Layout/Layout";
 import { formatInr } from "@/config/site";
 import { HOSTS, STORE_ORIGIN } from "@/config/env";
 import { pickFaqs } from "@/content/en-IN/faqs";
 import { films, filmsStrip } from "@/content/en-IN/films";
 import { navigation } from "@/content/en-IN/navigation";
 import { seller } from "@/content/en-IN/seller";
+import { eventPage } from "@/content/en-IN/store/event-page";
 import { inAppNote } from "@/content/en-IN/store/in-app-note";
 import { storePage } from "@/content/en-IN/store/store-page";
 import { buildOffer } from "@/lib/offer/offer";
 import { getOffer } from "@/lib/offer/get-offer";
 import { pageMeta } from "@/lib/seo/metadata";
+import { NotFoundPanel } from "./_components/NotFoundPanel";
 
 /** store.kheelona.com (§8.25-w, mode-gated since §8.26; restyled on the design
  *  system in task 5.15, ADR-013: markup, classes, copy and presentation imports).
@@ -112,21 +112,23 @@ export default async function StorePage() {
   );
 }
 
+/** Not configured: the store's one panel (NotFoundPanel, as the event page's state; task 6.3) with this page's approved
+ *  words (store.md, "Store not switched on"): the title and lead, the WhatsApp button, then the note. */
 function NotConfiguredState() {
   const copy = storePage.notConfigured;
   return (
     <>
-      <Section labelledBy="store-title">
-        <Container>
-          <Heading level={1} id="store-title" title={copy.title} lead={copy.body} />
-          <Actions>
-            <Button variant="secondary" href={seller.support.whatsapp} icon="whatsapp-logo">
-              {copy.action}
-            </Button>
-          </Actions>
-          <p className="kh-body-s ks-muted ks-store-closed">{copy.note}</p>
-        </Container>
-      </Section>
+      <NotFoundPanel
+        copy={eventPage.notConfigured}
+        title={copy.title}
+        body={copy.body}
+        action={
+          <Button variant="secondary" href={seller.support.whatsapp} icon="whatsapp-logo">
+            {copy.action}
+          </Button>
+        }
+        note={copy.note}
+      />
       <WhatsAppFloat href={seller.support.whatsapp} chat={seller.chat} context="store" />
     </>
   );
