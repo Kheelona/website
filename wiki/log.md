@@ -1051,3 +1051,11 @@ guide page. Plain build green too. `npm run verify`: 302 files, 6048 passed. Doc
 it started (20:46:42-20:47:20 UTC); CI `verify` success. Both beta hosts answer 302 to Vercel's login, as before, so the
 pages are checked in beta QA (task 7.2) once the bypass secret arrives. A Vercel deploy failure shows only "Deployment has
 failed" on GitHub: the reason is in the dashboard's build log (the founder can paste it, as on 2026-10-14).
+
+## [2026-10-15 03:18] decision | D060: the beta links open to the public (no Vercel login); kheelona.com unchanged until Gate B
+The founder asked "can we make it live for public?" and chose "Open the beta links" over going live on kheelona.com
+(Gate B cannot happen yet: a production build stops on the four draft legal pages, D029). The founder turns off Vercel
+Authentication in the dashboard (the main session never changes Vercel settings). Checked in the code before it opens:
+beta sends `X-Robots-Tag: noindex, nofollow` on every response (`next.config.ts`) and the store shows "Pre-orders open
+here shortly." with the WhatsApp button (D051). Once the hosts answer 200, the main session checks them and runs beta QA
+(task 7.2) without the bypass secret. [D060](decisions/D060-beta-open-to-the-public-2026-10-14.md).
