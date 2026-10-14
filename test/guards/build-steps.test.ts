@@ -5,8 +5,9 @@
 //    name order, and stops at the first that fails. A guard only blocks a deploy if its step file
 //    exists, the runner accepts its name, and the hook actually runs around the production build.
 //    This test pins all three for the steps the deploy depends on: DS checksums (prebuild 10, task
-//    1.1), compose.css (prebuild 20, task 1.2), and the placeholder guard on src/ (prebuild 30) and
-//    on the prerendered output (postbuild 10), both task 2.9.
+//    1.1), the journal sync (prebuild 15, task 8b.2b), compose.css (prebuild 20, task 1.2), the
+//    placeholder guard on src/ (prebuild 30) and on the prerendered output (postbuild 10), both task
+//    2.9, and the journal's pages (postbuild 20, task 8b.2b).
 // 2. Nothing replaces `npm run build` on Vercel: package.json has no `vercel-build` or `now-build`
 //    script (task 2.13: Vercel would run it instead of build, and npm its own pre and post hooks, so
 //    the steps above would silently never run), vercel.json sets no build command, and no .npmrc
@@ -28,9 +29,11 @@ const STEPS = join(REPO, "scripts", "steps");
 
 const REQUIRED = [
   "prebuild/10-ds-checksums.mjs",
+  "prebuild/15-journal-sync.mjs",
   "prebuild/20-compose-css.mjs",
   "prebuild/30-placeholders.mjs",
   "postbuild/10-placeholders-html.mjs",
+  "postbuild/20-journal-pages.mjs",
 ];
 
 /* The runner's own naming rule (scripts/run-steps.mjs): a misnamed .mjs stops the hook. */
@@ -53,6 +56,23 @@ describe("the build steps the deploy depends on", () => {
     const prebuild = readdirSync(join(STEPS, "prebuild")).filter((f) => f.endsWith(".mjs")).sort();
     expect(prebuild.indexOf("30-placeholders.mjs")).toBeGreaterThan(prebuild.indexOf("20-compose-css.mjs"));
     expect(prebuild.indexOf("20-compose-css.mjs")).toBeGreaterThan(prebuild.indexOf("10-ds-checksums.mjs"));
+  });
+
+  /* Journal-pipeline §2.2: the sync runs after the DS check (10, which fails fast without the network) and before the
+     placeholder scan of src/ (30), which then reads the snapshot the sync may have refreshed. Its pages are checked
+     after `next build`, after the placeholder scan of the output (postbuild 10). */
+  it("runs the journal sync after DS checksums and before the placeholder scan, and its page check after the build", () => {
+    const prebuild = readdirSync(join(STEPS, "prebuild")).filter((f) => f.endsWith(".mjs")).sort();
+    expect(prebuild.indexOf("15-journal-sync.mjs")).toBeGreaterThan(prebuild.indexOf("10-ds-checksums.mjs"));
+    expect(prebuild.indexOf("15-journal-sync.mjs")).toBeLessThan(prebuild.indexOf("30-placeholders.mjs"));
+    const postbuild = readdirSync(join(STEPS, "postbuild")).filter((f) => f.endsWith(".mjs")).sort();
+    expect(postbuild.indexOf("20-journal-pages.mjs")).toBeGreaterThan(postbuild.indexOf("10-placeholders-html.mjs"));
+  });
+
+  /* `npm run dev` and Storybook read the committed snapshot and make no request (journal-pipeline §2.1). */
+  it("no predev step syncs the journal", () => {
+    const predev = readdirSync(join(STEPS, "predev")).filter((f) => f.endsWith(".mjs"));
+    for (const f of predev) expect(readFileSync(join(STEPS, "predev", f), "utf8"), `predev/${f}`).not.toMatch(/sync-posts/);
   });
 });
 
