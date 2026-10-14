@@ -104,8 +104,8 @@ export interface Offer {
   readonly sticky: OfferSticky;
   /** The offer card for this mode. */
   readonly card: OfferCard;
-  /** The Kheelona+ line under Home's card (D041 F7): "Every Kheelu comes with 6
-   *  months of Kheelona+: …". */
+  /** The Kheelona+ line under Home's card (D041 F7), in D058 item 3's words: "Every Kheelu comes with 6
+   *  months of Kheelona+, our paid subscription, on top of the free parent app." */
   readonly plus: RichTextString;
   /** The visible delivery line, `DELIVERY_TEXT` (D023), for `{delivery}`. */
   readonly delivery: string;

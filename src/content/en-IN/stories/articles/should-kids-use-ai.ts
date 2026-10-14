@@ -116,12 +116,14 @@ export const article = {
       title: "How do you judge anything with AI inside?",
       blocks: [
         { kind: "p", text: "Ask the same four questions of every maker, us included." },
+        /* No bar D058 withdrew (task 8b.1b; the copy page's questions 4 and 5, applied as (a)): no "closed set of
+           material", and how you delete, which Kheelu meets by deleting the account (D058 item 1). */
         {
           kind: "list",
           items: [
-            "Can it reach the open internet, or only a closed set of material?",
+            "Can it reach the open internet?",
             "Is every reply checked for your child’s age, and can the maker say how?",
-            "Can you read every conversation, and delete any of it yourself?",
+            "Can you read every conversation, and how do you delete it?",
             "Does it talk with your child, in questions and turns, or perform at them?",
           ],
         },

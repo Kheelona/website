@@ -2,10 +2,14 @@ import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { ARTICLE_SLUGS } from "@/content/en-IN/routes";
+import { ARTICLE_CLAIM_FIXES, CLAIM_FIXES, editsBeforeClaimFixes } from "../e2e/support/deviations";
+import type { PageFacts } from "../e2e/support/page-facts";
 import { ROOT, isTestOrStory, listFiles, readRepoFile } from "../e2e/support/repo";
-import { approvedMockupText, MOCKUP_SLUGS } from "../e2e/support/mockup-text";
+import { approvedMockupText, htmlToText, MOCKUP_SLUGS } from "../e2e/support/mockup-text";
 import { codeWithoutComments, parseSource, sourceStrings } from "../e2e/support/source";
-import { BANNED_PHRASES, findBanned } from "./banned-phrases.data";
+import { mockupFold, parseMockup } from "../support/mockup-compare";
+import { blockSentences, withFacts } from "../support/mockup-facts";
+import { BANNED_PHRASES, CLAIM_FIXED_MOCKUPS, type ClaimFixedMockup, findBanned, findBannedOnMockup } from "./banned-phrases.data";
 import { isStillLegacy } from "./legacy-paths";
 
 /* banned-phrases (task 1.1; architecture §14, claims §4, QA review N24).
@@ -15,7 +19,10 @@ import { isStillLegacy } from "./legacy-paths";
  *   2. every entry is red on its planted example;
  *   3. every entry is green on all 18 approved mockup pages (visible text, title and description)
  *      and on every copy block (quoted lines) of wiki/site/pages/*.md, so the guard can never
- *      contradict approved copy;
+ *      contradict approved copy. One exception, on the mockups alone (task 8b.1b): a claim D058
+ *      withdrew after Gate A may still be printed by a frozen mockup whose route carries a claim-fix
+ *      rule, where the entry names that page (`mockupExempt`); 3b proves every such exemption backed
+ *      by the page's rule and needed;
  *   4. no string in src/content/** carries a banned phrase (rendered text: content-integrity.spec.ts);
  *   5. no shipped src/**\/*.ts(x) file carries a retired offer term, comments aside (the full scope
  *      of test/preorder-copy.test.ts, machine routes named);
@@ -77,7 +84,7 @@ describe("every entry is red on its planted example", () => {
 
 describe("every entry is green on approved copy", () => {
   it.each(MOCKUP_SLUGS)("mockup %s", (slug) => {
-    const hits = findBanned(approvedMockupText(slug));
+    const hits = findBannedOnMockup(slug, approvedMockupText(slug));
     expect(hits, hits.map((h) => `${h.id}: "${h.match}" in "${h.sentence}"`).join("\n")).toEqual([]);
   });
 
@@ -97,6 +104,113 @@ describe("every entry is green on approved copy", () => {
       .join("\n");
     const hits = findBanned(quoted);
     expect(hits, hits.map((h) => `${h.id}: "${h.match}" in "${h.sentence}"`).join("\n")).toEqual([]);
+  });
+});
+
+/* 3b. The withdrawn claims a frozen mockup may still print (task 8b.1b; D058, D046). An entry's `mockupExempt` names the
+ * claim-fixed pages that print it and the deviation rows of their rules; the exemption is the approved-mockup check's
+ * alone (findBannedOnMockup), never the copy pages', src/'s or the rendered build's. Each exemption must be backed: its
+ * page's route carries a claim-fix rule (test/e2e/support/deviations.ts CLAIM_FIXES, V26-V34; ARTICLE_CLAIM_FIXES, V37),
+ * the page prints the claim only inside <main>, and the page's rules (its earlier rules, then its claim fixes) leave
+ * <main> green, so the build prints none of it. And each must be needed: without the field rule 3 is red on exactly the
+ * exempted pages and entries. */
+describe("rule 3's exemption: the withdrawn claims the frozen mockups still print (D058; task 8b.1b)", () => {
+  const RULES: Readonly<Record<ClaimFixedMockup, PageFacts>> = { ...CLAIM_FIXES, ...ARTICLE_CLAIM_FIXES };
+  const exempted = BANNED_PHRASES.flatMap((entry) => (entry.mockupExempt?.on ?? []).map((slug) => ({ entry, slug })));
+  const rowOf = (slug: ClaimFixedMockup) => /\bV\d+\b/.exec(RULES[slug].approvedBy)?.[0];
+  const textOf = (el: Element) => blockSentences(el).join("\n");
+  const shown = (hits: readonly { id: string; match: string; sentence: string }[]) => hits.map((h) => `${h.id}: "${h.match}" in "${h.sentence}"`).join("\n");
+
+  it("names exactly the mockups whose routes carry a claim-fix rule, each an approved page", () => {
+    expect([...CLAIM_FIXED_MOCKUPS].sort()).toEqual([...Object.keys(CLAIM_FIXES), ...Object.keys(ARTICLE_CLAIM_FIXES)].sort());
+    for (const slug of CLAIM_FIXED_MOCKUPS) expect(MOCKUP_SLUGS).toContain(slug);
+  });
+
+  it("is a claim entry's only, names each page once, and cites each page's deviation row", () => {
+    expect(exempted.length).toBeGreaterThan(0);
+    for (const entry of BANNED_PHRASES.filter((e) => e.mockupExempt)) {
+      const { on, because } = entry.mockupExempt!;
+      expect(entry.kind, entry.id).toBe("claim");
+      expect(on.length, entry.id).toBeGreaterThan(0);
+      expect(new Set(on).size, `${entry.id} names a page twice`).toBe(on.length);
+      for (const slug of on) {
+        expect(rowOf(slug), `${slug}'s rule names no deviation row`).toBeDefined();
+        expect(because, `${entry.id}: "because" must cite ${slug}'s row`).toMatch(new RegExp(`\\b${rowOf(slug)}\\b`));
+      }
+    }
+  });
+
+  it("is needed wherever it applies: without the field rule 3 is red on exactly the exempted pages and entries", () => {
+    const red = MOCKUP_SLUGS.flatMap((slug) => [...new Set(findBanned(approvedMockupText(slug)).map((h) => `${h.id} on ${slug}`))]);
+    expect(red.sort()).toEqual(exempted.map(({ entry, slug }) => `${entry.id} on ${slug}`).sort());
+  });
+
+  it.each(CLAIM_FIXED_MOCKUPS)("%s: prints the exempted claims only inside <main>, and the page's rules withdraw every one", (slug) => {
+    const ids = exempted.filter((x) => x.slug === slug).map((x) => x.entry.id);
+    const page = parseMockup(slug);
+    page.querySelector("main")!.remove();
+    const description = page.querySelector('meta[name="description"]')?.getAttribute("content") ?? "";
+    const outside = findBanned([page.title, description, htmlToText(page.documentElement.outerHTML)].join("\n")).filter((h) => ids.includes(h.id));
+    expect(outside, shown(outside)).toEqual([]);
+    const main = mockupFold(slug, "main");
+    expect([...new Set(findBanned(textOf(main)).map((h) => h.id))].sort()).toEqual([...ids].sort());
+    /* As parity-deviations.test.ts applies them: the page's earlier rules, then its claim fixes on that page. */
+    const built = findBanned(textOf(withFacts(withFacts(main, editsBeforeClaimFixes(slug)), RULES[slug].edits)));
+    expect(built, shown(built)).toEqual([]);
+  });
+
+  it("exempts nothing anywhere else: each exempted entry stays red on a mockup it does not name and in findBanned", () => {
+    for (const entry of BANNED_PHRASES.filter((e) => e.mockupExempt)) {
+      const elsewhere = MOCKUP_SLUGS.find((slug) => !(entry.mockupExempt!.on as readonly string[]).includes(slug))!;
+      expect(findBannedOnMockup(elsewhere, entry.planted).map((h) => h.id), `${entry.id} on ${elsewhere}`).toContain(entry.id);
+      expect(findBannedOnMockup(entry.mockupExempt!.on[0], entry.planted).map((h) => h.id), entry.id).not.toContain(entry.id);
+      expect(findBanned(entry.planted).map((h) => h.id), entry.id).toContain(entry.id);
+    }
+  });
+});
+
+/* The D058 entries ban the idea in whole words (lessons §7): other phrasings of each withdrawn claim are red, and the
+ * approved lines nearest to one (the parents' advice task 8b.1b keeps, the code-checked words) stay green. */
+describe("the D058 entries: the idea, not one phrasing (task 8b.1b)", () => {
+  const VARIANTS: readonly (readonly [string, string])[] = [
+    ["one-tap-delete", "One-tap deletion for every chat."],
+    ["one-tap-delete", "Remove any conversation with a single tap."],
+    ["servers-in-india", "Your child’s voice goes to Indian servers."],
+    ["servers-in-india", "Everything is stored in India."],
+    ["closed-library", "Replies come from a closed set of answers."],
+    ["safety-layer", "Each answer Kheelu gives passes our checks for your child’s age."],
+    ["quiet-hours", "Set quiet hours in the parent app."],
+    ["topic-controls", "Choose which topics Kheelu talks about."],
+    ["new-word-count", "The app counts how many new words your child uses."],
+    ["four-skills-report", "Kheelu sends you a weekly progress report."],
+    ["minute-of-quiet", "It turns off after one minute."],
+    ["attack-own-safety", "We red-team our own model before launch."],
+    ["keep-none-of-it", "The providers keep nothing."],
+  ];
+  /* Approved lines, word for word: the guides' advice (should-kids, the AI-tutor checklist, the late-talker tips, the
+   * buyer's guide), the code-checked words of task 8b.1 and /privacy's processors row. */
+  const NEAR_MISSES = [
+    "Can it reach the open internet?",
+    "It can’t browse the open internet.",
+    "Is every reply checked for your child’s age, and can the maker say how?",
+    "Can you read every conversation, and how do you delete it?",
+    "Ask whether you can read every conversation, word for word, and how you delete it, without emailing anyone.",
+    "Explain a new word in the same breath: “The dal is boiling. See the bubbles?”",
+    "Getting your child talking, late talkers, new words and two languages at home.",
+    "It stays on while your child talks and switches itself off after a couple of minutes of quiet.",
+    "They don’t keep it, and they never use it to train their AI.",
+    "Removing a chat in the app hides it on that phone. Deleting your account deletes your child’s profile, conversations and recordings from our servers.",
+    "The AI model that answers your child gets child-safety rules for that age, with Google’s safety filters on top.",
+    "Each conversation appears a few minutes after it ends. Search them, read a daily summary, or look back over the week or the month.",
+    "India, and some of them outside India",
+  ];
+
+  it.each(VARIANTS)("%s is red on “%s”", (id, line) => {
+    expect(findBanned(line, ["claim"]).map((h) => h.id)).toContain(id);
+  });
+
+  it.each(NEAR_MISSES)("passes “%s”", (line) => {
+    expect(findBanned(line)).toEqual([]);
   });
 });
 

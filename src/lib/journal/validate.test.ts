@@ -252,6 +252,21 @@ describe("§8.2's prebuild rows, each red on a planted post", () => {
     expect(problems[0]).toMatch(new RegExp(`\\(rule ${rule}\\)$`));
   });
 
+  /* The claims the live team's code check withdrew (D058; claims §4, task 8b.1b) are claim entries, so rule 15 refuses
+     each in a post, whatever a frozen mockup still prints (their mockup exemption is the mockup check's alone). */
+  it("rule 15: refuses a post that makes any claim D058 withdrew", () => {
+    const withdrawn = BANNED_PHRASES.filter((b) => /^D058\b/.test(b.why));
+    expect(withdrawn.map((b) => b.id)).toEqual([
+      "one-tap-delete", "servers-in-india", "closed-library", "safety-layer", "quiet-hours", "topic-controls",
+      "new-word-count", "four-skills-report", "minute-of-quiet", "attack-own-safety", "keep-none-of-it",
+    ]);
+    for (const claim of withdrawn) {
+      const problems = plant(AI, (p) => ((block(p, 2).content as Json[])[0].text = claim.planted));
+      expect(problems, claim.id).toHaveLength(1);
+      expect(problems[0]).toMatch(new RegExp(`^post "${AI}": body\\[2\\]: banned (?:.+, )?${claim.id} ".*\\(rule 15\\)$`));
+    }
+  });
+
   it("refuses a post that is not an object, naming its place", () => {
     expect(validatePosts([...posts(), "x"], RULES)).toEqual(["post #5 is not an object (rule 4)"]);
   });

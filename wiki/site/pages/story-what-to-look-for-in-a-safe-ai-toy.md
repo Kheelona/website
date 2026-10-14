@@ -24,6 +24,7 @@ sources:
   - ../../engineering/journal-pipeline.md (§9.2 rows for this guide; §12, 8b.2a)
   - "the CMO review of task 8b.1 (wiki/qa/cmo-review-claims-8b.1-2026-10-14.md on 8b.1's branch: m6, m7, m11, m12, m13) and 8b.1's safety.md (fold 2 item 2, question 7), for the forms reused here"
   - ../../qa/cmo-review-guides-d058-8b.2a-2026-10-14.md (m3, m6, m8; m5 with the review of task 8b.2a, round 2: the internet item follows /safety's title; see the foot of this page)
+  - "../../engineering/tasks.md (8b.1b: the main session's ruling on fold 4's deletion bar, question 4 (a), 2026-10-14; see the foot of this page)"
 ---
 
 # Story: What to look for in a safe AI toy
@@ -150,7 +151,7 @@ data-law guide (its legal wording goes through the founder's review, [source ver
 > Ask where its answers come from. A toy that can browse or search can stumble onto things your child should not hear, and a filter on top then has to catch everything. Look for a toy that cannot browse the internet at all.
 >
 > **Can you read and delete every conversation?**
-> You would not leave your child with a babysitter who won't tell you how the afternoon went. Ask whether you can read every conversation, word for word, and delete any of it yourself, without emailing anyone. A summary is not the conversation.
+> You would not leave your child with a babysitter who won't tell you how the afternoon went. Ask whether you can read every conversation, word for word, and how you delete it, without emailing anyone. A summary is not the conversation.
 >
 > **Where does your child's voice go, and who keeps it?**
 > Ask who processes your child's voice and in which country, whether any of it is kept and for how long, and whether it is ever sold or used to advertise to your child. A vague answer is an answer. For what India's data law asks of companies, read [What India's data law asks of a toy that listens](https://kheelona.com/stories/ai-toys-and-indias-data-law).
@@ -367,7 +368,9 @@ None.
    Fold 5 promises an answer "on each point above". (a) "…word for word, and how you delete it, without emailing
    anyone." (the CMO's m13 form for the buyer's guide); (b) keep it as approved: fold 5 now answers plainly and a parent
    can judge. **Recommend (a)**, with the buyer's guide, so no guide sets a bar its own answer misses. Fold 2's
-   "whether you can read and delete every conversation" is met by account deletion and stays.
+   "whether you can read and delete every conversation" is met by account deletion and stays. **Applied as (a)**
+   by the main session's ruling (task 8b.1b, 2026-10-14; see the foot of this page); the founder signs the changed
+   line at Gate B ([D015](../../decisions/D015-founder-signs-off-copy.md)).
 5. **The deletion sentence in fold 5 (new, task 8b.2a).** `RETENTION_LINE` loses "You can delete any of them sooner,
    in one tap." (task 8b.1). (a) "Delete them all sooner by deleting your account." (as drafted: the live team's fact,
    the CMO's m7 form); (b) the buyer's guide's "Removing a chat in the app hides it on that phone. Deleting your
@@ -501,3 +504,24 @@ keeps the approved words): lines 111 (microphone), 112 (providers), 113 (retenti
 "Tested by us first." item, which the built page no longer has). Each is a changed approved line for the founder's
 sign-off at Gate B ([D015](../../decisions/D015-founder-signs-off-copy.md)). `test/e2e/support/deviations.ts` is task
 8b.1's file.
+
+## Changes after approval (task 8b.1b)
+
+The main session's ruling on [question 4](#questions-for-the-founder-website-only) ([tasks](../../engineering/tasks.md),
+8b.1b, 2026-10-14): the guides' advice questions stop setting a bar
+[D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) withdrew. Every other word of the Copy blocks is
+as approved and as task 8b.2a left it.
+
+| # | Where | What changed | Why (finding or source line) |
+|---|---|---|---|
+| 1 | Fold 4, "Can you read and delete every conversation?", the answer's second sentence | "Ask whether you can read every conversation, word for word, and delete any of it yourself, without emailing anyone." becomes "Ask whether you can read every conversation, word for word, and how you delete it, without emailing anyone." | Question 4, option (a): the CMO's m13 form for the buyer's guide's check 4 ("Ask whether you can read every word, and how you delete it.", `ai-toys-for-kids-in-india.ts:99`, task 8b.1). D058 item 1, lines 25-26: removing a chat hides it on that phone; deleting the account deletes the conversations, which fold 5 now says ("Delete them all sooner by deleting your account."), so the bar is one Kheelu's own answer meets. Advice to any maker, no new claim. Module `what-to-look-for-in-a-safe-ai-toy.ts:104` |
+
+**Counts.** −1 word (about 912 → about 911); the read time stays 5 min. "Kheelu" and "safe AI toy" counts unchanged;
+the answer block (fold 2) unchanged, and its "whether you can read and delete every conversation" stays (met by
+account deletion, question 4). No marker, placeholder or link changes.
+
+**Deviations for the main session** (the frozen `mockup/story-what-to-look-for-in-a-safe-ai-toy.html:95` keeps the
+approved words): the text pass excuses the old sentence and accepts the new one, and the visual pass hides that
+paragraph on both sides (it may wrap to another height), under the page's one rule (`ARTICLE_CLAIM_FIXES` in
+`test/e2e/support/deviations.ts`, deviation V37). A changed approved line for the founder's sign-off at Gate B
+([D015](../../decisions/D015-founder-signs-off-copy.md)).

@@ -98,8 +98,10 @@ export const article = {
             },
             {
               question: "Can you read and delete every conversation?",
+              /* How you delete, a bar Kheelu meets by deleting the account (D058 item 1; task 8b.1b; the copy page's
+                 question 4, applied as (a), the buyer's guide's check 4 wording). */
               answer: [
-                "You would not leave your child with a babysitter who won’t tell you how the afternoon went. Ask whether you can read every conversation, word for word, and delete any of it yourself, without emailing anyone. A summary is not the conversation.",
+                "You would not leave your child with a babysitter who won’t tell you how the afternoon went. Ask whether you can read every conversation, word for word, and how you delete it, without emailing anyone. A summary is not the conversation.",
               ],
             },
             {

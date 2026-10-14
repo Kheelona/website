@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import bellyModule from "@ds/assets/Kheelu/kheelu-belly-module.png";
 import floorTrain from "@ds/assets/Photo library/advik-04-floor-train-web.webp";
-import type { Answer, ArticlePart, FigureBlock, ProseBlock, Source } from "@/content/types";
+import { getArticle } from "@/content/en-IN/stories/articles";
+import type { Answer, Article, ArticlePart, FigureBlock, ProseBlock, Source } from "@/content/types";
 import { AnswerSection } from "../AnswerSection/AnswerSection";
 import { SourcesSection } from "../SourcesSection/SourcesSection";
 import { ArticleBody } from "./ArticleBody";
@@ -10,7 +11,13 @@ import { ArticleBody } from "./ArticleBody";
  * and sources below are the approved copy, ported verbatim into the content model's shapes (src/content/types.ts) as
  * task 5.6 will port them into the article modules; they are story and test data only (exported in capitals, which
  * Storybook leaves out of the story list), shared by the AnswerSection and SourcesSection stories. The answer and the
- * sources are their own sections, passed in as `before` and `after`: each story shows the column as the article does. */
+ * sources are their own sections, passed in as `before` and `after`: each story shows the column as the article does.
+ *
+ * The safe-AI-toy guide is the exception (task 8b.1b). Its body below keeps the frozen mockup's Gate A words (D046),
+ * because ArticleBody.test.tsx holds it word for word to that mockup (task 3.4); several of its facts are claims the
+ * live team's code check withdrew (D058: one tap, servers in India, a closed library, the safety layer, a minute of
+ * quiet, "Tested by us first"). So its story renders the guide as the site prints it instead: its module, through the
+ * journal registry, in the code-checked words. */
 
 type Body = readonly (ArticlePart | FigureBlock)[];
 
@@ -81,7 +88,8 @@ export const LEARNING_TOYS_BODY: Body = [
 
 const fact = (icon: string, title: string, body: string) => ({ icon, title, body });
 
-/** story-what-to-look-for-in-a-safe-ai-toy.html, folds 3-5 (fold 5 breaks out of the column from 1200 px). */
+/** story-what-to-look-for-in-a-safe-ai-toy.html, folds 3-5 (fold 5 breaks out of the column from 1200 px), in the frozen
+ *  mockup's Gate A words: the parity fixture of ArticleBody.test.tsx, not what the site prints (the SafeAiToy story). */
 export const SAFE_AI_TOY_BODY: Body = [
   part("What do child-safety groups say about AI toys?", [
     p("In November 2025 Fairplay, a children’s advocacy group, published an advisory signed by more than 150 experts and organisations telling parents not to buy AI toys that season.[^1]"),
@@ -324,6 +332,15 @@ export const LATE_TALKERS_SOURCES: readonly Source[] = [
 ];
 
 
+/** The safe-AI-toy guide as the site prints it (D058; task 8b.1b): read from the registry, so the story follows the
+ *  module (and, after the switch of task 8b.2e, the journal). */
+function siteArticle(slug: string): Article & { readonly answer: Answer } {
+  const article = getArticle(slug);
+  if (!article?.answer) throw new Error(`ArticleBody stories: the journal has no "${slug}" with an answer`);
+  return { ...article, answer: article.answer };
+}
+const SAFE_AI_TOY_NOW = siteArticle("what-to-look-for-in-a-safe-ai-toy");
+
 /** The answer first and the sources last, as the article template (4.2) passes them. */
 function column(answer: Answer, sources: readonly Source[]) {
   return {
@@ -346,8 +363,9 @@ type Story = StoryObj<typeof meta>;
 /** Learning toys, the whole column: the answer, parts, a "Try this" callout, a wide photo between parts, the checks list and in-text links. */
 export const LearningToys: Story = {};
 
-/** Safe AI toy: the six questions, and the facts list with the belly unit, breaking out of the column from 1200 px. */
-export const SafeAiToy: Story = { args: { blocks: SAFE_AI_TOY_BODY, ...column(SAFE_AI_TOY_ANSWER, SAFE_AI_TOY_SOURCES) } };
+/** Safe AI toy, as the site prints it: the six questions, and the facts list with the belly unit, breaking out of the
+ *  column from 1200 px. */
+export const SafeAiToy: Story = { args: { blocks: SAFE_AI_TOY_NOW.body, ...column(SAFE_AI_TOY_NOW.answer, SAFE_AI_TOY_NOW.sources) } };
 
 /** Late talkers: an untitled opening part, a bulleted list with markers, the plain "gut" line, the tips card, myths. */
 export const LateTalkers: Story = { args: { blocks: LATE_TALKERS_BODY, ...column(LATE_TALKERS_ANSWER, LATE_TALKERS_SOURCES) } };

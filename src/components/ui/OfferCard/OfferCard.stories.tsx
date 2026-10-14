@@ -27,7 +27,8 @@ const token: Offer = {
     ],
     perks: { home: [], product: [] },
   },
-  plus: "Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app.",
+  /* D058 item 3, as offer.ts prints it (task 8b.1b). */
+  plus: "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.",
   delivery: "Deliveries start mid-November",
   availabilityStarts: "2026-11-15",
 };
