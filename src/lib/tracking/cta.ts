@@ -209,6 +209,14 @@ const CTA_TABLE = {
     pages: ["every-page"],
     note: "carries ph-no-capture on /thanks",
   },
+  "share-whatsapp": {
+    status: "new",
+    reserved: false,
+    role: "secondary",
+    element: 'The "Share Kheelu on WhatsApp" ghost link under the offer card (D061, task 8c.2)',
+    pages: ["/", "/products/kheelu"],
+    note: "placed after Gate A: no approved mockup carries it (tracking inventory §6)",
+  },
 } as const satisfies Record<string, CtaSpec>;
 
 /** Every registered value, the reserved two included. */

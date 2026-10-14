@@ -506,6 +506,7 @@ No event fires Meta for the three new names: Meta receives only its fixed conver
 | `product-safety-learn` | New, secondary | Product safety secondary link | `/products/kheelu` |
 | `refund-learn`, `shipping-learn` | New, secondary | "Meet Kheelu" close links | `/refund`, `/shipping` |
 | `whatsapp-float` | New (D050) | The WhatsApp bubble (not a chilli button) | every page (with `ph-no-capture` on `/thanks`) |
+| `share-whatsapp` | New, secondary (D061, task 8c.2) | The "Share Kheelu on WhatsApp" ghost link under the offer card | `/`, `/products/kheelu` |
 
 Not tagged (as live or as the copy says): the store's pay button, contact buttons, film play buttons
 (their `aria-label`s carry the "Play:" measure, D040), `/privacy` and `/terms` closes.
