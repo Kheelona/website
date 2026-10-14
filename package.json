@@ -37,7 +37,6 @@
   },
   "dependencies": {
     "@next/third-parties": "^16.2.12",
-    "@react-three/fiber": "^9.6.1",
     "@supabase/supabase-js": "^2.112.3",
     "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
