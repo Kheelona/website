@@ -1,7 +1,7 @@
 import type { PayBesideConfig, StoreDetailsConfig } from "@/components/sections/store/StoreDetails/store-details.types";
 import type { PaymentsLineConfig } from "@/components/sections/store/StorePaymentsLine/store-payments-line.types";
 import type { StoreTopConfig } from "@/components/sections/store/StoreTop/store-top.types";
-import type { Meta } from "@/content/types";
+import type { Meta, RichTextString } from "@/content/types";
 import type { TierResult } from "@/lib/store/tiers";
 import { DEFAULT_OG } from "../organization";
 import { notFoundPage } from "../pages/not-found";
@@ -47,8 +47,8 @@ export interface TierCheckoutContent {
   /** StoreTop's words without the eyebrow, which is composed per tier (`eyebrow`). */
   readonly top: Omit<StoreTopConfig, "eyebrow">;
   /** The first screen's eyebrow: the tier's own price name ("Bangalore expo price", from its row), then the store's
-   *  age band, so the band stays on the first screen (CMO review C m2, task 7.1c). */
-  readonly eyebrow: (tierLabel: string) => string;
+   *  age band, so the band stays on the first screen (CMO review C m2, task 7.1c). Inline syntax (the band no-wrap). */
+  readonly eyebrow: (tierLabel: string) => RichTextString;
   readonly details: StoreDetailsConfig;
   readonly beside: PayBesideConfig;
   readonly questions: StorePageContent["questions"];
@@ -82,8 +82,9 @@ export const eventPage = {
       priceId: storePage.top.priceId,
       trust: storePage.top.trust,
     },
-    /* The tier's price name, then the store's own band ("Ages 3 to 7"): two approved words, no new copy. */
-    eyebrow: (tierLabel: string) => `${tierLabel} · ${storePage.top.eyebrow}`,
+    /* The tier's price name, then the store's own band ("Ages 3 to 7"): two approved words, no new copy. Beside the
+       small Kheelu on a phone the eyebrow wraps (at 360 and 390 px), so the band is kept whole. */
+    eyebrow: (tierLabel: string) => `${tierLabel} · {nowrap:${storePage.top.eyebrow}}`,
     details: storePage.details,
     beside: storePage.beside,
     questions: storePage.questions,

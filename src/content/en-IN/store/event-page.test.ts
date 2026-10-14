@@ -35,8 +35,12 @@ describe("event page: the tier checkout's words are the store page's (store.md; 
      The eyebrow keeps the store's own band beside the tier's name, from two approved words and no new copy (the CMO's
      7.1c copy review, "Not in this round"). */
   it("the eyebrow is the tier's own price name, then the store's age band (CMO review C m2)", () => {
-    expect(eventPage.checkout.eyebrow("Bangalore expo price")).toBe("Bangalore expo price · Ages 3 to 7");
-    expect(eventPage.checkout.eyebrow("Bangalore expo price").endsWith(` · ${storePage.top.eyebrow}`)).toBe(true);
+    expect(toPlainText(eventPage.checkout.eyebrow("Bangalore expo price"))).toBe("Bangalore expo price · Ages 3 to 7");
+    expect(toPlainText(eventPage.checkout.eyebrow("Bangalore expo price")).endsWith(` · ${storePage.top.eyebrow}`)).toBe(true);
+  });
+
+  it("keeps the age band on one line when the eyebrow wraps beside the small Kheelu on a phone", () => {
+    expect(eventPage.checkout.eyebrow("Bangalore expo price")).toBe(`Bangalore expo price · {nowrap:${storePage.top.eyebrow}}`);
   });
 
   it("the details heading, what sits beside the pay button, the questions and the payments line are the store's own", () => {
