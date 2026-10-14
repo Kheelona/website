@@ -1647,6 +1647,34 @@ item 1).
   store content; parity rules for every changed approved line (deviation rows returned); `llms.txt` and `pricing.md`
   hashes reported (the main session re-pins).
 - **Not here:** the 20 guides (8b.2 moves them to the dashboard with the same corrections).
+- **Done 2026-10-14** (run `wf_c359ee74-7a4`; merged `24ea2e4`): copy pages CMO-approved
+  ([review](../qa/cmo-review-claims-8b.1-2026-10-14.md)), modules and parity rules
+  [V26-V36](../qa/deviations.md); `llms.txt` and `pricing.md` re-pinned in the merge. Partly applied: D058 item 1's
+  talk-time limit and WiFi-off-at-rest (no copy yet, [G28](../open-questions.md)). At the 8b.2a merge: V35's three
+  entries come out of `deviations.ts` (8b.2a's own rule replaces them). Questions G26-G31.
+
+### 8b.1b Follow-ups to 8b.1 and 8b.2a (builder; risk medium; after 8b.2a, before 8b.2e; then the founder's G26-G32)
+
+- **Main-session rulings (2026-10-14):** `/safety` fold 4's screenshot alt drops "and to delete all chats", as Home's
+  does; `/privacy` §2's child's profile takes the live page's purpose ("so Kheelu can talk with them properly",
+  `origin/main` `privacy/page.tsx:217`); the D058 withdrawn claims become `claim` entries in
+  `test/guards/banned-phrases.data.ts` (one tap, servers in India, closed or curated content library, age-graded,
+  safety layer, quiet hours, topics are open, new-word count, four thinking skills, weekly report, about a minute of
+  quiet, attack our own safety layer, keep none of it), with a field that exempts an entry on a mockup whose route
+  carries a `CLAIM_FIXES` rule (the frozen mockups still print them; the guard's rule 3 is proven red without the
+  field; the 20 guide modules green, the parents' advice lines allowed: "reach the open internet", "a closed set of
+  material" until it goes, the AI-tutor checklist); 8b.2b's validator reads the same list; the guides' advice
+  questions stop setting a bar D058 withdrew (safe-AI-toy fold 4 and should-kids fold 7: "…and how you delete it",
+  the buyer's guide's check 4 wording; should-kids fold 7's first question loses "or only a closed set of material");
+  Storybook stories and type fixtures take the D058 wording
+  (TrustSection, TrustList, FeatureSplit, OfferCard, PriceSentence, ArticleBody stories; `PageTemplate/__fixtures__`;
+  `content/types.test-d.ts`).
+- **Then, as the founder answers:** G26 (the screenshot crop and the alts), G27 (`/setup` fold 6), G28 (the two
+  live-team facts, copywriter first), G29 (the pre-launch test and "says when it doesn't know"), G30 (Kheelona+ never
+  charges by itself), G31 (Aman's answers on `/privacy`), G32 (the providers' place in the four guides), each a
+  `CLAIM_FIXES` edit (or, in a guide, its module before the export) with its deviation row amended.
+- **Checkpoint (D052):** a CMO built-page review of the blocks hidden whole at 360, 390 and 1440: meet-kheelu fold 5's
+  words column, `/safety` fold 4's controls list, both `/privacy` §7 lists and `/terms` `#account`.
 
 ### 8b.2 The journal from the admin dashboard (architect, then builder; risk high)
 

@@ -59,7 +59,7 @@ live posts use only paragraphs, level-2 headings and links (API response, 2026-1
 
 Option 5, in these parts (detail and field maps in [journal-pipeline](../journal-pipeline.md)):
 
-- **Snapshot.** `src/content/en-IN/stories/posts.generated.json` (committed; `{ generated, source, posts }`), written
+- **Snapshot.** `src/content/en-IN/stories/posts.generated.json` (committed; `{ generated, posts }`, the source address inside the `generated` note: [journal-pipeline §2.4](../journal-pipeline.md#24-the-snapshot-file), ruled at the 8b.2b merge), written
   only by `scripts/journal/sync-posts.mjs` (or, once, by the export of the 20 guides). Prebuild step
   `scripts/steps/prebuild/15-journal-sync.mjs` runs it; Vitest, CI, the local e2e and beta read the committed file.
 - **Source switch.** The sync calls the API only on a production build with `JOURNAL_SOURCE = "api"` (a committed

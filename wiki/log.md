@@ -900,3 +900,15 @@ that one entry from the registry's metadata (`82b9444`, proven with npm 11.12.1 
 Dependabot on `main` (production): 1 critical, 4 high, 9 medium, 3 low; every critical and high is a package the rebuild
 already has fixed (next 16.3.8, sharp 0.35.5, source-map-js 1.2.2): open question G25, for Aman to patch `main` now.
 This push published `wiki/` and `design-system/` to the public repo for the first time (D010; checks in the 12:06 entry).
+
+## [2026-10-14 15:21] build | 8b.1 merged (`24ea2e4`): claims and the parent app on the site's pages (D058); V26-V36; G26-G31
+Run `wf_c359ee74-7a4` (11 agents): copy pages in four groups, CMO review passed in round 2
+([review](qa/cmo-review-claims-8b.1-2026-10-14.md)), modules, parity rules; task review passed in round 2 (round 1's
+blocker, a guide test that needed the withdrawn one-tap sentence on the copy pages, fixed in `0704cc0`). The merge
+re-pins `llms.txt` (token 93b2979f…, full 42173ef3…) and `pricing.md` (deb48acc…, f90f7ec9…). Deviation rows
+[V26-V36](qa/deviations.md) (V35, the safe-AI-toy guide's retention line, retires at the 8b.2a merge; V11 amended by V32).
+Checks on the merged tree: build green; `npm run verify` 288 files, 5512 passed, 2 skipped; Playwright on the 12 changed
+routes (text and visual parity, chrome, axe, no-sideways, first-screen, links, content-integrity, no-js,
+legal-template): 478 passed, 8 skipped, 0 failed. Partly applied: D058 item 1's talk-time limit and WiFi off at rest
+(no copy yet). New questions G26-G31 (five for the founder, one for Aman); follow-ups planned as 8b.1b. Ruled: the
+providers' keep-nothing promise stays (D020 items 1-4; D058 does not supersede them) until the founder's contract check.

@@ -496,7 +496,7 @@ of the modules (2026-10-14):
 | Guide | Lines | Withdrawn claim |
 |---|---|---|
 | what-to-look-for-in-a-safe-ai-toy.ts | :142 | "after about a minute of quiet" (D018 → "a couple of minutes") |
-| | :147 | "on servers in India"; providers keep nothing and never train (D058 items 1, 6) |
+| | :147 | "on servers in India" (D058 item 6). The providers' keep-nothing, never-train promise stays (D020 items 1-4, which D058 does not supersede; main-session ruling at the 8b.2a merge, 2026-10-14), as on 8b.1's pages, until the founder checks it against the provider contracts (a to-do in [status](../status.md)) |
 | | :152 | `RETENTION_LINE`: "in one tap" (policies.ts:50; 8b.1 rewords it) |
 | | :158 | "a curated, closed content library", "an age-graded safety layer" |
 | | :162 | "We attack our own safety layer before every release" |
@@ -635,6 +635,12 @@ grep rule, catalogue rows in the same commit). Waves: **i** = 8b.2a, 8b.2b, 8b.2
   the main session to rule; the ring reproduces main's three properties on a fixture journal
   (main:src/lib/stories.ts:189-207); no consumer switched yet (the registry still reads the modules).
 - **Test:** unit tests per file; the round-trip test over the 20 modules.
+- **Hand-offs from wave i (main session, 2026-10-14):** the play word: `articlePageCopy` gains `videoLabel`
+  ("Play video:", §7) with its copy-page line, and `ArticleTemplate` passes it to `ArticleBody` (8b.2c: a post with a
+  video fails the build without it, as a source marker without `sourceLabel` does); a `FigureBlock` inside a part gets
+  the column's space below its caption (`article-body.css`; the adapter places body images inside parts, 8b.2c's
+  observation); if `topics.ts` gains a separate dashboard title, `RULES.themes` in `sync-posts.mjs` and its tests follow
+  (8b.2b).
 
 ### 8b.2e The switch: the snapshot becomes the journal (builder; risk high; wave iii, after 8b.2a and 8b.2d)
 
@@ -650,6 +656,11 @@ grep rule, catalogue rows in the same commit). Waves: **i** = 8b.2a, 8b.2b, 8b.2
   with its new home (no guard weakened); the hits of the test-file grep rule listed; a new fixture post renders with
   no code change (scalability).
 - **Rulings needed at merge:** the copy-page and mockup tests on fixtures; article parity once a writer edits.
+- **Rulings made at the wave i merge (2026-10-14):** the four guides 8b.2a corrected are exported with `updated`
+  2026-10-14 (their JSON-LD `dateModified`, OG `modifiedTime` and sitemap date), the other sixteen keep theirs; the
+  export writes the file with `serialiseSnapshot` and `journal.ts` reads it with `parseSnapshot`, and `journal.ts` and
+  the snapshot land in one commit (8b.2b: the missing-snapshot tolerance of steps 15 and 20 ends when `journal.ts`
+  exists).
 
 ### 8b.2f The backend pack and the dry run (main session with Aman; after 8b.2e)
 
