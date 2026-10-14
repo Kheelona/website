@@ -1,9 +1,10 @@
 ---
 title: "Safety (/safety): page copy, Gate A mockup draft"
 type: page-copy
-updated: 2026-10-11
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
+  - "../../qa/cmo-review-built-a-2026-10-14.md (M4: the open FAQ pointed to a collapsed answer; M8: one wording for the age-3 advice; task 7.1b)"
   - ../strategy.md (§3.2-3.5 CTA rules, §4 URL plan, §5 the /safety row, §7 search rules)
   - ../gate-a-open-items.md (working defaults A10, B3, B6, B14, B32, B35, B36)
   - ../../decisions/D017-live-behaviour-claims-confirmed.md, D018, D019, D020, D021, D023, D024, D028, D032, D035, D036, D038, D040, D041, D042, D043
@@ -317,7 +318,7 @@ Word counts: 56 · 46 · 15 · 17.
 > **H2:** Questions parents ask.
 >
 > **Is Kheelu OK for a 3-year-old?** *(open by default)*
-> Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. If your child is 3, we advise play with a grown-up nearby. Common Sense Media advises against AI toys at this age. Its advice in full, and our answer, follow below.
+> Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. If your child is 3, keep a grown-up nearby while they play. Common Sense Media advises against AI toys at this age. Its advice in full, and our answer, are in the next question.
 >
 > **What do child-safety groups say about AI toys?**
 > In January 2026, Common Sense Media advised parents not to give AI toys, which it describes as "smart toys with voice-based interactions", to children aged 5 and under, and to use extreme caution before buying them for children aged 6 to 12.¹ We make Kheelu for ages 3 to 7, so you should hear this from us.
@@ -329,7 +330,7 @@ Word counts: 56 · 46 · 15 · 17.
 > - **Attachment:** Kheelu tells your child it's a toy, and it never asks them to keep a secret from you.
 > - **Data:** the four facts at the top of this page. We don't sell your data.
 > - **How well it works:** if it isn't right for your family, return it within 7 days of delivery, no questions asked.
-> - **At 3:** we advise play with a grown-up nearby.
+> - **At 3:** keep a grown-up nearby while they play.
 >
 > **Sources**
 > ¹ Common Sense Media, "Common Sense Media Warns Against AI Toy Companions After Research Reveals Safety Risks" (press release), 2026, paragraph 1. https://www.commonsensemedia.org/press-releases/common-sense-media-warns-against-ai-toy-companions-after-research-reveals-safety-risks
@@ -337,11 +338,19 @@ Word counts: 56 · 46 · 15 · 17.
 >
 > [How to choose an AI toy] → `ai-toys-for-kids-in-india.html`
 
-Word counts: 50 · first block 57 (the answer-first part: the C16 sentence and our one line), then the detail.
+Word counts: 53 · first block 57 (the answer-first part: the C16 sentence and our one line), then the detail.
+(Approved at 50; task 7.1b's M4 sentence adds three words.)
 
 - **H2 accent:** `Hand` on "ask."
 - `FAQ` component; **first item open** (DS: first item open on safety pages). Both answers, exactly as shown, join
   fold 2's four in the page's FAQPage JSON-LD.
+- **Question 1 points to question 2 as "the next question", not to text "below" (task 7.1b, CMO review A M4).** Question 2
+  is closed when the page loads, so question 1 says its answer is "in the next question", not that it "follows
+  below". That way a parent who reads the warning knows to open question 2 for our answer. The JSON-LD keeps the
+  same order (question 1, then question 2), so "the next question" stays true there.
+- **The age-3 advice uses the site's one wording (task 7.1b, CMO review A M8):** "If your child is 3, keep a
+  grown-up nearby while they play." Under the "At 3:" lead, the bullet keeps just the instruction, "keep a grown-up
+  nearby while they play.", so it does not say "3" twice.
 - **Question 2 is drafted as "the one signed answer"** the age-band review asks for
   ([§4](../../product/age-band-review.md#4-common-sense-media-and-the-3-to-7-band)), to be reused on the journal's
   safety article. It runs on the main session's working default B3 ("cite it in full, with one signed answer
@@ -366,7 +375,8 @@ Word counts: 50 · first block 57 (the answer-first part: the C16 sentence and o
 | Claim | Source |
 |---|---|
 | Made for 3 to 7; not a toy for children under 3 | [facts, age](../../product/facts.md#age) line 83; [keyword map §7.1](../../research/keyword-map.md#7-geo-plan) ("3 to 7; not for under 3"); approved Home FAQ, [home.md](home.md) lines 598-599 |
-| At 3, play with a grown-up nearby | [D041](../../decisions/D041-gate-a-round-1.md) line 33 |
+| At 3, keep a grown-up nearby while they play (both places) | [D041](../../decisions/D041-gate-a-round-1.md) line 33 ("with a grown-up nearby" in age and safety answers); the one wording: [CMO review A](../../qa/cmo-review-built-a-2026-10-14.md) M8 |
+| Its advice in full, and our answer, are in the next question | Fold 7's own order (question 2 follows question 1); [CMO review A](../../qa/cmo-review-built-a-2026-10-14.md) M4 (the CMO's own wording) |
 | Common Sense Media's advice, the 27% finding, its concerns | [source verification](../../research/source-verification.md) C16, lines 349-361 (verified line, verbatim; status EXTERNAL IF CONFIRMED, used here on working default B3, [Gate A open items](../gate-a-open-items.md) line 60); [age-band review §4](../../product/age-band-review.md#4-common-sense-media-and-the-3-to-7-band) lines 113-132 |
 | Curated, closed content library | [D036](../../decisions/D036-launch-feature-claims.md) line 21; [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) line 114 (Gate A flag honoured: Kheelu is called an AI toy on the page and the providers line is in fold 2, so nothing suggests no AI model is involved) |
 | Every reply passes an age-graded safety layer | [D036](../../decisions/D036-launch-feature-claims.md) line 22; [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) line 115 |
@@ -450,7 +460,7 @@ Primary cluster for `/safety`: **are AI toys safe** ([keyword map §4.1](../../r
 | Primary in an answer-first block in the first ~100 words | Yes | H1 (question) plus the 50-word lead that answers it |
 | "3 to 7" in the first screen | Yes | Lead, sentence 1 |
 | An H2 with a close variant | Yes | Fold 2: "Is Kheelu safe for my child?" |
-| Answer-first blocks, 40 to 60 words | Yes | Lead (50); fold 2 items 1 and 2 (56, 46); FAQ (50; 57 before the detail) |
+| Answer-first blocks, 40 to 60 words | Yes | Lead (50); fold 2 items 1 and 2 (56, 46); FAQ (53, was 50 before task 7.1b; 57 before the detail) |
 | Alt text: no keyword where it isn't true | Yes | No alt carries the primary |
 | Words never placed (toddler, best friend, tutor, lessons, adapts, wake-word lines, competitor names, "safe" as a claim, "region-pinned", "own servers", COPPA labels, health terms) | Yes | "No wake word" is the corrective form D018 allows, not a wake-word line (founder question 3) |
 | Density: primary 0.5% to 2% | Yes, at the floor | 1 occurrence (H1) of 4 words in about 830 words of `<main>` = about 0.5% |
@@ -491,6 +501,14 @@ and alerts (counsel, L6), training (D035: terms and privacy only).
    has no wake word to listen for." (a) Keep it on `/safety` only, where parents check listening and where the
    old page and answer engines still say "wake word"; (b) drop it here too. **Recommend (a)**; the build's
    banned-phrase guard then needs a `/safety` exception for "no wake word".
+4. **The open FAQ that pointed to a closed answer (new, task 7.1b; [CMO review A](../../qa/cmo-review-built-a-2026-10-14.md)
+   M4; for the CMO, then your sign-off, D015).** (a) The copy fix, now in the Copy block: "Its advice in full, and
+   our answer, are in the next question." Only the words change: one text-parity row, the first item stays open as
+   the DS asks, and the fold stays short on phones. (b) The builder opens both items and the copy keeps "follow
+   below". This needs a FaqSection change (all-open or per-item `open`) and a deviation row, breaks the DS's
+   first-item-open pattern for safety pages, and on a phone makes the fold longer by the whole second answer, its five
+   bullets and the two sources. (c) Both. **Recommend (a):** it fixes what the parent reads at the smallest cost,
+   needs no component change and keeps the DS pattern.
 
 ---
 
@@ -506,3 +524,38 @@ and alerts (counsel, L6), training (D035: terms and privacy only).
   "Parent-consented", "Nothing leaves without consent", the wake-word rules, "on-device and cloud filters", the
   "toddlers" FAQ, the unsigned "OK for a three-year-old?" answer and the frameworks chips are all gone (claims
   §4, §4.1 rows 2-5 and 21; age-band review rows 22-25; working defaults B6, B36).
+
+---
+
+## Changes after approval (task 7.1b)
+
+Applied from the CMO's built-page review of 2026-10-14 ([group A](../../qa/cmo-review-built-a-2026-10-14.md), M4
+and M8). The founder signs off copy ([D015](../../decisions/D015-founder-signs-off-copy.md)), and the review lists
+both under "Copy changes M4 (wording option) … and M8 need your sign-off". Every other line of the Copy blocks stays
+word for word as approved at Gate A ([D046](../../decisions/D046-gate-a-approved.md)). No new claim, and the age band
+stays 3 to 7.
+
+- **Fold 7, question 1, last sentence (CMO review A M4).** "Its advice in full, and our answer, follow below."
+  becomes "Its advice in full, and our answer, are in the next question." This is the CMO's own wording. On the
+  built page question 1 is open and question 2 is closed, so a parent read the warning while our answer stayed
+  hidden "below". The new sentence tells them where the answer is. The other fix the CMO offered, the builder
+  opening both items, is [question 4](#questions-for-the-founder-website-only-d030); I recommend the copy fix.
+- **Fold 7, question 1, the age-3 sentence (CMO review A M8).** "If your child is 3, we advise play with a grown-up
+  nearby." becomes "If your child is 3, keep a grown-up nearby while they play.", the one wording M8 asks for. The
+  journal articles already use these exact words. Same source: [D041](../../decisions/D041-gate-a-round-1.md)
+  line 33.
+- **Fold 7, question 2, the "At 3:" bullet (CMO review A M8).** "we advise play with a grown-up nearby." becomes
+  "keep a grown-up nearby while they play.", the same wording as question 1 without repeating "If your child is 3"
+  under the "At 3:" lead.
+- **Notes kept true:** question 1 is 53 words (was 50; still inside 40 to 60). The fold 7 notes and source rows and
+  the keyword placements row are updated to match. The page total (about 830 words), "Kheelu" count (18), primary
+  density, title, meta description, H1 and the hero's answer-first block are unchanged. There are still no
+  placeholders.
+- **For the builder (not edited here):** `src/content/en-IN/faqs.ts:125` (`age-three`, the whole answer as above)
+  and `:151` (`child-safety-groups`, the "At 3:" item's text). The Storybook copy of both is in
+  `src/components/sections/FaqSection/FaqSection.stories.tsx:49` and `:63`. `src/content/en-IN/pages/safety.ts:172`
+  keeps `firstOpen: true`. Neither FAQ is in `llms.txt` (`src/app/llms.txt/route.ts:42-53` lists other ids), so no
+  machine-file hash changes because of this page.
+- **Deviations for the main session to list at the merge** (`safety` key): the frozen mockup
+  (`mockup/safety.html:173` and `:183`) still reads "If your child is 3, we advise play with a grown-up nearby. …
+  follow below." and "we advise play with a grown-up nearby." Both lines now differ from it on purpose.

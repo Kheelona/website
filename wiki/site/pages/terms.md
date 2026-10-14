@@ -18,6 +18,8 @@ sources:
   - ../../raw/feedback/2026-10-11-gate-a-answers.md (lines 32, 62-64)
   - ../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md (items 7, 8, 10 and 11, applied in task 6.7; see "Changes after approval (task 6.7)")
   - "../../qa/cmo-review-page-facts-6.7-2026-10-14.md (M7: question 7, one refund timing; M8: the fold 0 draft note at Gate B)"
+  - ../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md (item 4, section 8's refund timing, applied in task 7.1b; see "Changes after approval (task 7.1b)")
+  - ../../qa/cmo-review-built-a-2026-10-14.md (M8, one wording for the age-3 advice: question 8 for section 9)
 ---
 
 # Terms (`/terms`): page copy
@@ -61,7 +63,7 @@ sources:
 | Anchors other pages link to | `#payment` (Home's trust row links "UPI, card or net banking" here, [home.md, CTA block](home.md#cta-block)); `#price`, `#cancel`, `#delivery`, `#returns`, `#training` |
 | Mockup meta | `{"title": "Kheelu pre-order terms · Kheelona", "description": "<token-mode meta>", "url": "/terms", "buybar": false, "active": "", "css": true}` |
 | Images | None (text-only policy page) |
-| Length | About 1,800 words of copy at Gate A. Task 6.7 takes out the five placeholders' wording (84 words) and adds 10 ("14 October 2026"; "with a switch in the parent app") |
+| Length | About 1,800 words of copy at Gate A. Task 6.7 takes out the five placeholders' wording (84 words) and adds 10 ("14 October 2026"; "with a switch in the parent app"). Task 7.1b swaps two words in section 8 ("is processed" → "reaches you"), none added |
 
 The meta descriptions are machine-read, so they lead with the total and give the advance second
 ([D028](../../decisions/D028-price-wording.md)). They leave out "first 500 units" so no search snippet reads as
@@ -334,7 +336,7 @@ Notes:
 > defect shows up after the first 7 days, we repair it, or replace it if the repair fails.
 >
 > We arrange the pickup, free, for returns we accept, faulty units and warranty claims. Once your Kheelu reaches
-> us and qualifies for return, your refund is processed within 7 working days.
+> us and qualifies for return, your refund reaches you within 7 working days.
 >
 > No exchanges: return it within 7 days and order again.
 >
@@ -346,6 +348,10 @@ Notes:
   described? You can have a replacement or a full refund."; repair, else replace; free pickup).
   [D022](../../decisions/D022-warranty-replacement-refund.md) (warranty scope; refund in 7 working days; the
   7-day report for on-arrival faults). [D042](../../decisions/D042-policy-display-answers.md) (no exchanges).
+- The refund "reaches you within 7 working days" of the return reaching us, bank time included
+  ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 5), in `/refund` step 3's words
+  ([refund.md](refund.md) step 3), so both pages give one timing
+  ([D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 4; task 7.1b).
 - The on-arrival 7-day line follows the faulty-unit remedy, so it never reads as the only remedy for a defect
   (legal review ECOM-06, policies note 2).
 
@@ -365,9 +371,11 @@ Notes:
 > When you set Kheelu up, you enter your child's age in the parent app. Every reply passes an age-graded safety
 > layer set to that age. You can change it later.
 
-Notes: Home's age answer, verbatim ([home.md](home.md), line 751); [D041](../../decisions/D041-gate-a-round-1.md)
-(grown-up nearby); [D036](../../decisions/D036-launch-feature-claims.md) (the safety layer, the parent sets the
-age).
+Notes: Home's age answer as approved at Gate A, verbatim ([home.md](home.md) fold 8);
+[D041](../../decisions/D041-gate-a-round-1.md) (grown-up nearby); [D036](../../decisions/D036-launch-feature-claims.md)
+(the safety layer, the parent sets the age). Since task 7.1b, Home's FAQ says "If your child is 3, keep a grown-up
+nearby." (CMO built-page review A, M8). This section keeps its approved words because no fix in task 7.1b names it;
+question 8 asks whether it follows.
 
 ### Section 10 · The parent app (`#account`)
 
@@ -551,9 +559,9 @@ Plain `path:line` = tag `archive/pre-reset-2026-10-10`. Wiki paths are relative 
 | Faulty or not as described: replacement or full refund | [D033](../../decisions/D033-warranty-after-day-7.md):20-23; product/policies.md:108; product/legal-requirements.md:374 (ECOM-06) |
 | On-arrival fault within 7 days of receipt | [D022](../../decisions/D022-warranty-replacement-refund.md) item 2; product/policies.md:105 |
 | 6-month warranty, exclusions, repair else replace | [D022](../../decisions/D022-warranty-replacement-refund.md) item 1; [D033](../../decisions/D033-warranty-after-day-7.md); product/policies.md:106 |
-| Free pickup; refund within 7 working days of the unit reaching us | [D033](../../decisions/D033-warranty-after-day-7.md); [D022](../../decisions/D022-warranty-replacement-refund.md) item 4; product/policies.md:107, 109 |
+| Free pickup; refund reaches you within 7 working days of the unit reaching us (bank time included) | [D033](../../decisions/D033-warranty-after-day-7.md); [D022](../../decisions/D022-warranty-replacement-refund.md) item 4; [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 5; [D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 4 (the wording, as site/pages/refund.md step 3); product/policies.md:107, 109 |
 | No exchanges | [D042](../../decisions/D042-policy-display-answers.md); product/policies.md:111 |
-| Ages 3 to 7; not under 3; grown-up nearby; age set in the app; safety layer | site/pages/home.md:751; product/facts.md:83; [D041](../../decisions/D041-gate-a-round-1.md); [D036](../../decisions/D036-launch-feature-claims.md):22, 25-26 |
+| Ages 3 to 7; not under 3; grown-up nearby; age set in the app; safety layer | site/pages/home.md:751 (fold 8's age answer as approved at Gate A; reworded on Home in task 7.1b, question 8); product/facts.md:83; [D041](../../decisions/D041-gate-a-round-1.md); [D036](../../decisions/D036-launch-feature-claims.md):22, 25-26 |
 | Adult account holder; privacy part of the terms | product/legal-requirements.md:459 (DATA-30), 524 |
 | Read and delete every conversation; 36 months | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7 |
 | Own-model training, on by default, opt-out; providers never train | [D035](../../decisions/D035-model-training-opt-out.md):14-29; [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 3 |
@@ -612,9 +620,19 @@ pages). Two more for this page:
    word for word ([refund.md](refund.md) line 188). **Recommend (b)**: one promise, worded once, and it is the one
    the founder gave. Not applied: D055 names no line on `/terms` here.
 
+8. **The age-3 sentence in section 9** (new, task 7.1b; [CMO built-page review A](../../qa/cmo-review-built-a-2026-10-14.md)
+   M8: one wording for the age-3 advice everywhere). Section 9 was written as Home's age answer, verbatim. Home's
+   FAQ now says "If your child is 3, keep a grown-up nearby."; section 9 still says "For 3-year-olds, we advise
+   having a grown-up nearby." M8 lists the FAQ answers and `/setup`, not `/terms`. (a) Keep section 9 as approved;
+   (b) "If your child is 3, keep a grown-up nearby.", so section 9 matches Home word for word again (one more
+   word; no new claim; the age band and "not a toy for children under 3" unchanged). **Recommend (b)**: one sentence
+   is the point of M8, and this section was built to match Home. Not applied: no fix in task 7.1b names section 9.
+
 Answered on 2026-10-14 ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)): question 6 by
 item 10 (the invoice line stays; the documents-and-timing and price-breakup slots come off), and privacy.md
-question 1's "how" by item 11 (a switch in the parent app). The questions stay above as asked.
+question 1's "how" by item 11 (a switch in the parent app). Question 7 by
+[D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 4: option (b), applied in task
+7.1b. The questions stay above as asked.
 
 ## Checks before sign-off (CTO or QA, not founder questions)
 
@@ -642,7 +660,7 @@ question 1's "how" by item 11 (a switch in the parent app). The questions stay a
 | H2 | "What a pre-order is." / "The price." (what the advance buys, after the total) |
 | Banned words checked | No "lessons", "best friend", "free" beside Kheelona+, "just/only ₹499", wake-word lines, "region", "MRP" framed as a saving, em dashes |
 
-The keyword placements are unchanged by task 6.7 (no change touches the title, meta, H1 or H2s).
+The keyword placements are unchanged by tasks 6.7 and 7.1b (no change touches the title, meta, H1 or H2s).
 
 ## Changes after approval (task 6.7)
 
@@ -669,3 +687,26 @@ main session.
   founder's call at Gate B, CMO review M8). Section 8 keeps its approved "your refund is processed within 7 working
   days" (no D055 item reaches /terms there; question 7, from CMO review M7). Title, meta, H1 and close are
   unchanged.
+
+## Changes after approval (task 7.1b)
+
+One line of the Gate A-approved copy ([D046](../../decisions/D046-gate-a-approved.md)) changes; every other word
+stands as approved. The frozen mockup (`mockup/terms.html`) is not edited: the builder carries the line into
+`src/content/en-IN/legal/terms.ts` and the main session adds the text-parity deviation row under the `terms` key.
+
+- **Section 8, the refund after a return.** "Once your Kheelu reaches us and qualifies for return, your refund is
+  processed within 7 working days." becomes "Once your Kheelu reaches us and qualifies for return, your refund reaches
+  you within 7 working days." ([D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 4,
+  the founder's answer to question 7, option (b); CMO review of the 6.7 page facts, M7). It is now `/refund` step 3's
+  sentence word for word ([refund.md](refund.md) step 3), and the timing is
+  [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 5's: the money reaches the parent
+  within 7 working days of the return reaching us, bank time included. Same promise, no new claim; same word count.
+- **"Last updated" stays "14 October 2026".** D056 is dated 14 October 2026, so the date at the top still matches
+  the change (section 15: "When these terms change, we update the date at the top").
+- **Notes updated to match:** the section 8 notes, the Sources row for the pickup and refund, Length, question 7
+  (answered), the section 9 note and its Sources row (Home's age answer changed in task 7.1b), and a new question 8.
+- **Not changed.** Section 9's "For 3-year-olds, we advise having a grown-up nearby." stays as approved: no fix in task
+  7.1b names `/terms`, although Home's FAQ now uses the CMO A M8 wording (question 8). Section 6's cancellation timing
+  ("We start your refund within 2 working days of your request; your bank takes 5-7 working days.") is a different
+  case, the cancellation before dispatch, and matches `/refund`'s own cancellation line. Title, meta, H1, H2s and
+  close are unchanged.
