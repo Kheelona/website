@@ -1,7 +1,7 @@
 /// <reference types="next/image-types/global" />
 import floorTrain from "@ds/assets/Photo library/advik-04-floor-train-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
+import { TEAM_BYLINE } from "../../organization";
 
 /**
  * 3-year-old not talking in sentences? What to do: rewritten (task 5.18) from its copy page,
@@ -17,7 +17,10 @@ export const article = {
   meta: {
     title: "3-year-old not talking in sentences? What to do · Kheelona",
     description: "3-year-old not talking in sentences? What varies between children, the signs worth a doctor’s look, and what helps at home.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/advik-04-floor-train.jpg",
+      alt: "A boy in a green T-shirt lying on a red floor, smiling as he pushes a blue wooden train.",
+    },
   },
   card: {
     title: "Talking late, or talking little?",

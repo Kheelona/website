@@ -1,7 +1,7 @@
 /// <reference types="next/image-types/global" />
 import paperCrown from "@ds/assets/Photo library/ira-04-paper-crown-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
+import { TEAM_BYLINE } from "../../organization";
 
 /**
  * Toys for language development: talk or listen?: rewritten (task 5.18) from its copy page,
@@ -20,7 +20,10 @@ export const article = {
     title: "Toys for language development: talk or listen? · Kheelona",
     description:
       "Toys for language development: why a toy that repeats is a mirror, what research says about back-and-forth talk, and how screens and speakers compare.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/ira-04-paper-crown.jpg",
+      alt: "A laughing girl with a long braid holds a yellow paper crown on her head, beside a low table scattered with crayons and paper scraps.",
+    },
   },
   card: {
     title: "A toy that talks is not a toy that listens",

@@ -310,7 +310,7 @@ describe.each(TALKING)("the talking guide %s", (slug, { article, stub, links, ic
   it("has the copy page's title and description", () => {
     expect(same(toPlainText(article.meta.title))).toBe(same(glanceRow(readCopyPage(slug), "Title")));
     expect(same(toPlainText(article.meta.description))).toBe(same(glanceRow(readCopyPage(slug), "Meta description")));
-    expect(article.meta.og).toEqual(DEFAULT_OG);
+    expect(article.meta.og.image, "CMO review B m4, task 7.1f: its own head photo's card (share-cards.test.ts), never the product shot (P19)").not.toBe(DEFAULT_OG.image);
   });
 
   it("keeps the stub's card, related list and first-published date; `updated` is the rewrite's (the hub's approved copy; part C merge ruling)", () => {

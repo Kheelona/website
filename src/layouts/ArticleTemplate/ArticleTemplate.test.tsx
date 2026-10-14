@@ -175,7 +175,7 @@ describe("ArticleTemplate: crumbs and structured data", () => {
       headline: "Learning toys for a 3-year-old, skill by skill",
       description:
         "Learning toys for a 3-year-old, skill by skill: language, turn-taking, pretend play, hands and numbers, plus what the WHO and IAP say about screens.",
-      image: "https://kheelona.com/og.png",
+      image: "https://kheelona.com/og/myra-04-drawing-at-home.jpg",
       datePublished: article.published,
       dateModified: article.updated,
       inLanguage: "en-IN",
@@ -255,7 +255,7 @@ describe("articleMeta", () => {
       modifiedTime: article.updated,
       authors: ["Aman Soni"],
       url: "/stories/what-to-look-for-in-a-safe-ai-toy",
-      images: [{ url: "/og.png", width: 1200, height: 630, alt: article.meta.og.alt }],
+      images: [{ url: "/og/tara-02-evening-with-amma.jpg", width: 1200, height: 630, alt: article.meta.og.alt }],
     });
     expect(meta).not.toHaveProperty("robots");
   });

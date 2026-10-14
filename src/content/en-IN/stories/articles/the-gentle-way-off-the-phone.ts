@@ -1,7 +1,7 @@
 /// <reference types="next/image-types/global" />
 import namingFeelings from "@ds/assets/Photo library/tara-01-naming-feelings-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
+import { TEAM_BYLINE } from "../../organization";
 
 /**
  * The gentle way off the phone: a seven-day plan: rewritten (task 5.17; copy page story-the-gentle-way-off-the-phone.md,
@@ -17,7 +17,10 @@ export const article = {
     title: "How to reduce screen time: a gentle 7-day plan · Kheelona",
     description:
       "How to reduce screen time gently: a seven-day plan for 3 to 7 year olds, and the screen-free times the Indian Academy of Pediatrics names.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/tara-01-naming-feelings.jpg",
+      alt: "A curly-haired girl in denim dungarees sits on a wooden floor by a sunlit window lined with potted plants, Kheelu in her lap, touching its chin with one finger.",
+    },
   },
   card: {
     title: "The gentle way off the phone: a seven-day plan",

@@ -1,7 +1,6 @@
 /// <reference types="next/image-types/global" />
 import readingNook from "@ds/assets/Photo library/tara-04-reading-nook-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG } from "../../organization";
 
 /**
  * Why the early years matter most: rewritten (task 5.19) from its approved copy page
@@ -18,7 +17,10 @@ export const article = {
     title: "Why the early years matter most for your child · Kheelona",
     description:
       "Why the early years matter most: what Harvard’s Center on the Developing Child says about the young brain, and why talk, play and sleep fill them well.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/tara-04-reading-nook.jpg",
+      alt: "A girl with curly hair, in a coral kurta, sits cross-legged on a window seat and reads a picture book aloud, one finger on the page.",
+    },
   },
   card: {
     title: "Why the early years matter most",

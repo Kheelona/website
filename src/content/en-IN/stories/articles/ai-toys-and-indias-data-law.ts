@@ -1,7 +1,6 @@
 /// <reference types="next/image-types/global" />
 import iraStory from "@ds/assets/Photo library/ira-01-story-on-the-bed-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG } from "../../organization";
 import { RETENTION_LINE } from "../../policies";
 import { seller } from "../../seller";
 
@@ -23,7 +22,10 @@ export const article = {
     title: "DPDP Act: what India’s data law asks of AI toys · Kheelona",
     description:
       "The DPDP Act and children’s data, in plain words: what India’s law asks of a company from May 2027, and the questions to ask any AI toy maker.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/ira-01-story-on-the-bed.jpg",
+      alt: "A laughing girl in a peach kurta sitting cross-legged on a block-print bedsheet, telling Kheelu a story with both hands.",
+    },
   },
   card: {
     title: "What India’s data law asks of a toy that listens",

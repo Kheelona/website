@@ -1,7 +1,7 @@
 /// <reference types="next/image-types/global" />
 import countingCarriages from "@ds/assets/Photo library/advik-01-counting-carriages-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
+import { TEAM_BYLINE } from "../../organization";
 
 /**
  * Screen time for a 3-year-old, and up to age 7: rewritten (task 5.17; copy page
@@ -16,7 +16,10 @@ export const article = {
   meta: {
     title: "Screen time for a 3-year-old, and up to age 7 · Kheelona",
     description: "Screen time for a 3-year-old: no more than an hour a day, say the WHO and the IAP. What changes up to age 7, and what to do at 6 pm.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/advik-01-counting-carriages.jpg",
+      alt: "A smiling boy in a navy-and-white striped T-shirt sits cross-legged on a red floor, lining up a blue wooden train, with Kheelu sitting beside him in front of a low bookshelf.",
+    },
   },
   card: {
     title: "How much screen time is okay for a young child?",

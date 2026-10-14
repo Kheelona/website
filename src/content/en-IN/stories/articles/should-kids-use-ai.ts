@@ -1,7 +1,6 @@
 /// <reference types="next/image-types/global" />
 import blockRocket from "@ds/assets/Photo library/kabir-02-block-rocket-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG } from "../../organization";
 import { RETENTION_LINE } from "../../policies";
 
 /**
@@ -19,7 +18,10 @@ export const article = {
     title: "Should kids use AI? An honest answer · Kheelona",
     description:
       "Should kids use AI? What child-safety groups advise, what young children need from the adults around them, and how to judge any toy with AI inside.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/kabir-02-block-rocket.jpg",
+      alt: "A boy in round glasses and an olive T-shirt kneels on a patterned rug, grinning as he stacks wooden blocks into a tall tower, with Kheelu sitting beside it.",
+    },
   },
   card: {
     title: "Should kids use AI? An honest answer from people who build it",

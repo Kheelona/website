@@ -1,7 +1,7 @@
 /// <reference types="next/image-types/global" />
 import paperCrown from "@ds/assets/Photo library/ira-04-paper-crown-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
+import { TEAM_BYLINE } from "../../organization";
 
 /**
  * How to get your child to talk more: rewritten (task 5.18) from its copy page,
@@ -19,7 +19,10 @@ export const article = {
     title: "How to get your child to talk more · Kheelona",
     description:
       "How to get your child to talk more: better questions than “How was school?”, the follow-up that keeps it going, and games that get a child talking.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/ira-04-paper-crown.jpg",
+      alt: "A laughing girl with a long braid holds a yellow paper crown on her head, beside a low table scattered with crayons and paper scraps.",
+    },
   },
   card: {
     title: "How to get your child talking",
