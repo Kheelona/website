@@ -325,6 +325,7 @@ function blocks(walk: Walk, nodes: readonly { node: PostBlock; where: string }[]
 }
 
 const isH2 = (node: PostBlock | undefined) => node?.type === "heading" && node.attrs.level === 2;
+const isFacts = (node: PostBlock | undefined) => node?.type === "bulletList" && node.attrs?.style === "facts";
 
 /** The body (§5.1): the answer card's detail, then parts and the photos between them. Nodes above a rule that comes
  *  before the first h2 sit in the answer card, under the answer, when the post has one (the approved guides' fold 2);
@@ -361,6 +362,8 @@ function body(walk: Walk, post: Post): { detail: ProseBlock[]; body: (ArticlePar
   const rest = nodes.slice(split + 1);
   rest.forEach((entry, i) => {
     const { node, where } = entry;
+    /* A photo right before an h2 sits between the parts, unless it is the facts list's figure (§5.1). */
+    const between = node.type === "image" && isH2(rest[i + 1]?.node) && !(node.attrs.photo && isFacts(rest[i - 1]?.node));
     if (node.type === "heading" && node.attrs.level === 2) {
       close();
       const anchor = node.attrs.anchor ?? undefined;
@@ -368,9 +371,9 @@ function body(walk: Walk, post: Post): { detail: ProseBlock[]; body: (ArticlePar
     } else if (node.type === "horizontalRule") {
       close();
       part = { nodes: [] };
-    } else if (node.type === "image" && isH2(rest[i + 1]?.node) && !(node.attrs.photo && part?.nodes.at(-1)?.node.type === "bulletList" && (part.nodes.at(-1)!.node as { attrs?: { style?: string } }).attrs?.style === "facts")) {
+    } else if (between) {
       close();
-      out.push(figure(walk, node, where));
+      out.push(figure(walk, node as PostImage, where));
     } else {
       part ??= { nodes: [] };
       part.nodes.push(entry);

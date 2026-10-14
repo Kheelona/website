@@ -268,6 +268,14 @@ describe("the body map (journal-pipeline §5)", () => {
     ]);
   });
 
+  it("keeps a facts list's photo as its figure even when an h2 comes right after it", () => {
+    const p = post("kind-facts");
+    p.body = { type: "doc", content: [...p.body.content.slice(0, 5), { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: "Next" }] }, p.body.content[5]] };
+    const article = adapt(p);
+    expect(article.body.map((b) => b.kind)).toEqual(["part", "part", "part"]);
+    expect(partTitled(article, "The facts").blocks.at(-1)).toMatchObject({ kind: "facts", figure: photos["kheelu-belly-module"].image });
+  });
+
   it("sets a callout with its icon and lead-in, and a group of questions each with its answer's paragraphs", () => {
     const article = adapt(post("kind-blockquotes"));
     expect(partTitled(article, "A callout").blocks).toEqual([
