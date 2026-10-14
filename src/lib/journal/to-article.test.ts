@@ -272,7 +272,7 @@ describe("the body map (journal-pipeline §5)", () => {
   it("warns that a facts list's photo shows no caption, since the facts card sets the photo alone (§5.1)", () => {
     const warnings: string[] = [];
     const p = post("kind-facts");
-    (p.body.content[4] as Extract<PostBlock, { type: "image" }>).attrs.caption = "A caption the writer typed.";
+    ((p.body.content[4] as Extract<PostBlock, { type: "image" }>).attrs as Record<string, unknown>).caption = "A caption the writer typed.";
     const facts = partTitled(adapt(p, warnings), "The facts").blocks.find((b) => b.kind === "facts");
     expect(facts).toMatchObject({ figure: photos["kheelu-belly-module"].image });
     expect(JSON.stringify(facts)).not.toContain("A caption the writer typed.");
@@ -310,7 +310,7 @@ describe("the body map (journal-pipeline §5)", () => {
       { kind: "p", lead: "Wait." },
     ]);
     const callout = post("kind-blockquotes");
-    const quote = callout.body.content[2] as Extract<PostBlock, { type: "blockquote" }>;
+    const quote = callout.body.content[2] as Record<string, unknown>;
     quote.content = [
       {
         type: "paragraph",
