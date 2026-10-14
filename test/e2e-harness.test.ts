@@ -90,7 +90,7 @@ describe("hideDeviations", () => {
   it("does nothing and prints nothing for a page with no rule on that side", async () => {
     const log = vi.spyOn(console, "log").mockImplementation(() => {});
     const { page, styles } = fakePage();
-    await hideDeviations(page, "home", "build", "visual-parity");
+    await hideDeviations(page, "ai-toys-for-kids-in-india", "build", "visual-parity");
     expect(styles).toEqual([]);
     expect(log).not.toHaveBeenCalled();
   });
