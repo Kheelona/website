@@ -19,6 +19,7 @@ sources:
   - "../../decisions/D058-follow-the-live-code-check-2026-10-14.md (items 1, 6, 7, 9: the live team's code check of 12 Oct; task 8b.1)"
   - "../../qa/live-main-reconciliation-2026-10-14.md (§2 the claims #19 withdrew, c630a49; §1 rows P5, P10-P12, #18, dd04e6d), quoted there; origin/main not read directly in task 8b.1 (no shell in that run)"
   - "../../qa/cmo-review-claims-8b.1-2026-10-14.md (round 2 of task 8b.1: m8 and m12 applied; m6 and m11 as questions 11 and 6)"
+  - "../../engineering/tasks.md (8b.1b: the main session's ruling on fold 4's alt, 2026-10-14)"
 ---
 
 # Safety (`/safety`): page copy
@@ -240,10 +241,13 @@ Word counts: 57 · 42 · 22 · 17 (task 8b.1; approved at Gate A as 56 · 46 · 
 - **H2:** the DS's own line for Meera's message ("the grown-up holds the keys", `03-cast.md:14`), also the live
   page's heading (`safety/page.tsx:329`). Accent: `Hand` on "the keys."
 - **Image:** `mockup/assets/app/app-privacy.webp` (the real privacy-centre screen from the founder's demo video,
-  names replaced, [log](../../log.md) line 465), in the DS phone frame (`kh-device`). Alt: "A real screen from the
-  Kheelu parent app: the privacy centre." **The file was not in `mockup/assets/app/` when this copy was written**
-  (it is being made in parallel): the builder checks the alt against the image and makes it describe what is
-  actually on screen. The list does not claim that the screenshot shows these controls.
+  names replaced, [log](../../log.md) line 465), in the DS phone frame (`kh-device`). Alt (task 8b.1b): "A real
+  screen from the Kheelu parent app: the privacy centre. Chats are kept for 36 months, with a button to download your
+  child's data." (36 is `RETENTION_MONTHS`.) It leaves out the screen's "delete all chats" button, which hides chats on
+  that phone ([D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1), as Home's and the product
+  page's alts do (task 8b.1). **The file was not in `mockup/assets/app/` when this copy was written** (it was made
+  in parallel): the builder checked the alt against the image. The list does not claim that the screenshot shows
+  these controls.
 - Never put a DS cast photo beside this real screen, so a "real" caption cannot be read onto an AI-made family.
 - **Task 8b.1 ([D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md)):** "Topics" and "Quiet hours"
   are gone: neither is in the app (the live team's code check, c630a49; D058 item 1). The age line no longer names an
@@ -764,3 +768,16 @@ Nothing new is claimed beyond the code-checked wording and D058.
   (m12). Every other word of the Copy blocks is as above. No new claim; no placeholder; "Kheelu" count unchanged.
 - **Notes kept true:** the fold 3 and fold 4 notes and source rows, the footer note, questions 5 and 6, and the new
   question 11.
+
+## Changes after approval (task 8b.1b)
+
+A main-session ruling on a follow-up of task 8b.1 ([tasks](../../engineering/tasks.md), 8b.1b, 2026-10-14), from the
+builder note above on the fold 4 screenshot's alt. No line of the Copy blocks changes.
+
+| # | Where | What changed | Why (finding or source line) |
+|---|---|---|---|
+| 1 | Fold 4, the privacy screen's alt (`src/content/en-IN/pages/safety.ts:148`) | "A real screen from the Kheelu parent app: the privacy centre. Chats are kept for 36 months, with buttons to download your child's data and to delete all chats." becomes "A real screen from the Kheelu parent app: the privacy centre. Chats are kept for 36 months, with a button to download your child's data." | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1, lines 25-26: removing a chat in the app hides it on that phone, so "delete all chats" read beside fold 5 could be taken for deletion from our servers (the builder note above; the CMO's r2-m3 on task 8b.1). Home's and the product page's alts dropped the same words in task 8b.1. "Keep chats for 36 months" stays on screen and in the alt (D058 item 9, lines 47-48). The fold 4 image note above carries the new alt |
+
+The frozen mockup (`mockup/safety.html`, fold 4) keeps the old alt: the `safety` rule of task 8b.1's claim fixes
+(`CLAIM_FIXES.safety` in `test/e2e/support/deviations.ts`) now swaps the image's alt too, so the content test holds the
+module to the new words. An alt is not visible text, so the text and visual passes are unchanged.

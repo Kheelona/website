@@ -114,8 +114,8 @@ export const safetyPage = {
     },
     /* Fold 4: the parent controls beside the one real privacy screen (D044), never beside a cast photo. The controls are
        the app's as the live team's code check found them (D058 items 1 and 7; safety.md fold 4): no topics or quiet
-       hours; the Save voice recordings switch. The screen's alt still names its "delete all chats" button, the founder's
-       to settle (safety.md, builder note; CMO review of task 8b.1, r2-m3). */
+       hours; the Save voice recordings switch. The screen's alt leaves out its "delete all chats" button, which hides
+       chats on that phone, as Home's and the product page's alts do (D058 item 1; safety.md fold 4, task 8b.1b). */
     {
       kind: "feature-split",
       config: {
@@ -145,7 +145,7 @@ export const safetyPage = {
           images: [
             {
               src: appPrivacy,
-              alt: `A real screen from the Kheelu parent app: the privacy centre. Chats are kept for ${RETENTION_MONTHS} months, with buttons to download your child’s data and to delete all chats.`,
+              alt: `A real screen from the Kheelu parent app: the privacy centre. Chats are kept for ${RETENTION_MONTHS} months, with a button to download your child’s data.`,
             },
           ],
           caption: "The Kheelona app is live on Apple’s App Store and the Google Play Store.",

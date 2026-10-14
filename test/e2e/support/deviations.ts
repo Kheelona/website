@@ -586,6 +586,13 @@ export const CLAIM_FIXES = {
           .map(([name, title, body]) => `<li class="kh-trust__item"><span class="kh-trust__icon">${icon(name as IconName)}</span><div><h3 class="kh-trust__title">${title}</h3><p class="kh-trust__body">${body}</p></div></li>`)
           .join(""),
       },
+      /* Fold 4's privacy screen: its alt without "and to delete all chats" (the button hides chats on that phone), as
+         Home's and the product page's (task 8b.1b; D058 item 1). */
+      {
+        at: 'img[src="assets/app/app-privacy.webp"]',
+        was: "",
+        now: `<img loading="lazy" src="assets/app/app-privacy.webp" width="576" height="1209" alt="A real screen from the Kheelu parent app: the privacy centre. Chats are kept for 36 months, with a button to download your child’s data.">`,
+      },
       /* Fold 5: the retention line's first sentence, then what removing and deleting do. */
       {
         at: "p.kh-body-l",

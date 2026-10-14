@@ -201,6 +201,8 @@ describe("fold 4: the grown-up holds the keys", () => {
     expect(config.screens.images).toHaveLength(1);
     expect(config.screens.images[0].alt).toBe(el.querySelector(".kh-device img")!.getAttribute("alt"));
     expect(config.screens.images[0].alt).toContain(`${RETENTION_MONTHS} months`);
+    /* The "delete all chats" button hides chats on that phone, so the alt no longer names it (D058 item 1; task 8b.1b). */
+    expect(config.screens.images[0].alt).not.toMatch(/delete all chats/);
     expect(plain(config.screens.caption!)).toBe(norm(el.querySelector("figcaption")?.textContent));
     const link = el.querySelector(".kh-section__actions a")!;
     expect(link.getAttribute("href")).toBe("meet-kheelu.html#app");
