@@ -256,7 +256,7 @@ describe.each(Object.keys(COPY_FIXES) as CopyFixesSlug[])("%s: task 7.1b's copy 
     expect(rule[0].jsOff).toBeUndefined();
   });
 
-  it("hides for the pixels exactly the blocks its edits reflow, each found once on its side (VISUAL_HIDDEN)", () => {
+  it("hides for the pixels the blocks it lists, in VISUAL_HIDDEN in its order, each found once on its side and holding a sentence its edits change (the mockup's side for a hide on both)", () => {
     expect(hiddenProblems(main, fixes)).toEqual([]);
     const rules = (VISUAL_HIDDEN[slug] ?? []).filter((r) => r.approvedBy === fixes.approvedBy);
     const sel = (side: string) => rules.filter((r) => r.side === side).map((r) => r.selector);
