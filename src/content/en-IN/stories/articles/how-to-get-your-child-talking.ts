@@ -7,8 +7,10 @@ import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
  * How to get your child to talk more: rewritten (task 5.18) from its copy page,
  * wiki/site/pages/story-how-to-get-your-child-talking.md, word for word (CMO review
  * wiki/qa/cmo-review-articles-5.18-2026-10-14.md; copy fixes M5 and M13 in task 5.20b, CMO review
- * wiki/qa/cmo-review-article-fixes-5.20b-2026-10-14.md). No mockup: the article template renders it. Card words, related
- * list and dates as the stub held them (stories.md fold 3; the live journal's ring and dates). No pitch on the
+ * wiki/qa/cmo-review-article-fixes-5.20b-2026-10-14.md). No mockup: the article template renders it. Card words and
+ * dates as the stub held them (stories.md fold 3; the live journal's dates); the related list from CMO built-page review
+ * B's ring (finding m3, which folds in CMO 5.18 M6; task 7.1d; the copy page's fold 10), the bilingual guide in place of
+ * the data-law guide. No pitch on the
  * talking-and-language guides: no product link, no pre-order button (the keep-reading close), and Kheelu named only
  * in D025's line under the answer; the one in-text link goes to another guide. Every statement about language
  * carries a source marker (D025, D026).
@@ -25,7 +27,7 @@ export const article = {
     title: "How to get your child talking",
     summary: "Better questions than “How was school?”, and the small habits that turn one-word answers into conversations.",
   },
-  related: ["ai-toys-and-indias-data-law", "talking-late-or-talking-little", "how-children-collect-words"],
+  related: ["talking-late-or-talking-little", "raising-a-bilingual-child-in-india", "how-children-collect-words"],
   published: "2026-07-28",
   updated: "2026-10-13",
   head: {

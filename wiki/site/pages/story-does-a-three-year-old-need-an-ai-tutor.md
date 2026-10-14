@@ -20,6 +20,9 @@ sources:
   - "design-system/project/03-cast.md:105 (Myra 04); assets/Photo library/myra-04-drawing-at-home-web.webp, checked by eye 2026-10-14 (read-only)"
   - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: M5, M6, M7 fixed in round 2; round 2: R2-2 fixed in task 5.20c; R2-3 ruled at the merge, no change)
   - ../../engineering/tasks.md (§4.9 and 5.20: the part C rulings, "D025 reading: as written"; the 5.20 subsection, task 5.20c and the photo pools)
+  - ../../qa/cmo-review-built-b-2026-10-14.md (m3, the related ring, row "ai-tutor (25)"; applied by task 7.1d to fold 8, see the foot of this page)
+  - ../../qa/cmo-review-related-ring-7.1d-2026-10-14.md (B1: this page's row of the ring, missed in the first 7.1d pass)
+  - "src/content/en-IN/stories/articles/*.ts (each guide's related line and head photo import, read in the w8-7.1d worktree 2026-10-14, for the ring and photo checks in fold 8)"
 ---
 
 # Story: Does a three-year-old need an AI tutor?
@@ -313,16 +316,29 @@ is built against it, with its age limits.
 > **H2:** Related guides
 >
 > - Should kids use AI? An honest answer from people who build it
+> - What India's data law asks of a toy that listens
 > - The hard questions parents ask about AI toys
-> - Why the early years matter most
 
-| Title (each guide's own card title, rendered from its module) | Real URL |
+| Title (each guide's own card title, rendered from its module, as the hub prints it) | Real URL |
 |---|---|
 | Should kids use AI? An honest answer from people who build it | `/stories/should-kids-use-ai` |
+| What India's data law asks of a toy that listens | `/stories/ai-toys-and-indias-data-law` |
 | The hard questions parents ask about AI toys | `/stories/questions-parents-ask-about-ai-toys` |
-| Why the early years matter most | `/stories/why-three-to-six-are-the-years-that-matter-most` |
 
-The stub's related list, unchanged (task instruction; `articles.test.ts` keeps every article at three incoming links).
+- Text links only; titles render from each module's card. The list is the related ring of
+  [CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md), finding m3, row "ai-tutor (25)" (task 7.1d;
+  [ring review](../../qa/cmo-review-related-ring-7.1d-2026-10-14.md) B1): should kids stays first, the data-law guide
+  comes in second, hard questions stays, and the early-years guide leaves the list.
+- Why each: should kids draws the line between AI built for adults and a toy built for young children; the data-law
+  guide says what India's law asks of a company handling a child's data (its card), a fair next question for a parent
+  weighing any AI toy or app for a young child (fold 6); hard questions answers what parents ask before buying a
+  talking toy. All three now sit in AI toys and safety, this page's own topic (the breadcrumb).
+- The ring: every guide keeps three related guides and three incoming links (`articles.test.ts:100-113`). This page is
+  linked from the hard-questions, should-kids and data-law guides; early years keeps three incoming links (learn by
+  talking, busy hands, sharp brain).
+- Photos: none of the three shares this page's head photo (`myra-04`): should kids `kabir-02`, data law `ira-01`, hard
+  questions `tara-03`; nor does the safe-AI-toy guide (`tara-02`), linked in fold 6's text (task 5.20a's rule). Fold
+  1's note on the `myra-04` repeat still holds: none of the three guides that carry it links to another.
 
 ---
 
@@ -421,7 +437,8 @@ None.
 | "The list above" (fold 6, task 5.20c) | [CMO review, round 2](../../qa/cmo-review-articles-5.19-2026-10-14.md#new-minor-items) R2-2; our own voice, no claim |
 | Not a toy for children under 3; a grown-up nearby at 3 | [facts, age](../../product/facts.md#age); [content boundary](../content-boundary.md); [D041](../../decisions/D041-gate-a-round-1.md) ("Age 3" row) |
 | Cut lines ("hundreds of them a day"; "learn least that way"; "learns faster than they ever will again"; "a pace set by the child"; "lesson plan"; "moves at your child's pace") | [source verification C13, C05](../../research/source-verification.md#5-do-not-use); [claims §3](../../product/claims.md#3-not-confirmed-do-not-publish) ("adapts" family); [D027](../../decisions/D027-story-mode-wording.md) ("lessons") |
-| Card title and summary, related list, first-published date | `src/content/en-IN/stories/articles/does-a-three-year-old-need-an-ai-tutor.ts` (stub); [stories.md fold 4](stories.md#fold-4--ai-toys-and-safety-ai-and-safety); `src/lib/stories-expansion.ts:288` |
+| Card title and summary, first-published date | `src/content/en-IN/stories/articles/does-a-three-year-old-need-an-ai-tutor.ts` (stub); [stories.md fold 4](stories.md#fold-4--ai-toys-and-safety-ai-and-safety); `src/lib/stories-expansion.ts:288` |
+| Related list (fold 8) and its titles | [CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md) m3, the ring table (task 7.1d; [ring review](../../qa/cmo-review-related-ring-7.1d-2026-10-14.md) B1); titles: each guide's card title as the hub prints it (`src/content/en-IN/stories/hub.ts:116-119` reads it from the guide's module; [stories.md fold 4](stories.md#fold-4--ai-toys-and-safety-ai-and-safety) cards 2, 3 and 4) |
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block) and [phone sticky bar](home.md#phone-sticky-bar) sources ([D028](../../decisions/D028-price-wording.md), [D041](../../decisions/D041-gate-a-round-1.md), [D023](../../decisions/D023-new-order-delivery.md), [D021](../../decisions/D021-returns-policy.md), [D032](../../decisions/D032-grievance-block-and-call-line.md)) |
 | Photo | DS `03-cast.md:9, 21-27, 105` (Myra, 3½; Myra 04, no Kheelu); alt from the approved [learning-toys guide](story-learning-toys-for-a-three-year-old.md) fold 1; file checked by eye 2026-10-14 |
 | "isn't ready for homework yet"; "doesn't need any of those" | [keyword map §6.5](../../research/keyword-map.md#65-ai-and-safety-articles) AT1; [CMO review](../../qa/cmo-review-articles-5.19-2026-10-14.md#minor) M5 |
@@ -448,3 +465,32 @@ changed, so no new source marker is needed. Founder questions P21 to P23 do not 
 
 **For the builder:** the module `does-a-three-year-old-need-an-ai-tutor.ts` follows fold 6 word for word in the same
 commit (`ai-safety-and-learning.test.tsx` reads the Copy blocks); `updated` stays 2026-10-13.
+
+## Changes after approval (task 7.1d)
+
+[CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md), finding m3 (which folds in
+[CMO 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M6), rebalances the journal's related ring: 14 slot changes
+across 10 guides ([tasks](../../engineering/tasks.md), 7.1d). This page's row was missed in the first 7.1d pass, and
+the [ring review](../../qa/cmo-review-related-ring-7.1d-2026-10-14.md) (B1) asked for it. On this page only fold 8's
+list changed.
+
+1. **Fold 8, related guides (m3).** Was: "Should kids use AI? An honest answer from people who build it", "The hard
+   questions parents ask about AI toys", "Why the early years matter most" (the stub's list). Now: "Should kids use
+   AI? An honest answer from people who build it", "What India's data law asks of a toy that listens", "The hard
+   questions parents ask about AI toys". Why: m3's ring, row "ai-tutor (25)": the data-law guide says what India's law
+   asks of a company handling a child's data, a question for any AI toy or app, and all three now sit in AI toys and
+   safety. Without this row, the data-law guide would have two
+   incoming links. The titles are each guide's card title, as the hub prints them.
+2. **Checked against the whole ring after m3:** every guide has three related guides and three incoming links; this
+   page is linked from the hard-questions, should-kids and data-law guides; no guide it links to, or that links to it,
+   shares its head photo (`myra-04`), and neither does the safe-AI-toy guide in fold 6's text (`tara-02`). Fold 1's
+   note on the `myra-04` repeat stands.
+3. **Notes kept true:** fold 8's table and notes, the Sources table (the related list now has its own row), the front
+   matter's sources. No other Copy block changed: the body (about 680 words, 3 min), title, meta, H1, the in-text links
+   of fold 6, keyword placements and every source marker are as approved. The new title carries neither "AI tutor" nor
+   "Kheelu" nor "screen time for a 3-year-old", so the density and overlap rows stand (if the related titles count in
+   `<main>`, the list grows from 26 to 30 words, still "about 680" and 3 minutes). "Tutor" stays a word this page uses
+   about tutoring apps, never about Kheelu. No placeholder.
+4. **For the builder:** `does-a-three-year-old-need-an-ai-tutor.ts:25` becomes `related: ["should-kids-use-ai",
+   "ai-toys-and-indias-data-law", "questions-parents-ask-about-ai-toys"]`, and the header note's "the related list and
+   first-published date are the stub's" (lines 9-10) follows. Same commit as the other nine modules.

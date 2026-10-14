@@ -9,9 +9,10 @@ import { seller } from "../../seller";
  * What India’s data law asks of a toy that listens: rewritten (task 5.19) from its approved copy page
  * (wiki/site/pages/story-ai-toys-and-indias-data-law.md; CMO review round 2; head photo from the AI guides' pool, task
  * 5.20c: ira-01, 4:5, so the head takes its portrait layout). No mockup: the article template renders it, as the three
- * approved articles. Head and lead are the hub card's words (stories.md fold 4); the related list (with the stub's
- * swap) and first-published date are the stub's, the busy-hands guide in place of the 3-6-9-12 guide that left the
- * journal (task 6.5, D053; the copy page's fold 11). Every statement about the law carries a marker and quotes the
+ * approved articles. Head and lead are the hub card's words (stories.md fold 4); the first-published date is the stub's,
+ * the related list CMO built-page review B's ring (finding m3, task 7.1d; the copy page's fold 11), the should-kids and
+ * AI-tutor guides in place of the get-talking guide (the legacy ring's) and the busy-hands guide (task 6.5's, for the
+ * 3-6-9-12 guide the stub's swap had named, which left the journal, D053). Every statement about the law carries a marker and quotes the
  * official MeitY texts; the page says early that it is not legal advice, and never that Kheelu meets section 9. Fold 9
  * answers only what Kheelona can answer in confirmed facts (D018, D020's order, the retention line from policies.ts),
  * with the page's one in-text product link and the help line from seller.ts. `updated` is the rewrite's date; re-read
@@ -29,7 +30,7 @@ export const article = {
     title: "What India’s data law asks of a toy that listens",
     summary: "India’s data law in plain words: what it asks of a company handling a child’s data, and what you can ask for.",
   },
-  related: ["what-to-look-for-in-a-safe-ai-toy", "how-to-get-your-child-talking", "busy-hands-no-screens"],
+  related: ["what-to-look-for-in-a-safe-ai-toy", "should-kids-use-ai", "does-a-three-year-old-need-an-ai-tutor"],
   published: "2026-09-11",
   updated: "2026-10-13",
   head: {

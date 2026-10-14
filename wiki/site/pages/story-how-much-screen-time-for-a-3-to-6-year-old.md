@@ -21,6 +21,9 @@ sources:
   - "src/content/en-IN/stories/articles/how-much-screen-time-for-a-3-to-6-year-old.ts (stub: card, related, dates); src/content/types.ts:356-469 and src/layouts/ArticleTemplate/ArticleTemplate.tsx (the blocks the template renders)"
   - design-system/project/03-cast.md:10, 34, 92, 107 (advik-01, task 5.20a; was :120, tara-04); 01-writing.md:19-26 (read-only)
   - "Task 5.20a fixes: ../../qa/cmo-review-articles-5.17-2026-10-14.md (M4, M5, M6, M7, M16); ../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md (N1: this alt is advik-01's one alt); ../../engineering/tasks.md (5.20, the head-photo pools); ../../engineering/assets.md (photo uses)"
+  - ../../qa/cmo-review-built-b-2026-10-14.md (m3, the related ring, row "how-much-screen-time (25)"; applied by task 7.1d to fold 12, see the foot of this page)
+  - ../../qa/cmo-review-related-ring-7.1d-2026-10-14.md (B1: this page's row of the ring, missed in the first 7.1d pass)
+  - "src/content/en-IN/stories/articles/*.ts (each guide's related line and head photo import, read in the w8-7.1d worktree 2026-10-14, for the ring and photo checks in fold 12)"
 ---
 
 # Story: Screen time for a 3-year-old, and up to age 7
@@ -311,17 +314,30 @@ tantrums guide. Renders as an `ArticlePart`: `p`, `list` (variant `tips`), three
 
 > **H2:** Related guides
 >
+> - Busy hands, no screens
 > - Screen-free does not mean silent
-> - Screen time and tantrums: what is actually happening
 > - The gentle way off the phone: a seven-day plan
 
-| Title (each guide's own card) | Real URL |
+| Title (each guide's own card, as the hub prints it) | Real URL |
 |---|---|
+| Busy hands, no screens | `/stories/busy-hands-no-screens` |
 | Screen-free does not mean silent | `/stories/screen-free-does-not-mean-silent` |
-| Screen time and tantrums: what is actually happening | `/stories/screen-time-and-tantrums` |
 | The gentle way off the phone: a seven-day plan | `/stories/the-gentle-way-off-the-phone` |
 
-The stub's `related` list, unchanged; the template words each link from its guide's card.
+- Text links only; the template words each link from its guide's card. The list is the related ring of
+  [CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md), finding m3, row "how-much-screen-time (25)"
+  (task 7.1d; [ring review](../../qa/cmo-review-related-ring-7.1d-2026-10-14.md) B1): busy hands comes in first, the
+  screen-free toys guide and the gentle-way plan stay, and the tantrums guide leaves the list. It is still one tap away:
+  fold 10 links it in the text, for the evenings when switching off ends in tears.
+- Why each: busy hands gives set-ups for the hours a limit frees; the screen-free toys guide shows a day full of talk
+  without a screen, the talking and play that fold 7 says the hour leaves room for; the gentle-way plan is the way to
+  cut back that fold 6 already points to in the text.
+- The ring: every guide keeps three related guides and three incoming links (`articles.test.ts:100-113`). This page is
+  linked from the learning-toys, screen-free and tantrums guides; tantrums keeps three incoming links (gentle way, busy
+  hands, screen-free).
+- Photos: none of the three shares this page's head photo (`advik-01`): busy hands `ira-02`, screen-free `ira-02`,
+  gentle way `tara-01`; nor does tantrums (`kabir-03`), still linked in the text (task 5.20a's rule). Busy hands and
+  screen-free share `ira-02`, which breaks no rule: neither links to the other.
 
 ---
 
@@ -414,7 +430,8 @@ ruling for the six articles.
 | Kheelu: screen-free plush toy, ages 3 to 7, answers then asks a question back | [facts, identity](../../product/facts.md#identity), [age](../../product/facts.md#age); [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) |
 | Not a toy for children under 3 (task 5.20a, CMO M7) | [facts, age](../../product/facts.md#age) (band 3 to 7, brief §2); [keyword map §7.1](../../research/keyword-map.md#7-geo-plan); [content boundary](../content-boundary.md) (never imply under 3); the same line and sources as the approved [learning-toys guide](story-learning-toys-for-a-three-year-old.md) |
 | A grown-up nearby at 3 | [D041](../../decisions/D041-gate-a-round-1.md) ("Age 3" row) |
-| Card title and summary, related list, published date | the stub module; [stories.md](stories.md) fold 2 (line 117); `src/lib/stories-expansion.ts:16` |
+| Card title and summary, published date | the stub module; [stories.md](stories.md) fold 2 (line 117); `src/lib/stories-expansion.ts:16` |
+| Related list (fold 12) and its titles | [CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md) m3, the ring table (task 7.1d; [ring review](../../qa/cmo-review-related-ring-7.1d-2026-10-14.md) B1); titles: each guide's card title as the hub prints it (`src/content/en-IN/stories/hub.ts:116-119` reads it from the guide's module; [stories.md](stories.md) fold 2, cards 4, 5 and 6) |
 | Cut lines | [source verification](../../research/source-verification.md) C31 caveat 2, C33 caveat 1, C09 caveat 3, C43 caveat 2; [age-band review](../../product/age-band-review.md) row 43 |
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block) and [phone sticky bar](home.md#phone-sticky-bar) sources ([D028](../../decisions/D028-price-wording.md), [D041](../../decisions/D041-gate-a-round-1.md), [D023](../../decisions/D023-new-order-delivery.md), [D021](../../decisions/D021-returns-policy.md), [D032](../../decisions/D032-grievance-block-and-call-line.md)) |
 | Photo | DS `03-cast.md:10, 107` (advik-01; task 5.20a, CMO M16; the photo's one alt, CMO fix pass N1); file checked by eye 2026-10-14 |
@@ -440,3 +457,31 @@ guides, the close and the sticky bar, the founder questions.
 **For the builder (same commit as this page):** the module follows folds 1, 3, 4, 8 and 10 word for word: the
 photo import and alt, and the four changed lines. assets.md: add `advik-01-counting-carriages-web.webp` (head of
 this guide, 4:5) and take this guide off the `tara-04` row.
+
+## Changes after approval (task 7.1d)
+
+[CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md), finding m3 (which folds in
+[CMO 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M6), rebalances the journal's related ring: 14 slot changes
+across 10 guides ([tasks](../../engineering/tasks.md), 7.1d). This page's row was missed in the first 7.1d pass, and
+the [ring review](../../qa/cmo-review-related-ring-7.1d-2026-10-14.md) (B1) asked for it. On this page only fold 12's
+list changed.
+
+1. **Fold 12, related guides (m3).** Was: "Screen-free does not mean silent", "Screen time and tantrums: what is
+   actually happening", "The gentle way off the phone: a seven-day plan" (the stub's list). Now: "Busy hands, no
+   screens", "Screen-free does not mean silent", "The gentle way off the phone: a seven-day plan". Why: m3's ring, row
+   "how-much-screen-time (25)". Busy hands gives the set-ups for the hours a limit frees. The tantrums guide leaves the
+   list but stays an in-text link in fold 10. Without this row, busy hands would have two incoming links and tantrums
+   four. The titles are each guide's card title, as the hub prints them.
+2. **Checked against the whole ring after m3:** every guide has three related guides and three incoming links; this
+   page is linked from the learning-toys, screen-free and tantrums guides; no guide it links to, or that links to it,
+   shares its head photo (`advik-01`), and neither do the two guides it links in the text (gentle way `tara-01`,
+   tantrums `kabir-03`). Fold 1's note on the screen-free toys guide, which links here both ways, still holds.
+3. **Notes kept true:** fold 12's table and notes, the Sources table (the related list now has its own row), the front
+   matter's sources. No other Copy block changed: the body (about 760 words before the sources, so the related list
+   falls outside the count; 4 min), title, meta, H1, the in-text links of folds 6 and 10, keyword placements (no new
+   title carries the primary or "Kheelu", so the density row stands) and every source marker are as approved. The
+   list's titles go from 22 to 18 words. No placeholder.
+4. **For the builder:** `how-much-screen-time-for-a-3-to-6-year-old.ts:25` becomes `related: ["busy-hands-no-screens",
+   "screen-free-does-not-mean-silent", "the-gentle-way-off-the-phone"]`, and the header note's "related links and
+   dates as the stub held them" (lines 10-11) follows. Same commit as the other nine modules, so the in-count test never
+   sees half a ring.

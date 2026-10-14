@@ -23,6 +23,7 @@ sources:
   - design-system/project/03-cast.md:112; 01-writing.md:111-113; assets/Photo library/ira-01-story-on-the-bed-web.webp, checked by eye (read-only)
   - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: M2, M3, M4, M11 fixed in round 2; M11 applied again in task 5.20c)
   - ../../engineering/tasks.md (§4.9 and 5.20, task 5.20c, copy fixes and photo pools), ../../engineering/assets.md (advik-04 and ira-01 rows)
+  - ../../qa/cmo-review-built-b-2026-10-14.md (m3, the related ring; applied by task 7.1d to fold 11, see the foot of this page)
 ---
 
 # Story: What India's data law asks of a toy that listens
@@ -59,7 +60,7 @@ sources:
 | Read time | 3 min (about 700 words in the article, headings included, close excluded; words ÷ 200, rounded, as `readingMinutes` in `src/lib/stories.ts:184-186`) |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 9 ("Kheelu" → `/products/kheelu`, `meet-kheelu.html`) |
-| Module values kept from the stub | Card title and summary (hub copy, `stories.md` fold 4); `related` (three, below; the stub's own swap note stands); `published` 2026-09-11; `updated` as the main session's note for task 5.19 directs |
+| Module values kept from the stub | Card title and summary (hub copy, `stories.md` fold 4); `published` 2026-09-11; `updated` as the main session's note for task 5.19 directs. Not the stub's: `related` (three, below), CMO B m3's ring (task 7.1d; fold 11) |
 | Page settings | Template parity; `close: "journal"`, so the shell shows the phone buy bar; `active: "stories"`, chrome on |
 
 **What changed from the live article** (`src/lib/stories-expansion.ts:517-553`, input only): section 9 was
@@ -314,21 +315,24 @@ point to the policy that covers the rest. Never a compliance claim.
 > **H2:** Related guides
 >
 > - What to look for in a safe AI toy
-> - How to get your child talking
-> - Busy hands, no screens
+> - Should kids use AI? An honest answer from people who build it
+> - Does a three-year-old need an AI tutor?
 
-| Title (each guide's own card) | Real URL | Mockup link |
+| Title (each guide's own card, as the hub prints it) | Real URL | Mockup link |
 |---|---|---|
 | What to look for in a safe AI toy | `/stories/what-to-look-for-in-a-safe-ai-toy` | `story-what-to-look-for-in-a-safe-ai-toy.html` |
-| How to get your child talking | `/stories/how-to-get-your-child-talking` | `stories.html#talking` |
-| Busy hands, no screens | `/stories/busy-hands-no-screens` | `stories.html#screen-time` |
+| Should kids use AI? An honest answer from people who build it | `/stories/should-kids-use-ai` | `stories.html#ai-and-safety` |
+| Does a three-year-old need an AI tutor? | `/stories/does-a-three-year-old-need-an-ai-tutor` | `stories.html#ai-and-safety` |
 
-- The stub's `related` list with one change (task 6.5, [D053](../../decisions/D053-remove-the-3-6-9-12-article.md)):
-  the 3-6-9-12 guide left the journal, and the busy-hands guide takes its place, third. The guides the removed one
-  offered (busy hands, the safe-AI-toy guide and this one) each need one more incoming link, and the other AI guides
-  already have three; this list already offers the safe-AI-toy guide and cannot offer itself, so it takes busy hands,
-  and every guide keeps three related guides and three incoming links (`articles.test.ts`). Its head photo
-  (`ira-02`) is not this page's (`ira-01`), so no linked guide shares a head photo (task 5.20a's rule). Titles render
+- The related ring of [CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md), finding m3 (task 7.1d):
+  the safe-AI-toy guide stays first, and the should-kids and AI-tutor guides take the places of how to get talking
+  (the stub's, from the legacy ring) and busy hands (task 6.5's swap for the removed 3-6-9-12 guide,
+  [D053](../../decisions/D053-remove-the-3-6-9-12-article.md)), which m3 found off-topic after a guide on the law.
+  Why each: all three are AI-and-safety guides, so a parent reading what the law asks goes on to the other questions
+  about AI and a young child: what to check before an AI toy comes home, where the line sits between AI built for
+  adults and a toy built for young children, and what help at 3 should look like. Every guide keeps three related
+  guides and three incoming links (`articles.test.ts:100-113`), and none of the three shares this page's head photo
+  (`ira-01`): safe AI toy `tara-02`, should kids `kabir-02`, AI tutor `myra-04` (task 5.20a's rule). Titles render
   from each module's card.
 
 ---
@@ -431,7 +435,8 @@ give yet, consent and tracking, are left out of fold 9 rather than held, and are
 
 | Claim | Source |
 |---|---|
-| H1, lead (hub card, word for word); related list; published 11 Sep 2026; live byline | `stories.md` fold 4; stub module; `src/lib/stories-expansion.ts:529-531` |
+| H1, lead (hub card, word for word); published 11 Sep 2026; live byline | `stories.md` fold 4; stub module; `src/lib/stories-expansion.ts:529-531` |
+| Related list (fold 11) and its titles | [CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md) m3, the ring table (task 7.1d); titles: each guide's card title as the hub prints it (`src/content/en-IN/stories/hub.ts:116-119` reads it from the guide's module; [stories.md fold 4](stories.md#fold-4--ai-toys-and-safety-ai-and-safety) cards 1, 3 and 5) |
 | The Act treats anyone under 18 as a child; the definition, quoted | [source verification C20](../../research/source-verification.md#c20--indias-data-law-and-children); excerpt `C20-dpdp-act-2023-official-text.md:20-22` (section 2(f)) |
 | Section 9(1): verifiable consent of the parent before processing a child's data | `C20-dpdp-act-2023-official-text.md:26` |
 | Fold 5's plain restatement: once section 9 is in force, the yes comes from the parent before a child's data is used | `C20-dpdp-act-2023-official-text.md:26` (section 9(1)); the start: `C20-dpdp-commencement-gsr-843e-2025.md:21, 25`; [CMO review](../../qa/cmo-review-articles-5.19-2026-10-14.md#minor) M2; counsel's read (D029) |
@@ -478,3 +483,28 @@ give yet, consent and tracking, are left out of fold 9 rather than held, and are
   portrait layout from the photo's own shape. `updated` stays 2026-10-13. [Assets](../../engineering/assets.md): the
   `ira-01` row adds A (the data-law head); the `advik-04` row drops "the data law" and its "16:9 on the data-law
   head" note.
+
+## Changes after approval (task 7.1d)
+
+[CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md), finding m3 (which folds in
+[CMO 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M6), rebalances the journal's related ring: 14 slot changes
+across 10 guides ([tasks](../../engineering/tasks.md), 7.1d). On this page only fold 11's list changed.
+
+- **Fold 11, related guides (m3).** Was: "What to look for in a safe AI toy", "How to get your child talking", "Busy
+  hands, no screens". Now: "What to look for in a safe AI toy", "Should kids use AI? An honest answer from people who
+  build it", "Does a three-year-old need an AI tutor?". Why: after the data-law guide, two of the three next steps
+  were a talking-habits guide and a screen-free activities guide (`data-law-390-motion-05.jpg`, `-06.jpg`); m3's ring
+  row "data-law (32)" keeps all three on AI and safety. The titles are each guide's card title, as the hub prints them.
+- **Checked against the whole ring after m3:** every guide has three related guides and three incoming links; this
+  page is linked from the safe-AI-toy, hard-questions and AI-tutor guides; no guide it links to, or that links to it,
+  shares its head photo (`ira-01`). "AI tutor" appears here only as that guide's title, a guide about tutoring apps,
+  never for Kheelu (as on the [hub](stories.md#keyword-placements)).
+- **Notes kept true:** the At a glance "Module values" row, fold 11's table and note, the Sources table (the related
+  list now has its own row), the front matter's sources. No other Copy block changed: the article (about 700 words,
+  3 min), title (58 characters), meta (142), keyword placements and every source marker are as approved; neither new
+  title carries "DPDP Act" or "Kheelu", so the density row stands (if the related titles count in `<main>`, the list
+  grows from 19 to 28 words, still "about 750"). No legal wording changed, so nothing new goes to counsel (D029). No
+  placeholder.
+- **For the builder:** `ai-toys-and-indias-data-law.ts:32` becomes `related: ["what-to-look-for-in-a-safe-ai-toy",
+  "should-kids-use-ai", "does-a-three-year-old-need-an-ai-tutor"]`, and the header note's words on the stub's swap and
+  the busy-hands guide (lines 12-14) follow.

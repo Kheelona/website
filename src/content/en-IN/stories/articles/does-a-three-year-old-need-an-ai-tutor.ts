@@ -7,7 +7,8 @@ import { DEFAULT_OG } from "../../organization";
  * Does a three-year-old need an AI tutor?: rewritten (task 5.19) from its approved copy page
  * (wiki/site/pages/story-does-a-three-year-old-need-an-ai-tutor.md; CMO review round 2). No mockup: the article
  * template renders it, as the three approved articles. Head and lead are the hub card's words (stories.md fold 4); the
- * related list and first-published date are the stub's. The answer is "no", with Harvard's serve-and-return line; the
+ * first-published date is the stub's, the related list CMO built-page review B's ring (finding m3, task 7.1d; the copy
+ * page's fold 8): the should-kids, data-law and hard-questions guides, all in its own topic. The answer is "no", with Harvard's serve-and-return line; the
  * brain lines sit in folds 2-3, three folds above the one product line (D016). Kheelu is never called a tutor. The
  * head photo shows no Kheelu (CMO M6). `updated` is the rewrite's date.
  */
@@ -22,7 +23,7 @@ export const article = {
     title: "Does a three-year-old need an AI tutor?",
     summary: "Tutoring apps promise homework help. Your child can’t do homework yet. What help at 3 should look like.",
   },
-  related: ["should-kids-use-ai", "questions-parents-ask-about-ai-toys", "why-three-to-six-are-the-years-that-matter-most"],
+  related: ["should-kids-use-ai", "ai-toys-and-indias-data-law", "questions-parents-ask-about-ai-toys"],
   published: "2026-07-30",
   updated: "2026-10-13",
   head: {

@@ -24,6 +24,7 @@ sources:
   - ../../qa/cmo-review-articles-5.17-2026-10-14.md (M13, M14, M15, M16; applied by task 5.20a, see the foot of this page)
   - ../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md (N1: the screen-free toys guide shares ira-02, with this alt)
   - ../../engineering/tasks.md (5.20, the screen-time photo pool) and ../../engineering/assets.md (§1, the pool photos' other uses)
+  - ../../qa/cmo-review-built-b-2026-10-14.md (m3, the related ring; applied by task 7.1d to fold 11, see the foot of this page)
 ---
 
 # Story: Busy hands, no screens
@@ -57,7 +58,7 @@ sources:
 | Card (hub, unchanged) | Title "Busy hands, no screens"; summary "Screen-free ways to keep a young child busy at home, including on the days you have to work." ([stories §2](stories.md#fold-2--screen-time-screen-time), card 5) |
 | Byline line | The Kheelona team · First published 28 Jul 2026 · 3 min read (byline: question 1) |
 | Dates | `published` 2026-07-28 (live, unchanged); `updated` 2026-10-13, the rewrite's date (main-session ruling at the wave 5 part C merge, as task 5.6 set it for the three approved guides) |
-| Related | `the-gentle-way-off-the-phone`, `ai-toys-and-indias-data-law`, `what-to-look-for-in-a-safe-ai-toy` (the stub's, the data-law guide in the removed 3-6-9-12 guide's place: task 6.5, D053; fold 11) |
+| Related | `the-gentle-way-off-the-phone`, `screen-time-and-tantrums`, `why-three-to-six-are-the-years-that-matter-most` (CMO B m3's ring, task 7.1d; fold 11) |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 9 ("Kheelu" → `/products/kheelu`) |
 | Template settings | `close: "journal"` (pre-order close and sticky bar); breadcrumb topic "Screen time" (`/stories#screen-time`) |
@@ -282,22 +283,25 @@ project" becomes one plain product line with the age limits and the grown-up-nea
 > **H2:** Related guides
 >
 > - The gentle way off the phone: a seven-day plan
-> - What India's data law asks of a toy that listens
-> - What to look for in a safe AI toy
+> - Screen time and tantrums: what is actually happening
+> - Why the early years matter most
 
-| Title (card title, from each module) | Real URL |
+| Title (card title, from each module, as the hub prints it) | Real URL |
 |---|---|
 | The gentle way off the phone: a seven-day plan | `/stories/the-gentle-way-off-the-phone` |
-| What India's data law asks of a toy that listens | `/stories/ai-toys-and-indias-data-law` |
-| What to look for in a safe AI toy | `/stories/what-to-look-for-in-a-safe-ai-toy` |
+| Screen time and tantrums: what is actually happening | `/stories/screen-time-and-tantrums` |
+| Why the early years matter most | `/stories/why-three-to-six-are-the-years-that-matter-most` |
 
-Text links only, so the page keeps one DS child. The list is the stub's with one change (task 6.5,
-[D053](../../decisions/D053-remove-the-3-6-9-12-article.md)): the 3-6-9-12 guide left the journal, and the data-law
-guide takes its place, second. The guides the removed one offered (this one, the safe-AI-toy guide and the data-law
-guide) each need one more incoming link, and the other screen-time guides already have three; this list already offers
-the safe-AI-toy guide and cannot offer itself, so it takes the data-law guide, and every guide keeps three related
-guides and three incoming links (`articles.test.ts`). The data-law guide's head photo (`ira-01`) is not
-this page's (`ira-02`), so no linked guide shares a head photo (task 5.20a's rule).
+Text links only, so the page keeps one DS child. The list is the related ring of
+[CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md), finding m3 (task 7.1d): the gentle-way plan stays
+first, and the tantrums and early-years guides take the places of the data-law and safe-AI-toy guides, which m3 found
+off-topic after a guide on screen-free activities at home (task 6.5 had put the data-law guide in the removed
+3-6-9-12 guide's place, [D053](../../decisions/D053-remove-the-3-6-9-12-article.md)). Why each: the gentle-way plan
+fills the times the phone comes out, one slot at a time, with set-ups like these; the tantrums guide covers the moment
+the screen goes off; the early-years guide is about the ordinary things that fill those years well, play among them.
+Every guide keeps three related guides and three incoming links (`articles.test.ts:100-113`), and none of the three
+shares this page's head photo (`ira-02`): gentle way `tara-01`, tantrums `kabir-03`, early years `tara-04` (task
+5.20a's rule).
 
 ---
 
@@ -375,7 +379,8 @@ None.
 | Not a toy for children under 3 | [facts, age](../../product/facts.md#age); [content boundary](../content-boundary.md); as on the [learning-toys guide](story-learning-toys-for-a-three-year-old.md#fold-12--where-kheelu-fits-the-one-in-text-product-link) |
 | A grown-up nearby at 3 | [D041](../../decisions/D041-gate-a-round-1.md) ("Age 3" row) |
 | Set-ups, jobs, ideas by age, the work-day advice (quiet set-ups during a call, talking ones for later) | Plain advice in our voice (no research claim); safety choices noted under folds 4 and 6; the work-day split under fold 9 (CMO M13) |
-| Card title and summary, related list, dates | `src/content/en-IN/stories/articles/busy-hands-no-screens.ts` (stub); [stories §2](stories.md#fold-2--screen-time-screen-time) card 5; live dates `src/lib/stories-expansion.ts:259-260` |
+| Card title and summary, dates | `src/content/en-IN/stories/articles/busy-hands-no-screens.ts` (stub); [stories §2](stories.md#fold-2--screen-time-screen-time) card 5; live dates `src/lib/stories-expansion.ts:259-260` |
+| Related list (fold 11) and its titles | [CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md) m3, the ring table (task 7.1d); titles: each guide's card title as the hub prints it (`src/content/en-IN/stories/hub.ts:116-119` reads it from the guide's module; [stories](stories.md) folds 2 and 5) |
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block) and [phone sticky bar](home.md#phone-sticky-bar) sources ([D028](../../decisions/D028-price-wording.md), [D041](../../decisions/D041-gate-a-round-1.md), [D023](../../decisions/D023-new-order-delivery.md), [D021](../../decisions/D021-returns-policy.md), [D032](../../decisions/D032-grievance-block-and-call-line.md)) |
 | Cut live lines | `src/lib/stories-expansion.ts:269-272` (unsourced claims and a promise) |
 | Photo | DS `03-cast.md:113` (Ira 02, "Creativity and imagination, web hero"; Ira is 5, `03-cast.md:11`); task 5.20's screen-time pool ([tasks](../../engineering/tasks.md), 5.20); also the screen-free toys guide's head, with the same alt, and neither guide links to the other ([CMO fix pass](../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md) N1; [assets §1](../../engineering/assets.md#1-design-system-assets-used-by-the-approved-pages)); file checked by eye 2026-10-14 |
@@ -414,3 +419,28 @@ and nothing else in the Copy blocks changed. No research statement was added or 
    this page's alt word for word; the two guides link to each other in neither direction. This page's Copy is unchanged.
 5. **Notes kept true:** read time about 620 words (3 min, unchanged); the answer's word count; the keyword table's alt
    and density rows; the Sources table's work-day and Photo rows; the front matter's sources.
+
+## Changes after approval (task 7.1d)
+
+[CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md), finding m3 (which folds in
+[CMO 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M6), rebalances the journal's related ring: 14 slot changes
+across 10 guides ([tasks](../../engineering/tasks.md), 7.1d). On this page only fold 11's list changed.
+
+1. **Fold 11, related guides (m3).** Was: "The gentle way off the phone: a seven-day plan", "What India's data law asks
+   of a toy that listens", "What to look for in a safe AI toy". Now: "The gentle way off the phone: a seven-day plan",
+   "Screen time and tantrums: what is actually happening", "Why the early years matter most". Why: after a guide on
+   screen-free activities at home, two of the three next steps were about data law and AI toys
+   (`busy-hands-390-motion-04.jpg`, `-05.jpg`): the safe-AI-toy guide from the legacy ring, and the data-law guide from
+   the swap task 6.5 made when the 3-6-9-12 guide left (D053). The titles are each guide's card title, as the hub
+   prints them.
+2. **Checked against the whole ring after m3:** every guide has three related guides and three incoming links; this
+   page is linked from the screen-time, tantrums and gentle-way guides; no guide it links to, or that links to it,
+   shares its head photo (`ira-02`); the screen-free toys guide, which shares `ira-02`, still links to it in neither
+   direction (fold 1's note stands).
+3. **Notes kept true:** the At a glance "Related" row, fold 11's table and note, the Sources table (the related list
+   now has its own row), the front matter's sources. No other Copy block changed: the body (about 620 words, 3 min),
+   title, meta, keyword placements (neither new title carries the primary or "Kheelu", so the density row stands) and
+   research sources are as approved. No placeholder.
+4. **For the builder:** `busy-hands-no-screens.ts:26` becomes `related: ["the-gentle-way-off-the-phone",
+   "screen-time-and-tantrums", "why-three-to-six-are-the-years-that-matter-most"]`, and the header note's words on the
+   data-law guide (lines 10-12) follow.

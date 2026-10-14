@@ -228,7 +228,7 @@ describe.each(SLUGS)("the rewritten article %s (task 5.19)", (slug) => {
     expect(renderedLinks(rendered(slug).column).filter((l) => l.href === "/products/kheelu")).toHaveLength(1);
   });
 
-  it("keeps the stub's related guides, in the copy page's order", () => {
+  it("offers the copy page's related guides, in its order (the stub's, or CMO B m3's ring, task 7.1d)", () => {
     const related = copyFold(readCopyPage(slug), /^Related guides/);
     expect(article(slug).related).toEqual([...related.text.matchAll(/^\| [^|]+ \| `\/stories\/([a-z0-9-]+)`/gm)].map((m) => m[1]));
     const titles = copyLines(related).filter((l) => l.startsWith("- ")).map((l) => norm(l.slice(2)));

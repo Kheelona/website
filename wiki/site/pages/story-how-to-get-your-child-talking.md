@@ -22,6 +22,7 @@ sources:
   - "src/content/types.ts (Article, Answer, ProseBlock), src/layouts/ArticleTemplate/ArticleTemplate.tsx, src/content/en-IN/stories/articles/index.ts (articlePageCopy.keep), src/assets/icons.generated.ts (DS icon names)"
   - "test/guards/banned-phrases.data.ts; test/e2e/content-integrity.spec.ts:25-60"
   - design-system/project/03-cast.md:37-43,115 (read-only); photo checked by eye 2026-10-13
+  - ../../qa/cmo-review-built-b-2026-10-14.md (m3, the related ring, folding in 5.18 M6; applied by task 7.1d to fold 10, see the foot of this page)
 ---
 
 # Story: How to get your child to talk more
@@ -56,7 +57,7 @@ sources:
 | Read time | 3 min: about 553 words of body (answer, disclaimer, parts and headings; about 549 before task 5.20b), `round(words / 200)` as `src/lib/stories.ts:184-186` |
 | CTA | None in the page body. No finale CTA, no sticky bar. The site chrome (nav, drawer) keeps its own button |
 | In-text product link | None (question 1). One in-text link to a sibling guide, `/stories/talking-late-or-talking-little` (fold 8) |
-| Card, related, dates (unchanged from the stub) | Card title "How to get your child talking"; card summary "Better questions than "How was school?", and the small habits that turn one-word answers into conversations." (curly quotes in the module); related `ai-toys-and-indias-data-law`, `talking-late-or-talking-little`, `how-children-collect-words`; published `2026-07-28`; updated: see the builder notes |
+| Card, related, dates (unchanged from the stub, apart from related: task 7.1d) | Card title "How to get your child talking"; card summary "Better questions than "How was school?", and the small habits that turn one-word answers into conversations." (curly quotes in the module); related `talking-late-or-talking-little`, `raising-a-bilingual-child-in-india`, `how-children-collect-words` (CMO B m3's ring; fold 10); published `2026-07-28`; updated: see the builder notes |
 | Template settings | `close: "keep"` (no sticky bar, `sticky-bar-paths.ts`); `answer.detail` = one `disclaimer` block; topic `talking` (crumb "Talking and language") |
 
 **What changed from the live article** (`src/lib/stories-expansion.ts:91-113`): the H1 and title carry the searched
@@ -267,20 +268,30 @@ on its three articles, so the main session rules which applies (the stub's `upda
 
 > **H2:** Keep reading
 >
-> - What India's data law asks of a toy that listens
 > - Talking late, or talking little?
+> - Raising a bilingual child in India
 > - How children collect words
 >
 > [All guides for parents of 3 to 7 year olds] → `/stories`
 
-| Title (each guide's card title, read by the template) | Real URL |
+| Title (each guide's card title, read by the template, as the hub prints it) | Real URL |
 |---|---|
-| What India's data law asks of a toy that listens | `/stories/ai-toys-and-indias-data-law` |
 | Talking late, or talking little? | `/stories/talking-late-or-talking-little` |
+| Raising a bilingual child in India | `/stories/raising-a-bilingual-child-in-india` |
 | How children collect words | `/stories/how-children-collect-words` |
 
-- The related list is the stub's, unchanged (the data-law guide is the legacy ring's swap, `articles.test.ts:210-213`).
-  Heading and hub link are `articlePageCopy.keep` (shared, read-only); its words carry the age band "3 to 7".
+- The related list is the ring of [CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md), finding m3
+  (task 7.1d; it folds in [CMO 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md#minor-fixes) M6): the data-law
+  guide, which the legacy ring gave this page as the guide before it in the live journal's order
+  (`articles.test.ts:183-210`; the approved note called it a swap), leaves; talking late moves up to first; the bilingual
+  guide comes in second; collect words stays third. Why each: all three are talking-and-language guides with the same
+  keep-reading close and no pitch, so a parent who came for talking habits stays on the subject. Talking late is the
+  "what varies, and when to ask" guide that fold 8 links; the bilingual guide is the journal's guide to two languages
+  at home; collect words is about new words, in every language a home speaks. M6 had offered
+  `how-children-learn-by-talking` in the data-law guide's place; the ring is m3's table, which keeps three related
+  guides and three incoming links for every guide (`articles.test.ts:100-113`). None of the three shares this page's
+  head photo (`ira-04`): talking late `advik-04`, bilingual `tara-04`, collect words `myra-04` (task 5.20a's rule).
+- Heading and hub link are `articlePageCopy.keep` (shared, read-only); its words carry the age band "3 to 7".
 
 ---
 
@@ -346,7 +357,8 @@ None.
 | No pitch | Task 5.18 notes (no product pitch on the talking-and-language pages); working default [B5](../gate-a-open-items.md#3-other-website-items-on-working-defaults) |
 | Cut lines (the vault, broad questions, joining vs starting, the gap, "the same mechanism … at the center of language growth", the Kheelu close) | No public source read for any of them ([D025](../../decisions/D025-speech-and-language.md), [D026](../../decisions/D026-public-statistics.md)); the close is a pitch |
 | Ages 3 to 7 on the page; nothing implying under 3 | [content boundary](../content-boundary.md); [age-band review](../../product/age-band-review.md); `test/e2e/content-integrity.spec.ts:25-49` |
-| Card title and summary; related list; first-published date | Stub `src/content/en-IN/stories/articles/how-to-get-your-child-talking.ts`; [stories.md fold 3](stories.md#fold-3--talking-and-language-talking); `src/lib/stories-expansion.ts:92-99` |
+| Card title and summary; first-published date | Stub `src/content/en-IN/stories/articles/how-to-get-your-child-talking.ts`; [stories.md fold 3](stories.md#fold-3--talking-and-language-talking); `src/lib/stories-expansion.ts:92-99` |
+| Related list (fold 10) and its titles | [CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md) m3, the ring table (task 7.1d); titles: each guide's card title as the hub prints it (`src/content/en-IN/stories/hub.ts:116-119` reads it from the guide's module; [stories.md fold 3](stories.md#fold-3--talking-and-language-talking) cards 2, 5 and 6) |
 | Byline | [facts, team](../../product/facts.md) (the live byline's author was removed from the site, lines 304-308); `TEAM_BYLINE` |
 | Photo | DS `03-cast.md:41-42, 115`; file checked by eye 2026-10-13 (and again 2026-10-14: the alt matches the photo); kept, with its alt as the journal's one alt for `ira-04`, under [CMO review 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md#minor-fixes) M13 |
 | Fold 8 line ("If your child says very little everywhere, …") | Advice, no research claim; the CMO's wording ([CMO review 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md#minor-fixes) M5) |
@@ -368,3 +380,24 @@ time stays 3 min (`round(words / 200)`) and the byline row does not change. Titl
 (147), keyword placements and sources do not change; no research statement was added, and there is no placeholder.
 Not part of this task: M6, the related ring (this page still offers the data-law guide; the main session and
 builder change it).
+
+## Changes after approval (task 7.1d)
+
+[CMO built-page review B](../../qa/cmo-review-built-b-2026-10-14.md), finding m3, rebalances the journal's related
+ring and folds in [CMO 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md#minor-fixes) M6, which named this page:
+14 slot changes across 10 guides ([tasks](../../engineering/tasks.md), 7.1d). On this page only fold 10's list
+changed.
+
+| Where | What changed | Why |
+|---|---|---|
+| Fold 10, keep reading | Was: "What India's data law asks of a toy that listens", "Talking late, or talking little?", "How children collect words". Now: "Talking late, or talking little?", "Raising a bilingual child in India", "How children collect words". The heading and the hub link are unchanged | M6 and m3: the only next step after a talking-habits guide sent a parent to the data-law guide (`get-talking` row of review B's table, "M6"); m3's ring row "how-to-get-talking (28)" keeps all three on talking and language. Titles are each guide's card title, as the hub prints them |
+| At a glance, "Card, related, dates" row; fold 10's table and note; the Sources table (the related list now has its own row); front matter sources | The new list and its source | To keep the notes true |
+
+**What follows from the change.** Checked against the whole ring after m3: every guide has three related guides and
+three incoming links; this page is linked from the late-talker, talking-late and bilingual guides; no guide it links
+to, or that links to it, shares its head photo (`ira-04`); fold 1's photo note stands. The keep-reading close sits
+outside the body, so the body (about 553 words, 3 min), title (45 characters), meta (147), keyword placements (no
+new title carries the primary, "speech" or "Kheelu") and research sources do not change. Still no product link, CTA
+or sticky bar; no placeholder. For the builder: `how-to-get-your-child-talking.ts:28` becomes
+`related: ["talking-late-or-talking-little", "raising-a-bilingual-child-in-india", "how-children-collect-words"]`, and
+the header note's "related list … as the stub held them" (lines 10-11) follows.

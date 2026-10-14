@@ -21,6 +21,7 @@ sources:
   - ../../qa/cmo-review-articles-5.18-2026-10-14.md (M11, the read time; M13, the alt approved for tara-04 in task 5.18, how-children-learn-by-talking's former alt, applied in task 5.20b: see the foot of this page)
   - ../../qa/cmo-review-article-fixes-5.20b-2026-10-14.md (F2: these notes, corrected in task 6.3)
   - design-system/project/03-cast.md:50, 120; 01-writing.md:19-26, 38, 111-113 (read-only)
+  - ../../qa/cmo-review-built-b-2026-10-14.md (m3, the related ring, folding in 5.18 M6; applied in task 7.1d, see the foot of this page)
 ---
 
 # Story: Raising a bilingual child in India
@@ -310,19 +311,27 @@ approved modules use); `callout` (lead "Try this:").
 > **H2:** Keep reading
 >
 > - Late talker? What helps a child find their words
-> - Should kids use AI? An honest answer from people who build it
-> - Does a three-year-old need an AI tutor?
+> - How to get your child talking
+> - How children learn by talking
 >
 > [All guides for parents of 3 to 7 year olds] → `/stories`
 
-| Title | Real URL |
-|---|---|
-| Late talker? What helps a child find their words | `/stories/talking-toys-and-late-talkers` |
-| Should kids use AI? An honest answer from people who build it | `/stories/should-kids-use-ai` |
-| Does a three-year-old need an AI tutor? | `/stories/does-a-three-year-old-need-an-ai-tutor` |
+| Title | Real URL | Why it is linked |
+|---|---|---|
+| Late talker? What helps a child find their words | `/stories/talking-toys-and-late-talkers` | The speech worry beside the language worry; its myth 1 gives the same AAP and ASHA answer in short (Overlap, above). Kept from the stub |
+| How to get your child talking | `/stories/how-to-get-your-child-talking` | More everyday talk at home, after fold 8's tips: better questions and small habits (its card). New in task 7.1d (5.18 M6) |
+| How children learn by talking | `/stories/how-children-learn-by-talking` | Serve and return, the back-and-forth between a young child and a caring adult (its card), the habit behind fold 5's "answer back in Tamil, warmly". New in task 7.1d |
 
-- The stub's `related` list, unchanged and in its order (task notes). Two of the three are AI guides from the
-  legacy ring; see the note for the main session.
+- The ring from [CMO review B](../../qa/cmo-review-built-b-2026-10-14.md) m3 (its table, `:223-234`; task 7.1d),
+  which folds in [CMO review 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M6; in its order. Titles render
+  from each module's card, as the hub prints them ([stories.md](stories.md) fold 3).
+- Out: "Should kids use AI? An honest answer from people who build it" and "Does a three-year-old need an AI tutor?",
+  two AI guides, an odd next step from a language page (M6; m3). All three guides now in the list are talking guides
+  with the keep close and no product link, so the reader's next step carries no pitch either.
+- M6 named `how-children-collect-words` where the ring has `how-children-learn-by-talking`: collect-words already has
+  its three incoming links in the ring (talking late, get talking, toy that talks), and learn-by-talking needs this one
+  after the hard-questions guide drops it.
+- No two linked guides share a head photo: `tara-04` here; `kabir-04`, `ira-04` and `kabir-04` on the three guides.
 
 ---
 
@@ -376,13 +385,14 @@ None.
 | No pitch on speech and language pages | Working default [B5](../gate-a-open-items.md#3-other-website-items-on-working-defaults); task notes (5.18); [B14](../gate-a-open-items.md#3-other-website-items-on-working-defaults) |
 | Cut lines | [source verification §3.6](../../research/source-verification.md#36-language-and-bilingualism) C38 caveats 1-3, C39 caveats 1-5, C40 caveat 1, C28 (not re-checked); C07 caveat 6 |
 | Ages 3 to 7 only; research about younger children is fine as research | [content boundary](../content-boundary.md); [age-band review](../../product/age-band-review.md) row 44 |
-| Card title and summary; related list; dates | stub `src/content/en-IN/stories/articles/raising-a-bilingual-child-in-india.ts`; [stories.md fold 3](stories.md#fold-3--talking-and-language-talking); `src/lib/stories-expansion.ts:194-195` |
+| Card title and summary; dates | stub `src/content/en-IN/stories/articles/raising-a-bilingual-child-in-india.ts`; [stories.md fold 3](stories.md#fold-3--talking-and-language-talking); `src/lib/stories-expansion.ts:194-195` |
+| Related list (fold 11), its order and titles | [CMO review B](../../qa/cmo-review-built-b-2026-10-14.md) m3, the ring table (`:223-234`), folding in [CMO review 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M6; [tasks](../../engineering/tasks.md) 7.1d; titles as the hub cards print them, [stories.md fold 3](stories.md#fold-3--talking-and-language-talking) |
 | Photo and alt | DS `03-cast.md:50, 120`; the alt approved for `tara-04` in task 5.18 (how-children-learn-by-talking's former alt), word for word; file checked by eye 2026-10-14; [CMO review M13](../../qa/cmo-review-articles-5.18-2026-10-14.md#minor-fixes) |
 
-**For the main session (not the founder).** (1) The stub's `related` list (late talker, should kids use AI, an AI
-tutor) is the legacy ring, kept as the task notes ask; two AI guides are an odd next step from a language page. A
-later swap to `how-children-collect-words` and `how-to-get-your-child-talking` would need the incoming-link count
-rebalanced (`articles.test.ts`, three incoming each). (2) `updated`: the same ruling as the other 17 (stub date or
+**For the main session (not the founder).** (1) Resolved in task 7.1d: the stub's `related` list (late talker,
+should kids use AI, an AI tutor) was the legacy ring, and two AI guides were an odd next step from a language page.
+The CMO's rebalanced ring (review B m3, with 5.18 M6) now gives late talker, how to get your child talking and how
+children learn by talking, three incoming links each (`articles.test.ts`); see fold 11 and the foot of this page. (2) `updated`: the same ruling as the other 17 (stub date or
 rewrite date).
 
 ## Changes after approval (task 5.20b)
@@ -400,3 +410,27 @@ the byline row does not change. The keyword placements, sources and questions do
 Not part of this task: M6 and M10 (the main session's: the related ring, and the line on where the review's studies
 were done, which stays as approved until the main session rules), M11 (already applied: the byline says 3 min) and
 M14 (the module already uses the CMO's icons, and the article test holds them).
+
+## Changes after approval (task 7.1d)
+
+- **Fold 11, the keep-reading guides** ([CMO review B](../../qa/cmo-review-built-b-2026-10-14.md) m3, the ring table
+  at `:223-234`, which folds in [CMO review 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M6;
+  [tasks](../../engineering/tasks.md) 7.1d). Was: "Late talker? What helps a child find their words", "Should kids
+  use AI? An honest answer from people who build it", "Does a three-year-old need an AI tutor?". Now: "Late talker?
+  What helps a child find their words", "How to get your child talking", "How children learn by talking". Why: M6
+  found the journal's most-searched language guide sending parents on to two AI guides, and review B lists it in the
+  same family (m3). The CMO's rebalanced ring keeps three related guides out and three in for every guide
+  (`articles.test.ts:109-113`), leaves the three mockup guides' lists unchanged, and links no two guides that share a
+  head photo. It takes `how-children-learn-by-talking` where M6 named `how-children-collect-words`, which already
+  has its three incoming links. Titles are the hub cards' ([stories.md](stories.md#fold-3--talking-and-language-talking) fold 3).
+- **Notes kept true:** fold 11's table (now with a "why" column) and notes; the Sources table (the related list has
+  its own row now); the note for the main session, item (1), now marked resolved; the front matter's sources. No other
+  Copy block changed. The task 5.20b section above is history and stays as written.
+- **What does not change:** the read time (3 min: about 696 words from the H1 to fold 9, so fold 11 is outside the
+  count) and the keyword table. The new titles are eight words shorter (`<main>` still about 700 words; "raising a
+  bilingual child" about 0.6%, "bilingual" about 0.9%), and they carry no keyword, no "Kheelu" and no banned word. With
+  the AI-tutor title gone from fold 11, the row "no tutor" now holds for every line on the page. Still no pitch: the
+  three guides are talking guides with no product link. No placeholder.
+- **For the builder:** `raising-a-bilingual-child-in-india.ts:30`, `related: ["talking-toys-and-late-talkers",
+  "how-to-get-your-child-talking", "how-children-learn-by-talking"]`, and the module's header note if it describes the
+  list, in the same commit as the other nine modules. Touch nothing else in the module: task 7.1f edits its `meta`.
