@@ -100,6 +100,41 @@ describe("OfferCard", () => {
     expect(card(<OfferCard offer={TOKEN} perks={PERKS} action={action} />).hasAttribute("data-reveal")).toBe(false);
   });
 
+  /* D061 item 3 (task 8c.2): the later price, as a plain line in the DS card's later-price place (kh-offer__prices, where
+     the DS draws `was`), never struck through (PRICE-01): only while the first-500 price is live. */
+  const LATER = "{price:headline} for the first 500 units. {price:full} once they are gone.";
+  const withLater = (offer: Offer): Offer => ({ ...offer, card: { ...offer.card, later: LATER } });
+
+  it("prints the later price in token mode as a plain line under the amount, in the card's later-price place", () => {
+    const el = card(<OfferCard offer={withLater(TOKEN)} perks={PERKS} action={action} />);
+    expect(el.querySelector(".kh-offer__prices")?.innerHTML).toBe(
+      '<span class="kh-offer__price">₹4,999</span><span class="kh-body-s">incl. GST</span>' +
+        '<p class="kh-body-s ks-offer__later">₹4,999 for the first 500 units. ₹7,999 once they are gone.</p>',
+    );
+  });
+
+  it("never prints the later price in full mode, even if one is passed by mistake", () => {
+    const el = card(<OfferCard offer={withLater(FULL)} perks={PERKS} action={action} />);
+    expect(el.querySelector(".ks-offer__later")).toBeNull();
+    expect(el.textContent).not.toMatch(/first 500|once they are gone/);
+  });
+
+  it("prints no later price when the offer has none", () => {
+    expect(card(<OfferCard offer={TOKEN} perks={PERKS} action={action} />).querySelector(".ks-offer__later")).toBeNull();
+  });
+
+  it("never strikes a price through: no s, del or the DS's struck later price (kh-offer__was), in either mode", () => {
+    for (const offer of [withLater(TOKEN), withLater(FULL)]) {
+      const el = card(<OfferCard offer={offer} perks={PERKS} action={action} />);
+      expect(el.querySelectorAll("s, del, strike, .kh-offer__was")).toHaveLength(0);
+    }
+  });
+
+  it("refuses rich text in the later price instead of flattening it", () => {
+    const linked = { ...TOKEN, card: { ...TOKEN.card, later: "[Later](/terms)" } };
+    expect(() => render(<OfferCard offer={linked} perks={PERKS} action={action} />)).toThrow(/OfferCard later price/);
+  });
+
   it("refuses rich text in the offer's own strings instead of flattening it", () => {
     const linked = { ...TOKEN, card: { ...TOKEN.card, priceNote: "[incl. GST](/terms)" } };
     expect(() => render(<OfferCard offer={linked} perks={PERKS} action={action} />)).toThrow(/OfferCard price note/);

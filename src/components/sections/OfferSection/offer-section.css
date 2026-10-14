@@ -1,5 +1,6 @@
 /* OfferSection (task 3.2). The product page's offer fold (variant photo), ported from mockup/css/meet-kheelu.css:19-28
-   (.mk-offer-split, .mk-offer-col, .mk-offer-photo). Home's close (variant close) is the DS split as delivered. */
+   (.mk-offer-split, .mk-offer-col, .mk-offer-photo). Home's close (variant close) is the DS split as delivered. The share
+   link's row (ks-offer-share) is task 8c.2's (D061), after Gate A: no mockup rule stands for it. */
 
 /* The card, the trust row and the help line in one column; the card fills it. */
 .ks-offer-col {
@@ -23,6 +24,12 @@
   justify-self: center;
   width: 100%;
 }
+/* The share link under the card (task 8c.2, D061): an actions row, as every ghost link under a CTA block, --space-6 under
+   the help line (the DS row's own margin). In the column's grid the gap gives --space-4 of it, so both placements read
+   the same. */
+.ks-offer-col > .ks-offer-share {
+  margin-top: calc(var(--space-6) - var(--space-4));
+}
 @media (min-width: 900px) {
   .ks-offer-split {
     grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
@@ -32,7 +39,8 @@
   }
   .ks-offer-col > .kh-offer,
   .ks-offer-col > .kh-trustline,
-  .ks-offer-col > .ks-help {
+  .ks-offer-col > .ks-help,
+  .ks-offer-col > .ks-offer-share {
     width: 100%;
     max-width: calc(var(--space-10) * 3 + var(--space-7)); /* 3 × 128 + 48 = 432 */
   }

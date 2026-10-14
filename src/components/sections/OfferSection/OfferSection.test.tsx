@@ -5,12 +5,20 @@ import { describe, expect, it } from "vitest";
 import { cta } from "@/content/en-IN/cta";
 import { seller } from "@/content/en-IN/seller";
 import { TRUST_FULL, trustItems } from "@/content/en-IN/trust";
-import type { ArtBoardRef, ImageRef } from "@/content/types";
+import type { ArtBoardRef, ImageRef, Offer } from "@/content/types";
 import { buildOffer } from "@/lib/offer/offer";
 import type { SellingContext } from "../CtaBlock/cta-block.types";
-import { CLAIM_FIXES, editsBeforeClaimFixes, KHEELONA_PLUS } from "../../../../test/e2e/support/deviations";
+import {
+  CLAIM_FIXES,
+  editsBeforeClaimFixes,
+  KHEELONA_PLUS,
+  OFFER_ADDITIONS,
+  TEXT_DEVIATIONS,
+  VISUAL_HIDDEN,
+} from "../../../../test/e2e/support/deviations";
+import { findBanned } from "../../../../test/guards/banned-phrases.data";
 import { builtMarkup, canonical, mockupFold, renderedElement, STORE, without } from "../../../../test/support/mockup-compare";
-import { withFacts } from "../../../../test/support/mockup-facts";
+import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../test/support/mockup-facts";
 import { OfferSection } from "./OfferSection";
 import type { OfferSectionConfig } from "./offer-section.types";
 
@@ -55,10 +63,13 @@ const PRODUCT: OfferSectionConfig = {
 };
 
 const MEDIA = ".kh-art, figure.kh-photo";
-/** A page's fold as approved, with the page's accepted changes applied: since task 8b.1 the Kheelona+ line under Home's
- *  card and the product card's perk read D058 item 3's sentence (deviations.md V26, V27; CLAIM_FIXES). */
-const approvedFold = (slug: "home" | "meet-kheelu", fold: string) =>
-  withFacts(withFacts(mockupFold(slug, "main"), editsBeforeClaimFixes(slug)), CLAIM_FIXES[slug].edits).querySelector(fold)!;
+type Slug = "home" | "meet-kheelu";
+/** A page's main with the page's earlier accepted changes applied: since task 8b.1 the Kheelona+ line under Home's card
+ *  and the product card's perk read D058 item 3's sentence (deviations.md V26, V27; CLAIM_FIXES). */
+const claimFixed = (slug: Slug) => withFacts(withFacts(mockupFold(slug, "main"), editsBeforeClaimFixes(slug)), CLAIM_FIXES[slug].edits);
+/** A page's fold as approved, with the page's accepted changes applied, then task 8c.2's: the later price on the card and
+ *  the share link under it (D061; OFFER_ADDITIONS). */
+const approvedFold = (slug: Slug, fold: string) => withFacts(claimFixed(slug), OFFER_ADDITIONS[slug].edits).querySelector(fold)!;
 /* A perk's words are always in a span (OfferCard), so a value-marked perk keeps its span. */
 const KEEP = ".kh-offer__list span";
 
@@ -146,6 +157,152 @@ describe("OfferSection: variants", () => {
 
   it("never moves on arrival: no data-reveal anywhere in the section (the offer card and the price, §11.2)", () => {
     for (const config of [HOME, PRODUCT]) expect(renderToStaticMarkup(<OfferSection {...config} {...context()} />)).not.toContain("data-reveal");
+  });
+});
+
+/* Task 8c.2 (D061 item 3): the later price on both cards while the first-500 price is live, never in full mode, never
+   struck through (PRICE-01, DARK-01). */
+describe("OfferSection: the later price on the card (D061 item 3)", () => {
+  const LATER = "₹4,999 for the first 500 units. ₹7,999 once they are gone.";
+
+  it.each([
+    ["Home", HOME],
+    ["the product page", PRODUCT],
+  ] as const)("%s, token mode: a plain line under the amount, in the card's prices row", (_name, config) => {
+    const prices = renderedElement(<OfferSection {...config} {...context(TOKEN)} />).querySelector(".kh-offer__prices")!;
+    const later = prices.querySelectorAll(".ks-offer__later");
+    expect(later).toHaveLength(1);
+    expect(later[0].textContent).toBe(LATER);
+    expect(later[0].getAttribute("class")).toBe("kh-body-s ks-offer__later");
+    expect(prices.lastElementChild).toBe(later[0]);
+  });
+
+  it.each([
+    ["Home", HOME],
+    ["the product page", PRODUCT],
+  ] as const)("%s, full mode: no later price anywhere (the later price is the price)", (_name, config) => {
+    const full = renderedElement(<OfferSection {...config} {...context(FULL)} />);
+    expect(full.querySelector(".ks-offer__later")).toBeNull();
+    expect(full.textContent).not.toMatch(/first 500|once they are gone/);
+  });
+
+  it("never strikes a price through, never counts units, never says save, in either mode", () => {
+    for (const offer of [TOKEN, FULL]) {
+      for (const config of [HOME, PRODUCT]) {
+        const section = renderedElement(<OfferSection {...config} {...context(offer)} />);
+        expect(section.querySelectorAll("s, del, strike, .kh-offer__was, .kh-offer__count, .kh-offer__bar, .kh-sticker")).toHaveLength(0);
+        expect(section.textContent).not.toMatch(/\bsave\b|\bleft at this price\b|\bunits left\b/i);
+      }
+    }
+  });
+});
+
+/* Task 8c.2 (D061; the main session's ruling on the share link): "Know a parent who needs this? Share Kheelu on WhatsApp"
+   under both cards, last in the offer's column, through Button as a ghost link (the DS link style, never WhatsApp green:
+   D050 keeps that colour for the bubble), tracked `share-whatsapp`. */
+describe("OfferSection: the share link under the card", () => {
+  const shareOf = (config: OfferSectionConfig, offer = TOKEN) => {
+    const section = renderedElement(<OfferSection {...config} {...context(offer)} />);
+    const links = section.querySelectorAll('[data-ph-capture-attribute-cta="share-whatsapp"]');
+    expect(links).toHaveLength(1);
+    return { section, link: links[0] as HTMLAnchorElement };
+  };
+
+  it.each([
+    ["Home", HOME],
+    ["the product page", PRODUCT],
+  ] as const)("%s: one ghost link with the live site's words, opening WhatsApp with the offer's message", (_name, config) => {
+    const { link } = shareOf(config);
+    expect(link.tagName).toBe("A");
+    expect(link.getAttribute("class")).toBe("kh-btn kh-btn--ghost");
+    expect(link.textContent).toBe("Know a parent who needs this? Share Kheelu on WhatsApp");
+    expect(link.getAttribute("href")).toBe(TOKEN.share?.href);
+    expect(link.getAttribute("href")).toMatch(/^https:\/\/wa\.me\/\?text=/);
+  });
+
+  it.each([
+    ["Home", HOME],
+    ["the product page", PRODUCT],
+  ] as const)("%s: sits last in the offer's column, after the help line, in an actions row of its own", (_name, config) => {
+    const { section, link } = shareOf(config);
+    const row = link.parentElement!;
+    expect(row.getAttribute("class")).toBe("kh-section__actions ks-offer-share");
+    expect(row.children).toHaveLength(1);
+    const column = section.querySelector(".kh-offer")!.parentElement!;
+    expect(row.parentElement).toBe(column);
+    expect(column.lastElementChild).toBe(row);
+    expect(row.previousElementSibling?.classList.contains("ks-help")).toBe(true);
+  });
+
+  it("is never a chilli button, never the bubble's green, and leaves the card's button the section's one chilli button", () => {
+    for (const config of [HOME, PRODUCT]) {
+      const { section, link } = shareOf(config);
+      expect(link.className).not.toMatch(/kh-btn--cta|kh-btn--primary|ks-wa/);
+      expect(section.querySelectorAll(".kh-btn--cta")).toHaveLength(1);
+    }
+  });
+
+  it("follows the mode: the full-mode message never names the advance", () => {
+    for (const config of [HOME, PRODUCT]) {
+      const { link } = shareOf(config, FULL);
+      expect(link.getAttribute("href")).toBe(FULL.share?.href);
+      const text = new URL(link.getAttribute("href")!).searchParams.get("text")!;
+      expect(text).toContain("₹7,999 (incl. GST), paid in full when you order.");
+      expect(text).not.toContain("₹499");
+    }
+  });
+
+  it("is left out when an offer has no share copy (a locale without one)", () => {
+    const bare: Offer = { ...TOKEN, share: undefined };
+    for (const config of [HOME, PRODUCT]) {
+      expect(renderedElement(<OfferSection {...config} {...context(bare)} />).querySelector(".ks-offer-share")).toBeNull();
+    }
+  });
+});
+
+/* The two lines as a parity deviation (deviations.ts OFFER_ADDITIONS; the rows the main session files for task 8c.2):
+   on each page the rule accepts exactly the four sentences the edits add and excuses none, and the pixels hide exactly
+   the two added blocks, on the build's side. */
+describe.each(["home", "meet-kheelu"] as const)("%s: task 8c.2's offer additions as a parity deviation", (slug) => {
+  const additions = OFFER_ADDITIONS[slug];
+  const base = claimFixed(slug);
+
+  it("adds exactly the later price's two sentences and the share link's two, and takes none away", () => {
+    expect(factSentences(base, additions.edits)).toEqual({ missing: [], extra: [...additions.build] });
+    expect(additions.build).toEqual([
+      "₹4,999 for the first 500 units.",
+      "₹7,999 once they are gone.",
+      "Know a parent who needs this?",
+      "Share Kheelu on WhatsApp",
+    ]);
+  });
+
+  it("adds nothing the banned-phrases list refuses (claims, offer terms, spelling)", () => {
+    expect(findBanned(additions.build.join("\n"))).toEqual([]);
+  });
+
+  it("is one text rule of the page, before D058's claim fixes (still the last), accepting exactly those sentences", () => {
+    const rules = TEXT_DEVIATIONS[slug] ?? [];
+    const own = rules.filter((r) => r.approvedBy === additions.approvedBy);
+    expect(own).toHaveLength(1);
+    expect(rules[rules.length - 1].approvedBy).toBe(CLAIM_FIXES[slug].approvedBy);
+    expect(ruleReach(base, additions.edits, own[0])).toEqual({ excused: [], accepted: [...additions.build] });
+    expect(own[0].jsOff).toBeUndefined();
+  });
+
+  it("hides for the pixels the two added blocks on the build's side, each found once", () => {
+    expect(hiddenProblems(base, additions)).toEqual([]);
+    const rows = (VISUAL_HIDDEN[slug] ?? []).filter((r) => r.approvedBy === additions.approvedBy);
+    expect(rows.map((r) => [r.side, r.selector])).toEqual([
+      ["build", ".ks-offer__later"],
+      ["build", ".ks-offer-share"],
+    ]);
+  });
+
+  it("finds each hidden block once in the section as it renders (token mode)", () => {
+    const config = slug === "home" ? HOME : PRODUCT;
+    const section = renderedElement(<OfferSection {...config} {...context()} />);
+    for (const selector of additions.hidden.build) expect(section.querySelectorAll(selector), selector).toHaveLength(1);
   });
 });
 

@@ -11,7 +11,8 @@ import { buildOffer } from "@/lib/offer/offer";
 import { OfferSection } from "./OfferSection";
 
 /* OfferSection (task 3.2): Home's close (home.html fold 9) and the product page's offer (meet-kheelu.html fold 3),
-   from the real content, in both offer modes. */
+   from the real content, in both offer modes. Since task 8c.2 (D061) the token-mode card shows the later price, and every
+   story ends with the share link under the card (its message follows the mode). */
 
 const meta: Meta<typeof OfferSection> = {
   title: "Sections/OfferSection",
@@ -49,10 +50,10 @@ const meta: Meta<typeof OfferSection> = {
 export default meta;
 type Story = StoryObj<typeof OfferSection>;
 
-/** `close`: Home's close, token mode (the split shows). */
+/** `close`: Home's close, token mode (the later price and the split show; the share link under the card). */
 export const HomeClose: Story = {};
 
-/** `close` in full mode: no split, the full price and sentence (G-08). */
+/** `close` in full mode: no later price, no split, the full price and sentence (G-08); the share link's full-mode message. */
 export const HomeCloseFullMode: Story = { args: { offer: buildOffer("full") } };
 
 /** `photo`: the product page's offer fold, the card beside the square photo. */
