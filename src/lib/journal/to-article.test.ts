@@ -389,10 +389,24 @@ describe("the adapter's rows of §8.2, each red on a planted post", () => {
       ((last.content![1] as unknown as { marks: { attrs: { href: string } }[] }).marks[0].attrs as { href: string }).href = href;
       return p;
     };
-    for (const href of ["/products/kheelu", "/store", "https://store.kheelona.com/", "https://betastore.kheelona.com/x"]) {
+    /* The site's paths, and the full address a writer pastes from the browser: either host, any case, `www` too. */
+    const pitches = [
+      "/products/kheelu",
+      "/store",
+      "https://store.kheelona.com/",
+      "https://betastore.kheelona.com/x",
+      "https://kheelona.com/products/kheelu",
+      "https://www.kheelona.com/products/kheelu",
+      "https://betawebsite.kheelona.com/products/kheelu",
+      "https://Store.kheelona.com/",
+      "https://KHEELONA.com/store?from=guide",
+    ];
+    for (const href of pitches) {
       expect(refused(linking(href)), href).toThrow(`post "kind-talking": a guide on the talking topic never links "${href}" (no pitch, B5) (rule 18)`);
     }
-    expect(refused(linking("/stories#talking"))).not.toThrow();
+    for (const href of ["/stories#talking", "https://kheelona.com/stories", "https://kheelona.com/productsheet", "https://example.org/products/x"]) {
+      expect(refused(linking(href)), href).not.toThrow();
+    }
 
     const bare = post("kind-talking");
     bare.photo = null;

@@ -111,11 +111,24 @@ export function uploadCardSize(width: number, height: number): { width: number; 
 
 export const isWide = (width: number, height: number): boolean => width / height >= WIDE_RATIO;
 
-/** A link a guide on a topic without a pitch never carries: a product page or the store, on either host (B5). */
+const PITCH_PATH = /^\/(products|store)(\/|$|[?#])/;
+const STORE_HOSTS: readonly string[] = [HOSTS.production.store, HOSTS.beta.store];
+const MARKETING_HOSTS: readonly string[] = [HOSTS.production.marketing, `www.${HOSTS.production.marketing}`, HOSTS.beta.marketing];
+
+/** A link a guide on a topic without a pitch never carries: a product page or the store, as a site path or as the full
+ *  address a writer pastes from the browser, on either host and in any case (B5). */
 export function isPitchLink(href: string): boolean {
-  if (/^\/(products|store)(\/|$|[?#])/.test(href)) return true;
-  const stores = [HOSTS.production.store, HOSTS.beta.store];
-  return stores.some((host) => href === `https://${host}` || href.startsWith(`https://${host}/`) || href.startsWith(`https://${host}?`));
+  if (PITCH_PATH.test(href)) return true;
+  if (!/^https:\/\//i.test(href)) return false;
+  let url: URL;
+  try {
+    url = new URL(href);
+  } catch {
+    return false;
+  }
+  const host = url.hostname.toLowerCase();
+  if (STORE_HOSTS.includes(host)) return true;
+  return MARKETING_HOSTS.includes(host) && PITCH_PATH.test(url.pathname);
 }
 
 /** The slugs a plain `/stories/<slug>` redirect answers, on the apex (the `www` twins repeat them). */
