@@ -155,7 +155,10 @@ const TRANSITIVE_FLOORS: {
       "sole consumer is SVGLoader in the dormant journey geometry), and no override was needed " +
       "because three-stdlib declares ^0.6.9, which 0.6.11 satisfies. A flat floor is correct " +
       "here even though a second copy exists at 0.8.3, because 0.8.3 is numerically above it. " +
-      "A THIRD copy arrived with posthog-js on 2026-09-19 and is exempted below.",
+      "A THIRD copy arrived with posthog-js on 2026-09-19 and is exempted below. " +
+      "2026-10-14, task 6.3: three, @react-three/drei and @types/three were retired, so the 0.6.11 and 0.8.3 " +
+      "copies left the tree; the floor STAYS because `npm ls fflate` is not empty (posthog-js@1.434.2 still " +
+      "brings fflate 0.4.9, the exempted copy), and a new copy arriving anywhere else must still meet it.",
     exempt: [
       {
         path: "node_modules/posthog-js/node_modules/fflate",
