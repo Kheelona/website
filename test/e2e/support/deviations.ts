@@ -7,6 +7,7 @@
  * every deviation they apply, so none is silent.
  */
 import type { Page } from "@playwright/test";
+import { ICON_PATHS, type IconName } from "@/assets/icons.generated";
 import { HOSTS } from "@/config/env";
 import { faqs } from "@/content/en-IN/faqs";
 import { navigation } from "@/content/en-IN/navigation";
@@ -128,6 +129,8 @@ const pageFactsHidden = (slug: PageFactsSlug): VisualHide[] => factsHidden(PAGE_
    `mockup` and `build` are the sentences that differ, for the text pass (src/content/en-IN/pages/parity-deviations.test.ts
    proves them exactly the sentences the edits change). Literal, because Playwright cannot load every content module. */
 
+/** An approved element ruled off whole. */
+const cut = (at: string, was: string): FactEdit => ({ at, was, now: null });
 /** An approved element whose words change in one place: its words with `from` swapped for `to` (plain text only). */
 const swap = (at: string, was: string, from: string, to: string): FactEdit => {
   if (!was.includes(from)) throw new Error(`"${from}" is not in "${was}"`);
@@ -291,6 +294,864 @@ export const COPY_FIXES = {
 export type CopyFixesSlug = keyof typeof COPY_FIXES;
 const COPY_FIXES_WHOSE = "task 7.1b's copy fixes";
 
+/* Task 8b.1's claim fixes (wiki/qa/deviations.md V26-V36): the founder's D058 (2026-10-14) has the site follow the live
+   team's code check of 12 October (origin/main c630a49, #19; dd04e6d, #18): one-tap delete, "servers in India", the
+   closed library, the age-graded safety layer, topic controls, quiet hours, the new-word count, the weekly report and
+   "about a minute" of quiet come off or take the code-checked words, the parent app's sections come onto /privacy and
+   /terms, and Kheelona+ reads D058 item 3's sentence. The copy pages (wiki/site/pages/*.md, "Changes after approval
+   (task 8b.1)") carry every changed line, passed by the CMO's review (wiki/qa/cmo-review-claims-8b.1-2026-10-14.md);
+   the founder signs them at Gate B (D015), the legal pages with D029's sign-off. In page-facts.ts's form, applied after a
+   page's earlier rules (its page facts, then task 7.1b's copy fixes: editsBeforeClaimFixes): `edits` turn that mockup
+   into the build, and `mockup` and `build` are the sentences the edits change, for the text pass (each page's
+   parity-deviations unit test proves them exactly those). Literal, because Playwright cannot load every content module;
+   the content modules' tests hold each literal to the module. */
+
+/** The DS icon as the mockups print it inline (mockup/build.mjs), for an item the fixes add. */
+const icon = (name: IconName) =>
+  `<svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="${ICON_PATHS[name]}"></path></svg>`;
+/** An approved element whose words are replaced whole (plain text, or inline markup). */
+const rewrite = (at: string, was: string, now: string): FactEdit => ({ at, was, now, inner: true });
+/** An approved element that comes off, found by a heading or label inside it (`scope`, the element that goes). */
+const cutAround = (at: string, was: string, scope: string): FactEdit => ({ at, was, scope, now: null });
+
+/** "About a minute" of quiet: a conversation ends after "~2 minutes of quiet" (D058 item 1; narrows D018). */
+const QUIET = { from: "about a minute of quiet", to: "a couple of minutes of quiet" } as const;
+/** D020 item 6's place comes off the providers line: some processors work outside India (D058 item 6). */
+const IN_INDIA = ", on servers in India";
+/** The retention line (policies.ts RETENTION_LINE) keeps D020's first sentence; its one-tap sentence comes off (D058
+ *  items 1 and 9). */
+export const RETENTION = {
+  mockup: "Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically. You can delete any of them sooner, in one tap.",
+  build: "Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically.",
+} as const;
+/** Kheelona+ (D058 item 3, verbatim): a paid subscription on top of the free parent app, with no feature list. The
+ *  product card's perk took the same sentence (meet-kheelu.md fold 3). */
+export const KHEELONA_PLUS = {
+  mockup: "Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app.",
+  perk: "6 months of Kheelona+ included: stories, poems, jingles, languages and the parent app",
+  build: "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.",
+} as const;
+/** The footer's promise on every page (navigation.ts; home.md "Footer"; deviations.md V36): the live footer's "No web
+ *  browsing." (D058 item 1; Kheelu does use the internet, on home Wi-Fi). Outside <main>, so no text-pass rule, and the
+ *  chrome's footer pixels stay within tolerance at the three widths (chrome.spec.ts); the chrome's unit tests
+ *  (navigation.test.ts, SiteShell.test.tsx, not-found.test.tsx) apply FOOTER_FIX to the mockup's footer. */
+export const FOOTER_PROMISE = {
+  mockup: "Press to talk. No open internet. You read every conversation.",
+  build: "Press to talk. No web browsing. You read every conversation.",
+} as const;
+export const FOOTER_FIX: FactEdit = rewrite(".kh-footer__promise", FOOTER_PROMISE.mockup, FOOTER_PROMISE.build);
+/** Removing a chat hides it on that phone; deleting the account deletes the profile, conversations and recordings
+ *  (D058 item 1; the live /privacy, map §1 P11-P12). */
+const DELETE_ACCOUNT =
+  "Removing a chat in the app hides it on that phone. Deleting your account deletes your child’s profile, conversations and recordings from our servers.";
+/** The age answers' last sentences (Home and the product page's FAQ): the age set at setup, then the mechanism in the live
+ *  team's words (D058 item 1). "At setup" keeps each answer within 60 words (home.md, meet-kheelu.md fold 8). */
+const AGE_SETUP = {
+  from: "When you set it up, you enter your child’s age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.",
+  to: "At setup, you enter your child’s age in the parent app. You can change it later. The AI model gets child-safety rules for that age, with Google’s safety filters on top.",
+} as const;
+/** The listening and providers bodies of the safety block Home and the product page share (D018, D020). */
+const LISTENING =
+  "Its microphone turns on only when someone presses the wake-up button. It stays on while your child talks and switches itself off after about a minute of quiet. A light on Kheelu shows whenever it’s listening. Left alone, it hears nothing and sends nothing.";
+const PROVIDERS =
+  "To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.";
+/** /privacy section 7's one row for the processors D058 item 6 names, as the live /privacy names them. */
+const PROCESSORS = {
+  who: "Google Cloud, Google’s Gemini, Sarvam AI, Twilio, Aiven, Redis, New Relic and Sentry",
+  what: "Run Kheelu and the parent app for us, from Kheelu’s replies to storing conversations, your child’s age and your parent-app account",
+  where: "India, and some of them outside India",
+} as const;
+const CLAIM_FIXES_WHOSE = "task 8b.1's claim fixes (D058)";
+const claimsApproved = (row: string, page: string) => `deviations.md ${row} (founder, D058, 2026-10-14; ${page}; task 8b.1, CMO review passed)`;
+
+export const CLAIM_FIXES = {
+  home: {
+    edits: [
+      /* Fold 5: the app as the code check found it; the mechanism; the retention line's first sentence. */
+      rewrite(
+        ".kh-trust__body",
+        "Every week, the app gives you a report on four thinking skills (words, reasons, stories and questions) and a new-word count.",
+        "Each conversation appears a few minutes after it ends. Search them, read a daily summary, or look back over the week or the month.",
+      ),
+      rewrite(
+        ".kh-trust__body",
+        "You set your child’s age in the app, and the age-graded safety layer follows it.",
+        "You set your child’s age in the app. The AI model that answers your child gets child-safety rules for that age, with Google’s safety filters on top.",
+      ),
+      rewrite(".kh-trust__body", RETENTION.mockup, RETENTION.build),
+      /* Fold 6: a couple of minutes; no place on the providers line; what removing and deleting do; the privacy screen's
+         alt without "delete all chats" (it hides chats on that phone). */
+      swap(".kh-trust__body", LISTENING, QUIET.from, QUIET.to),
+      swap(".kh-trust__body", PROVIDERS, IN_INDIA, ""),
+      rewrite(".kh-trust__body", "In the parent app. Delete any of them in one tap.", `In the parent app. ${DELETE_ACCOUNT.replace("in the app hides", "there hides")}`),
+      {
+        at: 'img[src="assets/app/app-privacy.webp"]',
+        was: "",
+        now: `<img src="assets/app/app-privacy.webp" width="576" height="1209" loading="lazy" alt="The parent app's privacy centre: keep chats for 36 months, a switch to save voice recordings, download your child's data, and links to the privacy policy, terms and the grievance officer.">`,
+      },
+      /* Fold 8, the age answer (after task 7.1b's age-3 sentence). */
+      swap(
+        ".kh-faq__a > p",
+        `Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. ${AGE_THREE_LINE} ${AGE_SETUP.from}`,
+        AGE_SETUP.from,
+        AGE_SETUP.to,
+      ),
+      /* Fold 9, under the offer card. */
+      rewrite("p.kh-body-s", KHEELONA_PLUS.mockup, KHEELONA_PLUS.build),
+    ],
+    mockup: [
+      "Every week, the app gives you a report on four thinking skills (words, reasons, stories and questions) and a new-word count.",
+      "You set your child’s age in the app, and the age-graded safety layer follows it.",
+      "You can delete any of them sooner, in one tap.",
+      "It stays on while your child talks and switches itself off after about a minute of quiet.",
+      "To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India.",
+      "Delete any of them in one tap.",
+      "When you set it up, you enter your child’s age in the parent app, and every reply passes an age-graded safety layer set to that age.",
+      KHEELONA_PLUS.mockup,
+    ],
+    build: [
+      "Each conversation appears a few minutes after it ends.",
+      "Search them, read a daily summary, or look back over the week or the month.",
+      "You set your child’s age in the app.",
+      "The AI model that answers your child gets child-safety rules for that age, with Google’s safety filters on top.",
+      "It stays on while your child talks and switches itself off after a couple of minutes of quiet.",
+      "To understand and answer your child, Kheelu uses trusted speech and AI providers.",
+      "Removing a chat there hides it on that phone.",
+      "Deleting your account deletes your child’s profile, conversations and recordings from our servers.",
+      "At setup, you enter your child’s age in the parent app.",
+      "The AI model gets child-safety rules for that age, with Google’s safety filters on top.",
+      KHEELONA_PLUS.build,
+    ],
+    /* Fold 5's three bullets, fold 6's three bodies and the Kheelona+ line under the offer card (one more line at 360)
+       wrap to other heights; the FAQ answer sits in a closed item. */
+    hidden: {
+      both: [
+        ...[2, 3, 4].map((n) => `section[aria-labelledby="see-title"] .kh-trust__item:nth-child(${n}) .kh-trust__body`),
+        ...[1, 2, 3].map((n) => `section[aria-labelledby="safety-title"] .kh-trust__item:nth-child(${n}) .kh-trust__body`),
+        "#offer + .kh-body-s",
+      ],
+      mockup: [],
+      build: [],
+    },
+    reason:
+      "Home's parent-app bullets, safety block and age answer in the live team's code-checked words, without one-tap delete, the weekly report, the new-word count, the age-graded layer or \"servers in India\"; Kheelona+ as D058 item 3 words it",
+    approvedBy: claimsApproved("V26", "home.md"),
+  },
+  "meet-kheelu": {
+    edits: [
+      /* Fold 3, the offer card's Kheelona+ perk; fold 4, Good to know. */
+      rewrite(".kh-offer__list li > span", KHEELONA_PLUS.perk, KHEELONA_PLUS.build),
+      swap("li > span", "Each conversation starts with a press of the wake-up button. It switches itself off after about a minute of quiet.", QUIET.from, QUIET.to),
+      /* Fold 5: the app as the code check found it; the four-skills chips come off with the weekly report (D058 item 8). */
+      rewrite("#app-title", "Their week, in four thinking skills.", 'Every conversation, <span class="kh-hand">word for word.</span>'),
+      rewrite(
+        ".kh-heading__lead",
+        "Every week, the parent app gives you a report on four thinking skills: words, reasons, stories and questions, plus a new-word count. And you can read every conversation, word for word.",
+        "Each one appears in the parent app a few minutes after it ends. Search them, read a daily summary, or look back over the week or the month.",
+      ),
+      cut(".kh-chips", "Words Reasons Stories Questions"),
+      rewrite("p.kh-body-s", "The parent app is part of Kheelona+, included for 6 months with every Kheelu.", KHEELONA_PLUS.build),
+      /* Fold 6: Home's safety block, and its privacy screen's alt without "delete all chats". */
+      swap(".kh-trust__body", LISTENING, QUIET.from, QUIET.to),
+      swap(".kh-trust__body", PROVIDERS, IN_INDIA, ""),
+      rewrite(".kh-trust__title", "You can read and delete every conversation.", "You can read every conversation."),
+      rewrite(".kh-trust__body", RETENTION.mockup, `${RETENTION.build} ${DELETE_ACCOUNT}`),
+      {
+        at: 'img[src="assets/app/app-privacy.webp"]',
+        was: "",
+        now: `<img loading="lazy" src="assets/app/app-privacy.webp" width="576" height="1209" alt="A real parent-app privacy screen: keep chats for 36 months, save voice recordings and download the child’s data.">`,
+      },
+      /* Fold 7: the Microphone and Parent app rows (after the founder's page facts), the Safety tab's first line. */
+      swap("dd", "On only after a press of the wake-up button; off after about a minute of quiet; a light shows while it’s on", QUIET.from, QUIET.to),
+      rewrite(
+        "dd",
+        "Every conversation, word for word; a weekly report on four thinking skills; a new-word count. On iPhone and Android.",
+        "Every conversation, word for word, a few minutes after it ends; a daily summary; search; a look back over the week or the month. On iPhone and Android.",
+      ),
+      rewrite(
+        "li > span",
+        "Every reply passes an age-graded safety layer, set to the age you enter in the parent app.",
+        "Every reply comes from an AI model given child-safety rules and the age you enter in the parent app, with Google’s safety filters on top.",
+      ),
+      /* Fold 8: FAQ 3's age answer (after task 7.1b's age-3 sentence) and FAQ 7 without "or delete". */
+      swap(
+        ".kh-faq__a > p",
+        `Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. ${AGE_THREE_LINE} ${AGE_SETUP.from}`,
+        AGE_SETUP.from,
+        AGE_SETUP.to,
+      ),
+      swap(
+        ".kh-faq__a > p",
+        "No toy can promise that. Kheelu remembers earlier conversations, so it can pick up where your child stopped instead of starting over. Story mode adds stories, poems and jingles, with no Wi‑Fi needed. You can read or delete any conversation in the parent app.",
+        "You can read or delete any conversation",
+        "You can read any conversation",
+      ),
+    ],
+    mockup: [
+      KHEELONA_PLUS.perk,
+      "It switches itself off after about a minute of quiet.",
+      "Their week, in four thinking skills.",
+      "Every week, the parent app gives you a report on four thinking skills: words, reasons, stories and questions, plus a new-word count.",
+      "And you can read every conversation, word for word.",
+      "Words",
+      "Reasons",
+      "Stories",
+      "Questions",
+      "The parent app is part of Kheelona+, included for 6 months with every Kheelu.",
+      "It stays on while your child talks and switches itself off after about a minute of quiet.",
+      "To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India.",
+      "You can read and delete every conversation.",
+      "You can delete any of them sooner, in one tap.",
+      "On only after a press of the wake-up button; off after about a minute of quiet; a light shows while it’s on",
+      "Every conversation, word for word; a weekly report on four thinking skills; a new-word count.",
+      "Every reply passes an age-graded safety layer, set to the age you enter in the parent app.",
+      "When you set it up, you enter your child’s age in the parent app, and every reply passes an age-graded safety layer set to that age.",
+      "You can read or delete any conversation in the parent app.",
+    ],
+    /* In order of first appearance on the page: the Kheelona+ sentence twice (the perk and fold 5's note), and "At setup,
+       …" where fold 4's Good to know already says it (FAQ 3 says it too now). */
+    build: [
+      KHEELONA_PLUS.build,
+      KHEELONA_PLUS.build,
+      "It switches itself off after a couple of minutes of quiet.",
+      "At setup, you enter your child’s age in the parent app.",
+      "Every conversation, word for word.",
+      "Each one appears in the parent app a few minutes after it ends.",
+      "Search them, read a daily summary, or look back over the week or the month.",
+      "It stays on while your child talks and switches itself off after a couple of minutes of quiet.",
+      "To understand and answer your child, Kheelu uses trusted speech and AI providers.",
+      "You can read every conversation.",
+      "Removing a chat in the app hides it on that phone.",
+      "Deleting your account deletes your child’s profile, conversations and recordings from our servers.",
+      "On only after a press of the wake-up button; off after a couple of minutes of quiet; a light shows while it’s on",
+      "Every conversation, word for word, a few minutes after it ends; a daily summary; search; a look back over the week or the month.",
+      "Every reply comes from an AI model given child-safety rules and the age you enter in the parent app, with Google’s safety filters on top.",
+      "The AI model gets child-safety rules for that age, with Google’s safety filters on top.",
+      "You can read any conversation in the parent app.",
+    ],
+    /* The perk, the Good-to-know line, fold 5's words column (its chips come off), fold 6's three changed items and the
+       Parent app row wrap to other heights; the Safety panel and the answers sit in a hidden tab and closed items. */
+    hidden: {
+      both: [
+        ".kh-offer__list > li:nth-child(2)",
+        "#know-title ~ ul > li:nth-child(3)",
+        "#app .kh-split > div:first-child",
+        ...[1, 2].map((n) => `section[aria-labelledby="safety-title"] .kh-trust__item:nth-child(${n}) .kh-trust__body`),
+        'section[aria-labelledby="safety-title"] .kh-trust__item:nth-child(3) > div',
+        "#panel-specs > dl > div:nth-child(5)",
+      ],
+      mockup: [],
+      build: [],
+    },
+    reason:
+      "the product page's Kheelona+ perk and note as D058 item 3 words them; the parent app as the code check found it (the four-skills report and its chips off until it ships); the safety block, specs, Safety tab and two answers without one-tap delete, the age-graded layer or \"servers in India\"",
+    approvedBy: claimsApproved("V27", "meet-kheelu.md"),
+  },
+  safety: {
+    edits: [
+      /* Fold 2, the four facts: a couple of minutes; no place on the providers line; read a few minutes after, delete by
+         deleting the account. */
+      swap(
+        ".kh-trust__body",
+        "No. Kheelu has no wake word to listen for. Its microphone turns on only when someone presses the wake-up button. It stays on while your child is talking and switches itself off after about a minute of quiet. Until the next press, nothing is heard, recorded or sent. A light on Kheelu shows whenever it’s listening.",
+        QUIET.from,
+        QUIET.to,
+      ),
+      swap(".kh-trust__body", PROVIDERS, IN_INDIA, ""),
+      rewrite(
+        ".kh-trust__body",
+        "Yes, in the parent app, word for word. Delete any of them in one tap.",
+        "Yes, in the parent app, word for word, a few minutes after each one ends. Delete them all by deleting your account.",
+      ),
+      /* Fold 3: the live footer's words (CMO review m12; safety.md question 5). */
+      rewrite(".kh-trust__title", "No open internet.", "No web browsing."),
+      /* Fold 4, the controls: the mechanism; no topics or quiet hours; the Save voice recordings switch after Languages. */
+      rewrite(
+        ".kh-trust__body",
+        "Enter it when you set Kheelu up, and change it later if you need to. The age-graded safety layer follows it.",
+        "Enter it when you set Kheelu up, and change it later if you need to. On every conversation, the AI model that answers your child is given that age and child-safety rules.",
+      ),
+      cutAround(".kh-trust__title", "Topics.", "li"),
+      cutAround(".kh-trust__title", "Quiet hours.", "li"),
+      {
+        at: ".kh-trust__title",
+        was: "Languages.",
+        scope: "li",
+        now: [
+          ["translate", "Languages.", "Pick the ones you speak at home."],
+          ["microphone-slash", "Voice recordings.", "Turn off Save voice recordings, and only the written record of each conversation is kept."],
+        ]
+          .map(([name, title, body]) => `<li class="kh-trust__item"><span class="kh-trust__icon">${icon(name as IconName)}</span><div><h3 class="kh-trust__title">${title}</h3><p class="kh-trust__body">${body}</p></div></li>`)
+          .join(""),
+      },
+      /* Fold 5: the retention line's first sentence, then what removing and deleting do. */
+      {
+        at: "p.kh-body-l",
+        was: RETENTION.mockup,
+        now: `<p class="kh-body-l">${RETENTION.build}</p><p class="kh-body-l">${DELETE_ACCOUNT}</p>`,
+      },
+      /* Fold 7, question 2: how Kheelu answers, in the live team's words. */
+      rewrite(
+        "li",
+        "Replies: its answers come from a curated, closed content library, and every reply passes an age-graded safety layer. When it doesn’t know something, it says so. Before launch, we test it by trying to make it say things it shouldn’t. You can read every conversation.",
+        "<strong>Replies:</strong> its answers are generated by an AI model that is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top. It can’t browse or search the web. When it doesn’t know something, it says so. Before launch, we test it by trying to make it say things it shouldn’t. You can read every conversation.",
+      ),
+    ],
+    mockup: [
+      "It stays on while your child is talking and switches itself off after about a minute of quiet.",
+      "To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India.",
+      "Yes, in the parent app, word for word.",
+      "Delete any of them in one tap.",
+      "No open internet.",
+      "The age-graded safety layer follows it.",
+      "Topics.",
+      "You choose what’s open, and what waits.",
+      "Quiet hours.",
+      "They’re yours to set.",
+      "You can delete any of them sooner, in one tap.",
+      "Replies: its answers come from a curated, closed content library, and every reply passes an age-graded safety layer.",
+    ],
+    build: [
+      "It stays on while your child is talking and switches itself off after a couple of minutes of quiet.",
+      "To understand and answer your child, Kheelu uses trusted speech and AI providers.",
+      "Yes, in the parent app, word for word, a few minutes after each one ends.",
+      "Delete them all by deleting your account.",
+      "No web browsing.",
+      /* Fold 3's body says it already; fold 7's "Replies" line says it too now. */
+      "It can’t browse or search the web.",
+      "On every conversation, the AI model that answers your child is given that age and child-safety rules.",
+      "Voice recordings.",
+      "Turn off Save voice recordings, and only the written record of each conversation is kept.",
+      "Removing a chat in the app hides it on that phone.",
+      "Deleting your account deletes your child’s profile, conversations and recordings from our servers.",
+      "Replies: its answers are generated by an AI model that is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top.",
+    ],
+    /* Fold 2's three bodies and fold 4's list (two items off, one on) change height; fold 5's card gains a paragraph;
+       the "Replies" line sits in a closed item. */
+    hidden: {
+      both: [
+        ...[1, 2, 3].map((n) => `#facts .kh-trust__item:nth-child(${n}) .kh-trust__body`),
+        'section[aria-labelledby="controls-title"] .kh-trust',
+        'section[aria-labelledby="kept-title"] > .kh-body-l:nth-child(2)',
+      ],
+      mockup: [],
+      build: ['section[aria-labelledby="kept-title"] > .kh-body-l:nth-child(3)'],
+    },
+    reason:
+      "the safety facts, controls and retention card in the live team's code-checked words: a couple of minutes, no place on the providers line, no one-tap delete, no topics or quiet hours, the Save voice recordings switch, no closed library or age-graded layer; \"No web browsing.\" as the live footer words it",
+    approvedBy: claimsApproved("V28", "safety.md"),
+  },
+  setup: {
+    edits: [
+      rewrite(
+        "p.kh-body-l",
+        "You enter your child’s age in the parent app. Every reply Kheelu gives passes a safety layer set to that age.",
+        "You enter your child’s age in the parent app. On every conversation, the AI model that answers your child is given that age and child-safety rules, with Google’s safety filters on top.",
+      ),
+      rewrite(
+        "p.kh-body-l",
+        "While you’re in the app, you can also choose your family’s languages, pick which topics are open and set quiet hours.",
+        "While you’re in the app, you can also choose your family’s languages.",
+      ),
+      swap(
+        "p.kh-body-l",
+        "One press starts a conversation. A light on Kheelu shows whenever it’s listening. After about a minute of quiet, it switches itself off, so the next chat starts with another press.",
+        "After about a minute of quiet",
+        "After a couple of minutes of quiet",
+      ),
+      rewrite(
+        "p.kh-body-l",
+        "Later, open the parent app to read every word of it. You can delete any conversation in one tap.",
+        "Later, open the parent app to read every word of it. Removing a chat in the app hides it on that phone. Deleting your account deletes every conversation and recording.",
+      ),
+    ],
+    mockup: [
+      "Every reply Kheelu gives passes a safety layer set to that age.",
+      "While you’re in the app, you can also choose your family’s languages, pick which topics are open and set quiet hours.",
+      "After about a minute of quiet, it switches itself off, so the next chat starts with another press.",
+      "You can delete any conversation in one tap.",
+    ],
+    build: [
+      "On every conversation, the AI model that answers your child is given that age and child-safety rules, with Google’s safety filters on top.",
+      "While you’re in the app, you can also choose your family’s languages.",
+      "After a couple of minutes of quiet, it switches itself off, so the next chat starts with another press.",
+      "Removing a chat in the app hides it on that phone.",
+      "Deleting your account deletes every conversation and recording.",
+    ],
+    hidden: {
+      both: [
+        '[aria-labelledby="age-title"] .kh-body-l:nth-child(1)',
+        '[aria-labelledby="age-title"] .kh-body-l:nth-child(4)',
+        '[aria-labelledby="button-title"] .kh-body-l:nth-child(2)',
+        '[aria-labelledby="talk-title"] .kh-body-l:nth-child(2)',
+      ],
+      mockup: [],
+      build: [],
+    },
+    reason:
+      "setup's age, languages, button and first-conversation lines in the live team's code-checked words: the AI model given the age and child-safety rules, no topics or quiet hours, a couple of minutes, no one-tap delete",
+    approvedBy: claimsApproved("V29", "setup.md"),
+  },
+  team: {
+    edits: [
+      swap(
+        ".kh-card__body",
+        "Aman builds the part your child talks to: how Kheelu listens and replies, and the safety layer every reply passes. He is also our grievance officer.",
+        "the safety layer every reply passes",
+        "the child-safety rules its AI is given",
+      ),
+      rewrite(
+        "p.kh-body-l",
+        "And you hold the keys. You can read every conversation in the parent app and delete any of them in one tap. You set your child’s age, and every reply passes a safety layer set to it.",
+        "And you hold the keys. You can read every conversation in the parent app, and delete them all by deleting your account. You set your child’s age, and Kheelu’s AI is given child-safety rules and that age on every conversation.",
+      ),
+    ],
+    mockup: [
+      "Aman builds the part your child talks to: how Kheelu listens and replies, and the safety layer every reply passes.",
+      "You can read every conversation in the parent app and delete any of them in one tap.",
+      "You set your child’s age, and every reply passes a safety layer set to it.",
+    ],
+    build: [
+      "Aman builds the part your child talks to: how Kheelu listens and replies, and the child-safety rules its AI is given.",
+      "You can read every conversation in the parent app, and delete them all by deleting your account.",
+      "You set your child’s age, and Kheelu’s AI is given child-safety rules and that age on every conversation.",
+    ],
+    hidden: {
+      both: ['[aria-labelledby="founders-title"] .kh-card:nth-child(2) .kh-card__body', '[aria-labelledby="why-title"] .kh-body-l:nth-child(3)'],
+      mockup: [],
+      build: [],
+    },
+    reason: "Aman's job line and fold 4's keys line in the live team's code-checked words: the child-safety rules the AI is given, no one-tap delete",
+    approvedBy: claimsApproved("V30", "team.md"),
+  },
+  "ai-toys-for-kids-in-india": {
+    edits: [
+      swap(
+        ".kh-step__body",
+        "A summary shows you what the maker chose to show. Ask whether you can read every word, and delete it yourself.",
+        "and delete it yourself.",
+        "and how you delete it.",
+      ),
+      swap(
+        ".kh-trust__body",
+        "On only after someone presses the wake-up button. A light shows whenever it’s listening, and it switches itself off after about a minute of quiet.",
+        QUIET.from,
+        QUIET.to,
+      ),
+      rewrite(
+        ".kh-trust__body",
+        "It can’t browse the internet. Its answers come from a curated, closed content library, and when it doesn’t know something, it says so.",
+        "It can’t browse the internet. Its answers are generated by an AI model. The model is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top. When it doesn’t know something, it says so.",
+      ),
+      rewrite(
+        ".kh-trust__body",
+        "Yes, in the parent app, word for word. Delete any of them in one tap.",
+        "Yes, in the parent app, word for word. Removing a chat in the app hides it on that phone. Deleting your account deletes the conversations and recordings from our servers.",
+      ),
+      /* Fold 5, the age answer (after task 7.1b's age-3 sentence). */
+      {
+        at: ".kh-faq__a > p",
+        was: GUIDE_AGE_ANSWER(AGE_THREE_LINE, "safety page"),
+        now: `Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. ${AGE_THREE_LINE} You enter your child’s age in the parent app, and Kheelu’s AI is given child-safety rules and that age on every conversation. What child-safety groups advise is on our <a href="safety.html">safety page</a>.`,
+        inner: true,
+      },
+    ],
+    mockup: [
+      "Ask whether you can read every word, and delete it yourself.",
+      "A light shows whenever it’s listening, and it switches itself off after about a minute of quiet.",
+      "Its answers come from a curated, closed content library, and when it doesn’t know something, it says so.",
+      "Delete any of them in one tap.",
+      "You enter your child’s age in the parent app, and every reply passes an age-graded safety layer set to that age.",
+    ],
+    build: [
+      "Ask whether you can read every word, and how you delete it.",
+      "A light shows whenever it’s listening, and it switches itself off after a couple of minutes of quiet.",
+      "Its answers are generated by an AI model.",
+      "The model is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top.",
+      "When it doesn’t know something, it says so.",
+      "Removing a chat in the app hides it on that phone.",
+      "Deleting your account deletes the conversations and recordings from our servers.",
+      "You enter your child’s age in the parent app, and Kheelu’s AI is given child-safety rules and that age on every conversation.",
+    ],
+    /* Check 4 and the three answers wrap to other heights; the age answer sits in a closed item. */
+    hidden: {
+      both: [
+        'section[aria-labelledby="checks-title"] .kh-step:nth-child(4) .kh-step__body',
+        ...[2, 3, 4].map((n) => `section[aria-labelledby="answers-title"] .kh-trust__item:nth-child(${n}) .kh-trust__body`),
+      ],
+      mockup: [],
+      build: [],
+    },
+    reason:
+      "the buyer's guide's check 4 and Kheelu's answers in the live team's code-checked words: a couple of minutes, replies generated by an AI model given child-safety rules and the age (no closed library, no age-graded layer), no one-tap delete",
+    approvedBy: claimsApproved("V31", "ai-toys-for-kids-in-india.md"),
+  },
+  store: {
+    edits: [
+      rewrite(
+        "p.mk-agree__fine",
+        `${KHEELONA_PLUS.mockup} The price is ₹4,999 (incl. GST) for the first 500 units, and ₹7,999 (incl. GST) once they are gone. Delivery anywhere in India is included, and every order comes with a GST invoice.`,
+        `${KHEELONA_PLUS.build} Kheelu’s price is <span data-src="LAUNCH_PRICE">₹4,999</span> (incl. GST) for the first 500 units, and <span data-src="FULL_PRICE">₹7,999</span> (incl. GST) once they are gone. Delivery anywhere in India is included, and every order comes with a GST invoice.`,
+      ),
+    ],
+    /* The text pass splits a sentence after "incl.", so the price sentence's changed part is its first piece. */
+    mockup: [KHEELONA_PLUS.mockup, "The price is ₹4,999 (incl."],
+    build: [KHEELONA_PLUS.build, "Kheelu’s price is ₹4,999 (incl."],
+    /* The small print wraps to another height on a phone. The build names it by its own block class. */
+    hidden: { both: [], mockup: [".mk-agree__fine"], build: [".ks-agree__fine"] },
+    reason: "the order summary's small print: Kheelona+ as D058 item 3 words it, and Kheelu's price named as Kheelu's (CMO review m10 (a))",
+    approvedBy: claimsApproved("V34", "store.md"),
+  },
+  /* /privacy (after the founder's page facts, V11): the code-checked words, and the parent app's sections of the live
+     /privacy (#18; map §1 P3-P12) in the rebuild's voice. */
+  privacy: {
+    edits: [
+      /* The short version, items 2, 3 and 5. */
+      swap(".kh-trust__body", "A light shows while it listens, and it switches itself off after about a minute of quiet.", QUIET.from, QUIET.to),
+      swap(
+        ".kh-trust__body",
+        "Trusted speech and AI providers, on servers in India, process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI.",
+        `${IN_INDIA},`,
+        "",
+      ),
+      rewrite(".kh-trust__title", "You can read and delete every conversation.", "You can read every conversation."),
+      rewrite(
+        ".kh-trust__body",
+        "Delete any of them in one tap. We delete transcripts automatically after 36 months.",
+        "Deleting your account in the parent app deletes them all, with the recordings. We delete transcripts automatically after 36 months.",
+      ),
+      /* Section 2: the answer-first block (P1), the listening paragraphs, where the voice goes. */
+      swap(
+        "p",
+        "We don’t sell your data. Trusted speech and AI providers, on servers in India, process your child’s voice only to produce Kheelu’s reply; they don’t keep it or train on it, and our contracts say so. Kheelona’s own model learns from conversations unless you turn this off. Conversations stay in your parent app for 36 months, then they’re deleted automatically.",
+        `${IN_INDIA},`,
+        "",
+      ),
+      swap(
+        "p",
+        "Kheelu has no wake word, so it never listens for one. Its microphone turns on only when someone presses the wake-up button. It stays on while your child talks and switches itself off after about a minute of quiet. A light on Kheelu shows whenever it’s listening. Until the next press, nothing is heard, recorded or sent.",
+        QUIET.from,
+        QUIET.to,
+      ),
+      swap(
+        "p",
+        "While the light is on, Kheelu hears whoever is speaking near it, so a brother, sister, friend or grown-up in the room can end up in a conversation too. You can read and delete any conversation in the parent app.",
+        "You can read and delete any conversation",
+        "You can read every conversation",
+      ),
+      {
+        at: "p",
+        was: "In AI mode, Kheelu uses your home Wi‑Fi. To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so. “Trusted” means we chose them carefully; it is not a certification.",
+        now:
+          "<p>In AI mode, Kheelu uses your home Wi‑Fi and sends your child’s voice to Kheelona’s servers. To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so. “Trusted” means we chose them carefully; it is not a certification.</p>" +
+          '<p>Every company that runs Kheelu and the parent app for us is named below, under <a href="#who-else">Everyone who handles your data</a>. Some of them process data outside India.</p>',
+      },
+      /* Section 2, what we keep (after the page facts' fills): Save voice recordings, the mechanism, the daily summary,
+         the child's profile, the account and Kheelu's setup in the live words; then the location paragraph. */
+      rewrite(
+        "li",
+        "Voice recordings: used to train Kheelona’s own model (next section). Besides Kheelu’s reply and that training, we use them for nothing else.",
+        '<strong>Voice recordings:</strong> used to train Kheelona’s own model (<a href="#training">next section</a>). Besides Kheelu’s reply and that training, we use them for nothing else. We keep them unless you turn off Save voice recordings in the parent app’s privacy settings; then we keep the text only.',
+      ),
+      rewrite(
+        "li",
+        "Your child’s age: you enter it in the parent app when you set Kheelu up, and you can change it later. Every reply passes an age-graded safety layer set to that age.",
+        "<strong>Your child’s age:</strong> you enter it in the parent app when you set Kheelu up, and you can change it later. The AI model that writes Kheelu’s replies is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top.",
+      ),
+      rewrite(
+        "li",
+        "The weekly report and the new-word count in the parent app, worked out from your child’s conversations.",
+        "<strong>A daily summary</strong> in the parent app, worked out from your child’s conversations.",
+      ),
+      rewrite(
+        "li",
+        "Your child’s first name: the parent app asks for it.",
+        "<strong>Your child’s profile:</strong> their first name, pronouns and languages, which the parent app asks for so Kheelu can talk with them properly, and a photo only if you add one.",
+      ),
+      {
+        at: "li",
+        was: "Your parent-app account and Kheelu’s setup: your phone number. You sign in with it and a one-time code. The account also keeps Kheelu’s serial or device ID, the name of the Wi‑Fi network Kheelu joins (not its password), and your phone’s model and operating system.",
+        now:
+          "<li><strong>Your parent-app account:</strong> your phone number, which you sign in with using a one-time code, and your name and how you’re related to your child, if you add them.</li>" +
+          "<li><strong>Kheelu’s setup:</strong> its serial or device ID, the name you give it, its battery and Wi‑Fi strength, when it was last online, and your phone’s model and operating system.</li>",
+      },
+      {
+        at: "h3",
+        was: "Your consent.",
+        now:
+          "<p>The parent app collects no location. Your phone asks for location permission while you set Kheelu up. That is only because Android and iPhone require it before an app can read the name of your Wi‑Fi network, and that name stays on your phone. Your account doesn’t keep the Wi‑Fi password. The app has no advertising or analytics tools.</p>" +
+          '<h3 class="kh-subtitle">Your consent.</h3>',
+      },
+      /* Section 7: the named processors in one row (D058 item 6), in place of the providers' and Kheelona's rows; phone
+         rows, then the laptop table. */
+      cutAround("p.kh-label", "Speech and AI providers", "li"),
+      {
+        at: "p.kh-label",
+        was: "Kheelona, on Google Cloud",
+        scope: "li",
+        inner: true,
+        now: `<p class="kh-label">${PROCESSORS.who}</p><p class="kh-body-s"><span class="mk-recips__k">What:</span> ${PROCESSORS.what}</p><p class="kh-body-s"><span class="mk-recips__k">Where:</span> ${PROCESSORS.where}</p>`,
+      },
+      cutAround("th", "Speech and AI providers", "tr"),
+      {
+        at: "th",
+        was: "Kheelona, on Google Cloud",
+        scope: "tr",
+        inner: true,
+        now: `<th scope="row">${PROCESSORS.who}</th><td>${PROCESSORS.what}</td><td>${PROCESSORS.where}</td>`,
+      },
+      /* Section 8: the answer-first block (RT1) and the first three rows. */
+      rewrite(
+        "p",
+        `${RETENTION.mockup} The speech and AI providers that help Kheelu reply keep none of it.`,
+        `${RETENTION.build} You can read every one of them there, word for word. If you delete your account in the parent app, we delete them sooner, with the voice recordings.`,
+      ),
+      rewrite(
+        "li",
+        "Conversation transcripts: 36 months, then deleted automatically, unless you delete them sooner.",
+        "<strong>Conversation transcripts:</strong> 36 months, then deleted automatically, unless you delete your account sooner.",
+      ),
+      rewrite(
+        "li",
+        "Voice recordings: 36 months, the same as transcripts.",
+        "<strong>Voice recordings:</strong> 36 months, the same as transcripts. With Save voice recordings off, we keep the text only.",
+      ),
+      rewrite(
+        "li",
+        "If you close your parent-app account: we keep your child’s conversations and recordings until their 36 months end.",
+        "<strong>If you delete your parent-app account:</strong> we delete the account, your child’s profile, and their conversations and recordings.",
+      ),
+      /* Section 9: the app's privacy settings, then what removing a chat and deleting the account do. */
+      {
+        at: "h3",
+        was: "Deleting a conversation.",
+        now:
+          '<h3 class="kh-subtitle">In the parent app.</h3><p>In the app’s privacy settings, you can:</p>' +
+          "<ul><li>turn off Save voice recordings, to keep the text of conversations only;</li><li>download your child’s data;</li><li>delete your account.</li></ul>" +
+          '<h3 class="kh-subtitle">Removing a chat, or deleting your account.</h3>',
+      },
+      {
+        at: "p",
+        was: "In the parent app, you can delete any conversation in one tap. It disappears from your app straight away. It is not removed from Kheelu’s memory, or from the data our model trains on.",
+        now:
+          "<p>Removing a chat in the parent app hides it on that phone only. It is not removed from our servers, from Kheelu’s memory, or from the data our model trains on. To delete your child’s conversations, delete your account, or write to us.</p>" +
+          "<p>Deleting your account deletes the account, your child’s profile, and their conversations and voice recordings.</p>",
+      },
+    ],
+    mockup: [
+      "A light shows while it listens, and it switches itself off after about a minute of quiet.",
+      "Trusted speech and AI providers, on servers in India, process your child’s voice only to produce Kheelu’s reply.",
+      "You can read and delete every conversation.",
+      "Delete any of them in one tap.",
+      "Trusted speech and AI providers, on servers in India, process your child’s voice only to produce Kheelu’s reply; they don’t keep it or train on it, and our contracts say so.",
+      "It stays on while your child talks and switches itself off after about a minute of quiet.",
+      "You can read and delete any conversation in the parent app.",
+      "In AI mode, Kheelu uses your home Wi‑Fi.",
+      "To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India.",
+      "Every reply passes an age-graded safety layer set to that age.",
+      "The weekly report and the new-word count in the parent app, worked out from your child’s conversations.",
+      "Your child’s first name: the parent app asks for it.",
+      "Your parent-app account and Kheelu’s setup: your phone number.",
+      "You sign in with it and a one-time code.",
+      "The account also keeps Kheelu’s serial or device ID, the name of the Wi‑Fi network Kheelu joins (not its password), and your phone’s model and operating system.",
+      "Speech and AI providers",
+      "Speech and AI providers",
+      "What: Turn your child’s voice into Kheelu’s reply",
+      "Where: Servers in India",
+      "Kheelona, on Google Cloud",
+      "Kheelona, on Google Cloud",
+      "What: Stores conversations, your child’s age and your parent-app account",
+      "Where: India",
+      "Turn your child’s voice into Kheelu’s reply",
+      "Servers in India",
+      "Stores conversations, your child’s age and your parent-app account",
+      "India",
+      "You can delete any of them sooner, in one tap.",
+      "The speech and AI providers that help Kheelu reply keep none of it.",
+      "Conversation transcripts: 36 months, then deleted automatically, unless you delete them sooner.",
+      "If you close your parent-app account: we keep your child’s conversations and recordings until their 36 months end.",
+      "Deleting a conversation.",
+      "In the parent app, you can delete any conversation in one tap.",
+      "It disappears from your app straight away.",
+      "It is not removed from Kheelu’s memory, or from the data our model trains on.",
+    ],
+    build: [
+      "A light shows while it listens, and it switches itself off after a couple of minutes of quiet.",
+      "Trusted speech and AI providers process your child’s voice only to produce Kheelu’s reply.",
+      "You can read every conversation.",
+      "Deleting your account in the parent app deletes them all, with the recordings.",
+      "Trusted speech and AI providers process your child’s voice only to produce Kheelu’s reply; they don’t keep it or train on it, and our contracts say so.",
+      "It stays on while your child talks and switches itself off after a couple of minutes of quiet.",
+      "You can read every conversation in the parent app.",
+      "In AI mode, Kheelu uses your home Wi‑Fi and sends your child’s voice to Kheelona’s servers.",
+      "To understand and answer your child, Kheelu uses trusted speech and AI providers.",
+      "Every company that runs Kheelu and the parent app for us is named below, under Everyone who handles your data.",
+      "Some of them process data outside India.",
+      "We keep them unless you turn off Save voice recordings in the parent app’s privacy settings; then we keep the text only.",
+      "The AI model that writes Kheelu’s replies is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top.",
+      "A daily summary in the parent app, worked out from your child’s conversations.",
+      "Your child’s profile: their first name, pronouns and languages, which the parent app asks for so Kheelu can talk with them properly, and a photo only if you add one.",
+      "Your parent-app account: your phone number, which you sign in with using a one-time code, and your name and how you’re related to your child, if you add them.",
+      "Kheelu’s setup: its serial or device ID, the name you give it, its battery and Wi‑Fi strength, when it was last online, and your phone’s model and operating system.",
+      "The parent app collects no location.",
+      "Your phone asks for location permission while you set Kheelu up.",
+      "That is only because Android and iPhone require it before an app can read the name of your Wi‑Fi network, and that name stays on your phone.",
+      "Your account doesn’t keep the Wi‑Fi password.",
+      "The app has no advertising or analytics tools.",
+      "Google Cloud, Google’s Gemini, Sarvam AI, Twilio, Aiven, Redis, New Relic and Sentry",
+      "Google Cloud, Google’s Gemini, Sarvam AI, Twilio, Aiven, Redis, New Relic and Sentry",
+      "What: Run Kheelu and the parent app for us, from Kheelu’s replies to storing conversations, your child’s age and your parent-app account",
+      "Where: India, and some of them outside India",
+      "Run Kheelu and the parent app for us, from Kheelu’s replies to storing conversations, your child’s age and your parent-app account",
+      "India, and some of them outside India",
+      "You can read every one of them there, word for word.",
+      "If you delete your account in the parent app, we delete them sooner, with the voice recordings.",
+      "Conversation transcripts: 36 months, then deleted automatically, unless you delete your account sooner.",
+      "With Save voice recordings off, we keep the text only.",
+      "If you delete your parent-app account: we delete the account, your child’s profile, and their conversations and recordings.",
+      "In the parent app.",
+      "In the app’s privacy settings, you can:",
+      "turn off Save voice recordings, to keep the text of conversations only;",
+      "download your child’s data;",
+      "delete your account.",
+      "Removing a chat, or deleting your account.",
+      "Removing a chat in the parent app hides it on that phone only.",
+      "It is not removed from our servers, from Kheelu’s memory, or from the data our model trains on.",
+      "To delete your child’s conversations, delete your account, or write to us.",
+      "Deleting your account deletes the account, your child’s profile, and their conversations and voice recordings.",
+    ],
+    /* Every block whose words change, on both sides; on the build's side alone the blocks it adds (section 2's two new
+       paragraphs; section 9's settings list, its heading and its two paragraphs). Section 7's two lists lose a row.
+       Section 8's second row only gains a sentence, so V11's hide of it serves here; its third row and section 9's first
+       paragraph are V11's hides too. */
+    hidden: {
+      both: [
+        ...[2, 3].map((n) => `section[aria-labelledby="short-title"] .kh-trust__item:nth-child(${n}) .kh-trust__body`),
+        'section[aria-labelledby="short-title"] .kh-trust__item:nth-child(5) .kh-trust__title',
+        'section[aria-labelledby="short-title"] .kh-trust__item:nth-child(5) .kh-trust__body',
+        ...[2, 4, 5, 7].map((n) => `#kheelu > p:nth-child(${n})`),
+        "#kheelu > ul",
+        "#who-else > ul",
+        "#who-else .kh-compare-wrap",
+        "#keep > p:nth-child(2)",
+        "#keep > ul > li:nth-child(1)",
+        "#keep > ul > li:nth-child(3)",
+        "#rights > h3:nth-child(2)",
+        "#rights > p:nth-child(3)",
+      ],
+      mockup: [],
+      build: ["#kheelu > p:nth-child(8)", "#kheelu > p:nth-child(12)", "#rights > ul:nth-child(4)", "#rights > h3:nth-child(5)", "#rights > p:nth-child(6)", "#rights > p:nth-child(7)"],
+    },
+    reason:
+      "/privacy in the live team's code-checked words, with the parent app's sections of the live /privacy (#18): a couple of minutes, the voice to Kheelona's servers and the processors named (some outside India), Save voice recordings, the child's profile, the account and Kheelu's setup, no location, removing a chat against deleting the account, no one-tap delete",
+    approvedBy: claimsApproved("V32", "privacy.md"),
+  },
+  /* /terms (after the founder's page facts, V14, and task 7.1b's fixes, V21): Kheelona+, the mechanism, and the parent
+     app's terms of the live /terms (#18; map §1 T2-T7) in the rebuild's voice. */
+  terms: {
+    edits: [
+      swap(
+        "p",
+        `In the box: the Kheelu plush toy, a charger and a quick-start card. ${KHEELONA_PLUS.mockup}`,
+        KHEELONA_PLUS.mockup,
+        KHEELONA_PLUS.build,
+      ),
+      rewrite(
+        "p",
+        "When you set Kheelu up, you enter your child’s age in the parent app. Every reply passes an age-graded safety layer set to that age. You can change it later.",
+        "When you set Kheelu up, you enter your child’s age in the parent app. You can change it later. The AI model that writes Kheelu’s replies is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top.",
+      ),
+      rewrite(
+        "p",
+        "The parent app is for parents and guardians. The person who sets it up must be 18 or over and looks after the account.",
+        "The parent app is for parents and guardians. The person who sets it up must be 18 or over and looks after the account. You’re responsible for how your child uses Kheelu.",
+      ),
+      {
+        at: "p",
+        was: "In the app, you can read every conversation and delete any of them in one tap. Conversations are deleted automatically after 36 months.",
+        now: [
+          "In the app, you can read every conversation word for word, a few minutes after it ends, with a daily summary, search, and a look back over the week or the month. Conversations are deleted automatically after 36 months.",
+          "The parent app is free. You sign in with your phone number and a one-time code. Keep the code to yourself, and tell us if you think someone else is using your account.",
+          "Conversations with Kheelu need your home Wi‑Fi. Stories and songs you’ve downloaded play without it.",
+          "Don’t try to break into our systems, copy the service, or use the app or Kheelu to harm anyone. If you do, we can close your account.",
+          "You can stop using the app and delete your account at any time, in its privacy settings. That deletes the account, your child’s profile, and their conversations and voice recordings.",
+        ]
+          .map((text) => `<p>${text}</p>`)
+          .join(""),
+      },
+      {
+        at: "p",
+        was: "Kheelu uses AI to understand and answer your child. Its stories and answers come from a curated, closed content library, and every reply passes an age-graded safety layer. We test it before launch by trying to make it say unsafe things, and when it isn’t sure, it says it doesn’t know rather than guess. Even so, an answer can sometimes be wrong. Kheelu doesn’t replace you: stay close, and read its conversations in the parent app.",
+        now: [
+          "Kheelu uses AI to understand and answer your child. The AI model that writes its replies is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top. It cannot browse or search the web.",
+          "We test it before launch by trying to make it say unsafe things, and when it isn’t sure, it says it doesn’t know rather than guess. Even so, an answer can sometimes be wrong, so treat its replies as conversation, not advice. Kheelu doesn’t replace you: stay close, and read its conversations in the parent app.",
+        ]
+          .map((text) => `<p>${text}</p>`)
+          .join(""),
+      },
+    ],
+    mockup: [
+      "Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app.",
+      "Every reply passes an age-graded safety layer set to that age.",
+      "In the app, you can read every conversation and delete any of them in one tap.",
+      "Its stories and answers come from a curated, closed content library, and every reply passes an age-graded safety layer.",
+      "Even so, an answer can sometimes be wrong.",
+    ],
+    build: [
+      "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.",
+      "The AI model that writes Kheelu’s replies is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top.",
+      "You’re responsible for how your child uses Kheelu.",
+      "In the app, you can read every conversation word for word, a few minutes after it ends, with a daily summary, search, and a look back over the week or the month.",
+      "The parent app is free.",
+      "You sign in with your phone number and a one-time code.",
+      "Keep the code to yourself, and tell us if you think someone else is using your account.",
+      "Conversations with Kheelu need your home Wi‑Fi.",
+      "Stories and songs you’ve downloaded play without it.",
+      "Don’t try to break into our systems, copy the service, or use the app or Kheelu to harm anyone.",
+      "If you do, we can close your account.",
+      "You can stop using the app and delete your account at any time, in its privacy settings.",
+      "That deletes the account, your child’s profile, and their conversations and voice recordings.",
+      "The AI model that writes its replies is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top.",
+      "It cannot browse or search the web.",
+      "Even so, an answer can sometimes be wrong, so treat its replies as conversation, not advice.",
+    ],
+    /* Every paragraph whose words change, on both sides, and section 12's second on the build's side alone. Section 10
+       (the parent app) is hidden whole: its first paragraph only gains a sentence, and four paragraphs follow. */
+    hidden: {
+      both: ["#preorder > p:nth-child(3)", "#ages > p:nth-child(3)", "#account", "#toy > p:nth-child(3)"],
+      mockup: [],
+      build: ["#toy > p:nth-child(4)"],
+    },
+    reason:
+      "/terms with Kheelona+ as D058 item 3 words it, the mechanism in the live team's code-checked words (no closed library, no age-graded layer, no one-tap delete), and the parent app's terms of the live /terms (#18)",
+    approvedBy: claimsApproved("V33", "terms.md"),
+  },
+  /* The safe-AI-toy guide prints the retention line from policies.ts, so its one-tap sentence comes off there too; the
+     guide's own words are task 8b.2's (it moves to the dashboard with D058's corrections). */
+  "story-what-to-look-for-in-a-safe-ai-toy": {
+    edits: [
+      rewrite(
+        ".kh-trust__body",
+        `Every conversation. You can read every conversation in the parent app. ${RETENTION.mockup}`,
+        `<strong class="kh-label">Every conversation.</strong> You can read every conversation in the parent app. ${RETENTION.build}`,
+      ),
+    ],
+    mockup: ["You can delete any of them sooner, in one tap."],
+    build: [],
+    /* The item is a line shorter; its section is labelled otherwise on each side, so the guide's one facts list names it. */
+    hidden: { both: [".kh-trust > .kh-trust__item:nth-child(3) .kh-trust__body"], mockup: [], build: [] },
+    reason: "the retention line policies.ts prints, without its one-tap sentence (D058 items 1 and 9); the guide's other words are task 8b.2's",
+    approvedBy: claimsApproved("V35", "policies.ts RETENTION_LINE"),
+  },
+} as const satisfies Readonly<Record<string, PageFacts>>;
+export type ClaimFixesSlug = keyof typeof CLAIM_FIXES;
+
+/** The edits a page's earlier rules make before task 8b.1's (its page facts, then task 7.1b's copy fixes): the mockup the
+ *  claim fixes start from. */
+export function editsBeforeClaimFixes(slug: string): readonly FactEdit[] {
+  return [...(PAGE_FACTS[slug as PageFactsSlug]?.edits ?? []), ...(COPY_FIXES[slug as CopyFixesSlug]?.edits ?? [])];
+}
+
 /** A route whose own parity runs would compare a state its mockup does not show, with the spec that proves that
  *  state's parity instead. The visual and text parity specs skip the route on the build and print why (SPA 1 and 2). */
 export type ParityElsewhere = {
@@ -365,6 +1226,8 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
       approvedBy: IN_APP_ONLY,
     },
     ...paymentsHidden,
+    /* The order summary's small print (V34, task 8b.1), compared by the text pass. */
+    ...factsHidden(CLAIM_FIXES.store, CLAIM_FIXES_WHOSE),
   ],
   "store-confirmation": paymentsHidden,
   /* The 3-6-9-12 card (V9) is hidden in the approved hub, so its screen-time topic lists the build's five guides in the
@@ -380,10 +1243,16 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     /* The topic's line (V9 as amended in task 7.1b), compared by the text pass. */
     ...factsHidden(COPY_FIXES.stories, COPY_FIXES_WHOSE),
   ],
-  /* The screen-time guide card's line (V18, task 7.1b), compared by the text pass. */
-  home: factsHidden(COPY_FIXES.home, COPY_FIXES_WHOSE),
-  /* The open FAQ answer (V19, task 7.1b), compared by the text pass. */
-  safety: factsHidden(COPY_FIXES.safety, COPY_FIXES_WHOSE),
+  /* The screen-time guide card's line (V18, task 7.1b), then the parent-app bullets and the safety bodies (V26, task 8b.1),
+     compared by the text pass. */
+  home: [...factsHidden(COPY_FIXES.home, COPY_FIXES_WHOSE), ...factsHidden(CLAIM_FIXES.home, CLAIM_FIXES_WHOSE)],
+  /* The open FAQ answer (V19, task 7.1b), then the facts, controls and retention card (V28, task 8b.1), compared by the
+     text pass. */
+  safety: [...factsHidden(COPY_FIXES.safety, COPY_FIXES_WHOSE), ...factsHidden(CLAIM_FIXES.safety, CLAIM_FIXES_WHOSE)],
+  /* Check 4 and Kheelu's three answers (V31, task 8b.1), compared by the text pass. */
+  "ai-toys-for-kids-in-india": factsHidden(CLAIM_FIXES["ai-toys-for-kids-in-india"], CLAIM_FIXES_WHOSE),
+  /* The retention line's last sentence came off (V35, task 8b.1), compared by the text pass. */
+  "story-what-to-look-for-in-a-safe-ai-toy": factsHidden(CLAIM_FIXES["story-what-to-look-for-in-a-safe-ai-toy"], CLAIM_FIXES_WHOSE),
   team: [
     /* What still differs on purpose (V7): the hero lead (CMO M-T1), and the mockup's placeholders that the founder's
        answers resolved (D054 item 20), each with other words or another height on the build's side, so every chunk
@@ -418,6 +1287,8 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
       ".kh-quote__who .kh-avatar",
       "the quote's badge (fold 4): the AS initials in the mockup, Apoorva's live photo in the build (task 7.1a, CMO built-page review A, M10); the same 48 px box, other pixels",
     ),
+    /* Aman's job line and fold 4's keys line (V30, task 8b.1), compared by the text pass. */
+    ...factsHidden(CLAIM_FIXES.team, CLAIM_FIXES_WHOSE),
   ],
   setup: [
     ...(["mockup", "build"] as const).map((side) => ({
@@ -432,11 +1303,15 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...pageFactsHidden("setup"),
     /* Fold 4's age line (V20, task 7.1b), compared by the text pass. */
     ...factsHidden(COPY_FIXES.setup, COPY_FIXES_WHOSE),
+    /* The age, languages, button and first-conversation lines (V29, task 8b.1), compared by the text pass. */
+    ...factsHidden(CLAIM_FIXES.setup, CLAIM_FIXES_WHOSE),
   ],
   "meet-kheelu": [
     ...pageFactsHidden("meet-kheelu"),
     /* The sources line (V17, task 7.1b), compared by the text pass. */
     ...factsHidden(COPY_FIXES["meet-kheelu"], COPY_FIXES_WHOSE),
+    /* The perk, the Good-to-know line, fold 5's words, fold 6's items and the Parent app row (V27, task 8b.1). */
+    ...factsHidden(CLAIM_FIXES["meet-kheelu"], CLAIM_FIXES_WHOSE),
   ],
   /* The Google Analytics block's paragraph and the PostHog block's first one say more in the build (V10), so they wrap
      to more lines and every block below would shift; the pixels compare the page without the two paragraphs on both
@@ -453,10 +1328,13 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
       }));
     }),
     ...pageFactsHidden("privacy"),
+    /* D058's claim fixes and the parent app's sections (V32, task 8b.1), compared by the text pass. */
+    ...factsHidden(CLAIM_FIXES.privacy, CLAIM_FIXES_WHOSE),
   ],
   refund: pageFactsHidden("refund"),
   shipping: pageFactsHidden("shipping"),
-  terms: pageFactsHidden("terms"),
+  /* The founder's page facts (V14), then D058's claim fixes and the parent app's terms (V33, task 8b.1). */
+  terms: [...pageFactsHidden("terms"), ...factsHidden(CLAIM_FIXES.terms, CLAIM_FIXES_WHOSE)],
 };
 
 /* The tap areas (task 7.1a; CMO built-page review A, B1): wherever a help line sits right under a trust line, the build
@@ -540,6 +1418,8 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
       approvedBy: IN_APP_ONLY,
     },
     paymentsMoved,
+    /* The order summary's small print (V34, task 8b.1): CLAIM_FIXES above. */
+    factsRule(CLAIM_FIXES.store),
   ],
   "store-confirmation": [paymentsMoved],
   stories: [
@@ -554,7 +1434,7 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
   ],
   /* The screen-time guide card's line and two FAQ answers (V18, task 7.1b): COPY_FIXES above. The answers sit in closed
      items, which the text pass does not read; Home's unit test holds them. */
-  home: [factsRule(COPY_FIXES.home)],
+  home: [factsRule(COPY_FIXES.home), factsRule(CLAIM_FIXES.home)],
   "meet-kheelu": [
     {
       /* The product details fold without JavaScript (wiki/qa/deviations.md V3): the tab row stays hidden and the three
@@ -583,12 +1463,16 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     pageFacts("meet-kheelu"),
     /* The films heading and the sources line (V17, task 7.1b): COPY_FIXES above. */
     factsRule(COPY_FIXES["meet-kheelu"]),
+    /* D058's claim fixes (V27, task 8b.1): CLAIM_FIXES above. */
+    factsRule(CLAIM_FIXES["meet-kheelu"]),
   ],
   /* The open FAQ answer and the closed one's "At 3:" line (V19, task 7.1b): COPY_FIXES above. */
-  safety: [factsRule(COPY_FIXES.safety)],
+  safety: [factsRule(COPY_FIXES.safety), factsRule(CLAIM_FIXES.safety)],
   /* The age answer's "At 3" sentence (V22, wave 8 merge): COPY_FIXES above. It sits in a closed item, which the text
      pass does not read; the route's unit test holds it. */
-  "ai-toys-for-kids-in-india": [factsRule(COPY_FIXES["ai-toys-for-kids-in-india"])],
+  "ai-toys-for-kids-in-india": [factsRule(COPY_FIXES["ai-toys-for-kids-in-india"]), factsRule(CLAIM_FIXES["ai-toys-for-kids-in-india"])],
+  /* The retention line policies.ts prints (V35, task 8b.1): CLAIM_FIXES above. */
+  "story-what-to-look-for-in-a-safe-ai-toy": [factsRule(CLAIM_FIXES["story-what-to-look-for-in-a-safe-ai-toy"])],
   team: [
     {
       /* CMO fix M-T1 (task 5.7): the hero lead says what Kheelu is, for whom, and the search term (team.ts). */
@@ -614,6 +1498,8 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
       reason: "the initials badges, replaced by the live photos: the founders' (D054 item 20; B24) and the quote's (task 7.1a, CMO M10)",
       approvedBy: TEAM_V7,
     },
+    /* D058's claim fixes (V30, task 8b.1): CLAIM_FIXES above. */
+    factsRule(CLAIM_FIXES.team),
   ],
   setup: [
     {
@@ -627,6 +1513,8 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     pageFacts("setup"),
     /* Fold 4's age-3 line (V20, task 7.1b): COPY_FIXES above. */
     factsRule(COPY_FIXES.setup),
+    /* D058's claim fixes (V29, task 8b.1): CLAIM_FIXES above. */
+    factsRule(CLAIM_FIXES.setup),
   ],
   privacy: [
     {
@@ -638,9 +1526,11 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
       approvedBy: PRIVACY_V10,
     },
     pageFacts("privacy"),
+    /* D058's claim fixes and the parent app's sections (V32, task 8b.1): CLAIM_FIXES above. */
+    factsRule(CLAIM_FIXES.privacy),
   ],
   refund: [pageFacts("refund")],
   shipping: [pageFacts("shipping")],
   /* Section 8's refund timing (V21, task 7.1b): COPY_FIXES above. */
-  terms: [pageFacts("terms"), factsRule(COPY_FIXES.terms)],
+  terms: [pageFacts("terms"), factsRule(COPY_FIXES.terms), factsRule(CLAIM_FIXES.terms)],
 };

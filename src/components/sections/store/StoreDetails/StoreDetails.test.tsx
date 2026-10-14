@@ -11,7 +11,9 @@ import { inAppNote } from "@/content/en-IN/store/in-app-note";
 import { storePage } from "@/content/en-IN/store/store-page";
 import { isSitePath } from "@/lib/links";
 import { buildOffer } from "@/lib/offer/offer";
+import { CLAIM_FIXES } from "../../../../../test/e2e/support/deviations";
 import { mockupDiff, mockupFold, mockupRoute } from "../../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../../test/support/mockup-facts";
 import { PayBeside, StoreDetails } from "./StoreDetails";
 
 /* StoreDetails (task 5.15; components §2; store.md folds 1-5 and 7): the store's two columns, compared element by
@@ -61,9 +63,9 @@ function comparable(source: Element, faq: string): Element {
 
 /** The mockup's two columns as the build must print them: the in-app note built switched off (N7, renders nothing),
  *  the consent box unrequired and its links' live rel (the rendered contract, ADR-013), the delivery head whole
- *  (checkout-presentation.test.tsx). */
+ *  (checkout-presentation.test.tsx), the small print as task 8b.1 words it (D058 item 3; deviations.md V34). */
 function approved(): Element {
-  const el = comparable(mockupFold("store", "div.mk-store"), "section.mk-faq");
+  const el = comparable(withFacts(mockupFold("store", "div.mk-store"), CLAIM_FIXES.store.edits), "section.mk-faq");
   el.querySelector(".mk-inapp")!.remove();
   el.querySelector('input[name="accepted"]')!.removeAttribute("required");
   el.querySelectorAll(".kh-check__text a").forEach((a) => a.setAttribute("rel", "noopener noreferrer"));

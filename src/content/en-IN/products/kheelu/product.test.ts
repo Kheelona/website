@@ -6,7 +6,7 @@ import { KHEELU_LANGUAGES } from "@/config/site";
 import type { IconText, RichTextString } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { PAGE_FACTS } from "../../../../../test/e2e/support/page-facts";
+import { CLAIM_FIXES, editsBeforeClaimFixes } from "../../../../../test/e2e/support/deviations";
 import { ROOT, readRepoFile } from "../../../../../test/e2e/support/repo";
 import { withFacts } from "../../../../../test/support/mockup-facts";
 import { seller } from "../../seller";
@@ -17,13 +17,15 @@ import { product, type SpecRow } from "./product";
  * page facts applied (task 6.7: the parent app's phones filled, D055 item 26; every row and line still
  * waiting on an F4 value hidden on every environment, the box contents kept, D054 item 19), languages
  * with their `lang` codes, the three modes, and the schema fields that never change (Product `@id`,
- * ages 3 to 7). */
+ * ages 3 to 7). Then the founder's D058 (task 8b.1; deviation V27; CLAIM_FIXES["meet-kheelu"]): the
+ * Microphone and Parent app rows and the Safety panel's first line follow the live team's code check. */
 
 const doc = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const approved = doc("meet-kheelu");
-/** The approved page with the founder's page facts applied (test/e2e/support/page-facts.ts). */
-const page = withFacts(approved.querySelector("main")!, PAGE_FACTS["meet-kheelu"].edits);
+/** The approved page with the founder's page facts applied (test/e2e/support/page-facts.ts), and task 7.1b's copy fixes,
+ *  then task 8b.1's claim fixes in a pass of their own (test/e2e/support/deviations.ts). */
+const page = withFacts(withFacts(approved.querySelector("main")!, editsBeforeClaimFixes("meet-kheelu")), CLAIM_FIXES["meet-kheelu"].edits);
 const offer = buildOffer("token");
 const text = (value: RichTextString) => toPlainText(value, offer);
 
@@ -62,7 +64,10 @@ describe("the details panels (product fold 7)", () => {
       "Parent app",
     ]);
     expect(text(product.specs.find((r) => r.term === "Parent app")!.value as string)).toBe(
-      "Every conversation, word for word; a weekly report on four thinking skills; a new-word count. On iPhone and Android.",
+      "Every conversation, word for word, a few minutes after it ends; a daily summary; search; a look back over the week or the month. On iPhone and Android.",
+    );
+    expect(text(product.specs.find((r) => r.term === "Microphone")!.value as string)).toBe(
+      "On only after a press of the wake-up button; off after a couple of minutes of quiet; a light shows while it’s on",
     );
   });
 

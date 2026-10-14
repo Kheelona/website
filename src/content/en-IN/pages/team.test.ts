@@ -7,7 +7,9 @@ import type { SectionEntry, SectionEntryOf, SectionKind } from "@/layouts/sectio
 import { isPlaceholder, placeholderText } from "@/lib/content/placeholder";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
+import { CLAIM_FIXES } from "../../../../test/e2e/support/deviations";
 import { ROOT, readRepoBytes, readRepoFile, tagBytes } from "../../../../test/e2e/support/repo";
+import { withFacts } from "../../../../test/support/mockup-facts";
 import { DEFAULT_OG, organization } from "../organization";
 import { routeFor } from "../routes";
 import { seller } from "../seller";
@@ -33,7 +35,9 @@ const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").tr
 const plain = (copy: Copy) => toPlainText(copy, token);
 
 const mockup = new DOMParser().parseFromString(readRepoFile("mockup/team.html"), "text/html");
-const main = mockup.querySelector("main")!;
+/* With task 8b.1's claim fixes applied (D058; deviations.md V30): Aman's job line and fold 4's keys line in the live team's
+   code-checked words. */
+const main = withFacts(mockup.querySelector("main")!, CLAIM_FIXES.team.edits);
 const fold = (labelledBy: string) => {
   const el = main.querySelector(`[aria-labelledby="${labelledBy}"]`);
   if (!el) throw new Error(`mockup/team.html has no fold labelled by #${labelledBy}`);

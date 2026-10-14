@@ -123,19 +123,21 @@ const MACHINE = [
  */
 const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } & Record<OfferMode, string>> = {
   "llms.txt": {
-    // 2026-10-14: the screen-time topic's lead (CMO reviews A M5, B m1) and Home's FAQ: the refund "reaches you within 7
-    // working days" (D056 item 4) and the age-3 advice in one wording (A M8) (task 7.1b, wave 8 merge). Earlier the same
-    // day: the product's Parent app row ends "On iPhone and Android." (D055 item 26; task 6.7).
+    // 2026-10-14: the live team's code check (D058; task 8b.1, wave 8b merge): the Microphone and Parent app rows, the
+    // safety mechanism, the age answer, the first-week answer and the Kheelona+ perk. Earlier the same day: the
+    // screen-time topic's lead (CMO reviews A M5, B m1), Home's refund and age-3 answers (task 7.1b) and the product's
+    // Parent app row "On iPhone and Android." (D055 item 26; task 6.7).
     date: "2026-10-14",
-    token: "e17e93898329d48c0a1e0ca1683f0ba700dc79f12b9954afa8d405451e30dcaa",
-    full: "bae71668a99c82176f4c66b7412453fd31910e0c1ad3f3417f63bab13d06c230",
+    token: "93b2979fb7856dc6270fe04c0111557b1257e655eeaab0f38471b5c2d7488bb8",
+    full: "42173ef3bb30a870a0f04137f89154fb7a2b980cfb8c667cae4056f6f8d0bd83",
   },
   "pricing.md": {
-    // 2026-10-14: "About Kheelu" prints Home's age answer, now with the age-3 advice in one wording (CMO review A M8;
-    // task 7.1b, wave 8 merge). 2026-10-13: it added the product page's Manufacturer declaration (task 4.5 item 6).
+    // 2026-10-14: the Kheelona+ perk in D058 item 3's words and Home's age answer after the code check (task 8b.1, wave
+    // 8b merge). Earlier the same day: the age-3 advice in one wording (CMO review A M8; task 7.1b). 2026-10-13: it
+    // added the product page's Manufacturer declaration (task 4.5 item 6).
     date: "2026-10-14",
-    token: "01bb7513d8b5cc92ab08ff276b9f5f632cfd526b9151a42cb3703825d38ebd19",
-    full: "44bd457855747141679a8e56fa1a06f56b70a09f3f70c41b9eeecc2b6666d54b",
+    token: "deb48accd5d9db1699eac3aa172d5448b2accae41165cbe52e3b064b213724bc",
+    full: "f90f7ec9298153e34c36dcc38aa96545c61b835006666e5d76f83acec4f06818",
   },
 };
 

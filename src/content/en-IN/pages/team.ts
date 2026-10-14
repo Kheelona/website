@@ -110,7 +110,8 @@ export const teamPage = {
             initials: "AS",
             firstName: "Aman",
             photo: "/team/aman.jpg",
-            body: "Aman builds the part your child talks to: how Kheelu listens and replies, and the safety layer every reply passes. He is also our grievance officer.",
+            /* "The child-safety rules its AI is given": the live team's code-checked mechanism (D058 item 1; team.md fold 3). */
+            body: "Aman builds the part your child talks to: how Kheelu listens and replies, and the child-safety rules its AI is given. He is also our grievance officer.",
             bio: "He studied AI, shipped machine learning in production, and holds 14 patents filed in his own name.",
           }),
           card(kashyap, {
@@ -133,7 +134,8 @@ export const teamPage = {
         copy: [
           "We are parents who build. We watched our own children reach for screens.",
           "Most AI gives children answers. We built a toy that answers, then asks your child a question back, so they do the thinking.",
-          "And you hold the keys. You can read every conversation in the parent app and delete any of them in one tap. You set your child’s age, and every reply passes a safety layer set to it.",
+          /* No one-tap delete, no safety layer: the live team's code-checked words (D058 item 1; team.md fold 4). */
+          "And you hold the keys. You can read every conversation in the parent app, and delete them all by deleting your account. You set your child’s age, and Kheelu’s AI is given child-safety rules and that age on every conversation.",
         ],
         subtitle: "No screen. No camera. It can’t browse the internet.",
         /* Apoorva's live photo in the quote's avatar (task 7.1a; CMO built-page review A, M10): the "AS" initials sat just

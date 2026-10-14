@@ -29,8 +29,10 @@ export const orderSummaryCopy = {
   },
   delivery: { icon: "truck", note: "Pre-orders go out first, in the order they were placed." },
   fine: {
-    /* The cap once on the page, as an offer term, never a count (D041); its words are config's, as in faqs.ts. */
-    token: `${offerCopy.plus} The price is {price:headline} (incl. GST) for the ${CAP_UNITS_TEXT}, and {price:full} (incl. GST) once they are gone. Delivery anywhere in India is included, and every order comes with a GST invoice.`,
+    /* The cap once on the page, as an offer term, never a count (D041); its words are config's, as in faqs.ts. "Kheelu's
+       price" since D058 item 3's Kheelona+ sentence comes first, so the price cannot be read as Kheelona+'s (store.md
+       fold 4; CMO review of task 8b.1, m10 (a)). */
+    token: `${offerCopy.plus} Kheelu’s price is {price:headline} (incl. GST) for the ${CAP_UNITS_TEXT}, and {price:full} (incl. GST) once they are gone. Delivery anywhere in India is included, and every order comes with a GST invoice.`,
     full: `${offerCopy.plus} The ${CAP_UNITS_TEXT} at {price:headline} have been reserved, and this order is at the {price:full} price (incl. GST). Delivery anywhere in India is included, and every order comes with a GST invoice.`,
   },
 } as const satisfies OrderSummaryCopy;

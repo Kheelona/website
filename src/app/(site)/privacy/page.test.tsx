@@ -7,7 +7,7 @@ import type { Offer } from "@/content/types";
 import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
-import { PRIVACY_B11_BUILD, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, PRIVACY_B11_BUILD, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
@@ -35,8 +35,10 @@ const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 
 const mockupDoc = new DOMParser().parseFromString(readRepoFile("mockup/privacy.html"), "text/html");
 const approvedMain = mockupDoc.querySelector("main")!;
-/** The approved page with the founder's page facts applied: what the build must print (task 6.7). */
-const mockupMain = withFacts(approvedMain, PAGE_FACTS.privacy.edits);
+/** The approved page with the founder's page facts applied (task 6.7), then D058's claim fixes and the parent app's
+ *  sections of the live /privacy in a pass of their own (task 8b.1; deviations.ts CLAIM_FIXES.privacy, V32): what the
+ *  build must print. */
+const mockupMain = withFacts(withFacts(approvedMain, PAGE_FACTS.privacy.edits), CLAIM_FIXES.privacy.edits);
 
 /** The approved Google Analytics sentence V10 replaces, and the PostHog sentence V10's new one follows. */
 const GA4_APPROVED = "Counts visits and the steps of a pre-order: starting the form, opening and closing the payment window, paying, and saving your address.";
@@ -105,7 +107,7 @@ describe("/privacy: the rendered page against the approved mockup", () => {
     expect(skeleton(main, OPTIONS)).toBe(skeleton(mockupMain, OPTIONS));
   });
 
-  it("differs from the approved page only by the founder's page facts, every placeholder among them", () => {
+  it("differs from the approved page only by the founder's page facts, every placeholder among them, and D058's claim fixes", () => {
     expect(words(mockupMain)).not.toBe(words(approvedMain));
     expect(approvedMain.querySelectorAll(".mk-placeholder").length).toBeGreaterThan(30);
     expect(mockupMain.querySelectorAll(".mk-placeholder")).toHaveLength(0);

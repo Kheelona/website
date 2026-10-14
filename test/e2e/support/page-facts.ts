@@ -355,7 +355,9 @@ export const PAGE_FACTS = {
         "#training > ul > li:nth-child(6)",
         "#store > p:nth-child(5)",
         "#choices > ul > li:nth-child(2)",
-        ...[1, 2, 3, 4, 5, 6, 7, 8, 10].flatMap((row) => [`#who-else > ul > li:nth-child(${row})`, `#who-else tbody > tr:nth-child(${row})`]),
+        /* Section 7's rows 1-8 and 10 (their regions filled) were hidden here one by one until task 8b.1, when D058 item 6
+           made the providers' and Kheelona's rows one (the build lists nine): deviations.ts CLAIM_FIXES.privacy (V32) hides
+           both lists whole, on both sides. */
         "#keep > ul > li:nth-child(2)",
         "#keep > ul > li:nth-child(3)",
         "#keep > ul > li:nth-child(4)",

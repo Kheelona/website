@@ -19,6 +19,7 @@ import { withoutHiddenRows } from "@/lib/content/placeholder";
 import { cta } from "../../cta";
 import { faqs, pickFaqs } from "../../faqs";
 import { films, filmsStrip } from "../../films";
+import { offerCopy } from "../../offer";
 import { RETENTION_LINE, RETURN_DAYS, RETURN_PICKUP_FREE, WARRANTY_MONTHS } from "../../policies";
 import { seller } from "../../seller";
 import { SAFETY_FACTS, TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "../../trust";
@@ -152,7 +153,7 @@ export const kheeluPage = {
           items: withoutHiddenRows([
             { icon: "wifi-high", text: "AI mode needs your home Wi‑Fi. Story mode and Bluetooth mode work without it." },
             { icon: "wifi-slash", text: "It can’t browse the internet. When it doesn’t know something, it says so." },
-            { icon: "microphone", text: "Each conversation starts with a press of the wake-up button. It switches itself off after about a minute of quiet." },
+            { icon: "microphone", text: "Each conversation starts with a press of the wake-up button. It switches itself off after a couple of minutes of quiet." },
             { icon: "sliders-horizontal", text: "At setup, you enter your child’s age in the parent app." },
             { icon: "battery-charging", text: "It charges with the charger in the box. {ph:F4 battery life per charge and charging time}" },
           ], "text"),
@@ -161,7 +162,9 @@ export const kheeluPage = {
         link: { label: "How setup works", href: "/setup" },
       },
     },
-    /* Fold 5 · The parent app: four thinking skills, two real screens. */
+    /* Fold 5 · The parent app, two real screens: every conversation word for word, as the live team's code check found the
+       app (D058 items 1, 3 and 8; meet-kheelu.md fold 5). The weekly four-skills report and its chips come back when the
+       report ships. */
     {
       kind: "feature-split",
       config: {
@@ -171,11 +174,10 @@ export const kheeluPage = {
         heading: {
           id: "app-title",
           eyebrow: "The parent app",
-          title: "Their week, in four {hand:thinking skills.}",
-          lead: "Every week, the parent app gives you a report on four thinking skills: words, reasons, stories and questions, plus a new-word count. And you can read every conversation, word for word.",
+          title: "Every conversation, {hand:word for word.}",
+          lead: "Each one appears in the parent app a few minutes after it ends. Search them, read a daily summary, or look back over the week or the month.",
         },
-        skills: { label: "The four thinking skills", items: ["Words", "Reasons", "Stories", "Questions"] },
-        note: "The parent app is part of Kheelona+, included for 6 months with every Kheelu.",
+        note: offerCopy.plus,
         screens: {
           images: [
             {
@@ -192,7 +194,8 @@ export const kheeluPage = {
         link: { label: "See what we keep, and for how long", href: "#safety" },
       },
     },
-    /* Fold 6 · Safety you can check, in D020's order, then the CTA block. */
+    /* Fold 6 · Safety you can check, in D020's order, then the CTA block; in the live team's code-checked words (D058
+       items 1 and 6; meet-kheelu.md fold 6), as Home's. */
     {
       kind: "trust-section",
       config: {
@@ -205,21 +208,26 @@ export const kheeluPage = {
           {
             icon: "microphone",
             title: "You’ll always see when it’s listening.",
-            body: "Its microphone turns on only when someone presses the wake-up button. It stays on while your child talks and switches itself off after about a minute of quiet. A light on Kheelu shows whenever it’s listening. Left alone, it hears nothing and sends nothing.",
+            body: "Its microphone turns on only when someone presses the wake-up button. It stays on while your child talks and switches itself off after a couple of minutes of quiet. A light on Kheelu shows whenever it’s listening. Left alone, it hears nothing and sends nothing.",
           },
           {
             icon: "lock-simple",
             title: "How it understands and answers.",
-            body: "To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.",
+            body: "To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.",
           },
-          { icon: "eye", title: "You can read and delete every conversation.", body: RETENTION_LINE },
+          {
+            icon: "eye",
+            title: "You can read every conversation.",
+            body: `${RETENTION_LINE} Removing a chat in the app hides it on that phone. Deleting your account deletes your child’s profile, conversations and recordings from our servers.`,
+          },
           { icon: "hand-heart", title: "We don’t sell your data.", body: "Your child’s data is never used to advertise to them." },
         ],
         screens: {
           images: [
             {
               src: appPrivacy,
-              alt: "A real parent-app privacy screen: keep chats for 36 months, save voice recordings, download the child’s data and delete all chats.",
+              /* Without "delete all chats": the button hides chats on that phone (D058 item 1; meet-kheelu.md question 11). */
+              alt: "A real parent-app privacy screen: keep chats for 36 months, save voice recordings and download the child’s data.",
             },
           ],
           caption: APP_CAPTION,

@@ -7,7 +7,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { TYPED_AMOUNT } from "@/lib/seo/price-lead";
-import { COPY_FIXES } from "../../../../test/e2e/support/deviations";
+import { COPY_FIXES, KHEELONA_PLUS } from "../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { termsFixture } from "../../../../test/fixtures/legal/terms";
 import { offerCopy } from "../offer";
@@ -21,7 +21,9 @@ import { termsPage } from "./terms";
  *   - read in token mode (the mode the mockup shows), the module IS the parity fixture copied from the mockup
  *     (test/fixtures/legal/terms.ts), every string equal, with the founder's page facts applied (task 6.7; D055 items 8,
  *     10 and 11: the date, GST as D024 confirms it, the training switch; item 7 is the template's) and section 8's
- *     refund timing as task 7.1b changed it (D056 item 4; deviation V21), and nothing else;
+ *     refund timing as task 7.1b changed it (D056 item 4; deviation V21), and D058's claim fixes (task 8b.1; deviation V33:
+ *     Kheelona+ as D058 item 3 words it, the mechanism in the live team's words, the parent app's terms of the live /terms),
+ *     and nothing else;
  *   - read in full mode, it is the fixture with exactly the copy page's full-mode variants (terms.md folds 2 and 4, the
  *     two "token mode only" paragraphs of sections 5 and 6) and nothing else changed;
  *   - a draft until the founder approves it (D029); D035's training disclosure and D041's AI-image note;
@@ -66,11 +68,62 @@ const REFUND_TIMING = { approved: COPY_FIXES.terms.mockup[0], now: COPY_FIXES.te
 /** Section 9's age-3 sentence in the site's one wording (the founder's answer, D057 item 3; deviation V21). */
 const AGE_THREE = { approved: COPY_FIXES.terms.mockup[1], now: COPY_FIXES.terms.build[1] } as const;
 
+/** D058's claim fixes, paragraph by paragraph (task 8b.1; terms.md "Changes after approval (task 8b.1)"; deviation V33):
+ *  each approved paragraph and the build's paragraphs in its place. test/e2e/support/deviations.ts CLAIM_FIXES.terms holds
+ *  the same words for the rendered page. */
+const CLAIMS: readonly { readonly part: string; readonly was: string; readonly now: readonly string[] }[] = [
+  {
+    part: "preorder",
+    was: `In the box: the Kheelu plush toy, a charger and a quick-start card. ${KHEELONA_PLUS.mockup}`,
+    now: [`In the box: the Kheelu plush toy, a charger and a quick-start card. ${KHEELONA_PLUS.build}`],
+  },
+  {
+    part: "ages",
+    was: "When you set Kheelu up, you enter your child’s age in the parent app. Every reply passes an age-graded safety layer set to that age. You can change it later.",
+    now: [
+      "When you set Kheelu up, you enter your child’s age in the parent app. You can change it later. The AI model that writes Kheelu’s replies is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top.",
+    ],
+  },
+  {
+    part: "account",
+    was: "The parent app is for parents and guardians. The person who sets it up must be 18 or over and looks after the account.",
+    now: [
+      "The parent app is for parents and guardians. The person who sets it up must be 18 or over and looks after the account. You’re responsible for how your child uses Kheelu.",
+    ],
+  },
+  {
+    part: "account",
+    was: "In the app, you can read every conversation and delete any of them in one tap. Conversations are deleted automatically after 36 months.",
+    now: [
+      "In the app, you can read every conversation word for word, a few minutes after it ends, with a daily summary, search, and a look back over the week or the month. Conversations are deleted automatically after 36 months.",
+      "The parent app is free. You sign in with your phone number and a one-time code. Keep the code to yourself, and tell us if you think someone else is using your account.",
+      "Conversations with Kheelu need your home Wi‑Fi. Stories and songs you’ve downloaded play without it.",
+      "Don’t try to break into our systems, copy the service, or use the app or Kheelu to harm anyone. If you do, we can close your account.",
+      "You can stop using the app and delete your account at any time, in its privacy settings. That deletes the account, your child’s profile, and their conversations and voice recordings.",
+    ],
+  },
+  {
+    part: "toy",
+    was: "Kheelu uses AI to understand and answer your child. Its stories and answers come from a curated, closed content library, and every reply passes an age-graded safety layer. We test it before launch by trying to make it say unsafe things, and when it isn’t sure, it says it doesn’t know rather than guess. Even so, an answer can sometimes be wrong. Kheelu doesn’t replace you: stay close, and read its conversations in the parent app.",
+    now: [
+      "Kheelu uses AI to understand and answer your child. The AI model that writes its replies is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top. It cannot browse or search the web.",
+      "We test it before launch by trying to make it say unsafe things, and when it isn’t sure, it says it doesn’t know rather than guess. Even so, an answer can sometimes be wrong, so treat its replies as conversation, not advice. Kheelu doesn’t replace you: stay close, and read its conversations in the parent app.",
+    ],
+  },
+];
+
 /** The fixture body with the founder's page facts applied: the date (item 8), "Every order gets a GST invoice." alone
  *  and no price breakup (item 10), "with a switch in the parent app" (item 11); section 8's refund timing as task 7.1b
- *  changed it; and section 9's age-3 sentence (D057 item 3). */
+ *  changed it; section 9's age-3 sentence (D057 item 3); and D058's claim fixes (task 8b.1). */
 function withTermsFacts(doc: LegalPage): LegalPage {
-  const parts = doc.parts.map((p) => {
+  const claimed = doc.parts.map((p) => ({
+    ...p,
+    blocks: p.blocks.flatMap((b) => {
+      const claim = CLAIMS.find((c) => c.part === p.id && b.kind === "p" && b.text === c.was);
+      return claim ? claim.now.map((text) => ({ ...b, text })) : [b];
+    }),
+  })) as LegalPart[];
+  const parts = claimed.map((p) => {
     if (p.id === "ages") {
       return {
         ...p,
@@ -168,6 +221,11 @@ describe("the terms page: the approved mockup's words (parity with the fixture c
     }
     expect(JSON.stringify(body(termsFixture))).toContain(TRAINING_SLOT);
     expect(JSON.stringify(FACTS_FIXTURE)).not.toContain(TRAINING_SLOT);
+    // And D058's claim fixes (task 8b.1), each paragraph there to be changed.
+    for (const claim of CLAIMS) {
+      expect(JSON.stringify(body(termsFixture)), claim.was).toContain(JSON.stringify(claim.was));
+      expect(JSON.stringify(FACTS_FIXTURE), claim.was).not.toContain(JSON.stringify(claim.was));
+    }
     // And section 8's refund timing (task 7.1b).
     expect(JSON.stringify(body(termsFixture))).toContain(REFUND_TIMING.approved);
     expect(JSON.stringify(FACTS_FIXTURE)).not.toContain(REFUND_TIMING.approved);

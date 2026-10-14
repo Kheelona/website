@@ -7,6 +7,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { parseRichText, type RichNode } from "@/lib/content/rich-text";
 import { formatDate } from "@/lib/format/date";
 import { buildOffer } from "@/lib/offer/offer";
+import { RETENTION } from "../../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../../test/e2e/support/repo";
 import { type CopyFold, type CopyPage, copyFold, copyLines, copyParagraphs, glanceRow, readCopyPage } from "../../../../../test/support/copy-page";
 import { words } from "../../../../../test/support/mockup-compare";
@@ -186,9 +187,15 @@ describe.each([...SLUGS, ...APPROVED])("the article %s, as its approved copy pag
     expect(norm(image.alt)).toBe(norm(m![2]));
   });
 
-  it("renders the copy page's reading column word for word: answer, body, sources", () => {
-    const expected = norm(columnBlocks(page).map((b) => plainCopy(b.text)).join(" "));
-    expect(norm(words(rendered(slug).column))).toBe(expected);
+  /* Task 8b.1 (D058 items 1 and 9; deviations.md V35): the retention line the guides print from policies.ts lost its
+     one-tap sentence. A copy page that still prints the Gate A line (until task 8b.2a's corrected copy pages are in) is
+     read with that one sentence gone, and nothing else; a corrected copy page is read as it stands. Either way no guide
+     prints the withdrawn sentence. */
+  it("renders the copy page's reading column word for word: answer, body, sources (the retention line as policies.ts prints it)", () => {
+    const copy = norm(columnBlocks(page).map((b) => plainCopy(b.text)).join(" "));
+    const column = norm(words(rendered(slug).column));
+    expect(column).toBe(copy.replaceAll(norm(RETENTION.mockup), norm(RETENTION.build)));
+    expect(column).not.toContain("You can delete any of them sooner, in one tap.");
   });
 
   it("renders the copy page's headings, in order: the answer's question, each H2, each question asked", () => {

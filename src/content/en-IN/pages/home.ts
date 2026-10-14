@@ -201,7 +201,8 @@ export const homePage = {
       },
     },
 
-    /* Fold 5 · What parents see: the parent app beside two real screens (D044, D046). */
+    /* Fold 5 · What parents see: the parent app beside two real screens (D044, D046). The bullets follow the live team's
+       code check (D058 items 1 and 8; home.md fold 5): no weekly report or new-word count until they ship. */
     {
       kind: "feature-split",
       config: {
@@ -213,9 +214,12 @@ export const homePage = {
           { icon: "eye", body: "Read every conversation in the parent app, word for word." },
           {
             icon: "chart-line-up",
-            body: "Every week, the app gives you a report on four thinking skills (words, reasons, stories and questions) and a new-word count.",
+            body: "Each conversation appears a few minutes after it ends. Search them, read a daily summary, or look back over the week or the month.",
           },
-          { icon: "sliders-horizontal", body: "You set your child’s age in the app, and the age-graded safety layer follows it." },
+          {
+            icon: "sliders-horizontal",
+            body: "You set your child’s age in the app. The AI model that answers your child gets child-safety rules for that age, with Google’s safety filters on top.",
+          },
           { icon: "trash", body: RETENTION_LINE },
         ],
         screens: {
@@ -235,7 +239,9 @@ export const homePage = {
       },
     },
 
-    /* Fold 6 · Safety you can check (D020 order). */
+    /* Fold 6 · Safety you can check (D020 order), in the live team's code-checked words (D058 items 1 and 6; home.md
+       fold 6): a couple of minutes of quiet, no place on the providers line, what removing a chat and deleting the
+       account do. */
     {
       kind: "trust-section",
       config: {
@@ -247,21 +253,26 @@ export const homePage = {
           {
             icon: "microphone",
             title: "You’ll always see when it’s listening.",
-            body: "Its microphone turns on only when someone presses the wake-up button. It stays on while your child talks and switches itself off after about a minute of quiet. A light on Kheelu shows whenever it’s listening. Left alone, it hears nothing and sends nothing.",
+            body: "Its microphone turns on only when someone presses the wake-up button. It stays on while your child talks and switches itself off after a couple of minutes of quiet. A light on Kheelu shows whenever it’s listening. Left alone, it hears nothing and sends nothing.",
           },
           {
             icon: "lock-simple",
             title: "How it understands and answers.",
-            body: "To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.",
+            body: "To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.",
           },
-          { icon: "eye", title: "You can read every conversation.", body: "In the parent app. Delete any of them in one tap." },
+          {
+            icon: "eye",
+            title: "You can read every conversation.",
+            body: "In the parent app. Removing a chat there hides it on that phone. Deleting your account deletes your child’s profile, conversations and recordings from our servers.",
+          },
           { icon: "hand-heart", title: "We don’t sell your data.", body: "Your child’s data is never used to advertise to them." },
         ],
         screens: {
           images: [
             {
               src: appPrivacy,
-              alt: "The parent app's privacy centre: keep chats for 36 months, a switch to save voice recordings, download your child's data, delete all chats, and links to the privacy policy, terms and the grievance officer.",
+              /* Without "delete all chats": the button hides chats on that phone (D058 item 1; home.md fold 6). */
+              alt: "The parent app's privacy centre: keep chats for 36 months, a switch to save voice recordings, download your child's data, and links to the privacy policy, terms and the grievance officer.",
             },
           ],
           caption: APP_CAPTION,

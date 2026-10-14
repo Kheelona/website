@@ -16,11 +16,15 @@ import { seller } from "../seller";
  *   it off with a switch in the parent app and what happens to what was already used, in the founder's words (D055
  *   item 12).
  * - **The founder's page facts** (D055 items 7, 8 and 13-24, D054 item 12; task 6.7), each in the place of the
- *   placeholder it fills: "Last updated" is his date; what the parent app keeps; consent; what a one-tap delete does not
- *   reach; how long each thing is kept; the breach line; every recipient's region (D047, `vercel.json`, and each
- *   provider's own published documents, cited in privacy.md section 7). Off the page: the providers' names and any "on
- *   request" line, parent alerts (off in v1, B34), the security-practices detail, the paid orders' period, the other
- *   PostHog events and the complaint reference (the template's, legal/shared.ts).
+ *   placeholder it fills: "Last updated" is his date; consent; how long each thing is kept; the breach line; every
+ *   recipient's region (D047, `vercel.json`, and each provider's own published documents, cited in privacy.md section
+ *   7). Off the page: any "on request" line, parent alerts (off in v1, B34), the security-practices detail, the paid
+ *   orders' period, the other PostHog events and the complaint reference (the template's, legal/shared.ts).
+ * - **The live team's code check** (D058; task 8b.1; privacy.md "Changes after approval (task 8b.1)"): the parent app's
+ *   sections of the live /privacy (#18, map §1 P3-P12) in the rebuild's voice: what the app keeps (the child's profile,
+ *   the account, Kheelu's setup), no location, the Save voice recordings switch, the processors named (some outside
+ *   India; supersedes D055 item 16), removing a chat against deleting the account (supersedes D055 items 17's one-tap
+ *   delete and 18); a couple of minutes of quiet; the mechanism without the age-graded layer; a daily summary.
  * - **Where orders are stored** is one value, below: the Sydney region D047 records, as the founder left the move
  *   question unanswered (D055 item 24); once he says the store is in Mumbai, the main session writes India there
  *   (ADR-009, architecture §15.6).
@@ -70,12 +74,12 @@ export const privacyPage = {
       {
         icon: "microphone",
         title: "Kheelu only listens when someone presses its button.",
-        body: "A light shows while it listens, and it switches itself off after about a minute of quiet.",
+        body: "A light shows while it listens, and it switches itself off after a couple of minutes of quiet.",
       },
       {
         icon: "lock-simple",
         title: "Outside providers only produce the reply.",
-        body: "Trusted speech and AI providers, on servers in India, process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI.",
+        body: "Trusted speech and AI providers process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI.",
       },
       {
         icon: "sliders-horizontal",
@@ -84,8 +88,8 @@ export const privacyPage = {
       },
       {
         icon: "chat-circle-dots",
-        title: "You can read and delete every conversation.",
-        body: `Delete any of them in one tap. We delete transcripts automatically after ${RETENTION_MONTHS} months.`,
+        title: "You can read every conversation.",
+        body: `Deleting your account in the parent app deletes them all, with the recordings. We delete transcripts automatically after ${RETENTION_MONTHS} months.`,
       },
       {
         icon: "chart-line-up",
@@ -129,23 +133,27 @@ export const privacyPage = {
     {
       id: "kheelu",
       title: "Kheelu, the parent app and your child’s voice.",
-      answer: `We don’t sell your data. Trusted speech and AI providers, on servers in India, process your child’s voice only to produce Kheelu’s reply; they don’t keep it or train on it, and our contracts say so. Kheelona’s own model learns from conversations unless you turn this off. Conversations stay in your parent app for ${RETENTION_MONTHS} months, then they’re deleted automatically.`,
+      answer: `We don’t sell your data. Trusted speech and AI providers process your child’s voice only to produce Kheelu’s reply; they don’t keep it or train on it, and our contracts say so. Kheelona’s own model learns from conversations unless you turn this off. Conversations stay in your parent app for ${RETENTION_MONTHS} months, then they’re deleted automatically.`,
       blocks: [
         { kind: "h3", text: "When Kheelu listens." },
         {
           kind: "p",
-          text: "Kheelu has no wake word, so it never listens for one. Its microphone turns on only when someone presses the wake-up button. It stays on while your child talks and switches itself off after about a minute of quiet. A light on Kheelu shows whenever it’s listening. Until the next press, nothing is heard, recorded or sent.",
+          text: "Kheelu has no wake word, so it never listens for one. Its microphone turns on only when someone presses the wake-up button. It stays on while your child talks and switches itself off after a couple of minutes of quiet. A light on Kheelu shows whenever it’s listening. Until the next press, nothing is heard, recorded or sent.",
         },
         {
           kind: "p",
-          text: "While the light is on, Kheelu hears whoever is speaking near it, so a brother, sister, friend or grown-up in the room can end up in a conversation too. You can read and delete any conversation in the parent app.",
+          text: "While the light is on, Kheelu hears whoever is speaking near it, so a brother, sister, friend or grown-up in the room can end up in a conversation too. You can read every conversation in the parent app.",
         },
         { kind: "h3", text: "Where your child’s voice goes." },
         {
           kind: "p",
-          text: "In AI mode, Kheelu uses your home Wi‑Fi. To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so. “Trusted” means we chose them carefully; it is not a certification.",
+          text: "In AI mode, Kheelu uses your home Wi‑Fi and sends your child’s voice to Kheelona’s servers. To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so. “Trusted” means we chose them carefully; it is not a certification.",
         },
-        /* The providers are not named, and the page makes no "on request" line (D055 item 16). */
+        /* The processors are named in section 7, as the live /privacy names them, some outside India (D058 item 6). */
+        {
+          kind: "p",
+          text: "Every company that runs Kheelu and the parent app for us is named below, under [Everyone who handles your data](#who-else). Some of them process data outside India.",
+        },
         { kind: "p", text: "Kheelu cannot browse the internet. It has no camera, so it takes no photos or video." },
         { kind: "h3", text: "What we keep, and why." },
         {
@@ -157,23 +165,36 @@ export const privacyPage = {
             },
             {
               lead: "Voice recordings:",
-              text: "used to train Kheelona’s own model ([next section](#training)). Besides Kheelu’s reply and that training, we use them for nothing else.",
+              /* The Save voice recordings switch (the live /privacy, map §1 P5; D058 item 1). */
+              text: "used to train Kheelona’s own model ([next section](#training)). Besides Kheelu’s reply and that training, we use them for nothing else. We keep them unless you turn off Save voice recordings in the parent app’s privacy settings; then we keep the text only.",
             },
             {
               lead: "Your child’s age:",
-              text: "you enter it in the parent app when you set Kheelu up, and you can change it later. Every reply passes an age-graded safety layer set to that age.",
+              text: "you enter it in the parent app when you set Kheelu up, and you can change it later. The AI model that writes Kheelu’s replies is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top.",
+            },
+            /* The weekly report and the new-word count come off until they ship (D058 item 8). */
+            { lead: "A daily summary", text: "in the parent app, worked out from your child’s conversations." },
+            /* No alerts line: parent alerts are off in v1 (B34, final by D054 item 23). What the app keeps, in the live
+               /privacy's words (map §1 P3, P4, P6; D055 item 14). */
+            {
+              lead: "Your child’s profile:",
+              text: "their first name, pronouns and languages, which the parent app asks for so Kheelu can talk with them properly, and a photo only if you add one.",
             },
             {
-              lead: "The weekly report and the new-word count",
-              text: "in the parent app, worked out from your child’s conversations.",
+              lead: "Your parent-app account:",
+              text: "your phone number, which you sign in with using a one-time code, and your name and how you’re related to your child, if you add them.",
             },
-            /* No alerts line: parent alerts are off in v1 (B34, final by D054 item 23). D055 item 14 below. */
-            { lead: "Your child’s first name:", text: "the parent app asks for it." },
             {
-              lead: "Your parent-app account and Kheelu’s setup:",
-              text: "your phone number. You sign in with it and a one-time code. The account also keeps Kheelu’s serial or device ID, the name of the Wi‑Fi network Kheelu joins (not its password), and your phone’s model and operating system.",
+              lead: "Kheelu’s setup:",
+              text: "its serial or device ID, the name you give it, its battery and Wi‑Fi strength, when it was last online, and your phone’s model and operating system.",
             },
           ],
+        },
+        /* No location, and why the phone asks for it (the live /privacy, map §1 P7, P8; supersedes D055 item 13's Wi-Fi
+           name in the account). */
+        {
+          kind: "p",
+          text: "The parent app collects no location. Your phone asks for location permission while you set Kheelu up. That is only because Android and iPhone require it before an app can read the name of your Wi‑Fi network, and that name stays on your phone. Your account doesn’t keep the Wi‑Fi password. The app has no advertising or analytics tools.",
         },
         { kind: "h3", text: "Your consent." },
         {
@@ -351,8 +372,8 @@ export const privacyPage = {
       ],
     },
     /* Section 7 · Everyone who handles your data: one stacked row each on phones, the table on laptops. Every region is
-     * sourced (D055 items 16 and 24; privacy.md section 7 notes): the providers' servers in India (D020 item 6);
-     * conversations and the parent app with Kheelona on Google Cloud in India (D047); Supabase, ORDER_DATA_LOCATION;
+     * sourced (D055 item 24; privacy.md section 7 notes): the processors that run Kheelu and the parent app named in one
+     * row, India and some outside India (D058 item 6, as the live /privacy names them); Supabase, ORDER_DATA_LOCATION;
      * the store's server code in Mumbai (vercel.json, bom1); Razorpay, Resend, Google, Meta and Ahrefs from each
      * provider's own published documents; PostHog's US cloud. */
     {
@@ -367,11 +388,10 @@ export const privacyPage = {
           headings: { who: "Who", what: "What they do for us", where: "Where" },
           keys: { what: "What:", where: "Where:" },
           rows: [
-            { who: "Speech and AI providers", what: "Turn your child’s voice into Kheelu’s reply", where: "Servers in India" },
             {
-              who: "Kheelona, on Google Cloud",
-              what: "Stores conversations, your child’s age and your parent-app account",
-              where: "India",
+              who: "Google Cloud, Google’s Gemini, Sarvam AI, Twilio, Aiven, Redis, New Relic and Sentry",
+              what: "Run Kheelu and the parent app for us, from Kheelu’s replies to storing conversations, your child’s age and your parent-app account",
+              where: "India, and some of them outside India",
             },
             { who: "Razorpay", what: "Takes your payment", where: "India" },
             { who: "Supabase", what: "Stores your order", where: ORDER_DATA_LOCATION },
@@ -397,20 +417,24 @@ export const privacyPage = {
         },
       ],
     },
-    /* Section 8 · How long we keep things: the answer-first block RT1, the retention line as every page prints it. */
+    /* Section 8 · How long we keep things: the answer-first block RT1, the retention line as every page prints it, then
+     * what deleting the account does (D058 items 1 and 9; supersedes D055 item 18). */
     {
       id: "keep",
       title: "How long we keep things.",
-      answer: `${RETENTION_LINE} The speech and AI providers that help Kheelu reply keep none of it.`,
+      answer: `${RETENTION_LINE} You can read every one of them there, word for word. If you delete your account in the parent app, we delete them sooner, with the voice recordings.`,
       blocks: [
         {
           kind: "list",
           items: [
-            { lead: "Conversation transcripts:", text: `${RETENTION_MONTHS} months, then deleted automatically, unless you delete them sooner.` },
-            { lead: "Voice recordings:", text: `${RETENTION_MONTHS} months, the same as transcripts.` },
             {
-              lead: "If you close your parent-app account:",
-              text: `we keep your child’s conversations and recordings until their ${RETENTION_MONTHS} months end.`,
+              lead: "Conversation transcripts:",
+              text: `${RETENTION_MONTHS} months, then deleted automatically, unless you delete your account sooner.`,
+            },
+            { lead: "Voice recordings:", text: `${RETENTION_MONTHS} months, the same as transcripts. With Save voice recordings off, we keep the text only.` },
+            {
+              lead: "If you delete your parent-app account:",
+              text: "we delete the account, your child’s profile, and their conversations and recordings.",
             },
             { lead: "Orders you’ve paid for:", text: "as long as Indian tax law requires, even after a refund." },
             { lead: "Unpaid orders:", text: "we keep them until you ask us to delete them." },
@@ -422,17 +446,28 @@ export const privacyPage = {
         },
       ],
     },
-    /* Section 9 · Deleting, and your other rights (D017; the request promise extends D032's, a drafter's addition). */
+    /* Section 9 · Deleting, and your other rights (D017 narrowed by D058 item 1; the request promise extends D032's, a
+     * drafter's addition). */
     {
       id: "rights",
       title: "Deleting, and your other rights.",
       blocks: [
-        { kind: "h3", text: "Deleting a conversation." },
+        /* The app's privacy settings, in the live /privacy's words (map §1 P10). "Save voice recordings" is the app's own
+           label; the copy page sets it bold, and content has no bold inside a line. */
+        { kind: "h3", text: "In the parent app." },
+        { kind: "p", text: "In the app’s privacy settings, you can:" },
+        {
+          kind: "list",
+          items: ["turn off Save voice recordings, to keep the text of conversations only;", "download your child’s data;", "delete your account."],
+        },
+        /* No one-tap delete (map §1 P11-P12): removing a chat hides it on that phone, with D055 item 17's limit said
+           plainly; deleting the account deletes. No line on backups. */
+        { kind: "h3", text: "Removing a chat, or deleting your account." },
         {
           kind: "p",
-          /* What a one-tap delete does not reach, said plainly (D055 item 17); no line on servers or backups. */
-          text: "In the parent app, you can delete any conversation in one tap. It disappears from your app straight away. It is not removed from Kheelu’s memory, or from the data our model trains on.",
+          text: "Removing a chat in the parent app hides it on that phone only. It is not removed from our servers, from Kheelu’s memory, or from the data our model trains on. To delete your child’s conversations, delete your account, or write to us.",
         },
+        { kind: "p", text: "Deleting your account deletes the account, your child’s profile, and their conversations and voice recordings." },
         { kind: "h3", text: "Asking us." },
         { kind: "p", text: "You can ask us to:" },
         {

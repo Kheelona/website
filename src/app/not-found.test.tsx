@@ -9,7 +9,9 @@ import { buildOffer } from "@/lib/offer/offer";
 import { freshBuiltPages } from "../../test/e2e/support/page-checks";
 import { ROOT } from "../../test/e2e/support/repo";
 import { isStillLegacy } from "../../test/guards/legacy-paths";
+import { FOOTER_FIX } from "../../test/e2e/support/deviations";
 import { mockupDiff, mockupPage } from "../../test/support/mockup-compare";
+import { withFacts } from "../../test/support/mockup-facts";
 import NotFound, { metadata } from "./not-found";
 
 /* The root not-found page (task 5.10; structure §3.1, §5; architecture §9.4): every unmatched URL of the marketing site
@@ -65,7 +67,9 @@ describe("not-found: the page equals the approved mockup (mockup/404.html)", () 
     ["menu drawer", "dialog.kh-drawer", "dialog.kh-drawer"],
   ])("chrome: %s", async (_name, mockupSelector, builtSelector) => {
     const { container } = await page();
-    const ref = mockup.querySelector(mockupSelector);
+    const approved = mockup.querySelector(mockupSelector);
+    /* The footer's promise reads "No web browsing." since task 8b.1 (D058 item 1; deviations.ts FOOTER_FIX). */
+    const ref = approved && mockupSelector === "footer.kh-footer" ? withFacts(approved, [FOOTER_FIX]) : approved;
     const built = container.querySelector(builtSelector);
     expect(ref, mockupSelector).not.toBeNull();
     expect(built, builtSelector).not.toBeNull();

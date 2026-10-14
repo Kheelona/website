@@ -1,9 +1,10 @@
 ---
 title: "Contact (/contact): page copy, Gate A mockup draft"
 type: page-copy
-updated: 2026-10-11
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
+  - ../../decisions/D058-follow-the-live-code-check-2026-10-14.md and ../../qa/live-main-reconciliation-2026-10-14.md (§2; task 8b.1 check, no copy change)
   - ../strategy.md (§2 journey row 6, §3.2 help line, §3.3 CTA placement, §4.4 footer and grievance link, §5 /contact row)
   - home.md (shared CTA block, price sentence, trust line; footer copy)
   - ../../product/facts.md (support channel 217-230, seller of record 232-240)
@@ -262,3 +263,16 @@ None for this page. One dependency, not a choice: the number must take calls bef
 
 - `ContactPage` JSON-LD as live (`wt:…/contact/page.tsx:69-79`), pointing at the Organization node, which carries the number and email.
 - The page never names the unrelated "Kheelona India" ([D039](../../decisions/D039-repo-and-setup-answers.md)); no Kheelona+ line (D041).
+
+## Changes after approval (task 8b.1)
+
+None to the copy. Task 8b.1 (2026-10-14) checked every fold against the claims
+[D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) withdraws ([reconciliation map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded)).
+None is on this page:
+
+- The grievance block stays Aman Soni, Co-Founder and CTO, aman@kheelona.com (D058 item 4).
+- The "Safety and privacy" card promises "what you can delete, in plain words". That stays true: `/privacy` now says
+  what removing a chat does and what deleting the account deletes (D058 item 1).
+- The page has no Kheelona+ line (D041).
+
+The module (`src/content/en-IN/pages/contact.ts`) needs no change for D058.

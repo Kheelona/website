@@ -23,6 +23,9 @@ sources:
   - "../../qa/cmo-review-page-facts-6.7-2026-10-14.md (round 2: M10, fold 2 item 4 worded as one app; M9, question 5's recommendation)"
   - "../../qa/cmo-review-built-a-2026-10-14.md (M8: one wording for the age-3 advice; task 7.1b)"
   - "../../qa/cmo-review-copy-fixes-7.1b-2026-10-14.md (minor 1 and the section \"M8: the one wording\": the CMO's pick, \"If your child is 3, keep a grown-up nearby.\")"
+  - "../../decisions/D058-follow-the-live-code-check-2026-10-14.md (items 1, 2, 7: the live team's code check of 12 Oct; task 8b.1)"
+  - "../../qa/live-main-reconciliation-2026-10-14.md (§2 the claims #19 withdrew, c630a49; §1 rows P11-P12, #18, dd04e6d), quoted there; origin/main not read directly in task 8b.1 (no shell in that run)"
+  - "../../qa/cmo-review-claims-8b.1-2026-10-14.md (round 2 of task 8b.1: m7 as question 8; no Copy block change)"
 ---
 
 # Setup (`/setup`): page copy
@@ -189,13 +192,13 @@ sources:
 
 > **H2:** Tell the app your child's age.
 >
-> You enter your child's age in the parent app. Every reply Kheelu gives passes a safety layer set to that age.
+> You enter your child's age in the parent app. On every conversation, the AI model that answers your child is given that age and child-safety rules, with Google's safety filters on top.
 >
 > You can change it later. Kheelu picks up the change the next time it's online.
 >
 > Kheelu is made for children aged 3 to 7. If your child is 3, keep a grown-up nearby.
 >
-> While you're in the app, you can also choose your family's languages, pick which topics are open and set quiet hours.
+> While you're in the app, you can also choose your family's languages.
 
 - **H2 accent:** `Hand` on "your child's age".
 - **The age-3 line (task 7.1b, CMO review A M8)** uses the site's one wording, "If your child is 3, keep a grown-up
@@ -203,19 +206,34 @@ sources:
   (minor 1). M8 asks for one sentence on every page that gives this advice; Home's age answer and `/safety` print the
   same sentence. It read "…while they talk." at Gate A.
 - "Kheelu picks up the change the next time it's online" also tells a parent, without a separate warning, that a change made while Kheelu is offline (Story mode, no Wi-Fi) waits for the next connection.
-- **Not used:** daily summary and parent alerts (wait on counsel's DPDP reading, [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) line 120); any claim about how well Kheelu understands a 3-year-old (B4: say nothing).
+- **The safety sentence (task 8b.1, [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1).**
+  "Every reply Kheelu gives passes a safety layer set to that age." is withdrawn with the "age-graded safety layer"
+  wording. The sentence now says what the live team's code check found: the AI model is given the child's age and
+  child-safety rules on every conversation, with Google's safety filters on top (D058's own words). "The AI model that
+  answers your child" is the same phrase `/safety`'s fold 4 uses, so the two pages describe it one way.
+- **The last paragraph (task 8b.1, D058 items 1 and 7).** "…pick which topics are open and set quiet hours" comes
+  off: neither is in the app. "Choose your family's languages" stays as approved (D058 item 7 keeps the rebuild's
+  languages; the live site's "up to two" is not carried over). Nothing replaces the two controls here: the Save voice
+  recordings switch and the account settings are privacy controls, which `/safety` and `/privacy` carry, not day-one
+  setup.
+- **Not used:** the app's report (every conversation word for word, a daily summary, search, the week or the month,
+  [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 8: the product page owns it); parent alerts
+  (none are in the app, [map](../../qa/live-main-reconciliation-2026-10-14.md) line 66); the daily talk-time limit
+  (code-checked, D058 item 1, but its live sentence was not read in task 8b.1: see `/safety` question 8); any claim
+  about how well Kheelu understands a 3-year-old (B4: say nothing).
 - **Image (optional):** none. The app screenshot is in fold 6, where it shows what a parent reads after the first conversation.
 
 **Sources, fold 4**
 
 | Claim | Source |
 |---|---|
-| The parent enters the age in the app; it can be changed | [D036](../../decisions/D036-launch-feature-claims.md) (lines 25-26); [facts, parent app](../../product/facts.md#parent-app) (line 154) |
-| Every reply passes an age-graded safety layer set to that age | [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) (line 115); [D036](../../decisions/D036-launch-feature-claims.md) (#6) |
+| The parent enters the age in the app; it can be changed | [D036](../../decisions/D036-launch-feature-claims.md) (lines 27-28); [facts, parent app](../../product/facts.md#parent-app) (line 154) |
+| On every conversation, the AI model that answers your child is given that age and child-safety rules, with Google's safety filters on top | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1 (lines 27-28: "replies are generated by an AI model given child-safety rules and the child's age on every conversation, with Google's safety filters on top"); D036's narrowing note (line 10); [map](../../qa/live-main-reconciliation-2026-10-14.md) §2 (lines 76 and 83, c630a49) |
 | Kheelu picks up the change the next time it's online | App demo |
 | Ages 3 to 7 | [facts, age](../../product/facts.md#age) (line 83); [age-band review](../../product/age-band-review.md) |
 | A grown-up nearby at 3 | [D041](../../decisions/D041-gate-a-round-1.md) (line 33: "with a grown-up nearby" in age and safety answers); one wording: [CMO review A](../../qa/cmo-review-built-a-2026-10-14.md) M8; the wording itself: [CMO copy review 7.1b](../../qa/cmo-review-copy-fixes-7.1b-2026-10-14.md) minor 1 |
-| Languages, topics, quiet hours in the app | [facts, parent app](../../product/facts.md#parent-app) (lines 150-153: language choice, topic controls, quiet hours; EXTERNAL per D017, lines 160-166) |
+| Languages in the app | [facts, parent app](../../product/facts.md#parent-app) (lines 150-153: language choice; EXTERNAL per D017, lines 160-166); kept as the rebuild has it: [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 7 (line 44) |
+| No topic controls, no quiet hours (both removed) | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1 (line 29); [map](../../qa/live-main-reconciliation-2026-10-14.md) §2 (line 74) |
 
 ---
 
@@ -229,7 +247,7 @@ sources:
 >
 > Kheelu only listens when someone presses its wake-up button. It's the button on Kheelu's back, the one you held during setup.
 >
-> One press starts a conversation. A light on Kheelu shows whenever it's listening. After about a minute of quiet, it switches itself off, so the next chat starts with another press.
+> One press starts a conversation. A light on Kheelu shows whenever it's listening. After a couple of minutes of quiet, it switches itself off, so the next chat starts with another press.
 >
 > *Image:* Kheelu's tummy unit, close up.
 
@@ -239,7 +257,7 @@ sources:
   button on Kheelu's back, the same one held for 3 seconds in step 2. It repeats step 2's words ("the button on
   Kheelu's back") so a parent links the two, and says nothing about the button's look or what holding it does
   outside setup.
-- The first sentence is [D018](../../decisions/D018-wake-up-button.md)'s alternative safety heading, as a sentence. The second paragraph is D018's button and light lines, with "about a minute" as D018 requires. No colour is named for the listening light; no "wake word" phrase at all (A10); nothing about what is or is not recorded once a conversation starts (conversations are kept for parents, [D017](../../decisions/D017-live-behaviour-claims-confirmed.md)).
+- The first sentence is [D018](../../decisions/D018-wake-up-button.md)'s alternative safety heading, as a sentence. The second paragraph is D018's button and light lines, with "a couple of minutes" since task 8b.1 (D018 said "about a minute"; the live team's code check found a conversation "ends after ~2 minutes of quiet", and [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1 narrows D018 to match). No colour is named for the listening light; no "wake word" phrase at all (A10); nothing about what is or is not recorded once a conversation starts (conversations are kept for parents, [D017](../../decisions/D017-live-behaviour-claims-confirmed.md)).
 - This replaces the live step "Teach the hello. Show your child how to wake Kheelu up. One word, one friend…" (`wt:src/lib/setup-steps.ts:10`), which implies a wake word and is banned ([claims §4.1](../../product/claims.md#41-the-retired-microphone-wording) row 20).
 - **Image:** `kheelu-belly-module.png` (DS: "for setup guides and 'how it works'", `assets/Kheelu/README.md:9`). Alt: "Kheelu's tummy unit up close, with its speaker, light ring and buttons." The caption makes no claim about which button is the wake-up button until the placeholder is filled. *Task 6.7:* the placeholder is filled, and the wake-up button is on Kheelu's back, which this front close-up does not show (the DS has no back view, `04-kheelu.md:27`). The alt stays as approved and still names no button as the wake-up button; whether the photo stays beside the sentence is question 5 (the CMO review, M9, now recommends dropping it until a back view exists; the Copy block keeps it until the founder chooses).
 
@@ -247,10 +265,10 @@ sources:
 
 | Claim | Source |
 |---|---|
-| Listens only when someone presses the wake-up button; one press starts a conversation | [D018](../../decisions/D018-wake-up-button.md) (lines 10-12, 24-25, 32-33); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) (line 73) |
+| Listens only when someone presses the wake-up button; one press starts a conversation | [D018](../../decisions/D018-wake-up-button.md) (lines 12-14, 26-27, 34-35); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) (line 73) |
 | The wake-up button is the button on Kheelu's back, the one held during setup | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 25 ("One button on Kheelu's back wakes it and, held for 3 seconds, starts setup") |
-| A light shows whenever it's listening | [D018](../../decisions/D018-wake-up-button.md) (lines 27-28, 34) |
-| Switches itself off after about a minute of quiet; the next conversation needs another press | [D018](../../decisions/D018-wake-up-button.md) (lines 24-27) |
+| A light shows whenever it's listening | [D018](../../decisions/D018-wake-up-button.md) (lines 29-30, 36) |
+| Switches itself off after a couple of minutes of quiet; the next conversation needs another press | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1 (line 29: "a conversation ends after a couple of minutes of quiet"); D018's narrowing note (line 10) and lines 26-30; [map](../../qa/live-main-reconciliation-2026-10-14.md) §2 (lines 64 and 80, c630a49) |
 | Tummy unit with speaker, light ring and buttons | DS `04-kheelu.md:13`; `assets/Kheelu/README.md:9` |
 
 ---
@@ -265,7 +283,7 @@ sources:
 >
 > The first conversation is your child's. Kheelu answers, then asks a question back.
 >
-> Later, open the parent app to read every word of it. You can delete any conversation in one tap.
+> Later, open the parent app to read every word of it. Removing a chat in the app hides it on that phone. Deleting your account deletes every conversation and recording.
 >
 > No Wi-Fi for a while? Story mode's stories, poems and jingles still play. AI mode needs your home Wi-Fi, and Bluetooth mode needs only your paired phone.
 >
@@ -275,16 +293,22 @@ sources:
 - **H2 accent:** `Hand` on "let them talk".
 - **Image:** `mockup/assets/app/app-activity.webp` (the real app, from the founder's demo video, with the child's name replaced by "Aarav" and example activity, [log 2026-10-11 11:35](../../log.md)). The file was not yet in `mockup/assets/app/` when this was written; the builder checks the alt against it. Draft alt: "The parent app's activity screen on a phone, showing example activity for one child." The caption is required: the screen is real, the content is not.
 - **Optional photo** (one DS child, used once on this page): `advik-02-whispering-to-kheelu`. Alt: "A boy in a mustard shirt leaning close to whisper to Kheelu, on a cane chair by a tall window." Keep it out of the same row as the app screenshot, so the illustrative child is never read as the "Aarav" in the app.
-- The modes line answers the most likely day-one question (does it stop working without Wi-Fi?) per mode, never as a blanket "works offline" ([facts, modes](../../product/facts.md#modes-and-connectivity)).
+- The modes line answers the most likely day-one question (does it stop working without Wi-Fi?) per mode, never as a blanket "works offline" ([facts, modes](../../product/facts.md#modes-and-connectivity)). Bluetooth mode stays ([D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 2, the founder's ruling where the live team had left it open).
+- **Deleting (task 8b.1, D058 item 1).** "You can delete any conversation in one tap." is withdrawn: the app has no
+  one-tap delete. The two sentences that replace it are the code-checked facts in D058's words, the first the same
+  sentence `/safety` prints in fold 5, so a parent who removes a chat knows it is only hidden on that phone. "Later,
+  open the parent app to read every word of it." stays word for word ("later" already fits the live team's "a few
+  minutes after it ends").
 
 **Sources, fold 6**
 
 | Claim | Source |
 |---|---|
 | Answers, then asks a question back | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) (line 70) |
-| Read every word; delete any conversation in one tap | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) (line 72); [gate-a open items](../gate-a-open-items.md) B35 |
+| Read every word | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) (line 72) |
+| Removing a chat in the app hides it on that phone; deleting the account deletes every conversation and recording | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1 (lines 25-26); D017's narrowing note (line 10); [map](../../qa/live-main-reconciliation-2026-10-14.md) §1 rows P11-P12 (lines 40-41, dd04e6d) and §2 (line 77, c630a49). One-tap delete withdrawn (was [gate-a open items](../gate-a-open-items.md) B35) |
 | Story mode: stories, poems and jingles, no Wi-Fi needed | [D027](../../decisions/D027-story-mode-wording.md); [facts, modes](../../product/facts.md#modes-and-connectivity) (line 99) |
-| AI mode on home Wi-Fi; Bluetooth mode needs only a paired phone | [facts, modes](../../product/facts.md#modes-and-connectivity) (lines 98, 100) |
+| AI mode on home Wi-Fi; Bluetooth mode needs only a paired phone | [facts, modes](../../product/facts.md#modes-and-connectivity) (lines 98, 100); Bluetooth kept: [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 2 (line 34) |
 | The app screenshot and its example content | [log](../../log.md) 2026-10-11 11:35 ("names replaced with 'Aarav' … activity filled with example content") |
 
 ---
@@ -330,8 +354,8 @@ Primary cluster: **how to set up Kheelu**.
 | An H2 per step / with a close variant | Yes | Folds 3 to 6, one H2 each; fold 3 carries "connect Kheelu to Wi-Fi" |
 | Secondary "Kheelona app" | Yes (since task 6.7) | Fold 2, item 4: "It's called the Kheelona app: …" (D055 item 26; CMO review M10) |
 | "3 to 7" on the page | Yes | Fold 4 |
-| Banned words absent (every wake-word phrase, "teach the hello", "toddler", "safe" alone, "works offline" as a blanket) | Yes | None on the page; the task 6.7 lines add none ("Lumi" is not named) |
-| Density: "Kheelu" ≤ 2% | No, on recount (question 7) | Approved: "About 11 of about 560 words (2.0%), down from 4.6% live; 'it' used where clear. Recheck on the built page." Recounted at task 6.7 over the Copy blocks (eyebrow, headings, body, step titles, caption and link labels): about 460 words and "Kheelu" 21 times, about 4.5%. The approved blocks already held 20 (fold 1: 4, fold 2: 2, fold 3: 5, fold 4: 3, fold 5: 2, fold 6: 1, fold 7: 3); task 6.7 adds one (fold 5, "Kheelu's back") and about 31 words (fold 2's store line, as reworded at CMO review M10, fold 5's button line, less "blue"). QA re-measures on the built page |
+| Banned words absent (every wake-word phrase, "teach the hello", "toddler", "safe" alone, "works offline" as a blanket) | Yes | None on the page; the task 6.7 lines add none ("Lumi" is not named); nor do the task 8b.1 lines |
+| Density: "Kheelu" ≤ 2% | No, on recount (question 7) | Since task 8b.1: about 475 words and "Kheelu" 20 times, about 4.2% (fold 4's safety sentence no longer names Kheelu; folds 4 to 6 net about 14 words more; fold 4 now holds 2). Before task 8b.1: approved, "About 11 of about 560 words (2.0%), down from 4.6% live; 'it' used where clear. Recheck on the built page." Recounted at task 6.7 over the Copy blocks (eyebrow, headings, body, step titles, caption and link labels): about 460 words and "Kheelu" 21 times, about 4.5%. The approved blocks already held 20 (fold 1: 4, fold 2: 2, fold 3: 5, fold 4: 3, fold 5: 2, fold 6: 1, fold 7: 3); task 6.7 adds one (fold 5, "Kheelu's back") and about 31 words (fold 2's store line, as reworded at CMO review M10, fold 5's button line, less "blue"). QA re-measures on the built page |
 
 ## CTA tracking values
 
@@ -343,7 +367,7 @@ Primary cluster: **how to set up Kheelu**.
 
 ## Placeholders
 
-**None in the Copy blocks since task 6.7.** What happened to the three Gate A placeholders:
+**None in the Copy blocks since task 6.7** (task 8b.1 adds none). What happened to the three Gate A placeholders:
 
 | Where | Placeholder (as approved) | Now |
 |---|---|---|
@@ -363,6 +387,13 @@ Primary cluster: **how to set up Kheelu**.
   relayed, not verified.
 - **The app may change before deliveries start** (mid-November, [D023](../../decisions/D023-new-order-delivery.md)). The setup steps should come from one content source the build can update in one place, like the price and delivery values.
 - **HowTo structured data:** the live page emits `setupHowTo(SETUP_STEPS)` (`wt:src/app/(site)/setup/page.tsx:31`), whose step 3 is the banned wake-word step ([claims §4.1](../../product/claims.md#41-the-retired-microphone-wording) row 19). The new HowTo uses these steps.
+- **The owner pages still state what D058 withdrew (task 8b.1).** [facts](../../product/facts.md) (listening line 124,
+  the voice path line 127, deletion line 130, retention line 132, the closed library line 144, parent app lines
+  150-154) and [claims](../../product/claims.md) (§1 lines
+  72-74 and 77-78, §2 lines 114-115 and 120) still carry "about a minute", one-tap delete, "servers in India", the
+  closed library, the safety layer, topics and quiet hours. Only the decisions carry D058's narrowing notes. This page
+  therefore cites D058 and the map directly. The main session's lint should bring the two owner pages in line, so
+  the next copy pass can cite them again.
 
 ## Questions for the founder (website only)
 
@@ -392,9 +423,21 @@ Primary cluster: **how to set up Kheelu**.
    4.5% of the time (21 in about 460 words), against the keyword map's 2% line; the approved blocks were already at
    about 4.6% (20 in about 435). (a) Accept it for a how-to page: each step names the thing the parent is holding, and "it" in a
    numbered step reads less clearly; (b) a light pass for the CMO and the founder that swaps four or five "Kheelu"
-   for "it" where the subject is clear (for example fold 4, "Every reply Kheelu gives" → "Every reply it gives").
+   for "it" where the subject is clear (for example fold 4, "Kheelu picks up the change" → "It picks up the change";
+   task 8b.1 removed this question's first example, "Every reply Kheelu gives", with the safety-layer sentence).
    **Recommend (a)**, with QA's measure on the built page as the check; (b) changes approved lines, so it waits for
-   the founder.
+   the founder. *Since task 8b.1:* about 4.2% (20 in about 475 words).
+8. **Fold 6's two deletion sentences (new, task 8b.1 round 2; [CMO review of task 8b.1](../../qa/cmo-review-claims-8b.1-2026-10-14.md)
+   m7).** "Removing a chat in the app hides it on that phone. Deleting your account deletes every conversation and
+   recording." put a second idea, deletion, into the first-conversation fold. The CMO asks to drop both, so fold 6's
+   second paragraph reads "Later, open the parent app to read every word of it."; deletion stays on `/safety` fold 5
+   and `/privacy` Section 9. It is tied to the builder cropping the "Delete all chats" button from the privacy
+   screenshot (the product page's question 11, option (b)), which brings the same shorter wording to Home and the
+   product page; if the button stays, these sentences stay too. (a) Drop them with the crop, as the CMO asks; (b)
+   drop them now: this fold's picture is the activity screen, not the privacy screen with the button (the builder
+   confirms the activity screen shows no delete button); (c) keep them. **Recommend (b)**: the fold keeps one idea whatever happens to the other screenshot,
+   and nothing is lost that `/safety` and `/privacy` don't say. Not applied: the CMO ties it to the crop. Either
+   way, "Later, open the parent app to read every word of it." stays word for word.
 
 ## Changes after approval (task 6.7)
 
@@ -455,3 +498,62 @@ and the task 6.7 changes above). No new claim, and the age band stays 3 to 7.
   not `/setup`'s body, so no machine-file hash changes because of this page.
 - **Deviations for the main session to list at the merge** (`setup` key): the frozen mockup (`mockup/setup.html:92`)
   still reads "…keep a grown-up nearby while they talk." The built line now differs from it on purpose.
+
+## Changes after approval (task 8b.1)
+
+Applied from the founder's [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) (2026-10-14: "What
+Aman has pushed [is] correct; follow that.") and the [reconciliation map](../../qa/live-main-reconciliation-2026-10-14.md)
+(§2: the claims the live team withdrew in #19, `c630a49`, after checking firmware, backend and app on 12 Oct; §1 rows
+P11-P12: #18, `dd04e6d`). The live words are quoted from D058's "In the site's words" and from the map. This pass had
+no shell, so `git show origin/main:<path>` was not read directly: the CMO's review checks the quoted words against
+`c630a49` before the module changes. Every other line of the Copy blocks stays word for word as approved (Gate A,
+[D046](../../decisions/D046-gate-a-approved.md); tasks 6.7 and 7.1b above). Ages stay 3 to 7. Nothing new is claimed
+beyond the code-checked wording and D058.
+
+- **Fold 4, first paragraph (D058 item 1).** "Every reply Kheelu gives passes a safety layer set to that age." becomes
+  "On every conversation, the AI model that answers your child is given that age and child-safety rules, with Google's
+  safety filters on top." The "age-graded safety layer" is withdrawn. The new sentence is what the code check found,
+  in D058's words, and it describes the model with the same phrase as `/safety`'s fold 4. "You enter your child's age
+  in the parent app." stays.
+- **Fold 4, last paragraph (D058 items 1 and 7).** "While you're in the app, you can also choose your family's
+  languages, pick which topics are open and set quiet hours." becomes "While you're in the app, you can also choose
+  your family's languages." Neither topic controls nor quiet hours are in the app. The languages stay as the rebuild
+  has them.
+- **Fold 5, second paragraph (D058 item 1).** "After about a minute of quiet, …" becomes "After a couple of minutes of
+  quiet, …". The code check found that a conversation "ends after ~2 minutes of quiet" (map line 64), and D018 is
+  narrowed to match.
+- **Fold 6, second paragraph (D058 item 1).** "You can delete any conversation in one tap." becomes "Removing a chat
+  in the app hides it on that phone. Deleting your account deletes every conversation and recording." The app has no
+  one-tap delete (D058 lines 25-26; map P11-P12, line 77). "Later, open the parent app to read every word of it."
+  stays.
+- **Not changed, on purpose:**
+  - The H1, title (42 characters), meta description (145) and the hero's 47-word answer-first block: none states a
+    withdrawn claim. "Afterwards, you can read every word of it in the app" fits "a few minutes after it ends".
+  - The four connection steps, the Kheelona app and its store links, and the 2.4 GHz tip.
+  - "Kheelu picks up the change the next time it's online".
+  - The age-3 line.
+  - Bluetooth mode in fold 6 (D058 item 2).
+  - Fold 7.
+  - Nothing on this page named the servers, Kheelona+, the new-word count or the weekly report, so fixes (b), (e),
+    (g), (i) and (j) do not apply here. The footer (fix h) is listed on home.md, not here.
+- **Notes kept true:**
+  - Updated: the fold 4, 5 and 6 notes and source rows (D018 and D036 now cited by their current line numbers, since
+    D058's narrowing notes moved them down by two); the keyword placements (banned words; density about 4.2%, 20 in
+    about 475 words).
+  - Question 7 has a new example, because the one it gave is gone.
+  - Placeholders: none added.
+  - Gaps: the owner pages still state the withdrawn claims.
+- **For the builder (not edited here):**
+  - `src/content/en-IN/pages/setup.ts:99` (fold 4, first paragraph), `:102` (fold 4, last paragraph), `:114` (fold 5)
+    and `:134` (fold 6).
+  - `setup.test.tsx:256` and `:260` print fold 5's old line and "about a minute" in their title.
+  - The four HowTo steps do not change.
+  - `llms.txt` does not read `/setup`'s body (`src/app/llms.txt/route.ts`), so this page changes no machine-file hash.
+- **Deviations for the main session to list at the merge** (`setup` key): in the frozen mockup, `mockup/setup.html`
+  lines 90, 93, 109 and 129 still show the withdrawn words. The built lines now differ from it on purpose.
+
+**Round 2, after the [CMO review of task 8b.1](../../qa/cmo-review-claims-8b.1-2026-10-14.md)** (2026-10-14): no
+Copy block on this page changes. The review passes the page on every criterion. Its one point here (m7: drop fold
+6's two deletion sentences, so the first-conversation fold keeps one idea) is tied to the builder's crop of the
+privacy screenshot, so it is question 8 (new), with the wording ready. Fold 4's safety sentence is the model form the
+CMO gives `/safety` (m8), so it stays word for word.

@@ -7,7 +7,7 @@ import type { SectionEntry } from "@/layouts/sections-registry";
 import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { COPY_FIXES, SETUP_STEP_BUILD, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, COPY_FIXES, SETUP_STEP_BUILD, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { APP_STORE, GOOGLE_PLAY, PAGE_FACTS, type FactEdit } from "../../../../test/e2e/support/page-facts";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
@@ -30,7 +30,9 @@ import { setupPage } from "./setup";
  * (task 6.7; test/e2e/support/page-facts.ts): the charger's F4 slot hidden until its value arrives (D055 item 27, D054
  * item 19), the parent app named and linked on both stores (item 26), and the wake-up button's place, the button on
  * Kheelu's back that step 2 holds (item 25). Fold 4's age-3 line in the site's one wording (task 7.1b, CMO review A M8;
- * deviation V20; test/e2e/support/deviations.ts COPY_FIXES.setup). APPROVED below is the mockup with exactly those
+ * deviation V20; test/e2e/support/deviations.ts COPY_FIXES.setup). D058's claim fixes (task 8b.1; deviation V29;
+ * CLAIM_FIXES.setup): fold 4's age and languages lines, fold 5's quiet time and fold 6's deleting line in the live team's
+ * code-checked words. APPROVED below is the mockup with exactly those
  * applied; every comparison runs against it, and one test pins that it differs from the mockup there alone. The activity screenshot is the D044
  * round-2 file (task 1.5b: no "Games"); the alt and the caption are the mockup's.
  */
@@ -41,8 +43,9 @@ const MOCKUP = mockupFold("setup", "main");
 const STEP_2 = { title: "Press and hold the button on Kheelu’s back.", body: SETUP_STEP_BUILD[0] };
 const V8: FactEdit = { at: ".kh-step__body", was: "Hold it for 3 seconds, until the light starts pulsing blue.", now: STEP_2.body, inner: true };
 
-/** The approved page: the mockup's <main> with V8, the founder's page facts and task 7.1b's age line applied. */
-const APPROVED = withFacts(MOCKUP, [...PAGE_FACTS.setup.edits, V8, ...COPY_FIXES.setup.edits]);
+/** The approved page: the mockup's <main> with V8, the founder's page facts and task 7.1b's age line applied, then task
+ *  8b.1's claim fixes in a pass of their own. */
+const APPROVED = withFacts(withFacts(MOCKUP, [...PAGE_FACTS.setup.edits, V8, ...COPY_FIXES.setup.edits]), CLAIM_FIXES.setup.edits);
 
 const LABELS = ["hero-title", "before-title", "connect-title", "age-title", "button-title", "talk-title", "help-title"];
 
@@ -108,7 +111,7 @@ describe("Setup: the folds of the approved page", () => {
     expect(folds(BUILT).map((f) => f.id || null)).toEqual(folds(MOCKUP).map((f) => f.id || null));
   });
 
-  it("differs from the mockup only in fold 2's first and last items, step 2's light, fold 4's age line and fold 5's button line", () => {
+  it("differs from the mockup only in fold 2's first and last items, step 2's light, fold 4's lines, fold 5's lines and fold 6's deleting line", () => {
     const step = (main: Element) => main.querySelector("#connect .kh-step:nth-child(2)")!;
     expect(words(step(MOCKUP))).toBe("2 Press and hold the button on Kheelu’s back. Hold it for 3 seconds, until the light starts pulsing blue.");
     expect(words(step(BUILT))).toBe(`2 ${STEP_2.title} ${STEP_2.body}`);
@@ -125,7 +128,14 @@ describe("Setup: the folds of the approved page", () => {
     expect(ageLine(BUILT)).toBe(`Kheelu is made for children aged 3 to 7. ${COPY_FIXES.setup.build[0]}`);
     const rest = (main: Element) => {
       const copy = main.cloneNode(true) as Element;
-      const gone = '#connect .kh-step:nth-child(2), [aria-labelledby="before-title"] li, [aria-labelledby="button-title"] p:first-of-type, [aria-labelledby="age-title"] p:nth-of-type(3)';
+      const gone = [
+        "#connect .kh-step:nth-child(2)",
+        '[aria-labelledby="before-title"] li',
+        '[aria-labelledby="button-title"] p:first-of-type',
+        '[aria-labelledby="age-title"] p:nth-of-type(3)',
+        // D058's claim fixes (task 8b.1, V29).
+        ...CLAIM_FIXES.setup.hidden.both,
+      ].join(", ");
       for (const el of copy.querySelectorAll(gone)) el.remove();
       return words(copy);
     };
@@ -253,11 +263,11 @@ describe("Setup: the steps and their HowTo (architecture §9.2)", () => {
 });
 
 describe("Setup: the wake-up button (D018; gate-a-open-items A10)", () => {
-  it("says D018's lines: listening only after a press, one press per conversation, the light, about a minute of quiet", () => {
+  it("says D018's lines: listening only after a press, one press per conversation, the light, a couple of minutes of quiet (D058)", () => {
     const text = words(fold(BUILT, "button-title"));
     expect(text).toContain("Kheelu only listens when someone presses its wake-up button.");
     expect(text).toContain(
-      "One press starts a conversation. A light on Kheelu shows whenever it’s listening. After about a minute of quiet, it switches itself off, so the next chat starts with another press.",
+      "One press starts a conversation. A light on Kheelu shows whenever it’s listening. After a couple of minutes of quiet, it switches itself off, so the next chat starts with another press.",
     );
     // Where it is (D055 item 25): the button step 2 holds, in step 2's own words.
     expect(text).toContain("Kheelu only listens when someone presses its wake-up button. It’s the button on Kheelu’s back, the one you held during setup.");
@@ -350,9 +360,9 @@ describe("Setup: search and share metadata (setup.md At a glance)", () => {
 });
 
 describe("Setup: the founder's page facts and task 7.1b's age line for the pixels (tasks 6.7, 7.1b)", () => {
-  it("finds each block the visual pass hides on the build side, once, on the page as it renders (V8, the facts and the age line)", () => {
+  it("finds each block the visual pass hides on the build side, once, on the page as it renders (V8, the facts, the age line and D058's lines)", () => {
     const selectors = VISUAL_HIDDEN.setup.filter((rule) => rule.side === "build").map((rule) => rule.selector);
-    expect(selectors).toHaveLength(5);
+    expect(selectors).toHaveLength(9);
     for (const selector of selectors) expect(BUILT.querySelectorAll(selector), selector).toHaveLength(1);
   });
 

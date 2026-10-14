@@ -3,7 +3,7 @@ import { createElement } from "react";
 import { describe, expect, it } from "vitest";
 import { StorePaymentsLine } from "@/components/sections/store/StorePaymentsLine/StorePaymentsLine";
 import { HOSTS } from "@/config/env";
-import { PARITY_ELSEWHERE, TEXT_DEVIATIONS, VISUAL_HIDDEN, hiddenCss, parityElsewhere } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, PARITY_ELSEWHERE, TEXT_DEVIATIONS, VISUAL_HIDDEN, hiddenCss, parityElsewhere } from "../../../../test/e2e/support/deviations";
 import { htmlToText } from "../../../../test/e2e/support/mockup-text";
 import { sentences } from "../../../../test/e2e/support/parity";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
@@ -19,6 +19,9 @@ import { paymentsLine } from "./payments-line";
  * still shows only inside the Instagram, Facebook or WhatsApp browser, and the parity browser is plain Chromium, so the
  * build there shows no fold 2, as a parent in Chrome or Safari sees it: the same rules, now under D056. */
 const IN_APP_ONLY = /V25, D056 item 3/;
+/** The order summary's small print (task 8b.1, V34): D058's Kheelona+ sentence and "Kheelu's price is", proven with the
+ *  other pages' claim fixes (src/content/en-IN/pages/parity-deviations.test.ts). */
+const CLAIMS = CLAIM_FIXES.store.approvedBy;
 
 const textOf = (el: Element) => sentences(htmlToText(el.outerHTML));
 const mockupDoc = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
@@ -35,11 +38,13 @@ const NEW_TAB = navigation.labels.newTabNote.trim();
 const MOCKUP_LINE = 'footer p:has(> a[href$="#chargeback"])';
 
 describe("store parity deviations: the visual pass (D056 item 3, V1)", () => {
-  it("store: hides the mockup's in-app note (shown only in the in-app browsers, D056 item 3) and the payments line on both sides, the mockup's footer line and the build's line in main (V1)", () => {
+  it("store: hides the mockup's in-app note (shown only in the in-app browsers, D056 item 3) and the payments line on both sides, the mockup's footer line and the build's line in main (V1), then the small print (V34)", () => {
     expect(VISUAL_HIDDEN.store).toEqual([
       expect.objectContaining({ side: "mockup", selector: ".mk-inapp", approvedBy: expect.stringMatching(IN_APP_ONLY) }),
       expect.objectContaining({ side: "mockup", selector: MOCKUP_LINE, approvedBy: expect.stringContaining("V1") }),
       expect.objectContaining({ side: "build", selector: ".ks-store-payments", approvedBy: expect.stringContaining("V1") }),
+      expect.objectContaining({ side: "mockup", selector: ".mk-agree__fine", approvedBy: CLAIMS }),
+      expect.objectContaining({ side: "build", selector: ".ks-agree__fine", approvedBy: CLAIMS }),
     ]);
   });
 
@@ -62,11 +67,11 @@ describe("store parity deviations: the visual pass (D056 item 3, V1)", () => {
   });
 
   it("each side's style hides that side's selectors only, and nothing on a page without a rule", () => {
-    expect(hiddenCss("store", "mockup")).toBe(`.mk-inapp, ${MOCKUP_LINE} { display: none !important; }`);
-    expect(hiddenCss("store", "build")).toBe(".ks-store-payments { display: none !important; }");
+    expect(hiddenCss("store", "mockup")).toBe(`.mk-inapp, ${MOCKUP_LINE}, .mk-agree__fine { display: none !important; }`);
+    expect(hiddenCss("store", "build")).toBe(".ks-store-payments, .ks-agree__fine { display: none !important; }");
     expect(hiddenCss("store-confirmation", "mockup")).toBe(`${MOCKUP_LINE} { display: none !important; }`);
     expect(hiddenCss("store-confirmation", "build")).toBe(".ks-store-payments { display: none !important; }");
-    expect(hiddenCss("ai-toys-for-kids-in-india", "build")).toBe("");
+    expect(hiddenCss("contact", "build")).toBe("");
   });
 
   it("every rule gives its reason", () => {
@@ -84,8 +89,9 @@ describe("store parity deviations: the visual pass (D056 item 3, V1)", () => {
 describe("store parity deviations: the text pass (D056 item 3, V1)", () => {
   const [note, payments] = TEXT_DEVIATIONS.store ?? [];
 
-  it("two rules: the in-app note's lines missing outside the in-app browsers (D056 item 3), the payments line moved (V1)", () => {
-    expect(TEXT_DEVIATIONS.store).toHaveLength(2);
+  it("three rules: the in-app note's lines missing outside the in-app browsers (D056 item 3), the payments line moved (V1), the small print (V34)", () => {
+    expect(TEXT_DEVIATIONS.store).toHaveLength(3);
+    expect(TEXT_DEVIATIONS.store[2].approvedBy).toBe(CLAIMS);
     expect(note.approvedBy).toMatch(IN_APP_ONLY);
     expect(note.reason).toMatch(/Instagram, Facebook or WhatsApp browser/);
     expect(note.build).toBeUndefined();

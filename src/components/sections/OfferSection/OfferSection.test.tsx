@@ -8,7 +8,9 @@ import { TRUST_FULL, trustItems } from "@/content/en-IN/trust";
 import type { ArtBoardRef, ImageRef } from "@/content/types";
 import { buildOffer } from "@/lib/offer/offer";
 import type { SellingContext } from "../CtaBlock/cta-block.types";
+import { CLAIM_FIXES, editsBeforeClaimFixes, KHEELONA_PLUS } from "../../../../test/e2e/support/deviations";
 import { builtMarkup, canonical, mockupFold, renderedElement, STORE, without } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 import { OfferSection } from "./OfferSection";
 import type { OfferSectionConfig } from "./offer-section.types";
 
@@ -53,6 +55,10 @@ const PRODUCT: OfferSectionConfig = {
 };
 
 const MEDIA = ".kh-art, figure.kh-photo";
+/** A page's fold as approved, with the page's accepted changes applied: since task 8b.1 the Kheelona+ line under Home's
+ *  card and the product card's perk read D058 item 3's sentence (deviations.md V26, V27; CLAIM_FIXES). */
+const approvedFold = (slug: "home" | "meet-kheelu", fold: string) =>
+  withFacts(withFacts(mockupFold(slug, "main"), editsBeforeClaimFixes(slug)), CLAIM_FIXES[slug].edits).querySelector(fold)!;
 /* A perk's words are always in a span (OfferCard), so a value-marked perk keeps its span. */
 const KEEP = ".kh-offer__list span";
 
@@ -61,7 +67,7 @@ describe("OfferSection: the approved folds, exactly (media aside)", () => {
     ["Home close (home.html fold 9)", "home", "#close", HOME],
     ["product offer (meet-kheelu.html fold 3)", "meet-kheelu", "#offer", PRODUCT],
   ] as const)("%s", (_name, slug, fold, config) => {
-    const expected = builtMarkup([without(mockupFold(slug, fold), MEDIA)], { keepSpans: KEEP });
+    const expected = builtMarkup([without(approvedFold(slug, fold), MEDIA)], { keepSpans: KEEP });
     const actual = canonical(without(renderedElement(<OfferSection {...config} {...context()} />), MEDIA));
     expect(actual).toBe(expected);
   });
@@ -111,7 +117,9 @@ describe("OfferSection: variants", () => {
     expect(photo.getAttribute("class")).toBe("kh-photo kh-photo--square kh-photo--xl ks-offer-photo");
     expect(photo.querySelector("img")).toHaveAttribute("alt", PHOTO.alt);
     expect(photo.querySelector("img")).toHaveAttribute("loading", "lazy");
-    expect(section.textContent).not.toContain(TOKEN.plus);
+    // No Kheelona+ line under the card: the sentence is the card's perk alone (D058 item 3 words both the same).
+    expect(section.querySelector(".kh-offer + p")).toBeNull();
+    expect(section.textContent?.split(TOKEN.plus)).toHaveLength(2);
   });
 
   it("lists the perks of its placement: Home's four, the product page's five (Kheelona+ among them)", () => {
@@ -119,7 +127,7 @@ describe("OfferSection: variants", () => {
       [...renderedElement(<OfferSection {...config} {...context()} />).querySelectorAll(".kh-offer__list li")].map((li) => li.textContent);
     expect(perks(HOME)).toEqual(["Deliveries start mid-November", "In the box: Kheelu plush toy, charger and quick-start card", "Delivery anywhere in India, included", "A GST invoice with every order"]);
     expect(perks(PRODUCT)).toHaveLength(5);
-    expect(perks(PRODUCT)[1]).toMatch(/^6 months of Kheelona\+ included/);
+    expect(perks(PRODUCT)[1]).toBe(KHEELONA_PLUS.build);
   });
 
   /* Task 3.6 item 6: the help line is content (`Copy`) and renders with the page's offer, as in CtaBlock. */

@@ -19,6 +19,10 @@ sources:
   - ../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md (item 5, the refund reaches the parent within 7 working days, bank time included)
   - ../../qa/cmo-review-built-a-2026-10-14.md (M8, one wording for the age-3 advice; task 7.1b)
   - "src/content/en-IN/faqs.ts:41, 86, 125, 151, 174 and test/guards/answer-length.test.ts (40-60 words per answer), read 2026-10-14 for the M8 word counts"
+  - ../../decisions/D058-follow-the-live-code-check-2026-10-14.md (items 1, 2, 3, 6, 7, 8, 9; task 8b.1)
+  - "../../qa/live-main-reconciliation-2026-10-14.md (§1 T3; §2 the table of withdrawn claims, with the live team's wording from origin/main c630a49, PR #19, and dd04e6d, PR #18; task 8b.1)"
+  - "src/content/en-IN/pages/home.ts:216-219, 250-264, policies.ts:50, faqs.ts:41, offer.ts:51, navigation.ts:75, read 2026-10-14 for the built lines task 8b.1 changes"
+  - "../../qa/cmo-review-claims-8b.1-2026-10-14.md (round 2 of task 8b.1: m8 applied; m6, m7, m11 as questions 13-15)"
 ---
 
 # Home (`/`): page copy
@@ -145,7 +149,8 @@ H1-5 → the current sticker board or `advik-02`. The "It asks. They think." sti
 ([D038](../../decisions/D038-trust-content-rulings.md)).
 
 **Lines kept for other places:** "Kheelu has answers. It wants your child’s, too." (candidate 7) for the "think less"
-objection on the product page or a fold-2 line; keep a closed-library fact within reach, never "ask it anything"
+objection on the product page or a fold-2 line; keep a closed-library fact within reach (withdrawn since:
+[D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1, task 8b.1), never "ask it anything"
 ([claims §1](../../product/claims.md#1-confirmed-by-the-founder), [§2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed)).
 "After Kheelu answers, it’s your child’s turn." (candidate 9) for how-it-works on the product page, never beside the
 Romeo 2018 finding.
@@ -600,42 +605,57 @@ Variant (b) leaves Home and is kept for the product-page outline. The CTA and li
 > **H2:** You see every conversation.
 >
 > - Read every conversation in the parent app, word for word.
-> - Every week, the app gives you a report on four thinking skills (words, reasons, stories and questions) and a new-word count.
-> - You set your child's age in the app, and the age-graded safety layer follows it.
-> - Your child's conversations stay in your parent app for 36 months, then they're deleted automatically. You can delete any of them sooner, in one tap.
+> - Each conversation appears a few minutes after it ends. Search them, read a daily summary, or look back over the week or the month.
+> - You set your child's age in the app. The AI model that answers your child gets child-safety rules for that age, with Google's safety filters on top.
+> - Your child's conversations stay in your parent app for 36 months, then they're deleted automatically.
 >
 > *Illustrative screen* (label on the app image)
 >
 > [See what the app shows you] → `/products/kheelu#app`
 
 - **H2 accent:** `Hand` on "every conversation".
-- The report is described as what it shows, never as an outcome for the child; no age-by-age claims, no
-  "progress" or "growth" words ([D036](../../decisions/D036-launch-feature-claims.md); legal review L7).
-- The retention line is [D020](../../decisions/D020-provider-terms-and-no-sale.md)'s, verbatim.
-- Not used: parent alerts and the daily summary (wait on counsel's DPDP reading, L6:
-  [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed)); "remembers"
-  (confirmed, but a second idea here).
+- The app is described as what it shows, never as an outcome for the child; no age-by-age claims, no
+  "progress" or "growth" words ([D036](../../decisions/D036-launch-feature-claims.md); legal review L7). Since task
+  8b.1 the second bullet follows the app as the live team checked it: every conversation readable a few minutes after
+  it ends, search, a daily summary, a look back over the week or the month
+  ([D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) items 1 and 8). The weekly four-skills report
+  and the new-word count are off until they ship (D058 item 8).
+- The third bullet is the code-checked safety mechanism in the live team's words: an AI model given child-safety rules
+  and the child's age, with Google's safety filters on top (D058 item 1; the "age-graded safety layer" goes). Since
+  round 2 it says "The AI model that answers your child", because this is the first time the page names an AI model
+  ([CMO review of task 8b.1](../../qa/cmo-review-claims-8b.1-2026-10-14.md) m8; the phrase `/safety` and `/setup`
+  use). No "Kheelu" is added, so the density is unchanged.
+- The retention line is [D020](../../decisions/D020-provider-terms-and-no-sale.md)'s first sentence, verbatim; its
+  one-tap sentence is withdrawn (D058 items 1 and 9: 36 months then deleted stays).
+- Not used: parent alerts (none are in the app, per the live team's code check, map §2); "remembers" (confirmed, but a
+  second idea here). The daily summary, held here at Gate A for counsel's DPDP reading (L6:
+  [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed)), is now in the copy
+  by the founder's D058 item 8; the legal sign-off on it is a question for the main session (task 8b.1).
 - **No Kheelona+ line in this fold** (Gate A round 2, [D041](../../decisions/D041-gate-a-round-1.md) F7). The
   round 1 draft had "The parent app is part of Kheelona+, included for 6 months with every Kheelu." here (CMO
   review S10). The founder asked not to discuss what happens after the six months "at most places", so the page's
   one Kheelona+ mention now sits at the close, where the offer is listed. The legal review's L7 risk (the parent
   app is part of Kheelona+, so this fold's H2 and the 36-month line assume it stays available) is recorded in D041
-  and accepted by the founder.
+  and accepted by the founder. Since D058 item 3 the parent app is free and Kheelona+ is a paid subscription on top
+  of it, so the fold no longer rests on a lapsing app (task 8b.1).
 - **No CTA.**
-- **Images:** the DS phone frame (`kh-device`) with a weekly-report screen, labelled "Illustrative screen".
-  Do not use `AppSummaryCard` as delivered: its "Today with Kheelu" framing implies a daily summary, which is
-  not cleared (L6). Alt for the frame: "An illustrative parent-app screen showing a weekly report on four
-  thinking skills." Optional photo `tara-02-evening-with-amma`. Alt: "A girl and her mother on a sofa in the
-  evening lamp light, with Kheelu between them."
+- **Images:** the DS phone frame (`kh-device`) with a parent-app screen of the day's conversations, labelled
+  "Illustrative screen" (no weekly-report screen: D058 item 8). Do not use `AppSummaryCard` as delivered: it was held
+  at Gate A for its "Today with Kheelu" daily-summary framing (L6), and the real app screens are used instead
+  ([D044](../../decisions/D044-app-screens-on-the-site.md)). Alt for the frame: "An illustrative parent-app screen
+  listing a child's conversations for the day." As built, the fold shows D044's two real screens with their own alts
+  (`pages/home.ts:225`, `:229`); neither names a weekly report or a new-word count. Optional photo
+  `tara-02-evening-with-amma`. Alt: "A girl and her mother on a sofa in the evening lamp light, with Kheelu between
+  them."
 
 **Sources, fold 5**
 
 | Claim | Source |
 |---|---|
 | Read every conversation; word for word | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [facts, parent app](../../product/facts.md#parent-app) ("the full conversation log word for word", live) |
-| Weekly report on four thinking skills; new-word count | [D036](../../decisions/D036-launch-feature-claims.md) #1, #8; skill names: [messaging, hierarchy](../../brand/messaging.md#the-hierarchy) ("the model parents repeat", EXTERNAL as what the report covers) |
-| Parent sets the age; the age-graded safety layer follows it | [D036](../../decisions/D036-launch-feature-claims.md); wording from [claims §3](../../product/claims.md#3-not-confirmed-do-not-publish) ("say instead") |
-| 36 months, deleted automatically; delete sooner in one tap | [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7, verbatim line; [D017](../../decisions/D017-live-behaviour-claims-confirmed.md) |
+| Each conversation appears a few minutes after it ends; search; a daily summary; a look back over the week or the month | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) items 1 and 8 (the live team's code check, origin/main `c630a49`; [map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded), "Main added, true per its code check") |
+| Parent sets the age; the AI model that answers your child gets child-safety rules for that age, with Google's safety filters on top | Age setting: [D036](../../decisions/D036-launch-feature-claims.md); the mechanism: [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1 ("replies are generated by an AI model given child-safety rules and the child's age on every conversation, with Google's safety filters on top"); [map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded), row "Age-graded safety layer" (live: "child-safety rules set for your child's age, with Google's safety filters on top") |
+| 36 months, deleted automatically | [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7, first sentence verbatim; kept by [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 9 (the one-tap sentence withdrawn, item 1) |
 ---
 
 ## Fold 6 · Safety you can check
@@ -647,13 +667,13 @@ Variant (b) leaves Home and is kept for the product-page outline. The CTA and li
 > **H2:** Safety you can check.
 >
 > **1 · You'll always see when it's listening.**
-> Its microphone turns on only when someone presses the wake-up button. It stays on while your child talks and switches itself off after about a minute of quiet. A light on Kheelu shows whenever it's listening. Left alone, it hears nothing and sends nothing.
+> Its microphone turns on only when someone presses the wake-up button. It stays on while your child talks and switches itself off after a couple of minutes of quiet. A light on Kheelu shows whenever it's listening. Left alone, it hears nothing and sends nothing.
 >
 > **2 · How it understands and answers.**
-> To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child's voice only to produce Kheelu's reply. They don't keep it, and they never use it to train their AI. Our contracts with them say so.
+> To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child's voice only to produce Kheelu's reply. They don't keep it, and they never use it to train their AI. Our contracts with them say so.
 >
 > **3 · You can read every conversation.**
-> In the parent app. Delete any of them in one tap.
+> In the parent app. Removing a chat there hides it on that phone. Deleting your account deletes your child's profile, conversations and recordings from our servers.
 >
 > **4 · We don't sell your data.**
 > Your child's data is never used to advertise to them.
@@ -671,7 +691,9 @@ Variant (b) leaves Home and is kept for the product-page outline. The CTA and li
 - **Order is [D020](../../decisions/D020-provider-terms-and-no-sale.md)'s:** button and light → providers line
   → read and delete → no sale. Component: `TrustList` (one column on phones). Item 1 is
   [D018](../../decisions/D018-wake-up-button.md)'s heading and body sentences verbatim, with "Kheelu" in the
-  heading replaced by "it" (density) and D018's opening sentence about a wake word left out (open question 8).
+  heading replaced by "it" (density) and D018's opening sentence about a wake word left out (open question 8); since
+  task 8b.1 it says "a couple of minutes of quiet", not D018's "about a minute"
+  ([D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1, the live team's code check).
   It ends with D018's off-state sentence, "Left alone, it hears nothing and sends nothing.", so the fold
   answers "is it always listening?" in words (CMO review S1); the sentence is about the off state only and
   says nothing about what is kept once a conversation starts (conversations are kept for parents, D017, D020).
@@ -679,25 +701,37 @@ Variant (b) leaves Home and is kept for the product-page outline. The CTA and li
   the body's opening, "To understand and answer your child"). The earlier "Where your child's voice goes"
   promised the voice's whole journey, which under [D035](../../decisions/D035-model-training-opt-out.md) also
   includes Kheelona's own model, and so implied nobody else keeps or trains on it (CMO review F2). Item 2's
-  body is D020's providers line in full, verbatim; its training clause is scoped to the providers, as D035
-  requires (open question 4). Nothing on the page mentions training otherwise, and nothing says "nothing is
-  ever recorded", "no risk" or that the microphone is disconnected.
-- Item 3 repeats fold 5's read-and-delete fact on purpose: D020 puts it in the safety block, and the block is
-  reused on the product page.
+  body is D020's providers line in full, verbatim, except ", on servers in India", withdrawn by D058 item 6 (task
+  8b.1); its training clause is scoped to the providers, as D035 requires (open question 4), and D020's promise
+  that the providers neither keep nor train on the voice is unchanged. No "Kheelona's servers" is added here: the
+  sentence names the providers, and placing them on Kheelona's servers would be a new claim the live page does not
+  make (it names them as processors, some outside India, on `/privacy`). Nothing on the page mentions training
+  otherwise, and nothing says "nothing is ever recorded", "no risk" or that the microphone is disconnected.
+- Item 3 repeats fold 5's "read every conversation" on purpose: D020 puts it in the safety block, and the block is
+  reused on the product page. Its deletion facts are the live team's (D058 item 1, task 8b.1): removing a chat in
+  the app hides it on that phone; deleting the account deletes the child's profile, the conversations and the
+  recordings from Kheelona's servers. One-tap delete is withdrawn. The second sentence also explains the "delete
+  all chats" button a parent sees on the built fold's privacy screen.
 - **CTA:** Pre-order Kheelu, `cta` = `safety` (new). Secondary link uses the DS's own second action
   (`01-writing.md:53`); suggested `safety-learn` (new, optional).
 - **Image:** `kheelu-belly-module.png` (derivative; DS: "the belly unit (speaker, light ring, buttons)"). Alt:
   "Kheelu's tummy unit up close, with its speaker, light ring and buttons." No imagination layer on a safety
   block (DS `02-imagery.md:57`). The DS has no photo of the light lit yet (Kheelu README), so the copy never
   describes what the light looks like.
+- **The real privacy screen (as built, D044; task 8b.1).** The built fold also shows the parent app's privacy
+  screen (`pages/home.ts:264`). Its alt drops "delete all chats", which per the code check hides chats on that phone
+  rather than deleting them (D058 item 1): "The parent app's privacy centre: keep chats for 36 months, a switch to
+  save voice recordings, download your child's data, and links to the privacy policy, terms and the grievance
+  officer." The "keep chats for 36 months" line on the screen stays (D058 item 9).
 
 **Sources, fold 6**
 
 | Claim | Source |
 |---|---|
-| Microphone on only after a press of the wake-up button; on while the child talks; off after about a minute of quiet; a light shows; left alone, it hears and sends nothing | [D018](../../decisions/D018-wake-up-button.md) (draft lines, including the body's last sentence); [facts, listening](../../product/facts.md#what-it-listens-for-and-where-the-voice-goes); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) |
-| Trusted providers, servers in India, reply only, keep nothing, never train, by contract | [D019](../../decisions/D019-voice-providers.md), [D020](../../decisions/D020-provider-terms-and-no-sale.md) items 1-4, 6; scoped per [D035](../../decisions/D035-model-training-opt-out.md) |
-| Read every conversation; one-tap delete | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md) |
+| Microphone on only after a press of the wake-up button; on while the child talks; off after a couple of minutes of quiet; a light shows; left alone, it hears and sends nothing | [D018](../../decisions/D018-wake-up-button.md) (draft lines, including the body's last sentence); "a couple of minutes": [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1 (the live team's code check, `c630a49`; [map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded), row "About a minute of quiet"); [facts, listening](../../product/facts.md#what-it-listens-for-and-where-the-voice-goes); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) |
+| Trusted providers, reply only, keep nothing, never train, by contract | [D019](../../decisions/D019-voice-providers.md), [D020](../../decisions/D020-provider-terms-and-no-sale.md) items 1-4; scoped per [D035](../../decisions/D035-model-training-opt-out.md). "On servers in India" (D020 item 6) withdrawn by [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 6 |
+| Read every conversation | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md) |
+| Removing a chat hides it on that phone; deleting the account deletes the child's profile, conversations and recordings from our servers | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1 (supersedes D017's and D020 item 7's one-tap delete); the live `/privacy` (`dd04e6d`), [map §1](../../qa/live-main-reconciliation-2026-10-14.md#1-18-dd04e6d-the-parent-app-on-privacy-and-terms-for-the-app-store-and-play) rows P11, P12 |
 | We don't sell your data | [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 5 |
 | Never used to advertise to your child | [D038](../../decisions/D038-trust-content-rulings.md) (F17); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) |
 | No camera; says it is a toy; never asks a child to keep a secret | [claims §1](../../product/claims.md#1-confirmed-by-the-founder) (founder, 2026-10-04) |
@@ -763,7 +797,7 @@ Variant (b) leaves Home and is kept for the product-page outline. The CTA and li
 > That's exactly what Kheelu is designed against. Most AI gives answers. Kheelu answers your child, then asks a question back, so they do the thinking. It can't browse the internet, and when it doesn't know something, it says so instead of guessing. You can read every conversation in the parent app.
 >
 > **What ages is Kheelu for?**
-> Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby. When you set it up, you enter your child's age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.
+> Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby. At setup, you enter your child's age in the parent app. You can change it later. The AI model gets child-safety rules for that age, with Google's safety filters on top.
 >
 > **How much is Kheelu, and how does the advance work?**
 > Kheelu is ₹4,999`{price-source}` (incl. GST) for the first 500 units`{price-source}`, with delivery anywhere in India included. Its MRP is ₹7,999`{price-source}` (incl. of all taxes). A refundable ₹499`{price-source}` advance reserves yours today, and the remaining ₹4,500`{price-source}` is due before delivery. You can pay by UPI, card or net banking, and you get a GST invoice.
@@ -780,7 +814,9 @@ Variant (b) leaves Home and is kept for the product-page outline. The CTA and li
 > [See all questions] → `/products/kheelu#faq`
 
 Word counts: 51 · 58 · 54 · 55 · 54 · 52 (age and price answers updated in Gate A round 2; the age answer's 3-year-old
-sentence and the returns answer's refund timing changed in task 7.1b, see [Changes after approval](#changes-after-approval-task-71b)).
+sentence and the returns answer's refund timing changed in task 7.1b, see [Changes after approval](#changes-after-approval-task-71b);
+the age answer's safety sentence changed in task 8b.1 and it stays at 58, see
+[Changes after approval (task 8b.1)](#changes-after-approval-task-8b1)).
 
 **Full mode**, the price question becomes:
 
@@ -809,6 +845,11 @@ sentence and the returns answer's refund timing changed in task 7.1b, see [Chang
 - The age answer advises a grown-up nearby for 3-year-olds ([D041](../../decisions/D041-gate-a-round-1.md)), in the
   one plain sentence chosen for the site's age-3 advice ("If your child is 3, keep a grown-up nearby."; CMO built-page
   review A, M8; task 7.1b). It still makes no claim about how well Kheelu understands a 3-year-old (G5).
+  Since task 8b.1 its safety sentence is the code-checked mechanism (an AI model given child-safety rules for the
+  child's age, with Google's safety filters on top; [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md)
+  item 1), not the withdrawn "age-graded safety layer". To keep the answer within 60 words, "When you set it up, you
+  enter your child's age in the parent app," became "At setup, you enter your child's age in the parent app." (the
+  product page's approved fold 4 words) and "You can change it later." moved up beside the age it refers to.
 - The returns answer's refund timing is `/refund`'s, word for word: the refund "reaches you within 7 working days"
   of the return reaching us, bank time included ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)
   item 5; [D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 4).
@@ -819,7 +860,7 @@ sentence and the returns answer's refund timing changed in task 7.1b, see [Chang
 | Answer | Source |
 |---|---|
 | Thinking less | [messaging, objection answers](../../brand/messaging.md#objection-answers) row 1 (EXTERNAL); [D017](../../decisions/D017-live-behaviour-claims-confirmed.md) (browse, read); [D036](../../decisions/D036-launch-feature-claims.md) #3 (says it doesn't know rather than guess) |
-| Ages | [facts, age](../../product/facts.md#age); [keyword map §7.1](../../research/keyword-map.md#7-geo-plan) ("3 to 7; not for under 3"); [D036](../../decisions/D036-launch-feature-claims.md) #6 and the age setting; [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) (every reply passes the layer); [D041](../../decisions/D041-gate-a-round-1.md) (a grown-up nearby for 3-year-olds); the sentence's wording: [CMO built-page review A](../../qa/cmo-review-built-a-2026-10-14.md) M8 (one wording on every page) |
+| Ages | [facts, age](../../product/facts.md#age); [keyword map §7.1](../../research/keyword-map.md#7-geo-plan) ("3 to 7; not for under 3"); [D036](../../decisions/D036-launch-feature-claims.md) (the age setting); the safety sentence: [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1 and [map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded), row "Age-graded safety layer" (the live team's wording, `c630a49`; replaces D036 #6's layer and claims §2's "every reply passes the layer"); [D041](../../decisions/D041-gate-a-round-1.md) (a grown-up nearby for 3-year-olds); the sentence's wording: [CMO built-page review A](../../qa/cmo-review-built-a-2026-10-14.md) M8 (one wording on every page) |
 | Price and advance | [pricing](../../product/pricing.md) (amounts, first 500, delivery included); [D041](../../decisions/D041-gate-a-round-1.md) (first 500 once, no badge or counter); [D034](../../decisions/D034-origin-manufacturer-mrp.md) (MRP ₹7,999 incl. of all taxes); [D028](../../decisions/D028-price-wording.md); [D024](../../decisions/D024-payment-methods-gst.md) (methods, GST, invoice); [keyword map §6.2](../../research/keyword-map.md#6-question-bank-answer-first-drafts) B3 |
 | Returns | [D021](../../decisions/D021-returns-policy.md) (policy line; "of delivery" is D021's reading); [D022](../../decisions/D022-warranty-replacement-refund.md), [D033](../../decisions/D033-warranty-after-day-7.md) (pickup free, refund within 7 working days of reaching us); [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 5 (the refund reaches the parent within those 7 working days, bank time included) and [D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 4 (worded "reaches you within 7 working days", as [refund.md](refund.md) step 3); [policies](../../product/policies.md#status-at-a-glance) (refundable in full before dispatch) |
 | Delivery | [D023](../../decisions/D023-new-order-delivery.md); [facts, ship date](../../product/facts.md#ship-date) (served in order placed); [policies](../../product/policies.md#status-at-a-glance) (shipping: anywhere in India, included, nothing at the door, no shipping abroad, tracking link, reserved units dispatch once the balance is paid) |
@@ -847,7 +888,7 @@ sentence and the returns answer's refund timing changed in task 7.1b, see [Chang
 > - cta: Pre-order Kheelu
 > - fine: Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST).
 >
-> Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app.
+> Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.
 >
 > 7-day returns, no questions asked · 6-month warranty · UPI, card or net banking · Delivery included anywhere in India
 >
@@ -865,11 +906,14 @@ sentence and the returns answer's refund timing changed in task 7.1b, see [Chang
 - **Full mode:** the OfferCard cannot show a paid-in-full offer (G-08, G9). Until G9 is decided, a composed
   block replaces it: price "₹7,999`{price-source}` (incl. GST)", the full-mode price sentence, the same perks,
   the Kheelona+ line, the button, the trust row and the help line.
-- **The Kheelona+ line** is the first sentence of [D027](../../decisions/D027-story-mode-wording.md)'s line,
-  verbatim, and the page's only Kheelona+ mention. Its other two sentences ("Kheelu's smart features keep working
-  for life, with no subscription needed." and "Kheelona+ pricing will be announced soon.") are dropped: both discuss
-  what happens after the six months, which the founder asked to leave out ([D041](../../decisions/D041-gate-a-round-1.md),
-  F7). "6 months" stays so the line cannot read as included for good (round 2, question 4).
+- **The Kheelona+ line** is, since task 8b.1, the founder's sentence in
+  [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 3, verbatim, and still the page's only
+  Kheelona+ mention: the parent app is free and Kheelona+ is a paid subscription on top of it. It lists no features,
+  because which features stay free is not decided (D058 item 3), so the approved list ("stories, poems, jingles,
+  languages and the parent app", the first sentence of [D027](../../decisions/D027-story-mode-wording.md)'s line) is
+  gone, and nothing says the parent app is part of Kheelona+. D027's other two sentences stay dropped, as the founder
+  asked to leave out what happens after the six months ([D041](../../decisions/D041-gate-a-round-1.md), F7). "6 months"
+  stays so the line cannot read as included for good (round 2, question 4).
 - **Box contents** are the founder's list ([D041](../../decisions/D041-gate-a-round-1.md)). The charger's BIS
   registration number belongs in the product page's declarations, not here.
 - **Order on phones:** the OfferCard comes first, then the board. With the board first, the price started
@@ -887,7 +931,7 @@ sentence and the returns answer's refund timing changed in task 7.1b, see [Chang
 | In the box: Kheelu plush toy, charger and quick-start card | [D041](../../decisions/D041-gate-a-round-1.md) (founder, 2026-10-11); [facts, in the box](../../product/facts.md#in-the-box) (specs otherwise still F4) |
 | Delivery included anywhere in India | [pricing, tax, delivery, MRP](../../product/pricing.md#tax-delivery-mrp) |
 | GST invoice with every order | [D024](../../decisions/D024-payment-methods-gst.md) |
-| Kheelona+ line (first sentence only) | [D027](../../decisions/D027-story-mode-wording.md); [D041](../../decisions/D041-gate-a-round-1.md) (F7: nothing about after the six months); [facts, Kheelona+](../../product/facts.md#kheelona) |
+| Kheelona+ line: 6 months with every Kheelu, a paid subscription on top of the free parent app | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 3 (the founder's sentence, verbatim; supersedes D027's feature list here; [map §1](../../qa/live-main-reconciliation-2026-10-14.md#1-18-dd04e6d-the-parent-app-on-privacy-and-terms-for-the-app-store-and-play) row T3); "6 months": [D027](../../decisions/D027-story-mode-wording.md); [D041](../../decisions/D041-gate-a-round-1.md) (F7: nothing about after the six months); [facts, Kheelona+](../../product/facts.md#kheelona) |
 | Trust row, help line | [CTA block sources](#cta-block) |
 
 ---
@@ -906,7 +950,7 @@ Referenced, not rewritten:
 
 New copy for two `Footer` props:
 
-> **promise:** Press to talk. No open internet. You read every conversation.
+> **promise:** Press to talk. No web browsing. You read every conversation.
 >
 > **made:** Designed by parents in Bengaluru. Made in India.
 >
@@ -918,7 +962,7 @@ New copy for two `Footer` props:
 | Claim | Source |
 |---|---|
 | "Press to talk" | [D018](../../decisions/D018-wake-up-button.md) short line |
-| No open internet | [facts, internet and camera](../../product/facts.md#internet-and-camera) ("Open internet: No", EXTERNAL); DS `01-writing.md:35` |
+| No web browsing | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1 (the live footer's code-checked words, `c630a49`; [map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded), row "No open internet (footer)"); [D017](../../decisions/D017-live-behaviour-claims-confirmed.md) (cannot browse the internet); replaces "No open internet" ([facts, internet and camera](../../product/facts.md#internet-and-camera); DS `01-writing.md:35`), task 8b.1 |
 | You read every conversation | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md) |
 | Designed by parents in Bengaluru | [claims §3.1](../../product/claims.md#31-origin-designed-and-built-here) (EXTERNAL) |
 | Made in India | [D034](../../decisions/D034-origin-manufacturer-mrp.md) |
@@ -946,7 +990,7 @@ Primary cluster for `/`: **Kheelu by Kheelona** ([keyword map §4.1](../../resea
 | Answer-first blocks, 40 to 60 words | Yes | Fold 4 (59) and six FAQs (49 to 58) |
 | Entity facts identical: "Kheelu by Kheelona", 3 to 7, ₹4,999 (incl. GST) first in machine text, no mention of the unrelated "Kheelona India" | Yes | Title, meta, sub-line, fold 4, fold 8; "made in India" in the footer |
 | Words never placed as keywords (health terms, friend, tutor, brain-development toy, lessons, adapts, wake-word lines, competitor names, free for life) | Yes | None on the page |
-| Density: "Kheelu" ≤ 2% of `<main>` words | Just over the flag line | About 29 of about 1,345 words (2.2%) with variant (b), after the CMO fixes (fold 5's Kheelona+ line adds one); about 2.3% with the films (their live captions name Kheelu). Below the 3% rewrite line. Already cut: "it" in FAQ answers, the safety headings, the close heading. QA re-measures on the built page |
+| Density: "Kheelu" ≤ 2% of `<main>` words | Just over the flag line | About 29 of about 1,345 words (2.2%) with variant (b), after the CMO fixes (fold 5's Kheelona+ line adds one); about 2.3% with the films (their live captions name Kheelu). Below the 3% rewrite line. Already cut: "it" in FAQ answers, the safety headings, the close heading. Task 8b.1 adds about 15 words of `<main>` text and no "Kheelu" (the new safety sentences say "the AI model", not "Kheelu's"), so the share falls a little (about 29 of 1,360, 2.1%, with variant (b)). QA re-measures on the built page |
 
 ---
 
@@ -1020,7 +1064,10 @@ caption. 4 (a) kept. 5 the founder: say nothing about after the six months at mo
    produce Kheelu's reply. They don't keep it. Our contracts with them say so.": a parent will generalise the
    clause to "my child's voice is not used to train AI", which D035 makes false for Kheelona's own model. Item
    2's new heading (CMO F2) applies either way. The founder's call ([D015](../../decisions/D015-founder-signs-off-copy.md)).
-5. **What keeps working after the six months of Kheelona+ (Gate A, F7).** Fold 4 (Story mode content,
+5. **Overtaken 2026-10-14 by [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 3** (the
+   parent app is free; Kheelona+ is a paid subscription on top of it; task 8b.1), so the five lines below no longer
+   rest on an app that lapses at month 6. The question as asked:
+   **What keeps working after the six months of Kheelona+ (Gate A, F7).** Fold 4 (Story mode content,
    languages) and fold 5 (the parent app, "You see every conversation") describe Kheelona+ features; the legal
    review (L7) says the site must say what stops. (a) Ship the sanctioned line only, as drafted; (b) the founder
    decides F7 and one line is added under the Kheelona+ line at the close. The CMO wants F7 decided **at Gate
@@ -1052,6 +1099,33 @@ caption. 4 (a) kept. 5 the founder: say nothing about after the six months at mo
 12. **A 3½-year-old in the hero photo (G5).** SKM's "never show 3-year-olds alone in ads" may or may not survive
     the 3 to 7 band. (a) `myra-01-breakfast-why` (the DS's "why" photo, matches the H1); (b)
     `advik-02-whispering-to-kheelu` (age 4). **Recommend (a) if G5 drops the rule, else (b).**
+13. **"When it doesn't know something, it says so instead of guessing" (fold 8, "Won't an AI toy make my child think
+    less?"; new, task 8b.1 round 2; [CMO review of task 8b.1](../../qa/cmo-review-claims-8b.1-2026-10-14.md) m11).**
+    It rests on [D036](../../decisions/D036-launch-feature-claims.md) #3. D058 does not name it, but the live team's
+    own rewrite of "Could Kheelu say something wrong?" (c630a49) dropped it. Now that answers come from an AI model,
+    it is true only if the child-safety rules tell the model to say so. (a) Keep it once you and Aman confirm that
+    before Gate B; (b) cut it. If (b), the answer drops to 39 words, under the 40-word guard, so "It can't browse the
+    internet, and when it doesn't know something, it says so instead of guessing." becomes "It can't browse or
+    search the web." (the live team's words, D017): 41 words. **Recommend (a) with the check, else (b) as written.**
+    The same confirmation covers `/terms` question 9, `/safety` question 6, the product page's question 12 and the
+    buyer's guide's question 3.
+14. **"From our servers" in fold 6 item 3 (new, task 8b.1 round 2; CMO review m6).** "Deleting your account deletes
+    your child's profile, conversations and recordings from our servers." is D058's and the live wording. Our training
+    data is on our servers too (D055 item 12), and no decision says deleting the account takes a child's data out of
+    it ([privacy.md](privacy.md#questions-for-the-founder-website-only) question 11, for the CTO). If it does not, the
+    line implies no training copy remains, which [D035](../../decisions/D035-model-training-opt-out.md) forbids on
+    customer pages. (a) Keep it, if the CTO confirms account deletion also takes the data out of the training data;
+    (b) otherwise, drop "from our servers" (here, the product page's fold 6, `/safety` fold 5 and the buyer's guide's
+    fold 3). **Recommend: the CTO answers privacy question 11 before Gate B, then (a) or (b).** If question 15's crop
+    comes first, the shorter item 3 has no server words, and this question no longer touches Home.
+15. **Fold 6 item 3, once the screenshot is cropped (new, task 8b.1 round 2; CMO review m7).** On this ad landing
+    page, "Safety you can check" item 3 opens with a limit ("Removing a chat there hides it on that phone."). The
+    sentence is there because the real privacy screen beside it shows a "Delete all chats" button, which per the
+    code check only hides chats on that phone. If the builder crops the button out (the product page's question 11,
+    option (b), as D044 cropped the banner), item 3's body becomes "In the parent app, word for word, a few minutes
+    after each one ends. Delete them all by deleting your account." (`/safety` fold 2 item 3's words; the limit stays
+    on `/safety` fold 5 and `/privacy` Section 9). If the button stays, item 3 stays as it is. **Recommend the crop,
+    then the shorter item 3**, with the CMO: a parent scanning the safety fold meets the reassurance first.
 
 ---
 
@@ -1063,12 +1137,13 @@ caption. 4 (a) kept. 5 the founder: say nothing about after the six months at mo
 - **Category cells in fold 7** have no public source; they are plain descriptions for the CMO Reviewer to
   check for fairness.
 - **DS components to adjust by composition, not by editing the DS:** `LanguageChips` with the eight named
-  chips only (no "+2 more at launch" chip; the heading carries "Up to 10"); `AppSummaryCard` avoided (daily-summary framing); `OfferCard` `sticker` off and no counter; `Footer`
+  chips only (no "+2 more at launch" chip; the heading carries "Up to 10"); `AppSummaryCard` avoided (held at Gate A for its daily-summary framing; the real app screens are used, D044); `OfferCard` `sticker` off and no counter; `Footer`
   `promise` replaced; `ComparisonTable` stacked phone variant (G-05, G11); sticky bar stepping aside beside
   inline CTAs (G-09, G4).
 - **Two chilli buttons on laptop** (nav plus hero) is G2 / G-06, decided at Gate A.
-- **The illustrative app screen** for fold 5 needs a weekly-report screen; the DS renders folder has
-  parent-app screens to check against before drawing anything new.
+- **The illustrative app screen** for fold 5 needs a screen of the day's conversations (no weekly report since
+  D058 item 8; as built, D044's real screens are used); the DS renders folder has parent-app screens to check
+  against before drawing anything new.
 - **Speech disclaimer** is deliberately absent from Home ([D025](../../decisions/D025-speech-and-language.md)).
 - **Production is untouched** until Gate B ([D011](../../decisions/D011-production-held-until-gate-b.md)): this
   copy is for the new site only.
@@ -1112,3 +1187,89 @@ answers, so they change with them.
   minor 5: fold 7's sources line on this page now prints the short form that `mockup/home.html:187` and
   `src/content/en-IN/pages/home.ts:157` already show (the dropped locator was a research note, kept in
   [source verification](../../research/source-verification.md)); no page text changes.
+
+---
+
+## Changes after approval (task 8b.1)
+
+Applied from the founder's [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) (2026-10-14): the
+site follows the live team's code check of 12 October (origin/main `c630a49`, PR #19, "checked against iot-firmware,
+backend-service and Kheelona_App on 2026-10-12"; the parent-app sections of `/privacy` and `/terms` in `dd04e6d`, PR
+#18). Each line below is one the [reconciliation map](../../qa/live-main-reconciliation-2026-10-14.md) §2 lists for
+Home (or §1 for the Kheelona+ line); the replacement wording is the live team's as the map quotes it and D058 states
+it "in the site's words". Every other line of the Copy blocks stands word for word as approved at Gate A
+([D046](../../decisions/D046-gate-a-approved.md)) and as changed in task 7.1b. No new claim is made: each new
+sentence is a fact D058 names.
+
+- **Fold 5, bullet 2** (D058 items 1 and 8; map §2 "A new-word count", `home.ts:216`, home.md:603 at the map's
+  reading). "Every week, the app gives you a report on four thinking skills (words, reasons, stories and questions)
+  and a new-word count." becomes "Each conversation appears a few minutes after it ends. Search them, read a daily
+  summary, or look back over the week or the month." The weekly four-skills report and the new-word count are off
+  until they ship; the app's code-checked report comes in (readable a few minutes after a conversation ends, search,
+  a daily summary, a look back over the week or the month). 21 → 24 words.
+- **Fold 5, bullet 3** (D058 item 1; map §2 "'Age-graded safety layer' wording", `home.ts:218`). "You set your
+  child's age in the app, and the age-graded safety layer follows it." becomes "You set your child's age in the app.
+  The AI model gets child-safety rules for that age, with Google's safety filters on top." The age setting stays
+  (D036); the mechanism is the live team's ("child-safety rules set for your child's age, with Google's safety
+  filters on top").
+- **Fold 5, bullet 4, the retention line** (D058 items 1 and 9; map §2 "One-tap delete", `RETENTION_LINE`,
+  `policies.ts:50`). "You can delete any of them sooner, in one tap." comes off; "Your child's conversations stay in
+  your parent app for 36 months, then they're deleted automatically." stays as approved.
+- **Fold 6, item 1** (D058 item 1, superseding D018's "about a minute"; map §2 "'About a minute of quiet'",
+  `home.ts:250`). "switches itself off after about a minute of quiet" becomes "switches itself off after a couple of
+  minutes of quiet".
+- **Fold 6, item 2** (D058 item 6, superseding D020 item 6; map §2 "'On servers in India'", `home.ts:255`).
+  ", on servers in India" comes off; the rest of D020's providers line is verbatim, including "They don't keep it, and
+  they never use it to train their AI. Our contracts with them say so." (D020's promise, unchanged). The processors
+  are named on `/privacy` only (D058 item 6); see the fold 6 notes for why "Kheelona's servers" is not added here.
+- **Fold 6, item 3** (D058 item 1; map §2 "One-tap delete", `home.ts:257`; the live `/privacy`, map §1 P11-P12).
+  "In the parent app. Delete any of them in one tap." becomes "In the parent app. Removing a chat there hides it on
+  that phone. Deleting your account deletes your child's profile, conversations and recordings from our servers."
+  The heading "You can read every conversation." is unchanged.
+- **Fold 8, "What ages is Kheelu for?"** (D058 item 1; map §2 "'Age-graded safety layer' wording", `faqs.ts:41`).
+  "When you set it up, you enter your child's age in the parent app, and every reply passes an age-graded safety
+  layer set to that age. You can change it later." becomes "At setup, you enter your child's age in the parent app.
+  You can change it later. The AI model gets child-safety rules for that age, with Google's safety filters on top."
+  58 words before and after (inside 40-60). "At setup" is the product page's approved fold 4 wording; with "When you set
+  it up" kept, the answer would run to 61 words. The age band, "not a toy for children under 3" and the age-3 sentence are unchanged.
+- **Fold 9, the Kheelona+ line** (D058 item 3; map §1 T3; `offer.ts:51`). "Every Kheelu comes with 6 months of
+  Kheelona+: stories, poems, jingles, languages and the parent app." becomes "Every Kheelu comes with 6 months of
+  Kheelona+, our paid subscription, on top of the free parent app." (the founder's sentence, verbatim; no feature
+  list; nothing says the parent app is part of Kheelona+).
+- **Footer `promise`** (D058 item 1; map §2 "'No open internet' (footer)", `navigation.ts:75`). "No open internet."
+  becomes "No web browsing.", the live footer's words. "Press to talk." and "You read every conversation." stay.
+- **Alt texts.** Fold 5's illustrative frame no longer shows or names a weekly report ("An illustrative parent-app
+  screen listing a child's conversations for the day."). Fold 6 gains the alt for the built privacy screen
+  (`home.ts:264`) without "delete all chats" (the button hides chats on that phone; D058 item 1); "keep chats for
+  36 months" stays (D058 item 9).
+- **Notes kept true:** the fold 5, 6, 8 and 9 notes and source tables, the footer source row, the fold 8 word-count
+  line, the density row of the keyword table (about 15 words more, no "Kheelu" added), question 5 (overtaken by D058
+  item 3), the gaps list, the Gate A round 2 note that kept "a closed-library fact within reach" (now marked
+  withdrawn), and the front matter. Title, meta descriptions, H1, every H2, every CTA, the price and delivery tokens
+  and the other keyword placements are unchanged; the six FAQ answers stay 51 to 58 words.
+- **Unchanged on purpose:** Bluetooth mode (D058 item 2); the eight named languages, up to 10, switching
+  mid-sentence (item 7); 36 months then deleted (item 9); "It can't browse the internet" (the live team's "cannot
+  browse or search the web", D017); "when it doesn't know something, it says so instead of guessing" (D036 #3, not
+  withdrawn); D020's promise that the providers neither keep nor train on the voice; nothing about Kheelona's own
+  model training on customer pages ([D035](../../decisions/D035-model-training-opt-out.md); the opt-out lives on
+  `/privacy` and `/terms`, D058 item 5); the Gate A round 2 history above, which records what was applied then.
+- **For the builder (not edited here):** `src/content/en-IN/pages/home.ts:216` and `:218` (fold 5 bullets 2 and 3),
+  `:250` (item 1), `:255` (item 2), `:257` (item 3 body), `:264` (the privacy screen's alt);
+  `src/content/en-IN/policies.ts:50` (`RETENTION_LINE` without its one-tap sentence; it feeds every surface that
+  prints it); `src/content/en-IN/faqs.ts:41` (the age answer; FAQPage JSON-LD and `llms.txt` read it);
+  `src/content/en-IN/offer.ts:51` (the close's Kheelona+ line); `src/content/en-IN/navigation.ts:75` (the footer
+  promise, on every page). **Deviations for the main session:** each changed line differs from the approved mockup
+  (`mockup/home.html`; text-parity rows under the `home` key; the footer under every page's key).
+
+**Round 2, after the [CMO review of task 8b.1](../../qa/cmo-review-claims-8b.1-2026-10-14.md)** (2026-10-14):
+- **Fold 5, bullet 3 (m8).** "You set your child's age in the app. The AI model gets child-safety rules for that age,
+  with Google's safety filters on top." becomes "You set your child's age in the app. The AI model that answers your
+  child gets child-safety rules for that age, with Google's safety filters on top." The bullet named "the AI model"
+  before the page had mentioned one. No new claim (D058 item 1); no "Kheelu" added. Builder:
+  `src/content/en-IN/pages/home.ts:218`.
+- **Not changed, on purpose:** the fold 8 age answer keeps "The AI model gets …": at 58 words it has no room (m8).
+  Fold 6 item 3 waits for the screenshot crop (m7; question 15). "From our servers" (m6) and the doesn't-know clause
+  (m11) wait on the CTO, the founder and Aman (questions 13 and 14). The Kheelona+ line at the close stays D058 item
+  3's sentence verbatim; whether Kheelona+ could ever charge by itself is the store's question 6 (m10 (b)). The four
+  thinking skills stay off until the report ships (m14; the main session logs it).
+- **Notes kept true:** the fold 5 note and source row; questions 13 to 15 are new.

@@ -3,7 +3,7 @@ import type { Copy, FaqItem, Offer, ProseBlock } from "@/content/types";
 import { isModeVariant } from "@/lib/content/mode";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { COPY_FIXES, type CopyFixesSlug } from "../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, type ClaimFixesSlug, COPY_FIXES, type CopyFixesSlug } from "../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../test/e2e/support/repo";
 import { withFacts } from "../../../test/support/mockup-facts";
 import { faqs, pickFaqs, type FaqId } from "./faqs";
@@ -13,7 +13,9 @@ import { faqs, pickFaqs, type FaqId } from "./faqs";
  * copy pages word them (home.md fold 8, meet-kheelu.md fold 8, ai-toys-for-kids-in-india.md
  * questions, store.md fold 5), ids stable. The mockup is read with task 7.1b's copy fixes applied
  * (test/e2e/support/deviations.ts COPY_FIXES; deviations V18, V19): Home's age-3 sentence and refund
- * timing, /safety's age-3 lines and its pointer to the next question. */
+ * timing, /safety's age-3 lines and its pointer to the next question; then with task 8b.1's claim fixes
+ * (CLAIM_FIXES; deviations V26-V31, D058): the age answers' mechanism in the live team's words, no
+ * "or delete" in the first-week answer, and /safety's "Replies" line without the closed library. */
 
 const token = buildOffer("token");
 const full = buildOffer("full");
@@ -83,11 +85,15 @@ describe("ids", () => {
   });
 });
 
-/** A page's approved FAQ items: its mockup's <main> with that page's copy fixes of task 7.1b, if any, applied. */
+/** A page's approved FAQ items: its mockup's <main> with that page's copy fixes of task 7.1b, then its claim fixes of
+ *  task 8b.1, if any, applied. */
 function approvedItems(slug: string): Element[] {
   const main = new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html").querySelector("main")!;
   const fixes = Object.hasOwn(COPY_FIXES, slug) ? COPY_FIXES[slug as CopyFixesSlug].edits : [];
-  return Array.from(withFacts(main, fixes).querySelectorAll(".kh-faq__item"));
+  // The claim fixes start from the page as its earlier rules left it, so they apply in a pass of their own; only those
+  // inside the questions (the rest need the page facts, which no FAQ reads).
+  const claims = Object.hasOwn(CLAIM_FIXES, slug) ? CLAIM_FIXES[slug as ClaimFixesSlug].edits.filter((e) => /faq|^li$/.test(e.at)) : [];
+  return Array.from(withFacts(withFacts(main, fixes), claims).querySelectorAll(".kh-faq__item"));
 }
 
 describe.each(Object.entries(PAGES))("mockup %s, token mode, word for word", (slug, ids) => {
@@ -152,6 +158,38 @@ describe("task 7.1b's copy fixes in the shared answers (deviations V18, V19)", (
 
   it("point /safety's open answer to the next question, where the answer is (CMO A M4)", () => {
     expect(plain(faqs["age-three"].answer, token)).toMatch(/Its advice in full, and our answer, are in the next question\.$/);
+  });
+});
+
+/* Task 8b.1 (D058; the live team's code check of 12 October): the answers follow the code check. The approved mockups keep
+   the withdrawn lines; the claim fixes above (CLAIM_FIXES) turn them into these, and the copy pages count the words. */
+describe("task 8b.1's claim fixes in the shared answers (D058; deviations V26-V31)", () => {
+  const all = () =>
+    (Object.values(faqs) as FaqItem[]).flatMap((f) => [plain(f.answer, token), plain(f.answer, full), ...(f.detail ?? []).flatMap((b) => blockText(b, token))]);
+
+  it("say none of the claims D058 withdraws: one-tap delete, the closed library, the age-graded layer", () => {
+    expect(all().filter((t) => /one tap|closed (?:content )?library|curated|age-graded|safety layer|read or delete|servers in India/.test(t))).toEqual([]);
+  });
+
+  it("give the age answers' mechanism in the live team's words, at the copy pages' word counts", () => {
+    const mechanism = "At setup, you enter your child’s age in the parent app. You can change it later. The AI model gets child-safety rules for that age, with Google’s safety filters on top.";
+    for (const [id, n] of [["what-ages", 58], ["right-for-a-three-year-old", 59]] as const) {
+      expect(plain(faqs[id].answer, token).endsWith(`If your child is 3, keep a grown-up nearby. ${mechanism}`), id).toBe(true);
+      expect(words(plain(faqs[id].answer, token)), id).toBe(n);
+    }
+    expect(plain(faqs["ai-toy-age"].answer, token)).toContain(
+      "You enter your child’s age in the parent app, and Kheelu’s AI is given child-safety rules and that age on every conversation.",
+    );
+    expect(words(plain(faqs["ai-toy-age"].answer, token))).toBe(59);
+  });
+
+  it("read the first-week answer without “or delete” (42 words) and /safety's “Replies” line in the live words", () => {
+    expect(plain(faqs["after-the-first-week"].answer, token)).toMatch(/ You can read any conversation in the parent app\.$/);
+    expect(words(plain(faqs["after-the-first-week"].answer, token))).toBe(42);
+    const replies = faqs["child-safety-groups"].detail.flatMap((b) => blockText(b, token)).find((line) => line.startsWith("Replies:"));
+    expect(replies).toBe(
+      "Replies: its answers are generated by an AI model that is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top. It can’t browse or search the web. When it doesn’t know something, it says so. Before launch, we test it by trying to make it say things it shouldn’t. You can read every conversation.",
+    );
   });
 });
 

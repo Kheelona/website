@@ -20,6 +20,9 @@ sources:
   - "../../qa/cmo-review-page-facts-6.7-2026-10-14.md (M7: question 7, one refund timing; M8: the fold 0 draft note at Gate B)"
   - ../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md (item 4, section 8's refund timing, applied in task 7.1b; see "Changes after approval (task 7.1b)")
   - ../../qa/cmo-review-built-a-2026-10-14.md (M8, one wording for the age-3 advice: question 8 for section 9)
+  - ../../decisions/D058-follow-the-live-code-check-2026-10-14.md (items 1, 3, 5 and 9, applied in task 8b.1; see "Changes after approval (task 8b.1)")
+  - "../../qa/live-main-reconciliation-2026-10-14.md (§1 rows T1-T8, §2's table of withdrawn claims: the live wording of origin/main dd04e6d (#18) and c630a49 (#19) as the map quotes it; origin/main itself was not re-read in task 8b.1)"
+  - "../../qa/cmo-review-claims-8b.1-2026-10-14.md (round 2 of task 8b.1: m6, m9, m10, m11; origin/main 8c4718a terms/page.tsx:73-86 as the review read it with git show)"
 ---
 
 # Terms (`/terms`): page copy
@@ -63,7 +66,7 @@ sources:
 | Anchors other pages link to | `#payment` (Home's trust row links "UPI, card or net banking" here, [home.md, CTA block](home.md#cta-block)); `#price`, `#cancel`, `#delivery`, `#returns`, `#training` |
 | Mockup meta | `{"title": "Kheelu pre-order terms · Kheelona", "description": "<token-mode meta>", "url": "/terms", "buybar": false, "active": "", "css": true}` |
 | Images | None (text-only policy page) |
-| Length | About 1,800 words of copy at Gate A. Task 6.7 takes out the five placeholders' wording (84 words) and adds 10 ("14 October 2026"; "with a switch in the parent app"). Task 7.1b swaps two words in section 8 ("is processed" → "reaches you"), none added |
+| Length | About 1,800 words of copy at Gate A. Task 6.7 takes out the five placeholders' wording (84 words) and adds 10 ("14 October 2026"; "with a switch in the parent app"). Task 7.1b swaps two words in section 8 ("is processed" → "reaches you"), none added. Task 8b.1 adds about 160 (the parent app's terms in section 10, about 125 with round 2's two live clauses; the replies line in sections 9 and 12; D058): about 1,885 words |
 
 The meta descriptions are machine-read, so they lead with the total and give the advance second
 ([D028](../../decisions/D028-price-wording.md)). They leave out "first 500 units" so no search snippet reads as
@@ -202,14 +205,17 @@ is G13). "We don't ship outside India" is live ([policies](../../product/policie
 > A pre-order reserves one Kheelu for you. Pre-orders are served first, in the order they were placed.
 >
 > In the box: the Kheelu plush toy, a charger and a quick-start card. Every Kheelu comes with 6 months of
-> Kheelona+: stories, poems, jingles, languages and the parent app.
+> Kheelona+, our paid subscription, on top of the free parent app.
 >
 > When your payment goes through, you see a confirmation page, and we email you a confirmation with your order
 > number.
 
 Notes:
-- The Kheelona+ sentence is the first sentence of [D027](../../decisions/D027-story-mode-wording.md)'s line,
-  verbatim, as on Home ([home.md](home.md), line 830). Nothing about what happens after the six months
+- The Kheelona+ sentence is [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 3's, verbatim
+  (task 8b.1): the parent app is free, Kheelona+ is paid on top of it, and which features stay free is not decided,
+  so no feature list. It replaces D027's "Kheelona+: stories, poems, jingles, languages and the parent app.", which
+  put the app inside Kheelona+ (map T3). The live `/terms`' "nothing is sold inside it" is not carried over (D058
+  item 3). Nothing about what happens after the six months
   ([D041](../../decisions/D041-gate-a-round-1.md) F7). The legal review's checklist asks `/terms` for the full
   Kheelona+ terms (DARK-04); the founder ruled otherwise, risk recorded in D041.
 - The confirmation is an acknowledgement, not a GST document ([pricing](../../product/pricing.md); legal review
@@ -368,13 +374,16 @@ Notes:
 > Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. If your child is 3, keep a grown-up
 > nearby.
 >
-> When you set Kheelu up, you enter your child's age in the parent app. Every reply passes an age-graded safety
-> layer set to that age. You can change it later.
+> When you set Kheelu up, you enter your child's age in the parent app. You can change it later. The AI model
+> that writes Kheelu's replies is given child-safety rules and your child's age on every conversation, with
+> Google's safety filters on top.
 
 Notes: Home's age answer as approved at Gate A, verbatim ([home.md](home.md) fold 8);
 [D041](../../decisions/D041-gate-a-round-1.md) (grown-up nearby); [D036](../../decisions/D036-launch-feature-claims.md)
-(the safety layer, the parent sets the age). Since task 7.1b, Home's FAQ says "If your child is 3, keep a grown-up
-nearby." (CMO built-page review A, M8). This section keeps its approved words because no fix in task 7.1b names it;
+(the parent sets the age). Since task 8b.1 "Every reply passes an age-graded safety layer set to that age." (D036
+#6) is the live wording instead ([D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1; map
+§2, "Age-graded safety layer" row), and it moves after "You can change it later.", so "it" still means the age.
+Since task 7.1b, Home's FAQ says "If your child is 3, keep a grown-up nearby." (CMO built-page review A, M8). This section keeps its approved words because no fix in task 7.1b names it;
 question 8 asks whether it follows.
 
 ### Section 10 · The parent app (`#account`)
@@ -384,16 +393,51 @@ question 8 asks whether it follows.
 > ## The parent app.
 >
 > The parent app is for parents and guardians. The person who sets it up must be 18 or over and looks after the
-> account.
+> account. You're responsible for how your child uses Kheelu.
 >
-> In the app, you can read every conversation and delete any of them in one tap. Conversations are deleted
-> automatically after 36 months.
+> In the app, you can read every conversation word for word, a few minutes after it ends, with a daily summary,
+> search, and a look back over the week or the month. Conversations are deleted automatically after 36 months.
+>
+> The parent app is free. You sign in with your phone number and a one-time code. Keep the code to yourself,
+> and tell us if you think someone else is using your account.
+>
+> Conversations with Kheelu need your home Wi-Fi. Stories and songs you've downloaded play without it.
+>
+> Don't try to break into our systems, copy the service, or use the app or Kheelu to harm anyone. If you do, we
+> can close your account.
+>
+> You can stop using the app and delete your account at any time, in its privacy settings. That deletes the
+> account, your child's profile, and their conversations and voice recordings.
 >
 > How we handle your child's data is on our [Privacy](../../../mockup/privacy.html) page, which is part of these terms.
 
-Notes: the account-holder line is legal review DATA-30 (a drafter's addition). Reading and deleting:
-[D017](../../decisions/D017-live-behaviour-claims-confirmed.md); 36 months:
-[D020](../../decisions/D020-provider-terms-and-no-sale.md). Nothing about Kheelona+ after six months (D041).
+Notes: the account-holder line is legal review DATA-30 (a drafter's addition), now also the live `/terms`' rule
+(map T2). Reading: [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); 36 months:
+[D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7, kept by
+[D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 9. Nothing about Kheelona+ after six
+months (D041). **Task 8b.1** brings in #18's app terms (origin/main dd04e6d, `terms/page.tsx:81-86`, as the
+[map](../../qa/live-main-reconciliation-2026-10-14.md) quotes it), in this page's voice:
+- "You're responsible for how your child uses Kheelu." (T2).
+- "The parent app is free." (D058 item 3; T3 without "nothing is sold inside it", which D058 item 3 does not carry
+  over) and the one-time-code sign-in (T3; as on /privacy, D055 item 14). Round 2 adds T3's own rule, "Keep the
+  code to yourself, and tell us if you think someone else is using your account." (origin/main `8c4718a`,
+  `terms/page.tsx:82`: "keep that code to yourself and tell us if you think someone else is using your account",
+  as the [CMO review of task 8b.1](../../qa/cmo-review-claims-8b.1-2026-10-14.md) read it, m9).
+- "Delete any of them in one tap" goes (D058 item 1; map §2 "One-tap delete"); the app's view is D058 item 8's
+  list (word for word, a few minutes after it ends, a daily summary, search, the week or the month).
+- **Order (round 2, CMO review m10 (c)).** The feature paragraph now comes before "The parent app is free.", so
+  the "free" sentence opens the sign-in paragraph instead of heading the list of what the app shows. Which
+  features stay free is not decided (D058 item 3), and the page lists none as free. No word changes.
+- Home Wi-Fi for conversations; downloaded stories and songs without it (T5). Bluetooth mode is not on this page
+  (D058 item 2 keeps it elsewhere). "Songs" is the live `/terms`' word (T5, code-checked against the app on 12
+  October); the rest of the site says Story mode plays "stories, poems and jingles" (D027). Checks: keep "songs"
+  only if the app's Play section uses it (CMO review m9, optional).
+- No breaking in, no copying, and, since round 2, no using the app or Kheelu to harm anyone; we can close the
+  account (T6; the harm clause is `terms/page.tsx:85`, CMO review m9).
+- Stop and delete the account at any time in the privacy settings (T7); what deleting deletes is D058 item 1 and
+  map P12, the same words as /privacy Section 9. Round 2: "Deleting it deletes the account, …" becomes "That
+  deletes the account, …" (m9).
+- T4 (replies can be wrong: conversation, not advice) is in section 12, beside the line it corrects.
 
 ### Section 11 · Conversations and Kheelona's own model (`#training`)
 
@@ -422,20 +466,30 @@ the same method /privacy states (item 12); what happens after a parent turns it 
 > Kheelu is a toy, not a therapy or treatment. If you're worried about your child's speech, talk to your
 > paediatrician.
 >
-> Kheelu uses AI to understand and answer your child. Its stories and answers come from a curated, closed
-> content library, and every reply passes an age-graded safety layer. We test it before launch by trying to make
-> it say unsafe things, and when it isn't sure, it says it doesn't know rather than guess. Even so, an answer can sometimes be wrong. Kheelu doesn't
-> replace you: stay close, and read its conversations in the parent app.
+> Kheelu uses AI to understand and answer your child. The AI model that writes its replies is given child-safety
+> rules and your child's age on every conversation, with Google's safety filters on top. It cannot browse or
+> search the web.
+>
+> We test it before launch by trying to make it say unsafe things, and when it isn't sure, it says it doesn't
+> know rather than guess. Even so, an answer can sometimes be wrong, so treat its replies as conversation, not
+> advice. Kheelu doesn't replace you: stay close, and read its conversations in the parent app.
 
 Notes:
 - The first paragraph is [D025](../../decisions/D025-speech-and-language.md)'s disclaimer, verbatim (on `/terms`
   and the product page only).
-- The second paragraph uses only [D036](../../decisions/D036-launch-feature-claims.md)'s confirmed behaviours
-  (closed library, safety layer, red-teamed, says it doesn't know). It opens with D020's "to understand and
-  answer your child, Kheelu uses … AI providers" in short, so the closed library never reads as "no AI model is
-  involved" ([facts](../../product/facts.md), line 144 flag). "An answer can sometimes be wrong" and
-  "doesn't replace you" are drafter's additions (a plain limit, voice rule 8 in [voice](../../brand/voice.md)).
-  "Kheelu's stories" here means its content, not a claim that Story mode adapts (D027).
+- The second paragraph opens with D020's "to understand and answer your child, Kheelu uses … AI providers" in
+  short. **Task 8b.1:** "Its stories and answers come from a curated, closed content library, and every reply
+  passes an age-graded safety layer." (D036 #5 and #6) goes; the live wording takes its place
+  ([D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1; [map](../../qa/live-main-reconciliation-2026-10-14.md)
+  §2, the "closed library" and "Age-graded safety layer" rows; origin/main c630a49), with "It cannot browse or
+  search the web." (the same code-checked wording; D017's "cannot browse the internet"). "So treat its replies as
+  conversation, not advice" is the live `/terms`' T4 (dd04e6d, `terms/page.tsx:83`). The red-teaming and "says it
+  doesn't know" sentence (D036 #3 and #7) stays: D058 withdraws neither by name (map, "For the founder" F;
+  question 9). "An answer can sometimes be wrong" and "doesn't replace you" were drafter's additions (a plain
+  limit, voice rule 8 in [voice](../../brand/voice.md)); the first is now the live T4 too.
+- **Round 2 (CMO review of task 8b.1, m9):** the second paragraph is split after "It cannot browse or search the
+  web.", so a phone shows two short paragraphs (what the AI is; then its limits) instead of six sentences in one.
+  No word changes.
 
 ### Section 13 · Images on this website (`#images`)
 
@@ -542,7 +596,7 @@ Plain `path:line` = tag `archive/pre-reset-2026-10-10`. Wiki paths are relative 
 | One Kheelu per pre-order; more via WhatsApp | `terms/page.tsx:52`; product/policies.md:80 |
 | Served in the order placed | product/facts.md:192 |
 | Box contents | [D041](../../decisions/D041-gate-a-round-1.md) ("Kheelu plush toy, Charger, quick start card") |
-| Kheelona+ first sentence only | [D027](../../decisions/D027-story-mode-wording.md):24-27; [D041](../../decisions/D041-gate-a-round-1.md) F7; site/pages/home.md:830 |
+| Kheelona+: 6 months included, a paid subscription on top of the free parent app; no feature list | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 3, verbatim; [D041](../../decisions/D041-gate-a-round-1.md) F7 |
 | Confirmation page and email | site/checkout.md:105, 108 |
 | Tick box accepts terms and refund policy | site/checkout.md:124 |
 | Methods UPI, cards, net banking; Razorpay form | [D024](../../decisions/D024-payment-methods-gst.md); product/policies.md:115, 149-166; `privacy/page.tsx:36` |
@@ -561,13 +615,22 @@ Plain `path:line` = tag `archive/pre-reset-2026-10-10`. Wiki paths are relative 
 | 6-month warranty, exclusions, repair else replace | [D022](../../decisions/D022-warranty-replacement-refund.md) item 1; [D033](../../decisions/D033-warranty-after-day-7.md); product/policies.md:106 |
 | Free pickup; refund reaches you within 7 working days of the unit reaching us (bank time included) | [D033](../../decisions/D033-warranty-after-day-7.md); [D022](../../decisions/D022-warranty-replacement-refund.md) item 4; [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 5; [D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 4 (the wording, as site/pages/refund.md step 3); product/policies.md:107, 109 |
 | No exchanges | [D042](../../decisions/D042-policy-display-answers.md); product/policies.md:111 |
-| Ages 3 to 7; not under 3; grown-up nearby; age set in the app; safety layer | site/pages/home.md:751 (fold 8's age answer as approved at Gate A; reworded on Home in task 7.1b, question 8); product/facts.md:83; [D041](../../decisions/D041-gate-a-round-1.md); [D036](../../decisions/D036-launch-feature-claims.md):22, 25-26 |
-| Adult account holder; privacy part of the terms | product/legal-requirements.md:459 (DATA-30), 524 |
-| Read and delete every conversation; 36 months | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7 |
+| Ages 3 to 7; not under 3; grown-up nearby; age set in the app | site/pages/home.md:751 (fold 8's age answer as approved at Gate A; reworded on Home in task 7.1b, question 8); product/facts.md:83; [D041](../../decisions/D041-gate-a-round-1.md); [D036](../../decisions/D036-launch-feature-claims.md):27-28 (the parent sets the age) |
+| The AI model is given child-safety rules and the child's age on every conversation, with Google's safety filters on top; it cannot browse or search the web (sections 9 and 12) | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1; [map](../../qa/live-main-reconciliation-2026-10-14.md) §2 ("closed library" and "Age-graded safety layer" rows; origin/main c630a49); [D017](../../decisions/D017-live-behaviour-claims-confirmed.md) (cannot browse) |
+| Adult account holder; privacy part of the terms | product/legal-requirements.md:459 (DATA-30), 524; map T2 |
+| Responsible for how your child uses Kheelu | map T2 (origin/main dd04e6d, `terms/page.tsx:81`); D058 item 1 |
+| The parent app is free; one-time-code sign-in | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 3; map T3 (`terms/page.tsx:82`); [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 14 |
+| Keep the code to yourself; tell us if someone else is using your account | origin/main `8c4718a`, `terms/page.tsx:82` (T3), as the [CMO review of task 8b.1](../../qa/cmo-review-claims-8b.1-2026-10-14.md) read it with `git show` (m9); D058 item 1 ("#18's app sections") |
+| Read every conversation word for word, a few minutes after it ends; daily summary; search; the week or the month | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md) (read); [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) items 1 and 8; map §2 |
+| 36 months, then deleted automatically | [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7; [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 9 |
+| Conversations need home Wi-Fi; downloaded stories and songs play without it | map T5 (`terms/page.tsx:84`); product/facts.md:98 (AI mode uses home Wi-Fi) |
+| No breaking in, copying, or using the app or Kheelu to harm anyone; we can close the account | map T6 (`terms/page.tsx:85`); the harm clause: origin/main `8c4718a`, `terms/page.tsx:85`, as the [CMO review of task 8b.1](../../qa/cmo-review-claims-8b.1-2026-10-14.md) read it (m9); D058 item 1 |
+| Stop and delete the account at any time in its privacy settings; what deleting deletes | map T7 (`terms/page.tsx:86`), P12; [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1 |
+| Replies can be wrong: conversation, not advice | map T4 (`terms/page.tsx:83`); D058 item 1 |
 | Own-model training, on by default, opt-out; providers never train | [D035](../../decisions/D035-model-training-opt-out.md):14-29; [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 3 |
 | Turned off with a switch in the parent app | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 11 (as on /privacy, item 12) |
 | Speech disclaimer | [D025](../../decisions/D025-speech-and-language.md):19-20; product/policies.md:123 |
-| Closed library, safety layer, red-teamed, says it doesn't know | [D036](../../decisions/D036-launch-feature-claims.md):18, 21-23 |
+| Red-teamed, says it doesn't know | [D036](../../decisions/D036-launch-feature-claims.md):20, 25 (#3, #7; not withdrawn by D058, question 9) |
 | AI-generated images disclosure | [D041](../../decisions/D041-gate-a-round-1.md); raw/feedback/2026-10-11-gate-a-answers.md:32; product/policies.md:133 |
 | Films: real pilot families, with permission | [D040](../../decisions/D040-films-move-to-new-site.md); product/legal-requirements.md:387 (DARK-02) |
 | Indian law, Bengaluru courts; consumer complaint where you live | `terms/page.tsx:82`; product/policies.md:90; product/legal-requirements.md:367 (TERMS-01) |
@@ -595,17 +658,19 @@ None left. Each of the five Gate A placeholders was filled or taken off the page
 ## Drafter's additions (need the founder's OK)
 
 1. "You must be 18 or over to pre-order." (DATA-13)
-2. The parent-app account holder is 18 or over and looks after the account (DATA-30).
+2. The parent-app account holder is 18 or over and looks after the account (DATA-30). Since task 8b.1 the live
+   `/terms` makes the same rule (map T2), so only "looks after the account" is still the drafter's.
 3. "If a payment goes wrong, tell us first and we'll sort it out." (before the chargeback line)
 4. "Even so, an answer can sometimes be wrong. Kheelu doesn't replace you: stay close, and read its
-   conversations in the parent app."
+   conversations in the parent app." Since task 8b.1 the first sentence carries the live T4 ("so treat its replies
+   as conversation, not advice"), so only "Kheelu doesn't replace you …" is still the drafter's.
 5. "If a change affects your order, we tell you first."
 
 ## Questions for the founder (website only)
 
 The questions shared with `/privacy` are on [privacy.md](privacy.md#questions-for-the-founder-website-only)
 (1: the opt-out method and purpose; 4: the drafter's additions on both pages; 5: no pre-order button on the policy
-pages). Two more for this page:
+pages). For this page (6 and 7 from task 6.7, 8 from 7.1b, 9 from 8b.1):
 
 6. **The GST line before your CA confirms.** (a) Keep "Every order gets a GST invoice." with the placeholder for
    the document details, as drafted; (b) hold the whole line until the CA has vouchers and invoices running (legal
@@ -628,6 +693,32 @@ pages). Two more for this page:
    word; no new claim; the age band and "not a toy for children under 3" unchanged). **Recommend (b)**: one sentence
    is the point of M8, and this section was built to match Home. Not applied: no fix in task 7.1b names section 9.
 
+9. **The test-and-say-it-doesn't-know sentence in section 12** (new, task 8b.1). "We test it before launch by
+   trying to make it say unsafe things, and when it isn't sure, it says it doesn't know rather than guess." rests
+   on [D036](../../decisions/D036-launch-feature-claims.md) #7 and #3. D058 removes the articles' "We attack our
+   own safety layer before every release" and the safety layer itself, but names neither of these, and the live
+   team's code check left them open ([map](../../qa/live-main-reconciliation-2026-10-14.md), "For the founder" F).
+   (a) Keep the sentence as approved; (b) keep "when it isn't sure, it says it doesn't know rather than guess" and
+   drop the test half; (c) drop both until the live team confirms them as it did the rest. **Recommend (a), with a
+   check:** ask Aman to confirm the "doesn't know" instruction is in the rules the model is given, and confirm
+   yourself that the pre-launch test was done; if either is not true by Gate B, take it out ((b) or (c)). Kept as
+   (a) in task 8b.1, which changes only what D058 reaches. **The CMO review of task 8b.1 (m11) adds:** the live
+   team's own rewrite of the same answer, "Could Kheelu say something wrong?" (c630a49), dropped both the test
+   sentence and any doesn't-know line. So both halves need your confirmation, and Aman's, before Gate B; whichever
+   is not confirmed comes out wherever it appears (here; `/safety` question 6; the product page's question 12;
+   the buyer's guide's question 3; Home's question 13). If both go, section 12's second paragraph starts "An answer
+   can sometimes be wrong, so treat its replies as conversation, not advice."
+
+[privacy.md](privacy.md#questions-for-the-founder-website-only) question 11 (what deleting the account reaches)
+covers section 10's last paragraph here too, which uses the same words. If (b), section 10 gains "and takes them
+out of our training data" after "voice recordings"; if (c), it gains (c)'s sentence after that paragraph (CMO
+review of task 8b.1, m6).
+
+**Kheelona+ and "nothing recurring"** (CMO review of task 8b.1, m10 (b)): the store's question 6 asks you to
+confirm, before Gate B, that Kheelona+ never starts charging without the parent's own sign-up. This page's short
+version says "Nothing recurring." (item 5) and section 3 calls Kheelona+ "our paid subscription", so the same
+answer covers both.
+
 Answered on 2026-10-14 ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)): question 6 by
 item 10 (the invoice line stays; the documents-and-timing and price-breakup slots come off), and privacy.md
 question 1's "how" by item 11 (a switch in the parent app). Question 7 by
@@ -639,11 +730,23 @@ question 1's "how" by item 11 (a switch in the parent app). Question 7 by
 - Razorpay's support link from an Indian network.
 - The store's tick-box wording still says "the pre-order terms and the refund policy" (Section 1 quotes it).
 - Every amount, the cap and the delivery text render from their sources in both modes (G9).
+- **Task 8b.1, against origin/main: done** by the [CMO review of task 8b.1](../../qa/cmo-review-claims-8b.1-2026-10-14.md)
+  (`git show` at `8c4718a`, `terms/page.tsx:73-86`). T6's closing condition matches ("If you do, we can close the
+  account.", `:85`); the two live clauses the first pass did not carry (T3's code rule, T6's harm clause) are in
+  section 10 since round 2.
+- **"Songs" in section 10** (CMO review m9, optional): the live T5 says "stories and songs"; the rest of the site
+  says Story mode plays "stories, poems and jingles" (D027). Keep "songs" only if the app's Play section uses the
+  word; if it does not, the sentence becomes "Stories you've downloaded play without it."
+- The 36-month automatic deletion runs by launch ([D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md)
+  item 9; the live code had no timed expiry on 12 October, map P13). If it does not, section 10's 36-month
+  sentence comes off.
 
 ## Risks recorded, not re-raised
 
 - Kheelona+ terms after six months are not stated ([D041](../../decisions/D041-gate-a-round-1.md); legal review
-  DARK-04, L7).
+  DARK-04, L7). Since task 8b.1 the page says Kheelona+ is a paid subscription but not its price after six months,
+  nor which features stay free ([D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 3: not
+  decided).
 - Opt-out training default vs DPDP consent ([D035](../../decisions/D035-model-training-opt-out.md)).
 - A published delivery start that slips gives buyers the Rule 7(4) refund claim, which the terms already honour
   ([D037](../../decisions/D037-delivery-date-in-schema.md)).
@@ -658,9 +761,10 @@ question 1's "how" by item 11 (a switch in the parent app). Question 7 by
 | H1 | "pre-order terms" |
 | Meta description | ₹4,999 (incl. GST) first, then "refundable ₹499 advance" (D028) |
 | H2 | "What a pre-order is." / "The price." (what the advance buys, after the total) |
-| Banned words checked | No "lessons", "best friend", "free" beside Kheelona+, "just/only ₹499", wake-word lines, "region", "MRP" framed as a saving, em dashes |
+| Banned words checked | No "lessons", "best friend", "free" beside Kheelona+ (since task 8b.1 "free" describes the parent app, in D058 item 3's own sentence, which calls Kheelona+ paid), "just/only ₹499", wake-word lines, "region", "MRP" framed as a saving, em dashes |
 
-The keyword placements are unchanged by tasks 6.7 and 7.1b (no change touches the title, meta, H1 or H2s).
+The keyword placements are unchanged by tasks 6.7, 7.1b and 8b.1 (no change touches the title, meta, H1 or H2s; the
+full-mode meta's "using Kheelu and its app" stays true).
 
 ## Changes after approval (task 6.7)
 
@@ -715,3 +819,68 @@ stands as approved. The frozen mockup (`mockup/terms.html`) is not edited: the b
   3, keep a grown-up nearby.", the sentence every FAQ answer uses (CMO built-page review A M8). The advice is still
   D041's; no other word changes. Built in `src/content/en-IN/legal/terms.ts` (`ages`); parity deviation V21
   (`COPY_FIXES.terms`). Signed off with the other legal pages (D029).
+
+## Changes after approval (task 8b.1)
+
+The founder's [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) (2026-10-14): the site follows
+the live team's code check of 12 October (origin/main c630a49, PR #19: claims withdrawn) and takes in the parent
+app's terms from the live `/terms` (origin/main dd04e6d, PR #18), as mapped in the
+[reconciliation map](../../qa/live-main-reconciliation-2026-10-14.md) (§1 rows T1-T8, §2's table). Only the lines
+D058 and the map reach changed; every other word of the Copy blocks stands as approved at Gate A
+([D046](../../decisions/D046-gate-a-approved.md)) and changed since by D055-D057. The live wording was taken from the
+map's quotes; origin/main was not re-read here (Checks).
+
+| # | Where | Was | Now | Why |
+|---|---|---|---|---|
+| 1 | Section 3 | "Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app." | "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app." | D058 item 3, verbatim (fix (i)); map T3 |
+| 2 | Section 9 | "Every reply passes an age-graded safety layer set to that age. You can change it later." | "You can change it later. The AI model that writes Kheelu's replies is given child-safety rules and your child's age on every conversation, with Google's safety filters on top." | D058 item 1 (fix (c)); map §2 "Age-graded safety layer" |
+| 3 | Section 10 | "…looks after the account." | Adds "You're responsible for how your child uses Kheelu." | Fix (j); map T2 |
+| 4 | Section 10 | (none) | "The parent app is free. You sign in with your phone number and a one-time code." | D058 item 3; fix (j); map T3 (without "nothing is sold inside it") |
+| 5 | Section 10 | "In the app, you can read every conversation and delete any of them in one tap." | "In the app, you can read every conversation word for word, a few minutes after it ends, with a daily summary, search, and a look back over the week or the month." "Conversations are deleted automatically after 36 months." stays | D058 items 1, 8 and 9 (fixes (a), (e)); map §2 "One-tap delete" |
+| 6 | Section 10 | (none) | "Conversations with Kheelu need your home Wi-Fi. Stories and songs you've downloaded play without it." | Fix (j); map T5 |
+| 7 | Section 10 | (none) | "Don't try to break into our systems or copy the service. If you do, we can close your account." | Fix (j); map T6 |
+| 8 | Section 10 | (none) | "You can stop using the app and delete your account at any time, in its privacy settings. Deleting it deletes the account, your child's profile, and their conversations and voice recordings." | D058 item 1 (fixes (a), (j)); map T7, P12 |
+| 9 | Section 12 | "Its stories and answers come from a curated, closed content library, and every reply passes an age-graded safety layer."; "Even so, an answer can sometimes be wrong." | "The AI model that writes its replies is given child-safety rules and your child's age on every conversation, with Google's safety filters on top. It cannot browse or search the web."; "Even so, an answer can sometimes be wrong, so treat its replies as conversation, not advice." | D058 item 1 (fix (c), D036 #5 and #6 withdrawn); map §2 "closed library", T4 |
+| 10 | Notes | | Front matter sources; Length; the section 3, 9, 10 and 12 notes; the Sources rows; drafter's additions 2 and 4 (now partly the live terms); question 9 (new); the checks; the risks; the keyword table's "free" note | So the page stays true |
+
+Length: about 1,885 words (was about 1,725 after tasks 6.7 and 7.1b; round 2 adds about 25).
+
+**Round 2, after the [CMO review of task 8b.1](../../qa/cmo-review-claims-8b.1-2026-10-14.md)** (2026-10-14; the
+review read origin/main `8c4718a`, `terms/page.tsx:73-86`, with `git show`). No new claim: each added clause is the
+live `/terms`' own.
+
+| # | Where | What changed | Why |
+|---|---|---|---|
+| 11 | Section 10 | The feature paragraph ("In the app, you can read every conversation …") moves before "The parent app is free.", which now opens the sign-in paragraph | m10 (c): "free" no longer heads the list of what the app shows (D058 item 3: which features stay free is not decided). No word changes |
+| 12 | Section 10 | After "You sign in with your phone number and a one-time code." adds "Keep the code to yourself, and tell us if you think someone else is using your account." | m9 (1); T3, `terms/page.tsx:82` |
+| 13 | Section 10 | "Don't try to break into our systems or copy the service." becomes "Don't try to break into our systems, copy the service, or use the app or Kheelu to harm anyone." | m9 (2); T6, `terms/page.tsx:85` |
+| 14 | Section 10 | "Deleting it deletes the account, …" becomes "That deletes the account, …" | m9 (3), phrasing only |
+| 15 | Section 12 | The second paragraph is split after "It cannot browse or search the web." | m9 (4): six sentences, about 95 words, in one paragraph; no word changes |
+| 16 | Notes | The section 10 and 12 notes, two Sources rows, question 9 (the CMO's m11 note), the question 11 pointer (m6), the Kheelona+ pointer (m10 (b)), the checks (origin/main read; "songs"), Length, front matter | So the page stays true |
+
+Not changed in round 2: every other word of the Copy blocks, including "Stories and songs you've downloaded" (the
+live T5; a check, not a change) and section 12's test and doesn't-know sentence (question 9, now for the founder
+and Aman before Gate B).
+
+**Kept, as the task names them:** the training disclosure and its switch in the parent app (section 11; D035,
+D058 item 5); 36 months, then deleted automatically (section 10; D058 item 9); the grievance officer Aman Soni,
+aman@kheelona.com (section 16; D058 item 4); ages 3 to 7, "not a toy for children under 3" and the age-3 line
+(section 9); every price as a `{price-source}` token. Bluetooth mode and the languages (D058 items 2 and 7) do not
+appear on this page; section 10's home Wi-Fi line speaks of conversations only, as T5 does.
+
+**Not on this page:** "on servers in India", "about a minute of quiet", the new-word count, the weekly report,
+topic controls and quiet hours (fixes (b), (d), (e), (f)) were never on `/terms`; the footer's "No open internet."
+(fix (h)) is navigation copy, not part of this page's Copy blocks. The parent-app sections of `/privacy` (fix (j),
+P3-P10) are on [privacy.md](privacy.md), which this page's section 10 links.
+
+**Not changed:** title, both meta descriptions, H1, every H2, the short version (its item 7 on training stays), fold 3,
+sections 1, 2, 4-8, 11 and 13-16, the close, fold 0's draft note. "Last updated: 14 October 2026" stays: D058 is
+dated 14 October 2026. No new line uses a phrase from `test/guards/banned-phrases.data.ts`; no amount is typed.
+
+**For the builder:** `src/content/en-IN/legal/terms.ts` follows the changed Copy blocks (rows 1-9, and rows 11-15 of
+round 2 above); the parity rules
+that pin the old lines change with them (`test/e2e/support/deviations.ts`, the `terms` key; `test/fixtures/legal/terms.ts`
+holds the Gate A text of sections 3, 9, 10 and 12). Section 3's Kheelona+ sentence also lives in `offer.ts` and on
+Home and the product page (map T3), which the other copy pages of task 8b.1 carry. The approved mockup `terms.html`
+keeps its Gate A text; each changed line is a deviation row the main session writes, and the founder signs them at
+Gate B with D029's legal sign-off.

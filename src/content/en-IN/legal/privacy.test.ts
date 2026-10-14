@@ -320,30 +320,45 @@ describe("the privacy page: the founder's page facts (D055)", () => {
     expect(TEXT).not.toMatch(/PLACEHOLDER/);
   });
 
-  it("names what the parent app keeps: the child's first name, the phone number and one-time code, the device and Wi‑Fi details (item 14)", () => {
+  /* D055 item 14, as the live /privacy's app sections word it since task 8b.1 (D058 item 1; map §1 P3-P8): the child's
+     profile, the account, Kheelu's setup, and the Wi-Fi network's name on the phone, not in the account (supersedes D055
+     item 13's account line). */
+  it("names what the parent app keeps: the child's profile, the account and its one-time code, Kheelu's setup; no location (item 14; D058)", () => {
     const kheelu = partText("kheelu");
-    expect(kheelu).toContain("Your child’s first name:\nthe parent app asks for it.");
     expect(kheelu).toContain(
-      "your phone number. You sign in with it and a one-time code. The account also keeps Kheelu’s serial or device ID, the name of the Wi‑Fi network Kheelu joins (not its password), and your phone’s model and operating system.",
+      "Your child’s profile:\ntheir first name, pronouns and languages, which the parent app asks for so Kheelu can talk with them properly, and a photo only if you add one.",
     );
-    expect(kheelu).not.toMatch(/alert/i);
+    expect(kheelu).toContain(
+      "Your parent-app account:\nyour phone number, which you sign in with using a one-time code, and your name and how you’re related to your child, if you add them.",
+    );
+    expect(kheelu).toContain(
+      "Kheelu’s setup:\nits serial or device ID, the name you give it, its battery and Wi‑Fi strength, when it was last online, and your phone’s model and operating system.",
+    );
+    expect(kheelu).toContain(
+      "The parent app collects no location. Your phone asks for location permission while you set Kheelu up. That is only because Android and iPhone require it before an app can read the name of your Wi‑Fi network, and that name stays on your phone. Your account doesn’t keep the Wi‑Fi password. The app has no advertising or analytics tools.",
+    );
+    expect(kheelu).not.toMatch(/alert|network Kheelu joins/i);
   });
 
-  it("uses recordings for the reply and training only (item 13), keeps consent in the founder's two sentences (item 15), and names no provider (item 16)", () => {
+  it("uses recordings for the reply and training only (item 13), keeps consent in the founder's two sentences (item 15), and names the processors in section 7 (D058 item 6)", () => {
     const kheelu = partText("kheelu");
-    expect(kheelu).toContain("Besides Kheelu’s reply and that training, we use them for nothing else.");
+    expect(kheelu).toContain(
+      "Besides Kheelu’s reply and that training, we use them for nothing else. We keep them unless you turn off Save voice recordings in the parent app’s privacy settings; then we keep the text only.",
+    );
     expect(kheelu).toContain(
       "Setting Kheelu up in the parent app is how a parent or guardian agrees to this policy. A separate consent step, with a check that you are the parent or guardian, comes before May 2027.",
     );
-    expect(kheelu).not.toMatch(/on request|which providers we use/);
+    expect(kheelu).toContain("In AI mode, Kheelu uses your home Wi‑Fi and sends your child’s voice to Kheelona’s servers.");
+    expect(kheelu).toContain("Every company that runs Kheelu and the parent app for us is named below, under Everyone who handles your data. Some of them process data outside India.");
+    expect(kheelu).not.toMatch(/on request|which providers we use|servers in India/);
   });
 
-  it("lists every recipient with its region (items 16 and 24): the providers unnamed, conversations with Kheelona on Google Cloud", () => {
+  /* D058 item 6 (task 8b.1) supersedes item 16: the processors named, as the live /privacy names them, some outside India. */
+  it("lists every recipient with its region (D058 item 6; D055 item 24): the processors named in one row, some outside India", () => {
     const recipients = part("who-else").blocks.find((b) => b.kind === "recipients");
     const rows = recipients?.kind === "recipients" ? recipients.rows : [];
     expect(rows.map((r) => [toPlainText(r.who), toPlainText(r.where)])).toEqual([
-      ["Speech and AI providers", "Servers in India"],
-      ["Kheelona, on Google Cloud", "India"],
+      ["Google Cloud, Google’s Gemini, Sarvam AI, Twilio, Aiven, Redis, New Relic and Sentry", "India, and some of them outside India"],
       ["Razorpay", "India"],
       ["Supabase", "Australia"],
       ["Resend", "United States"],
@@ -355,22 +370,32 @@ describe("the privacy page: the founder's page facts (D055)", () => {
     ]);
   });
 
-  it("keeps things as the founder said (items 13 and 18-21): recordings and closed accounts by the 36 months, orders without a period", () => {
+  /* D058 item 1 (task 8b.1) supersedes item 18: deleting the account deletes the data (the live /privacy, map §1 P12). */
+  it("keeps things as the founder said (items 13 and 19-21; D058 items 1 and 9): recordings by the 36 months, a deleted account deleted, orders without a period", () => {
     const keep = partText("keep");
-    expect(keep).toContain(`Voice recordings:\n${RETENTION_MONTHS} months, the same as transcripts.`);
-    expect(keep).toContain(`If you close your parent-app account:\nwe keep your child’s conversations and recordings until their ${RETENTION_MONTHS} months end.`);
+    expect(keep).toContain(`Conversation transcripts:\n${RETENTION_MONTHS} months, then deleted automatically, unless you delete your account sooner.`);
+    expect(keep).toContain(`Voice recordings:\n${RETENTION_MONTHS} months, the same as transcripts. With Save voice recordings off, we keep the text only.`);
+    expect(keep).toContain("If you delete your parent-app account:\nwe delete the account, your child’s profile, and their conversations and recordings.");
+    expect(keep).not.toMatch(/until their \d+ months end|keep none/);
     expect(keep).toContain("Orders you’ve paid for:\nas long as Indian tax law requires, even after a refund.");
     expect(keep).toContain("Unpaid orders:\nwe keep them until you ask us to delete them.");
     expect(keep).toContain("PostHog:\nscreen recordings for 30 days.");
     expect(partText("store")).toContain("If you start a pre-order and don’t pay, the details you entered are still saved, as an unpaid order. We keep them until you ask us to delete them.");
   });
 
-  it("says plainly what a one-tap delete does not reach (item 17), and promises nothing about servers or backups", () => {
+  /* D058 item 1 (task 8b.1; the live /privacy, map §1 P10-P12): no one-tap delete. Removing a chat hides it on that phone,
+     and item 17's limit stays said plainly; deleting the account is what deletes. */
+  it("says what the app's privacy settings do, what removing a chat does not reach (item 17; D058), and promises nothing about backups", () => {
     const rights = partText("rights");
+    expect(rights).toContain("In the app’s privacy settings, you can:");
+    for (const item of ["turn off Save voice recordings, to keep the text of conversations only;", "download your child’s data;", "delete your account."]) {
+      expect(rights).toContain(item);
+    }
     expect(rights).toContain(
-      "In the parent app, you can delete any conversation in one tap. It disappears from your app straight away. It is not removed from Kheelu’s memory, or from the data our model trains on.",
+      "Removing a chat in the parent app hides it on that phone only. It is not removed from our servers, from Kheelu’s memory, or from the data our model trains on. To delete your child’s conversations, delete your account, or write to us.",
     );
-    expect(rights).not.toMatch(/servers|backups/);
+    expect(rights).toContain("Deleting your account deletes the account, your child’s profile, and their conversations and voice recordings.");
+    expect(rights).not.toMatch(/one tap|backups/);
   });
 
   it("keeps the confirmed security lines and the founder's breach sentence (items 22 and 23)", () => {

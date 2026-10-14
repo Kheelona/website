@@ -10,7 +10,9 @@ import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
+import { CLAIM_FIXES } from "../../../../test/e2e/support/deviations";
 import { words } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 
 /* The /team route (task 5.7; structure §3.1, §5): the page module through PageTemplate with the live offer, thin, and as
  * a whole page equal to the approved mockup's <main> (mockup/team.html, D046) apart from what the plan changes on
@@ -55,9 +57,10 @@ const PHOTOS = [
 /** The approved <main> as the build must show it: the hero lede replaced by the CMO's fix M-T1, and the mockup's
  *  placeholders resolved (D054 item 20): each founder's photo in the initials badge's place (the photo placeholder line
  *  gone), each background line the live bio's, and fold 5's line the strip's visible names (the two marks that name
- *  their programmes carry no text). Every other word stays the mockup's. */
+ *  their programmes carry no text); and Aman's job line and fold 4's keys line in the live team's code-checked words
+ *  (task 8b.1; D058; deviations.md V30, CLAIM_FIXES.team). Every other word stays the mockup's. */
 function expectedMain(): Element {
-  const copy = mockupMain.cloneNode(true) as Element;
+  const copy = withFacts(mockupMain, CLAIM_FIXES.team.edits);
   const lede = copy.querySelector('section[aria-labelledby="hero-title"] .kh-heading__lead')!;
   expect(lede.textContent).toBe(APPROVED_LEDE);
   lede.textContent = CMO_LEDE;

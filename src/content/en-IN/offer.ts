@@ -7,14 +7,19 @@ import type { IconText, OfferCopy } from "@/content/types";
  *
  * Sources: the approved mockup for everything it shows (home.html hero, fold 9, the buy bar
  * partial; meet-kheelu.html fold 3); the copy pages for the full mode, which no mockup shows
- * (home.md "At a glance", "Phone sticky bar" and fold 9 "Full mode"; D028 wording).
+ * (home.md "At a glance", "Phone sticky bar" and fold 9 "Full mode"; D028 wording). Kheelona+ is
+ * the founder's D058 item 3 sentence, in both places (task 8b.1; home.md fold 9, meet-kheelu.md
+ * fold 3): the parent app is free, Kheelona+ a paid subscription on top of it, and no feature list.
  */
+
+/** D058 item 3, verbatim: which features stay free is not decided, so the sentence lists none. */
+const PLUS = "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.";
 
 /** Each offer-card perk, written once; the cards below list them in their own order. */
 const perk = {
   delivery: { icon: "truck", text: "{delivery}" },
   box: { icon: "package", text: "In the box: Kheelu plush toy, charger and quick-start card" },
-  plus: { icon: "star", text: "6 months of Kheelona+ included: stories, poems, jingles, languages and the parent app" },
+  plus: { icon: "star", text: PLUS },
   anywhere: { icon: "map-pin", text: "Delivery anywhere in India, included" },
   invoice: { icon: "check-circle", text: "A GST invoice with every order" },
 } as const satisfies Readonly<Record<string, IconText>>;
@@ -47,6 +52,7 @@ export const offerCopy = {
     token: { big: "{price:token} today", small: "refundable · {price:headline} total (incl. GST)" },
     full: { big: "{price:full} (incl. GST)", small: "Paid in full · {delivery}" },
   },
-  /* D027's first sentence only (D041 F7), under Home's card. */
-  plus: "Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app.",
+  /* Under Home's card, and at the start of the store's small print and /terms section 3; nothing after six months (D041
+     F7). */
+  plus: PLUS,
 } satisfies OfferCopy;

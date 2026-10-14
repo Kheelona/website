@@ -9,8 +9,13 @@ import type { SectionEntryOf, SectionKind } from "@/layouts/sections-registry";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import {
+  CLAIM_FIXES,
+  type ClaimFixesSlug,
   COPY_FIXES,
   type CopyFixesSlug,
+  editsBeforeClaimFixes,
+  FOOTER_FIX,
+  FOOTER_PROMISE,
   SETUP_STEP_BUILD,
   TEAM_BIOS_BUILD,
   TEAM_LEAD_BUILD,
@@ -23,7 +28,7 @@ import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../test/e2e/support/parity";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { mockupFold } from "../../../../test/support/mockup-compare";
-import { factSentences, hiddenProblems, ruleReach } from "../../../../test/support/mockup-facts";
+import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../test/support/mockup-facts";
 import { setupPage } from "./setup";
 import { teamPage } from "./team";
 
@@ -44,8 +49,13 @@ const TOKEN = buildOffer("token");
 const contentSentences = (module: unknown) => stringsOf(module).flatMap((s) => sentences(toPlainText(s, TOKEN)));
 const mockupMain = (slug: string) =>
   sentences(htmlToText(new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html").querySelector("main")!.outerHTML));
-const excused = (slug: string, lines: readonly string[]) => lines.filter((l) => (TEXT_DEVIATIONS[slug] ?? []).some((r) => r.mockup.test(l)));
-const accepted = (slug: string, lines: readonly string[]) => lines.filter((l) => (TEXT_DEVIATIONS[slug] ?? []).some((r) => r.build?.test(l)));
+/** A page's rules, all of them or those of one deviation row (`row`, the start of their approvedBy: "deviations.md V7"). */
+const rulesOf = (slug: string, row?: string) => (TEXT_DEVIATIONS[slug] ?? []).filter((r) => !row || r.approvedBy.startsWith(`${row} `));
+const excused = (slug: string, lines: readonly string[], row?: string) => lines.filter((l) => rulesOf(slug, row).some((r) => r.mockup.test(l)));
+const accepted = (slug: string, lines: readonly string[], row?: string) => lines.filter((l) => rulesOf(slug, row).some((r) => r.build?.test(l)));
+/** The team page's V7 rows: task 8b.1's claim fixes (V30) have rows of their own, proven below with the other pages'. */
+const V7 = "deviations.md V7";
+const teamV7Hidden = () => VISUAL_HIDDEN.team.filter((r) => r.approvedBy.startsWith(`${V7} `));
 
 /** One fold of the team page, by kind. */
 function teamFold<K extends SectionKind>(kind: K): SectionEntryOf<K> {
@@ -61,7 +71,7 @@ describe("team parity deviations (V7)", () => {
   it("accepts the hero lead, the founders' background lines and the strip's names team.ts renders, and only them", () => {
     const content = contentSentences(teamPage);
     for (const line of [TEAM_LEAD_BUILD, ...TEAM_BIOS_BUILD, ...TEAM_STRIP_BUILD]) expect(content, line).toContain(line);
-    expect(accepted("team", content)).toEqual([TEAM_LEAD_BUILD, ...TEAM_BIOS_BUILD, ...TEAM_STRIP_BUILD]);
+    expect(accepted("team", content, V7)).toEqual([TEAM_LEAD_BUILD, ...TEAM_BIOS_BUILD, ...TEAM_STRIP_BUILD]);
   });
 
   it("holds the build's words to the content: every background sentence and every programme shown as text", () => {
@@ -75,7 +85,7 @@ describe("team parity deviations (V7)", () => {
      and does not count them, and the text pass excuses a line only as often as the build lacks it (since task 7.1a the
      build lacks all four: the quote's "AS" is Apoorva's photo too, CMO M10). */
   it("excuses exactly the mockup's old lead, its seven placeholder lines (three B24 photos, three F11 backgrounds, the F11 programmes) and the initials", () => {
-    expect(excused("team", mockupMain("team"))).toEqual([
+    expect(excused("team", mockupMain("team"), V7)).toEqual([
       "Kheelu is designed by parents in Bengaluru.",
       "AS",
       "[PLACEHOLDER B24: founder photo]",
@@ -95,7 +105,7 @@ describe("team parity deviations (V7)", () => {
      founders' three (D054 item 20) and, since task 7.1a, the quote's "AS" (fold 4; CMO built-page review A, M10). The
      next test holds the build to no badge with words. */
   it("excuses the initials, as a browser reads them, and no longer the “Recognised by.” heading", () => {
-    expect(excused("team", ["AS", "KC", "Recognised by.", "AS Apoorva Sahu", "Aman Soni"])).toEqual(["AS", "KC"]);
+    expect(excused("team", ["AS", "KC", "Recognised by.", "AS Apoorva Sahu", "Aman Soni"], V7)).toEqual(["AS", "KC"]);
     const initials = Array.from(teamMockup().querySelectorAll(".mk-founder__head .kh-avatar, .kh-quote__avatar")).map((a) => a.textContent);
     expect(initials).toEqual(["AS", "AS", "KC", "AS"]);
   });
@@ -114,7 +124,7 @@ describe("team parity deviations (V7)", () => {
   });
 
   it("hides the hero lead, the founders' badges, the photo placeholder lines, the background lines, fold 5's line and the quote's badge", () => {
-    expect(VISUAL_HIDDEN.team.map((r) => [r.side, r.selector])).toEqual([
+    expect(teamV7Hidden().map((r) => [r.side, r.selector])).toEqual([
       ["mockup", "#hero-title ~ .kh-heading__lead"],
       ["build", "#hero-title ~ .kh-heading__lead"],
       ["mockup", ".mk-founder__head .kh-avatar"],
@@ -139,7 +149,7 @@ describe("team parity deviations (V7)", () => {
       ".kh-quote__avatar": 1,
     };
     const mockup = teamMockup();
-    for (const rule of VISUAL_HIDDEN.team.filter((r) => r.side === "mockup")) {
+    for (const rule of teamV7Hidden().filter((r) => r.side === "mockup")) {
       expect(mockup.querySelectorAll(rule.selector).length, rule.selector).toBe(counts[rule.selector as keyof typeof counts]);
     }
     /* The build's folds as the page renders them, from team.ts. */
@@ -152,7 +162,7 @@ describe("team parity deviations (V7)", () => {
       "#recognised-title ~ .ks-recognition": [strip, 1],
       ".kh-quote__who .kh-avatar": [why, 1],
     } as const;
-    for (const rule of VISUAL_HIDDEN.team.filter((r) => r.side === "build" && r.selector !== "#hero-title ~ .kh-heading__lead")) {
+    for (const rule of teamV7Hidden().filter((r) => r.side === "build" && r.selector !== "#hero-title ~ .kh-heading__lead")) {
       const [root, n] = build[rule.selector as keyof typeof build];
       expect(root.querySelectorAll(rule.selector).length, rule.selector).toBe(n);
     }
@@ -165,13 +175,29 @@ describe("setup parity deviations (V8, the founder's page facts V15, and task 7.
   const FACTS = PAGE_FACTS.setup;
   const factsRule = TEXT_DEVIATIONS.setup.find((rule) => rule.approvedBy === FACTS.approvedBy)!;
 
-  it("is three rules: V8 for step 2's light, the founder's page facts (task 6.7), then fold 4's age line (task 7.1b)", () => {
-    expect(TEXT_DEVIATIONS.setup.map((rule) => rule.approvedBy)).toEqual([V8.approvedBy, FACTS.approvedBy, COPY_FIXES.setup.approvedBy]);
+  it("is four rules: V8 for step 2's light, the founder's page facts (task 6.7), fold 4's age line (task 7.1b), then D058's claim fixes (task 8b.1)", () => {
+    expect(TEXT_DEVIATIONS.setup.map((rule) => rule.approvedBy)).toEqual([
+      V8.approvedBy,
+      FACTS.approvedBy,
+      COPY_FIXES.setup.approvedBy,
+      CLAIM_FIXES.setup.approvedBy,
+    ]);
   });
 
-  it("accepts step 2's light, the facts' lines and the age line as setup.ts renders them, and nothing else", () => {
-    for (const line of [...SETUP_STEP_BUILD, ...FACTS.build, ...COPY_FIXES.setup.build]) expect(contentSentences(setupPage)).toContain(line);
-    expect(accepted("setup", contentSentences(setupPage))).toEqual([FACTS.build[0], ...SETUP_STEP_BUILD, ...COPY_FIXES.setup.build, FACTS.build[1]]);
+  it("accepts step 2's light, the facts' lines, the age line and D058's lines as setup.ts renders them, and nothing else", () => {
+    const claims = CLAIM_FIXES.setup.build;
+    for (const line of [...SETUP_STEP_BUILD, ...FACTS.build, ...COPY_FIXES.setup.build, ...claims]) expect(contentSentences(setupPage)).toContain(line);
+    expect(accepted("setup", contentSentences(setupPage))).toEqual([
+      FACTS.build[0],
+      ...SETUP_STEP_BUILD,
+      claims[0],
+      ...COPY_FIXES.setup.build,
+      claims[1],
+      FACTS.build[1],
+      claims[2],
+      claims[3],
+      claims[4],
+    ]);
   });
 
   it("lists exactly the sentences the founder's facts change (page-facts.ts against the mockup)", () => {
@@ -244,5 +270,57 @@ describe.each(Object.keys(COPY_FIXES) as CopyFixesSlug[])("%s: task 7.1b's copy 
 
   it("gives the age-3 advice, wherever it changes, in the CMO's one wording (copy review 7.1b, minor 1; review A M8)", () => {
     for (const line of fixes.build.filter((l) => /grown-up/.test(l))) expect(line).toMatch(/^(If your child is 3, keep a grown-up nearby\.|At 3: keep a grown-up nearby\.)$/);
+  });
+});
+
+/* Task 8b.1's claim fixes (wiki/qa/deviations.md V26-V36; test/e2e/support/deviations.ts CLAIM_FIXES): the founder's D058
+ * has the site follow the live team's code check of 12 October. On each page the rule excuses and accepts exactly the
+ * sentences its edits change, those are exactly the ones the edits make to the frozen mockup with the page's earlier
+ * rules applied (its page facts, then task 7.1b's copy fixes), and none of its new sentences says a claim D058
+ * withdraws. The route and content tests hold each page's build to that edited mockup, markup and words alike. */
+const WITHDRAWN =
+  /one tap|servers in India|keep none|closed (?:content )?library|curated|age-graded|safety layer|[Tt]opics are open|quiet hours|new-word|thinking skills|weekly report|about a minute|open internet|part of Kheelona\+|Kheelona\+:|attack our own/;
+
+describe.each(Object.keys(CLAIM_FIXES) as ClaimFixesSlug[])("%s: task 8b.1's claim fixes (D058) as a parity deviation", (slug) => {
+  const fixes = CLAIM_FIXES[slug];
+  const base = withFacts(mockupFold(slug, "main"), editsBeforeClaimFixes(slug));
+  const once = (lines: readonly string[]) => [...new Set(lines)];
+
+  it("lists exactly the sentences the edits change, against the frozen mockup with the page's earlier rules applied", () => {
+    expect(factSentences(base, fixes.edits)).toEqual({ missing: [...fixes.mockup], extra: [...fixes.build] });
+    expect(fixes.mockup.length).toBeGreaterThan(0);
+  });
+
+  it("is one rule of the page, the last, which excuses and accepts exactly those sentences and no other line", () => {
+    const rules = TEXT_DEVIATIONS[slug] ?? [];
+    expect(rules.filter((r) => r.approvedBy === fixes.approvedBy)).toHaveLength(1);
+    expect(rules[rules.length - 1].approvedBy).toBe(fixes.approvedBy);
+    expect(ruleReach(base, fixes.edits, rules[rules.length - 1])).toEqual({ excused: once(fixes.mockup), accepted: once(fixes.build) });
+    expect(rules[rules.length - 1].jsOff).toBeUndefined();
+  });
+
+  it("hides for the pixels the blocks it lists, in VISUAL_HIDDEN in its order, each found once on its side and holding a sentence its edits change (the mockup's side for a hide on both)", () => {
+    expect(hiddenProblems(base, fixes)).toEqual([]);
+    const rules = (VISUAL_HIDDEN[slug] ?? []).filter((r) => r.approvedBy === fixes.approvedBy);
+    const sel = (side: string) => rules.filter((r) => r.side === side).map((r) => r.selector);
+    expect(sel("mockup")).toEqual([...fixes.hidden.both, ...fixes.hidden.mockup]);
+    expect(sel("build")).toEqual([...fixes.hidden.both, ...fixes.hidden.build]);
+  });
+
+  it("says none of the claims D058 withdraws in a sentence it adds, and names its deviations.md row and D058 as its approval", () => {
+    for (const line of fixes.build) expect(line).not.toMatch(WITHDRAWN);
+    expect(fixes.approvedBy).toMatch(/^deviations\.md V\d+ \(founder, D058, 2026-10-14; /);
+  });
+});
+
+describe("the footer's promise (task 8b.1; D058 item 1)", () => {
+  it("turns the mockup's footer line into the build's, and only that line", () => {
+    const footer = (doc: Document) => doc.querySelector("footer.kh-footer")!;
+    const mockup = new DOMParser().parseFromString(readRepoFile("mockup/home.html"), "text/html");
+    expect(footer(mockup).querySelector(".kh-footer__promise")?.textContent).toBe(FOOTER_PROMISE.mockup);
+    const fixed = withFacts(footer(mockup), [FOOTER_FIX]);
+    expect(fixed.querySelector(".kh-footer__promise")?.textContent).toBe(FOOTER_PROMISE.build);
+    expect(factSentences(footer(mockup), [FOOTER_FIX])).toEqual({ missing: ["No open internet."], extra: ["No web browsing."] });
+    expect(FOOTER_PROMISE.build).not.toMatch(WITHDRAWN);
   });
 });
