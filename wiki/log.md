@@ -932,3 +932,14 @@ in the four guides). Next: wave ii (8b.2d) with 8b.1b.
 no consumer switched. 8b.1b (3631/6231): `/safety`'s screenshot alt without "delete all chats"; D058's withdrawn claims
 as guard entries (frozen mockups exempt only where a claim-fix rule covers the route); the safe-AI-toy and should-kids
 guides' advice questions; Storybook stories and fixtures in the D058 wording. Founder items G26-G32 not in scope.
+
+## [2026-10-14 15:51] qa | Checkpoint before the beta push (8b.1 and 8b.2 wave i in): full Playwright, the store stand-in, `qa:payment`
+On `43fc8c4` (the code of `4c7258b`): `npm run verify:e2e` 1609 passed, 34 skipped, 0 failed (the same counts as wave 8's
+close); the store stand-in set (store-secondary, axe, chrome, tap-areas) 453 passed; `qa:payment` clean on the
+sandbox (the four fields and consent; create-order 200 with a sandbox gateway order; the amount from our tier table,
+49900 paise; preorder_form_started, preorder_start, begin_checkout value 499, preorder_payment_window_opened; no CSP
+refusal with 8b.2c's `frame-src`; a signed webhook accepted, a forged one refused; no payment). Lighthouse not re-run:
+no layout or script change on a shipped page since wave 8 (the video player loads only on a page with a video, and
+none has one; the perf-budget spec is green); it runs at 8b's close, after the journal switch (8b.2e). The diff to
+`origin/beta` holds no secret, phone number or raw capture; the only addresses are aman@ and connect@kheelona.com and a
+test fixture's example.org.
