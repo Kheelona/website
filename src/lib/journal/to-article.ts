@@ -575,9 +575,10 @@ export interface HubGroup {
   readonly slugs: readonly string[];
 }
 
-/** The hub's topics from the journal: the hub's own order and featured guide where the guide is still published (a
- *  featured one also needs its head photo), then every guide of the topic the hub does not list, newest first. A guide
- *  that left, a featured guide without a photo and a topic with no guide are skipped with a warning (row 25). */
+/** The hub's topics from the journal: the hub's own order and featured guide where the guide is still published under
+ *  that topic (a featured one also needs its head photo), then every guide of the topic the hub does not list, newest
+ *  first. A guide that left, one the dashboard moved to another theme (it joins its new topic), a featured guide without
+ *  a photo and a topic with no guide are skipped with a warning (row 25). */
 export function hubGroups(
   articles: readonly Article[],
   topicOf: ReadonlyMap<string, string>,
@@ -588,18 +589,28 @@ export function hubGroups(
   const bySlug = new Map(articles.map((a) => [a.slug, a]));
   const groups = topics.map((topic): HubGroup => {
     const override = overrides.find((o) => o.topic === topic.id) ?? { topic: topic.id, slugs: [] };
+    const moved = (slug: string) => `is under the topic "${topicOf.get(slug)}" now, not "${topic.id}"; skipped (rule 25)`;
     let featured = override.featured;
     if (featured !== undefined && !bySlug.has(featured)) {
       warnings.push(`hub: the featured "${featured}" left the journal; skipped (rule 25)`);
+      featured = undefined;
+    } else if (featured !== undefined && topicOf.get(featured) !== topic.id) {
+      warnings.push(`hub: the featured "${featured}" ${moved(featured)}`);
       featured = undefined;
     } else if (featured !== undefined && bySlug.get(featured)!.head.image === undefined) {
       warnings.push(`hub: the featured "${featured}" has no head photo; skipped (rule 25)`);
       featured = undefined;
     }
     const listed = override.slugs.filter((slug) => {
-      if (bySlug.has(slug)) return true;
-      warnings.push(`hub: "${slug}" left the journal; skipped (rule 25)`);
-      return false;
+      if (!bySlug.has(slug)) {
+        warnings.push(`hub: "${slug}" left the journal; skipped (rule 25)`);
+        return false;
+      }
+      if (topicOf.get(slug) !== topic.id) {
+        warnings.push(`hub: "${slug}" ${moved(slug)}`);
+        return false;
+      }
+      return true;
     });
     const named = new Set([...listed, ...(featured === undefined ? [] : [featured])]);
     const others = articles

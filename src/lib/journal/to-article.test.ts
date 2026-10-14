@@ -13,8 +13,8 @@ import { VOCABULARY } from "../../../test/fixtures/journal/vocabulary";
 import { parseSnapshot, type Post, type PostBlock } from "./post";
 import { readMinutes } from "./read-minutes";
 import { readingOrder, ringOffers } from "./ring";
-import { hubGroups, journalToArticles, postToArticle, type AdaptOptions } from "./to-article";
-import type { JournalRules } from "./validate";
+import { derivedMetaTitle, hubGroups, journalToArticles, postToArticle, type AdaptOptions } from "./to-article";
+import { editorialWarnings, serialiseSnapshot, validatePosts, type JournalRules } from "./validate";
 
 /**
  * The adapter (ADR-014; journal-pipeline §4, §5, §8.2): a dashboard post into the rebuild's `Article`, so the article
@@ -25,7 +25,8 @@ import type { JournalRules } from "./validate";
  */
 
 const RULES: JournalRules = { themes: topics.map((t) => t.title), imagesBase: JOURNAL_IMAGES, findBanned };
-const load = (file: string) => parseSnapshot(JSON.parse(readFileSync(join(process.cwd(), "test/fixtures/journal", file), "utf8")), RULES).posts;
+const text = (file: string) => readFileSync(join(process.cwd(), "test/fixtures/journal", file), "utf8");
+const load = (file: string) => parseSnapshot(JSON.parse(text(file)), RULES).posts;
 const KINDS = load("block-kinds.fixture.json");
 const SYNC = load("posts.fixture.json");
 
@@ -564,5 +565,65 @@ describe("hubGroups (§4 hub featured and order; §8.2 row 25)", () => {
     expect(hubGroups(bare, topicOf, VOCABULARY.topics, [{ topic: "screen-time", featured: "kind-upload", slugs: [] }]).warnings).toContain(
       'hub: the featured "kind-upload" has no head photo; skipped (rule 25)',
     );
+  });
+
+  it("skips a featured or listed guide the dashboard moved to another theme, with a warning; it joins its new topic (row 25)", () => {
+    const { groups, warnings } = hubGroups(articles, topicOf, VOCABULARY.topics, [
+      { topic: "screen-time", slugs: [] },
+      { topic: "talking", featured: "kind-paragraphs", slugs: ["kind-talking"] },
+      { topic: "ai-and-safety", slugs: ["kind-facts", "kind-lists", "kind-blockquotes"] },
+      { topic: "learning", slugs: [] },
+    ]);
+    expect(groups.slice(0, 3)).toEqual([
+      { topic: "screen-time", slugs: ["kind-upload", "kind-lists", "kind-paragraphs"] },
+      { topic: "talking", slugs: ["kind-talking"] },
+      { topic: "ai-and-safety", slugs: ["kind-facts", "kind-blockquotes"] },
+    ]);
+    expect(warnings).toEqual([
+      'hub: the featured "kind-paragraphs" is under the topic "screen-time" now, not "talking"; skipped (rule 25)',
+      'hub: "kind-lists" is under the topic "screen-time" now, not "ai-and-safety"; skipped (rule 25)',
+    ]);
+  });
+});
+
+/* ── What the adapter shares with the gate, and its own fixture ────────────────────────────────── */
+
+describe("the <title> a post that names none gets, written here and in the gate's rule 23 (validate.ts)", () => {
+  /* The gate sees the derivation only through rule 23's "also" warning: a post naming `derivedMetaTitle(title)` and a
+     post deriving it from `title` collide exactly when the two derivations agree. Either side of 60 characters. */
+  const suffixed = "A".repeat(49);
+  const bare = "B".repeat(50);
+  it.each([
+    ["a short title", "Paragraphs for a 3-year-old"],
+    ["a title at 60 with the site's name", suffixed],
+    ["a title one past it", bare],
+    ["a long title", "A title long enough that the site's name would push it past sixty"],
+  ])("agrees on %s", (_name, title) => {
+    const named: Post = { ...post("kind-paragraphs"), slug: "named", description: "One.", metaTitle: derivedMetaTitle(title) };
+    const derived: Post = { ...post("kind-lists"), slug: "derived", description: "Two.", title, accent: null, metaTitle: null };
+    expect(editorialWarnings([named, derived], RULES).filter((w) => w.includes("the meta title is also"))).toEqual([
+      `post "named": the meta title is also "derived"'s (rule 23)`,
+      `post "derived": the meta title is also "named"'s (rule 23)`,
+    ]);
+    expect(adapt({ ...derived, slug: "kind-lists" }).meta.title).toBe(derivedMetaTitle(title));
+  });
+
+  it("puts the site's name after the h1 only while the two fit in 60 characters", () => {
+    expect(derivedMetaTitle(suffixed)).toBe(`${suffixed} · Kheelona`);
+    expect(derivedMetaTitle(suffixed)).toHaveLength(60);
+    expect(derivedMetaTitle(bare)).toBe(bare);
+  });
+});
+
+describe("the adapter's fixture (block-kinds.fixture.json), held as 8b.2b's is", () => {
+  it("is written in the sync's order: serialiseSnapshot gives its text back byte for byte", () => {
+    const raw = text("block-kinds.fixture.json");
+    const { generated, posts } = JSON.parse(raw) as { generated: string; posts: unknown[] };
+    expect(serialiseSnapshot(posts, generated)).toBe(raw);
+  });
+
+  it("passes the gate and raises no editorial warning, so a planted fault is the only problem a test sees", () => {
+    expect(validatePosts(JSON.parse(text("block-kinds.fixture.json")).posts, RULES)).toEqual([]);
+    expect(editorialWarnings(KINDS, RULES)).toEqual([]);
   });
 });
