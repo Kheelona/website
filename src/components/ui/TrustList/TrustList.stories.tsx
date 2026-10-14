@@ -3,6 +3,8 @@ import Image from "next/image";
 import { ICON_PATHS, ICON_VIEWBOX, type IconName } from "@/assets/icons.generated";
 import { TrustList } from "./TrustList";
 
+/* The items speak as the site does since the live team's code check (D058; home.ts folds 5 and 6; task 8b.1b). */
+
 /* A stable public image (public/media/kheelu-front.jpg, task 1.5) standing in for the page's photo. */
 const KHEELU = {
   src: "/media/kheelu-front.jpg",
@@ -24,7 +26,11 @@ const titled = [
     title: "You’ll always see when it’s listening.",
     body: "Its microphone turns on only when someone presses the wake-up button. A light on Kheelu shows whenever it’s listening.",
   },
-  { icon: icon("eye"), title: "You can read every conversation.", body: "In the parent app. Delete any of them in one tap." },
+  {
+    icon: icon("eye"),
+    title: "You can read every conversation.",
+    body: "In the parent app. Removing a chat there hides it on that phone. Deleting your account deletes your child’s profile, conversations and recordings from our servers.",
+  },
   { icon: icon("hand-heart"), title: "We don’t sell your data.", body: "Your child’s data is never used to advertise to them." },
 ];
 
@@ -34,7 +40,10 @@ const meta = {
   args: {
     items: [
       { icon: icon("eye"), body: "Read every conversation in the parent app, word for word." },
-      { icon: icon("sliders-horizontal"), body: "You set your child’s age in the app, and the age-graded safety layer follows it." },
+      {
+        icon: icon("sliders-horizontal"),
+        body: "You set your child’s age in the app. The AI model that answers your child gets child-safety rules for that age, with Google’s safety filters on top.",
+      },
     ],
   },
   parameters: { layout: "padded" },

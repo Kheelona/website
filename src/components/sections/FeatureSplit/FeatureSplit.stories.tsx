@@ -9,13 +9,23 @@ import appTranscript from "@/assets/app/app-transcript.webp";
 import { DoodleDefs } from "@/components/ui/Doodle/DoodleDefs";
 import { FeatureSplit } from "./FeatureSplit";
 
-/* FeatureSplit (task 3.3): every layout with its approved words (home.html folds 3 and 5, meet-kheelu.html fold 5,
-   safety.html folds 4 to 6, ai-toys-for-kids-in-india.html fold 4, setup.html folds 2 and 4 to 6, team.html fold 4). */
+/* FeatureSplit (task 3.3): every layout (home.html folds 3 and 5, meet-kheelu.html fold 5, safety.html folds 4 to 6,
+   ai-toys-for-kids-in-india.html fold 4, setup.html folds 2 and 4 to 6, team.html fold 4), in the words the site prints
+   since the live team's code check (D058; task 8b.1b): home.ts, products/kheelu/page.ts, safety.ts and setup.ts. The
+   product page's skills chips (`skills`) are off the site until the weekly report ships (D058 item 8), so no story shows
+   them; FeatureSplit.test.tsx still covers the slot. */
 
 const CAPTION = "The Kheelona app is live on Apple’s App Store and the Google Play Store.";
 const TRANSCRIPT = { src: appTranscript, alt: "The parent app showing one conversation word for word: Kheelu greets Aarav, and when he asks for Hindi, Kheelu answers in Hindi." };
 const ACTIVITY = { src: appActivity, alt: "The parent app's activity screen for today: 22 minutes of talking, 3 chats and 9 questions asked, with today's chats listed." };
-const PRIVACY = { src: appPrivacy, alt: "A real screen from the Kheelu parent app: the privacy centre." };
+const PRIVACY = {
+  src: appPrivacy,
+  alt: "A real screen from the Kheelu parent app: the privacy centre. Chats are kept for 36 months, with a button to download your child’s data.",
+};
+/** The retention line every page prints (policies.ts RETENTION_LINE). */
+const RETENTION = "Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically.";
+/** What removing a chat and deleting the account do (D058 item 1; safety.ts fold 5). */
+const DELETING = "Removing a chat in the app hides it on that phone. Deleting your account deletes your child’s profile, conversations and recordings from our servers.";
 
 /** The page's one shared chalk filter (SiteShell renders it), which the drawn doodles use. */
 const withDoodleDefs: Decorator = (Story) => (
@@ -85,16 +95,22 @@ export const AppScreensHome: Story = {
     heading: { eyebrow: "The parent app", title: "You see {hand:every conversation.}", id: "see-title" },
     items: [
       { icon: "eye", body: "Read every conversation in the parent app, word for word." },
-      { icon: "chart-line-up", body: "Every week, the app gives you a report on four thinking skills (words, reasons, stories and questions) and a new-word count." },
-      { icon: "sliders-horizontal", body: "You set your child’s age in the app, and the age-graded safety layer follows it." },
-      { icon: "trash", body: "Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically. You can delete any of them sooner, in one tap." },
+      {
+        icon: "chart-line-up",
+        body: "Each conversation appears a few minutes after it ends. Search them, read a daily summary, or look back over the week or the month.",
+      },
+      {
+        icon: "sliders-horizontal",
+        body: "You set your child’s age in the app. The AI model that answers your child gets child-safety rules for that age, with Google’s safety filters on top.",
+      },
+      { icon: "trash", body: RETENTION },
     ],
     screens: { images: [TRANSCRIPT, ACTIVITY], caption: CAPTION },
-    link: { label: "See what the app shows you", href: "/products/kheelu", icon: "eye" },
+    link: { label: "See what the app shows you", href: "/products/kheelu#app", icon: "eye" },
   },
 };
 
-/** Product fold 5: the four thinking skills and the Kheelona+ note beside the screens. */
+/** Product fold 5: every conversation, word for word, and the Kheelona+ note beside the screens. */
 export const AppScreensProduct: Story = {
   args: {
     variant: "app-screens",
@@ -102,12 +118,11 @@ export const AppScreensProduct: Story = {
     id: "app",
     heading: {
       eyebrow: "The parent app",
-      title: "Their week, in four {hand:thinking skills.}",
-      lead: "Every week, the parent app gives you a report on four thinking skills: words, reasons, stories and questions, plus a new-word count. And you can read every conversation, word for word.",
+      title: "Every conversation, {hand:word for word.}",
+      lead: "Each one appears in the parent app a few minutes after it ends. Search them, read a daily summary, or look back over the week or the month.",
       id: "app-title",
     },
-    skills: { label: "The four thinking skills", items: ["Words", "Reasons", "Stories", "Questions"] },
-    note: "The parent app is part of Kheelona+, included for 6 months with every Kheelu.",
+    note: "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.",
     screens: { images: [TRANSCRIPT, ACTIVITY], caption: CAPTION },
     link: { label: "See what we keep, and for how long", href: "#safety" },
   },
@@ -121,10 +136,17 @@ export const AppScreensSafety: Story = {
     band: true,
     heading: { eyebrow: "Parent controls", title: "The grown-up holds {hand:the keys.}", lead: "The parent app is where you set the rules.", id: "controls-title" },
     items: [
-      { icon: "sliders-horizontal", title: "Your child’s age.", body: "Enter it when you set Kheelu up, and change it later if you need to. The age-graded safety layer follows it." },
-      { icon: "book-open", title: "Topics.", body: "You choose what’s open, and what waits." },
-      { icon: "moon", title: "Quiet hours.", body: "They’re yours to set." },
+      {
+        icon: "sliders-horizontal",
+        title: "Your child’s age.",
+        body: "Enter it when you set Kheelu up, and change it later if you need to. On every conversation, the AI model that answers your child is given that age and child-safety rules.",
+      },
       { icon: "translate", title: "Languages.", body: "Pick the ones you speak at home." },
+      {
+        icon: "microphone-slash",
+        title: "Voice recordings.",
+        body: "Turn off Save voice recordings, and only the written record of each conversation is kept.",
+      },
     ],
     screens: { images: [PRIVACY], caption: CAPTION },
     link: { label: "See what the app shows you", href: "/products/kheelu#app", icon: "eye" },
@@ -162,7 +184,7 @@ export const PhotoNone: Story = {
     band: true,
     heading: { title: "Tell the app {hand:your child’s age.}", id: "age-title" },
     copy: [
-      "You enter your child’s age in the parent app. Every reply Kheelu gives passes a safety layer set to that age.",
+      "You enter your child’s age in the parent app. On every conversation, the AI model that answers your child is given that age and child-safety rules, with Google’s safety filters on top.",
       "You can change it later. Kheelu picks up the change the next time it’s online.",
     ],
   },
@@ -220,7 +242,7 @@ export const Pair: Story = {
     cards: [
       {
         heading: { eyebrow: "Retention", title: "How long conversations are {hand:kept.}", id: "kept-title" },
-        copy: ["Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically. You can delete any of them sooner, in one tap."],
+        copy: [RETENTION, DELETING, "Kheelu remembers earlier conversations with your child, and you can read every one of them."],
         link: { label: "Read our privacy policy", href: "/privacy" },
       },
       {

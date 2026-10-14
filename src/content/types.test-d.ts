@@ -58,10 +58,11 @@ const homePerks = [
   { icon: "check-circle", text: "A GST invoice with every order" },
 ] satisfies readonly IconText[];
 
-/* The product page's card lists five, Kheelona+ among them (mockup/pages/meet-kheelu.html, fold 3). */
+/* The product page's card lists five, Kheelona+ among them (mockup/pages/meet-kheelu.html, fold 3), in D058 item 3's
+   words as offer.ts prints them (task 8b.1b). */
 const productPerks = [
   { icon: "package", text: "In the box: Kheelu plush toy, charger and quick-start card" },
-  { icon: "star", text: "6 months of Kheelona+ included: stories, poems, jingles, languages and the parent app" },
+  { icon: "star", text: "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app." },
   { icon: "map-pin", text: "Delivery anywhere in India, included" },
   { icon: "truck", text: "{delivery}" },
   { icon: "check-circle", text: "A GST invoice with every order" },
@@ -86,7 +87,7 @@ export const offerCopy = {
     ],
     perks: { home: homePerks, product: productPerks },
   },
-  plus: "Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app.",
+  plus: "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.",
 } satisfies OfferCopy;
 // @ts-expect-error the price sentence changes with the mode (D028), so it always carries both
 export const oneSentence: OfferCopy["sentence"] = "Reserve yours today.";

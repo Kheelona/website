@@ -4,7 +4,8 @@ import advikWhisper from "@ds/assets/Photo library/advik-02-whispering-to-kheelu
 import iraStory from "@ds/assets/Photo library/ira-01-story-on-the-bed-web.webp";
 import { ModesSection } from "./ModesSection";
 
-/* ModesSection (task 3.3): Home fold 4 and product fold 4 with their approved words and photos. */
+/* ModesSection (task 3.3): Home fold 4 and product fold 4 with their approved words and photos; product fold 4's quiet
+   line as products/kheelu/page.ts prints it since the live team's code check (D058 item 1; task 8b.1b). */
 
 const MODES = [
   { tone: "blue", icon: "wifi-high", title: "AI mode", body: "Open conversation, on your home Wi‑Fi. It can’t browse the internet." },
@@ -83,7 +84,7 @@ export const Product: Story = {
       items: [
         { icon: "wifi-high", text: "AI mode needs your home Wi‑Fi. Story mode and Bluetooth mode work without it." },
         { icon: "wifi-slash", text: "It can’t browse the internet. When it doesn’t know something, it says so." },
-        { icon: "microphone", text: "Each conversation starts with a press of the wake-up button. It switches itself off after about a minute of quiet." },
+        { icon: "microphone", text: "Each conversation starts with a press of the wake-up button. It switches itself off after a couple of minutes of quiet." },
         { icon: "sliders-horizontal", text: "At setup, you enter your child’s age in the parent app." },
         { icon: "battery-charging", text: "It charges with the charger in the box. {ph:F4 battery life per charge and charging time}" },
       ],

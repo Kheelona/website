@@ -9,7 +9,8 @@ const icon = (name: IconName) => (
   </svg>
 );
 
-/* Home's questions (home.html fold 8), as RichText renders them. test/e2e/motion-faq.spec.ts runs on these stories. */
+/* Home's questions (home.html fold 8), as RichText renders them, in the words faqs.ts prints since the live team's code
+   check (D058; task 8b.1b). test/e2e/motion-faq.spec.ts runs on these stories. */
 const items = [
   {
     id: "think-less",
@@ -21,7 +22,7 @@ const items = [
     id: "ages",
     question: "What ages is Kheelu for?",
     answer:
-      "Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby. When you set it up, you enter your child’s age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.",
+      "Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby. At setup, you enter your child’s age in the parent app. You can change it later. The AI model gets child-safety rules for that age, with Google’s safety filters on top.",
   },
   {
     id: "returns",
