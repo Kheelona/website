@@ -102,7 +102,7 @@ export const product = {
     { term: "Camera", value: "None" },
     {
       term: "Microphone",
-      value: "On only after a press of the wake-up button; off after about a minute of quiet; a light shows while it’s on",
+      value: "On only after a press of the wake-up button; off after a couple of minutes of quiet; a light shows while it’s on",
     },
     { term: "Modes", value: modes.map((m) => `${m.name} (${m.needs})`).join(" · ") },
     { term: "Open internet", value: "It can’t browse it" },
@@ -110,10 +110,12 @@ export const product = {
       term: "Languages",
       value: `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}; up to ${languageCeiling} at launch`,
     },
+    /* What the app shows, as the live team's code check found it (D058 items 1 and 8; meet-kheelu.md fold 7): the
+       weekly four-skills report and the new-word count come back when they ship. */
     {
       term: "Parent app",
       value:
-        "Every conversation, word for word; a weekly report on four thinking skills; a new-word count. On iPhone and Android.",
+        "Every conversation, word for word, a few minutes after it ends; a daily summary; search; a look back over the week or the month. On iPhone and Android.",
     },
     { term: "Size and weight", value: "{ph:F4 size and weight}" },
     { term: "Materials", value: "{ph:F4 outer fabric and filling}" },
@@ -126,9 +128,10 @@ export const product = {
     { icon: "book-open", text: "Quick-start card" },
   ],
   safety: withoutHiddenRows([
+    /* The mechanism in the live team's words (D058 item 1): no age-graded layer. */
     {
       icon: "shield-check",
-      text: "Every reply passes an age-graded safety layer, set to the age you enter in the parent app.",
+      text: "Every reply comes from an AI model given child-safety rules and the age you enter in the parent app, with Google’s safety filters on top.",
     },
     { icon: "check-circle", text: "Tested before launch by trying to make it say unsafe things." },
     {

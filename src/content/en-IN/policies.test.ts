@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { RETENTION } from "../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../test/e2e/support/repo";
 import {
   BANK_REFUND_WORKING_DAYS,
@@ -67,12 +68,15 @@ describe("the shared policy lines, as the approved mockups print them", () => {
     for (const slug of ["refund", "terms"]) expect(mockupText(slug)).toContain(NO_EXCHANGES);
   });
 
-  it("the retention line (D020): Home, product, safety, the safe-AI-toy article and privacy", () => {
-    expect(RETENTION_LINE).toBe(
-      "Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically. You can delete any of them sooner, in one tap.",
-    );
+  /* D020's first sentence. Its one-tap sentence came off with the live team's code check (D058 items 1 and 9; task 8b.1):
+     the approved mockups keep it, an accepted deviation (test/e2e/support/deviations.ts RETENTION, CLAIM_FIXES). */
+  it("the retention line (D020, D058): Home, product, safety, the safe-AI-toy article and privacy", () => {
+    expect(RETENTION_LINE).toBe(RETENTION.build);
+    expect(RETENTION_LINE).toBe("Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically.");
+    expect(RETENTION_LINE).not.toMatch(/one tap|sooner/);
     for (const slug of ["home", "meet-kheelu", "safety", "story-what-to-look-for-in-a-safe-ai-toy", "privacy"]) {
-      expect(mockupText(slug), slug).toContain(RETENTION_LINE);
+      expect(mockupText(slug), slug).toContain(RETENTION.mockup);
+      expect(RETENTION.mockup.startsWith(`${RETENTION_LINE} `), slug).toBe(true);
     }
   });
 });

@@ -7,7 +7,7 @@ import type { Offer } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
-import { COPY_FIXES, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, COPY_FIXES, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { words } from "../../../../test/support/mockup-compare";
@@ -34,7 +34,8 @@ const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 
 const mockupDoc = new DOMParser().parseFromString(readRepoFile("mockup/safety.html"), "text/html");
 const frozenMain = mockupDoc.querySelector("main")!;
-const mockupMain = withFacts(frozenMain, COPY_FIXES.safety.edits);
+/* Task 7.1b's copy fixes (V19), then task 8b.1's claim fixes (V28; D058) in a pass of their own. */
+const mockupMain = withFacts(withFacts(frozenMain, COPY_FIXES.safety.edits), CLAIM_FIXES.safety.edits);
 
 /** The page as the site shell holds it: the route's output inside <main>. */
 async function renderPage(offer: Offer) {
@@ -129,22 +130,23 @@ describe("/safety: the rendered page against the approved mockup", () => {
     expect(words(visible(main))).toBe(words(mockupMain));
   });
 
-  it("differs from the frozen mockup only in the FAQ fold, in the three lines task 7.1b changed (V19)", async () => {
+  it("differs from the frozen mockup only in the lines task 7.1b (V19) and task 8b.1 (V28) changed", async () => {
     const { main } = await renderPage(buildOffer("token"));
     const fold = (root: Element, name: string) => root.querySelector(`section[aria-labelledby="${name}"]`)!;
-    expect(foldNames(frozenMain).filter((name) => words(fold(frozenMain, name!)) !== words(fold(mockupMain, name!)))).toEqual(["faq-title"]);
+    const changed = foldNames(frozenMain).filter((name) => words(fold(frozenMain, name!)) !== words(fold(mockupMain, name!)));
+    expect(changed).toEqual(["facts-title", "never-title", "controls-title", "kept-title", "faq-title"]);
     const faq = words(fold(main, "faq-title"));
     for (const line of COPY_FIXES.safety.build) expect(faq).toContain(line);
     for (const line of COPY_FIXES.safety.mockup) expect(faq).not.toContain(line);
+    for (const line of CLAIM_FIXES.safety.build) expect(words(visible(main))).toContain(line);
   });
 
-  it("finds the one block the visual pass hides on the build side, once, on the page as it renders: the open answer (V19)", async () => {
+  it("finds each block the visual pass hides on the build side, once, on the page as it renders: the open answer (V19), the claim fixes' blocks (V28)", async () => {
     const { main } = await renderPage(buildOffer("token"));
     const selectors = (VISUAL_HIDDEN.safety ?? []).filter((rule) => rule.side === "build").map((rule) => rule.selector);
-    expect(selectors).toHaveLength(1);
-    const found = main.querySelectorAll(selectors[0]);
-    expect(found).toHaveLength(1);
-    expect(words(found[0])).toContain(COPY_FIXES.safety.build[0]);
+    expect(selectors).toEqual([...COPY_FIXES.safety.hidden.both, ...CLAIM_FIXES.safety.hidden.both, ...CLAIM_FIXES.safety.hidden.build]);
+    for (const selector of selectors) expect(main.querySelectorAll(selector), selector).toHaveLength(1);
+    expect(words(main.querySelector(selectors[0])!)).toContain(COPY_FIXES.safety.build[0]);
   });
 
   it("changes only the price sentence in full mode (D028; safety copy, fold 8)", async () => {

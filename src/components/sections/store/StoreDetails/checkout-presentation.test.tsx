@@ -6,7 +6,9 @@ import { navigation } from "@/content/en-IN/navigation";
 import { storePage } from "@/content/en-IN/store/store-page";
 import { isSitePath } from "@/lib/links";
 import { buildOffer } from "@/lib/offer/offer";
+import { CLAIM_FIXES } from "../../../../../test/e2e/support/deviations";
 import { mockupDiff, mockupFold, mockupRoute } from "../../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../../test/support/mockup-facts";
 import { PayBeside } from "./StoreDetails";
 
 /* The restyled checkout presentation (task 5.15; ADR-013 class 3; store.md folds 3 and 4): PreorderForm and
@@ -148,9 +150,10 @@ describe("PreorderForm, restyled", () => {
 
 describe("OrderSummary, restyled (the agreement card)", () => {
   /** The mockup's delivery head wraps "mid-November" in a no-wrap span; the build prints the one delivery line (D023)
-   *  whole and keeps it from breaking at the hyphen in CSS (`text-wrap: balance`, as the legal pages do). */
+   *  whole and keeps it from breaking at the hyphen in CSS (`text-wrap: balance`, as the legal pages do). The small print
+   *  reads D058 item 3's Kheelona+ sentence and "Kheelu's price is" since task 8b.1 (deviations.md V34). */
   function approvedCard(): Element {
-    const card = mockupFold("store", "section.mk-agree").cloneNode(true) as Element;
+    const card = withFacts(mockupFold("store", "section.mk-agree"), CLAIM_FIXES.store.edits);
     card.querySelectorAll(".mk-nowrap").forEach((n) => n.replaceWith(...Array.from(n.childNodes)));
     return card;
   }

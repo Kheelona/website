@@ -10,6 +10,7 @@ import { offerCopy } from "@/content/en-IN/offer";
 import type { Offer, OfferCopy, RichTextString } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
 import { formatInr } from "@/lib/format/inr";
+import { KHEELONA_PLUS } from "../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../test/e2e/support/repo";
 import { buildOffer, headlinePaise, offerPrices } from "./offer";
 
@@ -88,15 +89,22 @@ describe("token mode", () => {
     expect(offer.card.split?.flatMap((row) => [text(row.label, offer), offer.prices[row.price]])).toEqual(split);
   });
 
-  it("lists each placement's perks exactly as its card (Home fold 9, product fold 3)", () => {
+  /* The product card's Kheelona+ perk reads D058 item 3's sentence since task 8b.1 (deviations.md V27): the mockup keeps
+     the approved perk, and only that perk differs. */
+  it("lists each placement's perks exactly as its card (Home fold 9, product fold 3; the product's Kheelona+ perk as D058 words it)", () => {
     const perks = (d: Document) => Array.from(d.querySelectorAll(".kh-offer__list li")).map((li) => norm(li.textContent));
     expect(offer.card.perks.home.map((p) => text(p.text, offer))).toEqual(perks(home));
-    expect(offer.card.perks.product.map((p) => text(p.text, offer))).toEqual(perks(product));
+    expect(perks(product)).toContain(KHEELONA_PLUS.perk);
+    expect(offer.card.perks.product.map((p) => text(p.text, offer))).toEqual(perks(product).map((p) => (p === KHEELONA_PLUS.perk ? KHEELONA_PLUS.build : p)));
   });
 
-  it("carries the Kheelona+ line under Home's card (D027 first sentence, D041 F7)", () => {
+  /* D058 item 3 (task 8b.1; deviations.md V26): the parent app is free and Kheelona+ a paid subscription on top of it, with
+     no feature list, where the mockup lists D027's features. */
+  it("carries the Kheelona+ line under Home's card (D058 item 3, verbatim; D041 F7)", () => {
     const line = Array.from(home.querySelectorAll("p")).find((p) => p.textContent?.startsWith("Every Kheelu comes with"));
-    expect(offer.plus).toBe(norm(line?.textContent));
+    expect(norm(line?.textContent)).toBe(KHEELONA_PLUS.mockup);
+    expect(offer.plus).toBe(KHEELONA_PLUS.build);
+    expect(offer.plus).toBe("Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.");
   });
 
   it("carries the delivery line and its schema date (D023, D037)", () => {

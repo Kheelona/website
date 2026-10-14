@@ -7,6 +7,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { parseRichText, type RichNode } from "@/lib/content/rich-text";
 import { formatDate } from "@/lib/format/date";
 import { buildOffer } from "@/lib/offer/offer";
+import { RETENTION } from "../../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../../test/e2e/support/repo";
 import { type CopyFold, type CopyPage, copyFold, copyLines, copyParagraphs, glanceRow, readCopyPage } from "../../../../../test/support/copy-page";
 import { words } from "../../../../../test/support/mockup-compare";
@@ -186,8 +187,13 @@ describe.each([...SLUGS, ...APPROVED])("the article %s, as its approved copy pag
     expect(norm(image.alt)).toBe(norm(m![2]));
   });
 
-  it("renders the copy page's reading column word for word: answer, body, sources", () => {
-    const expected = norm(columnBlocks(page).map((b) => plainCopy(b.text)).join(" "));
+  /* Task 8b.1 (D058 items 1 and 9; deviations.md V35): the retention line the guides print from policies.ts lost its
+     one-tap sentence. Their copy pages keep it until task 8b.2 carries D058's corrections to the dashboard, so the
+     comparison reads the copy page with that one sentence gone, and nothing else. */
+  it("renders the copy page's reading column word for word: answer, body, sources (the retention line as policies.ts prints it)", () => {
+    const copy = norm(columnBlocks(page).map((b) => plainCopy(b.text)).join(" "));
+    const expected = copy.replaceAll(norm(RETENTION.mockup), norm(RETENTION.build));
+    expect(expected === copy).toBe(!moduleSource(slug).includes("RETENTION_LINE"));
     expect(norm(words(rendered(slug).column))).toBe(expected);
   });
 

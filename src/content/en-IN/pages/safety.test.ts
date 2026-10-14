@@ -4,7 +4,9 @@ import type { Copy } from "@/content/types";
 import type { SectionEntry, SectionEntryOf, SectionKind } from "@/layouts/sections-registry";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
+import { CLAIM_FIXES, COPY_FIXES } from "../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
+import { withFacts } from "../../../../test/support/mockup-facts";
 import { faqs } from "../faqs";
 import { DEFAULT_OG } from "../organization";
 import { RETENTION_LINE, RETENTION_MONTHS } from "../policies";
@@ -16,7 +18,8 @@ import { safetyPage } from "./safety";
  * each fold's words, icons, alt texts and links equal to the built mockup (mockup/safety.html, D046), the rules the copy
  * page sets for this page (D020 order and fold 2 in the FAQPage; certification "applied for, not yet granted", no mark;
  * "safe" only inside the two questions parents type; no placeholder, no typed amount), and the shared content it reads
- * by reference (faqs.ts, policies.ts, trust.ts), never retyped. */
+ * by reference (faqs.ts, policies.ts, trust.ts), never retyped. The mockup is read with task 7.1b's copy fixes (V19)
+ * and task 8b.1's claim fixes (V28; D058: the live team's code check) applied (test/e2e/support/deviations.ts). */
 
 const token = buildOffer("token");
 const full = buildOffer("full");
@@ -24,7 +27,7 @@ const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").tr
 const plain = (copy: Copy) => toPlainText(copy, token);
 
 const mockup = new DOMParser().parseFromString(readRepoFile("mockup/safety.html"), "text/html");
-const main = mockup.querySelector("main")!;
+const main = withFacts(withFacts(mockup.querySelector("main")!, COPY_FIXES.safety.edits), CLAIM_FIXES.safety.edits);
 const fold = (labelledBy: string) => {
   const el = main.querySelector(`[aria-labelledby="${labelledBy}"]`);
   if (!el) throw new Error(`mockup/safety.html has no fold labelled by #${labelledBy}`);
@@ -150,7 +153,7 @@ describe("fold 2: the four facts (D020 order, in full)", () => {
     if (facts.config.variant !== "facts") throw new Error("not the facts fold");
     const [listening, providers] = facts.config.items.map((i) => plain(i.body));
     expect(listening).toBe(
-      "No. Kheelu has no wake word to listen for. Its microphone turns on only when someone presses the wake-up button. It stays on while your child is talking and switches itself off after about a minute of quiet. Until the next press, nothing is heard, recorded or sent. A light on Kheelu shows whenever it’s listening.",
+      "No. Kheelu has no wake word to listen for. Its microphone turns on only when someone presses the wake-up button. It stays on while your child is talking and switches itself off after a couple of minutes of quiet. Until the next press, nothing is heard, recorded or sent. A light on Kheelu shows whenever it’s listening.",
     );
     expect(providers).toContain("They don’t keep it, and they never use it to train their AI. Our contracts with them say so.");
   });
@@ -179,7 +182,7 @@ describe("fold 3: what you won't find", () => {
 
 describe("fold 4: the grown-up holds the keys", () => {
   const controls = entry("feature-split", 0);
-  it("lists the four controls with their icons beside the one privacy screen, then the secondary link to the app fold", () => {
+  it("lists the three controls with their icons (D058: no topics or quiet hours; the Save voice recordings switch) beside the one privacy screen, then the secondary link to the app fold", () => {
     if (controls.config.variant !== "app-screens") throw new Error("not the app-screens fold");
     const el = fold("controls-title");
     const { config } = controls;
@@ -190,6 +193,11 @@ describe("fold 4: the grown-up holds the keys", () => {
     );
     expect(config.heading.title).toBe("The grown-up holds {hand:the keys.}");
     expect((config.items ?? []).map((i) => ({ icon: i.icon, title: plain(i.title!), body: plain(i.body) }))).toEqual(trustOf(el.querySelector("ul.kh-trust")!));
+    expect((config.items ?? []).map((i) => [i.icon, plain(i.title!)])).toEqual([
+      ["sliders-horizontal", "Your child’s age."],
+      ["translate", "Languages."],
+      ["microphone-slash", "Voice recordings."],
+    ]);
     expect(config.screens.images).toHaveLength(1);
     expect(config.screens.images[0].alt).toBe(el.querySelector(".kh-device img")!.getAttribute("alt"));
     expect(config.screens.images[0].alt).toContain(`${RETENTION_MONTHS} months`);
@@ -219,10 +227,13 @@ describe("folds 5 and 6: retention and certification", () => {
     }
   });
 
-  it("reads the retention line from policies.ts (D020, verbatim), beside the memory line, then links the privacy policy", () => {
+  it("reads the retention line from policies.ts (D020's first sentence), then what removing and deleting do (D058), beside the memory line, then links the privacy policy", () => {
     const [kept] = cards();
     expect(kept.copy[0]).toBe(RETENTION_LINE);
-    expect(plain(kept.copy[1])).toBe("Kheelu remembers earlier conversations with your child, and you can read every one of them.");
+    expect(plain(kept.copy[1])).toBe(
+      "Removing a chat in the app hides it on that phone. Deleting your account deletes your child’s profile, conversations and recordings from our servers.",
+    );
+    expect(plain(kept.copy[2])).toBe("Kheelu remembers earlier conversations with your child, and you can read every one of them.");
     expect(kept.link).toEqual({ label: "Read our privacy policy", href: "/privacy" });
   });
 

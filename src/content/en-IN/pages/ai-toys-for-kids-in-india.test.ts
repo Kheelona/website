@@ -4,8 +4,10 @@ import type { ArtBoardRef, Copy } from "@/content/types";
 import type { SectionEntry, SectionEntryOf, SectionKind } from "@/layouts/sections-registry";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
+import { CLAIM_FIXES, COPY_FIXES } from "../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { mockupRoute } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 import { faqs } from "../faqs";
 import { DEFAULT_OG } from "../organization";
 import { product } from "../products/kheelu/product";
@@ -27,7 +29,9 @@ const plain = (copy: Copy) => toPlainText(copy, token);
 
 const SLUG = "ai-toys-for-kids-in-india";
 const mockup = new DOMParser().parseFromString(readRepoFile(`mockup/${SLUG}.html`), "text/html");
-const main = mockup.querySelector("main")!;
+/* With task 7.1b's copy fix (V22) and task 8b.1's claim fixes (D058; deviations.md V31) applied: check 4, Kheelu's
+   answers and the age answer in the live team's code-checked words. */
+const main = withFacts(withFacts(mockup.querySelector("main")!, COPY_FIXES[SLUG].edits), CLAIM_FIXES[SLUG].edits);
 const fold = (labelledBy: string) => {
   const el = main.querySelector(`[aria-labelledby="${labelledBy}"]`);
   if (!el) throw new Error(`mockup/${SLUG}.html has no fold labelled by #${labelledBy}`);

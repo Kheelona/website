@@ -2,7 +2,9 @@ import { render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { STORE_URL, SUPPORT_WHATSAPP_HREF } from "@/config/site";
 import { buildOffer } from "@/lib/offer/offer";
+import { FOOTER_FIX } from "../../../test/e2e/support/deviations";
 import { mockupDiff, mockupPage, STORE } from "../../../test/support/mockup-compare";
+import { withFacts } from "../../../test/support/mockup-facts";
 import { SiteShell } from "./SiteShell";
 
 /* SiteShell (task 3.1; architecture §5.1, structure §3.1): the marketing site's shell, rendered by
@@ -42,7 +44,10 @@ describe("SiteShell: the chrome equals the approved mockup's (mockup/home.html)"
     ["phone buy bar", ".kh-buybar", ".kh-buybar"],
   ])("%s", (_name, mockupSelector, builtSelector) => {
     const { container } = shell();
-    const ref = mockup.querySelector(mockupSelector);
+    const approved = mockup.querySelector(mockupSelector);
+    /* The footer's promise reads "No web browsing." since task 8b.1, the live footer's words (D058 item 1; deviations.ts
+       FOOTER_FIX); every other element of the chrome is the mockup's as it stands. */
+    const ref = approved && mockupSelector === "footer.kh-footer" ? withFacts(approved, [FOOTER_FIX]) : approved;
     const built = container.querySelector(builtSelector);
     expect(ref, mockupSelector).not.toBeNull();
     expect(built, builtSelector).not.toBeNull();

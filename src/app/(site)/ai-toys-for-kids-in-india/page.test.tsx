@@ -9,7 +9,7 @@ import { PageTemplate } from "@/layouts/PageTemplate/PageTemplate";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
-import { COPY_FIXES } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, COPY_FIXES } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { words } from "../../../../test/support/mockup-compare";
@@ -48,8 +48,12 @@ const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 
 const mockupDoc = new DOMParser().parseFromString(readRepoFile("mockup/ai-toys-for-kids-in-india.html"), "text/html");
 /* The approved main with its copy fix applied: the age answer's "At 3" sentence in the site's one wording (CMO review A
- * M8; deviations.ts COPY_FIXES, V22). */
-const mockupMain = withFacts(mockupDoc.querySelector("main")!, COPY_FIXES["ai-toys-for-kids-in-india"].edits);
+ * M8; deviations.ts COPY_FIXES, V22); then task 8b.1's claim fixes (D058; CLAIM_FIXES, V31) in a pass of their own:
+ * check 4, Kheelu's answers and the age answer in the live team's code-checked words. */
+const mockupMain = withFacts(
+  withFacts(mockupDoc.querySelector("main")!, COPY_FIXES["ai-toys-for-kids-in-india"].edits),
+  CLAIM_FIXES["ai-toys-for-kids-in-india"].edits,
+);
 
 /** The page as the site shell holds it: the route's output inside <main>. */
 async function renderPage(offer: Offer) {

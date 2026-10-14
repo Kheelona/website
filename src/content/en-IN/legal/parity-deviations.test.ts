@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { PRIVACY_B11_BUILD, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, PRIVACY_B11_BUILD, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { htmlToText } from "../../../../test/e2e/support/mockup-text";
 import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../test/e2e/support/parity";
@@ -32,9 +32,13 @@ const mockupSentences = sentences(htmlToText(MOCKUP.querySelector("main")!.outer
 const rules = (TEXT_DEVIATIONS.privacy ?? []).filter((rule) => rule.approvedBy.startsWith("deviations.md V10"));
 
 describe("privacy parity deviations (V10)", () => {
-  it("is one rule, beside the page facts' (task 6.7)", () => {
+  it("is one rule, beside the page facts' (task 6.7) and D058's claim fixes (task 8b.1, proven with the other pages')", () => {
     expect(rules).toHaveLength(1);
-    expect(TEXT_DEVIATIONS.privacy.map((rule) => rule.approvedBy)).toEqual([rules[0].approvedBy, PAGE_FACTS.privacy.approvedBy]);
+    expect(TEXT_DEVIATIONS.privacy.map((rule) => rule.approvedBy)).toEqual([
+      rules[0].approvedBy,
+      PAGE_FACTS.privacy.approvedBy,
+      CLAIM_FIXES.privacy.approvedBy,
+    ]);
   });
 
   it("accepts the two B11 sentences privacy.ts renders, and only them", () => {

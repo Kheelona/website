@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { FOOTER_PROMISE } from "../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../test/e2e/support/repo";
 import { navigation } from "./navigation";
 
@@ -55,8 +56,11 @@ describe("the chrome's own labels", () => {
 });
 
 describe("the footer", () => {
-  it("carries the promise and made lines (home.md, Footer)", () => {
-    expect(navigation.footer.promise).toBe(norm(home.querySelector(".kh-footer__promise")?.textContent));
+  /* The promise says "No web browsing." since task 8b.1, the live footer's words (D058 item 1; home.md, Footer): the mockup
+     keeps "No open internet." */
+  it("carries the promise and made lines (home.md, Footer; the promise as D058 words it)", () => {
+    expect(norm(home.querySelector(".kh-footer__promise")?.textContent)).toBe(FOOTER_PROMISE.mockup);
+    expect(navigation.footer.promise).toBe(FOOTER_PROMISE.build);
     expect(navigation.footer.made).toBe(norm(home.querySelector(".kh-footer__made")?.textContent));
   });
 

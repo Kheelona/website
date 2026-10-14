@@ -46,5 +46,7 @@ export const PAYMENT_TERMS = "No payment fees. Nothing recurring. Payments by Ra
 /** The exchange line (D042). */
 export const NO_EXCHANGES = `No exchanges: return it within ${RETURN_DAYS} days and order again.`;
 
-/** The retention line as every page that names it prints it (D020). */
-export const RETENTION_LINE = `Your child’s conversations stay in your parent app for ${RETENTION_MONTHS} months, then they’re deleted automatically. You can delete any of them sooner, in one tap.`;
+/** The retention line as every page that names it prints it: D020's first sentence. Its one-tap sentence came off with the
+ *  live team's code check (D058 items 1 and 9): removing a chat hides it on that phone, and deleting the account deletes
+ *  the conversations, which each page that needs it says beside this line. */
+export const RETENTION_LINE = `Your child’s conversations stay in your parent app for ${RETENTION_MONTHS} months, then they’re deleted automatically.`;

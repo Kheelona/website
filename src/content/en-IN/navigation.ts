@@ -72,7 +72,9 @@ export const navigation = {
     newTabNote: " (opens in a new tab)",
   },
   footer: {
-    promise: "Press to talk. No open internet. You read every conversation.",
+    /* "No web browsing.": the live footer's words since the live team's code check (D058 item 1; home.md, Footer), as
+       Kheelu does use the internet, on home Wi-Fi. */
+    promise: "Press to talk. No web browsing. You read every conversation.",
     made: "Designed by parents in Bengaluru. Made in India.",
     columns: [
       {

@@ -135,7 +135,7 @@ export const termsPage = {
       group: "Your pre-order",
       blocks: [
         { kind: "p", text: "A pre-order reserves one Kheelu for you. Pre-orders are served first, in the order they were placed." },
-        /* D041's box contents; D027's first sentence only (offer.ts `plus`), nothing after six months (D041 F7). */
+        /* D041's box contents; D058 item 3's Kheelona+ sentence (offer.ts `plus`), nothing after six months (D041 F7). */
         { kind: "p", text: `In the box: the Kheelu plush toy, a charger and a quick-start card. ${offerCopy.plus}` },
         {
           kind: "p",
@@ -281,9 +281,11 @@ export const termsPage = {
           kind: "p",
           text: "Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby.",
         },
+        /* The mechanism in the live team's words (D058 item 1; terms.md section 9), after "You can change it later." so "it"
+           still means the age. */
         {
           kind: "p",
-          text: "When you set Kheelu up, you enter your child’s age in the parent app. Every reply passes an age-graded safety layer set to that age. You can change it later.",
+          text: "When you set Kheelu up, you enter your child’s age in the parent app. You can change it later. The AI model that writes Kheelu’s replies is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top.",
         },
       ],
     },
@@ -292,13 +294,29 @@ export const termsPage = {
       title: "The parent app.",
       group: "Using Kheelu",
       blocks: [
+        /* The parent app's terms of the live /terms (#18, dd04e6d; map §1 T2-T7), in this page's voice (terms.md section 10;
+           D058 items 1, 3, 8 and 9): what the app shows, free, the one-time code, home Wi-Fi, the misuse rule, deleting the
+           account. No one-tap delete; "nothing is sold inside it" is not carried over (D058 item 3). */
         {
           kind: "p",
-          text: "The parent app is for parents and guardians. The person who sets it up must be 18 or over and looks after the account.",
+          text: "The parent app is for parents and guardians. The person who sets it up must be 18 or over and looks after the account. You’re responsible for how your child uses Kheelu.",
         },
         {
           kind: "p",
-          text: `In the app, you can read every conversation and delete any of them in one tap. Conversations are deleted automatically after ${RETENTION_MONTHS} months.`,
+          text: `In the app, you can read every conversation word for word, a few minutes after it ends, with a daily summary, search, and a look back over the week or the month. Conversations are deleted automatically after ${RETENTION_MONTHS} months.`,
+        },
+        {
+          kind: "p",
+          text: "The parent app is free. You sign in with your phone number and a one-time code. Keep the code to yourself, and tell us if you think someone else is using your account.",
+        },
+        { kind: "p", text: "Conversations with Kheelu need your home Wi‑Fi. Stories and songs you’ve downloaded play without it." },
+        {
+          kind: "p",
+          text: "Don’t try to break into our systems, copy the service, or use the app or Kheelu to harm anyone. If you do, we can close your account.",
+        },
+        {
+          kind: "p",
+          text: "You can stop using the app and delete your account at any time, in its privacy settings. That deletes the account, your child’s profile, and their conversations and voice recordings.",
         },
         { kind: "p", text: `How we handle your child’s data is on our ${PRIVACY} page, which is part of these terms.` },
       ],
@@ -324,14 +342,19 @@ export const termsPage = {
       title: "A toy, not a therapy.",
       group: "Using Kheelu",
       blocks: [
-        /* D025's disclaimer, verbatim; then D036's confirmed behaviours only. */
+        /* D025's disclaimer, verbatim; then how the AI answers, in the live team's code-checked words (D058 item 1: no closed
+           library, no age-graded layer; the live /terms' T4, "conversation, not advice"), and the limits. */
         {
           kind: "p",
           text: "Kheelu is a toy, not a therapy or treatment. If you’re worried about your child’s speech, talk to your paediatrician.",
         },
         {
           kind: "p",
-          text: "Kheelu uses AI to understand and answer your child. Its stories and answers come from a curated, closed content library, and every reply passes an age-graded safety layer. We test it before launch by trying to make it say unsafe things, and when it isn’t sure, it says it doesn’t know rather than guess. Even so, an answer can sometimes be wrong. Kheelu doesn’t replace you: stay close, and read its conversations in the parent app.",
+          text: "Kheelu uses AI to understand and answer your child. The AI model that writes its replies is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top. It cannot browse or search the web.",
+        },
+        {
+          kind: "p",
+          text: "We test it before launch by trying to make it say unsafe things, and when it isn’t sure, it says it doesn’t know rather than guess. Even so, an answer can sometimes be wrong, so treat its replies as conversation, not advice. Kheelu doesn’t replace you: stay close, and read its conversations in the parent app.",
         },
       ],
     },

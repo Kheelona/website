@@ -95,11 +95,13 @@ export const setupPage = {
         split: "end",
         band: true,
         heading: { id: "age-title", title: "Tell the app {hand:your child’s age.}" },
+        /* The mechanism and the controls as the live team's code check found them (D058 items 1 and 7; setup.md fold 4):
+           no age-graded layer, no topic controls or quiet hours. */
         copy: [
-          "You enter your child’s age in the parent app. Every reply Kheelu gives passes a safety layer set to that age.",
+          "You enter your child’s age in the parent app. On every conversation, the AI model that answers your child is given that age and child-safety rules, with Google’s safety filters on top.",
           "You can change it later. Kheelu picks up the change the next time it’s online.",
           "Kheelu is made for children aged 3 to 7. If your child is 3, keep a grown-up nearby.",
-          "While you’re in the app, you can also choose your family’s languages, pick which topics are open and set quiet hours.",
+          "While you’re in the app, you can also choose your family’s languages.",
         ],
       },
     },
@@ -111,7 +113,7 @@ export const setupPage = {
         heading: { id: "button-title", title: "Show your child the {hand:wake-up button.}" },
         copy: [
           "Kheelu only listens when someone presses its wake-up button. It’s the button on Kheelu’s back, the one you held during setup.",
-          "One press starts a conversation. A light on Kheelu shows whenever it’s listening. After about a minute of quiet, it switches itself off, so the next chat starts with another press.",
+          "One press starts a conversation. A light on Kheelu shows whenever it’s listening. After a couple of minutes of quiet, it switches itself off, so the next chat starts with another press.",
         ],
         media: {
           kind: "photo",
@@ -131,7 +133,8 @@ export const setupPage = {
         heading: { id: "talk-title", title: "Then {hand:let them talk.}" },
         copy: [
           "The first conversation is your child’s. Kheelu answers, then asks a question back.",
-          "Later, open the parent app to read every word of it. You can delete any conversation in one tap.",
+          /* No one-tap delete (D058 item 1; setup.md fold 6). */
+          "Later, open the parent app to read every word of it. Removing a chat in the app hides it on that phone. Deleting your account deletes every conversation and recording.",
           "No Wi‑Fi for a while? Story mode’s stories, poems and jingles still play. AI mode needs your home Wi‑Fi, and Bluetooth mode needs only your paired phone.",
         ],
         media: {

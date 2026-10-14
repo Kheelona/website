@@ -6,8 +6,10 @@ import type { Copy } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
+import { CLAIM_FIXES, KHEELONA_PLUS } from "../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { mockupRoute, trustLinkHref } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 import { faqs } from "../faqs";
 import { films, filmsStrip } from "../films";
 import { navigation } from "../navigation";
@@ -176,8 +178,12 @@ describe("store page module: fold 4, what you are agreeing to", () => {
     );
   });
 
-  it("the token small print as the mockup", () => {
-    expect(checkoutWords(orderSummaryCopy.fine.token, tokenPrices)).toBe(norm(the(".mk-agree__fine", card).textContent));
+  /* D058 item 3's Kheelona+ sentence and "Kheelu's price is" (task 8b.1; deviations.md V34; CLAIM_FIXES.store): the
+     mockup keeps the approved small print, and the claim fixes turn it into the build's. */
+  it("the token small print as the mockup, with task 8b.1's claim fixes (D058 item 3; CMO review m10 (a))", () => {
+    const fixed = withFacts(main, CLAIM_FIXES.store.edits);
+    expect(norm(the(".mk-agree__fine", card).textContent).startsWith(`${KHEELONA_PLUS.mockup} The price is `)).toBe(true);
+    expect(checkoutWords(orderSummaryCopy.fine.token, tokenPrices)).toBe(norm(the("section.mk-agree .mk-agree__fine", fixed).textContent));
   });
 
   it("full mode, as the copy page: the whole price today, nothing due, the refund row unchanged, and its small print", () => {
@@ -188,11 +194,12 @@ describe("store page module: fold 4, what you are agreeing to", () => {
       [orderSummaryCopy.rows.token[2].head, orderSummaryCopy.rows.token[2].note],
     ]);
     expect(checkoutWords(orderSummaryCopy.fine.full, prices)).toBe(
-      "Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app. The first 500 units at ₹4,999 have been reserved, and this order is at the ₹7,999 price (incl. GST). Delivery anywhere in India is included, and every order comes with a GST invoice.",
+      "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. The first 500 units at ₹4,999 have been reserved, and this order is at the ₹7,999 price (incl. GST). Delivery anywhere in India is included, and every order comes with a GST invoice.",
     );
   });
 
-  it("the Kheelona+ sentence is offer.ts's (D027's first sentence only)", () => {
+  it("the Kheelona+ sentence is offer.ts's (D058 item 3's sentence, verbatim)", () => {
+    expect(offerCopy.plus).toBe(KHEELONA_PLUS.build);
     expect(orderSummaryCopy.fine.token.startsWith(offerCopy.plus)).toBe(true);
     expect(orderSummaryCopy.fine.full.startsWith(offerCopy.plus)).toBe(true);
   });

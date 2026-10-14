@@ -6,7 +6,9 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { parseRichText, type RichNode } from "@/lib/content/rich-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { readRepoFile } from "../../../../../test/e2e/support/repo";
+import { CLAIM_FIXES } from "../../../../../test/e2e/support/deviations";
 import { mockupFold, skeleton, words } from "../../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../../test/support/mockup-facts";
 import { RETENTION_LINE, RETENTION_MONTHS } from "../../policies";
 import { seller } from "../../seller";
 import { article as learningToys } from "./learning-toys-for-a-three-year-old";
@@ -41,7 +43,10 @@ function column(article: Article): Element {
  *  data-law guide itself (copy page fold 4, "Links"), where the mockup links the hub's topic while that guide waits
  *  for its rewrite (as the related rows do, ArticleTemplate.test.tsx). */
 function approvedColumn(slug: string): Element {
-  const fold = mockupFold(`story-${slug}`, ".mk-story-body").cloneNode(true) as Element;
+  /* The safe-AI-toy guide's retention line, as policies.ts prints it since task 8b.1 (D058 items 1 and 9; deviations.md
+     V35): its one-tap sentence came off. The guide's other words are task 8b.2's. */
+  const claims = slug === "what-to-look-for-in-a-safe-ai-toy" ? CLAIM_FIXES["story-what-to-look-for-in-a-safe-ai-toy"].edits : [];
+  const fold = withFacts(mockupFold(`story-${slug}`, ".mk-story-body"), claims);
   fold.querySelectorAll('.mk-part a[href="stories.html#ai-and-safety"]').forEach((a) => a.setAttribute("href", "/stories/ai-toys-and-indias-data-law"));
   return fold;
 }

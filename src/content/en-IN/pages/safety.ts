@@ -16,7 +16,8 @@ import { TRUST_COMPACT, trustItems } from "../trust";
  * The safety page, `/safety` (task 5.3): the approved mockup `mockup/pages/safety.html` (D046), word for word, in its
  * fold order (structure §5); meta, alt texts and the full-mode price sentence as wiki/site/pages/safety.md words them.
  * The H1 is the copy page's recommended option B. Fold 2 keeps the founder's order (D020: button and light, providers,
- * read and delete, no sale) and joins the page's FAQPage with the two FAQ answers (wave-4 close; architecture §9.2).
+ * reading the conversations, no sale) and joins the page's FAQPage with the two FAQ answers (wave-4 close; architecture
+ * §9.2). Since task 8b.1 the claims follow the live team's code check (D058; safety.md "Changes after approval").
  * "Safe" appears only inside the two questions parents type. Certification is "applied for, not yet granted", with no
  * mark, standard or date (claims §6; legal requirements BIS-02). Shared words are read, never retyped: the FAQ answers
  * from faqs.ts, the retention line from policies.ts (D020), the trust pair from trust.ts; the price sentence, the CTA
@@ -73,14 +74,18 @@ export const safetyPage = {
           {
             icon: "microphone",
             title: "Is Kheelu always listening?",
-            body: "No. Kheelu has no wake word to listen for. Its microphone turns on only when someone presses the wake-up button. It stays on while your child is talking and switches itself off after about a minute of quiet. Until the next press, nothing is heard, recorded or sent. A light on Kheelu shows whenever it’s listening.",
+            body: "No. Kheelu has no wake word to listen for. Its microphone turns on only when someone presses the wake-up button. It stays on while your child is talking and switches itself off after a couple of minutes of quiet. Until the next press, nothing is heard, recorded or sent. A light on Kheelu shows whenever it’s listening.",
           },
           {
             icon: "lock-simple",
             title: "How does Kheelu understand and answer my child?",
-            body: "To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.",
+            body: "To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.",
           },
-          { icon: "eye", title: "Can I read every conversation?", body: "Yes, in the parent app, word for word. Delete any of them in one tap." },
+          {
+            icon: "eye",
+            title: "Can I read every conversation?",
+            body: "Yes, in the parent app, word for word, a few minutes after each one ends. Delete them all by deleting your account.",
+          },
           {
             icon: "hand-heart",
             title: "Do you sell my child’s data?",
@@ -99,14 +104,18 @@ export const safetyPage = {
         items: [
           { icon: "eye-slash", title: "No camera.", body: "It can’t see your child or your home." },
           { icon: "speaker-high", title: "No screen.", body: "Your child talks and listens instead of watching." },
-          { icon: "wifi-slash", title: "No open internet.", body: "It can’t browse or search the web." },
+          /* The live footer's words (D058 item 1; safety.md question 5): Kheelu does use the internet, on home Wi-Fi. */
+          { icon: "wifi-slash", title: "No web browsing.", body: "It can’t browse or search the web." },
           { icon: "x", title: "No ads.", body: "Not in the toy, and not in the parent app." },
           { icon: "smiley", title: "No secrets.", body: "It never asks your child to keep one from you." },
         ],
         link: { label: "How to choose an AI toy: five checks", href: "/ai-toys-for-kids-in-india" },
       },
     },
-    /* Fold 4: the parent controls beside the one real privacy screen (D044), never beside a cast photo. */
+    /* Fold 4: the parent controls beside the one real privacy screen (D044), never beside a cast photo. The controls are
+       the app's as the live team's code check found them (D058 items 1 and 7; safety.md fold 4): no topics or quiet
+       hours; the Save voice recordings switch. The screen's alt still names its "delete all chats" button, the founder's
+       to settle (safety.md, builder note; CMO review of task 8b.1, r2-m3). */
     {
       kind: "feature-split",
       config: {
@@ -123,11 +132,14 @@ export const safetyPage = {
           {
             icon: "sliders-horizontal",
             title: "Your child’s age.",
-            body: "Enter it when you set Kheelu up, and change it later if you need to. The age-graded safety layer follows it.",
+            body: "Enter it when you set Kheelu up, and change it later if you need to. On every conversation, the AI model that answers your child is given that age and child-safety rules.",
           },
-          { icon: "book-open", title: "Topics.", body: "You choose what’s open, and what waits." },
-          { icon: "moon", title: "Quiet hours.", body: "They’re yours to set." },
           { icon: "translate", title: "Languages.", body: "Pick the ones you speak at home." },
+          {
+            icon: "microphone-slash",
+            title: "Voice recordings.",
+            body: "Turn off Save voice recordings, and only the written record of each conversation is kept.",
+          },
         ],
         screens: {
           images: [
@@ -141,7 +153,8 @@ export const safetyPage = {
         link: { label: "See what the app shows you", href: "/products/kheelu#app", icon: "eye" },
       },
     },
-    /* Folds 5 and 6: retention (D020's line, next to the memory claim, D036) and certification (claims §6). */
+    /* Folds 5 and 6: retention (D020's line, then what removing a chat and deleting the account do, D058 item 1; next to
+       the memory claim, D036) and certification (claims §6). */
     {
       kind: "feature-split",
       config: {
@@ -149,7 +162,11 @@ export const safetyPage = {
         cards: [
           {
             heading: { id: "kept-title", eyebrow: "Retention", title: "How long conversations are {hand:kept.}" },
-            copy: [RETENTION_LINE, "Kheelu remembers earlier conversations with your child, and you can read every one of them."],
+            copy: [
+              RETENTION_LINE,
+              "Removing a chat in the app hides it on that phone. Deleting your account deletes your child’s profile, conversations and recordings from our servers.",
+              "Kheelu remembers earlier conversations with your child, and you can read every one of them.",
+            ],
             link: { label: "Read our privacy policy", href: "/privacy" },
           },
           {
