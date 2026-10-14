@@ -1,0 +1,1254 @@
+{
+  "generated": "FIXTURE for the journal adapter's tests (src/lib/journal/to-article.test.ts, task 8b.2d): one post per block kind, an uploaded cover, a video and a talking guide, in the snapshot's shape and order (journal-pipeline §2.4, §3). Never read by the site; its words are test data, not approved copy.",
+  "posts": [
+    {
+      "slug": "kind-blockquotes",
+      "title": "A callout and a group of questions",
+      "description": "A fixture guide for the journal adapter: a callout with its icon and bold lead-in, and questions each answered in a paragraph or two.",
+      "theme": "AI toys and safety",
+      "author": "Apoorva Sahu",
+      "published": "2026-09-05",
+      "updated": "2026-09-05",
+      "pose": "curious",
+      "tint": "bg-blue/15",
+      "hero": null,
+      "heroAlt": "",
+      "heroWidth": null,
+      "heroHeight": null,
+      "ageNote": null,
+      "sources": [
+        {
+          "label": "Fixture source: questions to ask a toy company",
+          "url": "https://example.org/questions"
+        }
+      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "A callout"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "A callout sets one line apart.[^1]"
+              }
+            ]
+          },
+          {
+            "type": "blockquote",
+            "attrs": {
+              "style": "callout",
+              "icon": "question"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Try this: ",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": "ask what the toy does when nobody is talking to it."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Questions to ask"
+              }
+            ]
+          },
+          {
+            "type": "blockquote",
+            "attrs": {
+              "style": "questions"
+            },
+            "content": [
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 3
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Who hears it?"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Ask the company, and ask how long it keeps what it hears."
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Then ask how you can see it."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 3
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Can I switch it off?"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Ask where the switch is."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "A paragraph after the questions closes the part."
+              }
+            ]
+          }
+        ]
+      },
+      "metaTitle": null,
+      "cardTitle": null,
+      "accent": "group of questions",
+      "lead": "The two kinds of quoted block a guide may hold.",
+      "summary": null,
+      "answer": {
+        "question": "What can a quoted block hold?",
+        "text": "A callout sets one line apart in a tinted card with its icon and a bold lead-in.[^1] A group of questions holds smaller headings, each followed by its answer in a paragraph or two, so a reader can scan the questions first."
+      },
+      "photo": "tara-03-bedtime-with-baba",
+      "related": []
+    },
+    {
+      "slug": "kind-facts",
+      "title": "Facts in a list, with a photo",
+      "description": "A fixture guide for the journal adapter: a list of facts with icons and bold titles, and the photo that sits inside the list.",
+      "theme": "AI toys and safety",
+      "author": "Aman Soni",
+      "published": "2026-09-04",
+      "updated": "2026-09-04",
+      "pose": "curious",
+      "tint": "bg-blue/15",
+      "hero": null,
+      "heroAlt": "",
+      "heroWidth": null,
+      "heroHeight": null,
+      "ageNote": null,
+      "sources": [
+        {
+          "label": "Fixture source: a guide to reading a product page",
+          "url": "https://example.org/facts"
+        }
+      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Some facts, one to a row."
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "The facts"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Each fact has an icon, a bold title and its words.[^1]"
+              }
+            ]
+          },
+          {
+            "type": "bulletList",
+            "attrs": {
+              "style": "facts"
+            },
+            "content": [
+              {
+                "type": "listItem",
+                "attrs": {
+                  "icon": "microphone"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "The first fact. ",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": "It sits in a card with its own icon."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "attrs": {
+                  "icon": "lock-simple"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "The second fact has no title."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "image",
+            "attrs": {
+              "src": "",
+              "alt": "",
+              "caption": "",
+              "width": null,
+              "height": null,
+              "photo": "kheelu-belly-module"
+            }
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "The facts widen out of the column on a laptop."
+              }
+            ]
+          }
+        ]
+      },
+      "metaTitle": null,
+      "cardTitle": null,
+      "accent": "with a photo",
+      "lead": "Facts one to a row, each with an icon, and a photo in the grid.",
+      "summary": null,
+      "answer": {
+        "question": "How does a list of facts look?",
+        "text": "Each fact sits in its own row with an icon, a bold title and a line of words.[^1] On a laptop the list widens past the reading column into two columns, and a photo named right after the list takes a cell inside it."
+      },
+      "photo": "tara-02-evening-with-amma",
+      "related": []
+    },
+    {
+      "slug": "kind-headings",
+      "title": "How a guide is cut into parts",
+      "description": "A fixture guide for the journal adapter: headings of two levels, an anchor, a rule and the line a post may close with.",
+      "theme": "Learning and play",
+      "author": "Apoorva Sahu",
+      "published": "2026-09-02",
+      "updated": "2026-09-02",
+      "pose": "curious",
+      "tint": "bg-blue/15",
+      "hero": null,
+      "heroAlt": "",
+      "heroWidth": null,
+      "heroHeight": null,
+      "ageNote": "This fixture note closes the body as a plain line.",
+      "sources": [
+        {
+          "label": "Fixture source: a style guide for long pages",
+          "url": "https://example.org/style"
+        }
+      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2,
+              "anchor": "first-part"
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "The first part"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "A heading of level two starts a part.[^1]"
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 3
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "A smaller heading"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "A heading of level three stays inside its part."
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "The second part"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "A part without an anchor gets its id from its place."
+              }
+            ]
+          },
+          {
+            "type": "horizontalRule"
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "After a rule, the words sit in a part with no heading."
+              }
+            ]
+          }
+        ]
+      },
+      "metaTitle": null,
+      "cardTitle": null,
+      "accent": "cut into parts",
+      "lead": "Headings start the parts of a guide; a rule ends one.",
+      "summary": null,
+      "answer": {
+        "question": "How is a guide cut into parts?",
+        "text": "Each heading of level two starts a part, with its own anchor when other pages link to it.[^1] A heading of level three stays inside its part. A rule ends a part, and the words after it sit in a part with no heading at all."
+      },
+      "photo": "kabir-03-homework-desk",
+      "related": [
+        "kind-lists",
+        "kind-images",
+        "kind-video"
+      ]
+    },
+    {
+      "slug": "kind-images",
+      "title": "Photos inside a part and between parts",
+      "description": "A fixture guide for the journal adapter: a photo among a part's paragraphs, with a caption, and a wide photo between two parts.",
+      "theme": "Learning and play",
+      "author": "Kheelona",
+      "published": "2026-09-06",
+      "updated": "2026-09-06",
+      "pose": "curious",
+      "tint": "bg-blue/15",
+      "hero": null,
+      "heroAlt": "",
+      "heroWidth": null,
+      "heroHeight": null,
+      "ageNote": null,
+      "sources": [
+        {
+          "label": "Fixture source: a guide to photos on long pages",
+          "url": "https://example.org/photos"
+        }
+      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "A photo inside a part"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "A photo among a part's paragraphs stays inside the part.[^1]"
+              }
+            ]
+          },
+          {
+            "type": "image",
+            "attrs": {
+              "src": "",
+              "alt": "",
+              "caption": "Stories at bedtime.",
+              "width": null,
+              "height": null,
+              "photo": "ira-01-story-on-the-bed"
+            }
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "The next paragraph keeps the column's space below the caption."
+              }
+            ]
+          },
+          {
+            "type": "image",
+            "attrs": {
+              "src": "",
+              "alt": "",
+              "caption": "",
+              "width": null,
+              "height": null,
+              "photo": "advik-04-floor-train"
+            }
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "After the photo"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "A wide photo sits between the parts."
+              }
+            ]
+          }
+        ]
+      },
+      "metaTitle": null,
+      "cardTitle": null,
+      "accent": "between parts",
+      "lead": "Where a photo sits depends on what comes after it.",
+      "summary": null,
+      "answer": {
+        "question": "Where does a photo in a guide sit?",
+        "text": "A photo among a part's paragraphs stays inside the part, with its caption and the column's space below it.[^1] A photo that comes right before a heading sits between the two parts instead, and a wide photo takes the wide frame."
+      },
+      "photo": "ira-04-paper-crown",
+      "related": []
+    },
+    {
+      "slug": "kind-lists",
+      "title": "Lists of every kind, in one guide",
+      "description": "A fixture guide for the journal adapter: bullets with a bold lead-in, ticked checks, tips with icons and numbered steps.",
+      "theme": "Screen time",
+      "author": "Aman Soni",
+      "published": "2026-09-03",
+      "updated": "2026-09-03",
+      "pose": "curious",
+      "tint": "bg-blue/15",
+      "hero": null,
+      "heroAlt": "",
+      "heroWidth": null,
+      "heroHeight": null,
+      "ageNote": null,
+      "sources": [
+        {
+          "label": "Fixture source: a guide to screen time at home",
+          "url": "https://example.org/screens"
+        }
+      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Bullets"
+              }
+            ]
+          },
+          {
+            "type": "bulletList",
+            "content": [
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Morning. ",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": "A walk before breakfast."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "A song in the bath."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Checks"
+              }
+            ]
+          },
+          {
+            "type": "bulletList",
+            "attrs": {
+              "style": "checks"
+            },
+            "content": [
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Check the age on the box."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Ask what the toy does when it is quiet."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Tips"
+              }
+            ]
+          },
+          {
+            "type": "bulletList",
+            "attrs": {
+              "style": "tips"
+            },
+            "content": [
+              {
+                "type": "listItem",
+                "attrs": {
+                  "icon": "clock"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Give a five-minute warning."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "attrs": {
+                  "icon": "book-open"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Read one page more, then stop."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Steps"
+              }
+            ]
+          },
+          {
+            "type": "orderedList",
+            "content": [
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Agree the time together."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Set a timer you can both see.[^1]"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "metaTitle": null,
+      "cardTitle": null,
+      "accent": "every kind",
+      "lead": "Bullets, checks, tips and steps, as the dashboard writes them.",
+      "summary": null,
+      "answer": {
+        "question": "Which lists can a guide hold?",
+        "text": "A guide can hold plain bullets, ticked checks, tips that each carry an icon, and numbered steps.[^1] Any item may open with a bold lead-in, and every item holds one paragraph, so no list ever sits inside another list on a phone."
+      },
+      "photo": "kabir-04-planet-book",
+      "related": []
+    },
+    {
+      "slug": "kind-paragraphs",
+      "title": "Paragraphs for a 3-year-old, in plain words",
+      "description": "A fixture guide for the journal adapter: every kind of paragraph a dashboard post can hold, from a bold lead-in to a whole bold line.",
+      "theme": "Screen time",
+      "author": "Kheelona",
+      "published": "2026-09-01",
+      "updated": "2026-09-03",
+      "pose": "curious",
+      "tint": "bg-blue/15",
+      "hero": null,
+      "heroAlt": "",
+      "heroWidth": null,
+      "heroHeight": null,
+      "ageNote": null,
+      "sources": [
+        {
+          "label": "Fixture source: a guide to reading with young children",
+          "url": "https://example.org/reading"
+        }
+      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "These lines sit inside the answer card, under the answer."
+              }
+            ]
+          },
+          {
+            "type": "horizontalRule"
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Start here: ",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "a bold run at the start of a paragraph is its lead-in."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ask, then wait.",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Read the "
+              },
+              {
+                "type": "text",
+                "text": "hub of guides",
+                "marks": [
+                  {
+                    "type": "link",
+                    "attrs": {
+                      "href": "/stories"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " for more, or "
+              },
+              {
+                "type": "text",
+                "text": "write to us",
+                "marks": [
+                  {
+                    "type": "link",
+                    "attrs": {
+                      "href": "mailto:help@example.org"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": ".[^1]"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "type": "text",
+                "text": "A hard break starts a new paragraph for a 3-year-old, too."
+              }
+            ]
+          },
+          {
+            "type": "paragraph"
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Bold in the "
+              },
+              {
+                "type": "text",
+                "text": "middle",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " of a line shows as plain words."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "When it ships: {delivery}."
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Where the parts begin"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "A part begins at each heading."
+              }
+            ]
+          }
+        ]
+      },
+      "metaTitle": null,
+      "cardTitle": "Paragraphs in plain words",
+      "accent": "plain words",
+      "lead": "Every paragraph a writer can type in the dashboard, and how the page sets it.",
+      "summary": null,
+      "answer": {
+        "question": "What can a paragraph in a 3-year-old guide hold?",
+        "text": "A paragraph can open with a bold lead-in, stand as one bold line, carry a link to another page, name a source with a numbered marker,[^1] and print an amount from the live offer, {price:headline}, without ever typing a rupee sign or a date of its own."
+      },
+      "photo": "advik-01-counting-carriages",
+      "related": []
+    },
+    {
+      "slug": "kind-talking",
+      "title": "Waiting for a child's reply",
+      "description": "A fixture guide for the journal adapter: a guide on the talking topic, which closes without the pre-order button and carries D025's line.",
+      "theme": "Talking and language",
+      "author": "Kheelona",
+      "published": "2026-09-09",
+      "updated": "2026-09-09",
+      "pose": "curious",
+      "tint": "bg-blue/15",
+      "hero": null,
+      "heroAlt": "",
+      "heroWidth": null,
+      "heroHeight": null,
+      "ageNote": null,
+      "sources": [
+        {
+          "label": "Fixture source: a guide to talking with young children",
+          "url": "https://example.org/talking"
+        }
+      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Children learn to talk by talking with someone who waits.[^1]"
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Wait for the reply"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Count to five in your head before you speak again."
+              }
+            ]
+          },
+          {
+            "type": "bulletList",
+            "attrs": {
+              "style": "tips"
+            },
+            "content": [
+              {
+                "type": "listItem",
+                "attrs": {
+                  "icon": "chat-circle-dots"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Name what your child is looking at."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "More guides on talking are in "
+              },
+              {
+                "type": "text",
+                "text": "the stories hub",
+                "marks": [
+                  {
+                    "type": "link",
+                    "attrs": {
+                      "href": "/stories#talking"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "."
+              }
+            ]
+          }
+        ]
+      },
+      "metaTitle": null,
+      "cardTitle": null,
+      "accent": "child's reply",
+      "lead": "A guide on talking: no pitch, and the line under its answer.",
+      "summary": null,
+      "answer": {
+        "question": "How long should you wait for a reply?",
+        "text": "Longer than feels natural. Count to five in your head before you speak again, because a young child is still finding the words and the turn.[^1] The waiting gives them the time to answer, and it shows them that their answer is the one you want."
+      },
+      "photo": "tara-01-naming-feelings",
+      "related": []
+    },
+    {
+      "slug": "kind-upload",
+      "title": "A guide with an uploaded cover",
+      "description": "A fixture guide for the journal adapter: a cover uploaded in the dashboard, with its own size and words, and an uploaded photo in the text.",
+      "theme": "Screen time",
+      "author": "Kashyap C.R",
+      "published": "2026-09-07",
+      "updated": "2026-09-07",
+      "pose": "curious",
+      "tint": "bg-blue/15",
+      "hero": "https://api.kheelona.com/v1/public/blog/images/kind-upload-cover.jpg",
+      "heroAlt": "A child's drawing of a sun on a fridge door",
+      "heroWidth": 1600,
+      "heroHeight": 900,
+      "ageNote": null,
+      "sources": [
+        {
+          "label": "Fixture source: a guide to share cards",
+          "url": "https://example.org/cards"
+        }
+      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "A cover uploaded in the dashboard heads this guide.[^1]"
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "An uploaded photo"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "An uploaded photo in the text keeps its own size."
+              }
+            ]
+          },
+          {
+            "type": "image",
+            "attrs": {
+              "src": "https://api.kheelona.com/v1/public/blog/images/kind-upload-body.jpg",
+              "alt": "Crayons in a steel tumbler",
+              "caption": "Crayons, ready.",
+              "width": 800,
+              "height": 1000
+            }
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Its words come from the dashboard."
+              }
+            ]
+          }
+        ]
+      },
+      "metaTitle": null,
+      "cardTitle": null,
+      "accent": "uploaded cover",
+      "lead": "A cover from the dashboard, where no design-system photo is named.",
+      "summary": null,
+      "answer": {
+        "question": "What does an uploaded cover change?",
+        "text": "A cover uploaded in the dashboard heads the guide when it names no design-system photo.[^1] Its share card is the same upload, sized by this site's image optimiser, so search engines never read an address from the dashboard's own host."
+      },
+      "photo": null,
+      "related": []
+    },
+    {
+      "slug": "kind-video",
+      "title": "A video in a guide, still until pressed",
+      "description": "A fixture guide for the journal adapter: a YouTube video and a Vimeo video, each a still until a reader presses play.",
+      "theme": "Learning and play",
+      "author": "Kheelona",
+      "published": "2026-09-08",
+      "updated": "2026-09-08",
+      "pose": "curious",
+      "tint": "bg-blue/15",
+      "hero": null,
+      "heroAlt": "",
+      "heroWidth": null,
+      "heroHeight": null,
+      "ageNote": null,
+      "sources": [
+        {
+          "label": "Fixture source: a guide to video on slow connections",
+          "url": "https://example.org/video"
+        }
+      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "A video"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "A video shows a still until a reader presses play.[^1]"
+              }
+            ]
+          },
+          {
+            "type": "videoEmbed",
+            "attrs": {
+              "provider": "youtube",
+              "videoId": "abcDEF12345",
+              "title": "Building a tower together",
+              "caption": "Two minutes, no sound needed."
+            }
+          },
+          {
+            "type": "videoEmbed",
+            "attrs": {
+              "provider": "vimeo",
+              "videoId": "123456789",
+              "title": "A tower, built twice",
+              "caption": ""
+            }
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Nothing loads from the player before the press."
+              }
+            ]
+          }
+        ]
+      },
+      "metaTitle": null,
+      "cardTitle": null,
+      "accent": "still until pressed",
+      "lead": "Videos from two players, and what loads before a press.",
+      "summary": null,
+      "answer": {
+        "question": "What loads before a reader presses play?",
+        "text": "Only a still from this site's own image optimiser loads before a press.[^1] The player arrives when the reader presses the play button, which names the video, so nothing from the video host reaches the reader's browser while the page simply sits there."
+      },
+      "photo": "myra-04-drawing-at-home",
+      "related": []
+    }
+  ]
+}

@@ -28,14 +28,20 @@ import { leadWithHeadline, noTypedAmount } from "./price-lead";
  * absolute, on the production origin in every environment (accepted on beta, N8).
  */
 
-/** Every Open Graph card is 1200 x 630: `scripts/assets/build-og.mjs` renders them at that size and
+/** Every Open Graph card the site cuts is 1200 x 630: `scripts/assets/build-og.mjs` renders them at that size and
  *  `test/guards/generated-icons.test.ts` checks it (task 1.5). */
 export const OG_IMAGE_SIZE = { width: 1200, height: 630 } as const;
+
+/** A share card: the site's cut cards are `OG_IMAGE_SIZE`; a card of another shape names its size. One does today: a
+ *  journal post's uploaded cover, shared through this site's image optimiser at the size it serves (ADR-014;
+ *  journal-pipeline §6, src/lib/journal/to-article.ts), so share tools are told the size they will get. */
+export type OgImage = Meta["og"] & { readonly width?: number; readonly height?: number };
 
 const SITE_NAME = "Kheelona";
 const OG_LOCALE = "en_IN";
 
-export interface PageMetaInput extends Meta {
+export interface PageMetaInput extends Omit<Meta, "og"> {
+  readonly og: OgImage;
   /** The page's own path: the canonical and `og:url`. No fragment, no query, no trailing slash. */
   readonly path: SitePath;
   /** Needed when the title or description changes with the offer mode or names an amount. */
@@ -54,6 +60,17 @@ export type PageMetadata = Pick<Metadata, "title" | "description" | "alternates"
 /** `/`, or slash-separated segments with no trailing slash, query or fragment. */
 const CANONICAL_PATH = /^\/(?:[A-Za-z0-9._~%-]+(?:\/[A-Za-z0-9._~%-]+)*)?$/;
 
+/** The card's size: its own when it names one (both sides, whole pixels), else the cut cards' 1200 x 630. */
+function cardSize(og: OgImage, path: SitePath): { readonly width: number; readonly height: number } {
+  if (og.width === undefined && og.height === undefined) return OG_IMAGE_SIZE;
+  if (og.height === undefined) throw new Error(`pageMeta: the share card of "${path}" names a width without a height`);
+  if (og.width === undefined) throw new Error(`pageMeta: the share card of "${path}" names a height without a width`);
+  if (![og.width, og.height].every((n) => Number.isInteger(n) && n > 0)) {
+    throw new Error(`pageMeta: the share card of "${path}" is not a size in whole pixels (${og.width} x ${og.height})`);
+  }
+  return { width: og.width, height: og.height };
+}
+
 /** Every source string of a piece of copy: both modes of a variant, whichever one renders. */
 function sources(copy: Copy): readonly string[] {
   return isModeVariant(copy) ? [copy.token, copy.full] : [copy];
@@ -65,6 +82,7 @@ export function pageMeta({ title, description, og, path, offer, article }: PageM
   }
   for (const source of sources(title)) noTypedAmount(source, `The title of ${path}`);
   for (const source of sources(description)) noTypedAmount(source, `The meta description of ${path}`);
+  const ogSize = cardSize(og, path);
   const titleText = toPlainText(title, offer);
   const descriptionText = toPlainText(description, offer);
   if (offer) {
@@ -90,7 +108,7 @@ export function pageMeta({ title, description, og, path, offer, article }: PageM
       description: descriptionText,
       siteName: SITE_NAME,
       locale: OG_LOCALE,
-      images: [{ url: og.image, ...OG_IMAGE_SIZE, alt: og.alt }],
+      images: [{ url: og.image, ...ogSize, alt: og.alt }],
     },
     twitter: {
       card: "summary_large_image",
