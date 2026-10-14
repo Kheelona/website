@@ -2,9 +2,16 @@ import { readFileSync } from "node:fs";
 import { CAMPAIGN_KEYS } from "@/lib/campaign";
 import { execFileSync } from "node:child_process";
 import { describe, expect, it } from "vitest";
-// @ts-expect-error -- a plain .mjs tool, deliberately outside the TS graph
-import { buildUtmUrl, UtmError, SOURCES, MEDIUMS, SITE_URL } from "../tools/utm/build-link.mjs";
-import { SITE_URL as CANONICAL_SITE_URL } from "@/lib/seo";
+import { CANONICAL_ORIGIN } from "@/config/env";
+import * as utm from "../tools/utm/build-link.mjs";
+
+/* The tool is plain JavaScript that `allowJs` types from its code: its destructured options come out required, though
+   `path`, `content` and `term` are optional (the tool checks each for undefined). The test calls it with the shape
+   the tool actually takes (task 6.3: CANONICAL_ORIGIN replaces the legacy lib/seo SITE_URL, and this file
+   type-checks). */
+type UtmInput = { source: string; medium: string; campaign: string; path?: string; content?: string; term?: string };
+const buildUtmUrl = utm.buildUtmUrl as (input: UtmInput) => string;
+const { UtmError, SOURCES, MEDIUMS, SITE_URL } = utm;
 
 /**
  * Campaign tagging, guarded rather than hoped for.
@@ -34,7 +41,7 @@ describe("the builder and the doc cannot drift apart", () => {
   });
 
   it("builds on the same origin the rest of the site uses", () => {
-    expect(SITE_URL).toBe(CANONICAL_SITE_URL);
+    expect(SITE_URL).toBe(CANONICAL_ORIGIN);
   });
 
   it("reproduces the doc's own worked example", () => {

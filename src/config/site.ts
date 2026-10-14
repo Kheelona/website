@@ -136,14 +136,9 @@ export const MRP_PRICE = formatInr(MRP_AMOUNT_PAISE);
    never inline; the chip format is "Ages 3+". */
 export const KHEELU_AGES = "3+";
 
-/** The ONLY sanctioned Kheelona+ wording (V3; updated 2026-07-31 when the
- *  founder cleared HALF of gate V3-b): Kheelu's smart features are LIFETIME —
- *  that is the post-lapse answer — and pricing stays deliberately open-ended
- *  as "announced soon" (founder: no details yet). STILL GATED: any ₹ amount
- *  for Kheelona+. */
-export const KHEELONA_PLUS_LINE =
-  "Every Kheelu includes 6 months of Kheelona+, the stories, lessons, languages, and the parent app. Kheelu's smart features are yours for life, and Kheelona+ pricing is announced soon.";
-/** Short form, for the finale's small print. */
+/* KHEELONA_PLUS_LINE, the legacy KheelonaPlusBand's sentence ("the stories, lessons, languages": claims §4 row 10,
+   D027), was deleted with that band in task 6.3. */
+/** The Kheelona+ short form, for the finale's small print; the receipt email (frozen) still prints it. */
 export const KHEELONA_PLUS_SHORT = "Every Kheelu includes 6 months of Kheelona+.";
 
 /** Ship date (founder, 2026-08-23: moved from 1 October). Render from these,
@@ -154,7 +149,9 @@ export const SHIP_DATE_ISO = "2026-10-20";
 /** The announced languages (founder, 2026-07-31 — "they are final"). Eight
  *  named today; the published ceiling stays "up to 10", so two more can land
  *  without any copy change. Render the list from here (AEO: the named list is
- *  the strongest answer content this product has). */
+ *  the strongest answer content this product has); the product facts read it
+ *  (content/en-IN/products/kheelu/product.ts). The legacy LANGUAGES_LINE went
+ *  with its last importer and test/config-copy.test.ts in task 6.3. */
 export const KHEELU_LANGUAGES = [
   "English",
   "Hindi",
@@ -165,9 +162,6 @@ export const KHEELU_LANGUAGES = [
   "Spanish",
   "French",
 ] as const;
-export const LANGUAGES_LINE = `${KHEELU_LANGUAGES.slice(0, -1).join(", ")}, and ${
-  KHEELU_LANGUAGES[KHEELU_LANGUAGES.length - 1]
-}`;
 
 /** WhatsApp share (V3, India's native referral loop — no backend). "Rs" not
  *  "₹" in the payload: the rupee sign garbles in some WhatsApp clients. Leads

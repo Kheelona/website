@@ -102,37 +102,11 @@ const eslintConfig = defineConfig([
     rules: { "@next/next/no-html-link-for-pages": "off" },
   },
   {
-    // Legacy story, deleted by task 6.3: its plain <a href="/products/kheelu"> meets the rule since
-    // task 5.2 serves that page from the dynamic products/[slug] route.
-    files: ["src/components/molecules/Sheet.stories.tsx"],
-    rules: { "@next/next/no-html-link-for-pages": "off" },
-  },
-  {
-    // Tracking gates: bodies frozen byte for byte (tracking freeze). Task 2.6 moves them to
-    // src/components/tracking/ unchanged, so both paths are named; the rule returns only if a
-    // founder decision lets the gate bodies change.
-    files: [
-      "src/components/molecules/GoogleAnalyticsGate.tsx",
-      "src/components/molecules/MetaPixel.tsx",
-      "src/components/tracking/GoogleAnalyticsGate.tsx",
-      "src/components/tracking/MetaPixel.tsx",
-    ],
+    // Tracking gates: bodies frozen byte for byte (tracking freeze), moved by task 2.6 to
+    // src/components/tracking/ unchanged (task 6.3 dropped the old molecules/ paths with the legacy
+    // folder); the rule returns only if a founder decision lets the gate bodies change.
+    files: ["src/components/tracking/GoogleAnalyticsGate.tsx", "src/components/tracking/MetaPixel.tsx"],
     rules: { "react-hooks/set-state-in-effect": "off" },
-  },
-  {
-    // Legacy organism, deleted by task 6.3.
-    files: ["src/components/organisms/KheeluGuide.tsx"],
-    rules: { "react-hooks/set-state-in-effect": "off" },
-  },
-  {
-    // Legacy vendor primitive, deleted by task 6.3.
-    files: ["src/components/vendor/animate-ui/primitives/slot.tsx"],
-    rules: { "react-hooks/refs": "off" },
-  },
-  {
-    // The motion/react mock in the shared test setup; it goes when task 6.3 retires `motion`.
-    files: ["test/setup.ts"],
-    rules: { "react/display-name": "off" },
   },
 ]);
 

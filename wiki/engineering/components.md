@@ -1,7 +1,7 @@
 ---
 title: "Components catalogue (seeded in Phase 4, revised after QA round 1; builders update their rows)"
 type: catalogue
-updated: 2026-10-12
+updated: 2026-10-14
 sources:
   - architecture.md (§5, §11), structure.md (§5), adr/ADR-002, adr/ADR-003, adr/ADR-007
   - ../design-system/component-map.md (DS components, props in design-system/project/components/index.d.ts)
@@ -26,7 +26,7 @@ TH confirmation (`/thanks`), EV event, partner and store not-found pages, all = 
 ## 1. Primitives (`src/components/ui/`)
 
 Data by props only; server components unless marked client. Story required. New code joins classes with
-`clsx` directly (the legacy `src/lib/cn.ts` with `tailwind-merge` is not reused and goes in 6.3).
+`clsx` directly (the legacy `src/lib/cn.ts` with `tailwind-merge` was never reused and went in 6.3).
 
 | Component | DS source and classes | Key props | Client | Used on | Task | Status |
 |---|---|---|---|---|---|---|
@@ -226,8 +226,10 @@ Built HTML never carries an `mk-` class (`test/guards/mockup-markup.test.ts`).
 
 ## 8. Legacy components (deleted in task 6.3)
 
-Everything under `src/components/{atoms,molecules,organisms,templates,vendor}` and
-`src/features/home/components`, plus the old product route's `_components` (`ColorwayPicker`,
-`PacePanel`; deleted with the old route in 5.2; `ViewContentTracker` moves to `tracking/` in 2.6), and
-`src/lib/cn.ts`. None is reused: they are styled for the retired v3 DS. Their behaviour references kept:
-`VideoMoments` (the film labels, now `FilmsStrip`), `ViewContentTracker`, the three gates.
+**Deleted (task 6.3, 2026-10-14).** Everything under `src/components/{atoms,molecules,organisms,templates,vendor}`
+(145 files: components, their tests and stories, the vendored animate-ui primitives) and `src/features/home`
+(25 files), plus the old product route's `_components` (`ColorwayPicker`, `PacePanel`; deleted with the old route
+in 5.2; `ViewContentTracker` moved to `tracking/` in 2.6), and `src/lib/cn.ts` with `tailwind-merge`. None was
+reused: they were styled for the retired v3 DS. Their behaviour references kept: `VideoMoments` (the film labels,
+now `FilmsStrip`), `ViewContentTracker`, the three gates. Recoverable at the tag
+`archive/pre-reset-2026-10-10` (`git show archive/pre-reset-2026-10-10:<path>`).

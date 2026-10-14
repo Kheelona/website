@@ -31,18 +31,6 @@
   // and a legacy line whose file changed since the freeze tag (a rewritten file must type-check).
   "exclude": [
     "node_modules",
-    // Legacy: 6.3 deletes these stories with their components (atoms, organisms, features/home).
-    "src/components/atoms/Room.stories.tsx",
-    "src/components/atoms/Section.stories.tsx",
-    "src/components/organisms/FinaleCTA.stories.tsx",
-    "src/components/organisms/ParentQuotes.stories.tsx",
-    "src/features/home/components/ParentAppSection.stories.tsx",
-    // Legacy: 6.3 retires this guard with its subject.
-    "test/action-label.test.ts",
-    // Legacy: 6.3 rewrites it (CANONICAL_ORIGIN from @/config/env when seo.ts goes). It fails today
-    // (10 errors: allowJs types tools/utm/build-link.mjs, so its @ts-expect-error is unused and the
-    // calls miss `content` and `term`).
-    "test/utm.test.ts",
     // Frozen checkout test (ADR-013, B3; structure §7): excluded for good. 5.15's literal-only
     // reviewed patch changes no type (9 errors today).
     "src/features/preorder/components/PreorderForm.test.tsx",
