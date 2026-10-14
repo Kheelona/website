@@ -16,6 +16,7 @@ import { purchaseConfirmedEvent } from "@/lib/store/posthog-server";
 import { CTAS, CTA_IDS, CTA_VALUES, RESERVED_CTA_VALUES, type CtaValue } from "@/lib/tracking/cta";
 import { DESTINATIONS, type DestinationKey } from "@/lib/tracking/destinations";
 import { EVENTS, STAMPED_PROPERTIES, type TrackedEvent } from "@/lib/tracking/events";
+import { NEW_EVENTS } from "@/lib/tracking/new-events";
 
 /**
  * TRACKING REGISTRY GUARD (task 1.4; ADR-006; architecture §8.2-8.3; QA review N2).
@@ -682,6 +683,16 @@ describe("events.ts: architecture §8.2 and the new events", () => {
     for (const p of planned) {
       expect(only(EVENTS, p.name).params, `${p.name} parameters`).toEqual(p.params);
     }
+  });
+
+  /* Task 6.3 (6.2 note 2): track.ts runs in the store's client chunks, so it reads a client-only map of the new events
+     (src/lib/tracking/new-events.ts) instead of the whole registry. The map must stay the registry's new rows exactly. */
+  it("the dispatcher's client map is EVENTS filtered to status new: same names, destinations and parameters", () => {
+    const fromRegistry = Object.fromEntries(
+      EVENTS.filter((e) => e.status === "new").map((e) => [e.name, { destinations: e.destinations, params: e.params }]),
+    );
+    expect(Object.keys(fromRegistry).length).toBeGreaterThan(0);
+    expect(NEW_EVENTS).toEqual(fromRegistry);
   });
 
   it("Meta never receives a new event (architecture §8.2)", () => {

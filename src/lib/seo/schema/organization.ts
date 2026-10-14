@@ -7,7 +7,8 @@ import { countryNode, definedOnly, profileLinks, type CountryCode, type HttpsUrl
  * per page, in `siteGraph()`; every other node refers to it by `ORGANIZATION_ID`.
  *
  * Facts come from content/en-IN/organization.ts and seller.ts (task 2.1). Deliberately missing:
- * `memberOf`, which stays proof-gated until F11 (D038), and `contactOption`, whose only valid values
+ * `memberOf` (D054 item 20 lifted the proof gate, but /team names the programmes without stating any
+ * relationship, B26, and JSON-LD restates only what the page shows), and `contactOption`, whose only valid values
  * are HearingImpairedSupported and TollFree ("WhatsApp" was a validation error on every live page;
  * the channel is said with the contact point's wa.me `url`).
  */

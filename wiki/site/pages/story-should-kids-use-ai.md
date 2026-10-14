@@ -458,8 +458,8 @@ would need the founder's and counsel's answer on Kheelu's own providers' terms (
   fold 5, fold 8) follow whatever the founder signs for B3 (open question P21; this page's question 3). The C37
   chatbot line stays out (question 2; founder and counsel).
 - **Not changed:** the head photo, `kabir-02`, which heads no other guide and is used nowhere else on the site, so
-  it keeps its one alt; the review asks for no change, and the task's photo pool (ira-01, ira-03, kabir-01,
-  myra-03) has no grown-up in frame for a page that advises one nearby at 3. D025: none needed (the main session's
-  ruling at the wave 5 part C merge, R2-3).
+  it keeps its one alt and M11's repeat does not arise. Kabir is 6 (`03-cast.md:13`), so a child alone with Kheelu
+  suits the page ([CMO review 5.20c](../../qa/cmo-review-article-fixes-5.20c-2026-10-14.md) F2, applied in task 6.3).
+  D025: none needed (the main session's ruling at the wave 5 part C merge, R2-3).
 - **For the builder:** `should-kids-use-ai.ts`, the answer's third sentence, word for word as fold 2, in the same
   commit (`ai-safety-and-learning.test.tsx`); `updated` stays 2026-10-13.

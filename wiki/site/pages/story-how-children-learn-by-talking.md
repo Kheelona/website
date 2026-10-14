@@ -386,7 +386,8 @@ statement was added, and there is no placeholder. The builder updates the module
 the `assets.md` rows for `kabir-04` and `tara-04`.
 
 **For the main session (not the founder).** The photo move goes beyond the letter of M13, which left this page on
-`tara-04`; the CMO could not see the 5.19 guides' photos then (M13, last sentence). If task 5.20c moves
-`why-three-to-six-are-the-years-that-matter-most` off `tara-04`, this page can go back to it (the alt then is the one
-M13 names for `tara-04`, this page's old alt). With `kabir-04` here, the hub's talking fold shows `kabir-04` on its
+`tara-04`; the CMO could not see the 5.19 guides' photos then (M13, last sentence). Settled: `kabir-04` stays
+([CMO review 5.20b](../../qa/cmo-review-article-fixes-5.20b-2026-10-14.md) question 1, option (a);
+[CMO review 5.20c](../../qa/cmo-review-article-fixes-5.20c-2026-10-14.md) F1: `why-three-to-six-are-the-years-that-matter-most`
+keeps `tara-04`), so the offer to move back that stood here is withdrawn (task 6.3). With `kabir-04` here, the hub's talking fold shows `kabir-04` on its
 featured card (the late-talker guide) and this guide opens on the same photo; the hub shows no other card photo there.

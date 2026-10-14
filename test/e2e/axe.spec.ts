@@ -1,8 +1,9 @@
 import type { Page } from "@playwright/test";
 import { describeFindings, runAxe } from "./support/axe";
 import { PARITY_TARGET } from "./support/env";
-import { expect, forceMotionEnd, gateRouteGroup, settle, test } from "./support/fixtures";
+import { expect, forceMotionEnd, gateRouteGroup, requiresServer, settle, test } from "./support/fixtures";
 import { sweepRoutes, type Route } from "./support/routes";
+import { STAND_IN_ON, STAND_IN_PENDING, ensureStandIn, signedEventRoute } from "./support/store-stand-in";
 import { AXE_TEMPLATE_EXTRA, AXE_VIEWPORTS, type Viewport } from "./support/viewports";
 
 /* Accessibility (task 1.1; architecture §13 and §16.2, test plan §4.5 and §4.6, tasks.md SPA 3).
@@ -199,12 +200,35 @@ for (const route of sweepRoutes()) {
   });
 }
 
-test.describe("axe: store tier pages (/e/<tier>, /ideabaaz)", () => {
-  test("form, text field sizes and errors", () => {
-    test.skip(
-      true,
-      "pending: /e/<tier> and /ideabaaz render their form only with a store environment and a signed tier " +
-        "(D051: none locally or on beta); add them to this sweep when the store restyle (5.15) provides a stub",
-    );
+/* The signed event page /e/<tier> (task 6.3, from 6.1): its form renders only with a store database and a signed tier
+   (D051: none locally or on beta), so it runs on store-secondary.spec's read-only database stand-in
+   (support/store-stand-in.ts; shared, never closed) and prints as pending without it. Every state the sweep exercises:
+   the page as loaded at each axe width, its FAQ, its text field sizes, the form submitted empty with its errors, then
+   motion on. /ideabaaz is no tier page since D054 item 7: it is the store's dead end, swept by store-secondary.spec. */
+test.describe("axe: store tier page (/e/<tier>, signed, on the database stand-in)", () => {
+  requiresServer();
+  test.skip(!STAND_IN_ON, STAND_IN_PENDING);
+  test.beforeEach(() => ensureStandIn());
+
+  for (const vp of AXE_VIEWPORTS) {
+    test(vp.name, async ({ harness }) => {
+      const route = signedEventRoute();
+      const { page } = await harness.open(route, vp);
+      await forceMotionEnd(page);
+      await settle(page);
+      const label = `${route.id} ${vp.name}`;
+      // Not vacuous: the tier sells, so the form is there for the states below.
+      await expect(page.locator("main form")).toHaveCount(1);
+      await check(page, label);
+      await exerciseStates(page, route, vp, label);
+    });
+  }
+
+  test(`motion on, ${MOTION_ON_VIEWPORT.name}`, async ({ harness }) => {
+    const route = signedEventRoute();
+    const { page } = await harness.open(route, MOTION_ON_VIEWPORT, { reducedMotion: "no-preference" });
+    await forceMotionEnd(page);
+    await settle(page);
+    await check(page, `${route.id} ${MOTION_ON_VIEWPORT.name} motion on`);
   });
 });

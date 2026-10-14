@@ -18,8 +18,8 @@ sources:
   - "src/lib/stories-expansion.ts:187-217 (the live article; text and facts as input only), read in the task worktree at base aa4b39e"
   - "src/content/en-IN/stories/articles/raising-a-bilingual-child-in-india.ts (stub: card, related list, dates); src/content/types.ts (Article shape); src/layouts/ArticleTemplate/ArticleTemplate.tsx"
   - test/guards/banned-phrases.data.ts (checked against every Copy block)
-  - ../../qa/cmo-review-articles-5.18-2026-10-14.md (M11, the read time; M13, the alt, applied in task 5.20b: see the foot of this page)
-  - ../pages/story-how-children-learn-by-talking.md (fold 1: the alt for tara-04)
+  - ../../qa/cmo-review-articles-5.18-2026-10-14.md (M11, the read time; M13, the alt approved for tara-04 in task 5.18, how-children-learn-by-talking's former alt, applied in task 5.20b: see the foot of this page)
+  - ../../qa/cmo-review-article-fixes-5.20b-2026-10-14.md (F2: these notes, corrected in task 6.3)
   - design-system/project/03-cast.md:50, 120; 01-writing.md:19-26, 38, 111-113 (read-only)
 ---
 
@@ -110,8 +110,8 @@ keeps only the word count across languages and links here.
 - **Image** (`kh-photo`, 4:5): `tara-04-reading-nook-web.webp`. Alt: "A girl with curly hair, in a coral kurta, sits
   cross-legged on a window seat and reads a picture book aloud, one finger on the page." (`03-cast.md:120`,
   "multilingual books"; the cast's multilingual-homes child, `03-cast.md:50`; no Kheelu in the photo; checked by eye
-  2026-10-14.) The alt is the journal's one alt for this photo, word for word as on
-  [how-children-learn-by-talking](story-how-children-learn-by-talking.md#fold-1--article-head) (CMO review M13).
+  2026-10-14.) The alt is the journal's one alt for this photo: the alt approved for `tara-04` in task 5.18
+  (how-children-learn-by-talking's former alt; [CMO review M13](../../qa/cmo-review-articles-5.18-2026-10-14.md#minor-fixes)).
   No name or age in the alt. **No Kheelu in any image on this page** (no pitch).
 
 ---
@@ -377,7 +377,7 @@ None.
 | Cut lines | [source verification §3.6](../../research/source-verification.md#36-language-and-bilingualism) C38 caveats 1-3, C39 caveats 1-5, C40 caveat 1, C28 (not re-checked); C07 caveat 6 |
 | Ages 3 to 7 only; research about younger children is fine as research | [content boundary](../content-boundary.md); [age-band review](../../product/age-band-review.md) row 44 |
 | Card title and summary; related list; dates | stub `src/content/en-IN/stories/articles/raising-a-bilingual-child-in-india.ts`; [stories.md fold 3](stories.md#fold-3--talking-and-language-talking); `src/lib/stories-expansion.ts:194-195` |
-| Photo and alt | DS `03-cast.md:50, 120`; alt as on [how-children-learn-by-talking](story-how-children-learn-by-talking.md#fold-1--article-head), word for word; file checked by eye 2026-10-14; [CMO review M13](../../qa/cmo-review-articles-5.18-2026-10-14.md#minor-fixes) |
+| Photo and alt | DS `03-cast.md:50, 120`; the alt approved for `tara-04` in task 5.18 (how-children-learn-by-talking's former alt), word for word; file checked by eye 2026-10-14; [CMO review M13](../../qa/cmo-review-articles-5.18-2026-10-14.md#minor-fixes) |
 
 **For the main session (not the founder).** (1) The stub's `related` list (late talker, should kids use AI, an AI
 tutor) is the legacy ring, kept as the task notes ask; two AI guides are an odd next step from a language page. A
@@ -393,7 +393,7 @@ word of the Copy blocks changed. The module follows this page in the same commit
 
 | Where | What changed | Why |
 |---|---|---|
-| Fold 1, head photo alt | "A girl in a coral kurta sits cross-legged in a cushioned window seat, reading a picture book aloud." became "A girl with curly hair, in a coral kurta, sits cross-legged on a window seat and reads a picture book aloud, one finger on the page." The photo stays `tara-04-reading-nook-web.webp` | M13: one alt per photo across the journal, so this page takes the alt `how-children-learn-by-talking` gives the same photo. `tara-04` heads two of the six talking guides (that one and this), and neither links to the other |
+| Fold 1, head photo alt | "A girl in a coral kurta sits cross-legged in a cushioned window seat, reading a picture book aloud." became "A girl with curly hair, in a coral kurta, sits cross-legged on a window seat and reads a picture book aloud, one finger on the page." The photo stays `tara-04-reading-nook-web.webp` | M13: one alt per photo across the journal, so this page takes the alt approved for `tara-04` in task 5.18 (how-children-learn-by-talking's former alt; CMO review M13). `tara-04` heads one of the six talking guides (this one); how-children-learn-by-talking moved to `kabir-04` in the same task (these notes corrected in task 6.3, CMO review 5.20b F2) |
 
 **What follows from the change.** An alt is not part of the words a reader reads, so the read time stays 3 min and
 the byline row does not change. The keyword placements, sources and questions do not change. No placeholder.

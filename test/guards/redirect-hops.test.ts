@@ -1,5 +1,5 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative, sep } from "node:path";
 import { stringify } from "node:querystring";
 import { execFileSync } from "node:child_process";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -260,12 +260,17 @@ describe("the rest of the URL plan", () => {
     expect(served.href).toBe("https://store.kheelona.com/x");
   });
 
+  /* Every file in public/, and a file under each folder a dot-excluding rule covers: /product/ (public/product/lumi.png
+     until task 6.3 deleted it with the old pages) and /category/, so the [^.]+ rules stay proven with no such folder. */
   it("never redirects a public/ file on the hosts that serve it (the [^.]+ guard)", async () => {
-    const files = readdirSync(join(ROOT, "public", "product")).filter((f) => f.includes("."));
-    expect(files.length).toBeGreaterThan(0);
+    const files = readdirSync(join(ROOT, "public"), { recursive: true, withFileTypes: true })
+      .filter((entry) => entry.isFile())
+      .map((entry) => `/${relative(join(ROOT, "public"), join(entry.parentPath, entry.name)).split(sep).join("/")}`);
+    expect(files).toContain("/og.png");
+    expect(files.length).toBeGreaterThan(10);
     for (const [host, siteEnv] of [["kheelona.com", "production"], ["betawebsite.kheelona.com", "beta"]] as const) {
       const { chain } = await loadBuild(siteEnv);
-      for (const path of [`/product/${files[0]}`, "/category/x.png", "/og.png", "/llms.txt", "/pricing.md", "/sitemap.xml"]) {
+      for (const path of ["/product/lumi.png", "/category/x.png", ...files, "/llms.txt", "/pricing.md", "/sitemap.xml"]) {
         expect(chain(`https://${host}${path}`).hops, `${host}${path}`).toEqual([]);
       }
     }

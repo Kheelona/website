@@ -1,9 +1,8 @@
-import { createServer, type Server } from "node:http";
 import type { Page } from "@playwright/test";
-import { sign } from "../../src/lib/store/signing";
 import { describeFindings, runAxe } from "./support/axe";
 import { expect, forceMotionEnd, nodeGet, settle, test } from "./support/fixtures";
 import type { Route } from "./support/routes";
+import { STAND_IN_ON, STAND_IN_PENDING, ensureStandIn, signedEventRoute } from "./support/store-stand-in";
 import { APPROVED_WIDTHS, AXE_TEMPLATE_EXTRA, AXE_VIEWPORTS, SIDEWAYS_VIEWPORTS, type Viewport } from "./support/viewports";
 
 /* The store's secondary pages on the store host (task 6.1; architecture §16.1; tasks.md SPA 3, 4, 5, 9 for routes
@@ -20,15 +19,9 @@ import { APPROVED_WIDTHS, AXE_TEMPLATE_EXTRA, AXE_VIEWPORTS, SIDEWAYS_VIEWPORTS,
  * The state a route shows depends on the server's store keys, and both are honest: with none (locally, in CI, on
  * beta, D051) the event page says "Pre-orders open here shortly."; with keys a link without a signature is refused.
  * The signed event page sells only with a store database, so its form is
- * checked against a local, read-only stand-in of the store's REST API that this spec starts (one tier, no orders; it
- * refuses every write): run the server with
- *
- *   KH_E2E_SUPABASE_STUB_PORT=<port> SUPABASE_URL=http://127.0.0.1:<port> SUPABASE_SERVICE_ROLE_KEY=kh-e2e-stub \
- *   RAZORPAY_KEY_ID=rzp_test_khe2e RAZORPAY_KEY_SECRET=kh-e2e RAZORPAY_WEBHOOK_SECRET=kh-e2e \
- *   STORE_SIGNING_SECRET=kh-e2e-signing npx playwright test test/e2e/store-secondary.spec.ts
- *
- * (Playwright's web server inherits them; fake values only, never a real key; nothing is submitted.) Without them
- * that block prints as pending.
+ * checked against a local, read-only stand-in of the store's REST API (one tier, no orders; it refuses every write),
+ * shared with axe.spec.ts since task 6.3: run the server with the environment in test/e2e/support/store-stand-in.ts
+ * (fake values only, never a real key; nothing is submitted). Without it that block prints as pending.
  */
 
 const store = (id: string, path: string): Route => ({
@@ -181,54 +174,14 @@ for (const { route, h1, description, ogUrl } of ROUTES) {
 
 /* ── The signed event page, selling (needs the read-only database stand-in; see the header) ──────────────────────── */
 
-const STUB_PORT = Number(process.env.KH_E2E_SUPABASE_STUB_PORT ?? 0);
-const STUBBED = STUB_PORT > 0 && process.env.SUPABASE_URL === `http://127.0.0.1:${STUB_PORT}` && Boolean(process.env.STORE_SIGNING_SECRET);
-const TIER = "kh-e2e-expo";
-const TIER_ROW = { id: TIER, label: "Bangalore expo price", amount_paise: 9_900, cap: null, expires_on: null, active: true };
-
-/** PostgREST as supabase-js reads it: rows as a JSON array, counts in Content-Range; every write refused. */
-function startStub(port: number): Promise<Server> {
-  const server = createServer((req, res) => {
-    const url = new URL(req.url ?? "/", "http://stub");
-    const json = (status: number, body: unknown, headers: Record<string, string> = {}) => {
-      res.writeHead(status, { "content-type": "application/json", ...headers });
-      res.end(req.method === "HEAD" ? undefined : JSON.stringify(body));
-    };
-    if (req.method !== "GET" && req.method !== "HEAD") return json(503, { message: "e2e stand-in: read only" });
-    if (url.pathname === "/rest/v1/event_tiers") {
-      const id = url.searchParams.get("id")?.replace(/^eq\./, "");
-      return json(200, [TIER_ROW].filter((r) => r.id === id));
-    }
-    if (url.pathname === "/rest/v1/preorders") return json(200, [], { "content-range": "*/0" });
-    return json(404, { message: "e2e stand-in: no such table" });
-  });
-  return new Promise((resolve, reject) => {
-    server.once("error", reject);
-    server.listen(port, "127.0.0.1", () => resolve(server));
-  });
-}
-
 test.describe("store secondary page: event-signed (the form)", () => {
-  // In order, in one worker: the stand-in listens once for the block (and a failure does not skip the rest).
-  test.describe.configure({ mode: "default" });
-  test.skip(
-    !STUBBED,
-    "pending: the signed event page sells only with a store database; start the server with the read-only stand-in's environment (this spec's header)",
-  );
-
-  let stub: Server | null = null;
-  test.beforeAll(async () => {
-    stub = await startStub(STUB_PORT);
-  });
-  test.afterAll(async () => {
-    await new Promise((done) => (stub ? stub.close(() => done(undefined)) : done(undefined)));
-  });
-
-  const route = () => store("event-signed", `/e/${TIER}?sig=${sign(process.env.STORE_SIGNING_SECRET!, "event-link", TIER)}`);
+  test.skip(!STAND_IN_ON, STAND_IN_PENDING);
+  // The stand-in is shared with axe.spec.ts: reused when another worker's answers, never closed (store-stand-in.ts).
+  test.beforeEach(() => ensureStandIn());
 
   for (const vp of MATRIX) {
     test(vp.name, async ({ harness }) => {
-      const { page, response } = await harness.open(route(), vp);
+      const { page, response } = await harness.open(signedEventRoute(), vp);
       expect(response?.status()).toBe(200);
       await forceMotionEnd(page);
       const label = `event-signed ${vp.name}`;

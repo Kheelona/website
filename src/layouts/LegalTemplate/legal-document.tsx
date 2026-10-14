@@ -129,7 +129,8 @@ function Block({ block, ctx }: { block: LegalPageBlock; ctx: Ctx }): ReactNode {
         </>
       );
     case "grievance":
-      // D032 verbatim, with the complaint-reference line on all four pages; notice keeps "Co-Founder" whole.
+      // D032 verbatim; notice keeps "Co-Founder" whole. The complaint-reference line (`grievanceNote`) is off all four
+      // pages until a system issues a reference (D055 item 7), so today every card is its D032 line alone.
       return <GrievanceBlock context="legal" line={grievanceOfficerLine(seller, { nowrap: notice })} note={copy.grievanceNote} className="ks-doc__card" />;
     case "seller":
       // A card with the page's bold lead (reference), or a plain line with its phrases kept together (notice).

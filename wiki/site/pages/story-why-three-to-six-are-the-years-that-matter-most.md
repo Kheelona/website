@@ -105,13 +105,11 @@ accepted overlap).
   in a coral kurta, sits cross-legged on a window seat and reads a picture book aloud, one finger on the page."
   (`03-cast.md:120`: "Reading and school readiness"; Tara is 5½, inside the band.) No Kheelu in the head photo
   of a brain article, as on the learning-toys guide.
-- Round 2 (CMO M11): `tara-04` is now this page's head alone among the six guides of task 5.19; the data-law article,
-  which also used it in round 1, moved to `advik-04`. Across the journal it also heads two talking guides once tasks
-  5.20a and 5.20b land (how children learn by talking, and raising a bilingual child; the screen-time guides move to
-  photos with Kheelu), and how children learn by talking is in this page's related list and lists this page in its
-  own: see "Changes after approval" below.
+- Round 2 (CMO M11): `tara-04` heads this page alone among task 5.19's guides. After tasks 5.20a and 5.20b it heads
+  this page and raising a bilingual child, which do not link to each other
+  ([CMO review 5.20c](../../qa/cmo-review-article-fixes-5.20c-2026-10-14.md) F1, applied in task 6.3).
 - **Task 5.20c (one alt per photo):** the alt is now the journal's one alt for `tara-04`, word for word as on the
-  how-children-learn-by-talking guide ([CMO review 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M13;
+  raising-a-bilingual-child guide ([CMO review 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M13;
   [tasks](../../engineering/tasks.md) 5.20 item 2). The photo stays: brain guides keep a head photo without Kheelu
   ([D016](../../decisions/D016-brain-wording.md)).
 
@@ -406,7 +404,8 @@ no minor still open). The founder signs off the copy at Gate B ([D015](../../dec
 The head photo stays `tara-04` (main session: brain guides keep their `-04` heads; D016). No research line was added
 or changed. Founder questions P21 to P23 do not touch this page.
 
-**Open, for the main session (not changed here):** this page and how children learn by talking share the `tara-04`
+**Closed by task 5.20b (how children learn by talking moved to `kabir-04`).** Was open, for the main session (not
+changed here): this page and how children learn by talking share the `tara-04`
 head and link to each other both ways (this page's related list; that guide's related list, `how-children-learn-by-talking.ts:26`),
 so a parent who taps "Related guides" lands on the same picture: the repeat that CMO reviews 5.17 M16 and 5.18 M13
 set out to remove. The 5.18 review left the 5.19 picks to the merge. Options are in this task's report.

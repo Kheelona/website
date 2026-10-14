@@ -1,6 +1,5 @@
 import { findBanned } from "../guards/banned-phrases.data";
-import { isStillLegacy } from "../guards/legacy-paths";
-import { GATE_OFF, expect, gateRouteGroup, nodeGet, requiresServer, test } from "./support/fixtures";
+import { expect, gateRouteGroup, nodeGet, requiresServer, test } from "./support/fixtures";
 import { PARITY_TARGET } from "./support/env";
 import { MOCKUP_SLUGS, approvedMockupText, type MockupSlug } from "./support/mockup-text";
 import { jsonLdMismatches } from "./support/page-checks";
@@ -9,10 +8,11 @@ import { VIEWPORTS } from "./support/viewports";
 
 /* Content integrity on rendered pages (task 1.1; test plan §4.8, architecture §14, tasks.md SPA 7).
  *
- * On the visible text of every built route (and /llms.txt, /pricing.md once rebuilt):
+ * On the visible text of every built route (and /llms.txt, /pricing.md, rebuilt by task 4.4):
  *   - no banned phrase (test/guards/banned-phrases.data.ts, en-IN spelling included, N24);
- *   - the age band "3 to 7" on the pages that must state it, on every article (the 18 template
- *     articles included) and in /llms.txt; nothing that implies under 3;
+ *   - the age band "3 to 7" on the pages that must state it, on every article (the 17 template
+ *     articles included: 20 articles, 3 with a mockup, since D053 took one off the journal) and in
+ *     /llms.txt; nothing that implies under 3;
  *   - no internal material: competitor names, "PostHog" outside /privacy, analytics words, a unit
  *     count other than "first 500 units" once; every percentage printed for review (D026);
  *   - no mockup-only markup in the HTML (mk- classes, data-src, review labels; N22);
@@ -25,7 +25,7 @@ import { VIEWPORTS } from "./support/viewports";
 const AGE_BAND = /\b3 to 7\b/;
 const AGE_BAND_MISSING = 'the age band "3 to 7" is missing';
 /** The pages that are not articles and must state the age band; every article must too
- *  (needsAgeBand), the three with a mockup and the 18 template articles alike. */
+ *  (needsAgeBand), the three with a mockup and the 17 template articles alike. */
 const AGE_BAND_PAGES = new Set<string>(["home", "meet-kheelu", "safety", "ai-toys-for-kids-in-india", "stories", "team", "setup"]);
 
 function needsAgeBand(route: Pick<Route, "id" | "mockup" | "template">): boolean {
@@ -133,7 +133,6 @@ for (const file of MACHINE) {
   test.describe(`content integrity: ${file.path}`, () => {
     requiresServer();
     test(`restates visible copy only: no banned line, no /playos, no internal material${file.path === "/llms.txt" ? ", the age band" : ""}`, async () => {
-      test.skip(isStillLegacy(file.source) && !GATE_OFF, `pending: ${file.source} is the legacy route until task 4.4 rebuilds it`);
       const res = await nodeGet(file.path, "marketing" as Route["host"]);
       expect(res.status).toBe(200);
       expect(machineProblems(file.path, res.body)).toEqual([]);

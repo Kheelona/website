@@ -11,6 +11,7 @@ import { parseRichText, type RichNode } from "@/lib/content/rich-text";
 import { formatDate } from "@/lib/format/date";
 import { buildOffer } from "@/lib/offer/offer";
 import { ROOT, readRepoFile } from "../../../../../test/e2e/support/repo";
+import { type CopyFold, copyFold, copyLines, glanceRow, readCopyPage } from "../../../../../test/support/copy-page";
 import { mockupFold, portClass, skeleton, words } from "../../../../../test/support/mockup-compare";
 import { TEAM_BYLINE } from "../../organization";
 import type { ArticleSlug } from "../../routes";
@@ -126,55 +127,16 @@ const REWRITE_DATE: IsoDate = "2026-10-13";
 
 const TOKEN = buildOffer("token");
 
-/* ── The copy page ──────────────────────────────────────────────────────────────────────────────────────────────── */
+/* ── The copy page (test/support/copy-page.ts, the one reader; task 6.3) ───────────────────────────────────────── */
 
-interface Fold {
-  /** The fold's name after its number: "Article head", "The answer first", "Sources (article foot)". */
-  readonly name: string;
-  /** The Copy block's lines, the quote marks off, blank lines dropped (each line is one paragraph, item or heading). */
-  readonly lines: readonly string[];
-  /** The fold's notes, white space collapsed. */
-  readonly notes: string;
-}
-
-/** The copy page's folds, in order. */
-function copyPage(slug: string): Fold[] {
-  const md = readRepoFile(`wiki/site/pages/story-${slug}.md`);
-  return md
-    .split(/^## /m)
-    .filter((section) => section.startsWith("Fold "))
-    .map((section) => {
-      const name = section.slice(0, section.indexOf("\n")).replace(/^Fold \d+ · /, "");
-      const body = section.slice(section.indexOf("\n") + 1);
-      const start = body.search(/^\*\*Copy\b/m);
-      const lines = start === -1 ? [] : body.slice(start).split("\n").filter((l) => l.startsWith(">")).map((l) => l.replace(/^>\s?/, ""));
-      return { name, lines: lines.filter((l) => l.trim() !== ""), notes: body.replace(/\s+/g, " ") };
-    });
-}
-
-/** One fold by the start of its name. */
-function fold(folds: readonly Fold[], name: string): Fold {
-  const found = folds.find((f) => f.name.startsWith(name));
-  if (found === undefined) throw new Error(`the copy page has no fold "${name}…"`);
-  return found;
-}
+/** A fold's notes (everything under its heading), white space collapsed. */
+const notes = (fold: CopyFold) => fold.text.replace(/\s+/g, " ");
 
 /** The reading column's folds: from the one after the head to the sources, inclusive. */
-function columnFolds(folds: readonly Fold[]): Fold[] {
-  const end = folds.findIndex((f) => f.name.startsWith("Sources"));
+function columnFolds(folds: readonly CopyFold[]): CopyFold[] {
+  const end = folds.findIndex((f) => f.title.startsWith("Sources"));
   expect(end, "the copy page has a Sources fold").toBeGreaterThan(1);
   return folds.slice(1, end + 1);
-}
-
-/** A copy-page row of "At a glance": `| Title (56 characters) | … |`, its stated length checked. */
-function glance(slug: string, label: "Title" | "Meta description"): string {
-  const row = readRepoFile(`wiki/site/pages/story-${slug}.md`)
-    .split("\n")
-    .find((l) => l.startsWith(`| ${label} (`));
-  const m = row && /^\| [^(]+\((\d+) characters\) \| (.+?) \|$/.exec(row);
-  if (!m) throw new Error(`story-${slug}.md has no "${label} (n characters)" row`);
-  expect(m[2].length, `story-${slug}.md: ${label} says ${m[1]} characters`).toBe(Number(m[1]));
-  return m[2];
 }
 
 const SUPERSCRIPT = "⁰¹²³⁴⁵⁶⁷⁸⁹";
@@ -315,8 +277,10 @@ function markupOf(el: Element): string {
 /* ── The tests ──────────────────────────────────────────────────────────────────────────────────────────────────── */
 
 describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) => {
-  const folds = copyPage(slug);
-  const head = fold(folds, "Article head");
+  const page = readCopyPage(slug);
+  const folds = page.folds;
+  const head = copyFold(page, "Article head");
+  const headNotes = notes(head);
 
   it("is written: no open placeholder, and sources it cites", () => {
     const open = nodes(article).filter((n) => n.kind === "placeholder");
@@ -338,17 +302,17 @@ describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) =
   });
 
   it("carries the copy page's title and meta description, word for word", () => {
-    expect(same(toPlainText(article.meta.title))).toBe(same(glance(slug, "Title")));
-    expect(same(toPlainText(article.meta.description))).toBe(same(glance(slug, "Meta description")));
+    expect(same(toPlainText(article.meta.title))).toBe(same(glanceRow(page, "Title")));
+    expect(same(toPlainText(article.meta.description))).toBe(same(glanceRow(page, "Meta description")));
   });
 
   it("prints the copy page's head: crumbs, h1, accent, lead and byline", () => {
-    const [crumbs, h1, lead, byline] = head.lines.map(printed);
+    const [crumbs, h1, lead, byline] = copyLines(head).map(printed);
     const main = builtMain(article);
     const header = main.querySelector(".ks-story-head")!;
     expect([...header.querySelectorAll("nav a")].map((a) => a.textContent).join(" › ")).toBe(crumbs);
     expect(same(header.querySelector("h1")!.textContent ?? "")).toBe(same(h1));
-    const accent = /\*\*H1 accent:\*\* `Hand` on "([^"]+)"/.exec(head.notes)?.[1];
+    const accent = /\*\*H1 accent:\*\* `Hand` on "([^"]+)"/.exec(headNotes)?.[1];
     expect([...header.querySelectorAll("h1 .kh-hand")].map((s) => s.textContent)).toEqual([accent]);
     expect(same(header.querySelector(".kh-heading__lead")!.textContent ?? "")).toBe(same(lead));
     expect(header.querySelector(".ks-byline")!.textContent).toBe(byline);
@@ -356,19 +320,19 @@ describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) =
   });
 
   it("shows the copy page's head photo, with its alt", () => {
-    const named = /`([a-z0-9-]+-web\.webp)`/.exec(head.notes.slice(head.notes.indexOf("**Image**")))?.[1];
-    const alt = /Alt: "([^"]+)"/.exec(head.notes)?.[1];
+    const named = /`([a-z0-9-]+-web\.webp)`/.exec(headNotes.slice(headNotes.indexOf("**Image**")))?.[1];
+    const alt = /Alt: "([^"]+)"/.exec(headNotes)?.[1];
     expect(photoFile(article)).toBe(named);
     expect(same(article.head.image!.alt)).toBe(same(alt ?? ""));
   });
 
   it("prints the copy page's reading column word for word: the answer, every part, the sources", () => {
-    const expected = columnFolds(folds).flatMap((f) => f.lines.map(printed)).join(" ");
+    const expected = columnFolds(folds).flatMap((f) => copyLines(f).map(printed)).join(" ");
     expect(same(words(column(article)))).toBe(same(expected));
   });
 
   it("links in its text exactly where the copy page links, the product page once (strategy §3.3)", () => {
-    const expected = copyLinks(columnFolds(folds).flatMap((f) => f.lines));
+    const expected = copyLinks(columnFolds(folds).flatMap(copyLines));
     const links = [...column(article).querySelectorAll("a:not(.ks-src)")].filter((a) => a.closest(".ks-sources") === null);
     expect(links.map((a) => [same(a.textContent ?? ""), a.getAttribute("href")])).toEqual(expected.map(([label, path]) => [same(label), path]));
     expect(links.filter((a) => a.getAttribute("href") === "/products/kheelu")).toHaveLength(1);
@@ -382,19 +346,19 @@ describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) =
 
   it("uses the icons the copy page names for its tips and its callout", () => {
     for (const f of folds) {
-      const tips = /Tip icons: ((?:`[a-z-]+`(?:, )?)+)/.exec(f.notes)?.[1];
+      const tips = /Tip icons: ((?:`[a-z-]+`(?:, )?)+)/.exec(notes(f))?.[1];
       const lists = blocks(article).filter((b): b is ListBlock => b.kind === "list" && b.variant === "tips");
       if (tips) {
         const names = [...tips.matchAll(/`([a-z-]+)`/g)].map((m) => m[1]);
         expect(lists.map((l) => l.items.map((item) => (typeof item === "string" ? undefined : item.icon)))).toContainEqual(names);
       }
-      const callout = /`callout` \(icon `([a-z-]+)`\)/.exec(f.notes)?.[1];
+      const callout = /`callout` \(icon `([a-z-]+)`\)/.exec(notes(f))?.[1];
       if (callout) expect(blocks(article).filter((b) => b.kind === "callout").map((b) => (b.kind === "callout" ? b.icon : ""))).toContain(callout);
     }
   });
 
   it("offers the copy page's related guides, each by its own card title", () => {
-    const expected = fold(folds, "Related guides").lines.map(printed).slice(1).map(same);
+    const expected = copyLines(copyFold(page, "Related guides")).map(printed).slice(1).map(same);
     const related = builtMain(article).querySelector(".ks-related")!;
     expect([...related.querySelectorAll("a")].map((a) => [same(a.textContent ?? ""), a.getAttribute("href")])).toEqual(
       article.related.map((r, i) => [expected[i], `/stories/${r}`]),

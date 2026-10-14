@@ -17,8 +17,8 @@ export interface GrievanceLine {
  * - `contact`: the contact page's fold (`#grievance`, the footer's target): heading and sentence beside the card,
  *   links in the DS link colour at 800 (contact.css:27);
  * - `legal`: the card a legal page puts in its part, links at the legal template's 700 (privacy.css:38); the page
- *   passes its card class and the complaint-reference placeholder as `note`, which all four legal pages show
- *   (privacy, terms, refund and shipping; wave-3 close).
+ *   passes its card class and, when content holds one, the complaint-reference line as `note`. None of the four
+ *   legal pages shows it today: it is off until a system issues a reference (D055 item 7, task 6.7).
  */
 export type GrievanceBlockConfig =
   | {
@@ -31,8 +31,9 @@ export type GrievanceBlockConfig =
   | {
       readonly context: "legal";
       readonly line: GrievanceLine;
-      /** A second paragraph in the card: the complaint-reference placeholder, on all four legal pages (privacy, terms,
-       *  refund, shipping). The contact page's fold has none. */
+      /** A second paragraph in the card: the complaint-reference line (LegalTemplateCopy's optional `grievanceNote`),
+       *  left out on all four legal pages until a system issues a reference (D055 item 7). The contact page's fold has
+       *  none. */
       readonly note?: RichTextString;
       /** The legal template's card class. */
       readonly className?: string;

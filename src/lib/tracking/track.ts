@@ -2,8 +2,10 @@
  * The dispatcher for NEW events (ADR-006; architecture §8.1, §8.2).
  *
  * A component fires a registered new event by name; this module looks the event up in the
- * registry (src/lib/tracking/events.ts) and sends it to each browser destination the registry
- * lists, with exactly the registry's parameters in the registry's order:
+ * registry's client map of new events (src/lib/tracking/new-events.ts, held equal to the new rows
+ * of src/lib/tracking/events.ts; task 6.3, so the store's client chunks never carry the whole
+ * registry) and sends it to each browser destination listed, with exactly the registry's
+ * parameters in the registry's order:
  *   - GA4 through `window.gtag("event", name, params)`, as the frozen funnel does;
  *   - PostHog through `phCapture` (src/lib/posthog.ts), with the same parameters as GA4.
  *
@@ -17,7 +19,8 @@
  * no-op there, exactly like the funnel's own calls.
  */
 import { phCapture } from "@/lib/posthog";
-import { EVENTS, type NewEventName } from "./events";
+import type { NewEventName } from "./events";
+import { NEW_EVENTS, type NewEventRoute } from "./new-events";
 
 /** Each new event's parameters, named as the registry lists them (tracking-parity proves the match). */
 export type NewEventParams = {
@@ -35,8 +38,9 @@ type Gtag = (command: "event", name: string, params: Record<string, string | num
 
 export function track<N extends NewEventName>(name: N, params: NewEventParams[N]): void {
   if (typeof window === "undefined") return;
-  const entry = EVENTS.find((e) => e.name === name && e.status === "new");
-  if (!entry) return;
+  // Own keys only: an existing or unknown name (or "toString") finds nothing and sends nothing.
+  if (!Object.hasOwn(NEW_EVENTS, name)) return;
+  const entry: NewEventRoute = NEW_EVENTS[name];
 
   const given = params as Record<string, string | number | undefined>;
   const payload: Record<string, string | number> = {};

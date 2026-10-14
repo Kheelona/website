@@ -1,8 +1,9 @@
 ---
 title: "Dependency register (revised after QA round 1)"
 type: catalogue
-updated: 2026-10-12
+updated: 2026-10-14
 sources:
+  - "task 6.3 (2026-10-14): npm uninstall of each retired package one at a time, lockfile diff read per package; npm ls fflate before (drei > three-stdlib > 0.6.11, @types/three > 0.8.3, posthog-js > 0.4.9) and after (posthog-js > 0.4.9 only: the 2026-10-12 line below missed the posthog-js copy, which test/dependency-floor.test.ts had exempted since 2026-09-19); npm audit --omit=dev and npm audit"
   - ../raw/brief/kickoff-brief.md (§9.12 "Don't reinvent the wheel", licence and popularity rules)
   - adr/ADR-001-keep-the-stack.md, adr/ADR-007-motion-css-first.md, adr/ADR-010-media-pipeline.md, adr/ADR-011-guardrails-and-qa-harness.md
   - package.json, package-lock.json (reset/website-v2, 2026-10-12)
@@ -29,18 +30,25 @@ Size column: installed size on disk (not what ships); "ships" says what reaches 
 |---|---|---|---|---|---|---|
 | `next` | 16.3.8 (pinned; security patch from 16.3.4 on 2026-10-12, commit `1806937`: GHSA-vcvr-r3jv-pc5j, GHSA-cjq9-62q9-8jv4, GHSA-4jqv-mc3x-m676, GHSA-mcj8-r9mp-w47p) | MIT | 198 MB / framework runtime | The stack (brief §2) | none (no blocker found) | **Keep**. Task 1.2's `postcss.config.mjs` and `test/guards/visual-layer.test.ts` are verified on 16.3.8: whoever bumps `next` or `@tailwindcss/postcss` re-runs that check (tasks.md, guard-test ownership) |
 | `react`, `react-dom` | 19.2.4 (pinned) | MIT | 7.1 MB / runtime | The stack | none | **Keep** |
-| `@supabase/supabase-js` | 2.112.3 (`^`) | MIT | 8.6 MB / server only | Store database (frozen checkout) | none | **Keep**; pin exact in task 6.3 |
-| `posthog-js` | 1.434.2 (pinned) | Apache-2.0 AND MIT | 28 MB / dynamic import after the host check | Tracking parity (inventory §6) | none (parity) | **Keep** |
+| `@supabase/supabase-js` | 2.112.3 (pinned in 6.3) | MIT | 8.6 MB / server only | Store database (frozen checkout) | none | **Keep** |
+| `posthog-js` | 1.434.2 (pinned) | Apache-2.0 AND MIT | 28 MB / dynamic import after the host check | Tracking parity (inventory §6) | none (parity) | **Keep**. It brings the only `fflate` copy left (0.4.9, exempted in `test/dependency-floor.test.ts`) and `dompurify` 3.4.15 (one low advisory, GHSA-p98j-92pf-mc4p and GHSA-6688-9rhm-gjv2, `npm audit --omit=dev` 2026-10-14) |
 | `posthog-node` | 5.52.4 (pinned) | MIT | 1.3 MB / server only | `purchase_confirmed` (inventory §7) | none | **Keep** |
-| `@vercel/analytics` | 2.0.1 (`^`) | MIT | 620 KB / small script | Tracking parity (inventory §1) | none | **Keep**; pin exact in 6.3 |
-| `@next/third-parties` | 16.2.12 (`^`) | MIT | 68 KB / GA4 loader | GA4 as documented by Next (inventory §3) | raw gtag snippet | **Keep**; pin exact in 6.3 |
-| `clsx` | 2.1.1 (`^`) | MIT | 40 KB / < 1 KB | Conditional class joining, imported directly by new components (no wrapper) | template strings | **Keep**; pin exact in 6.3 |
-| `tailwind-merge` | 3.6.0 | MIT | 1.0 MB | Only the legacy `src/lib/cn.ts` uses it (32 legacy files and, until 5.15 and 5.16, the checkout forms); with a layout-only Tailwind (ADR-002) utilities never conflict | `clsx` alone | **Retire** with `cn.ts` (6.3) |
-| `motion` | 12.42.2 | MIT | 772 KB | Old components only (2 imports) | CSS presets + one observer (ADR-007); every D049 pick is CSS (stroke-dashoffset, grid rows on `::details-content`, transforms) | **Retire** (6.3) |
-| `three`, `@react-three/fiber`, `@react-three/drei` | 0.185.1, 9.6.1, 10.7.7 | MIT | 25 MB + 5.1 MB | 0 imports; the 3D stage was deleted in Phase 0 | none needed | **Retire** (6.3). They (with `@types/three`) bring the only copies of `fflate`, so 6.3 also drops the `fflate` floor in `test/dependency-floor.test.ts`, with `npm ls fflate` empty as evidence; no other floor changes |
-| `zustand` | 5.0.14 | MIT | 252 KB | 0 imports | none needed | **Retire** (6.3) |
-| `lucide-react` | 1.24.0 | ISC | 39 MB | Old components only (9 imports); brief §9.12 allows one icon set | DS icons, generated (ADR-010) | **Retire** (6.3) |
-| `@radix-ui/react-accordion`, `@radix-ui/react-dialog` | 1.2.16, 1.1.19 | MIT | 1.2 MB | Old components only | native `<details>` and `<dialog>` (DS, brief §9.12) | **Retire** (6.3) |
+| `@vercel/analytics` | 2.0.1 (pinned in 6.3) | MIT | 620 KB / small script | Tracking parity (inventory §1) | none | **Keep** |
+| `@next/third-parties` | 16.2.12 (pinned in 6.3) | MIT | 68 KB / GA4 loader | GA4 as documented by Next (inventory §3) | raw gtag snippet | **Keep** |
+| `clsx` | 2.1.1 (pinned in 6.3) | MIT | 40 KB / < 1 KB | Conditional class joining, imported directly by new components (no wrapper) | template strings | **Keep** |
+| `tailwind-merge` | 3.6.0 | MIT | 1.0 MB | Only the legacy `src/lib/cn.ts` used it; with a layout-only Tailwind (ADR-002) utilities never conflict | `clsx` alone | **Retired** with `cn.ts` (6.3, 2026-10-14) |
+| `motion` | 12.42.2 | MIT | 772 KB | Old components only (2 imports) | CSS presets + one observer (ADR-007); every D049 pick is CSS (stroke-dashoffset, grid rows on `::details-content`, transforms) | **Retired** (6.3, 2026-10-14; with `framer-motion`, `motion-dom`, `motion-utils`) |
+| `three`, `@react-three/fiber`, `@react-three/drei` | 0.185.1, 9.6.1, 10.7.7 | MIT | 25 MB + 5.1 MB | 0 imports; the 3D stage was deleted in Phase 0 | none needed | **Retired** (6.3, 2026-10-14). With `@types/three` they took the `fflate` 0.6.11 and 0.8.3 copies, but `npm ls fflate` is **not** empty afterwards (`posthog-js@1.434.2` > `fflate@0.4.9`), so the `fflate` floor in `test/dependency-floor.test.ts` stays (its reason records this); no floor was dropped |
+| `zustand` | 5.0.14 | MIT | 252 KB | 0 imports | none needed | **Retired** (6.3, 2026-10-14) |
+| `lucide-react` | 1.24.0 | ISC | 39 MB | Old components only (9 imports); brief §9.12 allows one icon set | DS icons, generated (ADR-010) | **Retired** (6.3, 2026-10-14) |
+| `@radix-ui/react-accordion`, `@radix-ui/react-dialog` | 1.2.16, 1.1.19 | MIT | 1.2 MB | Old components only | native `<details>` and `<dialog>` (DS, brief §9.12) | **Retired** (6.3, 2026-10-14; with the 18 `@radix-ui` helpers and `react-remove-scroll` family they pulled) |
+
+**Transitive security patch (6.3, 2026-10-14).** `npm audit --omit=dev` after the retirements listed one high runtime
+advisory: `source-map-js` < 1.2.2 (GHSA-68fv-2mgg-jv7q), reached through `next` > `postcss`. `npm update
+source-map-js` moved the one hoisted copy to 1.2.2, inside every dependent's `^1.2.1` range, and
+`test/dependency-floor.test.ts` floors it. Runtime audit after: 0 critical, 0 high, 1 low (`dompurify`, above). The
+full audit's 6 high advisories are all dev tooling (`eslint-config-next` > `@next/eslint-plugin-next` > `fast-glob`
+> `micromatch` > `braces`; `brace-expansion` above its recorded floor): never shipped, left for the main session.
 
 ## 2. Development dependencies
 
@@ -51,9 +59,9 @@ Size column: installed size on disk (not what ships); "ships" says what reaches 
 | `eslint`, `eslint-config-next` | 9.39.4, 16.3.8 (pinned) | MIT | | Lint, `no-restricted-imports` for the content boundary | none | **Keep** |
 | `vitest` | 4.1.11 | MIT | 2.9 MB | Unit, component and guard tests | Jest | **Keep** |
 | `@testing-library/react`, `jest-dom`, `user-event`, `jsdom` | 16.3.2, 6.9.1, 14.6.7, 27.4.0 | MIT | | Component tests | none | **Keep** |
-| `@vitejs/plugin-react`, `vite-tsconfig-paths` | 6.0.3, 5.1.4 | MIT | | Vitest and Storybook transforms; `vite-tsconfig-paths` is unused by `vitest.config.ts` today | explicit aliases | **Keep** `@vitejs/plugin-react`; **retire** `vite-tsconfig-paths` if still unused after 1.1 |
+| `@vitejs/plugin-react`, `vite-tsconfig-paths` | 6.0.3, 5.1.4 | MIT | | Vitest and Storybook transforms; `vite-tsconfig-paths` was never used by `vitest.config.ts` or `.storybook/main.ts` (both set the aliases themselves) | explicit aliases | **Keep** `@vitejs/plugin-react`; `vite-tsconfig-paths` **retired** as a direct dependency (6.3, 2026-10-14); 5.1.4 stays in the tree only as `vite-plugin-storybook-nextjs`'s own dependency |
 | `storybook`, `@storybook/nextjs-vite`, `@storybook/addon-a11y`, `@storybook/addon-docs` | 10.6.0 | MIT | 22 MB + 6.1 MB | Workbench for primitives and sections (ADR-011) | none (already in the stack) | **Keep** |
-| `@types/node`, `@types/react`, `@types/react-dom` | as installed | MIT | | Types | | **Keep**; `@types/three` **retire** (6.3) |
+| `@types/node`, `@types/react`, `@types/react-dom` | as installed | MIT | | Types | | **Keep**; `@types/three` **retired** (6.3, 2026-10-14) |
 | `@playwright/test` | 1.63.0, pinned (Chromium headless shell installed) | Apache-2.0 | browser download | Visual and text parity, axe runs, sideways scroll on the viewport matrix, perf bytes, motion cases, tracking probes, redirects (ADR-011); today borrowed from the npx cache | puppeteer-core (used by `tools/qa/` today) | **Add** (1.1) |
 | `@axe-core/playwright` with `axe-core` 4.12.1 | 4.12.1 and 4.12.1, pinned; npm hoisted `playwright-core` 1.64.0 beside Playwright 1.63.0 as its peer (axe runs on it; left as is, no `overrides`, main session 2026-10-12) | MPL-2.0 | 2.9 MB | Accessibility checks; the brief names axe-core for QA (§6); 4.12.1 is the baseline's engine, so before and after compare | none comparable | **Add** (1.1). Licence note: MPL-2.0 is not in §9.12's permissive list; test-only, never shipped, named by the brief, so recorded as an accepted tooling exception |
 | `jscpd` | 5.3.2, pinned | MIT | | Copy-paste detector (brief §9.12 "QA") | none | **Add** (1.1) |

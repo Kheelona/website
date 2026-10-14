@@ -155,7 +155,10 @@ const TRANSITIVE_FLOORS: {
       "sole consumer is SVGLoader in the dormant journey geometry), and no override was needed " +
       "because three-stdlib declares ^0.6.9, which 0.6.11 satisfies. A flat floor is correct " +
       "here even though a second copy exists at 0.8.3, because 0.8.3 is numerically above it. " +
-      "A THIRD copy arrived with posthog-js on 2026-09-19 and is exempted below.",
+      "A THIRD copy arrived with posthog-js on 2026-09-19 and is exempted below. " +
+      "2026-10-14, task 6.3: three, @react-three/drei and @types/three were retired, so the 0.6.11 and 0.8.3 " +
+      "copies left the tree; the floor STAYS because `npm ls fflate` is not empty (posthog-js@1.434.2 still " +
+      "brings fflate 0.4.9, the exempted copy), and a new copy arriving anywhere else must still meet it.",
     exempt: [
       {
         path: "node_modules/posthog-js/node_modules/fflate",
@@ -172,6 +175,17 @@ const TRANSITIVE_FLOORS: {
           "its fflate range.",
       },
     ],
+  },
+  {
+    name: "source-map-js",
+    min: "1.2.2",
+    why:
+      "GHSA-68fv-2mgg-jv7q HIGH, event-loop denial of service through indexed source-map section offsets " +
+      "(>=1.0.0 <1.2.2). Found by `npm audit --omit=dev` in task 6.3 (2026-10-14): it counts as RUNTIME because " +
+      "next@16.3.8 depends on postcss, which depends on source-map-js ^1.2.1. Reached only when CSS is compiled " +
+      "(next build, Vitest, Storybook), on CSS we wrote ourselves, never on a request. One hoisted copy serves " +
+      "next's postcss, the dev postcss, @tailwindcss/node and css-tree (jsdom); 1.2.2 is inside every one of " +
+      "their ^1.2.1 ranges, so `npm update source-map-js` moved it with no override.",
   },
   {
     name: "browserslist",

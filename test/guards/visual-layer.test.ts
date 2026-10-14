@@ -5,6 +5,7 @@ import postcss, { type AtRule, type ChildNode, type Container, type Root } from 
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import postcssConfig from "../../postcss.config.mjs";
 import { buildComposeCss } from "../../scripts/assets/build-compose-css.mjs";
+import { FREEZE_TAG, tagText } from "../e2e/support/repo";
 
 /**
  * The one CSS entry loads the approved cascade (ADR-002, architecture §4.1).
@@ -230,11 +231,14 @@ describe("site.css compiled as next build compiles it (NODE_ENV=production)", ()
 
   // Task 1.2 review (2026-10-11): one unoptimised Tailwind for every file reshaped the legacy globals.css in next
   // build (60,988 to 63,364 bytes: media blocks no longer merged). Only site.css needs Tailwind unoptimised.
-  it("compiles every other CSS file, the legacy globals.css included, exactly as Tailwind's default plugin does", async () => {
+  // Task 6.3 deleted globals.css with the old pages; the same sheet, read at the freeze tag and compiled at its old
+  // path, still proves that every CSS file other than site.css compiles through Tailwind's defaults.
+  it("compiles every other CSS file, the legacy globals.css (at the freeze tag) included, exactly as Tailwind's default plugin does", async () => {
     const plugins = await productionPlugins();
     const reference = await asProduction(() => tailwindcss());
     const GLOBALS = join(ROOT, "src/styles/globals.css");
-    const legacy = readFileSync(GLOBALS, "utf8");
+    const legacy = tagText("src/styles/globals.css");
+    if (legacy === null) throw new Error(`src/styles/globals.css is missing at ${FREEZE_TAG}`);
     const viaConfig = (await postcss(plugins).process(legacy, { from: `${GLOBALS}?visual-layer-legacy-config` })).css;
     const viaDefault = (await postcss([reference]).process(legacy, { from: `${GLOBALS}?visual-layer-legacy-default` })).css;
     expect(viaConfig.length).toBeGreaterThan(0);

@@ -10,12 +10,12 @@ import { TopicSection } from "./TopicSection";
  * 5.5) builds the same props from topics.ts, hub.ts and each article's own module. The guides not yet rewritten are
  * quiet rows that link nowhere, as approved. */
 
-/** stories.html fold 2: no rewritten guide yet, so the rows run in two columns. */
+/** stories.html fold 2: no rewritten guide yet, so the rows run in two columns. Without the 3-6-9-12 guide's row, which
+ *  left the journal after Gate A (D053, deviations.md V9; task 6.5), as the hub shows it. */
 export const SCREEN_TIME_TOPIC: TopicSectionConfig = {
   topic: { id: "screen-time", title: "Screen time", lead: "How much, which rules hold up, and what to do when the screen goes off." },
   items: [
     { title: "How much screen time is okay for a young child?", summary: "What the WHO, the Indian Academy of Pediatrics and the AAP say, age by age, and what to do at 6 pm." },
-    { title: "The 3-6-9-12 rule, and other screen rules parents swear by", summary: "Where the 3-6-9-12 rule comes from, whether it holds up, and what the WHO, the IAP and the AAP say." },
     { title: "Screen time and tantrums: what is actually happening", summary: "Why the meltdown lands the moment the screen goes off, and how to make switching off boring instead of explosive." },
     { title: "The gentle way off the phone: a seven-day plan", summary: "A week-long plan to cut a young child’s screen time without turning your home into a battlefield." },
     { title: "Busy hands, no screens", summary: "Screen-free ways to keep a young child busy at home, including on the days you have to work." },

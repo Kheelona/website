@@ -13,71 +13,23 @@
  * "pending") while its <main> has no DS section; once its new page renders, the route is tested.
  * A route NOT listed here must render the new design or the spec fails.
  *
- * Task 6.3 empties both lists when the legacy code is gone; nothing else edits them.
+ * Task 6.3 emptied both lists when the legacy code was gone (no "pending" route or file is left), and
+ * test/guards/legacy-paths.test.ts holds them empty. The helpers stay, so the guards that call them
+ * keep compiling; each now answers "not legacy" for every file and route.
  */
 import { FREEZE_TAG, git, readRepoFile, tagFiles, tagText } from "../e2e/support/repo";
 import { withoutImports } from "../e2e/support/source";
 
-export const LEGACY_PATHS: readonly string[] = [
-  // Every route file of the pre-reset site: rewritten in place in waves 3-6, or deleted
-  // (playos, the old product route) in 5.2 and 6.3.
-  "src/app/",
-  // The atomic-design component folders and the old home feature (6.3).
-  "src/components/atoms/",
-  "src/components/molecules/",
-  "src/components/organisms/",
-  "src/components/templates/",
-  "src/components/vendor/",
-  "src/features/home/",
-  // Checkout presentation, restyled by 5.15 and 5.16 under ADR-013.
-  "src/features/preorder/components/",
-  // The retired v3 token sheet and the legacy content and helper modules (6.3).
-  "src/styles/globals.css",
-  "src/lib/cn.ts",
-  "src/lib/family.ts",
-  "src/lib/feelings.ts",
-  "src/lib/growth-arc.ts",
-  "src/lib/interactions.ts",
-  "src/lib/kheelu-art.ts",
-  "src/lib/kheelu-poses.ts",
-  "src/lib/legal.ts",
-  "src/lib/product-facts.ts",
-  "src/lib/seo.ts",
-  "src/lib/setup-steps.ts",
-  "src/lib/shape-paths.ts",
-  "src/lib/stories.ts",
-  "src/lib/stories-expansion.ts",
-  "src/lib/video-moments.ts",
-];
+/* Emptied by task 6.3 (2026-10-14): every route file was rewritten in place (waves 3-6) or deleted (the old product
+   route in 5.2; /playos, the atomic-design folders, the old home feature, globals.css and the legacy lib modules in
+   6.3), and the checkout presentation was restyled (5.15, 5.16). test/guards/legacy-paths.test.ts keeps it empty. */
+export const LEGACY_PATHS: readonly string[] = [];
 
 export type LegacyRoute = { host: "marketing" | "store"; path: string };
 
-/** Routes served by legacy pages on 2026-10-12 (url-map §1, §2). */
-export const LEGACY_ROUTES: readonly LegacyRoute[] = [
-  ...[
-    "/",
-    "/products/kheelu",
-    "/safety",
-    "/ai-toys-for-kids-in-india",
-    "/stories",
-    "/team",
-    "/setup",
-    "/contact",
-    "/privacy",
-    "/terms",
-    "/refund",
-    "/shipping",
-    "/playos",
-    // The root not-found page renders every unmatched marketing URL (5.10).
-    "/__not-found__",
-  ].map((path) => ({ host: "marketing" as const, path })),
-  // Every article: one legacy template serves them all until 4.2 lands.
-  { host: "marketing", path: "/stories/*" },
-  ...["/", "/thanks", "/ideabaaz", "/e/*", "/__not-found__"].map((path) => ({
-    host: "store" as const,
-    path,
-  })),
-];
+/* Emptied by task 6.3: every marketing and store route renders the new design, /ideabaaz included (the store's
+   not-found page since 6.6, D054 item 7); /playos is a redirect (wave 1). legacy-paths.test.ts keeps it empty. */
+export const LEGACY_ROUTES: readonly LegacyRoute[] = [];
 
 export function isLegacyRoute(host: "marketing" | "store", path: string): boolean {
   return LEGACY_ROUTES.some(
