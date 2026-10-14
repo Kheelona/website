@@ -1,10 +1,10 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it } from "vitest";
-import type { ArticlePart, ProseBlock } from "@/content/types";
+import type { ArticlePart, ProseBlock, VideoBlock } from "@/content/types";
 import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { ArticleBody } from "./ArticleBody";
-import { LATE_TALKERS_BODY, LEARNING_TOYS_BODY, SAFE_AI_TOY_BODY, SOURCE_LABEL } from "./ArticleBody.stories";
+import { LATE_TALKERS_BODY, LEARNING_TOYS_BODY, SAFE_AI_TOY_BODY, SOURCE_LABEL, VIDEO_LABEL } from "./ArticleBody.stories";
 
 /* ArticleBody (task 3.4): the reading column of the three article mockups, every block type they use, type by
    ks-type-* steps (mockup-css-mapping rows 71-72, 83-84), no pixel sizes. */
@@ -22,6 +22,7 @@ const SLOTS = ".mk-answer, .mk-sources";
 const OPTIONS = { skip: SLOTS, drop: /^(?:ks-type-.*|ks-src--article)$/ };
 
 const BELLY = { src: { src: "/belly.png", width: 389, height: 397 } as StaticImageData, alt: "Kheelu’s tummy unit up close." };
+const VIDEO: VideoBlock = { kind: "video", provider: "youtube", videoId: "M7lc1UVf-VE", title: "Setting up Kheelu", caption: "Press play to [set it up](/setup)." };
 const one = (blocks: readonly ProseBlock[], extra: Partial<ArticlePart> = {}) => (
   <ArticleBody blocks={[{ kind: "part", title: "A part", ...extra, blocks }]} sourceLabel={SOURCE_LABEL} />
 );
@@ -177,6 +178,30 @@ describe("ArticleBody: every block type", () => {
   it("disclaimer: the quiet D025 line", () => {
     const { container } = render(one([{ kind: "disclaimer", text: "Kheelu is a toy, not a therapy or treatment." }]));
     expect(container.querySelector(".ks-part > p")!.className).toBe("kh-body-s ks-disclaimer");
+  });
+
+  /* A journal post's video (task 8b.2c; D057 item 1; journal-pipeline §5.1, §7): ui/VideoEmbed, a still in the DS frame
+     at 16:9 sized to the column, with the play button named by the content's word and the video's title; the caption
+     through the content syntax like any other line; the player only after the press. */
+  it("video: a still in the DS frame sized to the column, the play button named by the content's word, the player on the press", async () => {
+    const { container } = render(
+      <ArticleBody
+        blocks={[{ kind: "part", title: "A part", blocks: [VIDEO] }]}
+        sourceLabel={SOURCE_LABEL}
+        videoLabel={VIDEO_LABEL}
+      />,
+    );
+    const figure = container.querySelector(".ks-part > figure")!;
+    expect(figure.className).toBe("kh-photo kh-photo--wide ks-video");
+    expect(figure.querySelector("img")!.getAttribute("sizes")).toMatch(/700px/);
+    expect(figure.querySelector("figcaption")!.innerHTML).toBe('Press play to <a href="/setup">set it up</a>.');
+    expect(container.querySelector("iframe")).toBeNull();
+    fireEvent.click(await screen.findByRole("button", { name: "Play video: Setting up Kheelu" }));
+    expect(figure.querySelector("iframe")).toHaveAttribute("title", "Setting up Kheelu");
+  });
+
+  it("video: refuses one without the content's play word, rather than typing one", () => {
+    expect(() => render(one([VIDEO]))).toThrow(/play word/);
   });
 });
 

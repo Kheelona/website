@@ -5,12 +5,13 @@ import { Photo } from "@/components/ui/Photo/Photo";
 import { Quote } from "@/components/ui/Quote/Quote";
 import { RichText, type RichTextTag } from "@/components/ui/RichText/RichText";
 import { TrustList } from "@/components/ui/TrustList/TrustList";
+import { VideoEmbed } from "@/components/ui/VideoEmbed/VideoEmbed";
 import type { FigureBlock, IconRef, LeadText, ListBlock, ListItem, Offer, ProseBlock, RichTextString } from "@/content/types";
 
 /**
  * The prose blocks of the content model (src/content/types.ts, "Prose blocks"), rendered as the three approved
- * article mockups mark them up (story-*.html). ArticleBody renders a part's blocks with it, and AnswerSection the
- * detail under an answer. Every string goes through `RichText`; source markers take the article variant (kept on one
+ * article mockups mark them up (story-*.html), and a journal post's video as ui/VideoEmbed (task 8b.2c; ADR-014).
+ * ArticleBody renders a part's blocks with it, and AnswerSection the detail under an answer. Every string goes through `RichText`; source markers take the article variant (kept on one
  * line, stories.css:72). Spacing and type are ArticleBody's (article-body.css).
  */
 
@@ -24,6 +25,9 @@ export interface ProseContext {
   offer?: Offer;
   /** The word before a source marker's number ("Source"), from content; needed when the text carries markers. */
   sourceLabel?: string;
+  /** The play word before a video's title on its play button ("Play video:"), from content; needed when the blocks
+   *  hold a video (task 8b.2c). */
+  videoLabel?: string;
 }
 
 function rich(ctx: ProseContext, text: RichTextString, as?: RichTextTag, className?: string) {
@@ -139,6 +143,21 @@ function Block({ block, ctx }: { block: ProseBlock; ctx: ProseContext }): ReactN
       );
     case "disclaimer":
       return rich(ctx, block.text, "p", "kh-body-s ks-disclaimer");
+    case "video":
+      // A journal post's video (task 8b.2c; journal-pipeline §5.1, §7): a still until the press, sized to the column.
+      if (ctx.videoLabel === undefined) {
+        throw new Error(`A video's play button needs the content's play word: pass videoLabel ("${block.title}")`);
+      }
+      return (
+        <VideoEmbed
+          provider={block.provider}
+          videoId={block.videoId}
+          title={block.title}
+          playLabel={ctx.videoLabel}
+          caption={block.caption && rich(ctx, block.caption)}
+          sizes={PROSE_SIZES}
+        />
+      );
     default: {
       const unknown: never = block;
       throw new Error(`No approved markup for the prose block ${JSON.stringify(unknown)}`);

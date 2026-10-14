@@ -15,8 +15,17 @@ task 6.6 item 3; wiki/site/tracking-inventory.md §14a): three changes to the Re
     loads today is blocked. Every other directive, source and header is the tag's. No tracking ID, event name or
     parameter changes.
 
+D057 item 1 (founder, 2026-10-14; task 8b.2c; ADR-014, wiki/engineering/journal-pipeline.md §7): the journal comes
+from the admin dashboard, whose posts may embed YouTube or Vimeo videos. `frame-src` gains
+`https://www.youtube-nocookie.com` and `https://player.vimeo.com`, exact origins, frame-src only, as production has
+served since 2026-10-13 (origin/main src/lib/security-headers.ts:81-87, :177). The diff adds the `videoPlayers`
+source and its use in `frame-src`, and nothing else: no other directive, source or header changes, no tracking ID,
+event name or parameter changes, and the phase stays "report" (`CSP_PHASE`), so the header is still
+Content-Security-Policy-Report-Only and nothing that loads today is blocked. The player frame loads only after a reader
+presses play (ui/VideoEmbed); the still is fetched by next/image on the server, so img-src needs no video host.
+
 diff --git a/src/lib/security-headers.ts b/src/lib/security-headers.ts
-index c0eedb7..680a6ec 100644
+index c0eedb7..708586a 100644
 --- a/src/lib/security-headers.ts
 +++ b/src/lib/security-headers.ts
 @@ -58,6 +58,12 @@ const SOURCES = {
@@ -32,7 +41,7 @@ index c0eedb7..680a6ec 100644
    /** Vercel Web Analytics posts to a same-origin obfuscated path, so 'self'
     *  covers it. This is its documented fallback host, kept because a blocked
     *  beacon would be silent. */
-@@ -78,6 +84,16 @@ const SOURCES = {
+@@ -78,6 +84,23 @@ const SOURCES = {
     *  endpoints and there is no reason to admit the rest of the estate. */
    metaPixelScript: "https://connect.facebook.net",
    metaPixelCollect: "https://www.facebook.com",
@@ -46,10 +55,32 @@ index c0eedb7..680a6ec 100644
 +    "https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws",
 +    "https://bded8a3c6ae-1-1053047382554.us-central1.run.app",
 +  ],
++  /** Journal videos (D057 item 1, 2026-10-14; as production since 2026-10-13). A
++   *  post written in the admin dashboard may embed a YouTube or Vimeo video, and
++   *  the article shows a still until a reader presses play; only then does the
++   *  player frame load (ui/VideoEmbed). The privacy-enhanced YouTube host and
++   *  Vimeo's player host only: exact origins, frame-src only. The still needs no
++   *  img-src: next/image fetches it server-side and serves it from this origin. */
++  videoPlayers: ["https://www.youtube-nocookie.com", "https://player.vimeo.com"],
    /** PostHog (2026-09-19). TWO origins, and the split is not cosmetic: events
     *  are ingested at `us.i.posthog.com`, while the lazily-fetched bundles — the
     *  session recorder, error tracking, surveys, the toolbar — are fetched from
-@@ -168,15 +184,19 @@ export function contentSecurityPolicy(dev = false): string {
+@@ -161,22 +184,33 @@ export function contentSecurityPolicy(dev = false): string {
+        frame for cookie-matching, which production Report-Only was refusing.
+        frame-ancestors above still forbids anyone framing US, which is the
+        direction that matters for a checkout. */
+-    directive("frame-src", "'self'", SOURCES.razorpay, SOURCES.googlePay, SOURCES.metaPixelCollect),
++    directive(
++      "frame-src",
++      "'self'",
++      SOURCES.razorpay,
++      SOURCES.googlePay,
++      SOURCES.metaPixelCollect,
++      SOURCES.videoPlayers,
++    ),
+     directive(
+       "connect-src",
+       "'self'",
        SOURCES.ahrefs,
        SOURCES.googleTag,
        SOURCES.googleCollect,

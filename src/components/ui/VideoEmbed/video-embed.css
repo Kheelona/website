@@ -1,0 +1,33 @@
+/* VideoEmbed (task 8b.2c; journal-pipeline §7). The DS photo frame at 16:9 (kh-photo kh-photo--wide, bundle.css:1150-1152)
+   already crops the still to the frame's ratio, rounds it and puts the band behind it. This adds the stage the play button
+   and the player frame sit on: the same ratio (the frame's own --kh-ratio), radius and band, so a Vimeo video, which has
+   no still, keeps the frame, and the player fills it after the press. The play button sits centred and lifted, as the
+   films strip places its own. Nothing here moves: the DS IconButton's tap feedback is the only motion (architecture
+   §11.3). */
+/* A video sits among a part's paragraphs, so it keeps their rhythm below it (the reading column gives p, ul and ol
+   space-4 below, article-body.css); the column's last-child rule takes it away at the end of a part. The DS frame's
+   own margin is zero. */
+.ks-video {
+  margin-bottom: var(--space-4);
+}
+.ks-video__stage {
+  position: relative;
+  aspect-ratio: var(--kh-ratio);
+  overflow: hidden;
+  border-radius: var(--radius-l);
+  background: var(--surface-band);
+}
+.ks-video__play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: var(--shadow-lift);
+}
+.ks-video__player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}

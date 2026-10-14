@@ -176,6 +176,28 @@ describe("the content security policy", () => {
     }
   });
 
+  /* D057 item 1 (2026-10-14; ADR-014, journal-pipeline §7): the journal's videos. ui/VideoEmbed shows a still until a
+     reader presses play, then frames the privacy-enhanced YouTube player or Vimeo's player, as production has since
+     2026-10-13. Those two exact origins join frame-src, and no other directive: the player is a frame, never a script,
+     an image (the still comes through our own image optimiser) or a fetch from this page. No wildcard came with them. */
+  it("frames the two journal video players, exact origins, in frame-src only (D057 item 1)", () => {
+    const players = ["https://www.youtube-nocookie.com", "https://player.vimeo.com"];
+    const frames = directive("frame-src")!.split(" ");
+    const others = policy.split("; ").map((part) => part.split(" ")[0]).filter((name) => name !== "frame-src");
+    expect(others).toEqual(expect.arrayContaining(["default-src", "script-src", "img-src", "connect-src", "media-src", "form-action"]));
+    for (const host of players) {
+      expect(frames, `${host} is not in frame-src`).toContain(host);
+      for (const other of others) {
+        expect((directive(other) ?? "").split(" "), `${host} is in ${other}`).not.toContain(host);
+      }
+    }
+    /* Nothing else of YouTube's or Vimeo's estate: not the tracking youtube.com player, not the thumbnail host. */
+    for (const dev of [false, true]) {
+      const sources = contentSecurityPolicy(dev).split(/[\s;]+/);
+      expect(sources.filter((source) => /youtube|ytimg|vimeo/.test(source)).sort(), `video sources (dev: ${dev})`).toEqual([...players].sort());
+    }
+  });
+
   /* D054 item 9: a report-only policy ignores upgrade-insecure-requests, and the browser logs an error for it on every
      page (M1's Lighthouse Best Practices). It goes, and the policy stays Report-Only (the phase test below). */
   it("carries no upgrade-insecure-requests, which a report-only policy ignores (D054 item 9)", () => {

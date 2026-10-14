@@ -187,14 +187,24 @@ export type CtaRef = string;
 export type Tone = "chilli" | "blue" | "sun";
 
 /**
+ * An image the admin dashboard uploaded for a journal post (ADR-014; journal-pipeline §6): its exact address under the
+ * API's public image path, `JOURNAL_IMAGES` in src/config/journal.ts (task 8b.2b). next/image's optimiser admits that
+ * path alone (next.config.ts `images.remotePatterns`), so the reader's browser is only ever given this site's own
+ * `/_next/image` address for it.
+ */
+export type JournalImageUrl = `https://api.kheelona.com/v1/public/blog/images/${string}`;
+
+/**
  * An image. A design-system or app-screen raster is a static import (its size
  * comes with it); a file under public/ with a stable URL (film posters, Open
- * Graph and JSON-LD images) is a site path with its real size, so nothing shifts.
+ * Graph and JSON-LD images) is a site path with its real size, so nothing shifts;
+ * a journal post's upload is its `JournalImageUrl` with its real size, likewise.
  * `alt` is empty only for a decorative image.
  */
 export type ImageRef =
   | { readonly src: StaticImageData; readonly alt: string }
-  | { readonly src: SitePath; readonly width: number; readonly height: number; readonly alt: string };
+  | { readonly src: SitePath; readonly width: number; readonly height: number; readonly alt: string }
+  | { readonly src: JournalImageUrl; readonly width: number; readonly height: number; readonly alt: string };
 
 /** Doodles draw in up to five staggered steps (D049 pick 3). */
 export type DrawOrder = 1 | 2 | 3 | 4 | 5;
@@ -410,7 +420,24 @@ export interface DisclaimerBlock {
   readonly text: RichTextString;
 }
 
-/** Every block type the approved article mockups use. */
+/** The two hosts a journal post may embed a video from (D057 item 1; ADR-014). */
+export type VideoProvider = "youtube" | "vimeo";
+
+/**
+ * A YouTube or Vimeo video in a journal post (D057 item 1; journal-pipeline §5.1, §7): a still until a reader presses
+ * play (ui/VideoEmbed). No address: the player's and the still's are built from the provider and the id alone.
+ */
+export interface VideoBlock {
+  readonly kind: "video";
+  readonly provider: VideoProvider;
+  /** An 11-character YouTube id, or a numeric Vimeo id. */
+  readonly videoId: string;
+  /** Plain words: the player frame's title and, after the content's play word, the play button's name. */
+  readonly title: string;
+  readonly caption?: RichTextString;
+}
+
+/** Every block type the approved article mockups use, and the journal's video (ADR-014). */
 export type ProseBlock =
   | ParagraphBlock
   | SubheadingBlock
@@ -420,7 +447,8 @@ export type ProseBlock =
   | CalloutBlock
   | FigureBlock
   | FactsBlock
-  | DisclaimerBlock;
+  | DisclaimerBlock
+  | VideoBlock;
 
 /* ── Articles ─────────────────────────────────────────────────────────────── */
 
