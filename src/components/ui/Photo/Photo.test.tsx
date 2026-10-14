@@ -114,6 +114,40 @@ describe("Photo: loading (ADR-010, N12)", () => {
   });
 });
 
+/* The remote form (task 8b.2c; ADR-014, journal-pipeline §6): a journal post's uploaded image, by its exact address
+   under the API's public image path, with its stated size. It goes through Next's image optimiser like any photo, so
+   every address the browser is given is this site's own `/_next/image`: the reader's browser never contacts the API
+   (next.config.ts admits that path alone in `images.remotePatterns`, task 8b.2b). */
+describe("Photo: a journal upload (the remote form)", () => {
+  const UPLOAD = { src: "https://api.kheelona.com/v1/public/blog/images/cover-1.jpg", width: 1200, height: 800, alt: "A child stacking blocks." } as const;
+  const SAME_SITE = /^\/_next\/image\?url=https%3A%2F%2Fapi\.kheelona\.com%2Fv1%2Fpublic%2Fblog%2Fimages%2Fcover-1\.jpg&w=\d+&q=75$/;
+
+  it("is a kh-photo with its stated size and alt text, every source served through this site's optimiser", () => {
+    const { container } = render(<Photo image={UPLOAD} variant="wide" sizes={SIZES} />);
+    expect(container.firstElementChild!.className).toBe("kh-photo kh-photo--wide");
+    const image = img(container);
+    expect(image).toHaveAttribute("alt", UPLOAD.alt);
+    expect(image).toHaveAttribute("width", "1200");
+    expect(image).toHaveAttribute("height", "800");
+    expect(image.getAttribute("src")).toMatch(SAME_SITE);
+    const candidates = image.getAttribute("srcset")!.split(", ").map((c) => c.split(" ")[0]);
+    expect(candidates.length).toBeGreaterThan(1);
+    for (const url of candidates) expect(url).toMatch(SAME_SITE);
+  });
+
+  it("follows Photo's loading rules: lazy by default, eager at high priority as the LCP image", () => {
+    expect(img(render(<Photo image={UPLOAD} sizes={SIZES} />).container)).toHaveAttribute("loading", "lazy");
+    const lcp = img(render(<Photo image={UPLOAD} sizes={SIZES} lcp />).container);
+    expect(lcp).toHaveAttribute("loading", "eager");
+    expect(lcp).toHaveAttribute("fetchpriority", "high");
+  });
+
+  it("carries its own ratio in the bare form, from its stated size", () => {
+    const bare = render(<Photo bare image={UPLOAD} sizes={SIZES} />).container.firstElementChild as HTMLImageElement;
+    expect(bare.style.getPropertyValue("--kh-ratio")).toBe("1200 / 800");
+  });
+});
+
 /* The bare form (task 3.6 item 18; architecture §10): the image alone, with Photo's loading and sizes rules and no
    figure, frame or crop, for a DS raster a section places itself (ModesSection's "Good to know" photo,
    meet-kheelu.html fold 4, `img.mk-know__img`). Sections never render next/image directly. */

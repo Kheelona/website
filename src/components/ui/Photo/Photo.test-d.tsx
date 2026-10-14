@@ -33,6 +33,27 @@ export const misuses = () => (
   </>
 );
 
+/** The remote form (task 8b.2c; ADR-014, journal-pipeline §6): an image the admin dashboard uploaded for a journal
+ *  post, by its exact address under the API's public image path, with its own size so nothing shifts. Any other remote
+ *  address is refused: next/image's optimiser admits that path alone for content. */
+const UPLOAD = "https://api.kheelona.com/v1/public/blog/images/cover-1.jpg" as const;
+
+export const remote = () => (
+  <>
+    <Photo image={{ src: UPLOAD, width: 1200, height: 800, alt: "A child stacking blocks." }} sizes={SIZES} />
+    <Photo image={{ src: UPLOAD, width: 1200, height: 800, alt: "" }} variant="wide" sizes={SIZES} lcp />
+    <Photo bare image={{ src: UPLOAD, width: 1200, height: 800, alt: "" }} sizes={SIZES} />
+    {/* @ts-expect-error an upload states its size, as a site path does, so nothing shifts */}
+    <Photo image={{ src: UPLOAD, alt: "" }} sizes={SIZES} />
+    {/* @ts-expect-error only the API's public image path: no other host */}
+    <Photo image={{ src: "https://example.org/a.jpg", width: 1, height: 1, alt: "" }} sizes={SIZES} />
+    {/* @ts-expect-error only the API's public image path: not another path on the API */}
+    <Photo image={{ src: "https://api.kheelona.com/v1/public/blog/posts", width: 1, height: 1, alt: "" }} sizes={SIZES} />
+    {/* @ts-expect-error https only */}
+    <Photo image={{ src: "http://api.kheelona.com/v1/public/blog/images/a.jpg", width: 1, height: 1, alt: "" }} sizes={SIZES} />
+  </>
+);
+
 /** The bare form (task 3.6): the image alone, so nothing that belongs to the frame. */
 export const bare = () => (
   <>

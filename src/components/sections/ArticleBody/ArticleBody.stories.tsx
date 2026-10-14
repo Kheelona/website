@@ -213,6 +213,10 @@ export const LATE_TALKERS_BODY: Body = [
 /** The marker word the article templates pass (story-*.html: aria-label "Source 1"). */
 export const SOURCE_LABEL = "Source";
 
+/** The play word a video's button reads before its title (journal-pipeline §7: "Play video: <title>"); story and test
+ *  data only: the article template passes the content's (task 8b.2c). */
+export const VIDEO_LABEL = "Play video:";
+
 /** story-learning-toys-for-a-three-year-old.html fold 2: the answer, then two paragraphs of detail. */
 export const LEARNING_TOYS_ANSWER: Answer = {
   question: "What are the best learning toys for a {nowrap:3-year-old}?",
@@ -361,6 +365,26 @@ export const OtherBlocks: Story = {
         { kind: "figure", variant: "square", image: { src: bellyModule, alt: "Kheelu’s tummy unit up close." }, caption: "The tummy unit." },
         { kind: "p", lead: "Lead:", text: "a paragraph that opens with a bold label." },
         { kind: "disclaimer", text: "Kheelu is a toy, not a therapy or treatment." },
+      ]),
+    ],
+  },
+};
+
+/** A journal post's video (task 8b.2c; journal-pipeline §5.1, §7) between paragraphs: YouTube's still in the DS frame at
+ *  16:9 with the play button, then its caption; Vimeo's frame with the button alone (it has no still). Nothing loads
+ *  from either host until a press. The ids are the providers' own player-documentation samples (story data only); in
+ *  Storybook the still loads straight from i.ytimg.com, where the site serves it through its own image optimiser. */
+export const Video: Story = {
+  args: {
+    before: undefined,
+    after: undefined,
+    videoLabel: VIDEO_LABEL,
+    blocks: [
+      part("Videos", [
+        p("A paragraph before the video."),
+        { kind: "video", provider: "youtube", videoId: "M7lc1UVf-VE", title: "A sample from YouTube’s player documentation", caption: "A caption under the video." },
+        p("A paragraph between the two."),
+        { kind: "video", provider: "vimeo", videoId: "76979871", title: "A sample from Vimeo’s player documentation" },
       ]),
     ],
   },
