@@ -9,7 +9,8 @@ export type { ExampleConversationConfig, ExampleConversationLine } from "./examp
 /**
  * What asking back sounds like (task 8c.3; D061 and the main session's rulings; home.md fold 2 variant b): a written
  * example of one exchange, labelled as illustrative. The catalogue had nothing for it, so it is its own section
- * (components §2). The heading is the DS section heading, centred; under it, in one reading column, the label, then the
+ * (components §2). One reading column holds it all: the DS section heading (aligned to the start, as the steps fold
+ * before it on the product page), the label, then the
  * exchange as an ordered list the label names (each line led by who says it, Kheelu's lines to the start and the child's
  * to the end, as the pre-Gate A review build drew it: `mk-chat`, mockup.css:39-44 at c0f1668), then the line after it.
  * The label is required: the exchange is written by us, so it is never shown unmarked (DS 08-accessibility, "Children's
@@ -28,10 +29,10 @@ export function ExampleConversation({ heading, note, lines, after, id, band, off
   return (
     <Section id={id} band={band} labelledBy={titleId}>
       <Container>
-        <SectionHead>
-          <Heading eyebrow={heading.eyebrow} title={heading.title} id={titleId} align="center" offer={offer} />
-        </SectionHead>
         <div className="ks-exchange">
+          <SectionHead>
+            <Heading eyebrow={heading.eyebrow} title={heading.title} id={titleId} offer={offer} />
+          </SectionHead>
           <p className="kh-label-s ks-exchange__note" id={noteId}>
             {note}
           </p>

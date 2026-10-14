@@ -28,15 +28,23 @@ const CONFIG: ExampleConversationConfig = {
 const CSS = readFileSync(join(process.cwd(), "src/components/sections/ExampleConversation/example-conversation.css"), "utf8");
 
 describe("ExampleConversation: the fold", () => {
-  it("is a section named by its centred h2, the Hand accent on its words, on the page surface", () => {
+  it("is a section named by its h2, the Hand accent on its words, on the page surface", () => {
     const { container } = render(<ExampleConversation {...CONFIG} offer={OFFER} />);
     const section = screen.getByRole("region", { name: "What asking back sounds like." });
     expect(container.firstElementChild).toBe(section);
     expect(section.className).toBe("kh-section");
     expect(section).toHaveAttribute("aria-labelledby", "example-title");
-    const h2 = section.querySelector(".kh-section__head > header.kh-heading.kh-heading--center > h2.kh-heading__title#example-title")!;
+    const h2 = section.querySelector(".kh-section__head > header.kh-heading > h2.kh-heading__title#example-title")!;
     expect(h2).not.toBeNull();
     expect([...h2.querySelectorAll(".kh-hand")].map((s) => s.textContent)).toEqual(["asking back"]);
+  });
+
+  it("heads its own reading column, aligned to the start like the steps fold before it", () => {
+    const { container } = render(<ExampleConversation {...CONFIG} offer={OFFER} />);
+    const column = container.querySelector(".kh-container > .ks-exchange")!;
+    expect(column.firstElementChild).toHaveClass("kh-section__head");
+    expect(column.querySelector(".kh-heading--center")).toBeNull();
+    expect(column.firstElementChild?.nextElementSibling).toHaveClass("ks-exchange__note");
   });
 
   it("puts the label above the exchange and lets it name the list", () => {

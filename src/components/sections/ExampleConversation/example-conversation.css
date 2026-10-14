@@ -1,6 +1,6 @@
 /* ExampleConversation (task 8c.3). No approved mockup rule: the exchange was drawn in the pre-Gate A review build as
    `mk-chat` (mockup.css:39-44 at commit c0f1668), ported here on the same DS tokens as `ks-exchange`, in one reading
-   column under the centred heading. Each line is a quiet card: Kheelu's on the raised surface at the column's start,
+   column that also holds the heading. Each line is a quiet card: Kheelu's on the raised surface at the column's start,
    the child's on the cream at its end, each a space-7 short of the column so the two sides read apart. Type is the DS
    classes on the elements (kh-label-s, kh-body, kh-body-l); nothing moves. */
 .ks-exchange {
