@@ -14,6 +14,7 @@ import {
   COPY_FIXES,
   type CopyFixesSlug,
   editsBeforeClaimFixes,
+  FAQ_FIXES,
   FOOTER_FIX,
   FOOTER_PROMISE,
   SETUP_STEP_BUILD,
@@ -291,12 +292,15 @@ describe.each(Object.keys(CLAIM_FIXES) as ClaimFixesSlug[])("%s: task 8b.1's cla
     expect(fixes.mockup.length).toBeGreaterThan(0);
   });
 
-  it("is one rule of the page, the last, which excuses and accepts exactly those sentences and no other line", () => {
+  it("is one rule of the page, the last but a later task's, which excuses and accepts exactly those sentences and no other line", () => {
     const rules = TEXT_DEVIATIONS[slug] ?? [];
-    expect(rules.filter((r) => r.approvedBy === fixes.approvedBy)).toHaveLength(1);
-    expect(rules[rules.length - 1].approvedBy).toBe(fixes.approvedBy);
-    expect(ruleReach(base, fixes.edits, rules[rules.length - 1])).toEqual({ excused: once(fixes.mockup), accepted: once(fixes.build) });
-    expect(rules[rules.length - 1].jsOff).toBeUndefined();
+    const mine = rules.filter((r) => r.approvedBy === fixes.approvedBy);
+    expect(mine).toHaveLength(1);
+    // Only a rule whose edits apply to the page as these leave it follows: task 8c.4's FAQ fixes (D061).
+    const later = new Set<string>(Object.values(FAQ_FIXES).map((f) => f.approvedBy));
+    expect(rules.slice(rules.indexOf(mine[0]) + 1).filter((r) => !later.has(r.approvedBy))).toEqual([]);
+    expect(ruleReach(base, fixes.edits, mine[0])).toEqual({ excused: once(fixes.mockup), accepted: once(fixes.build) });
+    expect(mine[0].jsOff).toBeUndefined();
   });
 
   it("hides for the pixels the blocks it lists, in VISUAL_HIDDEN in its order, each found once on its side and holding a sentence its edits change (the mockup's side for a hide on both)", () => {

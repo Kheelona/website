@@ -10,7 +10,8 @@ const icon = (name: IconName) => (
 );
 
 /* Home's questions (home.html fold 8), as RichText renders them, in the words faqs.ts prints since the live team's code
-   check (D058; task 8b.1b). test/e2e/motion-faq.spec.ts runs on these stories. */
+   check (D058; task 8b.1b) and the third in the parent's words since task 8c.4 (D061). test/e2e/motion-faq.spec.ts runs
+   on these stories. */
 const items = [
   {
     id: "think-less",
@@ -26,7 +27,7 @@ const items = [
   },
   {
     id: "returns",
-    question: "What if it isn’t right for us?",
+    question: "What if my child doesn’t like it?",
     answer:
       "Return it within 7 days of delivery, no questions asked. Opened is fine: just send back everything that came in the box, undamaged. We arrange the pickup, free.",
   },

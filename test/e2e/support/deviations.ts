@@ -1144,6 +1144,70 @@ export function editsBeforeClaimFixes(slug: string): readonly FactEdit[] {
   return [...(PAGE_FACTS[slug as PageFactsSlug]?.edits ?? []), ...(COPY_FIXES[slug as CopyFixesSlug]?.edits ?? [])];
 }
 
+/* Task 8c.4's FAQ fixes (D061, 2026-10-15; the CMO's review of the advisor's proposal, AP-30; wiki/qa/deviations.md rows
+   filed by the main session at the merge): Home's fourth question takes the parent's own words, "What if my child doesn’t
+   like it?", its answer unchanged; and the product page answers "Which languages does Kheelu speak?", which no question
+   on Home or the product page answered, after the first-week question (facts.md's languages row: the named languages
+   and the ceiling from product.ts, switching mid-sentence as D017 approved it, in AI mode as film 6's caption says). The
+   founder signs both at Gate B (D015). In page-facts.ts's form, applied after a page's claim fixes (task 8b.1), whose
+   first-week answer the new question follows: `edits` turn that mockup into the build, and `mockup` and `build` are the
+   sentences they change, for the text pass (faqs.test.ts proves them exactly those). Literal, because Playwright cannot
+   load every content module; faqs.test.ts holds each literal to faqs.ts. */
+
+/** Home's fourth question (faqs.ts `not-right-for-us`), in the parent's words; its answer stays word for word. */
+export const NOT_RIGHT_QUESTION = {
+  mockup: "What if it isn’t right for us?",
+  build: "What if my child doesn’t like it?",
+} as const;
+/** The product page's new question (faqs.ts `languages`), as the page prints it. */
+export const LANGUAGES_FAQ = {
+  question: "Which languages does Kheelu speak?",
+  answer:
+    "Kheelu speaks up to 10 languages at launch, including English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French. In AI mode, it can switch between them mid-sentence: when your child changes language, Kheelu changes with them. You can watch it happen in the film “Two languages”.",
+} as const;
+/** The product page's seventh question as task 8b.1's claim fix leaves it (V27, without "or delete"): the new one
+ *  follows it, so the speech question and its source stay last, beside the D025 line. */
+const FIRST_WEEK = {
+  question: "Will my child still play with it after the first week?",
+  answer:
+    "No toy can promise that. Kheelu remembers earlier conversations, so it can pick up where your child stopped instead of starting over. Story mode adds stories, poems and jingles, with no Wi‑Fi needed. You can read any conversation in the parent app.",
+} as const;
+/** One closed question of the DS FAQ as the mockups print it (mockup/build.mjs): its words, the plus sign, the answer. */
+const faqItem = (question: string, answer: string) =>
+  `<details class="kh-faq__item"><summary class="kh-faq__q"><span>${question}</span><span class="kh-faq__sign" aria-hidden="true">${icon("plus")}</span></summary><div class="kh-faq__a"><p>${answer}</p></div></details>`;
+/** A page's FAQ item, by its place in the questions fold (both pages, both sides). */
+const faqAt = (n: number) => `section[aria-labelledby="faq-title"] .kh-faq__item:nth-child(${n})`;
+const faqApproved = (row: string, page: string) => `deviations.md ${row} (founder, D061, 2026-10-15; ${page}; CMO review of the advisor's proposal; task 8c.4)`;
+
+export const FAQ_FIXES = {
+  home: {
+    edits: [rewrite(".kh-faq__q span", NOT_RIGHT_QUESTION.mockup, NOT_RIGHT_QUESTION.build)],
+    mockup: [NOT_RIGHT_QUESTION.mockup],
+    build: [NOT_RIGHT_QUESTION.build],
+    /* The question is three characters longer and may wrap to another height on a phone, moving every chunk below. */
+    hidden: { both: [faqAt(4)], mockup: [], build: [] },
+    reason: "Home's fourth question in the parent's words, \"What if my child doesn’t like it?\" (AP-30); its answer unchanged",
+    approvedBy: faqApproved("V41", "home.md fold 8, AP-30"),
+  },
+  "meet-kheelu": {
+    edits: [
+      {
+        at: ".kh-faq__item",
+        was: `${FIRST_WEEK.question}${FIRST_WEEK.answer}`,
+        now: `${faqItem(FIRST_WEEK.question, FIRST_WEEK.answer)}${faqItem(LANGUAGES_FAQ.question, LANGUAGES_FAQ.answer)}`,
+      },
+    ],
+    mockup: [],
+    build: [LANGUAGES_FAQ.question, ...sentences(LANGUAGES_FAQ.answer)],
+    /* A ninth question: one more row moves the close below it; the build's alone holds it. */
+    hidden: { both: [], mockup: [], build: [faqAt(8)] },
+    reason: "the product page answers \"Which languages does Kheelu speak?\" after the first-week question: the named languages and the ceiling, switching mid-sentence in AI mode (facts.md; D017; film 6)",
+    approvedBy: faqApproved("V42", "meet-kheelu.md fold 8"),
+  },
+} as const satisfies Readonly<Record<string, PageFacts>>;
+export type FaqFixesSlug = keyof typeof FAQ_FIXES;
+const FAQ_FIXES_WHOSE = "task 8c.4's FAQ fixes (D061)";
+
 /** A route whose own parity runs would compare a state its mockup does not show, with the spec that proves that
  *  state's parity instead. The visual and text parity specs skip the route on the build and print why (SPA 1 and 2). */
 export type ParityElsewhere = {
@@ -1343,8 +1407,12 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...factsHidden(COPY_FIXES.stories, COPY_FIXES_WHOSE),
   ],
   /* The screen-time guide card's line (V18, task 7.1b), then the parent-app bullets and the safety bodies (V26, task 8b.1),
-     compared by the text pass. */
-  home: [...factsHidden(COPY_FIXES.home, COPY_FIXES_WHOSE), ...factsHidden(CLAIM_FIXES.home, CLAIM_FIXES_WHOSE)],
+     then the fourth question (task 8c.4, D061), compared by the text pass. */
+  home: [
+    ...factsHidden(COPY_FIXES.home, COPY_FIXES_WHOSE),
+    ...factsHidden(CLAIM_FIXES.home, CLAIM_FIXES_WHOSE),
+    ...factsHidden(FAQ_FIXES.home, FAQ_FIXES_WHOSE),
+  ],
   /* The open FAQ answer (V19, task 7.1b), then the facts, controls and retention card (V28, task 8b.1), compared by the
      text pass. */
   safety: [...factsHidden(COPY_FIXES.safety, COPY_FIXES_WHOSE), ...factsHidden(CLAIM_FIXES.safety, CLAIM_FIXES_WHOSE)],
@@ -1409,6 +1477,8 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...factsHidden(COPY_FIXES["meet-kheelu"], COPY_FIXES_WHOSE),
     /* The perk, the Good-to-know line, fold 5's words, fold 6's items and the Parent app row (V27, task 8b.1). */
     ...factsHidden(CLAIM_FIXES["meet-kheelu"], CLAIM_FIXES_WHOSE),
+    /* The languages question, the build's alone (task 8c.4, D061), compared by the text pass. */
+    ...factsHidden(FAQ_FIXES["meet-kheelu"], FAQ_FIXES_WHOSE),
   ],
   /* The Google Analytics block's paragraph and the PostHog block's first one say more in the build (V10), so they wrap
      to more lines and every block below would shift; the pixels compare the page without the two paragraphs on both
@@ -1532,8 +1602,9 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     factsRule(COPY_FIXES.stories),
   ],
   /* The screen-time guide card's line and two FAQ answers (V18, task 7.1b): COPY_FIXES above. The answers sit in closed
-     items, which the text pass does not read; Home's unit test holds them. */
-  home: [factsRule(COPY_FIXES.home), factsRule(CLAIM_FIXES.home)],
+     items, which the text pass does not read; Home's unit test holds them. Then D058's claim fixes (V26, task 8b.1), and
+     the fourth question in the parent's words, which the text pass does read (task 8c.4, D061): FAQ_FIXES above. */
+  home: [factsRule(COPY_FIXES.home), factsRule(CLAIM_FIXES.home), factsRule(FAQ_FIXES.home)],
   "meet-kheelu": [
     {
       /* The product details fold without JavaScript (wiki/qa/deviations.md V3): the tab row stays hidden and the three
@@ -1564,6 +1635,9 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     factsRule(COPY_FIXES["meet-kheelu"]),
     /* D058's claim fixes (V27, task 8b.1): CLAIM_FIXES above. */
     factsRule(CLAIM_FIXES["meet-kheelu"]),
+    /* The languages question (task 8c.4, D061): FAQ_FIXES above. Its answer sits in a closed item, which the text pass
+       does not read; faqs.test.ts and the route's unit test hold it. */
+    factsRule(FAQ_FIXES["meet-kheelu"]),
   ],
   /* The open FAQ answer and the closed one's "At 3:" line (V19, task 7.1b): COPY_FIXES above. */
   safety: [factsRule(COPY_FIXES.safety), factsRule(CLAIM_FIXES.safety)],
