@@ -35,9 +35,11 @@
 }
 
 /* An odd last item runs the full width from 720 px, where the DS list has two columns: the safety page's fifth
-   "never" item and the guide's fifth answer (safety.css:14, ai-toys-for-kids-in-india.css:27). */
+   "never" item, the guide's fifth answer (safety.css:14, ai-toys-for-kids-in-india.css:27) and the safety page's third
+   parent control (CMO m2, 2026-10-14; odd only, as shipping.css:20 writes it, so a fourth control makes two by two).
+   `:where()` keeps the old specificity, so the never list's three-then-two rule below still wins from 1024 px. */
 @media (min-width: 720px) {
-  .ks-trust--span-last .kh-trust__item:last-child {
+  .ks-trust--span-last .kh-trust__item:last-child:where(:nth-child(odd)) {
     grid-column: 1 / -1;
   }
 }

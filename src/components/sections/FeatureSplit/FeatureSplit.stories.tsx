@@ -139,7 +139,7 @@ export const AppScreensSafety: Story = {
       {
         icon: "sliders-horizontal",
         title: "Your child’s age.",
-        body: "Enter it when you set Kheelu up, and change it later if you need to. On every conversation, the AI model that answers your child is given that age and child-safety rules.",
+        body: "Enter it when you set Kheelu up, and change it later if you need to. On every conversation, the AI model that answers your child is given that age and child‑safety rules.",
       },
       { icon: "translate", title: "Languages.", body: "Pick the ones you speak at home." },
       {

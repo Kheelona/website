@@ -403,7 +403,7 @@ Section `id="app"` (Home links here).
 >
 > *(two real app screens, in the DS phone frame)*
 >
-> **Caption:** Real app screens, October 2026. Names changed; some content added for illustration.
+> **Caption:** The Kheelona app is live on Apple’s App Store and the Google Play Store. ([D046](../../decisions/D046-gate-a-approved.md)'s caption; the mockup and the build carry it.)
 >
 > [See what we keep, and for how long] → `#safety`
 

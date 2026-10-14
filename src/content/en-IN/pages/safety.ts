@@ -132,7 +132,7 @@ export const safetyPage = {
           {
             icon: "sliders-horizontal",
             title: "Your child’s age.",
-            body: "Enter it when you set Kheelu up, and change it later if you need to. On every conversation, the AI model that answers your child is given that age and child-safety rules.",
+            body: "Enter it when you set Kheelu up, and change it later if you need to. On every conversation, the AI model that answers your child is given that age and child‑safety rules.",
           },
           { icon: "translate", title: "Languages.", body: "Pick the ones you speak at home." },
           {
@@ -145,7 +145,7 @@ export const safetyPage = {
           images: [
             {
               src: appPrivacy,
-              alt: `A real screen from the Kheelu parent app: the privacy centre. Chats are kept for ${RETENTION_MONTHS} months, with a button to download your child’s data.`,
+              alt: `A real screen from the Kheelu parent app: the privacy centre. Chats are kept for ${RETENTION_MONTHS} months, with a switch to save voice recordings and a button to download your child’s data.`,
             },
           ],
           caption: "The Kheelona app is live on Apple’s App Store and the Google Play Store.",

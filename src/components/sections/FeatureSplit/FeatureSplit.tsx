@@ -187,7 +187,7 @@ function AppScreensBody({ config, title, text }: { config: Extract<FeatureSplitC
   } else {
     media = <AppScreens variant={placement} screens={screens.images} sizes={SCREEN_SIZES[placement]} caption={caption} reveal />;
   }
-  const list = items && <TrustList items={trustItems(items, text)} reveal={placement === "safety"} className={placement === "safety" ? "ks-sf-controls" : undefined} />;
+  const list = items && <TrustList items={trustItems(items, text)} reveal={placement === "safety"} className={placement === "safety" ? "ks-sf-controls ks-trust--span-last" : undefined} />;
 
   if (placement === "home") {
     // Home fold 5: the heading over the split; the lines and the link reveal together beside the phones.

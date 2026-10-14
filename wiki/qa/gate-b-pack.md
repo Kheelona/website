@@ -71,8 +71,14 @@ derived read times on two guides with no mockup (the-gentle-way-off-the-phone 3 
 
 ## 5. Before the merge to `main` (main session)
 
-- Wave 8b closed: 8b.2d, 8b.1b, 8b.2e (the journal from the snapshot), 8b.3 (`origin/main` merged in).
+- Wave 8b: 8b.1, 8b.1b, 8b.1d, 8b.2a-8b.2e and 8b.3 merged (2026-10-14; `origin/main` at `8c4718a` merged in, so the Gate B
+  merge is a fast-forward or a plain merge). Still to come: 8b.1c (the founder's answers to G26-G32), 8b.2f (the dry run
+  with Aman); 8b.2g is after Gate B.
 - Beta QA (task 7.2), with the bypass secret; Lighthouse before and after; tracking parity evidence.
+- Lighthouse with the tags (lp-tags) on `/stories`: 87 and then 88 (median of 5) at the 8b close, against the 90 budget,
+  measured on battery; the gap is the tags' main-thread time (240-410 ms of blocking; about 2 ms without them) and an LCP
+  that lands at 2.6 s or 3.2 s by run. Re-measure on mains power; if still below 90, look at when the tags load on the
+  hub. Every other page passes (local 94-98; with the tags, home 92 and the store 91 on 5 runs).
 - `README.md` and `docs/store-go-live.md` rewritten for the new site (from task 6.3).
 - Release steps 3-8 of [architecture §15.5](../engineering/architecture.md#155-gate-b-release-to-production-and-rollback):
   Gate B OK logged as a decision, the rollback tag pushed first, the merge, smoke tests, the sitemap resubmitted,

@@ -23,6 +23,8 @@ const RENAMES: Renames = {
   "setup-copy": ["ks-feature-copy"],
   "team-why": ["ks-feature-copy"],
   "team-quote": [],
+  /* The third parent control runs the full width from 720 px, as the never list's fifth item (CMO m2, 2026-10-14). */
+  "sf-controls": ["ks-sf-controls", "ks-trust--span-last"],
 };
 
 /** Inside these the primitive's own test owns the markup. */

@@ -571,7 +571,7 @@ export const CLAIM_FIXES = {
       rewrite(
         ".kh-trust__body",
         "Enter it when you set Kheelu up, and change it later if you need to. The age-graded safety layer follows it.",
-        "Enter it when you set Kheelu up, and change it later if you need to. On every conversation, the AI model that answers your child is given that age and child-safety rules.",
+        "Enter it when you set Kheelu up, and change it later if you need to. On every conversation, the AI model that answers your child is given that age and child‑safety rules.",
       ),
       cutAround(".kh-trust__title", "Topics.", "li"),
       cutAround(".kh-trust__title", "Quiet hours.", "li"),
@@ -591,7 +591,7 @@ export const CLAIM_FIXES = {
       {
         at: 'img[src="assets/app/app-privacy.webp"]',
         was: "",
-        now: `<img loading="lazy" src="assets/app/app-privacy.webp" width="576" height="1209" alt="A real screen from the Kheelu parent app: the privacy centre. Chats are kept for 36 months, with a button to download your child’s data.">`,
+        now: `<img loading="lazy" src="assets/app/app-privacy.webp" width="576" height="1209" alt="A real screen from the Kheelu parent app: the privacy centre. Chats are kept for 36 months, with a switch to save voice recordings and a button to download your child’s data.">`,
       },
       /* Fold 5: the retention line's first sentence, then what removing and deleting do. */
       {
@@ -628,7 +628,7 @@ export const CLAIM_FIXES = {
       "No web browsing.",
       /* Fold 3's body says it already; fold 7's "Replies" line says it too now. */
       "It can’t browse or search the web.",
-      "On every conversation, the AI model that answers your child is given that age and child-safety rules.",
+      "On every conversation, the AI model that answers your child is given that age and child‑safety rules.",
       "Voice recordings.",
       "Turn off Save voice recordings, and only the written record of each conversation is kept.",
       "Removing a chat in the app hides it on that phone.",

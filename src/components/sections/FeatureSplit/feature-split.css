@@ -34,6 +34,10 @@
 .kh-trust.ks-sf-controls {
   margin-top: var(--space-6);
 }
+/* No lone last word in a control's line ("rules." at 390; CMO m1, 2026-10-14; as store-details.css:74). */
+.ks-sf-controls .kh-trust__body {
+  text-wrap: pretty;
+}
 
 /* The guide's plush or robot fold: a measured paragraph, then Kheelu alone on a 4:3 board, 1:1 from 900 px
    (ai-toys-for-kids-in-india.css:30-33; mockup-css-mapping rows 11-13; the 480 px tablet clamp is ArtBoard's). */

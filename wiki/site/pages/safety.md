@@ -234,16 +234,16 @@ Word counts: 57 · 42 · 22 · 17 (task 8b.1; approved at Gate A as 56 · 46 · 
 > - **Languages.** Pick the ones you speak at home.
 > - **Voice recordings.** Turn off Save voice recordings, and only the written record of each conversation is kept.
 >
-> *(real screenshot)* Caption: Real app screens, October 2026. Names changed; some content added for illustration.
+> *(real screenshot)* Caption: The Kheelona app is live on Apple’s App Store and the Google Play Store. ([D046](../../decisions/D046-gate-a-approved.md)'s caption; the mockup and the build carry it.)
 >
 > [See what the app shows you] → `meet-kheelu.html#app`
 
 - **H2:** the DS's own line for Meera's message ("the grown-up holds the keys", `03-cast.md:14`), also the live
   page's heading (`safety/page.tsx:329`). Accent: `Hand` on "the keys."
 - **Image:** `mockup/assets/app/app-privacy.webp` (the real privacy-centre screen from the founder's demo video,
-  names replaced, [log](../../log.md) line 465), in the DS phone frame (`kh-device`). Alt (task 8b.1b): "A real
-  screen from the Kheelu parent app: the privacy centre. Chats are kept for 36 months, with a button to download your
-  child's data." (36 is `RETENTION_MONTHS`.) It leaves out the screen's "delete all chats" button, which hides chats on
+  names replaced, [log](../../log.md) line 465), in the DS phone frame (`kh-device`). Alt (task 8b.1b, with the CMO's
+  m3 of 2026-10-14): "A real screen from the Kheelu parent app: the privacy centre. Chats are kept for 36 months, with a
+  switch to save voice recordings and a button to download your child's data." (36 is `RETENTION_MONTHS`.) It leaves out the screen's "delete all chats" button, which hides chats on
   that phone ([D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1), as Home's and the product
   page's alts do (task 8b.1). **The file was not in `mockup/assets/app/` when this copy was written** (it was made
   in parallel): the builder checked the alt against the image. The list does not claim that the screenshot shows
@@ -757,7 +757,7 @@ Nothing new is claimed beyond the code-checked wording and D058.
 - **Fold 4, the age item (m8).** "On every conversation, the AI model that answers your child is given it, with
   child-safety rules." becomes "On every conversation, the AI model that answers your child is given that age and
   child-safety rules." ("it" sat far from "age"; `/setup` fold 4's wording, without the filters, which fold 7 names).
-  Same fact (D058 item 1). Builder: `src/content/en-IN/pages/safety.ts:126`.
+  Same fact (D058 item 1). Builder: `src/content/en-IN/pages/safety.ts:135`.
 - **Fold 3, the internet item (m12; question 5, option (a), for the founder's OK).** "**No open internet.**" becomes
   "**No web browsing.**"; the body, "It can't browse or search the web.", stays. The live footer's words (D058 item
   1). Builder: `safety.ts:102`. The mockup (`mockup/safety.html`, fold 3) keeps the old title: one more text-parity
@@ -777,6 +777,7 @@ builder note above on the fold 4 screenshot's alt. No line of the Copy blocks ch
 | # | Where | What changed | Why (finding or source line) |
 |---|---|---|---|
 | 1 | Fold 4, the privacy screen's alt (`src/content/en-IN/pages/safety.ts:148`) | "A real screen from the Kheelu parent app: the privacy centre. Chats are kept for 36 months, with buttons to download your child's data and to delete all chats." becomes "A real screen from the Kheelu parent app: the privacy centre. Chats are kept for 36 months, with a button to download your child's data." | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1, lines 25-26: removing a chat in the app hides it on that phone, so "delete all chats" read beside fold 5 could be taken for deletion from our servers (the builder note above; the CMO's r2-m3 on task 8b.1). Home's and the product page's alts dropped the same words in task 8b.1. "Keep chats for 36 months" stays on screen and in the alt (D058 item 9, lines 47-48). The fold 4 image note above carries the new alt |
+| 2 | Fold 4, the privacy screen's alt, and the age control's line | The alt becomes "…Chats are kept for 36 months, with a switch to save voice recordings and a button to download your child's data." (it names the switch the new third control is about, as Home's alt does); "child-safety" in the age control's line takes a non-breaking hyphen (the build's "Wi‑Fi" convention), so it never splits at 360 or 1440; the third control runs the full width from 720 px; fold 4's caption in the Copy block is corrected to D046's, which the mockup and the build already carry (d1) | The CMO's built-page review of 2026-10-14, m1-m3 ([review](../../qa/cmo-review-hidden-blocks-8b-2026-10-14.md)); main session, for the founder's sign-off at Gate B (D015, deviations V28) |
 
 The frozen mockup (`mockup/safety.html`, fold 4) keeps the old alt: the `safety` rule of task 8b.1's claim fixes
 (`CLAIM_FIXES.safety` in `test/e2e/support/deviations.ts`) now swaps the image's alt too, so the content test holds the
