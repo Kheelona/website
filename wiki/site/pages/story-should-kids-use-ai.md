@@ -22,6 +22,11 @@ sources:
   - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: B1, M1, M12 fixed in round 2; round 2: R2-1 fixed in task 5.20c)
   - ../../engineering/tasks.md (§4.9 and 5.20, task 5.20c, copy fixes and photo pools)
   - ../../qa/cmo-review-built-b-2026-10-14.md (m3, the related ring; applied in task 7.1d, see the foot of this page)
+  - ../../decisions/D058 (items 1, 5, 6, 9), D059 (item 1: contractions stay); task 8b.2a, see the foot of this page
+  - ../../qa/live-main-reconciliation-2026-10-14.md (§1 P11-P12; §2, origin/main c630a49 and dd04e6d)
+  - ../../engineering/journal-pipeline.md (§9.2 row for this guide; §12, 8b.2a)
+  - "the CMO review of task 8b.1 (wiki/qa/cmo-review-claims-8b.1-2026-10-14.md on 8b.1's branch: m6, m7, m12, m13) and 8b.1's safety.md (fold 2 item 2, question 7), for the forms reused here"
+  - ../../qa/cmo-review-guides-d058-8b.2a-2026-10-14.md (m3, m6, m8; m5 with the review of task 8b.2a, round 2: the internet item follows /safety's title; see the foot of this page)
 ---
 
 # Story: Should kids use AI? An honest answer from people who build it
@@ -52,7 +57,7 @@ sources:
 | Meta description (147 characters) | Should kids use AI? What child-safety groups advise, what young children need from the adults around them, and how to judge any toy with AI inside. |
 | H1 | Should kids use AI? An honest answer from people who build it (the hub card title, word for word) |
 | Byline line | Aman Soni · First published 28 Jul 2026 · 5 min read (byline: question 1) |
-| Read time | 5 min (about 930 words in the article after task 5.20c, headings included, sources, related guides and close excluded; words ÷ 200, rounded, as `readingMinutes` in `src/lib/stories.ts:184-186` and the 5.6 pages: 927 ÷ 200 = 4.6, so 5; 928 after round 2, one word fewer in the answer since; round 1 was about 890, so 4). The build derives it from the module, so the byline follows the module |
+| Read time | 5 min (about 930 words in the article after task 5.20c, headings included, sources, related guides and close excluded; words ÷ 200, rounded, as `readingMinutes` in `src/lib/stories.ts:184-186` and the 5.6 pages: 927 ÷ 200 = 4.6, so 5; 928 after round 2, one word fewer in the answer since; round 1 was about 890, so 4). Task 8b.2a's fold 8 corrections add two words (+1, −4, −2, +5, +2), so about 929 and still 5 min. The build derives it from the module, so the byline follows the module |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 8 ("Kheelu" → `/products/kheelu`, `meet-kheelu.html`) |
 | Module values kept from the stub | Card title and summary (hub copy, `stories.md` fold 4); `related` (three, below; since task 7.1d the CMO's ring, not the stub's); `published` 2026-07-28; `updated` as the main session's note for task 5.19 directs. The stub's `metaTitle` ("Should kids use AI?") gives way to the title above (the card title is 60 characters, so it cannot carry the brand) |
@@ -265,15 +270,15 @@ matched to a point above.
 >
 > Kheelu is made for children aged 3 to 7. Common Sense Media's advice covers that whole range: avoid AI toys at 5 and under, and use extreme caution at 6 and 7. You should hear that from us. Here is how we built [Kheelu](https://kheelona.com/products/kheelu) on each point above, so you can check it yourself and decide.
 >
-> **The microphone.** It turns on only when someone presses the wake-up button, and a light on Kheelu shows whenever it's listening. It switches itself off after about a minute of quiet.
+> **The microphone.** It turns on only when someone presses the wake-up button, and a light on Kheelu shows whenever it's listening. It switches itself off after a couple of minutes of quiet.
 >
-> **Your child's voice.** To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child's voice only to produce Kheelu's reply. They don't keep it, and they never use it to train their AI. Our contracts with them say so.
+> **Your child's voice.** To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child's voice only to produce Kheelu's reply. They don't keep it, and they never use it to train their AI. Our contracts with them say so.
 >
-> **Every conversation.** You can read every conversation in the parent app. Your child's conversations stay in your parent app for 36 months, then they're deleted automatically. You can delete any of them sooner, in one tap.
+> **Every conversation.** You can read every conversation in the parent app. Your child's conversations stay in your parent app for 36 months, then they're deleted automatically. Delete them all sooner by deleting your account.
 >
 > **Your data.** We don't sell your data. Your child's data is never used to advertise to them.
 >
-> **No open internet.** Kheelu can't browse the internet. Its answers come from a curated, closed content library, and every reply passes an age-graded safety layer set to the age you enter in the parent app.
+> **No web browsing.** Kheelu can't browse or search the internet. Its answers are generated by an AI model. On every conversation, the model is given child-safety rules and the age you enter in the parent app, with Google's safety filters on top.
 >
 > **Talking with, not at.** It answers your child, then asks a question back, so your child does the thinking.
 >
@@ -286,11 +291,23 @@ matched to a point above.
 - A `facts` block (`TrustList`, one column on phones), as fold 5 of the safe-AI-toy page, with the same icons for
   the same items (microphone, lock-simple, eye, hand-heart, wifi-slash) and `chat-circle` or `question` for the last
   (builder's pick from the DS icon set); bold lead-ins are the items' titles, not headings. No figure.
-- **Wording held to the rulings, as on the safe-AI-toy page:** the microphone item is D018's (no wake-word phrase,
-  no "no risk", no disconnect claim, the light's colour never named); the voice item is D020's line verbatim, its
-  training clause scoped to the providers ([D041](../../decisions/D041-gate-a-round-1.md)); the retention sentences
-  are `RETENTION_LINE`; the closed library and the age-graded layer come after the providers line and omit "on the
-  device and in the cloud" (D019 flag); no word "safe" about Kheelu.
+- **Wording held to the rulings, as on the safe-AI-toy page** (as corrected in task 8b.2a,
+  [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md)):
+  - The microphone item is D018's (no wake-word phrase, no "no risk", no disconnect claim, the light's colour never
+    named), with the live team's code-checked "a couple of minutes of quiet" (D058 item 1).
+  - The voice item is D020's line less ", on servers in India" (D058 item 6). Its promise (D020 items 1-4) and its
+    training clause scoped to the providers ([D041](../../decisions/D041-gate-a-round-1.md)) are unchanged; no place
+    is named in its stead, as on `/safety` (task 8b.1, its question 7).
+  - The retention sentence is `RETENTION_LINE` as task 8b.1 rewords it (its first sentence only; 8b.1 owns the
+    words), then "Delete them all sooner by deleting your account.", the live team's deletion fact (D058 item 1) in
+    the CMO's form for this place (review of task 8b.1, m7).
+  - The internet item says how a reply is made, in the code-checked words (D058 item 1), keeping the approved "the
+    age you enter in the parent app" ([D036](../../decisions/D036-launch-feature-claims.md) lines 27-28). The closed
+    library and the age-graded layer are gone, and the D019 flag no longer arises: the item says an AI model makes
+    the answers. Its first sentence says "browse or search", the code-checked fact's words (D058 item 1), as the
+    hard-questions guide says it (the [CMO's review of task 8b.2a](../../qa/cmo-review-guides-d058-8b.2a-2026-10-14.md),
+    m6); its title is "No web browsing.", the live footer's words and `/safety`'s since task 8b.1 (question 7).
+  - No word "safe" about Kheelu.
 - Links: `/products/kheelu` → `meet-kheelu.html`; `/safety` → `safety.html`.
 
 ---
@@ -385,8 +402,8 @@ As Home: **₹499`{price-source}` today** · **refundable · ₹4,999`{price-sou
 | An H2 with the primary or a close variant | Yes | Fold 2; fold 7 carries the keyword map's suggested H2 ("How do you judge anything with AI inside?") |
 | Secondaries | Yes | "AI chatbots and children": fold 4 ("general-purpose chatbots"); "is AI good for kids": answered by fold 2 and fold 6, not forced into a heading |
 | Alt text | Yes | Describes the scene |
-| Density | Yes | "should kids use AI" twice in `<main>` (H1, fold 2 H2): about 0.8% of about 990 words with the close, counting its 4 words; "Kheelu" 9 times including the close and its button (under 1%) |
-| Words never placed | Yes | No chatbot brand or age rule (C37 on hold), no "Brookings warns", no wake-word line, no "safe" about Kheelu, "friend", "tutor", "lessons", "adapts", brain promise for Kheelu, health terms, competitor or tested-toy names, "five checks" |
+| Density | Yes | "should kids use AI" twice in `<main>` (H1, fold 2 H2): about 0.8% of about 990 words with the close, counting its 4 words; "Kheelu" 9 times including the close and its button (under 1%). Task 8b.2a changes neither count (about 992 words now) |
+| Words never placed | Yes | No chatbot brand or age rule (C37 on hold), no "Brookings warns", no wake-word line, no "safe" about Kheelu, "friend", "tutor", "lessons", "adapts", brain promise for Kheelu, health terms, competitor or tested-toy names, "five checks"; since task 8b.2a ([D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md)), no "about a minute", "servers in India", "in one tap", "closed content library" or "age-graded safety layer", and no "No open internet." title (fold 7's "Can it reach the open internet" is advice about any toy; its closed-set clause is question 4) |
 
 ## CTA tracking values
 
@@ -418,6 +435,27 @@ would need the founder's and counsel's answer on Kheelu's own providers' terms (
    play and left the advice to fold 5. **Recommend (a)**: on the page that answers "should my young child use AI at
    all", an answer lifted without the main child-safety advice reads as the maker's view alone. It is a second short
    form of the B3 citation, so it follows whatever you sign for B3.
+4. **Fold 7's first question now points at the withdrawn library (new, task 8b.2a).** "Can it reach the open
+   internet, or only a closed set of material?" sets "a closed set of material" as the good answer. Fold 8 no longer
+   says Kheelu is one (D058 item 1: its answers are generated by an AI model), yet a parent reading the question and
+   then "**No open internet.**" can still take Kheelu for the closed set. (a) "Can it reach the open internet?" (the
+   approved opening, the closed-set clause cut); (b) keep it as approved: fold 8's body now says plainly how answers
+   are made. **Recommend (a):** the question should not hold up as the standard a design D058 withdrew. Advice, no
+   new claim; the module line is `should-kids-use-ai.ts:121`.
+5. **Fold 7's deletion bar (new, task 8b.2a; the CMO's m13 on the buyer's guide).** "Can you read every
+   conversation, and delete any of it yourself?" Kheelu's answer is now: delete them all by deleting your account;
+   removing one chat hides it on that phone only (D058 item 1). (a) "Can you read every conversation, and how do you
+   delete it?" (the CMO's m13 wording, as a question); (b) keep it as approved. **Recommend (a)**, with the buyer's
+   guide and the safe-AI-toy guide's question 4, so no guide sets a bar its own answer misses. Module line `:123`.
+6. **The deletion sentence in fold 8 (new, task 8b.2a).** As the safe-AI-toy guide's question 5: (a) "Delete them all
+   sooner by deleting your account." (as drafted); (b) the buyer's guide's two sentences, "from our servers" waiting on
+   the CTO (the CMO's m6); (c) none. **Recommend (a).** If the CTO answers privacy question 11 (c), this becomes
+   "Delete them sooner by deleting your account." (the CMO's review of task 8b.2a, m3).
+7. **The internet item's title (new, task 8b.2a; applied as `/safety`'s).** As the safe-AI-toy guide's question 3:
+   task 8b.1 retitled `/safety`'s item and the footer "No web browsing." (its question 5, option (a), for your OK), so
+   fold 8 now reads "**No web browsing.**" too (the review of task 8b.2a, round 2; the CMO's m5). **Follow your
+   `/safety` answer:** if you keep `/safety`'s "No open internet.", this guide takes it back with it, so the site says
+   it one way.
 
 ## Sources
 
@@ -437,11 +475,15 @@ would need the founder's and counsel's answer on Kheelu's own providers' terms (
 | Xu 2021: 90 children aged 3 to 6; adult questions drew longer answers with more different words than a smart speaker's; accuracy about equal | [source verification C11](../../research/source-verification.md#c11--an-adult-still-draws-out-more-words-ages-3-to-6); excerpt `C11-xu-2021-computers-and-education.md:24-35, 71-79` |
 | "You can do it anywhere: answer your child, then ask one back" | C07 house line |
 | B3 answer, word for word | [safe-AI-toy page](story-what-to-look-for-in-a-safe-ai-toy.md#fold-5--how-kheelu-is-built-against-each-worry-the-one-in-text-product-link), fold 5 paragraph 1 (draft for the founder's signature) |
-| Wake-up button; light; off after about a minute of quiet | [D018](../../decisions/D018-wake-up-button.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) |
-| Providers line, verbatim | [D019](../../decisions/D019-voice-providers.md), [D020](../../decisions/D020-provider-terms-and-no-sale.md); [D041](../../decisions/D041-gate-a-round-1.md) (training clause kept, scoped); [D035](../../decisions/D035-model-training-opt-out.md) |
-| Read every conversation; 36 months; delete sooner in one tap | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [D020](../../decisions/D020-provider-terms-and-no-sale.md) (`RETENTION_LINE`) |
+| Wake-up button; light | [D018](../../decisions/D018-wake-up-button.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) line 73 |
+| Off after a couple of minutes of quiet (was "about a minute", task 8b.2a) | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1, line 29 (narrows [D018](../../decisions/D018-wake-up-button.md), its line 10); [map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded) line 80; live `c630a49` (#19) |
+| Providers line (reply only, keep nothing, never train, contracts), no place named (", on servers in India" out, task 8b.2a) | [D019](../../decisions/D019-voice-providers.md); [D020](../../decisions/D020-provider-terms-and-no-sale.md) items 1-4 (lines 13-17; item 6 withdrawn, its line 10); [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 6 (lines 41-43); [map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded) line 79; [D041](../../decisions/D041-gate-a-round-1.md) (training clause kept, scoped); [D035](../../decisions/D035-model-training-opt-out.md), kept by D058 item 5 (line 40) |
+| Read every conversation; 36 months then deleted automatically | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7 (the 36 months stands, its line 10); [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 9 (lines 47-48); `RETENTION_LINE`, `src/content/en-IN/policies.ts:50`, first sentence only (task 8b.1's words) |
+| Delete them all sooner by deleting your account (was "You can delete any of them sooner, in one tap.", task 8b.2a) | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1, lines 25-26 (narrows [D017](../../decisions/D017-live-behaviour-claims-confirmed.md), its line 10); [map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded) line 77 (the live "Delete it all by deleting your account"); [map §1](../../qa/live-main-reconciliation-2026-10-14.md#1-18-dd04e6d-the-parent-app-on-privacy-and-terms-for-the-app-store-and-play) P11-P12, lines 40-41 (live `dd04e6d`); the CMO review of task 8b.1, m7 (this form) |
 | We don't sell your data; never used to advertise to your child | [D020](../../decisions/D020-provider-terms-and-no-sale.md); [D038](../../decisions/D038-trust-content-rulings.md) (F17) |
-| Can't browse; curated, closed content library; age-graded safety layer set to the age a parent enters | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md), [D036](../../decisions/D036-launch-feature-claims.md); [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) |
+| No web browsing; can't browse or search the internet (was "No open internet." and "can't browse the internet", task 8b.2a) | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) line 71; "browse or search": the code-checked fact ([D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1; c630a49) and the approved [Safety page](safety.md)'s "can't browse or search the web" (the CMO's m6); the title: the live footer's "No web browsing." (D058 item 1; [map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded), c630a49), as task 8b.1 set it on `/safety` and in the footer (question 7) |
+| Answers generated by an AI model, given child-safety rules and the child's age on every conversation, with Google's safety filters on top (was the closed library and the age-graded layer, task 8b.2a) | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1, lines 27-28 (withdraws [D036](../../decisions/D036-launch-feature-claims.md) #5 and the layer wording, D036 line 10); [map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded) lines 76, 83; live `c630a49` (#19) |
+| The age is the one a parent enters in the parent app | [D036](../../decisions/D036-launch-feature-claims.md) lines 27-28 (not withdrawn) |
 | Answers, then asks a question back; "so your child does the thinking" | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [messaging, objection answers](../../brand/messaging.md#objection-answers) |
 | A grown-up nearby at 3 | [D041](../../decisions/D041-gate-a-round-1.md) ("Age 3") |
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block), [phone sticky bar](home.md#phone-sticky-bar) |
@@ -489,3 +531,57 @@ would need the founder's and counsel's answer on Kheelu's own providers' terms (
   "questions-parents-ask-about-ai-toys", "does-a-three-year-old-need-an-ai-tutor"]`, and the module's header note if it
   describes the list, in the same commit as the other nine modules. Touch nothing else in the module: task 7.1f edits
   its `meta`.
+
+## Changes after approval (task 8b.2a)
+
+The founder's [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) (2026-10-14): the site follows the
+live team's code check of 12 October (`origin/main` `c630a49`, #19; `dd04e6d`, #18). This guide's lines are the
+ones [journal pipeline §9.2](../../engineering/journal-pipeline.md#92-the-d058-corrections-still-in-the-guides) lists
+(`should-kids-use-ai.ts:150, 155, 157, 162`), all in fold 8, and the words are the same as on the safe-AI-toy guide,
+whose facts this fold repeats. The live words come from D058's "In the site's words" and the
+[reconciliation map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded).
+The CMO review of task 8b.2a read c630a49 with git show (2026-10-14); the quoted words match (its m8). Row 5 is the
+review's round 2 (the CMO's m5 and m6). Contractions stay
+([D059](../../decisions/D059-journal-voice-uploads-and-timing-2026-10-14.md) item 1). Every other word of the Copy
+blocks is as approved.
+
+| # | Where | What changed | Why (finding or source line) |
+|---|---|---|---|
+| 1 | Fold 8, "The microphone." | "after about a minute of quiet" becomes "after a couple of minutes of quiet" | D058 item 1, line 29; D018 line 10; map §2 line 80 (`c630a49`). Module `:150` |
+| 2 | Fold 8, "Your child's voice." | ", on servers in India" comes out; nothing named in its place. The rest is D020's line word for word (D020 items 1-4) | D058 item 6, lines 41-43; D020 line 10; map §2 line 79. As `/safety` fold 2 item 2 (task 8b.1, its question 7). Module `:155` |
+| 3 | Fold 8, "Every conversation." | The retention sentences are `RETENTION_LINE` without "You can delete any of them sooner, in one tap." (task 8b.1 owns the words). After it: "Delete them all sooner by deleting your account." | D058 item 1, lines 25-26; D017 line 10; D020 line 10; map §2 line 77 and §1 P11-P12 (`dd04e6d`). 36 months then deleted automatically stays (D058 item 9). The CMO's form for this place (review of task 8b.1, m7), so fold 7's third question keeps an answer (question 6). Module `:157` |
+| 4 | Fold 8, "No open internet." | "Its answers come from a curated, closed content library, and every reply passes an age-graded safety layer set to the age you enter in the parent app." becomes "Its answers are generated by an AI model. On every conversation, the model is given child-safety rules and the age you enter in the parent app, with Google's safety filters on top." "Kheelu can't browse the internet." stays here (row 5 changes it) | D058 item 1, lines 27-28; D036 line 10; map §2 lines 76, 83 (`c630a49`). The approved "the age you enter in the parent app" is kept (D036 lines 27-28). Module `:162` |
+| 5 | Fold 8, the internet item | The title "No open internet." becomes "No web browsing."; "Kheelu can't browse the internet." becomes "Kheelu can't browse or search the internet." | The CMO's review of task 8b.2a: m6 ("browse or search", the code-checked fact's words, as the hard-questions guide says it) and m5 (the title follows `/safety`'s and the footer's "No web browsing.", task 8b.1, so the site says it one way; question 7). Module `:161-162` |
+| 6 | Notes | At a glance (read time), the fold 8 rulings note, keyword placements (density, words never placed), questions 4-7 (new; 6 with the CMO's m3 note, 7 applied as `/safety`'s), the Sources rows for items 1-5, front matter | So the page stays true |
+
+**Counts.** +1, −4, −2, +5, +2: the article is about 929 words and stays 5 min; "Kheelu" stays 9; "should kids use AI" stays 2.
+The answer block (fold 2, 59 words) is unchanged and inside 40-60. The source markers ¹-⁶ and fold 9 are unchanged:
+no changed line carried one. No placeholder. Every new and kept word passes `test/guards/banned-phrases.data.ts`,
+and none says "safe" about Kheelu.
+
+**Kept, as D058 and the task ask:** the providers' don't-keep and don't-train promise (D020 items 1-4), "We don't sell
+your data", 36 months then deleted automatically (D058 item 9). Kheelona's own model and the parent's opt-out stay on
+`/terms` and `/privacy` (D035, D058 item 5), and nothing here implies there is no training. Bluetooth mode and the
+languages do not appear on this page. This guide never had the "attack our own safety layer" line.
+
+**Not changed, checked:** the title, meta description, H1, lead, fold 2's answer ("unable to browse the internet" stays
+true), folds 3 to 7, 9, 10 and 11, the B3 paragraph, "Talking with, not at.", the age-3 line and the closing line.
+Fold 7's first and third questions are left for the founder (questions 4 and 5); the internet item's title follows
+`/safety`'s (question 7).
+
+**For the builder (not edited here):**
+- `src/content/en-IN/stories/articles/should-kids-use-ai.ts`, word for word as fold 8 above:
+  - `:150`: "about a minute" → "a couple of minutes".
+  - `:155`: drop ", on servers in India".
+  - `:157`: `` `You can read every conversation in the parent app. ${RETENTION_LINE} Delete them all sooner by deleting your account.` ``
+    (`RETENTION_LINE` by import, never retyped; it carries 8b.1's words).
+  - `:161-162`: the title "No web browsing." and the new internet body.
+  - Curly apostrophes as the module already uses (’).
+- `ai-safety-and-learning.test.tsx:262` checks only that the module prints `RETENTION_LINE`, so it holds; no other
+  test or fixture holds this guide's changed words (grep, 2026-10-14). `updated` as the main session directs.
+- Until task 8b.1's `RETENTION_LINE` lands in this branch, the built line still prints the one-tap clause; this page
+  already quotes the line without it.
+
+**For the Gate B pack:** this guide has no mockup, so there is no text-parity deviation; items 1-4 are changed
+approved lines for the founder's sign-off ([D015](../../decisions/D015-founder-signs-off-copy.md)), with row 5's
+title and first sentence.

@@ -21,6 +21,8 @@ sources:
   - design-system/project/03-cast.md:15, 119; 01-writing.md:111-113 (read-only)
   - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: M9, M11 fixed in round 2; M8 held, question 5)
   - ../../qa/cmo-review-built-b-2026-10-14.md (m3, the related ring; applied in task 7.1d, see the foot of this page)
+  - "../../decisions/D058-follow-the-live-code-check-2026-10-14.md (items 1, 6, 9), D059 (item 1, contractions stay); origin/main c630a49 (the live team's code check, 2026-10-12), via ../../qa/live-main-reconciliation-2026-10-14.md §2; ../../engineering/journal-pipeline.md §9.2 and §12 8b.2a (applied in task 8b.2a, see the foot of this page)"
+  - ../../qa/cmo-review-guides-d058-8b.2a-2026-10-14.md (m2, the deletion sentence, and its m3 and m8 notes; applied in task 8b.2a to fold 5, see the foot of this page)
 ---
 
 # Story: The hard questions parents ask about AI toys
@@ -51,7 +53,7 @@ sources:
 | Meta description (145 characters) | Does an AI toy record your child? Kheelu only listens when someone presses its wake-up button. The hard questions parents ask, answered straight. |
 | H1 | The hard questions parents ask about AI toys (the hub card title, word for word; question 1) |
 | Byline line | Aman Soni · First published 11 Sep 2026 · 4 min read (byline: question 2) |
-| Read time | 4 min (about 890 words in the article, headings included, close excluded; words ÷ 200, rounded, as `readingMinutes` in `src/lib/stories.ts:184-186` and the 5.6 pages) |
+| Read time | 4 min (about 890 words in the article, as before task 8b.2a: it cut about 10 words and added 8 with the deletion sentence; headings included, close excluded; words ÷ 200, rounded, as `readingMinutes` in `src/lib/stories.ts:184-186` and the 5.6 pages) |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 4 ("Kheelu" → `/products/kheelu`, `meet-kheelu.html`) |
 | Module values kept from the stub | Card title and summary (hub copy, `stories.md` fold 4); `related` (three, below; since task 7.1d the CMO's ring, not the stub's); `published` 2026-09-11; `updated` as the main session's note for task 5.19 directs (the 5.6 modules set it to the rewrite's date) |
@@ -122,12 +124,13 @@ the text now cites (the data law is owned by [its own article](story-ai-toys-and
 
 > **H2:** Does an AI toy record your child?
 >
-> Any AI toy has to capture your child's voice to answer, so yes, while it is listening. What matters is when it listens and what is kept. Kheelu's microphone turns on only when someone presses the wake-up button, and switches itself off after about a minute of quiet. You can read every conversation in the parent app.
+> Any AI toy has to capture your child's voice to answer, so yes, while it is listening. What matters is when it listens and what is kept. Kheelu's microphone turns on only when someone presses the wake-up button, and switches itself off after a couple of minutes of quiet. You can read every conversation in the parent app.
 
-- 57 words. The `answer` block (`question`, `answer`); no `detail`.
+- 58 words (57 before task 8b.2a). The `answer` block (`question`, `answer`); no `detail`.
 - "Yes, while it is listening" is the plain answer to the search: conversations ARE kept for parents
   ([D018](../../decisions/D018-wake-up-button.md): never "nothing is ever recorded"). The microphone clause is
-  D018's mechanism; "read every conversation" is [D017](../../decisions/D017-live-behaviour-claims-confirmed.md).
+  D018's mechanism, its timing ("a couple of minutes of quiet") [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md)'s
+  since task 8b.2a; "read every conversation" is [D017](../../decisions/D017-live-behaviour-claims-confirmed.md).
 - No training line, and nothing that implies there is none ([D035](../../decisions/D035-model-training-opt-out.md)).
 
 ---
@@ -183,38 +186,46 @@ B3 answer, before any reassurance.
 > **Is it always listening?**
 > Ask what turns the microphone on, what turns it off, and how you can tell. A toy that waits to hear its name has to listen all the time to catch it.
 >
-> Kheelu has no wake word to listen for. Its microphone turns on only when someone presses the wake-up button. It stays on while your child is talking and switches itself off after about a minute of quiet. Until the next press, nothing is heard, recorded or sent.
+> Kheelu has no wake word to listen for. Its microphone turns on only when someone presses the wake-up button. It stays on while your child is talking and switches itself off after a couple of minutes of quiet. Until the next press, nothing is heard, recorded or sent.
 >
 > **Where does my child's voice go, and what is kept?**
 > Ask who processes your child's voice and in which country, what is kept and for how long, and whether any of it is sold. A vague answer is an answer.
 >
-> To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child's voice only to produce Kheelu's reply. They don't keep it, and they never use it to train their AI. Our contracts with them say so.
+> To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child's voice only to produce Kheelu's reply. They don't keep it, and they never use it to train their AI. Our contracts with them say so.
 >
-> Your child's conversations stay in your parent app for 36 months, then they're deleted automatically. You can delete any of them sooner, in one tap.
+> Your child's conversations stay in your parent app for 36 months, then they're deleted automatically. Delete them all sooner by deleting your account.
 >
 > We don't sell your data. Your child's data is never used to advertise to them. Everything we collect, and what we use it for, is in our [privacy policy](https://kheelona.com/privacy).
 >
 > **How can I tell when it is listening?**
 > You can't check a microphone from the sofa. So prefer a sign you can see over a promise you have to trust.
 >
-> A light on Kheelu shows whenever it's listening. It switches its microphone off after about a minute of quiet, so even if it's left in a corner, it doesn't stay listening.
+> A light on Kheelu shows whenever it's listening. It switches its microphone off after a couple of minutes of quiet, so even if it's left in a corner, it doesn't stay listening.
 
 - A `questions` block: three items, each question an `h3`, each answer two to four paragraphs (the first: what to
   ask any maker; then Kheelu's answer). All items open: they are read, not hunted.
-- **Round 2 (CMO M9):** the second item's last answer paragraph is split after "in one tap.", so retention is one
-  paragraph and the no-sale, advertising and privacy sentences another: two or three sentences each, as the DS asks
-  for phones. Same words.
+- **Round 2 (CMO M9):** the second item's last answer paragraph is split after the retention line (then ending "in
+  one tap."; since task 8b.2a it ends "Delete them all sooner by deleting your account."), so retention is one paragraph and the no-sale,
+  advertising and privacy sentences another: two or three sentences each, as the DS asks for phones. Same words.
 - **Not changed in round 2 (CMO M8, question 5):** the parent app's "Save voice recordings" switch would be the most
   direct answer to "does it record my child", and the switch itself is confirmed for launch
   ([claims, D044 additions](../../product/claims.md#d044-additions-2026-10-11-what-the-real-app-screens-may-show)).
   But neither its default nor how long saved recordings are kept is on record, so the line waits for the founder.
 - Order follows [D020](../../decisions/D020-provider-terms-and-no-sale.md): the wake-up button, the providers line,
-  read and delete, no sale.
+  what is kept and how to delete it (one-tap deletion until task 8b.2a, deleting the account since), no sale.
 - **Wording held to the rulings:** the second paragraph is D018's FAQ draft ("Is Kheelu always listening?")
-  verbatim after its "No."; the providers line is D020's, verbatim, its training clause scoped to the providers as
-  [D041](../../decisions/D041-gate-a-round-1.md) keeps it; the retention sentences are `RETENTION_LINE`
-  (`policies.ts:49`), never retyped; "We don't sell your data." and the advertising line are D020 and
-  [D038](../../decisions/D038-trust-content-rulings.md) verbatim; the light's colour is never named (D018).
+  verbatim after its "No.", with [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md)'s "a couple of
+  minutes of quiet" in place of "about a minute" (task 8b.2a; so is the light paragraph's); the providers line is
+  D020's draft without "on servers in India" (D058 item 6), so it states only D020 items 1-4, its training clause
+  scoped to the providers as [D041](../../decisions/D041-gate-a-round-1.md) keeps it; the retention sentence is
+  `RETENTION_LINE` (`policies.ts`), never retyped, quoted here without the one-tap sentence that D058 withdrew (task
+  8b.1 owns the line's words; this page prints whatever 8b.1 sets), then "Delete them all sooner by deleting your
+  account.", the live team's deletion fact (D058 item 1) in the form the other three guides print
+  ([CMO review of task 8b.2a](../../qa/cmo-review-guides-d058-8b.2a-2026-10-14.md), m2), so the paragraph keeps the
+  "you're in control" half it had when it was approved; "We don't sell your data." and the advertising line
+  are D020 and [D038](../../decisions/D038-trust-content-rulings.md) verbatim; the light's colour is never named (D018).
+- **Since task 8b.2a, the country is not answered here** (question 6): fold 5's ask line names "in which country", and
+  the providers line now names no place. The privacy policy it links names the processors (task 8b.1, D058 item 6).
 - **The privacy pointer** answers "what is kept" in full without a training line on this page: `/privacy` states
   what Kheelona collects, what it is used for (including its own model's training, opt-out) and the choices a
   parent has ([privacy copy](privacy.md), [D035](../../decisions/D035-model-training-opt-out.md)). Link:
@@ -236,7 +247,7 @@ B3 answer, before any reassurance.
 > **What if my child asks it something upsetting?**
 > Listen for a mechanism, not a reassurance: how every reply is checked for your child's age, and who sets that age.
 >
-> Kheelu can't browse the internet. Its answers come from a curated, closed content library, and every reply passes an age-graded safety layer set to the age you enter in the parent app. We attack our own safety layer before every release, and you can read every conversation afterwards.
+> Kheelu can't browse or search the internet. Its replies are generated by an AI model that is given child-safety rules and your child's age on every conversation, with Google's safety filters on top. You set that age in the parent app, and you can read every conversation afterwards.
 >
 > **What if it gets something wrong?**
 > Any AI toy can get something wrong, so ask what it does when it isn't sure.
@@ -244,9 +255,16 @@ B3 answer, before any reassurance.
 > When Kheelu doesn't know, it says so, instead of guessing. If an answer ever sounds odd, look it up together. That is a good conversation too.
 
 - A `questions` block, two items.
-- The closed library and the age-graded layer sit after the providers line (fold 5) and omit "on the device and
-  in the cloud", so nothing suggests no outside AI model is involved
-  ([claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed), D019 flag).
+- **Since task 8b.2a** the mechanism is the code-checked fact in
+  [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md)'s words: replies are generated by an AI model
+  given child-safety rules and the child's age on every conversation, with Google's safety filters on top; it cannot
+  browse or search the web. "A curated, closed content library", "an age-graded safety layer" and "We attack our own
+  safety layer before every release" are withdrawn (D058 item 1; c630a49). The sentence says plainly that an AI model
+  writes the replies, so the D019 flag (nothing may suggest no outside AI model is involved,
+  [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed)) is met outright.
+  "You set that age in the parent app" answers the ask line's "who sets that age", as the old "set to the age you
+  enter in the parent app" did ([D036](../../decisions/D036-launch-feature-claims.md), how the age is set, not
+  withdrawn). It names no model and no training ([D035](../../decisions/D035-model-training-opt-out.md)).
 - "Any AI toy can get something wrong" is a general statement about toys that generate replies; it claims no
   error rate for Kheelu. No "alerts" here: their trigger is not defined and they wait on counsel's reading
   ([D036](../../decisions/D036-launch-feature-claims.md); [claims §7](../../product/claims.md#7-childrens-data-what-is-published-versus-documented)).
@@ -368,12 +386,12 @@ As Home: **₹499`{price-source}` today** · **refundable · ₹4,999`{price-sou
 | Title ≤ 60, primary at the start | Yes | 59 characters; the keyword map's own draft ([§5.2](../../research/keyword-map.md#52-per-page)) |
 | Meta ≤ 155: primary plus a concrete fact | Yes | 145 characters; the fact is the wake-up button ([D018](../../decisions/D018-wake-up-button.md)'s alternative heading line) |
 | One H1 with the primary | **Partly** | The H1 is the approved hub card title, which lacks "record" (question 1). The primary is in the title, the meta and the answer H2 |
-| Primary in an answer-first block in the first ~100 words | Yes | Fold 2 H2 "Does an AI toy record your child?" (exact) and its 57-word answer, about 30 words below the H1 |
+| Primary in an answer-first block in the first ~100 words | Yes | Fold 2 H2 "Does an AI toy record your child?" (exact) and its 58-word answer (57 before task 8b.2a), about 30 words below the H1 |
 | An H2 with the primary or a close variant | Yes | Fold 2 |
 | Secondaries | Yes | "Is it always listening?" (fold 5 h3, exact); "what happens to the data": fold 5 h3 "Where does my child's voice go, and what is kept?" |
 | Alt text | Yes | Describes the scene; no keyword forced |
 | Density | Yes | The primary once in `<main>` (fold 2 H2, 6 words of about 950 with the close: 0.6%); "Kheelu" 16 times including the close and its button (about 1.7%, under the 2% flag); "it" stands in wherever the subject is clear |
-| Words never placed | Yes | No wake-word line (only "no wake word"), no "safe" about Kheelu, "stays in your region", "only our own servers", "nothing is ever recorded", "no risk", training claims, "lessons", "adapts", "friend", health terms, competitor or tested-toy names, counts in the title |
+| Words never placed | Yes | No wake-word line (only "no wake word"), no "safe" about Kheelu, "stays in your region", "only our own servers", "nothing is ever recorded", "no risk", training claims, "lessons", "adapts", "friend", health terms, competitor or tested-toy names, counts in the title; since task 8b.2a, none of D058's withdrawn words ("about a minute", "on servers in India", "in one tap", "closed content library", "age-graded safety layer", "attack our own safety layer") |
 
 ## CTA tracking values
 
@@ -415,14 +433,23 @@ questions below.)
    [D041](../../decisions/D041-gate-a-round-1.md) ("no after-6-months lines"), and connectivity is the product
    page's FAQ.
 5. **The "Save voice recordings" switch (round 2, CMO M8).** The page owns "does an AI toy record your child", and
-   the parent app's switch (off keeps text only) is a confirmed launch feature (D044). The line would go after "in
-   one tap.": "In the parent app, you choose whether voice recordings are saved; with it off, only the text is
-   kept." It needs two answers that are on no page yet: is the switch on or off when a parent first sets up Kheelu,
+   the parent app's switch (off keeps text only) is a confirmed launch feature (D044). The line would go after the
+   retention paragraph (which ended "in one tap." until task 8b.2a and now ends "Delete them all sooner by deleting
+   your account."): "In the parent app, you choose whether voice
+   recordings are saved; with it off, only the text is kept." It needs two answers that are on no page yet: is the switch on or off when a parent first sets up Kheelu,
    and how long are saved recordings kept (the same 36 months as conversations, or another period)? Please also say
    whether the switch has any bearing on the training of Kheelona's own model ([D035](../../decisions/D035-model-training-opt-out.md)),
    because a parent may read "off" as "not used", and this page says nothing about training. (a) Leave the line out
    (as drafted); (b) add it once you answer the two questions. **Recommend (b)**: it is the most direct honest answer
    to the page's own question, and a parent who later finds the switch in the app may feel the article ducked it.
+6. **"In which country" (task 8b.2a, D058 item 6).** Fold 5 tells a parent to ask any maker who processes the voice
+   "and in which country", and adds "A vague answer is an answer." Since "on servers in India" went, Kheelu's answer
+   names no place; the linked privacy policy names the processors. (a) As now: no place on this page, the privacy
+   pointer covers it; (b) add D058 item 6's fact in the live `/privacy`'s words after "Our contracts with them say so.":
+   "Some of them process it outside India." (with "Our privacy policy names them." if wanted); (c) drop "and in which
+   country" from the ask line. **Recommend (b)**: it is the founder's own ruling and already the live site's words,
+   and it answers the question this page tells parents to ask; (c) would read as editing the question to fit the
+   answer. It needs the main session's ruling, because it adds a sentence that task 8b.2a's fix list does not.
 
 ## Sources
 
@@ -435,13 +462,17 @@ questions below.)
 | "create emotional attachment by design"; "cannot reliably distinguish AI from real people" | `C16-common-sense-press-release-2026-01-22.md:28`; `C16-common-sense-ai-toys-risk-assessment.md:37-38` |
 | A grown-up nearby at 3 | [D041](../../decisions/D041-gate-a-round-1.md) ("Age 3") |
 | Kheelu: screen-free plush toy, ages 3 to 7 | [facts, identity](../../product/facts.md#identity), [age](../../product/facts.md#age) |
-| No wake word; wake-up button; on while your child talks; off after about a minute of quiet; nothing heard, recorded or sent until the next press; the light | [D018](../../decisions/D018-wake-up-button.md) (FAQ draft and light line, verbatim); [claims §1](../../product/claims.md#1-confirmed-by-the-founder); [facts, listening](../../product/facts.md#what-it-listens-for-and-where-the-voice-goes) |
-| Providers line, verbatim | [D019](../../decisions/D019-voice-providers.md), [D020](../../decisions/D020-provider-terms-and-no-sale.md); [messaging, confirmed candidate lines](../../brand/messaging.md#confirmed-candidate-lines); training clause scoped to the providers: [D035](../../decisions/D035-model-training-opt-out.md), [D041](../../decisions/D041-gate-a-round-1.md) |
-| Read every conversation; 36 months then deleted automatically; delete sooner in one tap | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7 (`RETENTION_LINE`, `policies.ts:49`) |
+| No wake word; wake-up button; on while your child talks; nothing heard, recorded or sent until the next press; the light | [D018](../../decisions/D018-wake-up-button.md) (FAQ draft and light line, verbatim); [claims §1](../../product/claims.md#1-confirmed-by-the-founder); [facts, listening](../../product/facts.md#what-it-listens-for-and-where-the-voice-goes) |
+| Off after a couple of minutes of quiet (folds 2 and 5) | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1 ("a conversation ends after a couple of minutes of quiet"; narrows D018); origin/main c630a49, the live team's code check of 12 Oct ("ends after ~2 minutes of quiet", [reconciliation map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded)) |
+| Providers line (D020 items 1-4; no place since task 8b.2a) | [D019](../../decisions/D019-voice-providers.md), [D020](../../decisions/D020-provider-terms-and-no-sale.md) items 1-4 (item 6, "on servers in India", withdrawn by [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 6); [messaging, confirmed candidate lines](../../brand/messaging.md#confirmed-candidate-lines); training clause scoped to the providers: [D035](../../decisions/D035-model-training-opt-out.md), [D041](../../decisions/D041-gate-a-round-1.md) |
+| Read every conversation; 36 months then deleted automatically | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7 and [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 9 (`RETENTION_LINE`, `policies.ts`, its words owned by task 8b.1; one-tap deletion withdrawn by D058 item 1) |
+| Delete them all sooner by deleting your account (task 8b.2a) | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1 (deleting the account deletes the conversations; narrows [D017](../../decisions/D017-live-behaviour-claims-confirmed.md)); [map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded) (the live "Delete it all by deleting your account", c630a49) and [map §1](../../qa/live-main-reconciliation-2026-10-14.md#1-18-dd04e6d-the-parent-app-on-privacy-and-terms-for-the-app-store-and-play) P11-P12 (`dd04e6d`); the form the other three guides print ([CMO review of task 8b.2a](../../qa/cmo-review-guides-d058-8b.2a-2026-10-14.md), m2); "all" rests on the CTO's answer to privacy question 11 (m3) |
 | We don't sell your data; never used to advertise to your child | [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 5; [D038](../../decisions/D038-trust-content-rulings.md) (F17); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) |
 | The privacy policy sets out what is collected, its uses and a parent's choices | [privacy copy](privacy.md) (page job; section 3, Kheelona's own model); [D035](../../decisions/D035-model-training-opt-out.md) |
-| Can't browse the internet; curated, closed content library; age-graded safety layer set to the age a parent enters | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md), [D036](../../decisions/D036-launch-feature-claims.md) items 5-6; [claims §1-§2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) |
-| "We attack our own safety layer before every release" | [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) (D017); red-teamed before launch, [D036](../../decisions/D036-launch-feature-claims.md) item 7 |
+| Can't browse or search the internet | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md) (cannot browse); "browse or search" as on the approved [Safety page](safety.md) ("It can't browse or search the web", sourced there to D017) and in the code-checked fact ([D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1; c630a49; task 8b.2a's fix list) |
+| Replies generated by an AI model given child-safety rules and your child's age on every conversation, with Google's safety filters on top | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1, in its words; origin/main c630a49 ("an AI model that is given child-safety rules and your child's age on every conversation"; "child-safety rules set for your child's age, with Google's safety filters on top", [reconciliation map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded)) |
+| You set that age in the parent app | [D036](../../decisions/D036-launch-feature-claims.md), "How the age is set" (a parent enters the child's age in the parent app at setup and can change it; not withdrawn by D058) |
+| Withdrawn in task 8b.2a: "about a minute of quiet"; "on servers in India"; "You can delete any of them sooner, in one tap."; "a curated, closed content library"; "an age-graded safety layer"; "We attack our own safety layer before every release" | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) items 1 and 6 (narrowing D017, D018, D020 items 6-7, D036 #5); origin/main c630a49; [journal pipeline §9.2](../../engineering/journal-pipeline.md#92-the-d058-corrections-still-in-the-guides) (`questions-parents-ask-about-ai-toys.ts:53, :101, :108, :109, :117, :136`) |
 | Says when it doesn't know | [D036](../../decisions/D036-launch-feature-claims.md) item 3 |
 | Answers, then asks a question back; "so your child does the thinking" | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [messaging, objection answers](../../brand/messaging.md#objection-answers) ("Won't AI make my child think less?") |
 | "No toy replaces the people who talk with your child every day" | [late-talker page](story-talking-toys-and-late-talkers.md#fold-7--two-myths), fold 7 (approved) |
@@ -494,3 +525,65 @@ questions below.)
   "does-a-three-year-old-need-an-ai-tutor", "ai-toys-and-indias-data-law"]`, and the module's header note if it
   describes the list, in the same commit as the other nine modules. Touch nothing else in the module: task 7.1f edits
   its `meta`.
+
+## Changes after approval (task 8b.2a)
+
+The founder's [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) (2026-10-14): every claim the live
+team withdrew after its code check of 12 October (origin/main c630a49, "checked against iot-firmware, backend-service and
+Kheelona_App on 2026-10-12"; [reconciliation map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded))
+goes or takes the code-checked wording. The lines are those of [journal pipeline §9.2](../../engineering/journal-pipeline.md#92-the-d058-corrections-still-in-the-guides)
+for this guide, and the deletion sentence the [CMO's review of task 8b.2a](../../qa/cmo-review-guides-d058-8b.2a-2026-10-14.md)
+asked for (m2). Nothing else changed. The CMO review of task 8b.2a read c630a49 with git show (2026-10-14); the quoted
+words match (m8).
+
+- **Fold 2, the answer** (module `:53`). "switches itself off after about a minute of quiet" became "after a couple of
+  minutes of quiet". Why: D058 item 1 ("a conversation ends after a couple of minutes of quiet"), narrowing D018;
+  c630a49 ("ends after ~2 minutes of quiet"). The answer is 58 words (was 57), inside 40 to 60.
+- **Fold 5, "Is it always listening?"** (`:101`) and **"How can I tell when it is listening?"** (`:117`). The same
+  change, for the same reason. The rest of D018's FAQ draft and its light line stand word for word.
+- **Fold 5, "Where does my child's voice go"** (`:108`). ", on servers in India" is cut from the providers line. Why:
+  D058 item 6 withdraws D020 item 6 (some processors work outside India; c630a49: "To Kheelona's servers", "Some of
+  them process it outside India"). The rest of the line is D020 items 1-4 as they still stand: the providers process
+  the voice only to reply, don't keep it, never train on it, and the contracts say so. The country is now unanswered
+  on this page: question 6.
+- **Fold 5, the retention paragraph** (`:109`, `RETENTION_LINE` by import). "You can delete any of them sooner, in one
+  tap." goes. Why: D058 item 1 withdraws one-tap deletion (D017; D020 item 7): removing a chat in the app hides it on
+  that phone, and deleting the account deletes the data (c630a49). "36 months, then deleted automatically" stays (D058
+  item 9). Task 8b.1 owns the line's words in `policies.ts`; this page quotes it without the one-tap sentence and
+  follows 8b.1's final words. The guide states one-tap deletion nowhere else.
+- **Fold 5, the retention paragraph**, after the retention line: "Delete them all sooner by deleting your account." is
+  added ([CMO review of task 8b.2a](../../qa/cmo-review-guides-d058-8b.2a-2026-10-14.md), m2). Why: with the one-tap
+  sentence gone, the paragraph lost the "you're in control" half it had when it was approved. The sentence is the live
+  team's deletion fact (D058 item 1: deleting the account deletes the conversations; c630a49's "Delete it all by
+  deleting your account"), in the form the other three guides print, so all four say retention and deletion the same
+  way. If the CTO answers privacy question 11 (c), this becomes "Delete them sooner by deleting your account." (m3; the
+  main session adds this guide to that question's list of lines).
+- **Fold 6, "What if my child asks it something upsetting?"** (`:136`). Was: "Kheelu can't browse the internet. Its
+  answers come from a curated, closed content library, and every reply passes an age-graded safety layer set to the
+  age you enter in the parent app. We attack our own safety layer before every release, and you can read every
+  conversation afterwards." Now: "Kheelu can't browse or search the internet. Its replies are generated by an AI model
+  that is given child-safety rules and your child's age on every conversation, with Google's safety filters on top.
+  You set that age in the parent app, and you can read every conversation afterwards." Why: D058 item 1 withdraws the
+  closed library (D036 #5), the "age-graded safety layer" wording and "We attack our own safety layer before every
+  release"; the new sentence is D058's code-checked fact in its words, with "or search" from the same fact (and the
+  approved Safety page's "can't browse or search the web"). Kept: "who sets that age" still has its answer (D036, how
+  the age is set) and "you can read every conversation afterwards" (D017). Same 48 words.
+- **Kept, as D058 and the fix list require:** the languages (D058 item 7); 36 months then deleted (item 9). Bluetooth
+  mode and Kheelona's own-model training (D035; the opt-out in the parent app) are not on this page, and nothing here
+  implies the opposite of either. Contractions stay ([D059](../../decisions/D059-journal-voice-uploads-and-timing-2026-10-14.md)
+  item 1). No "!", no em dash, en-IN spelling; no banned phrase (checked against `banned-phrases.data.ts`).
+- **Notes kept true:** fold 2's word count and source note; fold 5's M9 note, order note and "Wording held to the
+  rulings", and a note on the country; fold 6's note; the At a glance read-time row; the keyword table (the answer's
+  word count; D058's withdrawn words added to "Words never placed"); question 5 (where its line would go); a new
+  question 6; the Sources table (four rows replaced by six, a row for the deletion sentence, and a row for what was
+  withdrawn); the front matter's sources.
+- **What does not change:** the read time (4 min: about 890 words, as before: about 10 cut, 8 added); the title, meta, H1, lead, photo,
+  alt, related ring and close; both source markers and the sources list (no changed line carried a marker); every
+  keyword placement (`<main>` is about 955 words, still "about 950": the primary at about 0.6%, "Kheelu" 16 times,
+  about 1.7%). No placeholder.
+- **For the builder:** the module's strings at `:53`, `:101`, `:108`, `:117` and `:136` take the Copy above, word for
+  word, with the module's curly apostrophes; `:109` becomes `` `${RETENTION_LINE} Delete them all sooner by deleting your account.` ``
+  (the import; 8b.1 changes the constant; the CMO's m2); the
+  header comment's "the facts follow D018 and D020 in the founder's order" may add "as narrowed by D058". The
+  expectation lines in the guide's test files follow where these words change, and each changed approved line needs a
+  deviation row for the Gate B pack (D015; [journal pipeline §12](../../engineering/journal-pipeline.md#8b2a-the-20-guides-corrected-per-d058-copywriter-fix-mode-cmo-builder-risk-high-wave-i), 8b.2a).

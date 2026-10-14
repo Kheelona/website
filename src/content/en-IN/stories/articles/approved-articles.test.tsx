@@ -5,10 +5,12 @@ import { ArticleTemplate } from "@/layouts/ArticleTemplate/ArticleTemplate";
 import { toPlainText } from "@/lib/content/plain-text";
 import { parseRichText, type RichNode } from "@/lib/content/rich-text";
 import { buildOffer } from "@/lib/offer/offer";
+import { ARTICLE_CLAIM_FIXES, RETENTION, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../../test/e2e/support/deviations";
+import type { PageFacts } from "../../../../../test/e2e/support/page-facts";
+import { sentences } from "../../../../../test/e2e/support/parity";
 import { readRepoFile } from "../../../../../test/e2e/support/repo";
-import { CLAIM_FIXES } from "../../../../../test/e2e/support/deviations";
 import { mockupFold, skeleton, words } from "../../../../../test/support/mockup-compare";
-import { withFacts } from "../../../../../test/support/mockup-facts";
+import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../../test/support/mockup-facts";
 import { RETENTION_LINE, RETENTION_MONTHS } from "../../policies";
 import { seller } from "../../seller";
 import { article as learningToys } from "./learning-toys-for-a-three-year-old";
@@ -39,16 +41,17 @@ function column(article: Article): Element {
   return body;
 }
 
+/** An approved article's accepted changes since Gate A (deviations.ts ARTICLE_CLAIM_FIXES), if it has any. */
+const claimFixes = (slug: string): PageFacts | undefined => (ARTICLE_CLAIM_FIXES as Readonly<Record<string, PageFacts>>)[`story-${slug}`];
+
 /** The mockup's reading column, its in-text links read as the copy page's real URLs: the safe-AI-toy guide links the
  *  data-law guide itself (copy page fold 4, "Links"), where the mockup links the hub's topic while that guide waits
- *  for its rewrite (as the related rows do, ArticleTemplate.test.tsx). */
+ *  for its rewrite (as the related rows do, ArticleTemplate.test.tsx). The frozen mockup (D046) keeps its Gate A words,
+ *  so an article's accepted changes since (the safe-AI-toy guide's D058 claim fixes, task 8b.2a) are applied to it. */
 function approvedColumn(slug: string): Element {
-  /* The safe-AI-toy guide's retention line, as policies.ts prints it since task 8b.1 (D058 items 1 and 9; deviations.md
-     V35): its one-tap sentence came off. The guide's other words are task 8b.2's. */
-  const claims = slug === "what-to-look-for-in-a-safe-ai-toy" ? CLAIM_FIXES["story-what-to-look-for-in-a-safe-ai-toy"].edits : [];
-  const fold = withFacts(mockupFold(`story-${slug}`, ".mk-story-body"), claims);
+  const fold = mockupFold(`story-${slug}`, ".mk-story-body").cloneNode(true) as Element;
   fold.querySelectorAll('.mk-part a[href="stories.html#ai-and-safety"]').forEach((a) => a.setAttribute("href", "/stories/ai-toys-and-indias-data-law"));
-  return fold;
+  return withFacts(fold, claimFixes(slug)?.edits ?? []);
 }
 
 /* The build's documented differences in the column: the type steps it adds (mapping rows 71-72) and the article
@@ -132,8 +135,62 @@ describe("the page-specific rules (tasks.md 5.6)", () => {
 
   it("prints the safe-AI-toy guide's retention line from policies.ts, never a retyped policy number (D020, architecture §6.1)", () => {
     const retention = columnStrings(safeAiToy).filter((s) => s.includes(RETENTION_LINE));
-    expect(retention).toEqual([`You can read every conversation in the parent app. ${RETENTION_LINE}`]);
+    /* Then the live team's deletion fact (D058 item 1; the copy page's fold 5, task 8b.2a). */
+    expect(retention).toEqual([`You can read every conversation in the parent app. ${RETENTION_LINE} Delete them all sooner by deleting your account.`]);
     const source = readRepoFile("src/content/en-IN/stories/articles/what-to-look-for-in-a-safe-ai-toy.ts");
     expect(source).not.toMatch(new RegExp(`\\b${RETENTION_MONTHS}\\s+months\\b`));
+  });
+});
+
+/* The safe-AI-toy guide's claim fixes (D058, the founder's ruling of 2026-10-14; task 8b.2a): the frozen mockup keeps
+ * the Gate A words, and the build follows the live team's code check of 12 October. One text rule and its visual hides
+ * (deviations.ts ARTICLE_CLAIM_FIXES), in page-facts.ts's form: the edits turn the approved page into the build (the
+ * reading-column tests above apply them), and the rule reaches exactly the sentences they change. The retention line is
+ * policies.ts's (task 8b.1 owns its words), so the sentences it changes are read from it. */
+describe("the safe-AI-toy guide's claim fixes (D058; task 8b.2a)", () => {
+  const SLUG = "story-what-to-look-for-in-a-safe-ai-toy";
+  const FIXES = ARTICLE_CLAIM_FIXES[SLUG];
+  const main = () => mockupFold(SLUG, "main");
+  const only = (lines: string[], not: string[]) => lines.filter((line) => !not.includes(line));
+
+  it("withdraw the approved lines D058 withdrew, and print the code-checked ones in their place (the copy page's fold 5)", () => {
+    expect(FIXES.mockup).toEqual([
+      "It switches itself off after about a minute of quiet.",
+      "To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India.",
+      ...only(sentences(RETENTION.mockup), sentences(RETENTION_LINE)),
+      "No open internet.",
+      "Kheelu can’t browse the internet.",
+      "Its answers come from a curated, closed content library, and every reply passes an age-graded safety layer set to the age you enter in the parent app.",
+      "Tested by us first.",
+      "We attack our own safety layer before every release.",
+    ]);
+    expect(FIXES.build).toEqual([
+      "It switches itself off after a couple of minutes of quiet.",
+      "To understand and answer your child, Kheelu uses trusted speech and AI providers.",
+      ...only(sentences(RETENTION_LINE), sentences(RETENTION.mockup)),
+      "Delete them all sooner by deleting your account.",
+      "No web browsing.",
+      "Kheelu can’t browse or search the internet.",
+      "Its answers are generated by an AI model.",
+      "On every conversation, the model is given child-safety rules and the age you enter in the parent app, with Google’s safety filters on top.",
+    ]);
+  });
+
+  it("list exactly the sentences their edits change in the approved page", () => {
+    expect(factSentences(main(), FIXES.edits)).toEqual({ missing: [...FIXES.mockup], extra: [...FIXES.build] });
+  });
+
+  it("are the page's one text rule, and it excuses and accepts exactly those sentences, no other line of the page", () => {
+    expect(TEXT_DEVIATIONS[SLUG]?.map((rule) => rule.approvedBy)).toEqual([FIXES.approvedBy]);
+    expect(ruleReach(main(), FIXES.edits, TEXT_DEVIATIONS[SLUG]![0])).toEqual({ excused: [...FIXES.mockup], accepted: [...FIXES.build] });
+  });
+
+  it("hide for the pixels the four reworded facts on both sides, and on the mockup's side the fact that came off", () => {
+    expect(hiddenProblems(main(), FIXES)).toEqual([]);
+    const body = (n: number) => `.kh-trust > .kh-trust__item:nth-child(${n}) > .kh-trust__body`;
+    expect(VISUAL_HIDDEN[SLUG]?.map((rule) => [rule.side, rule.selector, rule.approvedBy])).toEqual([
+      ...(["mockup", "build"] as const).flatMap((side) => [1, 2, 3, 5].map((n) => [side, body(n), FIXES.approvedBy])),
+      ["mockup", ".kh-trust > .kh-trust__item:nth-child(8)", FIXES.approvedBy],
+    ]);
   });
 });

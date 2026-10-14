@@ -69,7 +69,8 @@ describe("the shared policy lines, as the approved mockups print them", () => {
   });
 
   /* D020's first sentence. Its one-tap sentence came off with the live team's code check (D058 items 1 and 9; task 8b.1):
-     the approved mockups keep it, an accepted deviation (test/e2e/support/deviations.ts RETENTION, CLAIM_FIXES). */
+     the approved mockups keep it, an accepted deviation (test/e2e/support/deviations.ts RETENTION, CLAIM_FIXES; the
+     safe-AI-toy guide's in ARTICLE_CLAIM_FIXES). */
   it("the retention line (D020, D058): Home, product, safety, the safe-AI-toy article and privacy", () => {
     expect(RETENTION_LINE).toBe(RETENTION.build);
     expect(RETENTION_LINE).toBe("Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically.");

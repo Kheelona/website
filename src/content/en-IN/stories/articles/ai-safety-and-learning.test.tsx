@@ -264,9 +264,11 @@ describe.each(SLUGS)("the rewritten article %s (task 5.19)", (slug) => {
 });
 
 describe("the shared facts, read from their modules and never retyped", () => {
-  it("prints the D020 retention line from policies.ts where a page gives it (hard questions, should kids, data law)", () => {
+  /* Then D058 item 1's deletion fact, in the one form the safe-AI-toy guide prints too (CMO review of task 8b.2a, m2), so
+     each guide that tells a parent how long conversations stay also says how to delete them sooner. */
+  it("prints the D020 retention line from policies.ts where a page gives it, then the deletion sentence (hard questions, should kids, data law)", () => {
     for (const slug of ["questions-parents-ask-about-ai-toys", "should-kids-use-ai", "ai-toys-and-indias-data-law"] as const) {
-      expect(columnStrings(article(slug)).some((s) => s.includes(RETENTION_LINE)), slug).toBe(true);
+      expect(columnStrings(article(slug)).some((s) => s.includes(`${RETENTION_LINE} Delete them all sooner by deleting your account.`)), slug).toBe(true);
     }
     for (const slug of SLUGS) expect(moduleSource(slug), slug).not.toMatch(new RegExp(`\\b${RETENTION_MONTHS}\\s+months\\b`));
   });

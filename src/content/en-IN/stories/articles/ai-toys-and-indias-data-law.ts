@@ -13,9 +13,9 @@ import { seller } from "../../seller";
  * AI-tutor guides in place of the get-talking guide (the legacy ring's) and the busy-hands guide (task 6.5's, for the
  * 3-6-9-12 guide the stub's swap had named, which left the journal, D053). Every statement about the law carries a marker and quotes the
  * official MeitY texts; the page says early that it is not legal advice, and never that Kheelu meets section 9. Fold 9
- * answers only what Kheelona can answer in confirmed facts (D018, D020's order, the retention line from policies.ts),
- * with the page's one in-text product link and the help line from seller.ts. `updated` is the rewrite's date; re-read
- * the Gazette before Gate B (copy page, question 3).
+ * answers only what Kheelona can answer in confirmed facts (D018, D020's order, the retention line from policies.ts; as
+ * narrowed by D058, task 8b.2a), with the page's one in-text product link and the help line from seller.ts. `updated`
+ * is the rewrite's date; re-read the Gazette before Gate B (copy page, question 3).
  */
 export const article = {
   slug: "ai-toys-and-indias-data-law",
@@ -154,9 +154,13 @@ export const article = {
             {
               icon: "lock-simple",
               title: "Your child’s voice.",
-              body: "To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.",
+              body: "To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.",
             },
-            { icon: "eye", title: "Every conversation.", body: `You can read every conversation in the parent app. ${RETENTION_LINE}` },
+            {
+              icon: "eye",
+              title: "Every conversation.",
+              body: `You can read every conversation in the parent app. ${RETENTION_LINE} Delete them all sooner by deleting your account.`,
+            },
             { icon: "hand-heart", title: "Your data.", body: "We don’t sell your data. Your child’s data is never used to advertise to them." },
           ],
         },
