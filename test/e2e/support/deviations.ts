@@ -129,9 +129,9 @@ const pageFactsHidden = (slug: PageFactsSlug): VisualHide[] => factsHidden(PAGE_
    `mockup` and `build` are the sentences that differ, for the text pass (src/content/en-IN/pages/parity-deviations.test.ts
    proves them exactly the sentences the edits change). Literal, because Playwright cannot load every content module. */
 
-/** An approved element whose words change in one place: its words with `from` swapped for `to` (plain text only). */
 /** An approved element ruled off whole. */
 const cut = (at: string, was: string): FactEdit => ({ at, was, now: null });
+/** An approved element whose words change in one place: its words with `from` swapped for `to` (plain text only). */
 const swap = (at: string, was: string, from: string, to: string): FactEdit => {
   if (!was.includes(from)) throw new Error(`"${from}" is not in "${was}"`);
   return { at, was, now: was.replace(from, to), inner: true };

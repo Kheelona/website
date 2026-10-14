@@ -299,7 +299,7 @@ describe.each(Object.keys(CLAIM_FIXES) as ClaimFixesSlug[])("%s: task 8b.1's cla
     expect(rules[rules.length - 1].jsOff).toBeUndefined();
   });
 
-  it("hides for the pixels exactly the blocks its edits reflow, each found once on its side (VISUAL_HIDDEN)", () => {
+  it("hides for the pixels the blocks it lists, in VISUAL_HIDDEN in its order, each found once on its side and holding a sentence its edits change (the mockup's side for a hide on both)", () => {
     expect(hiddenProblems(base, fixes)).toEqual([]);
     const rules = (VISUAL_HIDDEN[slug] ?? []).filter((r) => r.approvedBy === fixes.approvedBy);
     const sel = (side: string) => rules.filter((r) => r.side === side).map((r) => r.selector);
@@ -307,7 +307,7 @@ describe.each(Object.keys(CLAIM_FIXES) as ClaimFixesSlug[])("%s: task 8b.1's cla
     expect(sel("build")).toEqual([...fixes.hidden.both, ...fixes.hidden.build]);
   });
 
-  it("says none of the claims D058 withdraws in a sentence it adds, and every sentence it removes says one or is reworded", () => {
+  it("says none of the claims D058 withdraws in a sentence it adds, and names its deviations.md row and D058 as its approval", () => {
     for (const line of fixes.build) expect(line).not.toMatch(WITHDRAWN);
     expect(fixes.approvedBy).toMatch(/^deviations\.md V\d+ \(founder, D058, 2026-10-14; /);
   });
