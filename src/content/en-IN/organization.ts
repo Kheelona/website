@@ -4,9 +4,10 @@ import { seller } from "./seller";
 /**
  * The facts behind the Organization and WebSite JSON-LD (architecture §6.1, §9.2), rendered once
  * by the site shell; the schema builders (src/lib/seo) take them as data. Owner page:
- * wiki/product/facts.md ("Identity", "Company facts the site uses as proof"). No `memberOf` and no
- * founder bios until each proof is filed in wiki/raw/ (D038, F11): schema never says more than the
- * page does. Paths are site paths; the builders make them absolute against the canonical origin.
+ * wiki/product/facts.md ("Identity", "Company facts the site uses as proof"). No `memberOf`: D054
+ * item 20 lifted the proof gate (F11) and /team now names the programmes, but the page states no
+ * relationship with them (B26, team.md), and schema never says more than the page does. Paths are
+ * site paths; the builders make them absolute against the canonical origin.
  */
 
 export interface Founder {

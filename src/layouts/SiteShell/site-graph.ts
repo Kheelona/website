@@ -9,7 +9,8 @@ import { websiteNode } from "@/lib/seo/schema/website";
  * Organization and WebSite nodes the site shell emits once per page. Neither type is renamed; task 4.4 reuses
  * `organizationFacts()` wherever the Organization input is needed again, so nothing restates it.
  *
- * Only what content holds goes in: no description and no `memberOf` (proof-gated, D038, F11).
+ * Only what content holds goes in: no description and no `memberOf` (the proof gate is lifted, D054 item 20, but
+ * /team states no relationship with the programmes it names: B26, team.md).
  */
 
 /** The site's language: the root layout's `<html lang>` (src/app/layout.tsx) and the WebSite node's `inLanguage`. */

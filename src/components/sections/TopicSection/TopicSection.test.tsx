@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it } from "vitest";
+import { STORIES_REMOVED_CARD, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import type { TopicSectionConfig } from "./topic-section.types";
 import { TopicSection } from "./TopicSection";
@@ -27,12 +28,29 @@ const OPTIONS = {
   rename: { guides: "ks-topic__guides", "guides--two": "ks-topic__guides--two", "photo-myra": "ks-guide__photo--portrait" },
 };
 
+/** The approved band as the build shows it: the rows the hub's parity deviation hides (V9, deviations.ts; the
+ *  3-6-9-12 guide left the journal after Gate A, D053, task 6.5) are taken out of a copy of the mockup first. */
+function approvedBand(id: string): Element {
+  const main = mockupFold("stories", "main").cloneNode(true) as Element;
+  for (const rule of VISUAL_HIDDEN.stories ?? []) {
+    if (rule.side === "mockup") main.querySelectorAll(rule.selector).forEach((row) => row.remove());
+  }
+  return main.querySelector(`section#${id}`)!;
+}
+
 describe("TopicSection: the approved hub bands", () => {
   it.each(TOPICS)("#%s: markup and words equal the mockup's band", (id, config) => {
     const { container } = render(<TopicSection {...config} />);
-    const mockup = mockupFold("stories", `section#${id}`);
+    const mockup = approvedBand(id);
     expect(skeleton(container.firstElementChild!, OPTIONS)).toBe(skeleton(mockup, OPTIONS));
     expect(words(container.firstElementChild!)).toBe(words(mockup, OPTIONS));
+  });
+
+  it("shows no card of the guide that left the journal (D053, V9) in any story fixture", () => {
+    for (const [id, config] of TOPICS) {
+      const titles = [config.featured?.title, ...config.items.map((item) => item.title)];
+      expect(titles, id).not.toContain(STORIES_REMOVED_CARD.title);
+    }
   });
 });
 
@@ -67,13 +85,14 @@ describe("TopicSection: parts", () => {
     const { container } = render(<TopicSection {...SCREEN_TIME_TOPIC} />);
     const list = container.querySelector("ul")!;
     expect(list.className).toBe("kh-list ks-list-reset ks-topic__guides ks-topic__guides--two");
-    expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(6);
+    expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(5);
     expect(screen.queryAllByRole("link")).toHaveLength(0);
     expect(container.querySelector("section")!.className).toBe("kh-section ks-topic");
   });
 
   it("links a row once its guide has a page", () => {
-    render(<TopicSection {...SCREEN_TIME_TOPIC} items={[{ ...SCREEN_TIME_TOPIC.items[4], href: "/stories/busy-hands-no-screens" }]} />);
+    const busyHands = SCREEN_TIME_TOPIC.items.find((item) => item.title === "Busy hands, no screens")!;
+    render(<TopicSection {...SCREEN_TIME_TOPIC} items={[{ ...busyHands, href: "/stories/busy-hands-no-screens" }]} />);
     expect(screen.getByRole("link", { name: /Busy hands, no screens/ })).toHaveAttribute("href", "/stories/busy-hands-no-screens");
   });
 });

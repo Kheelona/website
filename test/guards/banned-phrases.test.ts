@@ -85,7 +85,7 @@ describe("every entry is green on approved copy", () => {
   /* The 15 site pages by name, and one copy page per article of the URL plan (tasks 5.6, 5.17-5.19), so a new or
    * missing copy page is named rather than counted (ruling at the wave 5 part C merge). */
   const SITE_PAGES = ["404", "ai-toys-for-kids-in-india", "contact", "home", "meet-kheelu", "privacy", "refund", "safety", "setup", "shipping", "store", "store-confirmation", "stories", "team", "terms"];
-  it("covers the 15 site pages and the 21 article copy pages", () => {
+  it("covers the 15 site pages and the 20 article copy pages (D053 took the 3-6-9-12 guide's off)", () => {
     expect(pages.filter((f) => !f.startsWith("story-")).sort()).toEqual(SITE_PAGES.map((s) => `${s}.md`).sort());
     expect(pages.filter((f) => f.startsWith("story-")).sort()).toEqual(ARTICLE_SLUGS.map((s) => `story-${s}.md`).sort());
   });
