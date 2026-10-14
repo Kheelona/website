@@ -522,7 +522,7 @@ describe("D054 item 19: every hidden slot in the live src/ is dropped before any
 
 /* ── the prerendered-output scan ──────────────────────────────────────────── */
 
-describe("scanBuild: .next/server/app after next build", () => {
+describe("scanBuild: the prerendered output after next build", () => {
   const APP = ".next/server/app";
   const page = (body: string) => `<!DOCTYPE html><html><body><main>${body}</main></body></html>`;
 
@@ -574,6 +574,35 @@ describe("scanBuild: .next/server/app after next build", () => {
   it("says when there is no prerendered HTML to scan", () => {
     expect(scanBuild(tree({ "src/x.ts": CLEAN_MODULE })).missing).toBe(true);
     expect(scanBuild(tree({ [`${APP}/llms.txt.body`]: "ok" })).missing).toBe(true);
+  });
+
+  /* Vercel's layout (scripts/prerendered.mjs): with its adapter plugged in, next build leaves .next/server/app without
+     HTML and writes each prerender under .next/server/route-cache/<kind>/<hash of the source route>/$/. The beta deploy
+     of 2026-10-14 found this step's sibling reading only .next/server/app; this one would have stopped production. */
+  const CACHE = ".next/server/route-cache";
+  const vercel = {
+    [`${CACHE}/APP_PAGE/${"a".repeat(64)}/$/products/kheelu.html`]: page("<dd>[PLACEHOLDER F4: size and weight]</dd>"),
+    [`${CACHE}/APP_PAGE/${"b".repeat(64)}/$/index.html`]: page("Kheelu"),
+    [`${CACHE}/APP_ROUTE/${"c".repeat(64)}/$/llms.txt.body`]: "{ph:F4 battery}\n",
+    [`${APP}/(site)/page.js`]: "{ph:F4 x}",
+  };
+
+  it("finds a marker in Vercel's layout, by the same URL path", () => {
+    const scan = scanBuild(tree(vercel));
+    expect(scan.missing).toBe(false);
+    expect(scan.files).toBe(3);
+    expect(scan.findings.map((f: { file: string; pattern: string }) => `${f.file} ${f.pattern}`).sort()).toEqual([
+      "llms.txt.body token",
+      "products/kheelu.html marker",
+    ]);
+    expect(decide("production", scan).code).toBe(1);
+  });
+
+  it("vouches for a clean build in Vercel's layout: production passes", () => {
+    const clean = Object.fromEntries(Object.keys(vercel).map((path) => [path, path.endsWith(".js") ? "" : page("ok")]));
+    const scan = scanBuild(tree(clean));
+    expect(scan.missing).toBe(false);
+    expect(decide("production", scan).code).toBe(0);
   });
 });
 

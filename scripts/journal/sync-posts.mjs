@@ -51,6 +51,7 @@ import {
   validatePosts,
 } from "../../src/lib/journal/validate.ts";
 import { findBanned } from "../../test/guards/banned-phrases.data.ts";
+import { APP_DIR, prerenderedFile, ROUTE_CACHE_DIR } from "../prerendered.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -66,7 +67,8 @@ export const REGISTRY = "src/content/en-IN/stories/journal.ts";
 /** What the gate needs from the rest of the repo (src/lib/journal/validate.ts imports nothing). */
 export const RULES = Object.freeze({ themes: topics.map((t) => t.title), imagesBase: JOURNAL_IMAGES, findBanned });
 
-const PAGES_DIR = join(".next", "server", "app", "stories");
+/** A post's page, by URL path in the prerendered output (scripts/prerendered.mjs: either of Next's layouts). */
+const pagePath = (slug) => `stories/${slug}.html`;
 const ROUTES_MANIFEST = join(".next", "routes-manifest.json");
 const USAGE = "usage: node scripts/journal/sync-posts.mjs [--check | --split <dir> | --pages] [--root <dir>]";
 
@@ -290,13 +292,12 @@ function checkPages(root, out) {
     } else expected.push(post.slug);
   }
   const missing = expected.filter((slug) => {
-    const page = join(root, PAGES_DIR, `${slug}.html`);
-    return !existsSync(page) || statSync(page).size === 0;
+    const page = prerenderedFile(root, pagePath(slug));
+    return !page || statSync(page).size === 0;
   });
   if (missing.length) {
-    throw new Error(
-      missing.map((s) => `no prerendered page for "${s}" (${join(PAGES_DIR, `${s}.html`).split(sep).join("/")})`).join("\n  "),
-    );
+    const where = [APP_DIR, ROUTE_CACHE_DIR].map((dir) => `${dir.split(sep).join("/")}/`).join(" or ");
+    throw new Error(missing.map((s) => `no prerendered page for "${s}" (${pagePath(s)} under ${where})`).join("\n  "));
   }
   if (expected.length < 4) throw new Error(`${expected.length} journal pages; at least 4 (every guide offers three others)`);
   out.log(`journal-pages: ${file.value.posts.length} posts, ${expected.length} prerendered pages`);

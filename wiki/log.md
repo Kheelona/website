@@ -1023,3 +1023,25 @@ journal-pages 20 pages; SITE_ENV beta); no Node-24-only API in src or scripts (.
 journal data. New on Vercel in this push: step 15 now checks a real snapshot and postbuild step 20 checks 20 pages
 (before 8b.2e both printed "no snapshot yet"). A failed deployment is not aliased, so both beta hosts keep `ac68650`.
 This log commit goes to `beta` too, to see whether the failure repeats.
+
+## [2026-10-15 02:16] deploy | Beta's Vercel failure found and fixed: on Vercel, prerendered pages live in `.next/server/route-cache`
+`f2491b0` failed the same way (`dpl_ErceHcr19K9gTeNb256WdbyvSojC`, 68 s). The founder's `vercel inspect --logs` stopped
+at the CLI's login; the founder then pasted the build log from the dashboard. Prebuild passed (journal-sync 20 posts, no
+request, SITE_ENV beta) and `next build` made all 41 pages, then postbuild step 10 printed "nothing to scan (no
+prerendered HTML)" and step 20 failed with "no prerendered page" for all 20 guides. Cause: Vercel plugs its deployment
+adapter in ("Applying modifyConfig from Vercel"), and with any adapter Next 16.3 writes each prerender under
+`.next/server/route-cache/<kind>/<sha256 of the source route>/$/` instead of `.next/server/app`
+(`node_modules/next/dist/server/lib/route-cache-key.js`; `build/index.js` switches on `config.adapterPath`). A local
+build with `VERCEL=1` keeps the old layout, which is why every local run passed; `ac68650` deployed only because step 20
+had no snapshot to check then. Step 10 would also have stopped the first production deploy at Gate B (production
+refuses an empty scan). Reproduced in a clean clone with a stub adapter (`NEXT_ADAPTER_PATH`), exactly Vercel's errors;
+Node 22.23.3 and a clean clone without an adapter both passed, so neither was the cause.
+Fix (main session): `scripts/prerendered.mjs` lists the prerendered folders in both layouts; step 10's
+`scripts/guards/placeholders.mjs --html` and step 20's `sync-posts.mjs --pages` read through it (findings keep their URL
+path). Tests: new `test/prerendered.test.ts` pins the layout to the installed Next's `getRouteCacheKey` and the
+`adapterPath` switch; Vercel-layout cases in `test/guards/placeholders.test.ts` and `test/journal-sync.test.ts`, red on
+the old scripts (4 failures) and green on the new. Proven on the real build through the stub adapter: steps 10 and 20
+pass (38 prerendered files, 20 pages; production scan too), and each goes red (exit 1) on a planted marker or a deleted
+guide page. Plain build green too. `npm run verify`: 302 files, 6048 passed. Docs: [lessons §1](engineering/lessons.md#1-nextjs-16-and-vercel-behaviour),
+[structure](engineering/structure.md) scripts, tasks 2.9 and ADR-004 (the folder), [Gate B pack](qa/gate-b-pack.md) §5
+(check the first production build's log for both lines). No site output changes, so no e2e re-run (D052).

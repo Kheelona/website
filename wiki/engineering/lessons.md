@@ -1,7 +1,7 @@
 ---
 title: Engineering lessons a rebuild on this stack must not relearn
 type: engineering
-updated: 2026-10-10
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - docs/website-steps.md at tag archive/pre-reset-2026-10-10 (77552ff), section 8
@@ -17,6 +17,8 @@ sources:
   - "code greps at 77552ff (= tag archive/pre-reset-2026-10-10), 2026-10-10"
   - wiki/open-questions.md (section E, C10)
   - "lsof on ports 3456, 3460, 54321, 2026-10-10"
+  - "Vercel build log of dpl_ErceHcr19K9gTeNb256WdbyvSojC (beta f2491b0), pasted by the founder, 2026-10-14"
+  - node_modules/next/dist/server/lib/route-cache-key.js and build/index.js (Next 16.3.8)
 ---
 
 # Engineering lessons a rebuild on this stack must not relearn
@@ -119,6 +121,17 @@ CP = `docs/checkpoints/`. Code references (`src/`, `package.json`, `tools/`, `ne
   repo root. *WS §8.21-a L403.*
 - **Deleting a branch does not retire its preview.** Vercel keeps serving the last deployment for an
   alias until the deployment or project is deleted in the dashboard. *CLAUDE.md L657-663.*
+- **On Vercel, `next build` leaves no HTML in `.next/server/app`.** Vercel plugs its deployment adapter in
+  ("Applying modifyConfig from Vercel" in the build log), and with any adapter Next 16.3 writes each prerender to
+  `.next/server/route-cache/<kind>/<sha256 of the source route>/$/<URL path>` instead (`getRouteCacheKey` in
+  `node_modules/next/dist/server/lib/route-cache-key.js`; `build/index.js` switches on `config.adapterPath`). A local
+  build, even with `VERCEL=1`, uses the old layout, so a postbuild check that read only `.next/server/app` passed
+  everywhere but Vercel: beta `d79299d` and `f2491b0` failed on postbuild step 20 (2026-10-14), and step 10 would have
+  stopped the first production deploy (it refuses a production build with no HTML to scan). Both steps now read
+  through `scripts/prerendered.mjs`, and `test/prerendered.test.ts` pins the layout to the installed Next. To see
+  Vercel's layout locally, build with `NEXT_ADAPTER_PATH` set to a stub adapter
+  (`module.exports = { name: "probe", async onBuildComplete() {} }`). *Vercel build log of
+  dpl_ErceHcr19K9gTeNb256WdbyvSojC, 2026-10-14; [log](../log.md) 2026-10-14.*
 - **The free Supabase tier pauses after a quiet week.** `vercel.json` runs a daily cron on `/api/health`
   so a parent's first order is not the request that wakes it. *WS §8.25-k L846; vercel.json.*
 

@@ -563,7 +563,7 @@ alone; 1.2 leaves `globals.css` alone; 1.1 deletes only the two tests it owns).
   `src/config/env.ts`, no second copy of the rule) and any `{ph:`, `placeholder(`, `[PLACEHOLDER` or
   `status: "draft"` remains in `src/` (excluding `src/lib/content/placeholder.ts` and
   `src/content/types.ts`, which define them; N25), then scans the prerendered HTML in `.next/server/app`
-  after `next build`; on beta and development prints the count and the list and exits 0.
+  (or `.next/server/route-cache` on Vercel, [lessons §1](lessons.md#1-nextjs-16-and-vercel-behaviour)) after `next build`; on beta and development prints the count and the list and exits 0.
   `build-steps.test.ts` asserts the required step files exist (prebuild 10, 20, 30; postbuild 10).
 - **Test:** proven red (a planted `{ph:` in a fixture module with `KH_SITE_ENV=production`) and green;
   the excluded files never trip it.

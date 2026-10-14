@@ -49,6 +49,9 @@ scripts/                     build pipeline and guards (run by npm scripts, preb
     prebuild/15-journal-sync.mjs  postbuild/20-journal-pages.mjs   (8b.2b; the journal, ADR-014)
   journal/sync-posts.mjs     the dashboard's posts into the committed snapshot; the API only on a production build with
                              JOURNAL_SOURCE "api", or BLOG_SYNC=on (8b.2b; journal-pipeline §2)
+  prerendered.mjs            where next build left the prerendered HTML and route bodies, in both of Next's layouts
+                             (.next/server/app; .next/server/route-cache on Vercel); postbuild 10 and 20 read it
+                             (2026-10-14, [lessons §1](lessons.md#1-nextjs-16-and-vercel-behaviour))
   assets/                    build-ds-css, build-compose-css, build-fonts (1.2); build-icons, build-doodles, build-og (1.5)
   guards/                    placeholders.mjs (2.9)
   qa/                        lighthouse.mjs (1.1)

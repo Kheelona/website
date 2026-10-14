@@ -80,6 +80,10 @@ derived read times on two guides with no mockup (the-gentle-way-off-the-phone 3 
   that lands at 2.6 s or 3.2 s by run. Re-measure on mains power; if still below 90, look at when the tags load on the
   hub. Every other page passes (local 94-98; with the tags, home 92 and the store 91 on 5 runs).
 - `README.md` and `docs/store-go-live.md` rewritten for the new site (from task 6.3).
+- The first production build on Vercel is the first to run postbuild step 10 in production on Vercel's layout
+  ([lessons §1](../engineering/lessons.md#1-nextjs-16-and-vercel-behaviour); proven locally through a stub adapter,
+  2026-10-14): its log must show `[placeholders] … no open placeholders (38 prerendered files scanned;
+  SITE_ENV=production)` and `journal-pages: 20 posts, 20 prerendered pages`.
 - Release steps 3-8 of [architecture §15.5](../engineering/architecture.md#155-gate-b-release-to-production-and-rollback):
   Gate B OK logged as a decision, the rollback tag pushed first, the merge, smoke tests, the sitemap resubmitted,
   monitoring for 7 days.

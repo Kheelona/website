@@ -607,7 +607,33 @@ describe("--pages: every post became a prerendered page", () => {
   it("fails on a post that did not become a page, naming it", async () => {
     const { h, code } = pages(built(ALL.slice(1)));
     expect(await code).toBe(1);
-    expect(h.text()).toMatch(/journal-pages: FAILED: no prerendered page for "fixture-ai-safety-guide" \(\.next\/server\/app\/stories\/fixture-ai-safety-guide\.html\)/);
+    expect(h.text()).toContain(
+      'journal-pages: FAILED: no prerendered page for "fixture-ai-safety-guide" (stories/fixture-ai-safety-guide.html under .next/server/app/ or .next/server/route-cache/)',
+    );
+  });
+
+  /* Vercel's layout (scripts/prerendered.mjs): its adapter makes next build write each page under
+     .next/server/route-cache/APP_PAGE/<hash of the source route>/$/ and leave no HTML in .next/server/app. The beta
+     deploy of 2026-10-14 failed here: every page was built, and this step looked only in .next/server/app. */
+  const vercelBuilt = (slugs: string[]) =>
+    rootWith(FIXTURE_TEXT, {
+      ".next/routes-manifest.json": manifest(),
+      ".next/server/app/(site)/stories/[slug]/page.js": "",
+      ...Object.fromEntries(
+        slugs.map((s) => [`.next/server/route-cache/APP_PAGE/${"d".repeat(64)}/$/stories/${s}.html`, `<!DOCTYPE html><title>${s}</title>`]),
+      ),
+    });
+
+  it("finds every page in Vercel's layout", async () => {
+    const { h, code } = pages(vercelBuilt(ALL));
+    expect(await code, h.text()).toBe(0);
+    expect(h.text()).toMatch(/journal-pages: 4 posts, 4 prerendered pages/);
+  });
+
+  it("still fails in Vercel's layout on a post that did not become a page", async () => {
+    const { h, code } = pages(vercelBuilt(ALL.slice(1)));
+    expect(await code).toBe(1);
+    expect(h.text()).toMatch(/no prerendered page for "fixture-ai-safety-guide"/);
   });
 
   it("fails on an empty page", async () => {

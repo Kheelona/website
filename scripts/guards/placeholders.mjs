@@ -1,7 +1,7 @@
 // The placeholder build guard (task 2.9; architecture §6.2 and §14; ADR-004; QA review N25).
 //
 //   node scripts/guards/placeholders.mjs --source [--root <dir>]   src/, before next build
-//   node scripts/guards/placeholders.mjs --html   [--root <dir>]   .next/server/app, after it
+//   node scripts/guards/placeholders.mjs --html   [--root <dir>]   the prerendered output, after it
 //
 // An open placeholder is a fact the founder has not supplied yet: the inline token, the data
 // helper's call, the visible marker it renders, or a legal document still in draft. Production
@@ -19,7 +19,8 @@
 // The source scan is the only check of the dynamic routes (/store/*, /api/*): they are never
 // prerendered.
 // Output scan: everything prerendered, i.e. the prerendered HTML (*.html) and prerendered route
-// bodies (*.body: llms.txt, pricing.md, sitemap.xml, robots.txt) under .next/server/app. Binary
+// bodies (*.body: llms.txt, pricing.md, sitemap.xml, robots.txt), in either of Next's layouts
+// (.next/server/app, or .next/server/route-cache on Vercel: scripts/prerendered.mjs). Binary
 // files and dot-files are skipped. A production run with nothing to scan fails: an empty scan
 // cannot vouch for a build.
 //
@@ -48,6 +49,7 @@ import {
   placeholder,
   withoutHiddenRows,
 } from "../../src/lib/content/placeholder.ts";
+import { APP_DIR, prerenderedDirs, ROUTE_CACHE_DIR } from "../prerendered.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -76,7 +78,6 @@ export const PATTERNS = Object.freeze([
 const SOURCE_DIR = "src";
 /** The content modules, by repo path: the only place a hidden slot may stay, since only the content layer drops it. */
 const HIDDEN_SLOT_DIR = `${SOURCE_DIR}/content/`;
-const BUILD_DIR = join(".next", "server", "app");
 const BUILD_FILE = /\.(?:html|body)$/;
 
 /**
@@ -377,26 +378,28 @@ export function scanSource(root = REPO) {
 }
 
 /**
- * Scans the prerendered HTML and route bodies in .next/server/app under root.
+ * Scans the prerendered HTML and route bodies under root, in either layout (scripts/prerendered.mjs); each finding names
+ * its file by URL path ("products/kheelu.html"), the same in both.
  * React's empty text separator (<!-- -->) is removed first, so a split marker still reads whole.
  * @param {string} [root]
  */
 export function scanBuild(root = REPO) {
-  const dir = join(root, BUILD_DIR);
-  const base = { kind: "build", target: `${posix(BUILD_DIR)}/`, excluded: [] };
+  const base = { kind: "build", target: `${posix(APP_DIR)}/ or ${posix(ROUTE_CACHE_DIR)}/`, excluded: [] };
   let files = 0;
   let pages = 0;
   const findings = [];
-  for (const path of walk(dir)) {
-    if (!BUILD_FILE.test(path)) continue;
-    const raw = readText(path);
-    if (raw === null) continue;
-    files++;
-    if (path.endsWith(".html")) pages++;
-    const text = raw.replaceAll("<!-- -->", "");
-    const file = posix(relative(dir, path));
-    for (const hit of findPlaceholders(text)) {
-      findings.push({ file, line: hit.line, pattern: hit.pattern, label: hit.label, excerpt: outputExcerpt(text, hit) });
+  for (const dir of prerenderedDirs(root)) {
+    for (const path of walk(dir)) {
+      if (!BUILD_FILE.test(path)) continue;
+      const raw = readText(path);
+      if (raw === null) continue;
+      files++;
+      if (path.endsWith(".html")) pages++;
+      const text = raw.replaceAll("<!-- -->", "");
+      const file = posix(relative(dir, path));
+      for (const hit of findPlaceholders(text)) {
+        findings.push({ file, line: hit.line, pattern: hit.pattern, label: hit.label, excerpt: outputExcerpt(text, hit) });
+      }
     }
   }
   return { ...base, missing: pages === 0, files, findings, hidden: [] };

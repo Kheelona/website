@@ -1,7 +1,7 @@
 ---
 title: "ADR-004: One content model in typed TypeScript modules, with a placeholder type the production build refuses"
 type: adr
-updated: 2026-10-12
+updated: 2026-10-14
 sources:
   - ../../raw/brief/kickoff-brief.md (§6 Architect "Content model", §4.2, §9.8)
   - ../../site/content-boundary.md
@@ -57,7 +57,8 @@ Option 3.
   `ks-placeholder` style (the mockup's dashed marker) on every environment except production.
   `scripts/guards/placeholders.mjs` scans `src/` for `{ph:`, `placeholder(` and the literal
   `[PLACEHOLDER`; it **exits 1 when `SITE_ENV` is `production`** and prints the count otherwise. A second
-  pass after `next build` scans the prerendered HTML in `.next/server/app` the same way. Legal
+  pass after `next build` scans the prerendered HTML in `.next/server/app` (`.next/server/route-cache` on Vercel,
+  [lessons §1](../lessons.md#1-nextjs-16-and-vercel-behaviour), 2026-10-14) the same way. Legal
   documents carry `status: 'draft' | 'approved'`; a draft document is a placeholder by definition.
 - **Proof-gated content** (D038: founder bios, recognition) is not a placeholder: it is
   `gated: { proof: 'F11' }` and is **not rendered** until the gate is lifted, on any environment.
