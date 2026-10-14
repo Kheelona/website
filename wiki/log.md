@@ -1108,3 +1108,9 @@ subtitles locally (ffmpeg frames; the transcripts stay local: they name children
 [tasks](engineering/tasks.md): 8c.1 the first phone screen (high), 8c.2 the later price and the share link, 8c.3 the
 quotes, recognition strip, four steps and example (high), 8c.4 the FAQ wording, a languages answer and guard entries.
 [A fact pack for the advisor](brand/for-the-advisor.md) for the founder to forward.
+
+## [2026-10-15 04:41] build | Wave 8c handed to the build workflow (run `wf_6522caae-8ac`, base `94a799f`)
+Four builders in parallel worktrees (8c.1 and 8c.3 high risk: adversarial review, fix, re-review; 8c.2 and 8c.4
+normal: one review), ports 3461-3464 and 6011-6014. Lighthouse in the worktrees is advisory (four builds on one machine,
+on battery); the main session re-measures after the merge. Then: merge, full `npm run verify` and build, targeted
+Playwright on Home and the product page, Lighthouse, the CMO's phone review of the built pages, deviation rows, beta.
