@@ -992,3 +992,22 @@ added to the ruled list; article parity once a writer edits; 8b.2g's prerequisit
 `git merge -s ours origin/main` (`8c4718a`, PRs #18-#22): every file of §11's table resolves to the rebuild's; main's
 `GRIEVANCE_EMAIL` (connect@) stays out (D058 item 4); `git diff HEAD^1` empty; `origin/main` is an ancestor.
 Worktrees removed after the checkpoint.
+
+## [2026-10-15 01:05] qa | The wave 8b close checkpoint (D052): full Playwright, stand-in, qa:payment, Lighthouse, the CMO's hidden blocks
+At `dae33e6` (8b.3 merged): `npm run verify:e2e` 1613 passed, 34 skipped, 0 failed (13.4 min); the store stand-in run
+(Supabase stub, test keys) 453 passed; `qa:payment` clean (sandbox order `order_TntNycphjdJwuF`, 49900 paise from our
+tier table, the four checkout events, no CSP refusal, the signed webhook 200, a forged one 400). **Lighthouse**
+(13.4.1, simulated, mobile, on battery): local 94-98 on all ten pages (accessibility 96-100); with the tags (lp-tags)
+the first medians of 3 put home 89, the store 88 and `/stories` 87 under 90; five runs each gave home 92, the store 91
+and `/stories` 88. On `/stories` the tags add 240-410 ms of blocking time (about 2 ms without them) and LCP lands at
+2.6 s or 3.2 s by run; no journal data in the client chunks; one run logged the Meta pixel's `//log/error` call refused
+by the CSP (open question G18). Listed in the Gate B pack: re-measure on mains power. **CMO built-page review** of the
+four blocks the visual pass hides whole ([review](qa/cmo-review-hidden-blocks-8b-2026-10-14.md)): passed; m1-m3 on
+`/safety` fold 4 fixed (`f967d84`): "child‑safety" with a non-breaking hyphen and `text-wrap: pretty`; the third
+control runs full width (`ks-trust--span-last`); the alt names the Save voice recordings switch; D046's caption on two
+copy pages; V28 amended. The first try at m2 raised the selector's specificity and overrode the never list's
+three-then-two layout at 1024 px and up (`/safety` 1440 grew 118 px); the visual parity test caught it, and
+`:where(:nth-child(odd))` fixed it (height 5413 px, the mockup's). After the fixes: build green; the unit tests of the
+touched sections and the guards 1254 passed; Playwright on safety, ai-toys, meet-kheelu, privacy and terms 570 passed
+plus the re-run 65 passed. Diff since `ac68650` scanned: no secret, only aman@kheelona.com and the help@example.org
+fixture; design-system/ intact (643 files); no mockup or checkout-contract file touched. Next: push `beta`.
