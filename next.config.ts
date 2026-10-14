@@ -9,6 +9,7 @@ import {
 /* Relative paths only: Next resolves no `@/` alias in this file's own import
    graph (structure §2). */
 import { resolveSiteEnv } from "./src/config/env";
+import { JOURNAL_IMAGES, VIDEO_STILLS } from "./src/config/journal";
 import { REDIRECTS } from "./src/config/redirects";
 
 const nextConfig: NextConfig = {
@@ -22,6 +23,17 @@ const nextConfig: NextConfig = {
   images: {
     // AVIF preferred, WebP fallback (AVIF is opt-in on this Next build).
     formats: ["image/avif", "image/webp"],
+    /* THE JOURNAL'S TWO REMOTE IMAGE SOURCES (ADR-014, journal-pipeline §6):
+       an uploaded cover or body image from the dashboard's image folder, and
+       a YouTube still for a video, which our optimiser fetches so the reader's
+       browser contacts YouTube only after a press. A `URL` pattern keeps its
+       empty search, so no query string passes; nothing else remote is ever
+       optimised (test/guards/next-config.test.ts, with Next's own matcher). */
+    remotePatterns: [new URL(`${JOURNAL_IMAGES}**`), new URL(`${VIDEO_STILLS}**`)],
+    /* The optimiser follows a redirect from a remote image WITHOUT checking
+       remotePatterns again (Next's image docs, maximumRedirects): none is
+       followed, so an allowed address can never hand over another host. */
+    maximumRedirects: 0,
   },
   /* Nothing gains from telling the world which framework serves this (F-08). */
   poweredByHeader: false,

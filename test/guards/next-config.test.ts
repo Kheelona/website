@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import type { RemotePattern } from "next/dist/shared/lib/image-config";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { securityHeaders } from "@/lib/security-headers";
 
@@ -105,12 +106,73 @@ describe("redirects(): one table", () => {
   });
 
   /* Next resolves no `@/` alias in the config's own import graph (structure §2). */
-  it("imports env.ts and redirects.ts by relative path", () => {
+  it("imports env.ts, redirects.ts and journal.ts by relative path", () => {
     expect(CONFIG_TEXT).toMatch(/from "\.\/src\/config\/env"/);
     expect(CONFIG_TEXT).toMatch(/from "\.\/src\/config\/redirects"/);
+    expect(CONFIG_TEXT).toMatch(/from "\.\/src\/config\/journal"/);
     expect(CONFIG_TEXT).not.toMatch(/from "@\//);
     const table = readFileSync(join(ROOT, "src/config/redirects.ts"), "utf8");
     expect(table).not.toMatch(/from "@\//);
+  });
+});
+
+/* The journal's images (ADR-014; journal-pipeline §6): an uploaded cover or body image from the dashboard's image
+   folder, and a YouTube still for a video, both through our optimiser. Exactly these two, each a URL pattern, whose
+   empty `search` lets no query string through (image.md, remotePatterns), and no redirect followed: the optimiser
+   would follow one without checking remotePatterns again (image.md, maximumRedirects). Read through Next's own
+   normalisation (next/dist/server/config.js) and matcher (next/dist/shared/lib/match-remote-pattern.js). */
+describe("images: the journal's two remote sources, and nothing else", () => {
+  /** The patterns as Next normalises a `URL` entry (next/dist/server/config.js, `images.remotePatterns`): the
+   *  protocol's colon dropped, every other part kept as the URL holds it (an empty search stays ""). */
+  async function remotePatterns(): Promise<RemotePattern[]> {
+    const config = await loadConfigUnder(VERCEL.production);
+    return (config.images?.remotePatterns ?? []).map(({ protocol, hostname, port, pathname, search }) => ({
+      protocol: protocol?.replace(/:$/, "") as RemotePattern["protocol"],
+      hostname,
+      port,
+      pathname,
+      search,
+    }));
+  }
+
+  it("allows exactly the image folder and the video stills, https, no port, no query string", async () => {
+    const { JOURNAL_IMAGES, VIDEO_STILLS } = await import("@/config/journal");
+    expect(JOURNAL_IMAGES).toBe("https://api.kheelona.com/v1/public/blog/images/");
+    expect(VIDEO_STILLS).toBe("https://i.ytimg.com/vi/");
+    expect(await remotePatterns()).toEqual([
+      { protocol: "https", hostname: "api.kheelona.com", port: "", pathname: "/v1/public/blog/images/**", search: "" },
+      { protocol: "https", hostname: "i.ytimg.com", port: "", pathname: "/vi/**", search: "" },
+    ]);
+  });
+
+  it.each([
+    ["an upload", "https://api.kheelona.com/v1/public/blog/images/cover.jpg", true],
+    ["an upload in a folder", "https://api.kheelona.com/v1/public/blog/images/2026/10/cover.webp", true],
+    ["a YouTube still", "https://i.ytimg.com/vi/abcDEF12345/hqdefault.jpg", true],
+    ["an upload with a query string", "https://api.kheelona.com/v1/public/blog/images/cover.jpg?w=1", false],
+    ["a YouTube still with a query string", "https://i.ytimg.com/vi/abcDEF12345/hqdefault.jpg?sqp=x", false],
+    ["the posts API", "https://api.kheelona.com/v1/public/blog/posts", false],
+    ["the image folder over http", "http://api.kheelona.com/v1/public/blog/images/cover.jpg", false],
+    ["another port", "https://api.kheelona.com:8443/v1/public/blog/images/cover.jpg", false],
+    ["another host", "https://images.example.org/v1/public/blog/images/cover.jpg", false],
+    ["a subdomain", "https://x.api.kheelona.com/v1/public/blog/images/cover.jpg", false],
+    ["another YouTube path", "https://i.ytimg.com/an_webp/abcDEF12345/mqdefault_6s.webp", false],
+  ])("Next's matcher on %s (%s): allowed %s", async (_what, address, allowed) => {
+    const { hasRemoteMatch } = await import("next/dist/shared/lib/match-remote-pattern");
+    expect(hasRemoteMatch([], await remotePatterns(), new URL(address))).toBe(allowed);
+  });
+
+  it("follows no redirect from a remote image, and keeps the formats", async () => {
+    const config = await loadConfigUnder(VERCEL.production);
+    expect(config.images?.maximumRedirects).toBe(0);
+    expect(config.images?.formats).toEqual(["image/avif", "image/webp"]);
+    expect(Object.keys(config.images ?? {}).sort()).toEqual(["formats", "maximumRedirects", "remotePatterns"]);
+  });
+
+  it.each(Object.entries(VERCEL))("is the same on a %s build", async (_kind, vars) => {
+    const config = await loadConfigUnder(vars);
+    const prod = await loadConfigUnder(VERCEL.production);
+    expect(JSON.stringify(config.images)).toBe(JSON.stringify(prod.images));
   });
 });
 

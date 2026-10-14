@@ -1,0 +1,750 @@
+{
+  "generated": "FIXTURE for the journal sync tests (test/journal-sync.test.ts, src/lib/journal/*.test.ts): the shape of src/content/en-IN/stories/posts.generated.json (journal-pipeline §2.4, §3), in the sync's order. Never read by the site; its words are test data, not approved copy.",
+  "posts": [
+    {
+      "slug": "fixture-ai-safety-guide",
+      "title": "What to ask before a talking toy comes home",
+      "description": "A fixture guide for the journal sync tests: the questions to ask a toy company about voices, data and the parent app before you buy.",
+      "theme": "AI toys and safety",
+      "author": "Aman Soni",
+      "published": "2026-08-20",
+      "updated": "2026-08-20",
+      "pose": "joy",
+      "tint": "bg-orange/15",
+      "hero": "https://api.kheelona.com/v1/public/blog/images/fixture-cover.jpg",
+      "heroAlt": "A child's hands on a wooden train set on a rug",
+      "heroWidth": 1440,
+      "heroHeight": 810,
+      "ageNote": null,
+      "sources": [
+        {
+          "label": "Fixture source: a published guide to children's data",
+          "url": "https://example.org/childrens-data"
+        }
+      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "A toy that talks back needs a few honest answers from the company that makes it.[^1] Read "
+              },
+              {
+                "type": "text",
+                "text": "a plain privacy guide",
+                "marks": [
+                  {
+                    "type": "link",
+                    "attrs": {
+                      "href": "https://example.org/privacy-guide"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " before you choose."
+              }
+            ]
+          },
+          {
+            "type": "image",
+            "attrs": {
+              "src": "https://api.kheelona.com/v1/public/blog/images/fixture-body.jpg",
+              "alt": "A parent and child reading the settings screen together",
+              "caption": "Read the settings together.",
+              "width": 1200,
+              "height": 800
+            }
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2,
+              "anchor": "the-questions"
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "The questions"
+              }
+            ]
+          },
+          {
+            "type": "bulletList",
+            "attrs": {
+              "style": "checks"
+            },
+            "content": [
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Who hears the recordings, and for how long are they kept?"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Can you read every conversation in the parent app?"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "videoEmbed",
+            "attrs": {
+              "provider": "youtube",
+              "videoId": "abcDEF12345",
+              "title": "A short film about asking good questions",
+              "caption": "Two minutes, no sound needed."
+            }
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Write to "
+              },
+              {
+                "type": "text",
+                "text": "the help desk",
+                "marks": [
+                  {
+                    "type": "link",
+                    "attrs": {
+                      "href": "mailto:help@example.org"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " or "
+              },
+              {
+                "type": "text",
+                "text": "call it",
+                "marks": [
+                  {
+                    "type": "link",
+                    "attrs": {
+                      "href": "tel:+910000000000"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " if an answer is vague."
+              }
+            ]
+          }
+        ]
+      },
+      "metaTitle": null,
+      "cardTitle": "Questions for a toy company",
+      "accent": "comes home",
+      "lead": "Five questions, and what a good answer sounds like.",
+      "summary": null,
+      "answer": {
+        "question": "What should you ask before a talking toy comes home?",
+        "text": "Ask who hears your child's voice, where it goes, how long it is kept and how you delete it.[^1] Ask what the toy does when it is unsure, and whether you can read every conversation. A company with nothing to hide answers each question plainly and in writing."
+      },
+      "photo": null,
+      "related": [
+        "fixture-learning-guide",
+        "fixture-screen-time-guide",
+        "fixture-talking-guide"
+      ]
+    },
+    {
+      "slug": "fixture-learning-guide",
+      "title": "How building blocks teach a child to plan",
+      "description": "A fixture guide for the journal sync tests: what a child aged 3 to 7 practises while building, and how to join in without taking over.",
+      "theme": "Learning and play",
+      "author": "Kashyap C.R",
+      "published": "2026-07-14",
+      "updated": "2026-09-02",
+      "pose": "bliss",
+      "tint": "bg-yellow/15",
+      "hero": null,
+      "heroAlt": "",
+      "heroWidth": null,
+      "heroHeight": null,
+      "ageNote": "Written for children aged 3 and up.",
+      "sources": [
+        {
+          "label": "Fixture source: a study of block play",
+          "url": "https://example.org/block-play"
+        },
+        {
+          "label": "Fixture source: a review of planning in early childhood",
+          "url": "https://example.org/planning-review"
+        }
+      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Blocks first. ",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "A tower that falls is a plan that met the real world.[^1] Kheelu is {price:headline}, and {delivery}."
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2,
+              "anchor": "how-play-builds-skills"
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "How play builds skills"
+              }
+            ]
+          },
+          {
+            "type": "bulletList",
+            "attrs": {
+              "style": "facts"
+            },
+            "content": [
+              {
+                "type": "listItem",
+                "attrs": {
+                  "icon": "puzzle-piece"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Planning. ",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": "Deciding what goes at the bottom.[^2]"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "attrs": {
+                  "icon": "star"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Patience. ",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": "Trying again after the fall."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "image",
+            "attrs": {
+              "src": "",
+              "alt": "",
+              "caption": "",
+              "width": null,
+              "height": null,
+              "photo": "kheelu-belly-module"
+            }
+          },
+          {
+            "type": "horizontalRule"
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Sit beside the tower, not over it."
+              }
+            ]
+          },
+          {
+            "type": "videoEmbed",
+            "attrs": {
+              "provider": "vimeo",
+              "videoId": "123456789",
+              "title": "A tower, built twice",
+              "caption": "The second tower stands."
+            }
+          },
+          {
+            "type": "bulletList",
+            "content": [
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Wooden blocks"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "A clear patch of floor"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "metaTitle": "Building blocks and planning, ages 3 to 7 · Kheelona",
+      "cardTitle": null,
+      "accent": "teach a child to plan",
+      "lead": "Why the falling tower matters more than the finished one.",
+      "summary": "What a child practises while building.",
+      "answer": {
+        "question": "What does a child learn from building blocks?",
+        "text": "Building asks a child to picture a shape, choose an order and try again when it falls.[^1] Those are the first steps of planning, and a tower that topples teaches as much as one that stands. Sit nearby, name what you see and let your child decide the next block.[^2]"
+      },
+      "photo": "kabir-02-block-rocket",
+      "related": [
+        "fixture-ai-safety-guide",
+        "fixture-screen-time-guide",
+        "fixture-talking-guide"
+      ]
+    },
+    {
+      "slug": "fixture-screen-time-guide",
+      "title": "How much screen time suits a young child",
+      "description": "A fixture guide for the journal sync tests: limits, routines and a calm way off the screen for children aged 3 to 7.",
+      "theme": "Screen time",
+      "author": "Kheelona",
+      "published": "2026-09-01",
+      "updated": "2026-09-10",
+      "pose": "curious",
+      "tint": "bg-blue/15",
+      "hero": null,
+      "heroAlt": "",
+      "heroWidth": null,
+      "heroHeight": null,
+      "ageNote": null,
+      "sources": [
+        {
+          "label": "Fixture source: a published guideline on screen time",
+          "url": "https://example.org/guideline"
+        },
+        {
+          "label": "Fixture source: a survey of family routines",
+          "url": "https://example.org/survey"
+        }
+      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Start small: ",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "a fixed time each day works better than a running count.[^1]"
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2,
+              "anchor": "limits"
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "What the guidelines say"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Families who plan the off switch argue about it less.[^2] More guides are in "
+              },
+              {
+                "type": "text",
+                "text": "the stories hub",
+                "marks": [
+                  {
+                    "type": "link",
+                    "attrs": {
+                      "href": "/stories"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "."
+              }
+            ]
+          },
+          {
+            "type": "bulletList",
+            "attrs": {
+              "style": "tips"
+            },
+            "content": [
+              {
+                "type": "listItem",
+                "attrs": {
+                  "icon": "clock"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Give a five-minute warning before the screen goes off."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "attrs": {
+                  "icon": "book-open"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Have a book ready for what comes next."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "orderedList",
+            "content": [
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Agree the time together."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Keep to it, kindly."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "metaTitle": "Screen time for young children · Kheelona",
+      "cardTitle": "Screen time for young children",
+      "accent": "young child",
+      "lead": "A plain guide to limits and routines.",
+      "summary": null,
+      "answer": {
+        "question": "How much screen time is right for a 3-year-old?",
+        "text": "About an hour a day of good quality viewing, shared with a grown-up where you can, is the usual advice for children aged 3 to 5.[^1] Less is fine. What matters most is what the screen replaces: sleep, play outside, talk at the table and time with books."
+      },
+      "photo": "advik-04-floor-train",
+      "related": [
+        "fixture-ai-safety-guide",
+        "fixture-learning-guide",
+        "fixture-talking-guide"
+      ]
+    },
+    {
+      "slug": "fixture-talking-guide",
+      "title": "Talking with a child who is just starting to speak",
+      "description": "A fixture guide for the journal sync tests: how to wait for a reply, name what your child sees and keep a conversation going.",
+      "theme": "Talking and language",
+      "author": "Apoorva Sahu",
+      "published": "2026-06-30",
+      "updated": "2026-08-01",
+      "pose": "silly",
+      "tint": "bg-blue/15",
+      "hero": null,
+      "heroAlt": "",
+      "heroWidth": null,
+      "heroHeight": null,
+      "ageNote": null,
+      "sources": [
+        {
+          "label": "Fixture source: a study of conversational turns",
+          "url": "https://example.org/turns"
+        }
+      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Children learn to talk by talking with someone who waits for them.[^1]"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "type": "text",
+                "text": "The waiting is the hard part."
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2,
+              "anchor": null
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Wait for the reply"
+              }
+            ]
+          },
+          {
+            "type": "blockquote",
+            "attrs": {
+              "style": "callout",
+              "icon": "question"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Try this: ",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": "name what your child is looking at, then count to five in your head."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Questions parents ask"
+              }
+            ]
+          },
+          {
+            "type": "blockquote",
+            "attrs": {
+              "style": "questions"
+            },
+            "content": [
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 3
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Should I correct every word?"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Say the word back the right way, warmly, and move on."
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "A conversation is not a test."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 3
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "What if my child goes quiet?"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Quiet days happen. Keep talking about what you are both doing."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 3
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "A note on two languages"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Speak the language you are most at home in."
+              }
+            ]
+          }
+        ]
+      },
+      "metaTitle": null,
+      "cardTitle": null,
+      "accent": "just starting to speak",
+      "lead": "Small habits that keep a first conversation going.",
+      "summary": "How to wait, name and keep talking.",
+      "answer": {
+        "question": "How do you talk with a child who is just starting to speak?",
+        "text": "Get down to your child's height, name what they are looking at and then wait, longer than feels natural, for any reply.[^1] A sound, a point or a word all count as a turn. Answer it, add one new word and wait again, so the conversation keeps going back and forth."
+      },
+      "photo": "tara-01-naming-feelings",
+      "related": [
+        "fixture-ai-safety-guide",
+        "fixture-learning-guide",
+        "fixture-screen-time-guide"
+      ]
+    }
+  ]
+}
