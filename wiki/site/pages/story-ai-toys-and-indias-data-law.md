@@ -24,6 +24,7 @@ sources:
   - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: M2, M3, M4, M11 fixed in round 2; M11 applied again in task 5.20c)
   - ../../engineering/tasks.md (§4.9 and 5.20, task 5.20c, copy fixes and photo pools), ../../engineering/assets.md (advik-04 and ira-01 rows)
   - ../../qa/cmo-review-built-b-2026-10-14.md (m3, the related ring; applied by task 7.1d to fold 11, see the foot of this page)
+  - "../../decisions/D058-follow-the-live-code-check-2026-10-14.md (items 1, 6, 9), D059 (item 1, contractions stay); origin/main c630a49 (the live team's code check, 2026-10-12), via ../../qa/live-main-reconciliation-2026-10-14.md §2; ../../engineering/journal-pipeline.md §9.2 and §12 8b.2a (applied in task 8b.2a to fold 9, see the foot of this page)"
 ---
 
 # Story: What India's data law asks of a toy that listens
@@ -57,7 +58,7 @@ sources:
 | Meta description (142 characters) | The DPDP Act and children's data, in plain words: what India's law asks of a company from May 2027, and the questions to ask any AI toy maker. |
 | H1 | What India's data law asks of a toy that listens (the hub card title, word for word; question 1) |
 | Byline line | Apoorva Sahu · First published 11 Sep 2026 · 3 min read (byline: question 2) |
-| Read time | 3 min (about 700 words in the article, headings included, close excluded; words ÷ 200, rounded, as `readingMinutes` in `src/lib/stories.ts:184-186`) |
+| Read time | 3 min (about 690 words in the article since task 8b.2a, about 700 before; headings included, close excluded; words ÷ 200, rounded, as `readingMinutes` in `src/lib/stories.ts:184-186`) |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 9 ("Kheelu" → `/products/kheelu`, `meet-kheelu.html`) |
 | Module values kept from the stub | Card title and summary (hub copy, `stories.md` fold 4); `published` 2026-09-11; `updated` as the main session's note for task 5.19 directs. Not the stub's: `related` (three, below), CMO B m3's ring (task 7.1d; fold 11) |
@@ -248,7 +249,9 @@ cite them).
   a right to the answer. "A vague answer is an answer" is the safe-AI-toy page's line.
 - Round 2 (CMO M3): "So is a privacy policy nobody could follow." is cut. It set up fold 9's privacy-policy pointer
   while that policy's consent section is still a placeholder (G6; [privacy copy](privacy.md)). Fold 9 still answers
-  four of the six questions; consent and tracking wait on question 4.
+  four of the six questions; consent and tracking wait on question 4. **Since task 8b.2a** two of those four are
+  answered only in part: where the voice is processed (by trusted providers, with no country named; question 7), and
+  reading what a child said (yes) but not deleting it oneself (question 8). Sold and how long are answered in full.
 
 ---
 
@@ -265,9 +268,9 @@ point to the policy that covers the rest. Never a compliance claim.
 >
 > **Listening.** Kheelu's microphone turns on only when someone presses the wake-up button, and a light shows whenever it's listening.
 >
-> **Your child's voice.** To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child's voice only to produce Kheelu's reply. They don't keep it, and they never use it to train their AI. Our contracts with them say so.
+> **Your child's voice.** To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child's voice only to produce Kheelu's reply. They don't keep it, and they never use it to train their AI. Our contracts with them say so.
 >
-> **Every conversation.** You can read every conversation in the parent app. Your child's conversations stay in your parent app for 36 months, then they're deleted automatically. You can delete any of them sooner, in one tap.
+> **Every conversation.** You can read every conversation in the parent app. Your child's conversations stay in your parent app for 36 months, then they're deleted automatically.
 >
 > **Your data.** We don't sell your data. Your child's data is never used to advertise to them.
 >
@@ -275,12 +278,20 @@ point to the policy that covers the rest. Never a compliance claim.
 
 - A `facts` block (`TrustList`, one column on phones) with the safe-AI-toy page's icons for the same four items
   (microphone, lock-simple, eye, hand-heart), between two paragraphs. Order: the wake-up button and light → the
-  providers line → read and delete → no sale ([D020](../../decisions/D020-provider-terms-and-no-sale.md)).
+  providers line → read and keep (read and delete until task 8b.2a) → no sale
+  ([D020](../../decisions/D020-provider-terms-and-no-sale.md)).
 - **Wording held to the rulings:** D018's mechanism (no wake-word phrase, no absolute, the light's colour never
-  named); D020's providers line verbatim, its training clause scoped to the providers
-  ([D041](../../decisions/D041-gate-a-round-1.md)); `RETENTION_LINE`; D020 and
+  named); D020's providers line without "on servers in India"
+  ([D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 6, task 8b.2a), so it states only D020
+  items 1-4, its training clause scoped to the providers ([D041](../../decisions/D041-gate-a-round-1.md));
+  `RETENTION_LINE` (`policies.ts`, never retyped), quoted here without the one-tap sentence D058 item 1 withdrew (task
+  8b.1 owns the line's words; this page prints whatever 8b.1 sets); D020 and
   [D038](../../decisions/D038-trust-content-rulings.md)'s no-sale and advertising lines. The help line renders from
   `seller.help.contact`, never typed.
+- **Since task 8b.2a, two of fold 8's questions get less than a full answer here:** "in which country" (the providers
+  line names no place; question 7) and "delete it myself" (the one-tap sentence went with the retention line, and the
+  guide states no other way to delete; question 8). The linked privacy policy carries both after task 8b.1 (the
+  processors named, some outside India; deleting the account in the app's privacy settings; D058 items 1 and 6).
 - **Deliberately not answered here** (no confirmed line; question 4): how Kheelona gets a parent's consent (G6; the
   [privacy copy](privacy.md) holds it as a placeholder, and no consent flow exists yet), and whether anything in
   the parent app counts as tracking or behavioural monitoring (daily summaries and alerts wait on counsel's reading,
@@ -377,8 +388,8 @@ As Home: **₹499`{price-source}` today** · **refundable · ₹4,999`{price-sou
 | Primary in an answer-first block in the first ~100 words | Yes | Fold 2 H2 "What does the DPDP Act say about children's data?" (both halves of the primary) and its 59-word answer |
 | An H2 with the primary or a close variant | Yes | Fold 2; fold 5 carries the keyword map's suggested H2 ("Consent has to come from you") and the secondary, "verifiable consent of the parent", in its first line |
 | Alt text | Yes | Describes the scene (the approved alt of `ira-01`, task 5.20c); no keyword forced |
-| Density | Yes | "DPDP Act" twice in `<main>` (fold 2, fold 3): about 0.6% of about 750 words with the close, counting its 2 words; "Kheelu" 6 times including the close and its button (under 1%) |
-| Words never placed | Yes | No "complies", "compliant" or "meets section 9" about Kheelu; no consent or tracking claim for Kheelu; no "stays in your region", "only our own servers", "nothing is ever recorded", training claim, legal reading or advice; no competitor names |
+| Density | Yes | "DPDP Act" twice in `<main>` (fold 2, fold 3): about 0.6% of about 750 words with the close, counting its 2 words; "Kheelu" 6 times including the close and its button (under 1%). Task 8b.2a cut 14 words from fold 9 (about 735 now): the keyword share rises a shade, still well under 1%; "Kheelu" still 6 |
+| Words never placed | Yes | No "complies", "compliant" or "meets section 9" about Kheelu; no consent or tracking claim for Kheelu; no "stays in your region", "only our own servers", "nothing is ever recorded", training claim, legal reading or advice; no competitor names; since task 8b.2a, none of D058's withdrawn words ("on servers in India", "in one tap") |
 
 ## CTA tracking values
 
@@ -430,6 +441,25 @@ give yet, consent and tracking, are left out of fold 9 rather than held, and are
    (c) a new DS scene photo without Kheelu, if you have one (open question P24). **Recommend (a)** for beta: a child
    talking to a toy is what the page is about, the photo makes no claim, and (c) replaces it the day such a photo
    exists.
+7. **"In which country" (task 8b.2a, D058 item 6).** Fold 8 tells a parent to ask any company "Where is my child's
+   voice processed, and in which country?", then says "A vague answer is an answer." Since "on servers in India"
+   went, fold 9 names no place; the linked privacy policy names the processors. On a page about India's data law, this
+   gap is the sharpest on the site. (a) As now: no place in fold 9, the privacy pointer covers it; (b) add D058 item
+   6's fact in the live `/privacy`'s words after "Our contracts with them say so.": "Some of them process it outside
+   India." (with "Our privacy policy names them." if wanted), read by counsel with the rest of fold 9 (D029); (c) drop
+   "and in which country" from fold 8's list. **Recommend (b)**: it is the founder's own ruling and already the live
+   site's words, and it answers the page's own question; (c) would edit the question to fit the answer. It needs the
+   main session's ruling, because it adds a sentence that task 8b.2a's fix list does not (same question as the
+   hard-questions page, its question 6).
+8. **"Delete it myself" (task 8b.2a, D058 item 1).** Fold 8 asks "Can I read what my child said, and delete it
+   myself?". Until task 8b.2a, fold 9 answered with the retention line's "You can delete any of them sooner, in one
+   tap."; that sentence went (removing a chat in the app hides it on that phone). (a) As now: read and 36 months only;
+   the privacy policy, linked, carries deleting the account (task 8b.1); (b) add D058's code-checked fact to the
+   "Every conversation." item: "Deleting your account deletes your child's profile, conversations and recordings
+   from our servers."; (c) drop "and delete it myself" from fold 8's question. **Recommend (b)**, unless task 8b.1's
+   new `RETENTION_LINE` already carries a deletion sentence (then it prints here by import and nothing is added): it
+   is D058's own wording, a fact about Kheelona rather than a reading of the law, and it answers the page's own
+   question. It needs the main session's ruling, for the same reason as question 7.
 
 ## Sources
 
@@ -448,8 +478,9 @@ give yet, consent and tracking, are left out of fold 9 rather than held, and are
 | Exceptions: a school, for its pupils' safety; a child's real-time location, for their safety | `C20-dpdp-rules-2025.md:28-34` (Fourth Schedule, Part A item 3, Part B item 4) |
 | "Whichever toy you choose, ask the company how it gets your consent, and whether it tracks your child or shows them ads." | C20 house line |
 | Wake-up button; light | [D018](../../decisions/D018-wake-up-button.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) |
-| Providers line, verbatim | [D019](../../decisions/D019-voice-providers.md), [D020](../../decisions/D020-provider-terms-and-no-sale.md); training clause scoped: [D035](../../decisions/D035-model-training-opt-out.md), [D041](../../decisions/D041-gate-a-round-1.md) |
-| Read every conversation; 36 months; delete sooner in one tap | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [D020](../../decisions/D020-provider-terms-and-no-sale.md) (`RETENTION_LINE`) |
+| Providers line (D020 items 1-4; no place since task 8b.2a) | [D019](../../decisions/D019-voice-providers.md), [D020](../../decisions/D020-provider-terms-and-no-sale.md) items 1-4 (item 6, "on servers in India", withdrawn by [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 6); training clause scoped: [D035](../../decisions/D035-model-training-opt-out.md), [D041](../../decisions/D041-gate-a-round-1.md) |
+| Read every conversation; 36 months then deleted automatically | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7 and [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 9 (`RETENTION_LINE`, `policies.ts`, its words owned by task 8b.1; one-tap deletion withdrawn by D058 item 1) |
+| Withdrawn in task 8b.2a: "on servers in India"; "You can delete any of them sooner, in one tap." | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) items 1 and 6 (narrowing D017 and D020 items 6-7); origin/main c630a49 ("To Kheelona's servers", "Some of them process it outside India"; removing a chat hides it on that phone, deleting the account deletes the data; [reconciliation map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded)); [journal pipeline §9.2](../../engineering/journal-pipeline.md#92-the-d058-corrections-still-in-the-guides) (`ai-toys-and-indias-data-law.ts:157, :159`) |
 | We don't sell your data; never used to advertise to your child | [D020](../../decisions/D020-provider-terms-and-no-sale.md); [D038](../../decisions/D038-trust-content-rulings.md) (F17) |
 | The privacy policy sets out what is collected, its uses (training included) and a parent's choices | [privacy copy](privacy.md) (page job, sections 2-3); [D035](../../decisions/D035-model-training-opt-out.md) |
 | Help line | [D032](../../decisions/D032-grievance-block-and-call-line.md); [facts, support channel](../../product/facts.md#support-channel) |
@@ -508,3 +539,45 @@ across 10 guides ([tasks](../../engineering/tasks.md), 7.1d). On this page only 
 - **For the builder:** `ai-toys-and-indias-data-law.ts:32` becomes `related: ["what-to-look-for-in-a-safe-ai-toy",
   "should-kids-use-ai", "does-a-three-year-old-need-an-ai-tutor"]`, and the header note's words on the stub's swap and
   the busy-hands guide (lines 12-14) follow.
+
+## Changes after approval (task 8b.2a)
+
+The founder's [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) (2026-10-14): every claim the live
+team withdrew after its code check of 12 October (origin/main c630a49, "checked against iot-firmware, backend-service and
+Kheelona_App on 2026-10-12"; [reconciliation map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded))
+goes or takes the code-checked wording. The lines are those of [journal pipeline §9.2](../../engineering/journal-pipeline.md#92-the-d058-corrections-still-in-the-guides)
+for this guide, both in fold 9. Nothing else changed.
+
+- **Fold 9, "Your child's voice."** (module `:157`). ", on servers in India" is cut from the providers line. Why: D058
+  item 6 withdraws D020 item 6 (some processors work outside India; c630a49: "To Kheelona's servers", "Some of them
+  process it outside India"). The rest of the line is D020 items 1-4 as they still stand: the providers process the
+  voice only to reply, don't keep it, never train on it, and the contracts say so. Fold 8's "in which country" is now
+  unanswered on this page: question 7.
+- **Fold 9, "Every conversation."** (`:159`, `RETENTION_LINE` by import after "You can read every conversation in the
+  parent app."). "You can delete any of them sooner, in one tap." goes. Why: D058 item 1 withdraws one-tap deletion
+  (D017; D020 item 7): removing a chat in the app hides it on that phone, and deleting the account deletes the data
+  (c630a49). "36 months, then deleted automatically" stays (D058 item 9). Task 8b.1 owns the line's words in
+  `policies.ts`; this page quotes it without the one-tap sentence and follows 8b.1's final words. The guide states
+  one-tap deletion nowhere else. Fold 8's "delete it myself" is now unanswered on this page: question 8.
+- **Not on this page, so nothing to change:** "about a minute of quiet" (fold 9's listening line names no timing), the
+  closed library, the age-graded safety layer and "We attack our own safety layer" (none were here). Kept: 36 months
+  then deleted (D058 item 9). The languages, Bluetooth mode and Kheelona's own-model training (D035; the opt-out in the
+  parent app) are not on this page; fold 9 still says nothing that implies there is no training use, and still points
+  to the privacy policy that states it. Contractions stay ([D059](../../decisions/D059-journal-voice-uploads-and-timing-2026-10-14.md)
+  item 1). No "!", no em dash, en-IN spelling; no banned phrase (checked against `banned-phrases.data.ts`).
+- **No legal wording changed:** both lines are facts about Kheelona in "Where we stand", not statements about the law,
+  and carry no source marker. Counsel reads fold 9 with the rest of the page before Gate B as before (D029); nothing
+  here says or implies that Kheelu meets section 9.
+- **Notes kept true:** fold 8's note (which questions fold 9 answers, and how fully); fold 9's order note, "Wording held
+  to the rulings" and a note on the two part-answers; the At a glance read-time row; the keyword table (density, and
+  D058's withdrawn words added to "Words never placed"); questions 7 and 8 (new); the Sources table (two rows replaced,
+  a row for what was withdrawn); the front matter's sources.
+- **What does not change:** the answer block (59 words; no line in it changed), the read time (3 min: about 690
+  words, was about 700), the title (58 characters), meta (142), H1, lead, photo, alt, related ring and close; all three
+  source markers and the sources list; every keyword placement. No placeholder.
+- **For the builder:** the module's string at `:157` takes the Copy above, word for word, with the module's curly
+  apostrophes; `:159` stays `` `You can read every conversation in the parent app. ${RETENTION_LINE}` `` (8b.1 changes
+  the constant); the header comment's "Fold 9 answers only what Kheelona can answer in confirmed facts (D018, D020's
+  order, ...)" may add "as narrowed by D058". The expectation lines in the guide's test files follow where these words
+  change, and each changed approved line needs a deviation row for the Gate B pack (D015;
+  [journal pipeline §12](../../engineering/journal-pipeline.md#8b2a-the-20-guides-corrected-per-d058-copywriter-fix-mode-cmo-builder-risk-high-wave-i), 8b.2a).
