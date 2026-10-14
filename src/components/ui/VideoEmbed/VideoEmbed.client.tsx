@@ -1,46 +1,23 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { ICON_PLAY } from "@/assets/icons.generated";
-import { IconButton } from "@/components/ui/IconButton/IconButton";
-import type { VideoProvider } from "@/content/types";
-import { playerUrl } from "./embed";
+import { lazy, Suspense } from "react";
+import type { VideoEmbedPlayerProps } from "./player";
 
-export interface VideoEmbedPlayerProps {
-  readonly provider: VideoProvider;
-  readonly videoId: string;
-  /** The player frame's title: the video's own. */
-  readonly title: string;
-  /** The play button's accessible name: the content's play word, then the title. */
-  readonly label: string;
-}
+export type { VideoEmbedPlayerProps } from "./player";
 
-/**
- * VideoEmbed's island (task 8b.2c; journal-pipeline §7): the DS primary play button (`IconButton` with the named
- * `ICON_PLAY`, as the films strip draws it; it never imports `Icon`, `Button` or `PreorderButton`,
- * test/guards/client-icons.test.ts) until the reader presses it; then the player frame replaces it, plays (the press is
- * the gesture its autoplay needs) and takes focus, so a keyboard user lands in the player. The player's address is
- * built here from the provider and the id, so the page's HTML names neither host before the press. No tracking event.
- */
-export function VideoEmbedPlayer({ provider, videoId, title, label }: VideoEmbedPlayerProps) {
-  const [playing, setPlaying] = useState(false);
-  const frame = useRef<HTMLIFrameElement>(null);
+/* The player's code (the play button, the frame, the addresses) is its own chunk. A client module that a route's server
+ * components import ships in that route's chunks whether it renders or not, and ProseBlocks reaches every article,
+ * legal page and answer; an eager island put about 1.5 KB gzip on each article (three copies, one per chunk) for a video
+ * no page had yet (task 8b.2c, production build). Lazy, only a page that renders a video fetches it (journal-pipeline §7,
+ * Performance). A static page is prerendered with the button in its HTML (Next waits for the boundary); the browser
+ * fetches the chunk when it hydrates the boundary, and React replays a press made before then. */
+const Player = lazy(() => import("./player"));
 
-  useEffect(() => {
-    if (playing) frame.current?.focus();
-  }, [playing]);
-
-  if (!playing) {
-    return <IconButton icon={ICON_PLAY} label={label} variant="primary" size="l" className="ks-video__play" onClick={() => setPlaying(true)} />;
-  }
+/** VideoEmbed's island (task 8b.2c): the lazy player, with nothing in its place until it loads on the client. */
+export function VideoEmbedPlayer(props: VideoEmbedPlayerProps) {
   return (
-    <iframe
-      ref={frame}
-      className="ks-video__player"
-      src={playerUrl(provider, videoId)}
-      title={title}
-      allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-      referrerPolicy="strict-origin-when-cross-origin"
-    />
+    <Suspense fallback={null}>
+      <Player {...props} />
+    </Suspense>
   );
 }

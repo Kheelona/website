@@ -183,7 +183,7 @@ describe("ArticleBody: every block type", () => {
   /* A journal post's video (task 8b.2c; D057 item 1; journal-pipeline §5.1, §7): ui/VideoEmbed, a still in the DS frame
      at 16:9 sized to the column, with the play button named by the content's word and the video's title; the caption
      through the content syntax like any other line; the player only after the press. */
-  it("video: a still in the DS frame sized to the column, the play button named by the content's word, the player on the press", () => {
+  it("video: a still in the DS frame sized to the column, the play button named by the content's word, the player on the press", async () => {
     const { container } = render(
       <ArticleBody
         blocks={[{ kind: "part", title: "A part", blocks: [VIDEO] }]}
@@ -196,7 +196,7 @@ describe("ArticleBody: every block type", () => {
     expect(figure.querySelector("img")!.getAttribute("sizes")).toMatch(/700px/);
     expect(figure.querySelector("figcaption")!.innerHTML).toBe('Press play to <a href="/setup">set it up</a>.');
     expect(container.querySelector("iframe")).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: "Play video: Setting up Kheelu" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Play video: Setting up Kheelu" }));
     expect(figure.querySelector("iframe")).toHaveAttribute("title", "Setting up Kheelu");
   });
 

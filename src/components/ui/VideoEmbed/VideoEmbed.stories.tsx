@@ -48,7 +48,7 @@ export const Pressed: Story = {
   args: Vimeo.args,
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole("button", { name: `${args.playLabel} ${args.title}` }));
+    await userEvent.click(await canvas.findByRole("button", { name: `${args.playLabel} ${args.title}` }));
     const frame = canvasElement.querySelector("iframe");
     await expect(frame).toHaveAttribute("title", args.title);
     await waitFor(() => expect(canvasElement.ownerDocument.activeElement).toBe(frame));

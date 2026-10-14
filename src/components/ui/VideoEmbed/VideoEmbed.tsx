@@ -27,7 +27,8 @@ export interface VideoEmbedProps {
  * Nothing from YouTube or Vimeo loads before the press: the still (YouTube's own; Vimeo has none without an API call, so
  * its frame shows the button alone) is a lazy next/image, fetched by this site's optimiser, so the reader's browser
  * contacts neither host at rest (main's reasoning: about 500 KB and third-party connections for a video most readers
- * never play). The island (`VideoEmbed.client.tsx`) swaps the button for the player frame on the press. No `<video>`
+ * never play). The island (`VideoEmbed.client.tsx`) loads the player lazily, so only a page with a video fetches its
+ * code; the player swaps the button for the player frame on the press. No `<video>`
  * element, no tracking event (none exists for a video), no motion of its own (architecture §11.3): the DS IconButton's
  * own tap feedback only. Server component.
  */
