@@ -279,7 +279,7 @@ export const termsPage = {
       blocks: [
         {
           kind: "p",
-          text: "Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. For 3-year-olds, we advise having a grown-up nearby.",
+          text: "Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby.",
         },
         {
           kind: "p",

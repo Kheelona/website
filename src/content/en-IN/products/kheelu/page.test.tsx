@@ -106,11 +106,12 @@ describe("the product page as rendered (token mode)", () => {
     expect(folds(APPROVED).filter((fold, i) => words(fold) !== words(folds(facts)[i])).map(name)).toEqual(["modes-title", "specs-title"]);
   });
 
-  it("titles the films without a count (D056 item 2) and cites Harvard in Home's short form (CMO A M6; V17)", () => {
+  it("titles the films without a count or a place under the films' count (D056 item 2, D057 item 2) and cites Harvard in Home's short form (CMO A M6; V17)", () => {
     const films = BUILT.main.querySelector("#films-title")!;
-    expect(text(films)).toBe(COPY_FIXES["meet-kheelu"].build[0]);
-    expect(films.querySelector(".kh-hand")?.textContent).toBe("own homes.");
-    expect(text(BUILT.main.querySelector("#src-1"))).toBe(COPY_FIXES["meet-kheelu"].build[2]);
+    expect(text(films.closest("header")!.querySelector(".kh-eyebrow"))).toBe(COPY_FIXES["meet-kheelu"].build[0]);
+    expect(text(films)).toBe(COPY_FIXES["meet-kheelu"].build[1]);
+    expect(films.querySelector(".kh-hand")?.textContent).toBe("real families.");
+    expect(text(BUILT.main.querySelector("#src-1"))).toBe(COPY_FIXES["meet-kheelu"].build[3]);
     expect(BUILT.main.querySelector("#src-1 a")?.getAttribute("href")).toBe("https://developingchild.harvard.edu/key-concept/serve-and-return/");
   });
 
@@ -343,11 +344,12 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
     for (const selector of sel("build")) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
   });
 
-  it("leaves beside them only the sources line of task 7.1b's copy fixes (V17), found once on the page as it renders", () => {
+  it("leaves beside them only the films heading and the sources line of the copy fixes (V17), each found once on the page as it renders", () => {
     const others = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.approvedBy !== FACTS.approvedBy);
     expect(others.map((r) => [r.side, r.selector, r.approvedBy])).toEqual(
-      (["mockup", "build"] as const).map((side) => [side, "#src-1", COPY_FIXES["meet-kheelu"].approvedBy]),
+      (["mockup", "build"] as const).flatMap((side) => ["#films-title", "#src-1"].map((selector) => [side, selector, COPY_FIXES["meet-kheelu"].approvedBy])),
     );
+    expect(BUILT.main.querySelectorAll("#films-title")).toHaveLength(1);
     expect(BUILT.main.querySelectorAll("#src-1")).toHaveLength(1);
   });
 });

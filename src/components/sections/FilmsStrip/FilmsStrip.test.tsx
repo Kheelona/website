@@ -109,16 +109,17 @@ describe("FilmsStrip: the approved markup", () => {
   });
 
   it("product fold 2: the #films fragment and the proof line in the caption style", () => {
-    // The approved strip with the heading task 7.1b changed: no count of families (D056 item 2; deviation V17).
+    // The approved strip with the heading the founder changed: no count of families, no place (D056 item 2, D057 item 2;
+    // deviation V17).
     const main = withFacts(parseMockup("meet-kheelu").querySelector("main")!, COPY_FIXES["meet-kheelu"].edits);
     const section = main.querySelector("[data-films]")!.closest("section")!;
-    const title = "Real families, in their {hand:own homes.}";
+    const title = "Real children, {hand:real families.}";
     expect(stories.Product.args?.heading?.title).toBe(title);
     const { container } = render(
       <FilmsStrip
         {...PROPS}
         id="films"
-        heading={{ eyebrow: "Real homes", title, lead: norm(section.querySelector(".kh-heading__lead")?.textContent), id: "films-title" }}
+        heading={{ eyebrow: "Seven films", title, lead: norm(section.querySelector(".kh-heading__lead")?.textContent), id: "films-title" }}
         proof={{ text: norm(section.querySelector(".mk-films-proof")?.textContent), size: "caption" }}
         posters="lazy"
       />,

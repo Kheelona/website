@@ -63,12 +63,22 @@ const TRAINING_SLOT = ": {ph:how a parent turns training off, for example a sett
 /** Section 8's refund timing, as /refund words it (task 7.1b; D056 item 4; deviation V21): the approved sentence and the
  *  build's (test/e2e/support/deviations.ts COPY_FIXES.terms). */
 const REFUND_TIMING = { approved: COPY_FIXES.terms.mockup[0], now: COPY_FIXES.terms.build[0] } as const;
+/** Section 9's age-3 sentence in the site's one wording (the founder's answer, D057 item 3; deviation V21). */
+const AGE_THREE = { approved: COPY_FIXES.terms.mockup[1], now: COPY_FIXES.terms.build[1] } as const;
 
 /** The fixture body with the founder's page facts applied: the date (item 8), "Every order gets a GST invoice." alone
- *  and no price breakup (item 10), "with a switch in the parent app" (item 11); and section 8's refund timing as task
- *  7.1b changed it. */
+ *  and no price breakup (item 10), "with a switch in the parent app" (item 11); section 8's refund timing as task 7.1b
+ *  changed it; and section 9's age-3 sentence (D057 item 3). */
 function withTermsFacts(doc: LegalPage): LegalPage {
   const parts = doc.parts.map((p) => {
+    if (p.id === "ages") {
+      return {
+        ...p,
+        blocks: p.blocks.map((b) =>
+          b.kind === "p" && typeof b.text === "string" && b.text.includes(AGE_THREE.approved) ? { ...b, text: b.text.replace(AGE_THREE.approved, AGE_THREE.now) } : b,
+        ),
+      };
+    }
     if (p.id === "returns") {
       return {
         ...p,

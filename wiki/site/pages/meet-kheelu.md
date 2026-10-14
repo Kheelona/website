@@ -186,9 +186,9 @@ lines 15-21); the product page prefers them to the illustrative exchange (task b
 
 **Copy:**
 
-> **Eyebrow:** Real homes
+> **Eyebrow:** Seven films
 >
-> **H2:** Real families, in their *own homes.*
+> **H2:** Real children, *real families.*
 >
 > **Lede (the proof line):** Watch the children do the thinking. Then hear from two of their parents.
 >
@@ -196,7 +196,7 @@ lines 15-21); the product page prefers them to the illustrative exchange (task b
 >
 > **Caption under the strip:** Shared with each family's written consent.
 
-- **H2 accent:** `Hand` on "own homes."
+- **H2 accent:** `Hand` on "real families." (D057 item 2)
 - **The films:** reuse Home's markup and assets exactly (`mockup/pages/home.html` lines 43-107): the seven
   tiles in Home's order, the same chips, captions, durations, poster alt texts and play labels
   ("Play: {chip}. {caption}", "Previous video", "Next video", "1 of 7"). Film 6's caption is the founder's:
@@ -844,7 +844,7 @@ Each with options and a recommendation.
    founder sends the net quantity and the size before Gate B, so the declarations the page must carry while it
    takes orders are there from launch. **Recommend (b)**: those two need no test report, only the final product;
    the others follow as (a).
-8. **"In their own homes" on the films heading (new, task 7.1b).** D056 item 2 took the count out; the heading
+8. **Answered 2026-10-14 ([D057](../../decisions/D057-journal-from-dashboard-and-three-wordings-2026-10-14.md) item 2): option (b).** The question as asked: **"In their own homes" on the films heading (new, task 7.1b).** D056 item 2 took the count out; the heading
    still says the films were shot in the families' own homes, and the eyebrow says "Real homes". On 2026-10-11 the
    founder answered "Not every film was shot at home" about these same seven films ([home.md](home.md) line 220),
    and Home's lede became "Real children, real families." for that reason. (a) Keep D056's words as applied, if
@@ -948,3 +948,8 @@ line of the Copy blocks stands word for word as approved at Gate A (D046) and as
   the site's one wording (Home, `/safety`, `/setup` and the buyer's guide say it the same way). The answer goes from 57
   to 59 words; no other word changes. Built in `src/content/en-IN/faqs.ts` (`right-for-a-three-year-old`); parity
   deviation V17 (`COPY_FIXES["meet-kheelu"]`). The founder signs it off at Gate B (D015).
+- **Fold 2, the films heading again (founder, [D057](../../decisions/D057-journal-from-dashboard-and-three-wordings-2026-10-14.md)
+  item 2, 2026-10-14; question 8, option (b)).** The eyebrow "Real homes" becomes "Seven films" (the count checked in
+  D040) and the H2 "Real families, in their *own homes.*" becomes "Real children, *real families.*" (Home's approved
+  lede words; `Hand` on "real families."): not every film was shot at home (the founder, 2026-10-11). The lede below
+  is unchanged. Built in `src/content/en-IN/products/kheelu/page.ts`; parity deviation V17 (`COPY_FIXES["meet-kheelu"]`).

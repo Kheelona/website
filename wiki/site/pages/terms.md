@@ -365,8 +365,8 @@ Notes:
 
 > ## Who Kheelu is for.
 >
-> Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. For 3-year-olds, we advise
-> having a grown-up nearby.
+> Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. If your child is 3, keep a grown-up
+> nearby.
 >
 > When you set Kheelu up, you enter your child's age in the parent app. Every reply passes an age-graded safety
 > layer set to that age. You can change it later.
@@ -620,7 +620,7 @@ pages). Two more for this page:
    word for word ([refund.md](refund.md) line 188). **Recommend (b)**: one promise, worded once, and it is the one
    the founder gave. Not applied: D055 names no line on `/terms` here.
 
-8. **The age-3 sentence in section 9** (new, task 7.1b; [CMO built-page review A](../../qa/cmo-review-built-a-2026-10-14.md)
+8. **Answered 2026-10-14 ([D057](../../decisions/D057-journal-from-dashboard-and-three-wordings-2026-10-14.md) item 3): aligned.** The question as asked: **The age-3 sentence in section 9** (new, task 7.1b; [CMO built-page review A](../../qa/cmo-review-built-a-2026-10-14.md)
    M8: one wording for the age-3 advice everywhere). Section 9 was written as Home's age answer, verbatim. Home's
    FAQ now says "If your child is 3, keep a grown-up nearby."; section 9 still says "For 3-year-olds, we advise
    having a grown-up nearby." M8 lists the FAQ answers and `/setup`, not `/terms`. (a) Keep section 9 as approved;
@@ -710,3 +710,8 @@ stands as approved. The frozen mockup (`mockup/terms.html`) is not edited: the b
   ("We start your refund within 2 working days of your request; your bank takes 5-7 working days.") is a different
   case, the cancellation before dispatch, and matches `/refund`'s own cancellation line. Title, meta, H1, H2s and
   close are unchanged.
+- **Section 9, the age-3 sentence (founder, [D057](../../decisions/D057-journal-from-dashboard-and-three-wordings-2026-10-14.md)
+  item 3, 2026-10-14; question 8).** "For 3-year-olds, we advise having a grown-up nearby." becomes "If your child is
+  3, keep a grown-up nearby.", the sentence every FAQ answer uses (CMO built-page review A M8). The advice is still
+  D041's; no other word changes. Built in `src/content/en-IN/legal/terms.ts` (`ages`); parity deviation V21
+  (`COPY_FIXES.terms`). Signed off with the other legal pages (D029).

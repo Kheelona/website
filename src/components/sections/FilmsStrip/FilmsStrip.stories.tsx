@@ -48,8 +48,8 @@ export const Product: Story = {
   args: {
     id: "films",
     heading: {
-      eyebrow: "Real homes",
-      title: "Real families, in their {hand:own homes.}",
+      eyebrow: "Seven films",
+      title: "Real children, {hand:real families.}",
       lead: "Watch the children do the thinking. Then hear from two of their parents.",
       id: "films-title",
     },

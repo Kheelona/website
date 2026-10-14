@@ -416,7 +416,7 @@ pre-order, with no amount anywhere on the screen.
 | `expired` | The event's end date has passed (`wt:tiers.ts:92-93`) | This event link has expired. You can still pre-order at the usual price in our store. |
 | `full` | The event's allocation (its cap) is used up (`wt:tiers.ts:95-104`) | The allocation for this event has all gone. You can still pre-order at the usual price in our store. |
 | `unknown` | The link's signature is good, but no active event tier has that id: the tier was switched off (inactive), removed, or set up without a real amount (`wt:tiers.ts:82-90, 115-121`) | The price on this event link is not available. You can still pre-order at the usual price in our store. |
-| `bad-signature` | The link has no signature, or one that does not match: unsigned, altered or cut short (`wt:tiers.ts:78-80`) | This link is not one of ours. You can pre-order at the usual price in our store. |
+| `bad-signature` | The link has no signature, or one that does not match: unsigned, altered or cut short (`wt:tiers.ts:78-80`) | This link is incomplete, or not one of ours. You can pre-order at the usual price in our store. |
 | `cap-reached` and `not-yet` | Only at `/e/launch` once the store is in full mode, or at `/e/full` while it is in token mode (`wt:tiers.ts:66-76`) | The price on this link is not on offer right now. You can still pre-order at the usual price in our store. |
 
 - **Why (CMO review C, m1):** the panel printed the frozen `tierRefusalMessage` words (`wt:src/lib/store/tiers.ts:133-145`,
@@ -425,7 +425,9 @@ pre-order, with no amount anywhere on the screen.
   ([D028](../../decisions/D028-price-wording.md)) and would be false in full mode. "On this page" is wrong in every line,
   because the button leaves for the store, and "Refresh this page" cannot help here: a refresh brings the same refusal.
   `tiers.ts` is not changed: these bodies are words for the presentation side to print instead.
-- **First sentences:** `expired`, `full` and `bad-signature` keep their live first sentence word for word. `unknown`
+- **First sentences:** `expired` and `full` keep their live first sentence word for word; `bad-signature` did too until
+  the founder's answer of 2026-10-14 ([D057](../../decisions/D057-journal-from-dashboard-and-three-wordings-2026-10-14.md)
+  item 4): "This link is incomplete, or not one of ours.", true whether the link was cut short or forged. `unknown`
   gets its own: its link passed the signature check, so "not one of ours" would be false, and the line has to be true
   whether the tier was switched off, removed or mis-set. The two mode refusals share one line, with no amount and no
   count (the first 500 units stay an offer term printed once, on the store's summary card, [D041](../../decisions/D041-gate-a-round-1.md)).

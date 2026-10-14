@@ -107,10 +107,14 @@ describe("event page: a refused link's body, one per reason (store.md, Event lin
 
   it("keeps the live first sentence where it is still true, and never calls a signed link 'not one of ours'", () => {
     const live = (reason: (typeof REASONS)[number]) => tierRefusalMessage(reason).split(". ")[0];
-    for (const reason of ["expired", "full", "bad-signature"] as const) {
+    for (const reason of ["expired", "full"] as const) {
       expect(eventPage.refused.reasons[reason].startsWith(`${live(reason)}.`), reason).toBe(true);
     }
     expect(eventPage.refused.reasons.unknown).not.toMatch(/not one of ours/);
+  });
+
+  it("tells a parent whose link fails its signature that it may only be cut short, not only forged (D057 item 4)", () => {
+    expect(eventPage.refused.reasons["bad-signature"]).toBe("This link is incomplete, or not one of ours. You can pre-order at the usual price in our store.");
   });
 });
 

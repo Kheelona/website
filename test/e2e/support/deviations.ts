@@ -91,8 +91,10 @@ const STORIES_V9 = "deviations.md V9 (founder, D053, 2026-10-14; task 6.5)";
 /** A page's accepted changes as one text rule: the sentences they change, as listed beside their edits (page-facts.ts's
  *  form; each page's parity-deviations unit test proves them exactly the ones the edits change). */
 const factsRule = (facts: PageFacts): TextDeviation => ({
-  mockup: oneOf(facts.mockup),
-  build: oneOf(facts.build),
+  /* Each line also in capitals: an eyebrow (kh-eyebrow) renders uppercase, and the browser's text reports it so
+     ("SEVEN FILMS"; D057 item 2), while the unit tests read the words as written. */
+  mockup: oneOf([...facts.mockup, ...facts.mockup.map((line) => line.toUpperCase())]),
+  build: oneOf([...facts.build, ...facts.build.map((line) => line.toUpperCase())]),
   reason: facts.reason,
   approvedBy: facts.approvedBy,
 });
@@ -152,6 +154,8 @@ const AGE_THREE = {
      merge, copy review 7.1b minor 2): the same sentence, 59 and 58 words. */
   product: { mockup: "At 3, play with a grown-up nearby.", build: AGE_THREE_LINE },
   guide: { mockup: "At 3, we advise play with a grown-up nearby.", build: AGE_THREE_LINE },
+  /* /terms section 9 (the founder's answer, D057 item 3). */
+  terms: { mockup: "For 3-year-olds, we advise having a grown-up nearby.", build: AGE_THREE_LINE },
 } as const;
 /** The two FAQ answers' approved words around the age-3 sentence (products/kheelu FAQ 3; the guide's "What age"). */
 const PRODUCT_AGE_ANSWER = `Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. ${AGE_THREE.product.mockup} When you set it up, you enter your child’s age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.`;
@@ -162,8 +166,11 @@ const GUIDE_AGE_ANSWER = (age: string, safety: string) =>
 const REFUND_REACHES = { from: "your refund is processed within 7 working days", to: "your refund reaches you within 7 working days" } as const;
 const HOME_REFUND = "Once it reaches us and qualifies for return, your refund is processed within 7 working days.";
 const TERMS_REFUND = "Once your Kheelu reaches us and qualifies for return, your refund is processed within 7 working days.";
-/** The product page's films heading without a count (D056 item 2) and its sources line in Home's short form (A M6). */
-const FILMS_TITLE = { mockup: "Seven families, in their own homes.", build: "Real families, in their own homes." } as const;
+/** The product page's films heading without a count of families and without "in their own homes" (D056 item 2, then
+ *  D057 item 2: not every film was shot at home), its eyebrow the films' count (D040), and its sources line in Home's
+ *  short form (A M6). */
+const FILMS_EYEBROW = { mockup: "Real homes", build: "Seven films" } as const;
+const FILMS_TITLE = { mockup: "Seven families, in their own homes.", build: "Real children, real families." } as const;
 const HARVARD_URL = "https://developingchild.harvard.edu/key-concept/serve-and-return/";
 const HARVARD_LABEL = "developingchild.harvard.edu/key-concept/serve-and-return";
 const HARVARD = "Sources [1] Center on the Developing Child at Harvard University, “Serve and Return” (Key Concepts)";
@@ -204,7 +211,8 @@ export const COPY_FIXES = {
   },
   "meet-kheelu": {
     edits: [
-      { at: "#films-title", was: FILMS_TITLE.mockup, now: 'Real families, in their <span class="kh-hand">own homes.</span>', inner: true },
+      { at: ".kh-eyebrow", was: FILMS_EYEBROW.mockup, now: FILMS_EYEBROW.build, inner: true },
+      { at: "#films-title", was: FILMS_TITLE.mockup, now: 'Real children, <span class="kh-hand">real families.</span>', inner: true },
       {
         at: "#src-1",
         was: `${HARVARD}${HARVARD_LOCATOR}. ${HARVARD_LABEL}`,
@@ -213,13 +221,13 @@ export const COPY_FIXES = {
       },
       swap(".kh-faq__a > p", PRODUCT_AGE_ANSWER, AGE_THREE.product.mockup, AGE_THREE.product.build),
     ],
-    mockup: [FILMS_TITLE.mockup, AGE_THREE.product.mockup, `${HARVARD}${HARVARD_LOCATOR}. ${HARVARD_LABEL}`],
-    build: [FILMS_TITLE.build, AGE_THREE.product.build, `${HARVARD}. ${HARVARD_LABEL}`],
-    /* The short sources line is one or two lines shorter at every width and moves the folds below it; FAQ 3 sits in a
-       closed item. */
-    hidden: { both: ["#src-1"], mockup: [], build: [] },
-    reason: "the films heading claims no count of families (D056 item 2), the sources line is Home's short form (CMO A M6), and FAQ 3 gives the age-3 advice in one wording (A M8)",
-    approvedBy: "deviations.md V17 (founder, D056 item 2, 2026-10-14; CMO built-page review A M6; copy review 7.1b; task 7.1b)",
+    mockup: [FILMS_EYEBROW.mockup, FILMS_TITLE.mockup, AGE_THREE.product.mockup, `${HARVARD}${HARVARD_LOCATOR}. ${HARVARD_LABEL}`],
+    build: [FILMS_EYEBROW.build, FILMS_TITLE.build, AGE_THREE.product.build, `${HARVARD}. ${HARVARD_LABEL}`],
+    /* The films heading is shorter and wraps to fewer lines on a phone, and the short sources line is one or two lines
+       shorter at every width: each moves the folds below it. FAQ 3 sits in a closed item. */
+    hidden: { both: ["#films-title", "#src-1"], mockup: [], build: [] },
+    reason: "the films heading claims no count of families and no place (D056 item 2, D057 item 2) under the films' count, the sources line is Home's short form (CMO A M6), and FAQ 3 gives the age-3 advice in one wording (A M8)",
+    approvedBy: "deviations.md V17 (founder, D056 item 2 and D057 item 2, 2026-10-14; CMO built-page review A M6; copy review 7.1b; task 7.1b)",
   },
   safety: {
     edits: [
@@ -255,12 +263,13 @@ export const COPY_FIXES = {
         REFUND_REACHES.from,
         REFUND_REACHES.to,
       ),
+      swap("p", `Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. ${AGE_THREE.terms.mockup}`, AGE_THREE.terms.mockup, AGE_THREE.terms.build),
     ],
-    mockup: [TERMS_REFUND],
-    build: [TERMS_REFUND.replace(REFUND_REACHES.from, REFUND_REACHES.to)],
+    mockup: [TERMS_REFUND, AGE_THREE.terms.mockup],
+    build: [TERMS_REFUND.replace(REFUND_REACHES.from, REFUND_REACHES.to), AGE_THREE.terms.build],
     hidden: NO_HIDES,
-    reason: "section 8's refund timing as /refund words it (D056 item 4; D055 item 5)",
-    approvedBy: "deviations.md V21 (founder, D056 item 4, 2026-10-14; task 7.1b)",
+    reason: "section 8's refund timing as /refund words it (D056 item 4; D055 item 5), and section 9's age-3 advice in the site's one wording (D057 item 3)",
+    approvedBy: "deviations.md V21 (founder, D056 item 4 and D057 item 3, 2026-10-14; task 7.1b)",
   },
   "ai-toys-for-kids-in-india": {
     edits: [

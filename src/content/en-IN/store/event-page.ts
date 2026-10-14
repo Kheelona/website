@@ -103,7 +103,9 @@ export const eventPage = {
       /* A signed link with no live tier behind it (switched off, removed, or set without a real amount): its signature
          passed, so "not one of ours" would be false. */
       unknown: `The price on this event link is not available. You can still pre-order ${usualPrice}`,
-      "bad-signature": `This link is not one of ours. You can pre-order ${usualPrice}`,
+      /* No signature, or one that does not match: forged, or a QR link cut short when forwarded, so the line says both
+         (the founder, D057 item 4). */
+      "bad-signature": `This link is incomplete, or not one of ours. You can pre-order ${usualPrice}`,
       "cap-reached": notOnOffer,
       "not-yet": notOnOffer,
     },

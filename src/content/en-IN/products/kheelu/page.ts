@@ -102,8 +102,8 @@ export const kheeluPage = {
         id: "films",
         heading: {
           id: "films-title",
-          eyebrow: "Real homes",
-          title: "Real families, in their {hand:own homes.}",
+          eyebrow: "Seven films",
+          title: "Real children, {hand:real families.}",
           lead: "Watch the children do the thinking. Then hear from two of their parents.",
         },
         films,
