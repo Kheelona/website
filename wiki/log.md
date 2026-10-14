@@ -812,3 +812,9 @@ build's ("The United States and other countries"). The founder answered eight qu
 **[D056](decisions/D056-founder-answers-built-page-reviews-2026-10-14.md)** (delete limit left as is; "Real families";
 the in-app note on; refund "reaches you"; keep the Karnataka emblem and the Kheelona+ line; no examples note; the
 founder turns Meta's automatic events off). Fix batch 7.1a-7.1f in [tasks](engineering/tasks.md) "Wave 8 round 1".
+
+## [2026-10-14 09:07] agent | Wave 8 fix batch launched (run wf_4eb5e856-7af): 7.1a-7.1f, base `fdb7580`
+7.1a chrome and interaction (high), 7.1b copy fixes (high; copy stage on meet-kheelu, safety, setup, stories, home,
+terms in `.claude/worktrees/w8-7.1b`), 7.1c store fixes (high; copy stage on store and store-confirmation in
+`w8-7.1c`), 7.1d the related-guide ring (normal; copy stage on ten guides in `w8-7.1d`), 7.1e the LP probe's leak and
+PostHog visibility (normal), 7.1f share images for the 20 guides (normal). Ports 3600-3605 / 6200-6205.
