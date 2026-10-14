@@ -1059,3 +1059,15 @@ Authentication in the dashboard (the main session never changes Vercel settings)
 beta sends `X-Robots-Tag: noindex, nofollow` on every response (`next.config.ts`) and the store shows "Pre-orders open
 here shortly." with the WhatsApp button (D051). Once the hosts answer 200, the main session checks them and runs beta QA
 (task 7.2) without the bypass secret. [D060](decisions/D060-beta-open-to-the-public-2026-10-14.md).
+
+## [2026-10-15 03:23] qa | Beta public (D060): smoke passed; beta QA (task 7.2) handed to a workflow (run `wf_9d6aaf76-174`)
+The founder turned off Vercel Authentication: both beta hosts answer 200 with `x-robots-tag: noindex, nofollow`. Main
+session smoke: 14 pages 200, a bogus path 404, robots.txt, sitemap.xml, llms.txt and pricing.md 200; betastore shows
+"Pre-orders open here shortly." with no Razorpay; no Meta pixel, GA4, Ahrefs or GTM in the home page; robots meta
+noindex; canonical to https://kheelona.com; `/safety` carries f967d84's alt (the newest build is served);
+`x-vercel-id` `sfo1::bom1::…` (function region bom1). Beta QA scoped to what a deploy changes (D052): four checks run
+in parallel by QA agents, each then refuted by a verifier: (1) hosts, N1 noindex on every route and file, the redirect
+matrix on Vercel, the store APIs' 503, region and timing; (2) CTAs to betastore, chrome, the tracking probe and a
+§5.3 capture walk, then a read-only HogQL check of `env = 'beta'`; (3) axe and Lighthouse on beta; (4) the store
+form and `/thanks` phone screenshots from the local build with stand-in values (D051). Evidence under
+`wiki/raw/qa/beta-2026-10-15/` (local, uncommitted, D039).
