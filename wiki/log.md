@@ -1071,3 +1071,9 @@ matrix on Vercel, the store APIs' 503, region and timing; (2) CTAs to betastore,
 §5.3 capture walk, then a read-only HogQL check of `env = 'beta'`; (3) axe and Lighthouse on beta; (4) the store
 form and `/thanks` phone screenshots from the local build with stand-in values (D051). Evidence under
 `wiki/raw/qa/beta-2026-10-15/` (local, uncommitted, D039).
+
+## [2026-10-15 03:37] qa | Beta QA (task 7.2) on hold at the founder's word ("hold beta-qa")
+Workflow `wf_9d6aaf76-174` stopped mid-run, before any check reported; the keep-awake stopped too. No server, browser
+or Lighthouse left running; no tracked file changed. Partial evidence stays local in `wiki/raw/qa/beta-2026-10-15/`
+(uncommitted, D039). To resume: re-run the workflow script with `resumeFromRunId` (agents that finished return cached
+results) once the founder says go. The beta links stay public (D060).
