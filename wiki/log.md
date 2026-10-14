@@ -952,3 +952,8 @@ longer shows the claims D058 withdrew. Wave ii (`wf_437afd5d-b48`): both builder
 questions); the main session saved each worktree's uncommitted files as unverified WIP commits (8b.2d `ce84187`:
 topics, photos, nowrap, read-minutes, ring; 8b.1b `47d4942`: D058 claim entries, claims.md rows, a fixture), deleted
 8b.2d's scratch test folder, and resumed both in their worktrees (run `wf_55e2af9d-ae9`).
+
+## [2026-10-14 21:06] agent | Wave ii paused while the Mac slept (05:00-08:28 PDT), not stuck; a 4-hour sleep blocker started
+`pmset -g log`: the Mac entered sleep at 05:00 PDT and only dark-woke for seconds at 05:56, 06:30, 07:00 and 08:01;
+both resumed builders (`wf_55e2af9d-ae9`) show the same gaps and have worked again since 08:28. `caffeinate -i -s -t
+14400` now blocks idle sleep (on battery, closing the lid still sleeps the Mac).
