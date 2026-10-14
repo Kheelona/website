@@ -7,14 +7,18 @@ import type { Offer } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
+import { COPY_FIXES } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { words } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 
 /* The /safety route (task 5.3; structure §3.1, §5): the page module through PageTemplate with the live offer, thin, and
  * as a whole page equal to the approved mockup's <main> (mockup/safety.html, D046): the same words fold by fold, the
  * one chilli button (`finale`), reveals only where the mockup reveals and never on money, and a FAQPage of exactly the
- * questions the page shows: fold 2's four facts, then the two FAQ answers (wave-4 close; architecture §9.2). */
+ * questions the page shows: fold 2's four facts, then the two FAQ answers (wave-4 close; architecture §9.2). The approved
+ * page is the mockup with task 7.1b's copy fixes applied (deviation V19; test/e2e/support/deviations.ts COPY_FIXES.safety):
+ * the age-3 advice in one wording (CMO review A M8) and the open answer's pointer to the next question (A M4). */
 
 const getOffer = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/offer/get-offer", () => ({ getOffer }));
@@ -29,7 +33,8 @@ const SOURCE = readFileSync("src/app/(site)/safety/page.tsx", "utf8");
 const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 
 const mockupDoc = new DOMParser().parseFromString(readRepoFile("mockup/safety.html"), "text/html");
-const mockupMain = mockupDoc.querySelector("main")!;
+const frozenMain = mockupDoc.querySelector("main")!;
+const mockupMain = withFacts(frozenMain, COPY_FIXES.safety.edits);
 
 /** The page as the site shell holds it: the route's output inside <main>. */
 async function renderPage(offer: Offer) {
@@ -122,6 +127,15 @@ describe("/safety: the rendered page against the approved mockup", () => {
   it("prints every word of the mockup's <main>, in order, and nothing else (token mode)", async () => {
     const { main } = await renderPage(buildOffer("token"));
     expect(words(visible(main))).toBe(words(mockupMain));
+  });
+
+  it("differs from the frozen mockup only in the FAQ fold, in the three lines task 7.1b changed (V19)", async () => {
+    const { main } = await renderPage(buildOffer("token"));
+    const fold = (root: Element, name: string) => root.querySelector(`section[aria-labelledby="${name}"]`)!;
+    expect(foldNames(frozenMain).filter((name) => words(fold(frozenMain, name!)) !== words(fold(mockupMain, name!)))).toEqual(["faq-title"]);
+    const faq = words(fold(main, "faq-title"));
+    for (const line of COPY_FIXES.safety.build) expect(faq).toContain(line);
+    for (const line of COPY_FIXES.safety.mockup) expect(faq).not.toContain(line);
   });
 
   it("changes only the price sentence in full mode (D028; safety copy, fold 8)", async () => {

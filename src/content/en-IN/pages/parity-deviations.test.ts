@@ -8,6 +8,8 @@ import type { SectionEntryOf, SectionKind } from "@/layouts/sections-registry";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import {
+  COPY_FIXES,
+  type CopyFixesSlug,
   SETUP_STEP_BUILD,
   TEAM_BIOS_BUILD,
   TEAM_LEAD_BUILD,
@@ -140,18 +142,18 @@ describe("team parity deviations (V7)", () => {
   });
 });
 
-describe("setup parity deviations (V8, and the founder's page facts V15)", () => {
+describe("setup parity deviations (V8, the founder's page facts V15, and task 7.1b's age line V20)", () => {
   const V8 = TEXT_DEVIATIONS.setup.find((rule) => rule.approvedBy.startsWith("deviations.md V8"))!;
   const FACTS = PAGE_FACTS.setup;
   const factsRule = TEXT_DEVIATIONS.setup.find((rule) => rule.approvedBy === FACTS.approvedBy)!;
 
-  it("is two rules: V8 for step 2's light, then the founder's page facts (task 6.7)", () => {
-    expect(TEXT_DEVIATIONS.setup.map((rule) => rule.approvedBy)).toEqual([V8.approvedBy, FACTS.approvedBy]);
+  it("is three rules: V8 for step 2's light, the founder's page facts (task 6.7), then fold 4's age line (task 7.1b)", () => {
+    expect(TEXT_DEVIATIONS.setup.map((rule) => rule.approvedBy)).toEqual([V8.approvedBy, FACTS.approvedBy, COPY_FIXES.setup.approvedBy]);
   });
 
-  it("accepts step 2's light as setup.ts renders it, and with the facts the lines setup.ts renders for them, and nothing else", () => {
-    for (const line of [...SETUP_STEP_BUILD, ...FACTS.build]) expect(contentSentences(setupPage)).toContain(line);
-    expect(accepted("setup", contentSentences(setupPage))).toEqual([FACTS.build[0], ...SETUP_STEP_BUILD, FACTS.build[1]]);
+  it("accepts step 2's light, the facts' lines and the age line as setup.ts renders them, and nothing else", () => {
+    for (const line of [...SETUP_STEP_BUILD, ...FACTS.build, ...COPY_FIXES.setup.build]) expect(contentSentences(setupPage)).toContain(line);
+    expect(accepted("setup", contentSentences(setupPage))).toEqual([FACTS.build[0], ...SETUP_STEP_BUILD, ...COPY_FIXES.setup.build, FACTS.build[1]]);
   });
 
   it("lists exactly the sentences the founder's facts change (page-facts.ts against the mockup)", () => {
@@ -184,5 +186,41 @@ describe("setup parity deviations (V8, and the founder's page facts V15)", () =>
     expect(readRepoFile("mockup/setup.html")).toContain(light);
     expect(mockupMain("setup").filter((line) => V8.mockup.test(line))).toEqual([light]);
     expect(V8.mockup.test("Press and hold the button on Kheelu’s back.")).toBe(false);
+  });
+});
+
+/* Task 7.1b's copy fixes (wiki/qa/deviations.md V9 as amended, V17-V21; test/e2e/support/deviations.ts COPY_FIXES): the
+ * approved lines the copy pages changed after the built-page reviews (D056 items 2 and 4; CMO review A M4, M5, M6, M8;
+ * review B m1). On each of the six pages the rule excuses and accepts exactly the sentences its edits change, and those
+ * are exactly the ones the edits make to the frozen mockup; the route tests hold each page's build to that edited
+ * mockup, markup and words alike, so the accepted sentences are the ones the content renders. */
+describe.each(Object.keys(COPY_FIXES) as CopyFixesSlug[])("%s: task 7.1b's copy fixes as a parity deviation", (slug) => {
+  const fixes = COPY_FIXES[slug];
+  const main = mockupFold(slug, "main");
+  const once = (lines: readonly string[]) => [...new Set(lines)];
+
+  it("lists exactly the sentences the edits change (against the frozen mockup), one build sentence for each approved one", () => {
+    expect(factSentences(main, fixes.edits)).toEqual({ missing: [...fixes.mockup], extra: [...fixes.build] });
+    expect(fixes.mockup.length).toBeGreaterThan(0);
+    expect(fixes.build).toHaveLength(fixes.mockup.length);
+  });
+
+  it("is one rule of the page, which excuses and accepts exactly those sentences and no other line", () => {
+    const rule = (TEXT_DEVIATIONS[slug] ?? []).filter((r) => r.approvedBy === fixes.approvedBy);
+    expect(rule).toHaveLength(1);
+    expect(ruleReach(main, fixes.edits, rule[0])).toEqual({ excused: once(fixes.mockup), accepted: once(fixes.build) });
+    expect(rule[0].jsOff).toBeUndefined();
+  });
+
+  it("hides for the pixels exactly the blocks its edits reflow, each found once on its side (VISUAL_HIDDEN)", () => {
+    expect(hiddenProblems(main, fixes)).toEqual([]);
+    const rules = (VISUAL_HIDDEN[slug] ?? []).filter((r) => r.approvedBy === fixes.approvedBy);
+    const sel = (side: string) => rules.filter((r) => r.side === side).map((r) => r.selector);
+    expect(sel("mockup")).toEqual([...fixes.hidden.both, ...fixes.hidden.mockup]);
+    expect(sel("build")).toEqual([...fixes.hidden.both, ...fixes.hidden.build]);
+  });
+
+  it("says nothing the CMO's copy review rules out: no “we advise”, no count of families, no “processed within”", () => {
+    for (const line of fixes.build) expect(line).not.toMatch(/we advise|Seven families|is processed within|which rules hold up|follow below/);
   });
 });

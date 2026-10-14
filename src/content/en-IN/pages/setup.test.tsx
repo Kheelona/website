@@ -7,7 +7,7 @@ import type { SectionEntry } from "@/layouts/sections-registry";
 import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { SETUP_STEP_BUILD, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import { COPY_FIXES, SETUP_STEP_BUILD, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { APP_STORE, GOOGLE_PLAY, PAGE_FACTS, type FactEdit } from "../../../../test/e2e/support/page-facts";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
@@ -29,8 +29,9 @@ import { setupPage } from "./setup";
  * screen bracketed it, CMO review M-S1, and the founder has not confirmed one, D055 item 25). The founder's page facts
  * (task 6.7; test/e2e/support/page-facts.ts): the charger's F4 slot hidden until its value arrives (D055 item 27, D054
  * item 19), the parent app named and linked on both stores (item 26), and the wake-up button's place, the button on
- * Kheelu's back that step 2 holds (item 25). APPROVED below is the mockup with exactly those applied; every comparison
- * runs against it, and one test pins that it differs from the mockup there alone. The activity screenshot is the D044
+ * Kheelu's back that step 2 holds (item 25). Fold 4's age-3 line in the site's one wording (task 7.1b, CMO review A M8;
+ * deviation V20; test/e2e/support/deviations.ts COPY_FIXES.setup). APPROVED below is the mockup with exactly those
+ * applied; every comparison runs against it, and one test pins that it differs from the mockup there alone. The activity screenshot is the D044
  * round-2 file (task 1.5b: no "Games"); the alt and the caption are the mockup's.
  */
 
@@ -40,8 +41,8 @@ const MOCKUP = mockupFold("setup", "main");
 const STEP_2 = { title: "Press and hold the button on Kheelu’s back.", body: SETUP_STEP_BUILD[0] };
 const V8: FactEdit = { at: ".kh-step__body", was: "Hold it for 3 seconds, until the light starts pulsing blue.", now: STEP_2.body, inner: true };
 
-/** The approved page: the mockup's <main> with V8 and the founder's page facts applied. */
-const APPROVED = withFacts(MOCKUP, [...PAGE_FACTS.setup.edits, V8]);
+/** The approved page: the mockup's <main> with V8, the founder's page facts and task 7.1b's age line applied. */
+const APPROVED = withFacts(MOCKUP, [...PAGE_FACTS.setup.edits, V8, ...COPY_FIXES.setup.edits]);
 
 const LABELS = ["hero-title", "before-title", "connect-title", "age-title", "button-title", "talk-title", "help-title"];
 
@@ -107,7 +108,7 @@ describe("Setup: the folds of the approved page", () => {
     expect(folds(BUILT).map((f) => f.id || null)).toEqual(folds(MOCKUP).map((f) => f.id || null));
   });
 
-  it("differs from the mockup only in fold 2's first and last items, step 2's light and fold 5's button line", () => {
+  it("differs from the mockup only in fold 2's first and last items, step 2's light, fold 4's age line and fold 5's button line", () => {
     const step = (main: Element) => main.querySelector("#connect .kh-step:nth-child(2)")!;
     expect(words(step(MOCKUP))).toBe("2 Press and hold the button on Kheelu’s back. Hold it for 3 seconds, until the light starts pulsing blue.");
     expect(words(step(BUILT))).toBe(`2 ${STEP_2.title} ${STEP_2.body}`);
@@ -119,9 +120,13 @@ describe("Setup: the folds of the approved page", () => {
       "Keep your phone with you, with the parent app installed. It’s called the Kheelona app: get it on the App Store for iPhone, or on Google Play for Android.",
     ]);
     expect(items(MOCKUP).slice(1, 3)).toEqual(items(BUILT).slice(1, 3));
+    const ageLine = (main: Element) => words(all(fold(main, "age-title"), "p")[2]);
+    expect(ageLine(MOCKUP)).toBe(`Kheelu is made for children aged 3 to 7. ${COPY_FIXES.setup.mockup[0]}`);
+    expect(ageLine(BUILT)).toBe(`Kheelu is made for children aged 3 to 7. ${COPY_FIXES.setup.build[0]}`);
     const rest = (main: Element) => {
       const copy = main.cloneNode(true) as Element;
-      for (const gone of copy.querySelectorAll('#connect .kh-step:nth-child(2), [aria-labelledby="before-title"] li, [aria-labelledby="button-title"] p:first-of-type')) gone.remove();
+      const gone = '#connect .kh-step:nth-child(2), [aria-labelledby="before-title"] li, [aria-labelledby="button-title"] p:first-of-type, [aria-labelledby="age-title"] p:nth-of-type(3)';
+      for (const el of copy.querySelectorAll(gone)) el.remove();
       return words(copy);
     };
     expect(rest(APPROVED)).toBe(rest(MOCKUP));

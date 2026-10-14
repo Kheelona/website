@@ -98,7 +98,7 @@ export const setupPage = {
         copy: [
           "You enter your child’s age in the parent app. Every reply Kheelu gives passes a safety layer set to that age.",
           "You can change it later. Kheelu picks up the change the next time it’s online.",
-          "Kheelu is made for children aged 3 to 7. If your child is 3, keep a grown-up nearby while they talk.",
+          "Kheelu is made for children aged 3 to 7. If your child is 3, keep a grown-up nearby while they play.",
           "While you’re in the app, you can also choose your family’s languages, pick which topics are open and set quiet hours.",
         ],
       },

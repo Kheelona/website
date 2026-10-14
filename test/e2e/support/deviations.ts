@@ -14,7 +14,7 @@ import { product } from "@/content/en-IN/products/kheelu/product";
 import { inAppNote } from "@/content/en-IN/store/in-app-note";
 import { paymentsLine } from "@/content/en-IN/store/payments-line";
 import { toPlainText } from "@/lib/content/plain-text";
-import { PAGE_FACTS, type PageFactsSlug } from "./page-facts";
+import { PAGE_FACTS, type FactEdit, type PageFacts, type PageFactsSlug } from "./page-facts";
 import { sentences } from "./parity";
 
 export type VisualDeviation = {
@@ -88,30 +88,169 @@ export const STORIES_REMOVED_CARD = {
 } as const;
 const STORIES_V9 = "deviations.md V9 (founder, D053, 2026-10-14; task 6.5)";
 
-/** The founder's page facts on one page (task 6.7; D055, D054 items 12 and 19): each placeholder he filled and each line
- *  he ruled off, the sentences listed in page-facts.ts (each page's parity-deviations unit test proves them exactly the
- *  ones its facts change). */
-const pageFacts = (slug: PageFactsSlug): TextDeviation => ({
-  mockup: oneOf(PAGE_FACTS[slug].mockup),
-  build: oneOf(PAGE_FACTS[slug].build),
-  reason: PAGE_FACTS[slug].reason,
-  approvedBy: PAGE_FACTS[slug].approvedBy,
+/** A page's accepted changes as one text rule: the sentences they change, as listed beside their edits (page-facts.ts's
+ *  form; each page's parity-deviations unit test proves them exactly the ones the edits change). */
+const factsRule = (facts: PageFacts): TextDeviation => ({
+  mockup: oneOf(facts.mockup),
+  build: oneOf(facts.build),
+  reason: facts.reason,
+  approvedBy: facts.approvedBy,
 });
 
-/** The blocks the founder's page facts change, hidden for the pixels: on both sides where the words reflow, on the
- *  mockup's alone where a row or line came off (page-facts.ts; each page's parity-deviations test checks every selector
- *  finds one changed block on its side). Their words are compared by the text pass (pageFacts, above). */
-const pageFactsHidden = (slug: PageFactsSlug): VisualHide[] => {
-  const { hidden, approvedBy } = PAGE_FACTS[slug];
+/** The founder's page facts on one page (task 6.7; D055, D054 items 12 and 19): each placeholder he filled and each line
+ *  he ruled off, the sentences listed in page-facts.ts. */
+const pageFacts = (slug: PageFactsSlug): TextDeviation => factsRule(PAGE_FACTS[slug]);
+
+/** The blocks a page's accepted changes touch, hidden for the pixels: on both sides where the words reflow, on the
+ *  mockup's alone where a row or line came off (each page's parity-deviations test checks every selector finds one
+ *  changed block on its side). Their words are compared by the text pass (factsRule, above). `whose` names the changes
+ *  in the printed reason. */
+const factsHidden = (facts: PageFacts, whose: string): VisualHide[] => {
+  const { hidden, approvedBy } = facts;
   const rule = (side: VisualHide["side"], selector: string, reason: string): VisualHide => ({ side, selector, reason, approvedBy });
   return [
     ...(["mockup", "build"] as const).flatMap((side) =>
-      hidden.both.map((selector) => rule(side, selector, "a block the founder's page facts reword, compared by the text pass")),
+      hidden.both.map((selector) => rule(side, selector, `a block ${whose} reword, compared by the text pass`)),
     ),
-    ...hidden.mockup.map((selector) => rule("mockup", selector, "a block the founder's page facts take off, or its approved form")),
-    ...hidden.build.map((selector) => rule("build", selector, "the founder's page facts in a block the build words differently")),
+    ...hidden.mockup.map((selector) => rule("mockup", selector, `a block ${whose} take off, or its approved form`)),
+    ...hidden.build.map((selector) => rule("build", selector, `${whose} in a block the build words differently`)),
   ];
 };
+const pageFactsHidden = (slug: PageFactsSlug): VisualHide[] => factsHidden(PAGE_FACTS[slug], "the founder's page facts");
+
+/* Task 7.1b's copy fixes (wiki/qa/deviations.md V9 as amended, V17-V21): approved lines the copy pages changed after the
+   built-page reviews of 2026-10-14, the founder's answers (D056 items 2 and 4) and the CMO's findings (review A M4, M5,
+   M6 and M8; review B m1), passed by the CMO's copy review (wiki/qa/cmo-review-copy-fixes-7.1b-2026-10-14.md). The
+   founder signs each changed line at Gate B (D015). In page-facts.ts's form: `edits` turn the frozen mockup's elements
+   into the build's (each route's unit test holds the build to the mockup with them applied, markup and words alike), and
+   `mockup` and `build` are the sentences that differ, for the text pass (src/content/en-IN/pages/parity-deviations.test.ts
+   proves them exactly the sentences the edits change). Literal, because Playwright cannot load every content module. */
+
+/** An approved element whose words change in one place: its words with `from` swapped for `to` (plain text only). */
+const swap = (at: string, was: string, from: string, to: string): FactEdit => {
+  if (!was.includes(from)) throw new Error(`"${from}" is not in "${was}"`);
+  return { at, was, now: was.replace(from, to), inner: true };
+};
+const NO_HIDES = { both: [], mockup: [], build: [] } as const;
+
+/** The screen-time topic's line, on the hub and on Home's guide card: the 3-6-9-12 guide that answered "which rules hold
+ *  up" left the journal (D053), so the line names what guide 1 gives (CMO review A M5, review B m1). */
+const SCREEN_TIME_LEAD = {
+  mockup: "How much, which rules hold up, and what to do when the screen goes off.",
+  build: "How much, what the guidelines say, and what to do when the screen goes off.",
+} as const;
+/** The age-3 advice in one wording (CMO review A M8): Home's FAQ in the CMO's short form, /safety and /setup with "while
+ *  they play" (the copy pages as approved; the CMO's copy review asks for the short form there too, a later fix). */
+const AGE_THREE = {
+  home: { mockup: "For 3-year-olds, we advise having a grown-up nearby.", build: "If your child is 3, keep a grown-up nearby." },
+  safety: { mockup: "If your child is 3, we advise play with a grown-up nearby.", build: "If your child is 3, keep a grown-up nearby while they play." },
+  safetyDetail: { mockup: "At 3: we advise play with a grown-up nearby.", build: "At 3: keep a grown-up nearby while they play." },
+  setup: { mockup: "If your child is 3, keep a grown-up nearby while they talk.", build: "If your child is 3, keep a grown-up nearby while they play." },
+} as const;
+/** The refund after a return "reaches you within 7 working days", as /refund says it (D056 item 4; D055 item 5: bank
+ *  time included). */
+const REFUND_REACHES = { from: "your refund is processed within 7 working days", to: "your refund reaches you within 7 working days" } as const;
+const HOME_REFUND = "Once it reaches us and qualifies for return, your refund is processed within 7 working days.";
+const TERMS_REFUND = "Once your Kheelu reaches us and qualifies for return, your refund is processed within 7 working days.";
+/** The product page's films heading without a count (D056 item 2) and its sources line in Home's short form (A M6). */
+const FILMS_TITLE = { mockup: "Seven families, in their own homes.", build: "Real families, in their own homes." } as const;
+const HARVARD_URL = "https://developingchild.harvard.edu/key-concept/serve-and-return/";
+const HARVARD_LABEL = "developingchild.harvard.edu/key-concept/serve-and-return";
+const HARVARD = "Sources [1] Center on the Developing Child at Harvard University, “Serve and Return” (Key Concepts)";
+const HARVARD_LOCATOR = ", undated (page metadata 2024, updated 2026), Key Takeaways and the paragraph after Fast Facts";
+
+export const COPY_FIXES = {
+  stories: {
+    edits: [swap("#screen-time .kh-heading__lead", SCREEN_TIME_LEAD.mockup, SCREEN_TIME_LEAD.mockup, SCREEN_TIME_LEAD.build)],
+    mockup: [SCREEN_TIME_LEAD.mockup],
+    build: [SCREEN_TIME_LEAD.build],
+    /* At 360 the new line takes one more line and moves every topic below it. */
+    hidden: { both: ["#screen-time .kh-heading__lead"], mockup: [], build: [] },
+    reason: "the screen-time topic's line names what its guides give, now that the 3-6-9-12 guide has left (D053; CMO A M5, B m1)",
+    approvedBy: "deviations.md V9, amended (CMO built-page reviews A M5 and B m1, 2026-10-14; copy review 7.1b; task 7.1b)",
+  },
+  home: {
+    edits: [
+      swap(".kh-card__body", SCREEN_TIME_LEAD.mockup, SCREEN_TIME_LEAD.mockup, SCREEN_TIME_LEAD.build),
+      swap(
+        ".kh-faq__a > p",
+        "Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. For 3-year-olds, we advise having a grown-up nearby. When you set it up, you enter your child’s age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.",
+        AGE_THREE.home.mockup,
+        AGE_THREE.home.build,
+      ),
+      swap(
+        ".kh-faq__a > p",
+        `Return it within 7 days of delivery, no questions asked. Opened is fine: just send back everything that came in the box, undamaged. We arrange the pickup, free. ${HOME_REFUND} Until we dispatch it, everything you’ve paid is refundable in full.`,
+        REFUND_REACHES.from,
+        REFUND_REACHES.to,
+      ),
+    ],
+    mockup: [SCREEN_TIME_LEAD.mockup, AGE_THREE.home.mockup, HOME_REFUND],
+    build: [SCREEN_TIME_LEAD.build, AGE_THREE.home.build, HOME_REFUND.replace(REFUND_REACHES.from, REFUND_REACHES.to)],
+    /* The card's line takes one more line at 360 and moves the folds below; the two answers sit in closed items. */
+    hidden: { both: ['section[aria-labelledby="guides-title"] .kh-card:first-child .kh-card__body'], mockup: [], build: [] },
+    reason: "Home's screen-time guide card and two FAQ answers: the topic's line (CMO A M5), the age-3 advice in one wording (A M8), the refund timing as /refund words it (D056 item 4)",
+    approvedBy: "deviations.md V18 (founder, D056 item 4, 2026-10-14; CMO built-page review A M5 and M8; copy review 7.1b; task 7.1b)",
+  },
+  "meet-kheelu": {
+    edits: [
+      { at: "#films-title", was: FILMS_TITLE.mockup, now: 'Real families, in their <span class="kh-hand">own homes.</span>', inner: true },
+      {
+        at: "#src-1",
+        was: `${HARVARD}${HARVARD_LOCATOR}. ${HARVARD_LABEL}`,
+        now: `${HARVARD.replace("Sources", "<strong>Sources</strong>")}. <a href="${HARVARD_URL}">${HARVARD_LABEL}</a>`,
+        inner: true,
+      },
+    ],
+    mockup: [FILMS_TITLE.mockup, `${HARVARD}${HARVARD_LOCATOR}. ${HARVARD_LABEL}`],
+    build: [FILMS_TITLE.build, `${HARVARD}. ${HARVARD_LABEL}`],
+    /* The short sources line is one or two lines shorter at every width and moves the folds below it. */
+    hidden: { both: ["#src-1"], mockup: [], build: [] },
+    reason: "the films heading claims no count of families (D056 item 2), and the sources line is Home's short form (CMO A M6)",
+    approvedBy: "deviations.md V17 (founder, D056 item 2, 2026-10-14; CMO built-page review A M6; copy review 7.1b; task 7.1b)",
+  },
+  safety: {
+    edits: [
+      {
+        at: ".kh-faq__a > p",
+        was: `Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. ${AGE_THREE.safety.mockup} Common Sense Media advises against AI toys at this age. Its advice in full, and our answer, follow below.`,
+        now: `Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. ${AGE_THREE.safety.build} Common Sense Media advises against AI toys at this age. Its advice in full, and our answer, are in the next question.`,
+        inner: true,
+      },
+      { at: ".kh-faq__a li", was: AGE_THREE.safetyDetail.mockup, now: `<strong>At 3:</strong> ${AGE_THREE.safetyDetail.build.replace("At 3: ", "")}`, inner: true },
+    ],
+    mockup: [AGE_THREE.safety.mockup, "Its advice in full, and our answer, follow below.", AGE_THREE.safetyDetail.mockup],
+    build: [AGE_THREE.safety.build, "Its advice in full, and our answer, are in the next question.", AGE_THREE.safetyDetail.build],
+    hidden: NO_HIDES,
+    reason: "the FAQ's age-3 advice in one wording (CMO A M8), and the open answer points to the next question, which is closed (A M4)",
+    approvedBy: "deviations.md V19 (CMO built-page review A M4 and M8, 2026-10-14; copy review 7.1b; task 7.1b)",
+  },
+  setup: {
+    edits: [swap("p.kh-body-l", `Kheelu is made for children aged 3 to 7. ${AGE_THREE.setup.mockup}`, AGE_THREE.setup.mockup, AGE_THREE.setup.build)],
+    mockup: [AGE_THREE.setup.mockup],
+    build: [AGE_THREE.setup.build],
+    hidden: NO_HIDES,
+    reason: "the age-3 advice in one wording (CMO A M8)",
+    approvedBy: "deviations.md V20 (CMO built-page review A M8, 2026-10-14; copy review 7.1b; task 7.1b)",
+  },
+  terms: {
+    edits: [
+      swap(
+        "p",
+        `We arrange the pickup, free, for returns we accept, faulty units and warranty claims. ${TERMS_REFUND}`,
+        REFUND_REACHES.from,
+        REFUND_REACHES.to,
+      ),
+    ],
+    mockup: [TERMS_REFUND],
+    build: [TERMS_REFUND.replace(REFUND_REACHES.from, REFUND_REACHES.to)],
+    hidden: NO_HIDES,
+    reason: "section 8's refund timing as /refund words it (D056 item 4; D055 item 5)",
+    approvedBy: "deviations.md V21 (founder, D056 item 4, 2026-10-14; task 7.1b)",
+  },
+} as const satisfies Readonly<Record<string, PageFacts>>;
+export type CopyFixesSlug = keyof typeof COPY_FIXES;
+const COPY_FIXES_WHOSE = "task 7.1b's copy fixes";
 
 /** A route whose own parity runs would compare a state its mockup does not show, with the spec that proves that
  *  state's parity instead. The visual and text parity specs skip the route on the build and print why (SPA 1 and 2). */
@@ -193,7 +332,11 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
       reason: "the 3-6-9-12 guide left the journal (D053), so its card left the screen-time topic",
       approvedBy: STORIES_V9,
     },
+    /* The topic's line (V9 as amended in task 7.1b), compared by the text pass. */
+    ...factsHidden(COPY_FIXES.stories, COPY_FIXES_WHOSE),
   ],
+  /* The screen-time guide card's line (V18, task 7.1b), compared by the text pass. */
+  home: factsHidden(COPY_FIXES.home, COPY_FIXES_WHOSE),
   team: [
     /* What still differs on purpose (V7): the hero lead (CMO M-T1), and the mockup's placeholders that the founder's
        answers resolved (D054 item 20), each with other words or another height on the build's side, so every chunk
@@ -236,7 +379,11 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     })),
     ...pageFactsHidden("setup"),
   ],
-  "meet-kheelu": pageFactsHidden("meet-kheelu"),
+  "meet-kheelu": [
+    ...pageFactsHidden("meet-kheelu"),
+    /* The sources line (V17, task 7.1b), compared by the text pass. */
+    ...factsHidden(COPY_FIXES["meet-kheelu"], COPY_FIXES_WHOSE),
+  ],
   /* The Google Analytics block's paragraph and the PostHog block's first one say more in the build (V10), so they wrap
      to more lines and every block below would shift; the pixels compare the page without the two paragraphs on both
      sides, and their words are compared by the text pass (TEXT_DEVIATIONS). Third and sixth tools, as privacy.ts
@@ -309,7 +456,12 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
       reason: "the 3-6-9-12 guide left the journal (D053), so its card left the screen-time topic",
       approvedBy: STORIES_V9,
     },
+    /* The screen-time topic's line (V9 as amended in task 7.1b): COPY_FIXES above. */
+    factsRule(COPY_FIXES.stories),
   ],
+  /* The screen-time guide card's line and two FAQ answers (V18, task 7.1b): COPY_FIXES above. The answers sit in closed
+     items, which the text pass does not read; Home's unit test holds them. */
+  home: [factsRule(COPY_FIXES.home)],
   "meet-kheelu": [
     {
       /* The product details fold without JavaScript (wiki/qa/deviations.md V3): the tab row stays hidden and the three
@@ -336,7 +488,11 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
       approvedBy: "deviations.md V6 (main session; task 4.7 item 4, P15 default)",
     },
     pageFacts("meet-kheelu"),
+    /* The films heading and the sources line (V17, task 7.1b): COPY_FIXES above. */
+    factsRule(COPY_FIXES["meet-kheelu"]),
   ],
+  /* The open FAQ answer and the closed one's "At 3:" line (V19, task 7.1b): COPY_FIXES above. */
+  safety: [factsRule(COPY_FIXES.safety)],
   team: [
     {
       /* CMO fix M-T1 (task 5.7): the hero lead says what Kheelu is, for whom, and the search term (team.ts). */
@@ -372,6 +528,8 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
       approvedBy: "deviations.md V8 (main session, 2026-10-14, M1; task 5.8; shrunk to the colour by D055 item 25, task 6.7)",
     },
     pageFacts("setup"),
+    /* Fold 4's age-3 line (V20, task 7.1b): COPY_FIXES above. */
+    factsRule(COPY_FIXES.setup),
   ],
   privacy: [
     {
@@ -386,5 +544,6 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
   ],
   refund: [pageFacts("refund")],
   shipping: [pageFacts("shipping")],
-  terms: [pageFacts("terms")],
+  /* Section 8's refund timing (V21, task 7.1b): COPY_FIXES above. */
+  terms: [pageFacts("terms"), factsRule(COPY_FIXES.terms)],
 };

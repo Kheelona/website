@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { STORIES_REMOVED_CARD, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import { COPY_FIXES, STORIES_REMOVED_CARD, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { htmlToText } from "../../../../test/e2e/support/mockup-text";
 import { sentences } from "../../../../test/e2e/support/parity";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
@@ -10,8 +10,10 @@ import { articles } from "./articles";
 import { hubPage, hubTopics } from "./hub";
 
 /* The stories hub's approved parity deviation (wiki/qa/deviations.md V9; D053, task 6.5): the 3-6-9-12 guide left the
- * journal after Gate A, and its card left the hub's screen-time topic with it. The rules excuse exactly that card's two
- * lines of the approved hub and hide exactly its row there; the build holds none of its words. */
+ * journal after Gate A, and its card left the hub's screen-time topic with it. The card's rules excuse exactly that
+ * card's two lines of the approved hub and hide exactly its row there; the build holds none of its words. V9 as amended
+ * in task 7.1b adds the topic's line, which promised that guide (CMO reviews A M5, B m1; COPY_FIXES.stories, proven in
+ * src/content/en-IN/pages/parity-deviations.test.ts with the other copy fixes). */
 
 /** Every string of a content module, in order. */
 const stringsOf = (value: unknown): string[] =>
@@ -27,8 +29,10 @@ const contentSentences = (module: unknown) => stringsOf(module).flatMap((s) => s
 const html = readRepoFile("mockup/stories.html");
 const hub = new DOMParser().parseFromString(html, "text/html");
 const mockupMain = sentences(htmlToText(hub.querySelector("main")!.outerHTML));
-const excused = (lines: readonly string[]) => lines.filter((l) => (TEXT_DEVIATIONS.stories ?? []).some((r) => r.mockup.test(l)));
-const accepted = (lines: readonly string[]) => lines.filter((l) => (TEXT_DEVIATIONS.stories ?? []).some((r) => r.build?.test(l)));
+/** The card's rules: every stories rule but the topic line's (task 7.1b). */
+const cardRules = (TEXT_DEVIATIONS.stories ?? []).filter((r) => r.approvedBy !== COPY_FIXES.stories.approvedBy);
+const excused = (lines: readonly string[]) => lines.filter((l) => cardRules.some((r) => r.mockup.test(l)));
+const accepted = (lines: readonly string[]) => lines.filter((l) => cardRules.some((r) => r.build?.test(l)));
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const { title, summary, selector } = STORIES_REMOVED_CARD;
 const titleOf = (row: Element) => norm(row.querySelector(".kh-listitem__title")?.textContent);
@@ -41,14 +45,31 @@ describe("stories parity deviations (V9)", () => {
     expect(norm(rows[0].querySelector(".kh-listitem__sub")?.textContent)).toBe(summary);
   });
 
+  it("are two text rules: the card's, then the topic line's (V9 as amended in task 7.1b)", () => {
+    expect(TEXT_DEVIATIONS.stories?.map((r) => r.approvedBy)).toEqual([cardRules[0].approvedBy, COPY_FIXES.stories.approvedBy]);
+    expect(cardRules).toHaveLength(1);
+  });
+
   it("excuse exactly the card's two lines of the approved hub's main, and accept nothing of the build", () => {
     expect(excused(mockupMain)).toEqual([title, summary]);
-    expect(TEXT_DEVIATIONS.stories?.every((r) => r.build === undefined)).toBe(true);
+    expect(cardRules.every((r) => r.build === undefined)).toBe(true);
     expect(accepted(contentSentences(hubPage))).toEqual([]);
   });
 
+  it("accept the topic line hub.ts renders for the screen-time topic (task 7.1b), and only that line of the build", () => {
+    const [lineRule] = (TEXT_DEVIATIONS.stories ?? []).filter((r) => r.approvedBy === COPY_FIXES.stories.approvedBy);
+    expect(contentSentences(hubPage).filter((l) => lineRule.build?.test(l))).toEqual([...COPY_FIXES.stories.build]);
+  });
+
   it("hide the card's row in the approved hub only, leaving the build's screen-time guides in the build's order", () => {
-    expect(VISUAL_HIDDEN.stories?.map((r) => [r.side, r.selector])).toEqual([["mockup", selector]]);
+    const cardHides = (VISUAL_HIDDEN.stories ?? []).filter((r) => r.approvedBy !== COPY_FIXES.stories.approvedBy);
+    expect(cardHides.map((r) => [r.side, r.selector])).toEqual([["mockup", selector]]);
+    // Beside it, only the topic line's hide on both sides (task 7.1b; proven with the other copy fixes).
+    const lineHides = (VISUAL_HIDDEN.stories ?? []).filter((r) => r.approvedBy === COPY_FIXES.stories.approvedBy);
+    expect(lineHides.map((r) => [r.side, r.selector])).toEqual([
+      ["mockup", "#screen-time .kh-heading__lead"],
+      ["build", "#screen-time .kh-heading__lead"],
+    ]);
     const rest = Array.from(hub.querySelectorAll("section#screen-time li.kh-listitem")).filter((row) => !row.matches(selector));
     const screenTime = hubTopics.find((g) => g.topic === "screen-time")!;
     expect(rest.map(titleOf)).toEqual(screenTime.slugs.map((slug) => toPlainText(articles[slug].card.title)));

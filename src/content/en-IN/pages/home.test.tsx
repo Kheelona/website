@@ -7,8 +7,10 @@ import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
+import { COPY_FIXES } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { mockupFold, mockupRoute, skeleton, words } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 import { homePage } from "./home";
 
 /*
@@ -22,6 +24,10 @@ import { homePage } from "./home";
  * module gives are the approved page's. Three links follow the copy page (wiki/site/pages/home.md) rather than the
  * mockup, whose review build had no page for them: architecture §6.3 takes everything but the visible words from the
  * copy page. They are listed below and printed in the task report.
+ *
+ * Three approved lines changed after the built-page reviews (task 7.1b; deviation V18; test/e2e/support/deviations.ts
+ * COPY_FIXES.home): the screen-time guide card's line (CMO review A M5), and in the FAQ the age-3 advice (A M8) and the
+ * refund timing (D056 item 4). MOCKUP below is the approved page with exactly those applied.
  */
 
 /* The hero board's two stickers as Next imports them (`{ src, width, height }`, the size read from the DS file), where
@@ -34,7 +40,7 @@ const staticImport = vi.hoisted(() => async (file: string) => {
 vi.mock("@ds/assets/Cast/advik-sticker.png", () => staticImport("design-system/project/assets/Cast/advik-sticker.png"));
 vi.mock("@ds/assets/Kheelu/kheelu-front-sticker.png", () => staticImport("design-system/project/assets/Kheelu/kheelu-front-sticker.png"));
 
-const MOCKUP = mockupFold("home", "main");
+const MOCKUP = withFacts(mockupFold("home", "main"), COPY_FIXES.home.edits);
 const LABELS = ["hero-title", "ask-title", "why-title", "what-title", "see-title", "safety-title", "compare-title", "guides-title", "faq-title", "close-title"];
 
 /** The copy page's targets for the three untracked links whose mockup address was a page of the review build. */
@@ -82,6 +88,19 @@ describe("Home: the folds of the approved page", () => {
   it.each(LABELS)("%s says word for word what the mockup says (token mode)", (label) => {
     const { built, mockup } = each(label);
     expect(words(built)).toBe(words(mockup));
+  });
+
+  it("differs from the frozen mockup only in the guide card's line and the two FAQ answers task 7.1b changed (V18)", () => {
+    const frozen = mockupFold("home", "main");
+    const changed = LABELS.filter((label) => words(fold(frozen, label)) !== words(fold(MOCKUP, label)));
+    expect(changed).toEqual(["guides-title", "faq-title"]);
+    expect(words(fold(BUILT, "guides-title"))).toContain(COPY_FIXES.home.build[0]);
+    expect(words(fold(BUILT, "faq-title"))).toContain(COPY_FIXES.home.build[1]);
+    expect(words(fold(BUILT, "faq-title"))).toContain(COPY_FIXES.home.build[2]);
+    // The card's line is the one block the visual pass hides for them, found once on the page as it renders.
+    const [hide] = COPY_FIXES.home.hidden.both;
+    expect(BUILT.querySelectorAll(hide)).toHaveLength(1);
+    expect(words(BUILT.querySelector(hide)!)).toBe(COPY_FIXES.home.build[0]);
   });
 
   it.each(LABELS)("%s draws the mockup's icons, tones and pictures (and the pictures' words)", (label) => {

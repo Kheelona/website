@@ -3,13 +3,17 @@ import type { Copy, FaqItem, Offer, ProseBlock } from "@/content/types";
 import { isModeVariant } from "@/lib/content/mode";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
+import { COPY_FIXES, type CopyFixesSlug } from "../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../test/e2e/support/repo";
+import { withFacts } from "../../../test/support/mockup-facts";
 import { faqs, pickFaqs, type FaqId } from "./faqs";
 
 /* Every FAQ item of every page, once (architecture §6.1; task 2.1 acceptance 1): word for word as
  * the approved mockup prints it in token mode (architecture §6.3), the full-mode variants as the
  * copy pages word them (home.md fold 8, meet-kheelu.md fold 8, ai-toys-for-kids-in-india.md
- * questions, store.md fold 5), ids stable. */
+ * questions, store.md fold 5), ids stable. The mockup is read with task 7.1b's copy fixes applied
+ * (test/e2e/support/deviations.ts COPY_FIXES; deviations V18, V19): Home's age-3 sentence and refund
+ * timing, /safety's age-3 lines and its pointer to the next question. */
 
 const token = buildOffer("token");
 const full = buildOffer("full");
@@ -79,9 +83,15 @@ describe("ids", () => {
   });
 });
 
+/** A page's approved FAQ items: its mockup's <main> with that page's copy fixes of task 7.1b, if any, applied. */
+function approvedItems(slug: string): Element[] {
+  const main = new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html").querySelector("main")!;
+  const fixes = Object.hasOwn(COPY_FIXES, slug) ? COPY_FIXES[slug as CopyFixesSlug].edits : [];
+  return Array.from(withFacts(main, fixes).querySelectorAll(".kh-faq__item"));
+}
+
 describe.each(Object.entries(PAGES))("mockup %s, token mode, word for word", (slug, ids) => {
-  const doc = new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
-  const items = Array.from(doc.querySelectorAll(".kh-faq__item"));
+  const items = approvedItems(slug);
 
   it("has the same number of questions", () => {
     expect(items.length).toBe(ids.length);
@@ -120,6 +130,24 @@ describe("P15: the shared answer gives D033's remedy for a faulty Kheelu (deviat
   it("stays within 60 words in both modes (answer-length)", () => {
     expect(words(answer())).toBe(60);
     expect(words(plain(faqs[P15.id].answer, full))).toBe(60);
+  });
+});
+
+describe("task 7.1b's copy fixes in the shared answers (deviations V18, V19)", () => {
+  it("advise a grown-up nearby at 3 in the copy pages' words, never “we advise”, on Home and /safety", () => {
+    expect(plain(faqs["what-ages"].answer, token)).toContain(" It is not a toy for children under 3. If your child is 3, keep a grown-up nearby. ");
+    expect(plain(faqs["age-three"].answer, token)).toContain(" If your child is 3, keep a grown-up nearby while they play. ");
+    const detail = faqs["child-safety-groups"].detail.flatMap((b) => blockText(b, token));
+    expect(detail.at(-1)).toBe("At 3: keep a grown-up nearby while they play.");
+    for (const id of ["what-ages", "age-three"] as const) expect(plain(faqs[id].answer, token), id).not.toContain("we advise");
+  });
+
+  it("say the refund reaches you within 7 working days of the return reaching us, as /refund does (D056 item 4)", () => {
+    expect(plain(faqs["not-right-for-us"].answer, token)).toContain("Once it reaches us and qualifies for return, your refund reaches you within 7 working days.");
+  });
+
+  it("point /safety's open answer to the next question, where the answer is (CMO A M4)", () => {
+    expect(plain(faqs["age-three"].answer, token)).toMatch(/Its advice in full, and our answer, are in the next question\.$/);
   });
 });
 
