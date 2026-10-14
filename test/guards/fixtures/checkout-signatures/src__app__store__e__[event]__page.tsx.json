@@ -4,11 +4,12 @@
   "code": [
     "import type { Metadata } from \"next\";",
     "import { storeEnv } from \"@/lib/store/env\";",
-    "import { resolveTier, tierRefusalMessage } from \"@/lib/store/tiers\";",
+    "import { resolveTier } from \"@/lib/store/tiers\";",
     "import { formatInr, LAUNCH_AMOUNT_PAISE } from \"@/config/site\";",
     "import { eventPage, type StorePanelCopy } from \"@/content/en-IN/store/event-page\";",
     "import { pageMeta } from \"@/lib/seo/metadata\";",
     "import { NotFoundPanel } from \"../../_components/NotFoundPanel\";",
+    "import { StoreNotConfigured } from \"../../_components/StoreNotConfigured\";",
     "import { StoreClose, TierCheckout } from \"../../_components/TierCheckout\";",
     "export const dynamic = \"force-dynamic\";",
     "const { title, description, openGraph, twitter } = pageMeta({ ...eventPage.meta, path: \"/\" });",
@@ -24,7 +25,7 @@
     "    const [{ event }, { sig }] = await Promise.all([params, searchParams]);",
     "    const env = storeEnv();",
     "    if (!env)",
-    "        return __JSX_Panel__;",
+    "        return __JSX_StoreNotConfigured__;",
     "    const result = await resolveTier(env, { tier: event, signature: sig ?? null });",
     "    if (!result.ok) {",
     "        return __JSX_Panel__;",
@@ -33,25 +34,21 @@
     "    const balanceLabel = formatInr(Math.max(0, LAUNCH_AMOUNT_PAISE - result.tier.amountPaise));",
     "    return (__JSX_TierCheckout__);",
     "}",
-    "function Panel({ copy, message, cta = true }: {",
+    "function Panel({ copy, message }: {",
     "    copy: StorePanelCopy;",
-    "    message?: string;",
-    "    cta?: boolean;",
+    "    message: string;",
     "}) {",
     "    return (__JSX_fragment__);",
     "}"
   ],
   "jsx": [
-    "@Panel copy={eventPage.notConfigured}",
-    "@Panel cta={false}",
     "@Panel copy={eventPage.refused}",
-    "@Panel message={tierRefusalMessage(result.reason)}",
+    "@Panel message={eventPage.refused.reasons[result.reason]}",
     "@TierCheckout content={eventPage.checkout}",
     "@TierCheckout tier={result.tier}",
     "@TierCheckout signature={sig}",
     "@TierCheckout amountLabel={amountLabel}",
     "@TierCheckout balanceLabel={balanceLabel}",
-    "@NotFoundPanel copy={copy}",
-    "@NotFoundPanel cta={cta}"
+    "@NotFoundPanel copy={copy}"
   ]
 }

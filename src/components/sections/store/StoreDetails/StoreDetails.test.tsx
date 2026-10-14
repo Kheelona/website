@@ -92,7 +92,7 @@ describe("StoreDetails", () => {
     expect(within(details).getByRole("button", { name: "Pay ₹499 and reserve" })).toBeInTheDocument();
   });
 
-  it("prints nothing for the in-app note while it is switched off (N7)", () => {
+  it("prints nothing for the in-app note outside the in-app browsers (its gate reads the user agent; on since D056 item 3)", () => {
     const { container } = render(composed());
     expect(container.querySelector(".ks-inapp")).toBeNull();
     expect(container.textContent).not.toContain("Paying by UPI?");

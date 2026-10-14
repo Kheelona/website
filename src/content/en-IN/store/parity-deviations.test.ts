@@ -11,9 +11,14 @@ import { navigation } from "../navigation";
 import { inAppNote } from "./in-app-note";
 import { paymentsLine } from "./payments-line";
 
-/* The store's and /thanks's approved parity deviations (task 4.8 item 1; wiki/qa/deviations.md V1, V4): what the visual
+/* The store's and /thanks's approved parity deviations (task 4.8 item 1; wiki/qa/deviations.md V1): what the visual
  * pass hides on each side, and which sentences the text pass accepts, each read from content and held to exactly the
- * lines it names, so a rule can never excuse a sentence it was not written for. */
+ * lines it names, so a rule can never excuse a sentence it was not written for.
+ *
+ * The in-app note's rules: V4 ("built but off") retired in task 7.1c, when the note shipped (D056 item 3). The note
+ * still shows only inside the Instagram, Facebook or WhatsApp browser, and the parity browser is plain Chromium, so the
+ * build there shows no fold 2, as a parent in Chrome or Safari sees it: the same rules, now under D056. */
+const IN_APP_ONLY = /D056 item 3/;
 
 const textOf = (el: Element) => sentences(htmlToText(el.outerHTML));
 const mockupDoc = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
@@ -29,10 +34,10 @@ const NEW_TAB = navigation.labels.newTabNote.trim();
 /** The payments line where each side prints it: the mockups' store footer, the build's main. */
 const MOCKUP_LINE = 'footer p:has(> a[href$="#chargeback"])';
 
-describe("store parity deviations: the visual pass (V4, V1)", () => {
-  it("store: hides the mockup's in-app note (V4) and the payments line on both sides, the mockup's footer line and the build's line in main (V1)", () => {
+describe("store parity deviations: the visual pass (D056 item 3, V1)", () => {
+  it("store: hides the mockup's in-app note (shown only in the in-app browsers, D056 item 3) and the payments line on both sides, the mockup's footer line and the build's line in main (V1)", () => {
     expect(VISUAL_HIDDEN.store).toEqual([
-      expect.objectContaining({ side: "mockup", selector: ".mk-inapp", approvedBy: expect.stringContaining("V4") }),
+      expect.objectContaining({ side: "mockup", selector: ".mk-inapp", approvedBy: expect.stringMatching(IN_APP_ONLY) }),
       expect.objectContaining({ side: "mockup", selector: MOCKUP_LINE, approvedBy: expect.stringContaining("V1") }),
       expect.objectContaining({ side: "build", selector: ".ks-store-payments", approvedBy: expect.stringContaining("V1") }),
     ]);
@@ -67,14 +72,22 @@ describe("store parity deviations: the visual pass (V4, V1)", () => {
   it("every rule gives its reason", () => {
     for (const rule of Object.values(VISUAL_HIDDEN).flat()) expect(rule.reason.length, rule.selector).toBeGreaterThan(20);
   });
+
+  it("V4 is retired: no store rule cites it, and the note's rule says why the build lacks it now (the in-app browsers only)", () => {
+    for (const rule of [...(VISUAL_HIDDEN.store ?? []), ...(TEXT_DEVIATIONS.store ?? [])]) expect(rule.approvedBy).not.toMatch(/\bV4\b/);
+    const [note] = VISUAL_HIDDEN.store ?? [];
+    expect(note.reason).toMatch(/Instagram, Facebook or WhatsApp browser/);
+    expect(note.reason).not.toMatch(/built but off|device check/);
+  });
 });
 
-describe("store parity deviations: the text pass (V4, V1)", () => {
+describe("store parity deviations: the text pass (D056 item 3, V1)", () => {
   const [note, payments] = TEXT_DEVIATIONS.store ?? [];
 
-  it("two rules: the in-app note's lines missing (V4), the payments line moved (V1)", () => {
+  it("two rules: the in-app note's lines missing outside the in-app browsers (D056 item 3), the payments line moved (V1)", () => {
     expect(TEXT_DEVIATIONS.store).toHaveLength(2);
-    expect(note.approvedBy).toContain("V4");
+    expect(note.approvedBy).toMatch(IN_APP_ONLY);
+    expect(note.reason).toMatch(/Instagram, Facebook or WhatsApp browser/);
     expect(note.build).toBeUndefined();
     expect(payments.approvedBy).toContain("V1");
     expect(note.jsOff).toBeUndefined();

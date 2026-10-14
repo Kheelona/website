@@ -10,6 +10,7 @@ import { DELIVERY_TEXT } from "../delivery";
 import { DEFAULT_OG } from "../organization";
 import { RETURN_DAYS } from "../policies";
 import { seller } from "../seller";
+import { storeNotFound } from "./event-page";
 import { paymentsLine } from "./payments-line";
 
 /**
@@ -29,6 +30,9 @@ import { paymentsLine } from "./payments-line";
  *  fold, the two other states' words, and the payments line that closes main. */
 export interface ConfirmationContent {
   readonly meta: Meta;
+  /** The browser tab per state (store-confirmation.md, At a glance; CMO review C m5, task 7.1c): "reserved" only once
+   *  the payment is confirmed; the confirming, link-needed and cannot-open states take the other. */
+  readonly titles: { readonly paid: string; readonly other: string };
   readonly head: {
     readonly paid: ConfirmationHeadCopy;
     readonly created: ConfirmationHeadCopy;
@@ -36,8 +40,9 @@ export interface ConfirmationContent {
   };
   /** Under the link-needed lede: a person who can find the order. */
   readonly linkNeededHelp: HelpLineCopy;
-  /** A signed link whose order will not load (the store's not-found panel). */
-  readonly cannotOpen: { readonly title: string; readonly body: string };
+  /** A signed link whose order will not load (the store's not-found panel): its title and body, then a WhatsApp button
+   *  and the call line (CMO review C m4, task 7.1c). */
+  readonly cannotOpen: { readonly title: string; readonly body: string; readonly action: string; readonly call: RichTextString };
   readonly order: OrderRowsCopy;
   readonly address: { readonly empty: AddressStepCopy; readonly saved: AddressStepCopy };
   readonly next: {
@@ -53,15 +58,20 @@ export interface ConfirmationContent {
 }
 
 const email = seller.support.email;
+/** The mockup's title (the paid state): the share card's too. */
+const reservedTitle = "Your Kheelu is reserved · Kheelona";
+/** The store's dead end's words, which this state printed as its muted line until task 7.1c. */
+const deadEndHelp = storeNotFound.panel.help;
 const checkEmail = { tone: "sun", title: "Check your email", body: ["Your confirmation has your order number and a link back to this page."] } as const;
 const trackDelivery = { tone: "chilli", title: "Track your delivery", body: ["When it is dispatched, we send you the courier and tracking details."] } as const;
 
 export const confirmation = {
   meta: {
-    title: "Your Kheelu is reserved · Kheelona",
+    title: reservedTitle,
     description: "Your Kheelu pre-order: order number, what you paid, what is still due and where to deliver it.",
     og: DEFAULT_OG,
   },
+  titles: { paid: reservedTitle, other: "Your Kheelu pre-order · Kheelona" },
   head: {
     paid: {
       icon: "check-circle",
@@ -99,6 +109,10 @@ export const confirmation = {
   cannotOpen: {
     title: "We cannot open that order right now.",
     body: "Your link is fine. The order behind it did not load, which is ours to sort out and not yours.",
+    /* The store's not-switched-on button (store-page.ts notConfigured.action), the same words as the dead end's link. */
+    action: deadEndHelp.linkAlone,
+    /* "Or", the D032 help line's call, then the live tail: a person who can find the order, by phone too. */
+    call: `${deadEndHelp.or} {nowrap:[call ${seller.support.phone}](${seller.support.tel})} ${deadEndHelp.tail}`,
   },
   order: {
     heading: "Your order",

@@ -1,0 +1,26 @@
+{
+  "file": "src/app/store/_components/StoreNotConfigured.tsx",
+  "note": "Logic signature (test/guards/checkout-signature.test.ts). Regenerated only with a restyle; every changed line is reviewed (ADR-013).",
+  "code": [
+    "import { WhatsAppFloat } from \"@/components/chrome/WhatsAppFloat/WhatsAppFloat\";",
+    "import { Button } from \"@/components/ui/Button/Button\";",
+    "import { seller } from \"@/content/en-IN/seller\";",
+    "import { eventPage } from \"@/content/en-IN/store/event-page\";",
+    "import { storePage } from \"@/content/en-IN/store/store-page\";",
+    "import { NotFoundPanel } from \"./NotFoundPanel\";",
+    "export function StoreNotConfigured() {",
+    "    const copy = storePage.notConfigured;",
+    "    return (__JSX_fragment__);",
+    "}"
+  ],
+  "jsx": [
+    "@NotFoundPanel copy={eventPage.notConfigured}",
+    "@NotFoundPanel action={__JSX_Button__}",
+    "@NotFoundPanel note={copy.note}",
+    "@Button href={seller.support.whatsapp}",
+    "{copy.action}",
+    "@WhatsAppFloat href={seller.support.whatsapp}",
+    "@WhatsAppFloat chat={seller.chat}",
+    "@WhatsAppFloat context=\"store\""
+  ]
+}

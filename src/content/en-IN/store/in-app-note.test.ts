@@ -3,16 +3,18 @@ import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { inAppNote } from "./in-app-note";
 
 /* The store's in-app browser note (task 5.15; store.md fold 2; B12, N7; architecture §16.3). Its words are the approved
- * mockup's; it stays switched off until QA's real-device check confirms the UPI problem inside WhatsApp or Instagram
- * (test plan §6.4), and then the main session switches it on. */
+ * mockup's. Switched on in task 7.1c: the founder chose to show it now, on the PostHog audit's evidence, without the
+ * real-device check beta cannot run (D056 item 3; deviation V4 retired). It still shows only inside the Instagram,
+ * Facebook or WhatsApp browser (ui/InAppBrowserNote's client gate). */
 
 const mockup = new DOMParser().parseFromString(readRepoFile("mockup/store.html"), "text/html");
 const note = mockup.querySelector(".mk-inapp .kh-alert")!;
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 
 describe("in-app browser note", () => {
-  it("is built switched off (N7): nothing renders until the device check passes", () => {
-    expect(inAppNote.enabled).toBe(false);
+  it("ships switched on (D056 item 3), and store.md records it", () => {
+    expect(inAppNote.enabled).toBe(true);
+    expect(readRepoFile("wiki/site/pages/store.md")).toContain("**Ships switched on (task 7.1c).**");
   });
 
   it("title, body, button and confirmation as the mockup (the store address printed after the body)", () => {

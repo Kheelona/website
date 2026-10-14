@@ -1,15 +1,17 @@
 ---
 title: "Store confirmation (store.kheelona.com/thanks): page copy for the Gate A mockup"
 type: page-copy
-updated: 2026-10-11
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
+  - ../../qa/cmo-review-built-c-2026-10-14.md (m4, m5), task 7.1c (see "Changes after approval (task 7.1c)")
+  - "wt (task 7.1c, worktree w8-7.1c, read 2026-10-14): src/app/store/thanks/page.tsx:87-89, 97-128, 198-209; src/content/en-IN/store/confirmation.ts:59-62, 95-102; src/content/en-IN/seller.ts:93-96; src/content/en-IN/store/event-page.ts:113; src/content/en-IN/store/store-page.ts:79-84; src/app/store/_components/NotFoundPanel.tsx:47-57"
   - ../checkout.md (steps 9-15, address fields, failure and edge states, what must not change, copy the new checkout carries)
   - ../strategy.md (§2 stage 7, §5 store row), ../tracking-inventory.md (§6 replay deny list, ph-no-capture)
   - ../../product/pricing.md, ../../product/policies.md, ../../product/facts.md (ship date, support channel), ../../product/claims.md
   - ../../open-questions.md (F12), ../gate-a-open-items.md
   - ./store.md (header, footer, help line), ./home.md
-  - "decisions D021, D023, D028, D032, D033, D041, D042, D043"
+  - "decisions D021, D023, D028, D032, D033, D041, D042, D043, D046"
   - "wt: src/app/store/thanks/page.tsx, src/features/preorder/components/AddressForm.tsx, src/features/preorder/lib/{validate,india}.ts, src/lib/store/order-ref.ts, src/lib/email/templates.ts, src/app/(site)/{shipping,refund}/page.tsx (working tree of reset/website-v2, read 2026-10-11; no git access in this step. The line numbers match the tag citations on checkout.md for every range checked: thanks/page.tsx:60-216, AddressForm.tsx:40-163)"
   - design-system/project/01-writing.md, components/StepLoop/README.md (read-only)
 ---
@@ -40,12 +42,13 @@ sources:
 | Real URL | `https://store.kheelona.com/thanks` (mockup file `store-confirmation.html`) |
 | Indexing | `noindex, nofollow` (store layout, `wt:src/app/store/layout.tsx:28-31`); session replay off for `/thanks` ([tracking inventory §6](../tracking-inventory.md#6-posthog-in-the-browser)) |
 | Primary search cluster | **None** (noindex, transactional) |
-| Title (34 characters) | Your Kheelu is reserved · Kheelona |
+| Title, paid state (34 characters) | Your Kheelu is reserved · Kheelona |
+| Title, every other state (32 characters): confirming, link needed, cannot open | Your Kheelu pre-order · Kheelona |
 | Meta description (94 characters) | Your Kheelu pre-order: order number, what you paid, what is still due and where to deliver it. |
 | H1 | Your Kheelu is reserved. (as live) |
 | Page meta for the build script | `"chrome": false`, `"buybar": false`, `"active": ""` |
 | Container | The whole page body sits inside one element carrying `class="ph-no-capture ph-mask"`, as live (`wt:thanks/page.tsx:117-119`): the page prints an email address, an order number and a delivery address |
-| Orange buttons | One: "Save my address" |
+| Orange buttons | One: "Save my address" (the cannot-open state's "Message us on WhatsApp" is a secondary button) |
 | Header and footer | The store header and footer, word for word as on [store.md](store.md#fold-0--store-header) (fold 0 and fold 7) |
 
 ---
@@ -225,7 +228,15 @@ Each renders its own single H1 in place of folds 1 to 5; header and footer stay.
 |---|---|---|---|---|
 | Paid, confirmation not yet in | Confirming your payment | Thank you. We are confirming it now. | Your payment is with our provider and we are waiting for their confirmation, which usually takes a few seconds. Nothing is lost if you refresh, and your order number is below either way. *(fold 2 and the address step still show)* | `wt:thanks/page.tsx:120-141` |
 | Bare `/thanks`, expired or lost link | Your pre-order is safe | We need your link again. | This page opens from the link in your confirmation email, and that link has either expired or was opened somewhere else. Open the most recent email from us and tap it again, and you will land back here. Cannot find the email? [WhatsApp] or [call +91 91875 46483] and a person will pull up your order and add your address for you. | `wt:thanks/page.tsx:190-216`; call option per [D032](../../decisions/D032-grievance-block-and-call-line.md) |
-| Signed link, order will not load | (none) | We cannot open that order right now. | Your link is fine. The order behind it did not load, which is ours to sort out and not yours. | `wt:thanks/page.tsx:89-97` |
+| Signed link, order will not load | (none) | We cannot open that order right now. | Your link is fine. The order behind it did not load, which is ours to sort out and not yours. **[Message us on WhatsApp]** *(secondary button, to `https://wa.me/919187546483`)* Or [call +91 91875 46483] with your order number and a person will find it. | `wt:thanks/page.tsx:89-97`; button and call line since task 7.1c (CMO review C m4): the button label is the store's not-switched-on button ([store.md, Other states](store.md)), "call +91 91875 46483" is the approved help line's ([D032](../../decisions/D032-grievance-block-and-call-line.md)), and "with your order number and a person will find it" is this state's live line |
+
+**Tab title (task 7.1c):** every state in this table shows "Your Kheelu pre-order · Kheelona" (32 characters). Only the
+paid state (folds 1 to 5) shows "Your Kheelu is reserved · Kheelona", because only there has the payment been confirmed.
+The meta description is the same in every state.
+
+**Cannot-open state, how it reads on a phone:** the H1 and body, then one secondary WhatsApp button (never orange: the
+reader has already paid, so there is no button to buy again), then the call line under it, its number a `tel:` link
+with a 44 px tap area. "Or" opens the line because the button is the first option.
 
 ## Phone order
 
@@ -245,7 +256,7 @@ Header → fold 1 → fold 2 → fold 3 → fold 4 → fold 5 → footer, one co
 | Rule | Met | Where |
 |---|---|---|
 | Primary cluster placements | Not applicable | Noindex |
-| Title ≤ 60, meta ≤ 155 | Yes | 34; 94 |
+| Title ≤ 60, meta ≤ 155 | Yes | 34 (paid state) and 32 (every other state); 94 |
 | One H1 | Yes | "Your Kheelu is reserved." (each other state has its own single H1) |
 | Prices say "incl. GST" | Yes | Fold 2 balance row |
 | Banned words (friend, lessons, adapts, wake word, product "safe", competitor names) | None present | Whole page ("safe" appears only about the order, as live) |
@@ -276,6 +287,8 @@ Plain `path:line` = wiki file; `wt:` = working tree of `reset/website-v2` (see f
 | No Purchase event on this page | `wt:thanks/page.tsx:40-51` |
 | StepLoop rules | DS `components/StepLoop/README.md:10-12` |
 | Header and footer | [store.md, folds 0 and 7](store.md) and their sources |
+| Tab title per state: "reserved" only once the payment is confirmed | [CMO review C](../../qa/cmo-review-built-c-2026-10-14.md) m5; the states and their H1s, `wt:src/app/store/thanks/page.tsx:97-128, 152-155, 198-209`; `wt:src/content/en-IN/store/confirmation.ts:59-62` (the one title today) |
+| Cannot-open state: a secondary WhatsApp button, then "Or call +91 91875 46483 with your order number and a person will find it." | [CMO review C](../../qa/cmo-review-built-c-2026-10-14.md) m4; button label [store.md, Other states](store.md) (`wt:src/content/en-IN/store/store-page.ts:82`); "call +91 91875 46483" [D032:23](../../decisions/D032-grievance-block-and-call-line.md), `wt:src/content/en-IN/seller.ts:95`; live tail `wt:src/content/en-IN/store/event-page.ts:113`, printed today through `wt:src/app/store/_components/NotFoundPanel.tsx:72-79`; the reader has paid, so no button to buy, `wt:src/app/store/thanks/page.tsx:114-121` |
 
 ## Placeholders
 
@@ -295,6 +308,10 @@ No factual claim on this page lacks a source.
    (b) earlier reservations still ship from 20 October, in which case the row needs a per-order date, which is a
    logic change for your approval. **Recommend (a)** if it is true (it is the only option without touching checkout
    logic); this is the website half of F12.
+2. **The tab title while a payment is being confirmed (task 7.1c).** The "Thank you. We are confirming it now." state
+   has an order, but its payment is not yet confirmed. (a) "Your Kheelu pre-order · Kheelona", as the two states with no
+   order (applied); (b) keep "Your Kheelu is reserved · Kheelona" there. **Recommend (a):** the page itself does not
+   say "reserved" until the payment is confirmed, and CMO review C m5 asks for a title that is true in every state.
 
 ## Notes for the builder and gaps
 
@@ -307,3 +324,24 @@ No factual claim on this page lacks a source.
   (`src/lib/offer/delivery-line.ts`; [D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 1),
   through a reviewed diff of the frozen template.
 - Production is untouched until Gate B ([D011](../../decisions/D011-production-held-until-gate-b.md)).
+- **Task 7.1c, for the builder:** the title follows the state the page renders: the paid branch keeps
+  `confirmation.meta.title`; the confirming, link-needed and cannot-open branches show the new title (one more
+  string in `confirmation.ts`). The cannot-open state passes the WhatsApp button as the panel's `action` and the call
+  line as its `note`, as the store's not-configured state does (`wt:src/app/store/_components/NotFoundPanel.tsx:52-57`);
+  the line's number links to `tel:+919187546483` from the seller source. Keep tracking parity: the new button and the
+  call link carry `ph-no-capture`, so `/thanks` still sends no autocapture event carrying page text
+  ([tracking inventory](../tracking-inventory.md) row 18). Presentation only (ADR-013); signatures regenerated and
+  reviewed.
+
+## Changes after approval (task 7.1c)
+
+The founder approved this page at Gate A ([D046](../../decisions/D046-gate-a-approved.md)). Task 7.1c changed only what
+[CMO built-page review C](../../qa/cmo-review-built-c-2026-10-14.md) m4 and m5 ask, on 2026-10-14
+([tasks](../../engineering/tasks.md), 7.1c). Every other word of the Copy blocks is as approved; no amount, promise,
+placeholder or keyword placement changed.
+
+| Where | What changed | Why |
+|---|---|---|
+| Other states, "We cannot open that order right now." | After the unchanged body: a secondary button "Message us on WhatsApp", then "Or [call +91 91875 46483] with your order number and a person will find it." It replaces the muted line "Message us on WhatsApp with your order number and a person will find it." | m4: a parent who has paid and cannot see their order got only a small muted WhatsApp link and no call option, while the link-needed state offers "WhatsApp or call" ([D032](../../decisions/D032-grievance-block-and-call-line.md)). Words from approved lines only: the store's not-switched-on button, the D032 help line's "call +91 91875 46483", and this state's live tail |
+| At a glance (title rows, orange buttons); Other states (tab title note); Keyword placements | The title is per state: "Your Kheelu is reserved · Kheelona" (34) for the paid state only; "Your Kheelu pre-order · Kheelona" (32) for the confirming, link-needed and cannot-open states | m5: the tab said "reserved" on "We need your link again." and "We cannot open that order right now." too, so a parent whose payment failed could read "reserved". The confirming state is included because its payment is not yet confirmed (question 2) |
+| Front matter, Sources, Questions, Notes for the builder | The review, D046 and the code read added; source rows for both changes; question 2; a builder note | So every new line has its source |

@@ -3,6 +3,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { toPlainText } from "@/lib/content/plain-text";
 import { pageMeta } from "@/lib/seo/metadata";
 import { TYPED_AMOUNT } from "@/lib/seo/price-lead";
+import { tierRefusalMessage } from "@/lib/store/tiers";
 import { readRepoFile, tagText } from "../../../../test/e2e/support/repo";
 import { DEFAULT_OG } from "../organization";
 import { notFoundPage } from "../pages/not-found";
@@ -24,10 +25,22 @@ function helpLine(copy: StorePanelCopy, cta: boolean): string {
 }
 
 describe("event page: the tier checkout's words are the store page's (store.md; reuse, never retyped)", () => {
-  it("first screen: the store's h1, image, price id and compact trust line; the eyebrow is the tier's own price name", () => {
+  it("first screen: the store's h1, image, price id and compact trust line; the eyebrow is composed per tier", () => {
     expect(eventPage.checkout.top).toEqual({ ...storePage.top, eyebrow: undefined });
     expect(eventPage.checkout.top).not.toHaveProperty("eyebrow");
     expect(eventPage.checkout.top.title).toBe("Pre-order Kheelu.");
+  });
+
+  /* CMO review C m2 (task 7.1c): the tier's price name took the eyebrow's place, so the age band left the first screen.
+     The eyebrow keeps the store's own band beside the tier's name, from two approved words and no new copy (the CMO's
+     7.1c copy review, "Not in this round"). */
+  it("the eyebrow is the tier's own price name, then the store's age band (CMO review C m2)", () => {
+    expect(toPlainText(eventPage.checkout.eyebrow("Bangalore expo price"))).toBe("Bangalore expo price · Ages 3 to 7");
+    expect(toPlainText(eventPage.checkout.eyebrow("Bangalore expo price")).endsWith(` · ${storePage.top.eyebrow}`)).toBe(true);
+  });
+
+  it("keeps the age band on one line when the eyebrow wraps beside the small Kheelu on a phone", () => {
+    expect(eventPage.checkout.eyebrow("Bangalore expo price")).toBe(`Bangalore expo price · {nowrap:${storePage.top.eyebrow}}`);
   });
 
   it("the details heading, what sits beside the pay button, the questions and the payments line are the store's own", () => {
@@ -49,8 +62,55 @@ describe("event page: a refused link (as live)", () => {
     expect(helpLine(refused, true)).toBe("Or message us on WhatsApp and a person will sort it out with you.");
   });
 
-  it("has no body of its own: the reason is the checkout's (tiers.ts tierRefusalMessage), passed by the page", () => {
+  it("has no single body: the page passes the body for the refusal's reason", () => {
     expect(eventPage.refused).not.toHaveProperty("body");
+  });
+});
+
+/* CMO review C m1 (task 7.1c): the panel printed the frozen tiers.ts words, whose default line put ₹499 beside a button
+ * with no total (D028) and said "on this page" of a button that leaves for the store. The copy page now gives one body
+ * per refusal reason (store.md, "Event link refused"), printed presentation-side; tiers.ts stays byte-identical. */
+describe("event page: a refused link's body, one per reason (store.md, Event link refused)", () => {
+  const REASONS = ["cap-reached", "not-yet", "unknown", "bad-signature", "expired", "full"] as const;
+
+  /** The copy page's table: each row's reasons (the backticked names in its first cell) and its body (last cell). */
+  function copyPageBodies(): Record<string, string> {
+    const markdown = readRepoFile("wiki/site/pages/store.md");
+    const section = markdown.split(/^## /m).find((s) => s.startsWith("Event link refused"));
+    if (!section) throw new Error('store.md has no "## Event link refused" section');
+    const out: Record<string, string> = {};
+    for (const line of section.split("\n")) {
+      if (!line.startsWith("| `")) continue;
+      const cells = line.split("|").slice(1, -1).map((c) => c.trim());
+      for (const [, reason] of cells[0].matchAll(/`([a-z-]+)`/g)) out[reason] = cells.at(-1)!;
+    }
+    return out;
+  }
+
+  it("has a body for each of the checkout's six reasons, and only those", () => {
+    expect(Object.keys(eventPage.refused.reasons).sort()).toEqual([...REASONS].sort());
+  });
+
+  it("each body is the copy page's, word for word", () => {
+    const bodies = copyPageBodies();
+    expect(Object.keys(bodies).sort()).toEqual([...REASONS].sort());
+    for (const reason of REASONS) expect(eventPage.refused.reasons[reason], reason).toBe(bodies[reason]);
+  });
+
+  it("names no amount and points at the store, never at this page: true in token and full mode (D028)", () => {
+    for (const [reason, body] of Object.entries(eventPage.refused.reasons)) {
+      expect(body, reason).not.toMatch(TYPED_AMOUNT);
+      expect(body, reason).not.toMatch(/\{price:|₹|this page|Refresh/);
+      expect(body.endsWith("at the usual price in our store."), reason).toBe(true);
+    }
+  });
+
+  it("keeps the live first sentence where it is still true, and never calls a signed link 'not one of ours'", () => {
+    const live = (reason: (typeof REASONS)[number]) => tierRefusalMessage(reason).split(". ")[0];
+    for (const reason of ["expired", "full", "bad-signature"] as const) {
+      expect(eventPage.refused.reasons[reason].startsWith(`${live(reason)}.`), reason).toBe(true);
+    }
+    expect(eventPage.refused.reasons.unknown).not.toMatch(/not one of ours/);
   });
 });
 

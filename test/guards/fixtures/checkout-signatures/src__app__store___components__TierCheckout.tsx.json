@@ -41,7 +41,7 @@
     "@StoreDetails summary={__JSX_OrderSummary__}",
     "@StoreDetails questions={__JSX_FaqSection__}",
     "{mark}",
-    "@StoreTop content={{ ...content.top, eyebrow: tier.label }}",
+    "@StoreTop content={{ ...content.top, eyebrow: content.eyebrow(tier.label) }}",
     "@StoreTop offer={offer}",
     "@StoreTop newTabNote={newTabNote}",
     "@PreorderForm tier={tier.id}",

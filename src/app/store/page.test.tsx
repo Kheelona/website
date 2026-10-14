@@ -144,21 +144,37 @@ describe("store page: the configured store (token mode)", () => {
     expect(bubble.classList.contains("ph-no-capture")).toBe(false);
   });
 
-  it("keeps the in-app note out while it is switched off (N7), even inside Instagram's browser once hydrated", async () => {
-    // The note's gate reads the user agent on the client only (the server HTML never holds it), so this renders in the
-    // browser's way, as Instagram's in-app browser.
+  /* The note ships switched on (D056 item 3, task 7.1c; deviation V4 retired). Its gate reads the user agent on the
+     client only (the server HTML never holds it), so this renders in the browser's way. */
+  it("shows the in-app note above the form inside Instagram's browser once hydrated (D056 item 3), and never in the server HTML", async () => {
     const agent = vi.spyOn(navigator, "userAgent", "get").mockReturnValue(INSTAGRAM);
     try {
-      // Not vacuous: switched on, the same render shows the note, so the agent reaches the gate and `.ks-inapp` is its mark.
-      const on = render(<InAppBrowserNote content={{ ...inAppNote, enabled: true }} storeUrl={STORE_ORIGIN} />);
-      expect(on.container.querySelector(".ks-inapp")).not.toBeNull();
-      on.unmount();
-      // The page as built hands over the content module's note, switched off: nothing shows, not even in the app.
       const { default: StorePage } = await import("./page");
       const page = render((await StorePage()) as ReactElement);
-      expect(page.container.querySelector("form")).not.toBeNull();
-      expect(page.container.querySelector(".ks-inapp")).toBeNull();
+      const note = page.container.querySelector(".ks-inapp")!;
+      expect(note).not.toBeNull();
+      expect(note.textContent).toContain(inAppNote.title);
+      expect(note.textContent).toContain(new URL(STORE_ORIGIN).host);
+      expect(note.compareDocumentPosition(page.container.querySelector("form")!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       page.unmount();
+    } finally {
+      agent.mockRestore();
+    }
+    const { main } = await renderPage();
+    expect(main.querySelector(".ks-inapp")).toBeNull();
+  });
+
+  it("keeps the in-app note out of any other browser: Chrome or Safari need no note", async () => {
+    const { default: StorePage } = await import("./page");
+    const page = render((await StorePage()) as ReactElement);
+    expect(page.container.querySelector("form")).not.toBeNull();
+    expect(page.container.querySelector(".ks-inapp")).toBeNull();
+    // Not vacuous: the same note, inside Instagram's browser, renders its mark.
+    const agent = vi.spyOn(navigator, "userAgent", "get").mockReturnValue(INSTAGRAM);
+    try {
+      const on = render(<InAppBrowserNote content={inAppNote} storeUrl={STORE_ORIGIN} />);
+      expect(on.container.querySelector(".ks-inapp")).not.toBeNull();
+      on.unmount();
     } finally {
       agent.mockRestore();
     }

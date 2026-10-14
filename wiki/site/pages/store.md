@@ -1,9 +1,11 @@
 ---
 title: "Store (store.kheelona.com): page copy for the Gate A mockup"
 type: page-copy
-updated: 2026-10-11
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
+  - ../../qa/cmo-review-built-c-2026-10-14.md (m1; "Needs the founder" 2), task 7.1c (see "Changes after approval (task 7.1c)")
+  - "wt (task 7.1c, worktree w8-7.1c, read 2026-10-14): src/lib/store/tiers.ts:42-47, 64-121, 133-145; src/app/store/e/[event]/page.tsx:53-58; src/content/en-IN/store/event-page.ts:44-45, 70-76; src/app/api/preorder/create-order/route.ts:54-62; src/content/en-IN/store/in-app-note.ts:8-12"
   - ../strategy.md (§2 stage 7, §3.2, §3.3 store row, §5 store row, §6 issues 2, 3, 4, 9, 10)
   - ../checkout.md (step by step, form fields, failure states, what must not change, copy the new checkout carries)
   - ../gate-a-open-items.md (B12, B13), ../../open-questions.md (G13, F12)
@@ -11,7 +13,7 @@ sources:
   - ../../brand/messaging.md (confirmed candidate lines, CTA labels), ../../brand/voice.md, ../content-boundary.md, ../tracking-inventory.md (§6)
   - ../../research/keyword-map.md (§6 PM1), ../../research/d2c-benchmarks.md (A3, A4, A5, A8, A11)
   - ./home.md (CTA block, compact block, fold 2 films table, fold 8 answers)
-  - "decisions D021, D022, D023, D024, D028, D032, D033, D040, D041, D042, D043"
+  - "decisions D021, D022, D023, D024, D028, D032, D033, D040, D041, D042, D043, D046, D056 (item 3)"
   - "wt: src/app/store/page.tsx, src/app/store/layout.tsx, src/features/preorder/components/{PreorderForm,OrderSummary}.tsx, src/features/preorder/lib/validate.ts, src/lib/store/tiers.ts, src/config/site.ts, src/app/(site)/{shipping,refund}/page.tsx (working tree of reset/website-v2, read 2026-10-11; no git access in this step, so the tag was not read with git show. The line numbers match the tag citations on checkout.md for every range checked: PreorderForm.tsx:194-241, store/page.tsx:45-126, layout.tsx:28-95)"
   - design-system/project/01-writing.md, 08-accessibility.md, components/Alert/README.md, components/FAQ/README.md (read-only)
 ---
@@ -134,6 +136,11 @@ you order." The micro-line is unchanged.
 - Wording from the founder-facing item G13 ("Paying by UPI? Open in Chrome or Safari", with copy link;
   [open questions](../../open-questions.md) G13), working default B12: presentation only, shipped once QA's
   sandbox test confirms the failure ([gate-a-open-items](../gate-a-open-items.md#3-other-website-items-on-working-defaults)).
+- **Ships switched on (task 7.1c).** The founder chose to show it now, on the PostHog audit's evidence (strategy §6
+  issue 2), without the device check that beta cannot run ([D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md)
+  item 3, superseding the B12 condition above; [CMO review C](../../qa/cmo-review-built-c-2026-10-14.md), "Needs the
+  founder" 2). The words above are unchanged, and it still shows only when the store opens inside the Instagram,
+  Facebook or WhatsApp browser. Deviation V4 retires when it ships (D056).
 - The address is printed in full so the note works without JavaScript; the button is a secondary button with the
   `copy` icon, never orange. Confirmation follows the DS pattern "say what happened" (`01-writing.md:106`).
 - It sits above the form on purpose: a parent who switches browser after typing loses what they typed.
@@ -389,6 +396,55 @@ the money questions.
 
 Failure messages show in a DS `Alert` (`danger`, `role="alert"`) above the pay button, as live.
 
+## Event link refused (`store.kheelona.com/e/<tier>`; added in task 7.1c)
+
+**Fold job:** when the store refuses an event link, say why in one line, then send the parent to the store's own
+pre-order, with no amount anywhere on the screen.
+
+**Copy (the store's panel; store header and footer as folds 0 and 7):**
+
+> **H1:** That link will not work.
+>
+> *(the body for the refusal's reason, from the table below)*
+>
+> **[Pre-order at the usual price]** → the store's own page, `/`
+>
+> Or [message us on WhatsApp] and a person will sort it out with you.
+
+| Reason (the code's, `wt:src/lib/store/tiers.ts:46`) | When this page gets it | Body |
+|---|---|---|
+| `expired` | The event's end date has passed (`wt:tiers.ts:92-93`) | This event link has expired. You can still pre-order at the usual price in our store. |
+| `full` | The event's allocation (its cap) is used up (`wt:tiers.ts:95-104`) | The allocation for this event has all gone. You can still pre-order at the usual price in our store. |
+| `unknown` | The link's signature is good, but no active event tier has that id: the tier was switched off (inactive), removed, or set up without a real amount (`wt:tiers.ts:82-90, 115-121`) | The price on this event link is not available. You can still pre-order at the usual price in our store. |
+| `bad-signature` | The link has no signature, or one that does not match: unsigned, altered or cut short (`wt:tiers.ts:78-80`) | This link is not one of ours. You can pre-order at the usual price in our store. |
+| `cap-reached` and `not-yet` | Only at `/e/launch` once the store is in full mode, or at `/e/full` while it is in token mode (`wt:tiers.ts:66-76`) | The price on this link is not on offer right now. You can still pre-order at the usual price in our store. |
+
+- **Why (CMO review C, m1):** the panel printed the frozen `tierRefusalMessage` words (`wt:src/lib/store/tiers.ts:133-145`,
+  byte-identical to the tag; passed at `wt:src/app/store/e/[event]/page.tsx:58`). Its default line, "This link is not
+  one of ours. You can pre-order at ₹499 on this page.", puts ₹499 beside a button with no ₹4,999 total
+  ([D028](../../decisions/D028-price-wording.md)) and would be false in full mode. "On this page" is wrong in every line,
+  because the button leaves for the store, and "Refresh this page" cannot help here: a refresh brings the same refusal.
+  `tiers.ts` is not changed: these bodies are words for the presentation side to print instead.
+- **First sentences:** `expired`, `full` and `bad-signature` keep their live first sentence word for word. `unknown`
+  gets its own: its link passed the signature check, so "not one of ours" would be false, and the line has to be true
+  whether the tier was switched off, removed or mis-set. The two mode refusals share one line, with no amount and no
+  count (the first 500 units stay an offer term printed once, on the store's summary card, [D041](../../decisions/D041-gate-a-round-1.md)).
+- **Second sentence:** the live "You can still pre-order at the usual price on this page." with "on this page"
+  replaced by "in our store". The `bad-signature` line keeps its live "You can pre-order", with "₹499" replaced by "the
+  usual price". With no amount, every body is true in token and full mode: the usual price is whatever the store page
+  shows ([pricing](../../product/pricing.md#where-price-text-appears-and-whether-it-follows-the-mode)). "At the usual
+  price" is also the button's live label.
+- **As live, unchanged:** the H1, the button (to `/`) and the WhatsApp line (`wt:src/content/en-IN/store/event-page.ts:44-45, 70-76`).
+  The store header above the panel still offers "Need help? WhatsApp or call" (fold 0, [D032](../../decisions/D032-grievance-block-and-call-line.md)).
+- **For the builder:** the bodies go into `event-page.ts` `refused`, one per reason, and `page.tsx:58` passes the body
+  for `result.reason` in place of `tierRefusalMessage(result.reason)` (presentation only, ADR-013; its signature
+  regenerated and reviewed). `page.test.tsx:101-104` compares the lead with `tierRefusalMessage` and moves to these
+  bodies.
+- **Gap, not fixed here (frozen logic):** the same `tiers.ts` words still reach a parent through the form. If an event
+  tier is refused when Pay is pressed (the allocation runs out, the date passes), create-order answers 409 with
+  `tierRefusalMessage` (`wt:src/app/api/preorder/create-order/route.ts:58-62`), and the form shows it, "…on this page"
+  included. Changing that needs a frozen logic file, so it is reported to the main session, not changed.
+
 ## Phone order and laptop layout
 
 - **Phone (360 px first):** header → fold 1 → fold 2 (only in in-app browsers; shown in the mockup) → fold 3 →
@@ -457,6 +513,12 @@ Plain `path:line` = wiki file; `wt:` = working tree of `reset/website-v2` (see f
 | Films: chips, captions, alts, heading, lede; "Families already using Kheelu." banned | [home.md:241-258](home.md#fold-2--see-it-ask); [D040:21-26](../../decisions/D040-films-move-to-new-site.md); [claims.md:197, :298](../../product/claims.md#4-retired-or-banned-wording) |
 | Pay button has no `cta` attribute; cta values | `wt:PreorderForm.tsx:255-270`; [tracking-inventory.md:269-283](../tracking-inventory.md#6-posthog-in-the-browser) |
 | White text on the Chilli pay button | [D041:19](../../decisions/D041-gate-a-round-1.md) |
+| Event link refused: the code's six reasons and when each happens (an inactive tier reads as `unknown`) | `wt:src/lib/store/tiers.ts:42-47, 64-121` (task 7.1c read) |
+| Event link refused: the frozen words replaced on this page, and why | `wt:src/lib/store/tiers.ts:133-145`; `wt:src/app/store/e/[event]/page.tsx:58`; [CMO review C](../../qa/cmo-review-built-c-2026-10-14.md) m1; [D028](../../decisions/D028-price-wording.md) |
+| Event link refused: H1, button "Pre-order at the usual price" to `/`, WhatsApp line (as live) | `wt:src/content/en-IN/store/event-page.ts:44-45, 70-76`; [checkout.md:167-168](../checkout.md#variants) |
+| An event token is always the token shape; the store page's price follows the live mode | [checkout.md:162-164](../checkout.md#variants); [pricing](../../product/pricing.md#where-price-text-appears-and-whether-it-follows-the-mode) |
+| The form shows create-order's 409 refusal words (frozen) | `wt:src/app/api/preorder/create-order/route.ts:58-62` |
+| In-app browser note ships switched on, words unchanged | [D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 3; `wt:src/content/en-IN/store/in-app-note.ts:8-12` (the switch); [deviations](../../qa/deviations.md) V4 |
 
 ## Placeholders
 
@@ -495,3 +557,16 @@ None. Every line on this page has a source. (The chargeback link depends on an a
   "A screen-free talking friend for ages 3+" ([age-band review](../../product/age-band-review.md) row 10). Both need
   the same treatment in the build.
 - Production is untouched until Gate B ([D011](../../decisions/D011-production-held-until-gate-b.md)).
+
+## Changes after approval (task 7.1c)
+
+The founder approved this page at Gate A ([D046](../../decisions/D046-gate-a-approved.md)). Task 7.1c changed only what
+[CMO built-page review C](../../qa/cmo-review-built-c-2026-10-14.md) m1 and [D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md)
+item 3 ask, on 2026-10-14 ([tasks](../../engineering/tasks.md), 7.1c). Every other word of the Copy blocks is as
+approved; no amount, promise or keyword placement changed.
+
+| Where | What changed | Why |
+|---|---|---|
+| New section, [Event link refused](#event-link-refused-storekheelonacometier-added-in-task-71c) | One body per refusal reason (`expired`, `full`, `unknown`, which covers an inactive tier, `bad-signature`, and the two mode refusals), for the presentation side to print on `/e/<tier>` in place of the frozen `tierRefusalMessage` text (`wt:src/lib/store/tiers.ts:133-145`). Each sends the parent to the store's own pre-order and names no amount. The panel's H1, button and WhatsApp line stay as live | m1: the default line "You can pre-order at ₹499 on this page." puts ₹499 beside a button with no total (D028), is false in full mode, and "on this page" (and "Refresh this page") points at the wrong place. `tiers.ts` stays byte-identical (ADR-013) |
+| Fold 2, in-app browser note | The Copy block is unchanged. A new note bullet records that the note ships switched on (still only in the Instagram, Facebook or WhatsApp browser), superseding the B12 "once QA's sandbox test confirms" condition | D056 item 3: the founder switched it on now, on the PostHog audit's evidence; CMO review C, "Needs the founder" 2. Deviation V4 retires when it ships |
+| Front matter, Sources | The review, D046, D056 and the code read for the reasons added; new source rows for both changes | So every new line has its source |

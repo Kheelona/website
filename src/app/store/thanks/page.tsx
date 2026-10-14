@@ -21,6 +21,8 @@ import { fillSteps } from "@/components/sections/store/ConfirmationHead/slot-tex
 import { HelpBlock } from "@/components/sections/store/HelpBlock/HelpBlock";
 import { OrderRows } from "@/components/sections/store/OrderRows/OrderRows";
 import { StorePaymentsLine } from "@/components/sections/store/StorePaymentsLine/StorePaymentsLine";
+import { Button } from "@/components/ui/Button/Button";
+import { RichText } from "@/components/ui/RichText/RichText";
 import { STORE_ORIGIN } from "@/config/env";
 import { navigation } from "@/content/en-IN/navigation";
 import { seller } from "@/content/en-IN/seller";
@@ -80,13 +82,21 @@ import { pageMeta } from "@/lib/seo/metadata";
  *  is the delivery row's choice by order date (N9, F12 answered: D054), in
  *  lib/offer/delivery-line.ts: this page passes `created_at`.
  *
- *  Metadata through pageMeta (title, description, share card), with the
- *  canonical and the share URL on the store host, as the store page sets its
- *  own: this page's URL is the store's, never the marketing origin's. No robots
- *  key: the store layout's noindex stands (a page-level one would replace it). */
-const { title, description, openGraph, twitter } = pageMeta({ ...confirmation.meta, path: THANKS_PATH });
+ *  Metadata through pageMeta (description, share card), with the canonical
+ *  and the share URL on the store host, as the store page sets its own: this
+ *  page's URL is the store's, never the marketing origin's. No robots key: the
+ *  store layout's noindex stands (a page-level one would replace it).
+ *
+ *  THE TAB TITLE FOLLOWS THE STATE (task 7.1c, CMO review C m5;
+ *  store-confirmation.md, At a glance): "Your Kheelu is reserved" only once the
+ *  payment is confirmed, "Your Kheelu pre-order" in every other state. Static
+ *  metadata cannot know the state without reading the order a second time, so
+ *  each branch renders its own React <title> (hoisted into <head>) and the
+ *  metadata title is null: Next prints no title, not even the store layout's,
+ *  so the state's is the only one. The share card keeps the mockup's title. */
+const { description, openGraph, twitter } = pageMeta({ ...confirmation.meta, path: THANKS_PATH });
 
-export const metadata: Metadata = { title, description, alternates: { canonical: `${STORE_ORIGIN}${THANKS_PATH}` }, openGraph: { ...openGraph, url: `${STORE_ORIGIN}${THANKS_PATH}` }, twitter };
+export const metadata: Metadata = { title: null, description, alternates: { canonical: `${STORE_ORIGIN}${THANKS_PATH}` }, openGraph: { ...openGraph, url: `${STORE_ORIGIN}${THANKS_PATH}` }, twitter };
 
 export const dynamic = "force-dynamic";
 
@@ -118,11 +128,26 @@ export default async function ThanksPage() {
      stays blank until JavaScript hydrates (§8.34-a), and blank is the worst
      thing to show someone looking for money they have already sent.
      Distinguishing "no row" from "query failed" is worth doing and is logged
-     in Technical-Todo.md; it does not change what this reader is told. */
+     in Technical-Todo.md; it does not change what this reader is told.
+     Since task 7.1c (CMO review C m4): a secondary WhatsApp button, never a
+     button to buy again, then the call line; the whole panel inside
+     ph-no-capture, since it sits outside the order's container. */
   if (!data) {
     return (
       <>
-        <NotFoundPanel title={confirmation.cannotOpen.title} body={confirmation.cannotOpen.body} cta={false} />
+        <title>{confirmation.titles.other}</title>
+        <NotFoundPanel
+          title={confirmation.cannotOpen.title}
+          body={confirmation.cannotOpen.body}
+          cta={false}
+          action={
+            <Button variant="secondary" href={seller.support.whatsapp} icon="whatsapp-logo">
+              {confirmation.cannotOpen.action}
+            </Button>
+          }
+          note={<RichText text={confirmation.cannotOpen.call} />}
+          noCapture
+        />
         <ThanksClose />
       </>
     );
@@ -147,6 +172,7 @@ export default async function ThanksPage() {
      would be correct today and quietly wrong at the next edit. */
   return (
     <>
+      <title>{paid ? confirmation.titles.paid : confirmation.titles.other}</title>
       <div className="ph-no-capture ph-mask kh-section ks-thanks">
         <div className="ks-thanks__col">
           <ConfirmationHead
@@ -198,6 +224,7 @@ export default async function ThanksPage() {
 function LinkNeeded() {
   return (
     <>
+      <title>{confirmation.titles.other}</title>
       <div className="kh-section ks-thanks">
         <div className="ks-thanks__col">
           <ConfirmationHead copy={confirmation.head.linkNeeded} help={confirmation.linkNeededHelp} />

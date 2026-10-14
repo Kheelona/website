@@ -10,7 +10,6 @@ import { FilmsStrip } from "@/components/sections/FilmsStrip/FilmsStrip";
 import { PayBeside, StoreDetails } from "@/components/sections/store/StoreDetails/StoreDetails";
 import { StorePaymentsLine } from "@/components/sections/store/StorePaymentsLine/StorePaymentsLine";
 import { StoreTop } from "@/components/sections/store/StoreTop/StoreTop";
-import { Button } from "@/components/ui/Button/Button";
 import { InAppBrowserNote } from "@/components/ui/InAppBrowserNote/InAppBrowserNote";
 import { formatInr } from "@/config/site";
 import { HOSTS, STORE_ORIGIN } from "@/config/env";
@@ -18,13 +17,12 @@ import { pickFaqs } from "@/content/en-IN/faqs";
 import { films, filmsStrip } from "@/content/en-IN/films";
 import { navigation } from "@/content/en-IN/navigation";
 import { seller } from "@/content/en-IN/seller";
-import { eventPage } from "@/content/en-IN/store/event-page";
 import { inAppNote } from "@/content/en-IN/store/in-app-note";
 import { storePage } from "@/content/en-IN/store/store-page";
 import { buildOffer } from "@/lib/offer/offer";
 import { getOffer } from "@/lib/offer/get-offer";
 import { pageMeta } from "@/lib/seo/metadata";
-import { NotFoundPanel } from "./_components/NotFoundPanel";
+import { StoreNotConfigured } from "./_components/StoreNotConfigured";
 
 /** store.kheelona.com (§8.25-w, mode-gated since §8.26; restyled on the design
  *  system in task 5.15, ADR-013: markup, classes, copy and presentation imports).
@@ -40,7 +38,8 @@ import { NotFoundPanel } from "./_components/NotFoundPanel";
  *   3. NOT CONFIGURED: deployed before the keys are in the dashboard (and on
  *      beta, which never takes a payment, D051). Says "shortly" rather than
  *      failing, which is what let this ship before the founder had finished
- *      with Razorpay.
+ *      with Razorpay. The state is _components/StoreNotConfigured, shared
+ *      with the event page since task 7.1c.
  *
  *  Rendered on the server, form and all, so the price a parent reads is in the
  *  HTML rather than assembled by a script that might not run.
@@ -68,7 +67,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function StorePage() {
   const env = storeEnv();
-  if (!env) return <NotConfiguredState />;
+  if (!env) return <StoreNotConfigured />;
 
   const mode = await preorderMode(env);
   const tier = mode === "token" ? launchTier() : fullTier();
@@ -107,28 +106,6 @@ export default async function StorePage() {
           until a visitor asks for one. */}
       <FilmsStrip {...storePage.films} films={films} labels={filmsStrip} offer={offer} />
       <StorePaymentsLine content={storePage.payments} newTabNote={newTabNote} />
-      <WhatsAppFloat href={seller.support.whatsapp} chat={seller.chat} context="store" />
-    </>
-  );
-}
-
-/** Not configured: the store's one panel (NotFoundPanel, as the event page's state; task 6.3) with this page's approved
- *  words (store.md, "Store not switched on"): the title and lead, the WhatsApp button, then the note. */
-function NotConfiguredState() {
-  const copy = storePage.notConfigured;
-  return (
-    <>
-      <NotFoundPanel
-        copy={eventPage.notConfigured}
-        title={copy.title}
-        body={copy.body}
-        action={
-          <Button variant="secondary" href={seller.support.whatsapp} icon="whatsapp-logo">
-            {copy.action}
-          </Button>
-        }
-        note={copy.note}
-      />
       <WhatsAppFloat href={seller.support.whatsapp} chat={seller.chat} context="store" />
     </>
   );

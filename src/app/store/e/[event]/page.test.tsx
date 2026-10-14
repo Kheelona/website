@@ -2,17 +2,19 @@ import { readFileSync } from "node:fs";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { sign } from "@/lib/store/signing";
-import { tierRefusalMessage } from "@/lib/store/tiers";
 import { pageMeta } from "@/lib/seo/metadata";
 import { seller } from "@/content/en-IN/seller";
-import { eventPage } from "@/content/en-IN/store/event-page";
+import { eventPage, type TierRefusal } from "@/content/en-IN/store/event-page";
+import { storePage } from "@/content/en-IN/store/store-page";
 import { fakeClient, fakeEnv, type RecordedCall } from "../../../../../test/helpers/fake-supabase";
 import type { StoreEnv } from "@/lib/store/env";
 
 /* The event page, store.kheelona.com/e/<tier>?sig=… (task 6.1; architecture §16.1; checkout.md "Variants"). What a QR
  * code at a stall points at. Its logic is the tag's, unchanged (ADR-013): the signed tier is resolved and priced on the
  * server, a refused link says why, a store without keys says it opens shortly. Only the presentation is new: the store
- * page's folds around the same checkout, the tier's price name in the first screen's heading. */
+ * page's folds around the same checkout, the tier's price name beside the store's age band in the first screen's
+ * eyebrow (task 7.1c, CMO review C m2), a refused link's body per reason from the copy page (7.1c, m1), and the store
+ * page's own not-configured state (7.1c, m3). */
 
 let calls: RecordedCall[] = [];
 let results: Record<string, { data?: unknown; error?: unknown; count?: number }> = {};
@@ -50,7 +52,7 @@ describe("event page: a signed, live tier", () => {
     expoRow();
     const { container } = await visit("bangalore-expo", SIG);
     expect(calls.find((c) => c.table === "event_tiers" && c.method === "eq")?.args).toEqual(["id", "bangalore-expo"]);
-    expect(container.querySelector(".ks-store-top .kh-eyebrow")!.textContent).toBe("Bangalore expo price");
+    expect(container.querySelector(".ks-store-top .kh-eyebrow")!.textContent).toBe("Bangalore expo price · Ages 3 to 7");
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Pre-order Kheelu.");
     expect(screen.getByRole("button", { name: "Pay ₹99 and reserve" })).toBeInTheDocument();
     expect(container.querySelector(".ks-store-top__price")!.textContent).toContain("₹99 today");
@@ -75,10 +77,18 @@ describe("event page: a signed, live tier", () => {
 });
 
 describe("event page: a link the store refuses", () => {
-  const cases: [string, () => Promise<ReturnType<typeof render>>, Parameters<typeof tierRefusalMessage>[0]][] = [
+  const cases: [string, () => Promise<ReturnType<typeof render>>, TierRefusal][] = [
     ["no signature", () => visit("bangalore-expo"), "bad-signature"],
     ["a forged signature", () => visit("bangalore-expo", "AAAAAAAAAAAAAAAA"), "bad-signature"],
     ["an unknown tier", () => visit("bangalore-expo", SIG), "unknown"],
+    [
+      "a tier set up without a real amount",
+      () => {
+        expoRow({ amount_paise: 0 });
+        return visit("bangalore-expo", SIG);
+      },
+      "unknown",
+    ],
     [
       "an expired tier",
       () => {
@@ -96,12 +106,24 @@ describe("event page: a link the store refuses", () => {
       },
       "full",
     ],
+    [
+      "the public token tier once the store is in full mode",
+      () => {
+        results["preorders.select"] = { count: 1_000_000 };
+        return visit("launch");
+      },
+      "cap-reached",
+    ],
+    ["the public full tier while the store is in token mode", () => visit("full"), "not-yet"],
   ];
 
   it.each(cases)("%s: says the link will not work and why, then the usual price and a person", async (_name, open, reason) => {
     const { container } = await open();
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("That link will not work.");
-    expect(container.querySelector(".kh-heading__lead")!.textContent).toBe(tierRefusalMessage(reason));
+    // The copy page's body for the reason (store.md, "Event link refused"), never the frozen tiers.ts words.
+    expect(container.querySelector(".kh-heading__lead")!.textContent).toBe(eventPage.refused.reasons[reason]);
+    // No amount anywhere on the screen, so nothing can contradict the store's own price in either mode (D028).
+    expect(container.textContent).not.toMatch(/₹/);
     expect(screen.getByRole("link", { name: eventPage.refused.action })).toHaveAttribute("href", "/");
     expect(container.querySelector("p.ks-store-closed")!.textContent).toBe(
       "Or message us on WhatsApp and a person will sort it out with you.",
@@ -112,17 +134,28 @@ describe("event page: a link the store refuses", () => {
 });
 
 describe("event page: the store before its keys are in place (and on beta, D051)", () => {
-  it('reads "Pre-orders open here shortly.", offers WhatsApp, reads nothing and shows no form', async () => {
+  /* CMO review C m3 (task 7.1c): the store page's own state (store.md, "Store not switched on"), not a muted link
+     beside a payments line that names a payment provider where nothing can be paid. */
+  it('renders the store page\'s not-configured state: "Pre-orders open here shortly.", the WhatsApp button and the note', async () => {
     env = null;
     const { container } = await visit("bangalore-expo", SIG);
-    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Pre-orders open here shortly.");
-    expect(container.textContent).toContain("nothing has been charged");
-    expect(container.querySelector("p.ks-store-closed")!.textContent).toBe(
-      "Message us on WhatsApp and we will reserve one for you by hand in the meantime.",
-    );
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(storePage.notConfigured.title);
+    expect(container.textContent).toContain(storePage.notConfigured.body);
+    const button = screen.getByRole("link", { name: storePage.notConfigured.action });
+    expect(button).toHaveAttribute("href", seller.support.whatsapp);
+    expect(button.className).toMatch(/\bkh-btn--secondary\b/);
+    expect(container.querySelector("p.ks-store-closed")!.textContent).toBe(storePage.notConfigured.note);
     expect(screen.queryByRole("link", { name: /pre-order/i })).toBeNull();
     expect(container.querySelector("form")).toBeNull();
     expect(calls).toEqual([]);
+  });
+
+  it("prints no payments line, and closes with the store's bubble", async () => {
+    env = null;
+    const { container } = await visit("bangalore-expo", SIG);
+    expect(container.querySelector(".ks-store-payments")).toBeNull();
+    expect(container.textContent).not.toMatch(/Razorpay|payment fees/);
+    expect(Array.from(container.children).map((b) => b.tagName.toLowerCase())).toEqual(["section", "a"]);
     expect(Array.from(container.children).at(-1)!.getAttribute("href")).toBe(bubbleHref);
   });
 });

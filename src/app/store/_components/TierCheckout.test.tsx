@@ -32,10 +32,12 @@ function renderCheckout(mark?: ReactNode) {
 afterEach(() => cleanup());
 
 describe("TierCheckout: the store page's folds for an event tier", () => {
-  it("shows the tier's price name in its own heading, above the store's h1 (OrderSummary no longer prints it; 5.15 review)", () => {
+  it("shows the tier's price name beside the store's age band, above the store's h1 (5.15 review; CMO review C m2)", () => {
     const { container } = renderCheckout();
     const top = container.querySelector(".ks-store-top")!;
-    expect(top.querySelector(".kh-eyebrow")!.textContent).toBe("Bangalore expo price");
+    // The band stays on the first screen (task 7.1c): the tier's name first, then the store's own eyebrow.
+    expect(top.querySelector(".kh-eyebrow")!.textContent).toBe(`Bangalore expo price · ${storePage.top.eyebrow}`);
+    expect(top.querySelector(".kh-eyebrow")!.textContent).toBe("Bangalore expo price · Ages 3 to 7");
     expect(within(top as HTMLElement).getByRole("heading", { level: 1 }).textContent).toBe("Pre-order Kheelu.");
     expect(container.querySelectorAll("h1")).toHaveLength(1);
     expect(Array.from(container.querySelectorAll("h2")).map((h) => h.textContent)).toEqual([

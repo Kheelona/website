@@ -312,16 +312,22 @@ const bothSides = (mockup: string, build: string, reason: string): VisualHide[] 
   { side: "build", selector: build, reason, approvedBy: TEAM_V7 },
 ];
 
+/* The in-app browser note ships switched on (D056 item 3, task 7.1c; deviation V4, "built but off", retired). It shows
+   only inside the Instagram, Facebook or WhatsApp browser, and the parity browser is plain Chromium, so the build there
+   shows no fold 2, as a parent in Chrome or Safari sees it; the mockup prints it as an example (store.md fold 2). */
+const IN_APP_ONLY = "D056 item 3 (founder, 2026-10-14; task 7.1c): the note ships, shown only in the in-app browsers";
+const IN_APP_REASON =
+  "the in-app browser note (fold 2) shows only inside the Instagram, Facebook or WhatsApp browser, and the parity browser is plain Chromium, so the build shows no fold 2";
+
 export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   store: [
     {
-      /* The in-app browser note is built but off (N7), so the store shows no fold 2 and every chunk below the first
-         screen would move up by the note's height (without these hides the store is 3 to 5 percent shorter than
-         the mockup at the three widths, task 4.8). */
+      /* Every chunk below the first screen would move up by the note's height (without these hides the store is 3 to 5
+         percent shorter than the mockup at the three widths, task 4.8). */
       side: "mockup",
       selector: ".mk-inapp",
-      reason: "the in-app browser note (fold 2) is built but off until QA's device check (N7), so the store shows no fold 2",
-      approvedBy: "deviations.md V4 (main session, 2026-10-14, wave 5 part B2 merge; task 4.8)",
+      reason: IN_APP_REASON,
+      approvedBy: IN_APP_ONLY,
     },
     ...paymentsHidden,
   ],
@@ -495,8 +501,8 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
         ...sentences(`${inAppNote.body} ${HOSTS.production.store}`),
         inAppNote.copyLabel,
       ]),
-      reason: "the in-app browser note (fold 2) is built but off until QA's device check (N7), so its lines are missing",
-      approvedBy: "deviations.md V4 (main session, 2026-10-14, wave 5 part B2 merge; task 4.8)",
+      reason: `${IN_APP_REASON}: its lines are missing`,
+      approvedBy: IN_APP_ONLY,
     },
     paymentsMoved,
   ],
