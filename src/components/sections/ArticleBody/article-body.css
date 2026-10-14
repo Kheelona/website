@@ -16,9 +16,12 @@
 }
 .ks-prose p,
 .ks-prose ul,
-.ks-prose ol {
+.ks-prose ol,
+.ks-part > .kh-photo {
   margin: 0 0 var(--space-4);
 }
+/* A photo among a part's paragraphs (a journal post's, task 8b.2d) keeps that rhythm below its caption, as a video does
+   (video-embed.css); the DS frame's own margin is zero, and the last-child rule below takes it away at a part's end. */
 .ks-prose > * > :last-child,
 .ks-prose .kh-card > :last-child {
   margin-bottom: 0;
