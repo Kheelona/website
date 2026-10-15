@@ -8,7 +8,19 @@ import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { findBanned } from "../../../../test/guards/banned-phrases.data";
 import { htmlToText } from "../../../../test/e2e/support/mockup-text";
+import {
+  HOME_FOOTER_COLS_HIDDEN,
+  HOME_SELLING,
+  HOME_SELLING_APPROVED,
+  HOME_SELLING_HIDDEN,
+  HOME_SELLING_TEXT,
+  TEXT_DEVIATIONS,
+  VISUAL_HIDDEN,
+  type HomeSellingFold,
+} from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
+import { sentences } from "../../../../test/e2e/support/parity";
+import { mockupFold } from "../../../../test/support/mockup-compare";
 import { expertClip, expertFold } from "../expert-video";
 import { faqs } from "../faqs";
 import { filmQuotes, films } from "../films";
@@ -567,5 +579,70 @@ describe("Home: search and share metadata (plan §2, title, meta)", () => {
     expect(description.length).toBeLessThanOrEqual(155);
     expect(pageMeta({ ...homePage.meta, path: "/", offer }).alternates?.canonical).toBe("/");
     expect(homePage.meta.og).toEqual({ image: "/og/kheelu.jpg", alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." });
+  });
+});
+
+/* Home's rules for the parity passes since task Q2.9 (test/e2e/support/deviations.ts HOME_SELLING; tasks.md SPA 1 and 2):
+ * fold by fold, one per deviation row. The text pass reads the browser's text at 390 px; here every line a fold lists is
+ * held to the page it names: an excused line to the approved page (it is a real approved sentence), an accepted line to
+ * the page as it renders (it is a real sentence of the build). Every fold of either page is hidden for the pixels on its
+ * side, each selector finding exactly one fold. */
+describe("Home: the parity rules of the selling update (deviations.ts HOME_SELLING)", () => {
+  const APPROVED = mockupFold("home", "main");
+  /** A page's sentences as the text pass splits them, every block a line of its own, eyebrows also in capitals. */
+  const linesOf = (html: string) => {
+    // htmlToText spaces every inline tag, so a source marker reads "brain. [1]" where a browser reads "brain.[1]".
+    // Blocks start a line, and so do the labels and chips CSS sets on their own line, as a browser's innerText reads them.
+    const blocks = html.replace(/<(span class="(?:kh-label-s|kh-chip)"[^>]*>[^<]*<\/span>)/g, "\n<$1\n").replace(/<(p|ul|ol|li|div|figure|figcaption|h[1-6])\b/g, "\n<$1");
+    const text = htmlToText(blocks);
+    const lines = sentences(text.replace(/[ \t]+(?=[.,;:!?)\]…]|\[\d+\])/g, ""));
+    return new Set([...lines, ...lines.map((l) => l.toUpperCase())]);
+  };
+  const approvedLines = linesOf(APPROVED.outerHTML);
+  const builtLines = linesOf(TOKEN.html);
+  /** What the text pass reads: a closed FAQ answer is not in a browser's innerText. */
+  const shown = TOKEN.doc.cloneNode(true) as Document;
+  shown.querySelectorAll(".kh-faq__a").forEach((a) => a.remove());
+  const shownLines = linesOf(shown.documentElement.outerHTML);
+  const folds = Object.entries(HOME_SELLING as Readonly<Record<string, HomeSellingFold>>);
+
+  it("lists the eleven folds of the build and the approved folds that left, each once, with its reason", () => {
+    expect(folds.flatMap(([, f]) => (f.buildFold ? [f.buildFold] : []))).toEqual(LABELS);
+    const approved = [...APPROVED.children].filter((el) => el.tagName === "SECTION").map((el) => el.getAttribute("aria-labelledby"));
+    expect(folds.flatMap(([, f]) => f.mockupFolds).sort()).toEqual([...approved].sort());
+    for (const [name, fold] of folds) expect(fold.reason.length, name).toBeGreaterThan(20);
+  });
+
+  it("excuses only approved sentences, and accepts only sentences the page prints", () => {
+    for (const [name, fold] of folds) {
+      for (const line of fold.mockup) expect(approvedLines.has(line) || approvedLines.has(line.toUpperCase()), `${name}: "${line}" is not an approved sentence`).toBe(true);
+      for (const line of fold.build) expect(builtLines.has(line), `${name}: "${line}" is not a sentence of the page`).toBe(true);
+    }
+  });
+
+  it("hides every fold of both pages for the pixels, each selector finding one fold on its side, and the footer's columns", () => {
+    const rules = VISUAL_HIDDEN.home.filter((r) => r.approvedBy === HOME_SELLING_APPROVED);
+    expect(rules).toEqual(HOME_SELLING_HIDDEN);
+    const doc = { mockup: mockupFold("home", "html"), build: TOKEN.doc.documentElement };
+    for (const rule of rules) expect(doc[rule.side].querySelectorAll(rule.selector), `${rule.side} ${rule.selector}`).toHaveLength(1);
+    expect(rules.filter((r) => r.side === "mockup")).toHaveLength(10);
+    expect(rules.filter((r) => r.side === "build")).toHaveLength(LABELS.length);
+    expect(VISUAL_HIDDEN.home).toEqual(expect.arrayContaining([...HOME_FOOTER_COLS_HIDDEN]));
+  });
+
+  it("is a text rule a fold, before the claim fixes (which only the FAQ fix may follow)", () => {
+    const rules = TEXT_DEVIATIONS.home;
+    const at = rules.indexOf(HOME_SELLING_TEXT[0]);
+    expect(at).toBeGreaterThan(-1);
+    expect(rules.slice(at, at + HOME_SELLING_TEXT.length)).toEqual([...HOME_SELLING_TEXT]);
+    expect(HOME_SELLING_TEXT).toHaveLength(folds.length);
+    expect(rules.slice(at + HOME_SELLING_TEXT.length).map((r) => r.approvedBy)).toEqual([expect.stringMatching(/^deviations\.md V26 /), expect.stringMatching(/D061/)]);
+  });
+
+  it("excuses no line the page still prints, and every rule's words pass the claims guard", () => {
+    for (const [name, fold] of folds) {
+      for (const line of fold.mockup) expect(shownLines.has(line), `${name}: "${line}" is excused but the page prints it`).toBe(false);
+      for (const line of fold.build) expect(findBanned(line), `${name}: ${line}`).toEqual([]);
+    }
   });
 });

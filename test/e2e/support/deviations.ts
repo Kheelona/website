@@ -1742,6 +1742,155 @@ const HOME_FILMS_ORDER_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as c
   approvedBy: HOME_FILMS_ORDER.approvedBy,
 }));
 
+/* Task Q2.9, Home end to end (the selling update: D064, D065 and the main session's rulings of 2026-10-15; the copy: the
+   D2C plan v2 §2, checked by the claims guard and the CMO): eleven folds in a new order, every one changed from the
+   approved Gate A page (D046), and four approved folds gone (What is Kheelu?, the parent app, the comparison, the
+   guides). No edit of the frozen mockup can turn it into this page, so Home's rules are fold by fold, one per deviation
+   row (the rows are the main session's, numbered at the merge; the founder signs the words at Gate B, D015):
+   - the pixels compare Home without its folds, on both sides: each approved fold is hidden on the mockup's side and
+     each fold of the build on the build's (the selector names the fold by its heading), so the visual pass compares the
+     nav and the footer, and nothing of a fold against another fold. The page itself is held by its unit test
+     (src/content/en-IN/pages/home.test.tsx: every line, picture, button and link as the plan's v2), the first phone
+     screen by test/e2e/first-screen.spec.ts, the layout by the sideways, axe and tap-target specs;
+   - the text pass excuses, fold by fold, the approved sentences the fold no longer prints and accepts the sentences it
+     prints instead (as the browser reads them at 390 px, eyebrows in capitals; the earlier Home rules above still excuse
+     their own lines). Literal, as the rest of this file (Playwright cannot load the page module, which imports images);
+     home.test.tsx holds every listed sentence to the approved page or to the page as it renders. */
+export const HOME_SELLING_APPROVED =
+  "D064, D065 and the D2C plan v2 §2 (founder, 2026-10-15; the main session's rulings of the selling update; CMO review of the plan v2; task Q2.9; deviations.md rows to come, one per fold)";
+export type HomeSellingFold = {
+  /** The approved fold it replaces (its heading's id on the mockup), if any. */
+  readonly mockupFolds: readonly string[];
+  /** The build's fold (its heading's id), if any. */
+  readonly buildFold?: string;
+  /** Approved sentences this fold no longer prints, and the sentences it prints instead (eyebrows in content case). */
+  readonly mockup: readonly string[];
+  readonly build: readonly string[];
+  readonly reason: string;
+};
+export const HOME_SELLING = {
+  hero: {
+    mockupFolds: ["hero-title"],
+    buildFold: "hero-title",
+    mockup: ["Ages 3 to 7", "Kheelu answers every why.", "Then it asks one back.", "A screen-free plush toy by Kheelona.", "It answers your child first, then asks a question back, so they do the thinking.", "Questions?"],
+    build: ["Screen-free AI toy · Ages 3 to 7", "The AI toy that answers every why, then asks your child one back.", "Kheelu by Kheelona is a soft plush rabbit.", "You can read every chat."],
+    reason: "Fold 1, the hero: the founder's eyebrow and h1 (D065 item 1), the lead naming Kheelu and the brand, no help line (plan §1.1), the film link on laptops only (CMO M1, M2), the Kabir photo kept out of the bubble's column (ruling (a))",
+  },
+  films: {
+    mockupFolds: ["ask-title"],
+    buildFold: "films-title",
+    mockup: ["See it ask", "Watch them think.", "Press play on any of them.", "See what else it does"],
+    build: ["Seven films", "Watch the children do the thinking.", "Then hear from two of their parents."],
+    reason: "Fold 2, the films: the product page's built heading (\"Real children, real families.\"), posters lazy (ruling 9), no CTA block and no link (fold 3's button is one screen below, DS 07-selling)",
+  },
+  recognised: {
+    mockupFolds: [],
+    buildFold: "recognised-title",
+    mockup: [],
+    build: ["Recognised by"],
+    reason: "Fold 2's foot: \"Recognised by\" as a small label under the quotes, on the films' band (ruling 1; CMO m10)",
+  },
+  why: {
+    mockupFolds: ["why-title"],
+    buildFold: "why-title",
+    mockup: ["Harvard’s Center on the Developing Child says back-and-forth “serve and return” exchanges between a young child and a caring adult help build and strengthen neural connections in the child’s brain.", "They also support the early language and social skills that later, more complex thinking builds on.[1]", "You can do it anywhere, too: answer your child, then ask one back.", "why does the moon follow our car?", "Read more: how children learn by talking"],
+    build: ["Harvard’s Center on the Developing Child says back-and-forth “serve and return” exchanges between a young child and a caring adult help build and strengthen neural connections in the child’s brain.[1]", "It doesn’t replace that time with you.", "Pre-order Kheelu"],
+    reason: "Fold 3, why it matters: the Harvard sentence alone, the card's second sentence (faqs.ts speech), no Kabir frame (Kabir is the hero: one appearance a page), no link, and the button home-why",
+  },
+  languages: {
+    mockupFolds: [],
+    buildFold: "languages-title",
+    mockup: [],
+    build: ["Languages", "Kheelu speaks up to 10 languages at launch.", "Eight today: English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French.", "In AI mode, it can switch between them mid-sentence: when your child changes language, Kheelu changes with them.", "Two languages · 0:31", "In AI mode, Arha switches to English, and Kheelu switches with her."],
+    reason: "Fold 4, languages (D064 item 9): the ceiling, the eight languages and the switching line, the chips, and film 6 played in place",
+  },
+  asks: {
+    mockupFolds: ["what-title"],
+    buildFold: "asks-title",
+    mockup: ["Modes and languages", "Kheelu by Kheelona is a screen-free plush rabbit that talks with children aged 3 to 7.", "It answers your child, then asks a question back.", "It has three modes: AI mode for open conversation on home Wi‑Fi, Story mode for stories, poems and jingles with no Wi‑Fi needed, and Bluetooth mode, which makes it a speaker for your phone.", "AI mode", "Open conversation, on your home Wi‑Fi.", "Story mode", "Stories, poems and jingles your child enjoys and learns from.", "No Wi‑Fi needed.", "Bluetooth mode", "Pair your phone and use it as a speaker.", "Up to 10 languages at launch", "It can switch between them mid-sentence.", "See what each mode does"],
+    build: ["How it works", "Your child thinks.", "A soft plush rabbit.", "No screen.", "Kheelu is a cream plush rabbit with a speaker in its tummy.", "Your child talks and listens instead of watching.", "Press and ask.", "Your child presses the wake-up button and asks.", "A light shows Kheelu is listening.", "It answers, then asks one back.", "It answers the question first.", "Then it asks your child a question back, so they do the thinking.", "Illustrative example, not a recording.", "Your child", "“Why does the moon follow our car?”", "Kheelu", "“The moon is very, very far away.", "So when the trees zoom past, the moon seems to stay with you.", "What else looks like it follows you?”", "“My shadow?”", "And when it doesn’t know something, it says so instead of guessing.", "You read every conversation.", "Each one appears in the parent app, word for word, a few minutes after it ends.", "Kheelu remembers them too, so it can pick up where your child stopped.", "From age 3.", "Still asking back at 7.", "Made for children aged 3 to 7.", "It is not a toy for children under 3.", "You set your child’s age in the parent app, and Kheelu’s AI is given child-safety rules for that age.", "Pre-order Kheelu"],
+    reason: "Fold 5, Kheelu asks (D064 items 7 and 10): six points in a sticky scroll in \"What is Kheelu?\"'s place (its answer is the FAQ's first), the labelled example under point 3, the line under the points, home-asks and home-asks-learn",
+  },
+  expert: {
+    mockupFolds: [],
+    buildFold: "expert-title",
+    mockup: [],
+    build: ["A video from an expert", "Watching isn’t talking.", "0:34", "Chaitra, therapist and developmental coach", "Kheelona made this video with Chaitra and compensated her for it."],
+    reason: "Fold 6, the expert clip moved here from the product page (D064 item 8; D061 items 12-13), on the band",
+  },
+  offer: {
+    mockupFolds: ["close-title"],
+    buildFold: "offer-title",
+    mockup: ["Questions?"],
+    build: ["Pre-order", "There every day at home, with no screen to switch off.", "Kheelona+ is our paid subscription, on top of the free parent app."],
+    reason: "Fold 7, the offer card moved up from the close (plan fold 7): the lead (CMO M4), the one perk list (CMO m8), the Kheelona+ note, no help line, home-offer",
+  },
+  safety: {
+    mockupFolds: ["see-title", "safety-title"],
+    buildFold: "safety-title",
+    mockup: ["The parent app", "You see every conversation.", "Read every conversation in the parent app, word for word.", "Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically.", "See what the app shows you", "You’ll always see when it’s listening.", "Its microphone turns on only when someone presses the wake-up button.", "A light on Kheelu shows whenever it’s listening.", "Left alone, it hears nothing and sends nothing.", "How it understands and answers.", "They process your child’s voice only to produce Kheelu’s reply.", "They don’t keep it, and they never use it to train their AI.", "Our contracts with them say so.", "You can read every conversation.", "In the parent app.", "Your child’s data is never used to advertise to them.", "No camera", "It can’t browse the internet", "It says it’s a toy, and never asks your child to keep a secret from you"],
+    build: ["It listens only after someone presses the wake-up button.", "No web browsing.", "You read every conversation in the parent app.", "Each Kheelu has a daily limit on how long it talks."],
+    reason: "Fold 8, safety compact (D064 item 2): the parent-app fold and the safety fold merged into five one-line promises beside the privacy screen (G26's alt, D065 item 7; the daily limit, D065 item 5); the facts line and the app link gone",
+  },
+  day: {
+    mockupFolds: [],
+    buildFold: "day-title",
+    mockup: [],
+    build: ["Little moments", "A day with Kheelu, sunrise to bedtime.", "Not all day.", "A few moments, wherever the day goes.", "Breakfast", "The first ‘why’ of the day.", "Kheelu answers, then asks one back.", "AI mode · home Wi‑Fi", "After school", "Yesterday’s question, picked up where your child stopped: Kheelu remembers earlier conversations.", "While you cook", "A question to think about, not a cartoon to watch.", "At Nani’s", "Stories, poems and jingles in Story mode, with no Wi‑Fi needed.", "Story mode · no Wi‑Fi needed", "Bedtime", "One last story, lights low.", "In the parent app, you can see how long your child talked each day.", "Each Kheelu has a daily limit on how long it talks."],
+    reason: "Fold 9, a day with Kheelu (plan fold 9; D065 item 5, D044): five moments and their modes, the closing line, the activity screen",
+  },
+  faq: {
+    mockupFolds: ["faq-title"],
+    buildFold: "faq-title",
+    mockup: ["See all questions"],
+    build: ["Isn’t this just screen time in disguise?"],
+    reason: "Fold 10, the questions: the eight in the plan's order, \"What is Kheelu?\" first and \"Isn’t this just screen time in disguise?\" new, the price answer without GST (D065 items 3-4); no \"See all questions\" (ruling 1)",
+  },
+  close: {
+    mockupFolds: [],
+    buildFold: "close-title",
+    mockup: [],
+    build: ["For your own child, or as a gift for a 3 to 7 year old in the family."],
+    reason: "Fold 11, the close: \"It asks. They think.\" with the product page's built lead, finale, a board with no cast child",
+  },
+  compare: {
+    mockupFolds: ["compare-title"],
+    mockup: ["Compare", "Thinking out loud, not tapping on a screen.", "Screen-free", "Kheelu: Yes", "Puzzles and activity books: yes", "Learning apps and videos: no", "Smart speakers and chatbots: varies", "Holds a back-and-forth conversation", "Puzzles and activity books: no", "Learning apps and videos: rarely, mostly tapping and watching", "Smart speakers and chatbots: yes", "Asks your child a question back", "Kheelu: Yes, after it answers", "Learning apps and videos: some ask quiz questions", "Smart speakers and chatbots: usually just answer", "You can read every conversation", "Kheelu: Yes, in the parent app", "Puzzles and activity books: nothing to read", "Learning apps and videos: nothing to read", "Kinds of products, not brands: what each one usually does.", "How to choose an AI toy"],
+    build: [],
+    reason: "The comparison leaves Home for the product page (ruling 1; task Q2.10)",
+  },
+  guides: {
+    mockupFolds: ["guides-title"],
+    mockup: ["Guides for parents", "How we can help, from 3 to 7.", "Short, sourced guides from the Kheelona team, for the questions every parent of a young child asks.", "Screen time", "Read the screen-time guides", "Talking and language", "Getting your child talking, late talkers, new words and two languages at home.", "Read the talking guides", "Learning and play", "What a young child is working on, and the toys and habits that serve it.", "Read the learning guides"],
+    build: [],
+    reason: "\"How we can help, from 3 to 7\" leaves Home (ruling 1: three links away)",
+  },
+} as const satisfies Readonly<Record<string, HomeSellingFold>>;
+/** Each fold of either side hidden for the pixels, with its fold's reason. */
+export const HOME_SELLING_HIDDEN: readonly VisualHide[] = Object.values(HOME_SELLING as Readonly<Record<string, HomeSellingFold>>).flatMap((fold) => [
+  ...fold.mockupFolds.map((id) => ({ side: "mockup" as const, selector: `main > section[aria-labelledby="${id}"]`, reason: fold.reason, approvedBy: HOME_SELLING_APPROVED })),
+  ...(fold.buildFold === undefined
+    ? []
+    : [{ side: "build" as const, selector: `main > section[aria-labelledby="${fold.buildFold}"]`, reason: fold.reason, approvedBy: HOME_SELLING_APPROVED }]),
+]);
+/** The footer's link columns, on both sides, on Home only: task Q2.4 closed their gaps (D064 item 6), which every other
+ *  page absorbs inside the 2 % height tolerance; with Home's folds hidden the visual pass compares little but the nav
+ *  and the footer, so the shorter columns alone exceed it. The footer's words are compared by the text pass of no page
+ *  (it is outside main) and by chrome.spec.ts. */
+export const HOME_FOOTER_COLS_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as const).map((side) => ({
+  side,
+  selector: "footer.kh-footer .kh-footer__cols",
+  reason: "the footer's link columns, their gaps closed by task Q2.4 (D064 item 6): on Home, with its folds hidden (task Q2.9), they alone exceed the height tolerance",
+  approvedBy: "D064 item 6 (founder, 2026-10-15; task Q2.4), on Home since task Q2.9",
+}));
+/** One text rule a fold: its approved lines excused, its new lines accepted, each also in capitals (an eyebrow). */
+export const HOME_SELLING_TEXT: readonly TextDeviation[] = Object.values(HOME_SELLING as Readonly<Record<string, HomeSellingFold>>).map((fold) => ({
+  mockup: fold.mockup.length ? oneOf([...fold.mockup, ...fold.mockup.map((line) => line.toUpperCase())]) : /(?!)/,
+  build: fold.build.length ? oneOf([...fold.build, ...fold.build.map((line) => line.toUpperCase())]) : undefined,
+  reason: fold.reason,
+  approvedBy: HOME_SELLING_APPROVED,
+}));
+
 /* Home's close board top-aligned with the offer card on laptops (D064 item 5, task Q2.1): from 900 px, where the split
    begins, the board (the girl in the mustard frock beside Kheelu) starts level with the card's top instead of centred
    beside the taller column. The same board in another place, from 900 px only (below it the columns stack, as
@@ -1795,6 +1944,9 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
      Kabir photo at every width (task Q2.1, D064 item 4, in place of task 8c.1's phone-board rule); then the films' order
      and, from 900 px, the close's board (task Q2.1, D064 items 1 and 5). */
   home: [
+    /* Task Q2.9: every fold of both sides (HOME_SELLING above); the earlier rules below hide parts of them again. */
+    ...HOME_SELLING_HIDDEN,
+    ...HOME_FOOTER_COLS_HIDDEN,
     ...factsHidden(COPY_FIXES.home, COPY_FIXES_WHOSE),
     ...factsHidden(CLAIM_FIXES.home, CLAIM_FIXES_WHOSE),
     ...factsHidden(FAQ_FIXES.home, FAQ_FIXES_WHOSE),
@@ -2047,6 +2199,8 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     /* The hero board's word sticker, gone with the board (task Q2.1, D064 item 4): HOME_HERO_PHOTO above. Before the
        claim fixes, which only the FAQ fix may follow (pages/parity-deviations.test.ts). */
     HOME_HERO_PHOTO_TEXT,
+    /* Task Q2.9, fold by fold (HOME_SELLING above), before the claim fixes, which only the FAQ fix may follow. */
+    ...HOME_SELLING_TEXT,
     factsRule(CLAIM_FIXES.home),
     factsRule(FAQ_FIXES.home),
   ],

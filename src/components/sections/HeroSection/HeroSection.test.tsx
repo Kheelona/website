@@ -314,7 +314,8 @@ describe("HeroSection: the visual pass's hero rules (D061 item 1, D064 item 4)",
   it("home: the approved board and the photo hidden at every width, each on its own side", () => {
     expect(hiddenCss("home", "mockup").split("\n")[0]).toContain(".mk-hero .kh-art");
     expect(hiddenCss("home", "build").split("\n")[0]).toContain(".ks-hero .kh-photo");
-    const hero = VISUAL_HIDDEN.home.filter((rule) => /hero/.test(rule.selector));
+    // The hero picture's own rules (task Q2.1); since task Q2.9 Home's folds are hidden whole too (HOME_SELLING).
+    const hero = VISUAL_HIDDEN.home.filter((rule) => /hero/.test(rule.selector) && !rule.selector.startsWith("main > section"));
     expect(hero.map((rule) => [rule.side, rule.selector, rule.media])).toEqual([
       ["mockup", ".mk-hero .kh-art", undefined],
       ["build", ".ks-hero .kh-photo", undefined],
