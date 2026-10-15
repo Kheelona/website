@@ -2405,6 +2405,37 @@ Base: `a62247a0`. Verified findings (`wf_78365aa5-dfe`):
   `ui/FaqList` CSS, their tests and stories, the shared rules of `deviations.ts`, the catalogue rows. **Acceptance:**
   `npm run verify` and the build green; each finding re-measured on the build at the sizes it was found.
 
+### Q2.17 The founder's answers on the built selling update (D066) (builder; risk normal)
+
+Base: the branch after Q2.15 merges. [D066](../decisions/D066-selling-update-founder-answers-2026-10-16.md):
+- **The bubble after the hero (item 1):** on phones (below 900 px), on a page whose buy bar waits for `#hero-cta` (Home),
+  the WhatsApp bubble stays hidden (not focusable, `inert`, no layout shift) until the bar first shows, then stays,
+  stepping aside as today; pages where the bar shows from first paint, or that have no bar, are unchanged; laptops
+  unchanged. Label, place and `whatsapp-float` unchanged. The specs that expect the bubble on Home's first phone screen
+  (`first-screen.spec.ts`, `chrome.spec.ts`) follow; the Kheelu crop may keep its margin. Amend D050's note (main session).
+- **The share text (item 2):** `share.ts` token "… {price:headline} in total; {price:token} today reserves yours,
+  refundable." and full "… {price:full} in total, paid in full when you order." (plan v2 §1.7), no "incl. GST"; tests.
+- **One more button on the product page (item 3):** a CtaBlock ("Pre-order Kheelu", the short price line, the
+  risk-reversal line; the one CTA shape of R2) right after the comparison table, tracked by a new value `product-compare`
+  registered in `cta.ts`, tracking inventory §6 (placed after Gate A, D066), architecture §8.3 and the registry guard
+  (the expected lists), as the selling update's values were (`ffa029da`).
+- **"See how Kheelu works" (item 4):** the journal closes' ghost link reads so, as on `/team` and `/contact`. If Q2.15
+  changed Home's offer lead or added a "Pre-order" eyebrow to closes that had none, revert those two (not approved).
+- **The pre-launch test line off (item 6):** the product page's Safety tab line (`product.ts`), the sentence "Before
+  launch, we test it by trying to make it say things it shouldn’t." in the child-safety-groups answer (`faqs.ts`), and
+  `/terms` section 12's "We test it before launch by trying to make it say unsafe things, and" (the sentence keeps "When it
+  isn’t sure, it says it doesn’t know rather than guess."); grep the journal snapshot and report any hit (never hand-edit
+  `posts.generated.json`); the copy pages note the change.
+- **G28's two lines (item 7):** `/safety` fold 3's "No talking all day." reads "Each Kheelu has a daily limit on how long
+  it talks, and no conversation runs on without end. When it rests, its Wi‑Fi is off."; the product page's "Good to
+  know" gains "Between conversations nothing is sent anywhere, and when Kheelu rests, its Wi‑Fi is switched off."
+  `findBanned` clean; the claims page notes both as confirmed (D066).
+- **Owns:** `chrome/WhatsAppFloat` and the buy bar's state it reads, `share.ts`, the product page module and
+  `product.ts`, `pages/safety.ts`, `faqs.ts` (that answer), `legal/terms.ts` (that sentence), the journal close config,
+  `cta.ts` and its registry docs and guard, the specs named, `deviations.ts`, the copy pages' change notes, catalogue
+  rows. **Acceptance:** `npm run verify` and the build green; Home's first phone screen at 360, 390 and 412 shows no
+  bubble until the hero's button leaves, then the bubble with the bar.
+
 ## Wave 9: beta deploy and beta QA (after wave 8)
 
 ### 7.2 Beta deploy and beta QA (main session, founder, QA)
