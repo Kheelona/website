@@ -9,6 +9,7 @@
 import type { Page } from "@playwright/test";
 import { ICON_PATHS, type IconName } from "@/assets/icons.generated";
 import { HOSTS } from "@/config/env";
+import { filmQuotes } from "@/content/en-IN/films";
 import { faqs } from "@/content/en-IN/faqs";
 import { navigation } from "@/content/en-IN/navigation";
 import { RETENTION_LINE } from "@/content/en-IN/policies";
@@ -1436,6 +1437,81 @@ const IN_APP_ONLY = "deviations.md V25, D056 item 3 (founder, 2026-10-14; task 7
 const IN_APP_REASON =
   "the in-app browser note (fold 2) shows only inside the Instagram, Facebook or WhatsApp browser, and the parity browser is plain Chromium, so the build shows no fold 2";
 
+/* Wave 8c, task 8c.3 (D061 item 4 and the main session's rulings on the advisor's proposal, 2026-10-15): blocks the
+   approved pages do not have, added on purpose. On Home and the product page, parents' own words under the films (two
+   DS quote cards, films.ts `filmQuotes`, each with its "Watch the film" button) and the "Recognised by." strip after the
+   films (the /team strip as built, D054 item 20); on the product page, before "How it works", the four steps and the
+   labelled example conversation (home.md fold 2 variant b). Nothing of the approved pages changes, so the pixels compare
+   each page without them (the build side hides them and every fold below lines up), and the text pass accepts their
+   sentences on the build side only: no mockup line is excused. The steps' and the example's words are spelled here
+   because Playwright cannot load the product page's module (it imports images); its page.test.tsx holds them to
+   products/kheelu/page.ts. The rows themselves are the main session's, in wiki/qa/deviations.md (drafted in the task's
+   report). */
+export const PROOF_ADDITIONS_APPROVED = "D061 item 4 and the main session's 8c rulings (founder, 2026-10-15; task 8c.3; deviations.md rows to come)";
+/** The four steps on the product page (task 8c.3; D018, D017, D036: "remembers" beside the parent's control). */
+export const PROOF_STEPS_BUILD = [
+  "What happens when your child presses it.",
+  "Press and ask.",
+  "Your child presses the wake-up button and asks. A light shows Kheelu is listening.",
+  "Kheelu answers.",
+  "It answers the question first.",
+  "Then it asks one back.",
+  "A question back, so your child does the thinking.",
+  "Next time, it remembers.",
+  "It remembers earlier conversations, so it can pick up where your child stopped. You can read every one of them.",
+] as const;
+/** The example conversation on the product page, word for word as home.md fold 2 variant b, line by line as it shows:
+ *  the heading, the label, each speaker and their words, then the line after. */
+export const PROOF_EXAMPLE_BUILD = [
+  "What asking back sounds like.",
+  "Illustrative example, not a recording.",
+  "Your child",
+  "“Why does the moon follow our car?”",
+  "Kheelu",
+  "“The moon is very, very far away. So when the trees zoom past, the moon seems to stay with you. What else looks like it follows you?”",
+  "Your child",
+  "“My shadow?”",
+  "It answers first, then asks a question back. That’s how your child ends up doing the thinking.",
+] as const;
+/** The strip's words as the page prints them: its heading and the programmes shown as text (the NVIDIA and nasscom
+ *  marks carry theirs as alt text; TEAM_STRIP_BUILD, held to team.ts by its parity test). */
+const RECOGNITION_BUILD = ["Recognised by.", ...TEAM_STRIP_BUILD] as const;
+/** The quotes' words as the page prints them: each quote, its speaker and role, and its button's words. */
+const QUOTES_BUILD = [...filmQuotes.items.flatMap((q) => [q.quote, q.name, q.role]), filmQuotes.watch];
+/** Each block the task adds, by page: the build-side selectors the pixels hide (each finds one block on its page; the
+ *  pages' unit tests check), and the lines it prints. */
+export const PROOF_ADDITIONS = {
+  home: {
+    selectors: [".ks-film-quotes", 'section[aria-labelledby="recognised-title"]'],
+    build: [...QUOTES_BUILD, ...RECOGNITION_BUILD],
+  },
+  "meet-kheelu": {
+    selectors: [
+      ".ks-film-quotes",
+      'section[aria-labelledby="recognised-title"]',
+      'section[aria-labelledby="steps-title"]',
+      'section[aria-labelledby="example-title"]',
+    ],
+    /* The steps' numerals are lines of their own in the page's text (kh-step__num, hidden from screen readers only). */
+    build: [...QUOTES_BUILD, ...RECOGNITION_BUILD, ...PROOF_STEPS_BUILD, "1", "2", "3", "4", ...PROOF_EXAMPLE_BUILD],
+  },
+} as const;
+type ProofSlug = keyof typeof PROOF_ADDITIONS;
+const proofHidden = (slug: ProofSlug): VisualHide[] =>
+  PROOF_ADDITIONS[slug].selectors.map((selector) => ({
+    side: "build",
+    selector,
+    reason: "a block task 8c.3 adds (parents' quotes, the recognition strip, the steps, the example); the approved page has none, so the pixels compare without it",
+    approvedBy: PROOF_ADDITIONS_APPROVED,
+  }));
+/** Nothing of the approved page is excused (a regex no sentence matches); the build's added lines are accepted. */
+const proofText = (slug: ProofSlug): TextDeviation => ({
+  mockup: /(?!)/,
+  build: oneOf(PROOF_ADDITIONS[slug].build.flatMap((line) => sentences(line))),
+  reason: "the lines of the blocks task 8c.3 adds: parents' quotes, the recognition strip, and on the product page the four steps and the example conversation",
+  approvedBy: PROOF_ADDITIONS_APPROVED,
+});
+
 export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   store: [
     {
@@ -1468,12 +1544,13 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   ],
   /* The screen-time guide card's line (V18, task 7.1b), then the parent-app bullets and the safety bodies (V26, task 8b.1),
      then the fourth question (task 8c.4, D061), compared by the text pass; then the offer card's later price and the
-     share link the build adds (task 8c.2, D061). */
+     share link the build adds (task 8c.2, D061); then the quotes and the strip (task 8c.3). */
   home: [
     ...factsHidden(COPY_FIXES.home, COPY_FIXES_WHOSE),
     ...factsHidden(CLAIM_FIXES.home, CLAIM_FIXES_WHOSE),
     ...factsHidden(FAQ_FIXES.home, FAQ_FIXES_WHOSE),
     ...offerAdditionsHidden("home"),
+    ...proofHidden("home"),
   ],
   /* The open FAQ answer (V19, task 7.1b), then the facts, controls and retention card (V28, task 8b.1), compared by the
      text pass. */
@@ -1543,6 +1620,8 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...factsHidden(FAQ_FIXES["meet-kheelu"], FAQ_FIXES_WHOSE),
     /* The offer card's later price and the share link the build adds (task 8c.2, D061). */
     ...offerAdditionsHidden("meet-kheelu"),
+    /* The quotes, the strip, the steps and the example (task 8c.3). */
+    ...proofHidden("meet-kheelu"),
   ],
   /* The Google Analytics block's paragraph and the PostHog block's first one say more in the build (V10), so they wrap
      to more lines and every block below would shift; the pixels compare the page without the two paragraphs on both
@@ -1667,9 +1746,10 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
   ],
   /* The screen-time guide card's line and two FAQ answers (V18, task 7.1b): COPY_FIXES above. The answers sit in closed
      items, which the text pass does not read; Home's unit test holds them. The offer card's later price and the share link
-     (task 8c.2, D061): OFFER_ADDITIONS above. Then D058's claim fixes (V26, task 8b.1), and the fourth question in the
-     parent's words, which the text pass does read (task 8c.4, D061): FAQ_FIXES above. */
-  home: [factsRule(COPY_FIXES.home), factsRule(OFFER_ADDITIONS.home), factsRule(CLAIM_FIXES.home), factsRule(FAQ_FIXES.home)],
+     (task 8c.2, D061): OFFER_ADDITIONS above. The quotes and the strip (task 8c.3): PROOF_ADDITIONS above. Then D058's
+     claim fixes (V26, task 8b.1), and the fourth question in the parent's words, which the text pass does read (task 8c.4,
+     D061): FAQ_FIXES above. */
+  home: [factsRule(COPY_FIXES.home), factsRule(OFFER_ADDITIONS.home), proofText("home"), factsRule(CLAIM_FIXES.home), factsRule(FAQ_FIXES.home)],
   "meet-kheelu": [
     {
       /* The product details fold without JavaScript (wiki/qa/deviations.md V3): the tab row stays hidden and the three
@@ -1701,6 +1781,9 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     /* The offer card's later price and the share link (task 8c.2, D061): OFFER_ADDITIONS above, before D058's claim
        fixes, which stay the page's last rule. */
     factsRule(OFFER_ADDITIONS["meet-kheelu"]),
+    /* The quotes, the strip, the steps and the example (task 8c.3): PROOF_ADDITIONS above, before the claim fixes, which
+       stay last. */
+    proofText("meet-kheelu"),
     /* D058's claim fixes (V27, task 8b.1): CLAIM_FIXES above. */
     factsRule(CLAIM_FIXES["meet-kheelu"]),
     /* The languages question (task 8c.4, D061): FAQ_FIXES above. Its answer sits in a closed item, which the text pass

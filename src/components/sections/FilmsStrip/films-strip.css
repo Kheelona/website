@@ -115,6 +115,23 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Parents' own words under the controls (task 8c.3; D061 item 4): the DS quote cards in the DS two-column grid
+   (kh-cols kh-cols--2, stacked below 720 px), each card filling its cell so the two "Watch the film" buttons line up
+   under them. No mockup rule: the approved strip has no quotes (deviation row drafted in the task report). */
+.ks-film-quotes {
+  margin-top: var(--space-6);
+}
+.ks-film-quote {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+.ks-film-quote > .kh-quote {
+  flex: 1 1 auto;
+  align-self: stretch;
+}
+
 @media (min-width: 720px) {
   /* Three at rest; the montage in the centre, the parent film to its right (founder, 2026-09-19). The centre film is
      the one in focus, so it grows from its middle. */

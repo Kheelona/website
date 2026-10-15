@@ -13,10 +13,11 @@ import type { IconName } from "@/components/ui/Icon/Icon";
 import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
 import { cta } from "../cta";
 import { pickFaqs } from "../faqs";
-import { films, filmsStrip } from "../films";
+import { filmQuotes, films, filmsStrip } from "../films";
 import { DEFAULT_OG } from "../organization";
 import { RETENTION_LINE } from "../policies";
 import { product } from "../products/kheelu/product";
+import { recognitionStrip } from "../recognition";
 import { topics, type TopicId } from "../stories/topics";
 import { SAFETY_FACTS, TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "../trust";
 
@@ -24,7 +25,9 @@ import { SAFETY_FACTS, TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } fro
  * Home, `/` (task 5.1; structure §5): the approved page's ten folds (mockup/pages/home.html, Gate A approved D046,
  * the hero D045), rendered by PageTemplate from `src/app/(site)/page.tsx`. Visible words are the mockup's; the meta,
  * the full-mode words and the three untracked links' targets are the copy page's (wiki/site/pages/home.md;
- * architecture §6.3). Shared facts come from their one module: the films, the FAQ answers, the trust items and the
+ * architecture §6.3). Added after Gate A (task 8c.3; D061 item 4 and the main session's rulings; deviation rows to come):
+ * two parents' quotes under the films, and the "Recognised by." strip after them. Shared facts come from their one
+ * module: the films and the parents' quotes, the recognition strip, the FAQ answers, the trust items and the
  * safety facts line, the CTA links, the retention line, the modes and languages, the stories topics.
  *
  * Motion (D049): the hero board's doodle stays still (pick 2: a hero never draws); the imagination frame's doodles and
@@ -102,7 +105,8 @@ export const homePage = {
       cta: heroCta,
     },
 
-    /* Fold 2 · See it ask: the seven parent films (D040). */
+    /* Fold 2 · See it ask: the seven parent films (D040), then two parents' own words from them, each playing its film
+       (task 8c.3, D061 item 4; the proof line covers them). */
     {
       kind: "films-strip",
       config: {
@@ -116,9 +120,14 @@ export const homePage = {
         labels: filmsStrip,
         proof: { text: "Kids doing the talking. Parents, in their own words.", size: "body-s" },
         posters: "eager-low",
+        quotes: filmQuotes,
       },
       cta: { cta: "see-it-ask", align: "center", trust: COMPACT, secondary: { ...cta.secondary["see-it-ask-learn"], variant: "ghost" } },
     },
+
+    /* "Recognised by." after the films (task 8c.3; D061's rulings): the /team strip as built (D054 item 20), read from
+       the team page, names only; never "Backed by". */
+    { kind: "recognition-strip", config: recognitionStrip },
 
     /* Fold 3 · Why conversation matters (D016, D026: the one marked line and its source). */
     {

@@ -1,3 +1,4 @@
+import type { FilmQuotes } from "@/components/sections/FilmsStrip/films-strip.types";
 import type { Film } from "@/content/types";
 
 /**
@@ -87,3 +88,32 @@ export const filmsStrip = {
   /** The position line's word: "1 of 7" on phones, "1–3 of 7" on laptops (mockup.js §4). */
   of: "of",
 } as const;
+
+/**
+ * Parents' own words (task 8c.3; D061 item 4: the founder confirmed the written consent covers quoting them in text).
+ * Each quote is word for word from its film's burned-in subtitles (a-parent-speaks at about 0:09-0:15, a-father-speaks
+ * at about 0:17-0:23), with the site's apostrophe; the first ends where the quote ends, with a full stop. The speakers
+ * are named as the founder named them (D061 item 4) and as the films' captions do. The films' proof line covers them
+ * (D040: claim only what the films show). Left out on purpose: "completely safe", "more than an hour", "make him jump".
+ * Shown under the strip on Home and the product page; each button plays its own film in the strip (FilmsStrip refuses
+ * a film id the strip does not show; films.test.ts holds each to one of the seven).
+ */
+export const filmQuotes = {
+  watch: "Watch the film",
+  items: [
+    {
+      film: "a-parent-speaks",
+      quote: "They first thought it’s just another soft toy, but when it started speaking, they were very much surprised.",
+      name: "Nikita",
+      role: "Parent",
+      tone: "sun",
+    },
+    {
+      film: "a-father-speaks",
+      quote: "I would recommend everyone to have one — so that there is play away from the screen.",
+      name: "Siddhant’s father",
+      role: "Parent",
+      tone: "blue",
+    },
+  ],
+} as const satisfies FilmQuotes;

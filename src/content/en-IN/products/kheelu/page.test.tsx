@@ -10,7 +10,19 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../../test/e2e/support/page-checks";
-import { CLAIM_FIXES, COPY_FIXES, FAQ_FIXES, OFFER_ADDITIONS, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../../test/e2e/support/deviations";
+import {
+  CLAIM_FIXES,
+  COPY_FIXES,
+  FAQ_FIXES,
+  OFFER_ADDITIONS,
+  PROOF_ADDITIONS,
+  PROOF_ADDITIONS_APPROVED,
+  PROOF_EXAMPLE_BUILD,
+  PROOF_STEPS_BUILD,
+  TEXT_DEVIATIONS,
+  VISUAL_HIDDEN,
+} from "../../../../../test/e2e/support/deviations";
+import { findBanned } from "../../../../../test/guards/banned-phrases.data";
 import { htmlToText } from "../../../../../test/e2e/support/mockup-text";
 import { PAGE_FACTS } from "../../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../../test/e2e/support/parity";
@@ -19,7 +31,8 @@ import { mockupRoute as mockupPageRoute } from "../../../../../test/e2e/support/
 import { mockupLinks, mockupPage, STORE, words } from "../../../../../test/support/mockup-compare";
 import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../../test/support/mockup-facts";
 import { faqs } from "../../faqs";
-import { films } from "../../films";
+import { filmQuotes, films } from "../../films";
+import { recognitionStrip } from "../../recognition";
 import { SAFETY_FACTS } from "../../trust";
 import { kheeluPage } from "./page";
 import { product } from "./product";
@@ -45,11 +58,16 @@ const PATH = "/products/kheelu";
 const TOKEN = buildOffer("token");
 const FULL = buildOffer("full");
 
-/** The page as the site shell holds it: the template's output in `main#main`. */
+/** The page as the site shell holds it: the template's output in `main#main`. `main` is the page without the blocks
+ *  task 8c.3 adds (PROOF_ADDITIONS; D061 item 4 and the main session's rulings: the parents' quotes, the recognition
+ *  strip, the four steps and the example conversation), what must equal the approved page; `whole` is the page as it
+ *  renders, on which those blocks are tested below. */
 function rendered(offer: Offer) {
   const html = `<!doctype html><html><body><main id="main">${renderToStaticMarkup(<PageTemplate page={kheeluPage} offer={offer} path={PATH} />)}</main></body></html>`;
-  const doc = new DOMParser().parseFromString(html, "text/html");
-  return { html, doc, main: doc.querySelector("main")! };
+  const whole = new DOMParser().parseFromString(html, "text/html");
+  const doc = whole.cloneNode(true) as Document;
+  for (const selector of PROOF_ADDITIONS["meet-kheelu"].selectors) for (const el of doc.querySelectorAll(selector)) el.remove();
+  return { html, doc, main: doc.querySelector("main")!, whole: whole.querySelector("main")! };
 }
 
 const BUILT = rendered(TOKEN);
@@ -362,7 +380,7 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
     for (const selector of sel("build")) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
   });
 
-  it("leaves beside them only the films heading and the sources line of the copy fixes (V17), then the claim fixes' blocks (V27), then the FAQ fix's question (task 8c.4), then the offer additions (task 8c.2), each found once on the page as it renders", () => {
+  it("leaves beside them only the films heading and the sources line of the copy fixes (V17), then the claim fixes' blocks (V27), then the FAQ fix's question (task 8c.4), then the offer additions (task 8c.2), each found once on the page as it renders, then task 8c.3's added blocks", () => {
     const claims = CLAIM_FIXES["meet-kheelu"];
     const faq = FAQ_FIXES["meet-kheelu"];
     const additions = OFFER_ADDITIONS["meet-kheelu"];
@@ -372,6 +390,7 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
       ...(["mockup", "build"] as const).flatMap((side) => claims.hidden.both.map((selector) => [side, selector, claims.approvedBy])),
       ...faq.hidden.build.map((selector) => ["build", selector, faq.approvedBy]),
       ...additions.hidden.build.map((selector) => ["build", selector, additions.approvedBy]),
+      ...PROOF_ADDITIONS["meet-kheelu"].selectors.map((selector) => ["build", selector, PROOF_ADDITIONS_APPROVED]),
     ]);
     for (const selector of additions.hidden.build) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
     for (const selector of claims.hidden.both) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
@@ -400,23 +419,25 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
       expect.objectContaining({ mockup: /^Specs$/, jsOff: true }),
     ]);
     // The route's other rules are P15's (V6, task 4.7), the founder's page facts (V16, task 6.7), task 7.1b's copy fixes
-    // (V17), task 8c.2's offer additions (D061, rows numbered at the merge), task 8b.1's claim fixes (V27) and task 8c.4's
-    // FAQ fix, for both runs: the FAQ answer, the details, the heading, the sources, the offer's two lines, D058's lines
-    // and the languages question read the same with JavaScript off.
+    // (V17), task 8c.2's offer additions (D061, rows numbered at the merge), task 8c.3's added blocks, task 8b.1's claim
+    // fixes (V27) and task 8c.4's FAQ fix, for both runs: the FAQ answer, the details, the heading, the sources, the
+    // offer's two lines, the added blocks, D058's lines and the languages question read the same with JavaScript off.
     expect(TEXT_DEVIATIONS["meet-kheelu"].map((rule) => [rule.approvedBy.slice(0, "deviations.md V3".length), rule.jsOff ?? false])).toEqual([
       ["deviations.md V3", true],
       ["deviations.md V6", false],
       ["deviations.md V1", false],
       ["deviations.md V1", false],
       ["deviations.md ro", false],
+      [PROOF_ADDITIONS_APPROVED.slice(0, "deviations.md V3".length), false],
       ["deviations.md V2", false],
       ["deviations.md V4", false],
     ]);
     expect(TEXT_DEVIATIONS["meet-kheelu"][2].approvedBy).toBe(PAGE_FACTS["meet-kheelu"].approvedBy);
     expect(TEXT_DEVIATIONS["meet-kheelu"][3].approvedBy).toBe(COPY_FIXES["meet-kheelu"].approvedBy);
     expect(TEXT_DEVIATIONS["meet-kheelu"][4].approvedBy).toBe(OFFER_ADDITIONS["meet-kheelu"].approvedBy);
-    expect(TEXT_DEVIATIONS["meet-kheelu"][5].approvedBy).toBe(CLAIM_FIXES["meet-kheelu"].approvedBy);
-    expect(TEXT_DEVIATIONS["meet-kheelu"][6].approvedBy).toBe(FAQ_FIXES["meet-kheelu"].approvedBy);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][5].approvedBy).toBe(PROOF_ADDITIONS_APPROVED);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][6].approvedBy).toBe(CLAIM_FIXES["meet-kheelu"].approvedBy);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][7].approvedBy).toBe(FAQ_FIXES["meet-kheelu"].approvedBy);
   });
 
   it("accepts on the build side exactly the stacked panels' lines, as the page prints them, and no other line of the page", () => {
@@ -436,5 +457,137 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
     const [rule] = (await import(DEVIATIONS)).TEXT_DEVIATIONS["meet-kheelu"] as typeof TEXT_DEVIATIONS[string];
     expect(rule.build!.test("Battery safety: a filled-in fact.")).toBe(true);
     expect(rule.build!.test("Battery safety: [PLACEHOLDER F4: battery safety certification]")).toBe(false);
+  });
+});
+
+/* Task 8c.3 (D061 item 4 and the main session's rulings, 2026-10-15): parents' own words under the films, the "Recognised
+ * by." strip after them, and, just before "How it works", four plain steps and the labelled example conversation. The
+ * approved page has none of them, so the tests above compare the page without them (PROOF_ADDITIONS), and these hold the
+ * blocks themselves on the page as it renders. */
+describe("the product page's added blocks (task 8c.3)", () => {
+  const WHOLE = BUILT.whole;
+  const fold = (label: string) => folds(WHOLE).find((f) => name(f) === label)!;
+  /** Straight quotes and apostrophes, for comparing the site's typography with the copy page's plain text. */
+  const plainQuotes = (s: string) => s.replace(/[“”]/g, '"').replace(/’/g, "'");
+  /** home.md fold 2 variant b's copy block, line by line: the heading, the label, each speaker and their words, the line after. */
+  const variantB = () => {
+    const md = readFileSync(join(ROOT, "wiki/site/pages/home.md"), "utf8");
+    const start = md.indexOf("### Variant (b): without the films");
+    const block = md.slice(md.indexOf("**Copy:**", start), md.indexOf("- **H2 accent:**", start));
+    return block
+      .split("\n")
+      .filter((l) => l.startsWith("> ") && l.trim() !== ">")
+      .map((l) => l.slice(2).trim())
+      .flatMap((l) => {
+        const said = /^\*\*(.+?):\*\* (.+)$/.exec(l);
+        if (said) return said[1] === "H2" ? [said[2]] : [said[1], said[2]];
+        return [l.replace(/^\*(.+)\*$/, "$1")];
+      });
+  };
+
+  it("orders the page at every width: hero, films with the quotes, the strip, the offer, the steps and the example, then the rest", () => {
+    expect(folds(WHOLE).map(name)).toEqual([
+      "hero-title",
+      "films-title",
+      "recognised-title",
+      "offer-title",
+      "steps-title",
+      "example-title",
+      "modes-title",
+      "app-title",
+      "safety-title",
+      "specs-title",
+      "faq-title",
+      "close-title",
+    ]);
+    expect(fold("films-title").querySelector(".ks-films-ctrl + .ks-film-quotes")).not.toBeNull();
+  });
+
+  it("prints the parents' quotes under the films, each button playing its film; every poster still lazy, no film before a tap", () => {
+    const quotes = fold("films-title").querySelector(".ks-film-quotes")!;
+    expect([...quotes.querySelectorAll("blockquote")].map((q) => q.textContent)).toEqual(filmQuotes.items.map((q) => q.quote));
+    expect([...quotes.querySelectorAll("button")].map((b) => b.getAttribute("aria-label"))).toEqual(
+      filmQuotes.items.map((q) => `${filmQuotes.watch}: ${films.find((f) => f.id === q.film)!.chip}`),
+    );
+    expect([...fold("films-title").querySelectorAll("img")].every((img) => img.getAttribute("loading") === "lazy")).toBe(true);
+    expect(WHOLE.querySelector("video")).toBeNull();
+  });
+
+  it("shows the team's strip as built, after the films and before the offer, its marks lazy", () => {
+    const strip = fold("recognised-title");
+    expect(text(strip.querySelector("h2"))).toBe(recognitionStrip.title);
+    expect(strip.querySelectorAll(".ks-recognition__item")).toHaveLength(recognitionStrip.items.length);
+    expect([...strip.querySelectorAll("img")].map((img) => img.getAttribute("loading"))).toEqual(["lazy", "lazy", "lazy"]);
+  });
+
+  it("states the four steps in the plan's words (D018, D017, D036: \"remembers\" beside reading every conversation)", () => {
+    const steps = fold("steps-title");
+    expect(steps.className).toBe("kh-section kh-section--band");
+    expect(steps.querySelector("ol.kh-steps.ks-steps--four")).not.toBeNull();
+    expect([...steps.querySelectorAll("#steps-title .kh-hand")].map((s) => s.textContent)).toEqual(["presses it."]);
+    const shown = [text(steps.querySelector("#steps-title")), ...[...steps.querySelectorAll(".kh-step")].flatMap((s) => [text(s.querySelector(".kh-step__title")), text(s.querySelector(".kh-step__body"))])];
+    expect(shown).toEqual([...PROOF_STEPS_BUILD]);
+    expect(steps.querySelector("[data-reveal]")).toBeNull();
+  });
+
+  it("shows the example conversation word for word as home.md fold 2 variant b, the label above the exchange", () => {
+    const example = fold("example-title");
+    expect(example.className).toBe("kh-section");
+    expect([...example.querySelectorAll("#example-title .kh-hand")].map((s) => s.textContent)).toEqual(["asking back"]);
+    const shown = [
+      text(example.querySelector("#example-title")),
+      text(example.querySelector(".ks-exchange__note")),
+      ...[...example.querySelectorAll(".ks-exchange__line")].flatMap((li) => [text(li.querySelector(".ks-exchange__who")), text(li).slice(text(li.querySelector(".ks-exchange__who")).length)]),
+      text(example.querySelector(".ks-exchange__after")),
+    ];
+    expect(shown).toEqual([...PROOF_EXAMPLE_BUILD]);
+    expect(PROOF_EXAMPLE_BUILD.map(plainQuotes)).toEqual(variantB());
+    // The label names the exchange; no doodle and no picture in the fold (the page's HTML budget, task 8c.3).
+    expect(example.querySelector(`ol[aria-labelledby="${example.querySelector(".ks-exchange__note")?.id}"]`)).not.toBeNull();
+    expect(example.querySelector("img, svg.ks-doodle, [data-reveal]")).toBeNull();
+  });
+
+  it("keeps the page's tracking values, the offer card's fragment and its one h1", () => {
+    const values = (root: Element) => [...root.querySelectorAll("[data-ph-capture-attribute-cta]")].map((el) => el.getAttribute("data-ph-capture-attribute-cta"));
+    expect(values(WHOLE)).toEqual(values(BUILT.main));
+    expect(WHOLE.querySelectorAll("#offer")).toHaveLength(1);
+    expect(WHOLE.querySelectorAll("h1")).toHaveLength(1);
+    expect(revealOnMoneyInDocument(BUILT.whole.ownerDocument)).toEqual([]);
+  });
+
+  it("hides for the pixels exactly the added blocks, each found once on the page and gone from the page compared", () => {
+    for (const selector of PROOF_ADDITIONS["meet-kheelu"].selectors) {
+      expect(WHOLE.querySelectorAll(selector), selector).toHaveLength(1);
+      expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(0);
+    }
+  });
+
+  it("accepts in the text pass every added line as the page prints it, and excuses no approved line", () => {
+    const rule = TEXT_DEVIATIONS["meet-kheelu"].find((r) => r.approvedBy === PROOF_ADDITIONS_APPROVED)!;
+    const added = PROOF_ADDITIONS["meet-kheelu"].selectors.flatMap((selector) => [...WHOLE.querySelectorAll(selector)]);
+    // Every line the rule accepts, split as the text pass splits a page's lines into sentences.
+    for (const line of PROOF_ADDITIONS["meet-kheelu"].build) for (const s of sentences(line)) expect(rule.build!.test(s), s).toBe(true);
+    // And those lines are every word the added blocks print, in order (the browser's text pass gives the who labels and
+    // the steps' numerals lines of their own; the NVIDIA and nasscom marks carry their names as alt text).
+    const squash = (s: string) => s.replace(/\s/g, "");
+    const lines = [
+      ...filmQuotes.items.flatMap((q) => [q.quote, q.name, q.role, filmQuotes.watch]),
+      "Recognised by.",
+      "Karnataka Elevate",
+      "Founders Inc",
+      PROOF_STEPS_BUILD[0],
+      ...PROOF_STEPS_BUILD.slice(1).flatMap((line, i) => (i % 2 === 0 ? [String(i / 2 + 1), line] : [line])),
+      ...PROOF_EXAMPLE_BUILD,
+    ];
+    expect(squash(added.map((block) => block.textContent ?? "").join(""))).toBe(squash(lines.join("")));
+    expect(lines.every((line) => PROOF_ADDITIONS["meet-kheelu"].build.includes(line as never))).toBe(true);
+    for (const line of sentences(words(MOCKUP))) expect(rule.mockup.test(line), line).toBe(false);
+  });
+
+  it("passes the claims guard on every added line, and says nothing of an age under 3", () => {
+    for (const line of PROOF_ADDITIONS["meet-kheelu"].build) {
+      expect(findBanned(line), line).toEqual([]);
+      expect(line).not.toMatch(/\b[0-2]\s*(?:years?|yrs?|months?)\b|toddler|baby|babies/i);
+    }
   });
 });

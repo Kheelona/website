@@ -18,9 +18,10 @@ import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
 import { withoutHiddenRows } from "@/lib/content/placeholder";
 import { cta } from "../../cta";
 import { faqs, pickFaqs } from "../../faqs";
-import { films, filmsStrip } from "../../films";
+import { filmQuotes, films, filmsStrip } from "../../films";
 import { offerCopy } from "../../offer";
 import { RETENTION_LINE, RETURN_DAYS, RETURN_PICKUP_FREE, WARRANTY_MONTHS } from "../../policies";
+import { recognitionStrip } from "../../recognition";
 import { seller } from "../../seller";
 import { SAFETY_FACTS, TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "../../trust";
 import { product, type Mode } from "./product";
@@ -33,6 +34,9 @@ import { product, type Mode } from "./product";
  * products/kheelu/product.ts, every FAQ from faqs.ts, the trust items from trust.ts, the films from films.ts, the help
  * line from seller.ts and the CTA label and secondary links from cta.ts, so none is written twice. Amounts are
  * `{price:…}` tokens and the delivery line `{delivery}`: the template resolves them from the live offer (ADR-005).
+ * Added after Gate A (task 8c.3; D061 item 4 and the main session's rulings; deviation rows to come): the parents' quotes
+ * under the films (films.ts), the "Recognised by." strip after them (recognition.ts, the /team strip as built), and,
+ * between the offer and "How it works", four plain steps and the labelled example conversation.
  */
 
 const trust = (ids: readonly TrustId[]): TrustItem[] => ids.map((id) => trustItems[id]);
@@ -111,8 +115,13 @@ export const kheeluPage = {
         labels: filmsStrip,
         proof: { text: "Shared with each family’s written consent.", size: "caption" },
         posters: "lazy",
+        /* Two parents' own words from the films, each playing its film (task 8c.3, D061 item 4). */
+        quotes: filmQuotes,
       },
     },
+    /* "Recognised by." after the films, before the offer (task 8c.3; D061's rulings): the /team strip as built (D054
+       item 20), read from the team page, names only. */
+    { kind: "recognition-strip", config: recognitionStrip },
     /* Fold 3 · The offer card beside the product photo. */
     {
       kind: "offer-section",
@@ -122,6 +131,51 @@ export const kheeluPage = {
         cta: "product-offer",
         trust: trust(["returns-7-days", "warranty-6-months", "payment-methods"]),
         photo: { src: kheeluOnFur, alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." },
+      },
+    },
+    /* The loop in four plain steps, just before "How it works" (task 8c.3; D061's rulings, the CMO's AP-14): the button
+       first (D018), answer then ask back (D017), and "remembers" beside the parent reading every conversation (D036 #2).
+       On the band, so it stands apart from the offer above and the example below. */
+    {
+      kind: "steps-section",
+      config: {
+        variant: "four",
+        band: true,
+        heading: { id: "steps-title", title: "What happens when your child {hand:presses it.}" },
+        steps: [
+          {
+            tone: "sun",
+            title: "Press and ask.",
+            body: "Your child presses the wake-up button and asks. A light shows Kheelu is listening.",
+          },
+          { tone: "blue", title: "Kheelu answers.", body: "It answers the question first." },
+          { tone: "chilli", title: "Then it asks one back.", body: "A question back, so your child does the thinking." },
+          {
+            tone: "sun",
+            title: "Next time, it remembers.",
+            body: "It remembers earlier conversations, so it can pick up where your child stopped. You can read every one of them.",
+          },
+        ],
+      },
+    },
+    /* Right after the steps: what asking back sounds like, home.md fold 2 variant b word for word (task 8c.3; the CMO's
+       AP-15). The label sits above the exchange and is never removed: we wrote it, no child said it. Without the
+       ImaginationFrame and its doodles, inside the page's HTML budget. */
+    {
+      kind: "example-conversation",
+      config: {
+        heading: { id: "example-title", title: "What {hand:asking back} sounds like." },
+        note: "Illustrative example, not a recording.",
+        lines: [
+          { speaker: "child", who: "Your child", text: "“Why does the moon follow our car?”" },
+          {
+            speaker: "kheelu",
+            who: "Kheelu",
+            text: "“The moon is very, very far away. So when the trees zoom past, the moon seems to stay with you. What else looks like it follows you?”",
+          },
+          { speaker: "child", who: "Your child", text: "“My shadow?”" },
+        ],
+        after: "It answers first, then asks a question back. That’s how your child ends up doing the thinking.",
       },
     },
     /* Fold 4 · How it works: the three modes, the languages, Good to know. */

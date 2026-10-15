@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { films, filmsStrip } from "@/content/en-IN/films";
+import { ICON_PLAY } from "@/assets/icons.generated";
+import { filmQuotes, films, filmsStrip } from "@/content/en-IN/films";
 import { COPY_FIXES } from "../../../../test/e2e/support/deviations";
 import { outline, parseMockup } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
@@ -213,8 +214,21 @@ describe("FilmsStrip: playback (mockup.js section 5)", () => {
     const video = container.querySelector("video")!;
     const away = TestObserver.all.find((o) => o.targets.includes(video))!;
     expect(away.options.threshold).toBe(0.5);
+    act(() => away.callback([{ target: video, intersectionRatio: 0.6, isIntersecting: true }]));
+    expect(pause).not.toHaveBeenCalled();
     act(() => away.callback([{ target: video, intersectionRatio: 0.3, isIntersecting: true }]));
     expect(pause).toHaveBeenCalled();
+  });
+
+  /* Task 8c.3: a film started from a quote below the strip is scrolled to while it starts, so the observer's first report
+     may find it under half on screen; it pauses only once it has been at least half on screen and then leaves. */
+  it("never pauses a film that has not yet been half on screen (still scrolling to it)", async () => {
+    const { container } = render(<FilmsStrip {...PROPS} />);
+    await act(async () => fireEvent.click(playButtons()[2]));
+    const video = container.querySelector("video")!;
+    const away = TestObserver.all.find((o) => o.targets.includes(video))!;
+    act(() => away.callback([{ target: video, intersectionRatio: 0.2, isIntersecting: true }]));
+    expect(pause).not.toHaveBeenCalled();
   });
 
   it("brings the poster back when the film ends and returns focus to its play button", async () => {
@@ -248,6 +262,95 @@ describe("FilmsStrip: the film in focus (D049 pick 8)", () => {
   });
 });
 
+/* Task 8c.3 (D061 item 4): parents' own words under the strip on Home and the product page, in DS quote cards
+   (ui/Quote), each with a "Watch the film" button that plays its film in the strip through the island: no video before
+   the tap, a native button for the keyboard, a name that says which film. */
+describe("FilmsStrip: parents' own words (task 8c.3)", () => {
+  const QUOTED: FilmsStripProps = { ...PROPS, quotes: filmQuotes };
+  const watchButtons = () => [...document.querySelectorAll<HTMLButtonElement>(".ks-film-quote button")];
+  const chipOf = (id: string) => films.find((f) => f.id === id)!.chip;
+
+  it("prints each quote in a DS quote card in its own tone, cited by name and role, after the controls", () => {
+    const { container } = render(<FilmsStrip {...QUOTED} after={<div className="after-slot" />} />);
+    const block = container.querySelector(".ks-films-ctrl + .ks-film-quotes")!;
+    expect(block).not.toBeNull();
+    expect(block).toHaveClass("kh-cols", "kh-cols--2");
+    expect(block.nextElementSibling).toBeNull();
+    const cards = [...block.querySelectorAll(":scope > .ks-film-quote > figure.kh-quote")];
+    expect(cards.map((c) => [c.querySelector("blockquote.kh-quote__text")?.textContent, c.querySelector(".kh-quote__name")?.textContent, c.querySelector(".kh-quote__role")?.textContent])).toEqual(
+      filmQuotes.items.map((q) => [q.quote, q.name, q.role]),
+    );
+    expect(cards.map((c) => [...c.classList].find((k) => k.startsWith("kh-tone-")))).toEqual(filmQuotes.items.map((q) => `kh-tone-${q.tone}`));
+    // No avatar: the films name the speakers, and no initials or photo was given for them (DS Testimonial).
+    expect(block.querySelector(".kh-quote__avatar, .kh-avatar")).toBeNull();
+    // The quotes sit inside the revealing wrap, before whatever follows the strip.
+    expect(container.querySelector(".ks-films-wrap")?.contains(block)).toBe(true);
+    expect(container.querySelector(".ks-films-wrap + .after-slot")).not.toBeNull();
+  });
+
+  it("gives each quote a native button with the DS play icon, \"Watch the film\", named by its film", () => {
+    render(<FilmsStrip {...QUOTED} />);
+    const buttons = watchButtons();
+    expect(buttons).toHaveLength(2);
+    for (const [i, button] of buttons.entries()) {
+      const { film } = filmQuotes.items[i];
+      expect(button).toHaveAttribute("type", "button");
+      expect(button).toHaveClass("kh-btn", "kh-btn--secondary", "kh-btn--s");
+      expect(button.textContent).toBe(filmQuotes.watch);
+      expect(button).toHaveAccessibleName(`${filmQuotes.watch}: ${chipOf(film)}`);
+      expect(button.querySelector("svg.kh-icon path")?.getAttribute("d")).toBe(ICON_PLAY);
+      expect(button.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+    }
+  });
+
+  it("loads no film before the tap", () => {
+    const { container } = render(<FilmsStrip {...QUOTED} />);
+    expect(container.querySelector("video")).toBeNull();
+  });
+
+  it("plays the quote's own film in its tile of the strip, scrolled into view and focused", async () => {
+    const focused: Element[] = [];
+    const focusSpy = vi.spyOn(HTMLElement.prototype, "focus").mockImplementation(function (this: HTMLElement) {
+      focused.push(this);
+    });
+    const scrolled: { el: Element; options: ScrollIntoViewOptions }[] = [];
+    Element.prototype.scrollIntoView = vi.fn(function (this: Element, options?: boolean | ScrollIntoViewOptions) {
+      scrolled.push({ el: this, options: options as ScrollIntoViewOptions });
+    });
+    const { container } = render(<FilmsStrip {...QUOTED} />);
+    for (const [i, { film }] of filmQuotes.items.entries()) {
+      await act(async () => fireEvent.click(watchButtons()[i]));
+      const tile = container.querySelector(`[data-video-id="${film}"]`)!;
+      const videos = container.querySelectorAll("video");
+      expect(videos).toHaveLength(1);
+      expect(tile.contains(videos[0])).toBe(true);
+      expect(videos[0].getAttribute("src")).toBe(`/video/moments/${film}.mp4`);
+      expect(videos[0]).toHaveAttribute("preload", "none");
+      expect(tile.querySelector(".ks-film__play")).toHaveAttribute("hidden");
+      expect(focused.at(-1)).toBe(videos[0]);
+      expect(scrolled.at(-1)).toEqual({ el: tile, options: expect.objectContaining({ block: "center", inline: "nearest" }) });
+    }
+    expect(play).toHaveBeenCalledTimes(2);
+    focusSpy.mockRestore();
+    delete (Element.prototype as Partial<Element>).scrollIntoView;
+  });
+
+  it("gives focus back to the quote's button when its film ends", async () => {
+    const { container } = render(<FilmsStrip {...QUOTED} />);
+    await act(async () => fireEvent.click(watchButtons()[1]));
+    await act(async () => fireEvent.ended(container.querySelector("video")!));
+    expect(container.querySelector("video")).toBeNull();
+    expect(document.activeElement).toBe(watchButtons()[1]);
+  });
+
+  it("refuses a quote whose film the strip does not show", () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const quotes = { ...filmQuotes, items: [{ ...filmQuotes.items[0], film: "no-such-film" }] };
+    expect(() => render(<FilmsStrip {...PROPS} quotes={quotes} />)).toThrow(/no-such-film/);
+    vi.mocked(console.error).mockRestore();
+  });
+});
+
 /* Task 3.6 item 19: films.spec.ts and motion-films.spec.ts run on these stories, so the stories show the content itself
    (content/en-IN/films.ts), never a retyped copy: the specs then test what the pages publish. */
 describe("FilmsStrip: the stories show the content", () => {
@@ -258,5 +361,12 @@ describe("FilmsStrip: the stories show the content", () => {
       expect(story.args?.films ?? storiesMeta.args.films).toBe(films);
       expect(story.args?.labels ?? storiesMeta.args.labels).toBe(filmsStrip);
     }
+  });
+
+  it("Home and the product page show the parents' quotes from content; the store shows none (task 8c.3)", () => {
+    expect(stories.Home.args?.quotes).toBe(filmQuotes);
+    expect(stories.Product.args?.quotes).toBe(filmQuotes);
+    expect(stories.Store.args?.quotes).toBeUndefined();
+    expect(storiesMeta.args).not.toHaveProperty("quotes");
   });
 });

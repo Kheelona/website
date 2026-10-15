@@ -179,4 +179,15 @@ export const ENTRY_FIXTURES: { readonly [K in SectionKind]: SectionEntryOf<K> } 
     kind: "related-guides",
     config: { variant: "related", title: "Related guides", items: [{ title: "Another guide", href: "/stories" }] },
   },
+  "example-conversation": {
+    kind: "example-conversation",
+    config: {
+      heading: { title: "What {hand:it says}" },
+      note: "An example, not a recording.",
+      lines: [
+        { speaker: "child", who: "A child", text: "“Why?”" },
+        { speaker: "kheelu", who: "Kheelu", text: "“Because. Why do you think?”" },
+      ],
+    },
+  },
 };
