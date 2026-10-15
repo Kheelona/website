@@ -26,7 +26,9 @@ import { share } from "./share";
 const PLUS = "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.";
 
 /** The small line under the offer cards' perks since task Q2.9 (the D2C plan v2 §2 fold 7; D058 item 3: a paid
- *  subscription on top of the free parent app, no feature list): the perk itself says "6 months of Kheelona+ included". */
+ *  subscription on top of the free parent app, no feature list): the perk itself says "6 months of Kheelona+ included".
+ *  Since task Q2.13 both cards print it inside the card, before the button (ui/OfferCard's `note`; plan §3 fold 3), from
+ *  the pages' OfferSection config (pages/home.ts, products/kheelu/page.ts). */
 export const PLUS_NOTE = "Kheelona+ is our paid subscription, on top of the free parent app.";
 
 /**
