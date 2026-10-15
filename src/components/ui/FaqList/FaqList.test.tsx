@@ -95,7 +95,7 @@ describe("faqPlainItems (the FAQPage JSON-LD text)", () => {
     const items: FaqItem[] = [
       {
         id: "returns",
-        question: "What if it isn’t right for us?",
+        question: "What if my child doesn’t like it?",
         answer: "Return it within 7 days of delivery.",
         detail: [
           { kind: "p", lead: "Faulty?", text: "Tell us within 7 days." },

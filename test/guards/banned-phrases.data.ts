@@ -129,6 +129,14 @@ const D8 = `The weekly four-thinking-skills report`;
 const D9 = `"About a minute of quiet"`;
 const D10 = `"We attack our own safety layer before every release"`;
 const D11 = `The providers "keep none of it"`;
+/* The rows D061 added (the advisor's stale facts; task 8c.4): one per idea. */
+const C1 = `Cash on delivery as a way to pay`;
+const C2 = `"Ships 20 Oct"`;
+const C3 = `Open-ended ages`;
+const C4 = `A part-price in the pre-order button`;
+const C5 = `"Real pilot homes"`;
+const C6 = `"Backed by" over the programmes`;
+const C7 = `"Safety certified"`;
 
 const APOS = "['’]";
 
@@ -156,6 +164,91 @@ const COUNTS_NEW_WORDS = "(?:counts?|counted|counting|tallies|tallied|tallying|t
 const PICKS_TOPICS = "(?:choose|chooses|pick|picks|block|blocks|limit|limits|set|sets|decide|decides|control|controls|restrict|restricts) (?:which |what )topics?\\b";
 /** Topics as open or shut. */
 const TOPICS_GATED = "\\btopics? (?:are|is|stay|stays) (?:open|closed|allowed|blocked|off[- ]limits)\\b";
+
+/* Task 8c.4 (D061): the advisor's stale facts. Each entry bans the idea; the sentences that deny it ("there's no cash on
+ * delivery", "nothing to pay at the door", "not yet safety certified") are the approved pages' own and pass. */
+
+/** A pattern source with each of its letters in either case ("pay" → "[pP][aA][yY]"), for an entry compiled without the
+ *  `i` flag because one of its words keeps its case (COD, the programmes): the rest of it still matches in any case.
+ *  Never a RegExp modifier group ("(?-i:COD)"): that is ES2025, Node 23 and later, and scripts/journal/sync-posts.mjs
+ *  loads this file in every build, on whatever Node the host runs (task 8c.4 review; banned-phrases.test.ts holds it).
+ *  Escapes (\b, \d, \n, \{) stay as they are. A letter inside a class, a \u, \x, \c, \p or \k escape and a named group
+ *  are refused, since a letter there cannot simply gain its other case. */
+function anyCase(source: string): string {
+  let out = "";
+  let inClass = false;
+  for (let i = 0; i < source.length; i++) {
+    const c = source[i];
+    if (c === "\\") {
+      if (/[uxcpPk]/.test(source[i + 1] ?? "")) throw new Error(`anyCase: unsupported escape \\${source[i + 1]} in ${source}`);
+      out += c + (source[i + 1] ?? "");
+      i++;
+    } else if (inClass) {
+      if (/[A-Za-z]/.test(c)) throw new Error(`anyCase: letter "${c}" inside a class in ${source}`);
+      if (c === "]") inClass = false;
+      out += c;
+    } else if (c === "[") {
+      inClass = true;
+      out += c;
+    } else if (c === "(" && source.startsWith("?<", i + 1) && /[A-Za-z]/.test(source[i + 3] ?? "")) {
+      throw new Error(`anyCase: named group in ${source}`);
+    } else {
+      out += /[A-Za-z]/.test(c) ? `[${c.toLowerCase()}${c.toUpperCase()}]` : c;
+    }
+  }
+  return out;
+}
+
+/** Words just before a phrase that deny it: "no …", "we don't offer …", "nothing (more) to pay …". */
+const DENIED = `(?<!\\b(?:no|not|never|without|nor|nothing (?:more |else |left )?to|no need to|(?:don|doesn|can|won|didn)${APOS}t (?:offer|take|accept|do|have|support|allow|need to)|(?:do|does|can|will) not (?:offer|take|accept|do|have|support|allow|need to)|cannot (?:offer|take|accept|do|have|support|allow)) )`;
+/** Paying for Kheelu on delivery, in cash or at the door; "COD" in capitals only (cod is a fish). Compiled without `i`. */
+const ON_DELIVERY = `${anyCase(DENIED)}\\b(?:COD|${anyCase(`cash[- ]on[- ]delivery|pay(?:ment|ing)?(?: (?:in )?cash)? (?:on|upon|at) (?:delivery|arrival)|pay(?:ing)?(?: (?:the |your )?(?:rest|balance|remaining amount|full price|full amount|whole price|in full|₹ ?[\\d,]+|\\{price:\\w+\\}))?(?: in cash)? (?:at (?:the|your) door|to the courier|when (?:it|Kheelu|your Kheelu|your order|the toy|the parcel) (?:arrives|is delivered|reaches you))`)})\\b${anyCase(`(?! (?:is not|isn${APOS}t|is never|was never|are not|aren${APOS}t|not)\\b)`)}`;
+/** 20 October, in the forms a date takes. */
+const OCT_20 = "(?:20(?:th)?(?: of)? Oct(?:ober)?\\b\\.?|Oct(?:ober)?\\.? 20(?:th)?\\b|2026-10-20\\b|20[/.]10(?:[/.](?:20)?26)?\\b)";
+/** A verb of the parcel leaving or arriving. */
+const SHIPS = "(?:ships?|shipping|shipped|dispatch(?:es|ed|ing)?|deliver(?:s|ed|ing|y|ies)|arriv(?:es|ing|als?)|reach(?:es)? you|out for delivery)";
+/** An age as a number (1-12) or a word (one to ten). */
+const AGE_N = "(?:[1-9]|1[0-2])";
+const AGE_WORD = "(?:[1-9]|1[0-2]|one|two|three|four|five|six|seven|eight|nine|ten)";
+/** A count's unit after "2+": "kids 2+ hours" is play time, not an age. */
+const COUNT_UNIT = "(?:hours?|hrs?|minutes?|mins?|days?|nights?|weeks?|months?|times?|sessions?|books?|stories|songs?|languages?|words?|questions?)";
+/** An age with no ceiling: "Ages 3+", "kids 3+", "Ages 3 plus", a bare "6+" label, "3+ years", "3 and up", "3 years
+ *  onwards". A count with its unit ("2+ hours"), a school grade ("Grade 8 and beyond"), "up to age 7" and an app's
+ *  system requirement ("Android 9+", "iOS 15+") are not ages without a ceiling. */
+const OPEN_AGE = [
+  `\\b(?:ages?|aged)\\b:? ?${AGE_N} ?\\+`,
+  `\\b(?:kids|children|child)\\b:? ?${AGE_N} ?\\+(?! ?${COUNT_UNIT}\\b)`,
+  `\\b(?:ages?|aged)\\b:? ?${AGE_WORD} plus\\b`,
+  "(?<=^|[\\s(\\[·•|:,])(?<!\\b(?:android|ios|ipados|macos|watchos|windows|os|iphone|version|ver\\.?|v|api|level|grade|class|std\\.?) )[2-9]\\+(?=$|[\\n)\\].,;:!?·•|]| +$)",
+  `\\b${AGE_N} ?\\+ ?(?:years?|yrs?|year[- ]olds?)\\b`,
+  `(?<!\\b(?:grades?|class(?:es)?|std\\.?|standards?|levels?|years?|steps?|pages?|chapters?|parts?|books?) )\\b${AGE_WORD}(?:[- ](?:years?|yrs?)(?:[- ]olds?)?|[- ]year[- ]olds?)?,? (?:and|&) (?:up|upwards?|above|older|over)\\b(?! (?:to|until|till|than|the|a|an|their|his|her|our|children|kids|siblings|ones)\\b)`,
+  `\\b${AGE_WORD}(?: ?\\+)? ?(?:years?|yrs?) (?:and )?(?:onwards?|plus)\\b`,
+  `\\b(?:ages?|aged|from|for) ${AGE_WORD} (?:and )?onwards?\\b`,
+].join("|");
+/** The advance or the balance, typed or as its token (the total is ₹4,999, never a part-price). */
+const PART_PRICE = "(?:(?:₹ ?|Rs\\.? ?|INR ?)(?:499|4,500)\\b|\\{price:(?:token|balance)\\})";
+/** The programmes the strip names, as they are spelled: the entry is compiled without `i`, so the verb "elevate" and a
+ *  plan's "inception" are not one. */
+const PROGRAMME = "(?:NVIDIA|Nvidia|Inception|Karnataka Elevate|Elevate|nasscom|NASSCOM|Nasscom|Founders Inc)";
+/** Where a label or a sentence starts: the text's or a line's start, after . ? ! : a bullet, a bar or an opening bracket
+ *  or quote. */
+const LABEL_START = "(?<=(?:^|[\\n.?!:·•|(\\[\"“‘])\\s?)";
+/** "Top" or "leading" ones, a few words before the noun ("the best incubators in India", "top startup programmes"). */
+const TOP = `(?:some of )?(?:the |india${APOS}s )?(?:top|leading|premier|best)\\b[^.?!\\n]{0,20}?\\b`;
+/** "Backed by" over the programmes, compiled without `i`. As a label: at a label's or a sentence's start, alone, before a
+ *  colon or a separator, or before "top" or "leading" programmes. Anywhere: before "top" accelerators, incubators or
+ *  startup programmes (startup words); backed, funded, supported or sponsored by a programme the strip names, or that
+ *  programme backing. Advice "backed by research", "by a large study", "by experts", "by leading programmes in early
+ *  education" or by a body that is not a programme passes, since a journal line stops the build. */
+const BACKED_BY = [
+  `${LABEL_START}${anyCase(`backed by(?= ?(?:$|[\\n.:·•|)\\]\"”’]|${TOP}(?:programmes?|programs?)\\b))`)}`,
+  `\\b${anyCase(`backed by ${TOP}(?:accelerators?|incubators?|startup (?:programmes?|programs?))`)}\\b`,
+  `\\b${PROGRAMME}[- ]${anyCase("(?:backed|funded|supported|endorsed|sponsored)")}\\b`,
+  `\\b${anyCase("(?:backed|supported|funded|endorsed|sponsored|invested in|incubated|accelerated|mentored)(?: by)?")}\\b[^.?!\\n]{0,40}?\\b${PROGRAMME}\\b`,
+  `\\b${PROGRAMME}\\b[^.?!\\n]{0,40}?\\b${anyCase("(?:backs|backed|funds|funded|invests? in|invested in|endorses|endorsed|sponsors|sponsored)")}\\b`,
+].join("|");
+/** Words just before a certification that deny it: "not yet safety certified". */
+const NOT_YET = `(?<!\\b(?:no|not|never|not yet|not been|isn${APOS}t|isn${APOS}t yet|aren${APOS}t|aren${APOS}t yet) )`;
 
 export const BANNED_PHRASES: readonly BannedPhrase[] = [
   // ── Row 1: the retired microphone wording and its variants (claims §4.1) ──
@@ -240,6 +333,14 @@ export const BANNED_PHRASES: readonly BannedPhrase[] = [
   { id: "minute-of-quiet", kind: "claim", claimsRow: D9, pattern: new RegExp(`\\boff,? after ${A_MINUTE} of ${QUIET_SPELL}\\b|\\b(?:switch(?:es|ed)?|turns?|turned|shuts?|powers?)(?: itself)? off,? after ${A_MINUTE}|\\b(?:it|Kheelu|microphone|mic|conversations?|chats?)\\b[^.?!\\n]{0,60}?\\b(?:goes|go|went|stops?|stopped|ends?|ended)(?: quiet| silent| listening| off)?,? after ${A_MINUTE}|\\bafter ${A_MINUTE}(?: of ${QUIET_SPELL})?,? (?:it|Kheelu|the microphone|the mic|the conversation|the chat)(?: itself)? (?:switch(?:es)?|turns?|shuts?|powers?|goes|stops?|ends?)\\b|\\b(?:Kheelu|microphone|mic)\\b[^.?!\\n]{0,60}?\\b${A_MINUTE} of ${QUIET_SPELL}\\b|\\b${A_MINUTE} of ${QUIET_SPELL}\\b[^.?!\\n]{0,60}?\\b(?:Kheelu|microphone|mic)\\b|\\bit (?:also |then |just )?${GOES_OFF},? after ${A_MINUTE} of ${QUIET_SPELL}\\b|\\b${A_MINUTE} of ${QUIET_SPELL},? and (?:it|Kheelu|the microphone|the mic) ${GOES_OFF}`, "i"), planted: "It switches itself off after about a minute of quiet.", why: "D058 item 1: a conversation ends after a couple of minutes of quiet. \"A couple of minutes of quiet\" passes, and so does a family's own minute of quiet, with no switching off and no Kheelu in the sentence, before or after (task 8b.1d).", mockupExempt: frozenOn("home", "meet-kheelu", "safety", "setup", "ai-toys-for-kids-in-india", "privacy", "story-what-to-look-for-in-a-safe-ai-toy") },
   { id: "attack-own-safety", kind: "claim", claimsRow: D10, pattern: /\battack(?:s|ed|ing)? (?:our|its) own (?:safety|filters?|layer|model|AI|systems?|guardrails?)\b|\bred[- ]team(?:s|ed|ing)? (?:our|its) own\b|\b(?:try|tries|trying|tried) to (?:break|crack|beat|fool|trick|bypass|jailbreak|defeat) (?:our|its) own\b|\b(?:break|breaks|breaking|crack|cracks|cracking|jailbreak|jailbreaks|jailbreaking|bypass|bypasses|bypassing) (?:our|its) own (?:safety|filters?|layer|model|AI|systems?|guardrails?)\b|\bsafety (?:layer|filters?|guardrails?) before (?:every|each) (?:release|update)\b/i, planted: "We attack our own safety layer before every release.", why: "D058 item 1: the line goes, in any wording (\"We try to break our own safety filters\", task 8b.1d). The pre-launch test (\"Tested before launch by trying to make it say unsafe things\") is open question G29 and passes.", mockupExempt: frozenOn("story-what-to-look-for-in-a-safe-ai-toy") },
   { id: "keep-none-of-it", kind: "claim", claimsRow: D11, pattern: new RegExp(`\\b(?:keeps?|retains?|stores?|holds?|saves?) none of (?:it|them|your child${APOS}s (?:voice|data|words|conversations|recordings))\\b|\\b(?:providers?|they)\\b[^.?!\\n]{0,60}\\b(?:keeps?|kept|retains?|retained) nothing\\b|\\bproviders?\\b[^.?!\\n]{0,60}\\b(?:stores?|stored|holds?|held|saves?|saved) nothing\\b|\\bnothing (?:is |gets )?(?:kept|retained|stored|saved) by (?:them|the providers?|our providers?)\\b`, "i"), planted: "The speech and AI providers that help Kheelu reply keep none of it.", why: "D058 item 6: the live /privacy names the processors instead. Banned as written, in any wording (\"The providers retain nothing\", task 8b.1d): D020's \"They don't keep it\" stays until the founder checks the provider contracts (journal pipeline §9.2). Holding, saving or storing nothing is the providers' only (\"they hold nothing back\" passes).", mockupExempt: frozenOn("privacy") },
+  // ── The advisor's stale facts (D061, 2026-10-15; claims §4, task 8c.4) ──
+  { id: "cash-on-delivery", kind: "offer", claimsRow: C1, pattern: new RegExp(ON_DELIVERY), allowSentence: /\?\s*$/, planted: "Cash on delivery", why: "D024, D061: every order is paid online (UPI, card or net banking); there is no cash on delivery, and the checkout is frozen (ADR-013). Saying there is none passes (\"there's no cash on delivery\", \"nothing to pay at the door\", \"nothing more to pay when it arrives\", \"No COD\"), and so does a parent's question. Compiled without `i` so \"COD\" counts only in capitals (cod is a fish); its other words match in any case (anyCase)." },
+  { id: "ships-20-october", kind: "offer", claimsRow: C2, pattern: new RegExp(`\\b${SHIPS}\\b[^.?!\\n]{0,30}?\\b${OCT_20}|\\b${OCT_20}[^.?!\\n]{0,20}?\\b${SHIPS}\\b`, "i"), planted: "Ships 20 Oct", why: "D023, D061: new orders deliver from mid-November; the pages say \"Deliveries start mid-November\" ({delivery}). A receipt for an order placed before 10 October keeps its \"Ships from\" row beside the date (D054 item 1): two cells, never one line of a page." },
+  { id: "open-ended-ages", kind: "claim", claimsRow: C3, pattern: new RegExp(OPEN_AGE, "i"), planted: "Ages 3+", why: "D009, D061: the band is 3 to 7; \"3+\" has no ceiling and, beside \"AI toy\", invites toddler use. A closed band (\"aged 5 and under\", \"aged 6 to 12\"), \"up to age 7\", a count with its unit (\"2+ hours\", \"kids 2+ hours\") and an app's system requirement (\"Android 9+\") pass." },
+  { id: "part-price-button", kind: "offer", claimsRow: C4, pattern: new RegExp(`\\b(?:pre-?order|book now|buy now|order now)(?: (?:now|today|Kheelu|yours|your Kheelu|it))?(?: (?:for|at|from|@)|:| ·| \\|)? (?:just |only )?${PART_PRICE}`, "i"), planted: "Pre-order for ₹499", why: "D041 G1, D028, D061: the button reads \"Pre-order Kheelu\" (a registered tracking label), and ₹499 beside it is said with the total in the same sentence (DARK-03). The price sentence and the store's own pay button (\"Pay ₹499 and reserve\") pass." },
+  { id: "pilot-homes", kind: "claim", claimsRow: C5, pattern: /\bpilot[- ](?:homes?|households?|houses?)\b/i, planted: "Real pilot homes", why: "D057 item 2, D061: not every film was shot at home. \"Real pilot families\" (/terms, /privacy) and \"Real children in real homes.\" pass." },
+  { id: "backed-by", kind: "claim", claimsRow: C6, pattern: new RegExp(BACKED_BY), planted: "Backed by top programs", why: "B26, D054 item 20, D061: the strip names the programmes only, with no relationship; \"Backed by\" reads as an investment claim (the live /team dropped it, V6 QA M1). The bare label is banned at a label's or a sentence's start (alone, before a colon or before \"top programmes\"); \"backed by\" top accelerators or incubators, or a named programme, anywhere. \"Recognised by.\" and advice \"backed by research\", \"by a large study\" or \"by experts\" pass. Compiled without `i` so the programmes keep their case (\"elevate\", \"inception\")." },
+  { id: "safety-certified", kind: "claim", claimsRow: C7, pattern: new RegExp(`${NOT_YET}\\b(?:toy[- ])?safety[- ]certified\\b|${NOT_YET}\\bcertified (?:as )?(?:safe|child[- ]safe|kid[- ]safe|toy[- ]safe|non[- ]toxic)\\b|${NOT_YET}\\bcertified for (?:toy |child |children${APOS}s |kids${APOS} )?safety\\b|${NOT_YET}\\b(?:BIS|ISI)[- ](?:certified|approved|marked|licensed)\\b(?! (?:charger|adapter|power))`, "i"), planted: "Safety certified", why: "Claims §6, D061: Kheelu's toy-safety (BIS) licence is applied for, not granted. \"Toy-safety certification (BIS): applied for, not yet granted.\" and \"not yet safety certified\" pass." },
   // ── en-IN spelling (N24): src/content strings and rendered text only ──
   { id: "us-color", kind: "spelling", claimsRow: "N24", pattern: /\bcolor(?:s|ed|ful|ing|way|ways)?\b/i, planted: "Pick a color.", why: "en-IN: colour." },
   { id: "us-center", kind: "spelling", claimsRow: "N24", pattern: /\bcent(?:er|ers|ered|ering)\b/, allowSentence: /^center$/, planted: "Put it in the center.", why: "en-IN: centre. Proper nouns (\"Center on the Developing Child\", \"Synergy Center\") are capitalised and pass. A string that is only \"center\" is a layout value (a CTA block's `align`), not copy." },

@@ -82,6 +82,20 @@ describe("every entry is red on its planted example", () => {
   });
 });
 
+/* The build loads this file: scripts/journal/sync-posts.mjs imports findBanned in prebuild step 15 and postbuild step 20,
+ * on whatever Node the host runs (Vercel's is a dashboard setting, not .nvmrc; the diagnosis of 2026-10-15 ran 22.23.3).
+ * A RegExp modifier group, "(?i:…)" or "(?-i:…)", is ES2025 (V8 12.5, Node 23 and later): Node 22 refuses the whole file
+ * and every build stops at prebuild (task 8c.4 review). An entry that needs a word in one case (COD, the programmes) is
+ * compiled without the `i` flag instead, its other words in either case (the data file's anyCase). */
+describe("no pattern carries a RegExp modifier group, so Node 22 loads this file (the journal sync, every build)", () => {
+  it.each(BANNED_PHRASES.map((e) => [e.id, e] as const))("%s", (_id, entry) => {
+    for (const re of [entry.pattern, entry.allowSentence]) {
+      if (!re) continue;
+      expect(re.source, `${entry.id}: "(?i:…)" and "(?-i:…)" need Node 23`).not.toMatch(/\(\?[a-z]*-?[a-z]+:/);
+    }
+  });
+});
+
 describe("every entry is green on approved copy", () => {
   it.each(MOCKUP_SLUGS)("mockup %s", (slug) => {
     const hits = findBannedOnMockup(slug, approvedMockupText(slug));
@@ -249,6 +263,185 @@ describe("the D058 entries: the idea, not one phrasing (tasks 8b.1b, 8b.1d)", ()
 
   it.each(NEAR_MISSES)("passes “%s”", (line) => {
     expect(findBanned(line)).toEqual([]);
+  });
+});
+
+/* The advisor's stale facts (D061, 2026-10-15; task 8c.4). A senior marketing advisor's homepage proposal (12 October
+ * 2026; wiki/raw/feedback/advisor-homepage-2026-10-12/, local and git-ignored) carried facts that are no longer true, or
+ * never were: cash on delivery (D024), "Ships 20 Oct" (D023), open-ended ages (D009), ₹499 in the button label (D028,
+ * D041 G1), "Real pilot homes" (D057 item 2), "Backed by" over the programmes (B26) and "Safety certified" (claims §6).
+ * One entry per idea, each a row of claims.md §4's D061 table. VARIANTS holds the advisor's own lines (quoted from the
+ * document, which this repo does not carry) and other phrasings of each idea; NEAR_MISSES the approved lines nearest to
+ * one, word for word, and a parent's lines that share its words without the claim. */
+describe("the D061 entries: the advisor's stale facts, the idea not one phrasing (task 8c.4)", () => {
+  const D061 = ["cash-on-delivery", "ships-20-october", "open-ended-ages", "part-price-button", "pilot-homes", "backed-by", "safety-certified"];
+
+  it("reads the seven D061 entries from claims.md §4, each a row of its own", () => {
+    const md = readRepoFile("wiki/product/claims.md");
+    const table = md.slice(md.indexOf("**The advisor's stale facts (D061"), md.indexOf("### 4.1"));
+    const rows = table
+      .split("\n")
+      .filter((l) => l.startsWith("| ") && /\| BANNED 2026-10-15 \(D061\)/.test(l))
+      .map((l) => l.split(" | ")[0].replace(/^\|\s*/, ""));
+    expect(rows).toHaveLength(D061.length);
+    expect(BANNED_PHRASES.filter((e) => rows.some((r) => r.startsWith(e.claimsRow))).map((e) => e.id)).toEqual(D061);
+  });
+
+  const VARIANTS: readonly (readonly [string, string])[] = [
+    /* Cash on delivery offered (D024: every order is paid online; the checkout is frozen, ADR-013). */
+    ["cash-on-delivery", "Founding price ₹4,999 for the first 500 • Ships 20 Oct • Cash on delivery • 15-day returns"],
+    ["cash-on-delivery", "Or cash on delivery"],
+    ["cash-on-delivery", "Pay ₹499 now and ₹4,500 at dispatch, or pay cash on delivery."],
+    ["cash-on-delivery", "Pay today / Pay on delivery (updates with choice)"],
+    ["cash-on-delivery", "Button: Pay ₹499 and reserve / Place cash-on-delivery order"],
+    ["cash-on-delivery", "Cash on delivery (pay ₹4,999 when Kheelu arrives at your door)"],
+    ["cash-on-delivery", "Is the ₹499 reservation kept alongside COD"],
+    ["cash-on-delivery", "COD available on every order."],
+    ["cash-on-delivery", "Pay when it arrives."],
+    ["cash-on-delivery", "Pay the balance in cash at the door."],
+    /* In capitals or title case too (a badge typed in capitals; the entry is compiled without `i` so COD keeps its case). */
+    ["cash-on-delivery", "CASH ON DELIVERY · 15-DAY RETURNS"],
+    ["cash-on-delivery", "Pay On Delivery"],
+    /* "Ships 20 Oct" (D023: new orders deliver from mid-November). */
+    ["ships-20-october", "Ships 20 Oct"],
+    ["ships-20-october", "Ships 20 October 2026"],
+    ["ships-20-october", "Only 500 at the founding price. Ships 20 October."],
+    ["ships-20-october", "Shipping from October 20th."],
+    ["ships-20-october", "Dispatch starts on 20 Oct."],
+    ["ships-20-october", "Delivered to your door by 20 October."],
+    ["ships-20-october", "Arrives 20/10/2026."],
+    /* Open-ended ages (D009: 3 to 7). */
+    ["open-ended-ages", "Ages 3+"],
+    ["open-ended-ages", "SCREEN-FREE · AGES 3+"],
+    ["open-ended-ages", "Badge: NEW · Screen-free AI toy · Ages 3+"],
+    ["open-ended-ages", "AI books: Stories that answer back. (Ages 5+, coming soon)"],
+    ["open-ended-ages", "6+"],
+    ["open-ended-ages", "Tap an age circle: 3, 4, 5, 6+"],
+    ["open-ended-ages", "A soft, screen-free AI toy for children aged 3 and up."],
+    ["open-ended-ages", "Ages 3 and up. It grows with your child."],
+    ["open-ended-ages", "For 3 years and above."],
+    ["open-ended-ages", "Suitable from 3 years onwards."],
+    ["open-ended-ages", "Made for 3+ year olds."],
+    ["open-ended-ages", "For kids aged three and older."],
+    ["open-ended-ages", "Kids 3+ love it."],
+    ["open-ended-ages", "Perfect for kids 3+ who love stories."],
+    ["open-ended-ages", "Ages 3 plus"],
+    /* A part-price in the pre-order button (D028, D041 G1: "Pre-order Kheelu"; DARK-03). */
+    ["part-price-button", "Pre-order for ₹499"],
+    ["part-price-button", "Button: Pre-order ₹499"],
+    ["part-price-button", "Sticky bar: Pre-order for ₹499 | WhatsApp icon"],
+    ["part-price-button", "PRE-ORDER FOR ₹499"],
+    ["part-price-button", "Pre-order for {price:token}"],
+    ["part-price-button", "Pre-order now at ₹499"],
+    ["part-price-button", "Preorder @ Rs 499"],
+    ["part-price-button", "Book now for ₹499"],
+    ["part-price-button", "Pre-order Kheelu for ₹4,500"],
+    /* "Real pilot homes" (D057 item 2: not every film was shot at home). */
+    ["pilot-homes", "Real pilot homes"],
+    ["pilot-homes", "REAL PILOT HOMES"],
+    ["pilot-homes", "Filmed in our pilot homes."],
+    /* "Backed by" over the programmes (B26: names only, no relationship). */
+    ["backed-by", "Backed by top programs"],
+    ["backed-by", "Backed by"],
+    ["backed-by", "Backed by NVIDIA Inception, Karnataka Elevate and nasscom."],
+    ["backed-by", "An NVIDIA-backed startup."],
+    ["backed-by", "Supported by NVIDIA Inception and nasscom startups."],
+    ["backed-by", "Funded by Karnataka Elevate."],
+    /* The label at the start of a line or a sentence, before nothing, a colon or the "top programmes"; and "backed by" a
+     * programme anywhere. */
+    ["backed-by", "BACKED BY TOP PROGRAMS"],
+    ["backed-by", "Backed by:"],
+    ["backed-by", "Proud to be here. Backed by leading accelerators."],
+    ["backed-by", "Backed by\nNVIDIA Inception · Karnataka Elevate · nasscom"],
+    ["backed-by", "Kheelu is backed by NVIDIA Inception."],
+    ["backed-by", "We are backed by leading accelerators."],
+    ["backed-by", "Kheelona is backed by top startup programmes."],
+    /* "Safety certified" (claims §6: BIS applied for, not granted). */
+    ["safety-certified", "Safety certified"],
+    ["safety-certified", "[Safety certified · confirm]"],
+    ["safety-certified", "A safety-certified plush toy."],
+    ["safety-certified", "Certified safe for children."],
+    ["safety-certified", "Kheelu is BIS certified."],
+    ["safety-certified", "Certified for child safety."],
+  ];
+
+  /* Approved lines, word for word (shipping, terms, the FAQ answers, the price sentence, the store's pay button, the films'
+   * consent lines, /team's strip, /safety's certification fold, the product page's Safety tab and the founders' bios), the
+   * share text of task 8c.2, and a parent's lines that share an entry's words without its claim. */
+  const NEAR_MISSES = [
+    "Every order is paid online, so there’s no cash on delivery.",
+    "Delivery is in the price. Nothing to pay at the door.",
+    "Delivery is included anywhere in India, with nothing to pay at the door.",
+    "Delivery anywhere in India is included, so the price is the whole cost of Kheelu arriving at your door. Nothing is collected at the door.",
+    "We don’t offer cash on delivery.",
+    "Cash on delivery isn’t available.",
+    "Can I pay cash on delivery?",
+    "Deliveries start mid-November.",
+    "Last updated: 14 October 2026",
+    "Ships from",
+    "Kheelu is made for children aged 3 to 7.",
+    "Screen time for a 3-year-old, and up to age 7",
+    "In January 2026, Common Sense Media advised parents not to give AI toys, which it describes as “smart toys with voice-based interactions”, to children aged 5 and under, and to use extreme caution before buying them for children aged 6 to 12.",
+    "Children should be taught in their home language until at least Grade 5, and preferably till Grade 8 and beyond.",
+    "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.",
+    "WhatsApp or call +91 91875 46483",
+    "Aim for 2+ hours of outdoor play on a holiday.",
+    'export const KHEELU_AGES = "3+";',
+    "Reserve yours for ₹499 today, refundable until dispatch, then pay ₹4,500 before delivery: ₹4,999 in total (incl. GST).",
+    "Pay ₹499 and reserve",
+    "Pre-order Kheelu",
+    "Kheelu is ₹4,999 (incl. GST); pre-order with {price:token} today, refundable until dispatch.",
+    "A refundable {price:token} advance reserves yours today, and the remaining {price:balance} is due before delivery.",
+    "Our films are different: they show real pilot families, filmed with their permission.",
+    "The films on this website show pilot families, filmed with their permission.",
+    "Real children in real homes. Press play on any of them.",
+    "Recognised by.",
+    "NVIDIA Inception Program",
+    "It is advice backed by research, not a rule.",
+    "Toy-safety certification (BIS): applied for, not yet granted. We show no mark until it is granted.",
+    "We have applied for Kheelu’s BIS licence for toy safety. It has not been granted yet, so no toy-safety certificate has been issued to us so far.",
+    "“Trusted” means we chose them carefully; it is not a certification.",
+    "Over a decade in hardware, including years at Intel leading Thunderbolt 4 and 5 compliance, he took products from a blank page to certification.",
+    "Kheelu is not yet safety certified.",
+    /* The task 8c.4 review's probes: the same denial in other words, cod the fish, an app's system requirement, a count
+     * with its unit, and advice backed by research, a study, a body or experts (a journal line stops the build, rule 15). */
+    "Nothing more to pay when it arrives.",
+    "There is nothing left to pay when it arrives.",
+    "No COD: every order is paid online.",
+    "A spoon of cod liver oil.",
+    "Android 9+.",
+    "Requires iOS 15+ or Android 9+.",
+    "Give kids 2+ hours of outdoor play.",
+    "This advice is backed by decades of research.",
+    "The guidance is backed by a large study of 2,000 families.",
+    "The approach is backed by the American Academy of Pediatrics.",
+    "A habit backed by experts.",
+    "Backed by research, the advice is simple: read together.",
+    "The approach is backed by leading programmes in early education.",
+    "The idea has been supported by parents since its inception.",
+    "Games that elevate a child’s mood are supported by research.",
+  ];
+
+  it.each(VARIANTS)("%s is red on “%s”", (id, line) => {
+    expect(findBanned(line).map((h) => h.id)).toContain(id);
+  });
+
+  it.each(NEAR_MISSES)("passes “%s”", (line) => {
+    expect(findBanned(line)).toEqual([]);
+  });
+
+  it("names every D061 idea in VARIANTS, and each entry's planted line is the advisor's own words", () => {
+    expect([...new Set(VARIANTS.map(([id]) => id))].sort()).toEqual([...D061].sort());
+    const planted = Object.fromEntries(BANNED_PHRASES.filter((e) => D061.includes(e.id)).map((e) => [e.id, e.planted]));
+    expect(planted).toEqual({
+      "cash-on-delivery": "Cash on delivery",
+      "ships-20-october": "Ships 20 Oct",
+      "open-ended-ages": "Ages 3+",
+      "part-price-button": "Pre-order for ₹499",
+      "pilot-homes": "Real pilot homes",
+      "backed-by": "Backed by top programs",
+      "safety-certified": "Safety certified",
+    });
   });
 });
 

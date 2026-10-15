@@ -272,6 +272,7 @@ export const kheeluPage = {
           "delivery-start",
           "returns-and-warranty",
           "after-the-first-week",
+          "languages",
           "speech",
         ]),
         sourceMarker: "Source",

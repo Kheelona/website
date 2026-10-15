@@ -127,13 +127,14 @@ const MACHINE = [
  */
 const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } & Record<OfferMode, string>> = {
   "llms.txt": {
+    // 2026-10-15: Home's question "What if my child doesn’t like it?", its answer unchanged (D061, AP-30; task 8c.4).
     // 2026-10-14: the live team's code check (D058; task 8b.1, wave 8b merge): the Microphone and Parent app rows, the
     // safety mechanism, the age answer, the first-week answer and the Kheelona+ perk. Earlier the same day: the
     // screen-time topic's lead (CMO reviews A M5, B m1), Home's refund and age-3 answers (task 7.1b) and the product's
     // Parent app row "On iPhone and Android." (D055 item 26; task 6.7).
-    date: "2026-10-14",
-    token: "93b2979fb7856dc6270fe04c0111557b1257e655eeaab0f38471b5c2d7488bb8",
-    full: "42173ef3bb30a870a0f04137f89154fb7a2b980cfb8c667cae4056f6f8d0bd83",
+    date: "2026-10-15",
+    token: "b34181eecebea7ec9b419bb909144152479ac3a5cff1e83325e4a449afeb13a0",
+    full: "09a31f6f30fad12445188eb452437905dae14a94a61ca81206bbf132b9d0bee9",
   },
   "pricing.md": {
     // 2026-10-14: the Kheelona+ perk in D058 item 3's words and Home's age answer after the code check (task 8b.1, wave
