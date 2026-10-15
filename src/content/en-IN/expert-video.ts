@@ -3,7 +3,8 @@ import type { FilmsSingleConfig, SingleFilm } from "@/components/sections/FilmsS
 /**
  * The expert clip (task 8c.6; D061 items 12-13): 34 seconds of the founder's own expert video, cut to its general part
  * (screens and talk) before she speaks about herself or about Kheelu, hosted on this site like the films (poster first,
- * played on a tap) and shown on the product page right after the offer. The founder chose the CMO's cut, the credit
+ * played on a tap) and shown on Home after "Kheelu asks. Your child thinks." (task Q2.9; until then on the product page,
+ * right after the offer). The founder chose the CMO's cut, the credit
  * "Chaitra, therapist and developmental coach" (never "Dr." or "doctor" in our words, though her coat's badge shows it,
  * as it is), "a video from an expert", and a disclosure beside the clip, because she was paid or given a Kheelu. Her
  * written permission is on file with the founder. Nothing here names Kheelu: the fold never says Kheelu fills the gap she

@@ -24,9 +24,11 @@ export interface HelpLineProps {
   /** The DS body step: `body-s` (default), `body`, `body-l`. One step only, since tokens.css puts kh-body-s last. */
   size?: HelpLineSize;
   icon?: ReactNode;
-  /** "Questions?", "Still have a question?", "Rather talk to a person?", "Need help?". /thanks and /setup's contact line have none. */
+  /** "Questions?" (the help line everywhere since the selling update, plan v2 §1.1), "Still have a question?" (the product FAQ),
+   *  "Rather talk to a person?" (the store's checkout column, as approved). /thanks and /setup's contact line have none. */
   lead?: ReactNode;
-  /** The links (WhatsApp, then the phone line, sometimes the email), with any words that follow them. */
+  /** The links (WhatsApp, sometimes the email; the phone only on /contact and the legal pages, D063 item 2), with any words
+   *  that follow them. */
   contact: ReactNode;
   /** The parent's composition class (the store header's element, the legal pages' and /setup's), added after the DS classes. */
   className?: string;

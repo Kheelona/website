@@ -657,7 +657,7 @@ export type LegalDoc =
 /** A legal page as its content module writes it and LegalTemplate renders it (`satisfies LegalPage`): the document. */
 export type LegalPage = LegalDoc;
 
-/** A help line: a short lead, then the WhatsApp and call links (seller.ts `help`, `storeHelp`). */
+/** A help line: a short lead, then the WhatsApp link (seller.ts `help`, `storeHelp`; no number, D063 item 2). */
 export interface HelpLineCopy {
   readonly lead: string;
   readonly contact: RichTextString;

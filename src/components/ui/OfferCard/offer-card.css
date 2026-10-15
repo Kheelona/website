@@ -11,4 +11,5 @@
    card and before the button. The DS's kh-body-s, as the later price; the card's grid gap spaces it, so no margin. */
 .ks-offer__note {
   margin: 0;
+  text-wrap: pretty; /* no lone last word ("parent app." alone at 1440, the q2c review) */
 }

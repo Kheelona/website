@@ -200,7 +200,7 @@ test.describe("the single film: the expert clip (task 8c.6)", () => {
         await expect(page.getByRole("button", { name: CLIP_PLAY })).toBeVisible();
         await expect(page.getByRole("button")).toHaveCount(1);
         await expect(page.locator(".ks-clip__chip")).toHaveAttribute("aria-hidden", "true");
-        await expect(page.locator(".ks-clip__chip")).toHaveText("0:34 · With captions");
+        await expect(page.locator(".ks-clip__chip")).toHaveText("0:34"); // no burned-in captions since Q2.6 (D064 item 8)
         await expect(page.locator(".ks-clip__credit")).toHaveText(/Chaitra, therapist and developmental coach\s*Kheelona made this video with Chaitra and compensated her for it\./);
         const fetched = await page.evaluate(() => performance.getEntriesByType("resource").map((e) => e.name));
         expect(fetched.filter((url) => url.includes("expert-clip.mp4"))).toEqual([]);

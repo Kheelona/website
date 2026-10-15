@@ -15,3 +15,7 @@ function teamStrip(): RecognitionStripConfig {
 }
 
 export const recognitionStrip: RecognitionStripConfig = teamStrip();
+
+/** The strip as a small label over the row, no heading (RecognitionStrip `label`; the D2C plan v2 §2 fold 2 and §3 fold
+ *  4, the CMO's m10): Home and the product page show it in the same words, from here. */
+export const recognitionLabel: RecognitionStripConfig = { ...recognitionStrip, title: "Recognised by", variant: "label" };

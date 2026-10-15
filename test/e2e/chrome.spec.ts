@@ -892,13 +892,17 @@ test.describe("chrome: WhatsApp bubble beside the prices (task 4.9; D050)", () =
       });
     }
 
-    test(`the step aside is not vacuous on ${route.path}: at rest at 324 x 566 the bubble would cover the hero's price`, async ({ harness }) => {
-      const page = await openBuilt(harness, phone324, {}, route);
-      await expect.poll(() => bubbleAside(page)).toEqual(ASIDE);
-      expect(await coveredAtRest(page, NEVER_COVERED)).toEqual(expect.arrayContaining([expect.stringMatching(/^<p\.(?:.*\.)?ks-price(?:\.|>)/)]));
-      expect(await coveredByBubble(page, NEVER_COVERED)).toEqual([]);
-    });
   }
+
+  /* The step aside proven not vacuous where its premise holds: Home's hero price sits under the resting bubble at
+     324 x 566. Since the selling update (task Q2.10) the product hero's price sits clear of it there, so the product
+     page is covered by the sweep above only. */
+  test(`the step aside is not vacuous on ${HOME.path}: at rest at 324 x 566 the bubble would cover the hero's price`, async ({ harness }) => {
+    const page = await openBuilt(harness, phone324, {}, HOME);
+    await expect.poll(() => bubbleAside(page)).toEqual(ASIDE);
+    expect(await coveredAtRest(page, NEVER_COVERED)).toEqual(expect.arrayContaining([expect.stringMatching(/^<p\.(?:.*\.)?ks-price(?:\.|>)/)]));
+    expect(await coveredByBubble(page, NEVER_COVERED)).toEqual([]);
+  });
 
   test("while the bar lifts it, it steps aside from a price in its lifted band, and rests again once the bar has gone (motion on and reduced)", async ({ harness }) => {
     for (const reducedMotion of ["no-preference", "reduce"] as const) {

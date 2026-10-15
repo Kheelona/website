@@ -529,4 +529,4 @@ holds every other changed line. The founder signs them at Gate B ([D015](../../d
 | 1 | Both metas | "(incl. GST)" becomes "in total" (154 and 151 characters become 151 and 148); the total still leads in token mode ([D028](../../decisions/D028-price-wording.md)) | D065 item 3; plan v2 §6 "The guide: title, meta, keywords" |
 | 2 | Fold 3, "Every conversation" and "Open internet" | G26's "“Delete all chats” in the app deletes them from our servers."; "…it says so instead of guessing." | D065 items 7-8; plan v2 §6 fold 3 |
 | 3 | After fold 3 | A pre-order button (`guide-answers`), the price line and the trust line | Plan v2 §6 fold 3, §11 |
-| 4 | Fold 5, the fifth question | Home's rewritten price answer (`faqs.ts` `price-in-total`) in place of `how-much`, which stays for `/pricing.md` | D065 items 3-4; plan v2 §6 fold 5 |
+| 4 | Fold 5, the fifth question | Home's rewritten price answer (`faqs.ts` `price-and-advance`, since task Q2.13; Q2.12 had a duplicate `price-in-total`) in place of `how-much`, which stays for `/pricing.md` | D065 items 3-4; plan v2 §6 fold 5 |

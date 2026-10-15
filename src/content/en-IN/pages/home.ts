@@ -22,7 +22,7 @@ import { PLUS_NOTE } from "../offer";
 import { DEFAULT_OG } from "../organization";
 import { RETENTION_MONTHS } from "../policies";
 import { product } from "../products/kheelu/product";
-import { recognitionStrip } from "../recognition";
+import { recognitionLabel } from "../recognition";
 import { TRUST_COMPACT, TRUST_OFFER, trustItems, type TrustId } from "../trust";
 
 /**
@@ -160,7 +160,7 @@ export const homePage = {
 
     /* Fold 2, its foot · "Recognised by" as a small label under the quotes, on the films' band (ruling 1; CMO m10): the
        /team strip as built, names only. */
-    { kind: "recognition-strip", config: { ...recognitionStrip, title: "Recognised by", variant: "label", band: true } },
+    { kind: "recognition-strip", config: { ...recognitionLabel, band: true } },
 
     /* Fold 3 · Why it matters (D016, D026: the one marked line and its source). No picture: Kabir is the hero. */
     {

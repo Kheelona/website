@@ -18,7 +18,7 @@ import { faqs, filmLink, pickFaqs } from "../../faqs";
 import { filmQuotes, films, filmsStrip } from "../../films";
 import { PLUS_NOTE } from "../../offer";
 import { RETURN_DAYS, RETURN_PICKUP_FREE, WARRANTY_MONTHS } from "../../policies";
-import { recognitionStrip } from "../../recognition";
+import { recognitionLabel } from "../../recognition";
 import { seller } from "../../seller";
 import { TRUST_COMPACT, TRUST_OFFER, trustItems, type TrustId } from "../../trust";
 import { product, type Mode } from "./product";
@@ -174,7 +174,7 @@ export const kheeluPage = {
        the CMO's m10) as Home shows it: the small label "Recognised by" over the row, no heading (RecognitionStrip `label`);
        on the page's own background, as the offer fold above it. The expert clip that followed it went to Home with task
        Q2.10 (task Q2.9; D064 item 8). */
-    { kind: "recognition-strip", config: { ...recognitionStrip, title: "Recognised by", variant: "label" } },
+    { kind: "recognition-strip", config: recognitionLabel },
     /* The loop in four plain steps, just before "How it works" (task 8c.3; D061's rulings, the CMO's AP-14): the button
        first (D018), answer then ask back (D017), and "remembers" beside the parent reading every conversation (D036 #2).
        On the band, so it stands apart from the offer above and the example below. */
