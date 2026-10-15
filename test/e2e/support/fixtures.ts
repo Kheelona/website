@@ -188,9 +188,16 @@ export async function forceMotionEnd(page: Page): Promise<void> {
   });
 }
 
-/** Hides the Gate A review tool (mockup only) and, for parity, the D050 bubble and its clearance. */
+/** Hides the Gate A review tool (mockup only) and, for parity, the D050 bubble and its clearance. The approved
+ *  mockup's nav does not stick, so the build's laptop nav (sticky from 900 px, task Q2.5) is put back in the flow and
+ *  the room it takes (--ks-nav-clearance: the scroll padding, the legal contents panel's offset) goes to 0;
+ *  micro-motion.spec checks the sticky nav itself. */
 export async function hideForParity(page: Page): Promise<void> {
-  await page.addStyleTag({ content: `${REVIEW_TOOL_SELECTOR}, .ks-wa { display: none !important; }` });
+  await page.addStyleTag({
+    content: `${REVIEW_TOOL_SELECTOR}, .ks-wa { display: none !important; }
+      nav.kh-nav { position: static !important; }
+      html { --ks-nav-clearance: 0px !important; }`,
+  });
   await page.evaluate(() => document.body.classList.remove("ks-has-float"));
 }
 

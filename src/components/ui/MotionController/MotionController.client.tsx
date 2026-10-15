@@ -18,22 +18,31 @@ import { usePagePath } from "@/lib/page-path";
  * one MutationObserver on document.body: on screen, shown at once (its fade or draw jumped to the end before the
  * frame paints); below, observed. A target with no layout box yet (a streamed block in React's hidden holder) is
  * observed, never shown at once, whether it is there at arming or added later (tasks 3.6, 4.5).
+ * Line drawing (task Q2.5, D064 item 10): a section heading's one accent, the `kh-hand` or `kh-mark` span RichText
+ * renders inside an h2 or h3, is a target too and writes or draws itself once as it enters (motion.css). The hook is
+ * the DS markup itself, so no page's server HTML changes; an h1's accent (the hero, D049 pick 2) and an accent outside
+ * a heading are never targets.
  * It renders nothing and changes only opacity and transform (motion.css), so it shifts no layout. */
 
-const TARGETS = "[data-reveal]:not(.is-in), [data-draw]:not(.is-in)";
+/** A section heading's one accent (DS 10-pages.md:39: one Hand phrase or one Mark per heading). */
+const HEADING_ACCENT = ":is(h2, h3) :is(.kh-hand, .kh-mark)";
+const TARGETS = `[data-reveal]:not(.is-in), [data-draw]:not(.is-in), ${HEADING_ACCENT}:not(.is-in)`;
+/** Targets that draw: their animations run on their paths or their ::after, so a draw is finished with the subtree's. */
+const DRAWS = `[data-draw], ${HEADING_ACCENT}`;
 const ARMED = "js-motion";
 const SHOWN = "is-in";
 const REDUCED = "(prefers-reduced-motion: reduce)";
 /** mockup.js: a block reveals once its top is a tenth of the screen above the bottom edge. */
 const ROOT_MARGIN = "0px 0px -10% 0px";
 
-/** A target shown without moving: a doodle's draw (on its paths, so the whole subtree) or a block's own fade (its
- *  own transitions only, so nothing inside it is cut short) jumps to its end. Reading the animations brings the
- *  element's style up to date first, so a fade that the class change has just started is among them. (The singular
- *  word for a CSS fade stays out of this folder: Tailwind reads it as its motion utility; motion-properties guard.) */
+/** A target shown without moving: a draw (a doodle's on its paths, a mark's on its ::after, so the whole subtree) or
+ *  a block's own fade (its own transitions only, so nothing inside it is cut short) jumps to its end. Reading the
+ *  animations brings the element's style up to date first, so a fade that the class change has just started is among
+ *  them. (The singular word for a CSS fade stays out of this folder: Tailwind reads it as its motion utility;
+ *  motion-properties guard.) */
 function finishShown(el: Element): void {
   if (typeof el.getAnimations !== "function") return;
-  const animations = el.matches("[data-draw]") ? el.getAnimations({ subtree: true }) : el.getAnimations();
+  const animations = el.matches(DRAWS) ? el.getAnimations({ subtree: true }) : el.getAnimations();
   for (const animation of animations) animation.finish();
 }
 
@@ -82,9 +91,9 @@ function arm(): (() => void) | undefined {
   );
   later.forEach((el) => observer.observe(el));
 
-  // A doodle already shown (on screen at load, or kept by the shell across a navigation) is drawn, not
+  // A doodle or an accent already shown (on screen at load, or kept by the shell across a navigation) is drawn, not
   // drawing: its draw, which js-motion has just started, jumps to the end before the frame paints.
-  document.querySelectorAll(`[data-draw].${SHOWN}`).forEach(finishShown);
+  document.querySelectorAll(`[data-draw].${SHOWN}, ${HEADING_ACCENT}.${SHOWN}`).forEach(finishShown);
 
   // Targets added later (task 2.12). A mutation observer reports as a microtask, before the browser paints, so an
   // added target on screen is never seen hidden. js-motion is on by now, so a block's position includes the preset's

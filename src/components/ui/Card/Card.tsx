@@ -84,6 +84,8 @@ export interface CardProps {
   groupClassName?: string;
   /** The id of the heading that names the card (aria-labelledby). */
   labelledBy?: string;
+  /** Fades and rises once on scroll (`data-reveal`). Not with `link` or `links`: the reveal would cancel the card's
+   *  hover lift (task Q2.5), so Card throws; reveal the list or section around a linked card instead. */
   reveal?: boolean;
   /** The parent's composition class, added after the DS classes. */
   className?: string;
@@ -119,6 +121,13 @@ export function Card({
   }
   if (link !== undefined && links !== undefined) {
     throw new Error("Card: pass link and links one at a time (a single link, or the contact cards' links row)");
+  }
+  /* Task Q2.5 review: a card with a link lifts on hover (motion.css), but a revealed card's end state (transform none)
+     outranks the lift, so it would never move. Reveal the list or section around a linked card instead. */
+  if (reveal && (link !== undefined || (links !== undefined && links.length > 0))) {
+    throw new Error(
+      "Card: a card with a link lifts on hover, which reveal would cancel; reveal the list or section around it instead",
+    );
   }
   const words = (
     <>

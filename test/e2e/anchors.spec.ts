@@ -11,7 +11,8 @@ import { VIEWPORTS, type Viewport } from "./support/viewports";
  *     afterwards (the mockup's anchor scrolling), and Next 16 still reads the attribute to jump on route changes.
  *   - M2: Home's "See all questions" (a client navigation to /products/kheelu#faq) lands at the questions' heading,
  *     with motion on and reduced, on a phone and a laptop. It stopped 464 px (phone) or 394 px (laptop) past it: the
- *     product details tabs collapsed after Next had scrolled.
+ *     product details tabs collapsed after Next had scrolled. On a laptop the heading lands just below the nav, which
+ *     sticks from 900 px (task Q2.5; the page's scroll padding is the bar's height); on a phone, at the top.
  *   - m8: every trust item links to the part of its terms page it promises (returns, the warranty, paying, when and
  *     where deliveries go), and that part exists on the page.
  *   - QA-005: the footer's "Grievance officer" opens the grievance officer's block on /contact.
@@ -138,7 +139,8 @@ test.describe("anchors: Home's “See all questions” lands at the questions (M
         await page.waitForURL(`**${PRODUCT_FAQ}`);
         await page.locator("#faq").waitFor();
         await settled(page);
-        expect(Math.abs(await topOf(page, "#faq")), "the questions' heading sits at the top of the screen").toBeLessThanOrEqual(2);
+        const bar = vp.width >= 900 ? await page.locator("nav.kh-nav").evaluate((n) => Math.round(n.getBoundingClientRect().bottom)) : 0;
+        expect(Math.abs((await topOf(page, "#faq")) - bar), "the questions' heading sits at the top of the screen, below the sticky nav on a laptop").toBeLessThanOrEqual(2);
       });
     }
   }

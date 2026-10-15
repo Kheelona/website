@@ -596,3 +596,100 @@ describe("MotionController: targets added after it armed", () => {
     expect(html()).not.toHaveClass("js-motion");
   });
 });
+
+/* Line drawing (task Q2.5; D064 item 10, architecture §11). A section heading's one accent, the `kh-hand` or `kh-mark`
+ * span RichText renders inside an h2 or h3, writes or draws itself once as it enters the view, through the same observer
+ * and the same rules as a reveal: on screen at load (the first screen) it is shown at once, its draw finished before the
+ * frame paints; below, it waits until it enters. The hook is the DS markup itself, so no page's server HTML changes
+ * (the mockup-parity tests compare it exactly). Never an h1's accent: the hero stays still (D049 pick 2), and never an
+ * accent outside a heading (a quote, a note). A mark draws on its ::after, so its draw is finished with the subtree's
+ * animations, as a doodle's is. */
+describe("MotionController: heading accents draw themselves once (task Q2.5)", () => {
+  const mutationsDelivered = () => act(() => new Promise<void>((done) => queueMicrotask(done)));
+
+  /** A page with an accent in the first screen, two below it (a hand in an h2, a mark in an h3), an h1's accent and an
+   *  accent outside any heading. Positions are on the accent spans themselves (jsdom has no layout). */
+  const ACCENTS = `
+    <header><h1><span id="hand-h1" class="kh-hand" data-top="100">asks one back.</span></h1></header>
+    <h2 id="title-top">Kheelu asks. Watch them <span id="hand-top" class="kh-hand" data-top="300">think.</span></h2>
+    <h2 id="title-low">Questions parents <span id="hand-low" class="kh-hand" data-top="${below}">ask.</span></h2>
+    <h3 id="sub-low"><span id="mark-low" class="kh-mark" data-top="${below + 200}">Conversation</span> helps.</h3>
+    <p><span id="hand-p" class="kh-hand" data-top="${below}">a note</span></p>`;
+
+  it("takes an h2's or h3's accent below the fold as a target: observed, waiting (not is-in)", async () => {
+    document.body.innerHTML = ACCENTS;
+    render(<MotionController />);
+    await nextFrame();
+    const [observer] = FakeObserver.instances;
+    expect(observer.observed.has(byId("hand-low"))).toBe(true);
+    expect(observer.observed.has(byId("mark-low"))).toBe(true);
+    expect(byId("hand-low")).not.toHaveClass("is-in");
+    expect(byId("mark-low")).not.toHaveClass("is-in");
+  });
+
+  it("marks an accent on screen at load is-in before js-motion arrives and finishes its draw (subtree: a mark draws on ::after)", async () => {
+    document.body.innerHTML = ACCENTS;
+    const draw = stubAnimations(byId("hand-top"));
+    const changes = recordClassChanges();
+    render(<MotionController />);
+    await nextFrame();
+    const log = changes();
+    expect(byId("hand-top")).toHaveClass("is-in");
+    expect(firstWith(log, "hand-top", "is-in"), log.join("\n")).toBeLessThan(firstWith(log, "html", "js-motion"));
+    expect(draw.finish).toHaveBeenCalled();
+    expect(byId("hand-top").getAnimations).toHaveBeenCalledWith({ subtree: true });
+    expect(FakeObserver.instances[0].observed.has(byId("hand-top"))).toBe(false);
+  });
+
+  it("never takes an h1's accent (the hero stays still) or an accent outside a heading", async () => {
+    document.body.innerHTML = ACCENTS;
+    render(<MotionController />);
+    await nextFrame();
+    const [observer] = FakeObserver.instances;
+    for (const id of ["hand-h1", "hand-p"]) {
+      expect(byId(id), id).not.toHaveClass("is-in");
+      expect(observer.observed.has(byId(id)), id).toBe(false);
+    }
+  });
+
+  it("draws an accent once it enters, then stops watching it; the draw is not cut short", async () => {
+    document.body.innerHTML = ACCENTS;
+    const draw = stubAnimations(byId("mark-low"));
+    render(<MotionController />);
+    await nextFrame();
+    const [observer] = FakeObserver.instances;
+    expect(observer.observed.has(byId("mark-low")), "watched until it enters").toBe(true);
+    observer.fire(byId("mark-low"), true);
+    expect(byId("mark-low")).toHaveClass("is-in");
+    expect(observer.observed.has(byId("mark-low"))).toBe(false);
+    expect(draw.finish).not.toHaveBeenCalled();
+  });
+
+  it("takes an accent added after arming: below the fold observed, on screen shown at once with its draw finished", async () => {
+    document.body.innerHTML = PAGE;
+    render(<MotionController />);
+    await nextFrame();
+    const [observer] = FakeObserver.instances;
+    const holder = document.createElement("div");
+    holder.innerHTML = `<h2><span id="late-hand" class="kh-hand" data-top="${below + 40}">ask.</span></h2><h3><span id="late-mark" class="kh-mark" data-top="60">won’t</span></h3>`;
+    const lateMark = stubAnimations(holder.querySelector("#late-mark")!);
+    document.body.append(holder);
+    await mutationsDelivered();
+    expect(observer.observed.has(byId("late-hand"))).toBe(true);
+    expect(byId("late-hand")).not.toHaveClass("is-in");
+    expect(byId("late-mark")).toHaveClass("is-in");
+    expect(lateMark.finish).toHaveBeenCalled();
+    expect(byId("late-mark").getAnimations).toHaveBeenCalledWith({ subtree: true });
+  });
+
+  it("does nothing to accents with reduced motion", async () => {
+    vi.spyOn(window, "matchMedia").mockImplementation(
+      (query: string) => ({ matches: query === REDUCE, media: query, addEventListener: vi.fn(), removeEventListener: vi.fn() }) as unknown as MediaQueryList,
+    );
+    document.body.innerHTML = ACCENTS;
+    render(<MotionController />);
+    await nextFrame();
+    expect(document.querySelectorAll(".is-in")).toHaveLength(0);
+    expect(FakeObserver.instances).toHaveLength(0);
+  });
+});

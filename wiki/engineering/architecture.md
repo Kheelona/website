@@ -1,7 +1,7 @@
 ---
 title: "Architecture of the new kheelona.com (Phase 4 plan, revised after QA round 1)"
 type: engineering
-updated: 2026-10-14
+updated: 2026-10-15
 sources:
   - ../raw/brief/kickoff-brief.md (§4, §6 Architect, §7 Phase 4-5, §9)
   - phase-4-kickoff.md, lessons.md
@@ -686,6 +686,28 @@ WhatsApp bubble carry their own few lines. The `motion` library is not used (ADR
 **Never animated on arrival or scroll:** the hero section, any `h1`, the price sentence, any chilli button,
 the offer card and the store form (`test/guards/no-reveal-on-money.test.tsx`). Nothing loops; nothing
 moves for more than five seconds; nothing flashes; no scroll-jacking.
+
+**D064 item 10 and the sticky laptop nav (task Q2.5, 2026-10-15).** On top of the rows above, all in `src/motion/motion.css`
+on DS tokens, transform and opacity only, once, nothing under reduced motion: **line drawing**: a section heading's one
+accent (`:is(h2, h3) :is(.kh-hand, .kh-mark)`, the spans `RichText` renders; never an `h1`'s, so never the hero) is a
+`MotionController` target like a `[data-reveal]` block (on screen at load: shown drawn; below: it waits, then draws
+once as it enters), so no page's server HTML changes; after the block's entrance (`--duration-enter`) and over
+`--duration-draw`, `--ease-standard`, a Hand fades in from one `--space-2` to the left and settles on the DS tilt
+(`ks-write`), and a Mark's crayon stroke grows from its left end (`ks-stroke`, `scaleX` on its `::after` from
+`--ks-stroke-start: 0`: the DS stroke is a CSS mask, not an SVG path, so there is no dash to offset; a true wipe of a
+Hand's words would need two spans inside it, which the mockup-parity tests' exact markup forbids). **Micro-interactions**
+(hover only under `(hover: hover) and (pointer: fine)`, the same state on `:focus-visible`, `--duration-fast`): a
+`kh-card` holding a `kh-card__link` lifts one `--space-1` with `--shadow-lift` (`card.css`; the shadow is not
+animated) and its link's arrow nudges `--ks-nudge`, as do a ghost link's end arrow and (on keyboard focus) the chilli
+arrow; the nav link's hover line (the DS's sun line, `nav-bar.css` `::after`) slides in from the left; a tag or chip
+that is a link or button presses half a `--space-1`; the FAQ sign turns as before. **Sticky nav:** from 900 px (the DS
+laptop width, where the buy bar is gone) `nav.kh-nav` sticks at `top: 0` on `--z-sticky` with its `navbar` chilli
+button (before, the button came at 1024 px); the room it takes, `--ks-nav-clearance` (72 px, set on `<html>` only where
+the bar sticks), is the page's `scroll-padding-top`, so in-page jumps land below it, and offsets a page's own sticky
+element (the legal contents panel, `legal-template.css`; a later sticky column's `top` is the same
+`calc(var(--ks-nav-clearance, 0px) + <its gap>)`); the visual-parity harness puts the bar back in the flow and the room to 0 (`hideForParity`), as the
+approved mockup's nav does not stick. Guards: `motion-properties.test.ts` (contract classes, presets, pointer-only hovers with focus twins,
+reduced motion); browser checks `test/e2e/micro-motion.spec.ts`.
 
 ### 11.3 Class contract between motion.css and components
 
