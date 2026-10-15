@@ -79,6 +79,13 @@ founder's; the founder answered each.
     Kheelu**, so a **disclosure line** sits beside the clip. This changes D038's F9 ("no child-development advisor:
     every advisor reference is dropped") for this one video: she is shown as an expert speaking about talk and
     screens in general, never as Kheelona's advisor. Task 8c.6.
+13. **The expert clip, details (founder, after the CMO's and the claims review's proposals):** our text never says
+    "doctor" (nor "Dr."); her white coat and its badge ("Dr Chaitra C R" beside a medical symbol, in every shot) are
+    shown as they are, not blurred: "We can show it as a real" (the reviewers' risk that the coat and badge read as a
+    medical doctor is the founder's to accept, and is accepted). The cut is the CMO's 34-second one (0:00.0-0:24.5 and
+    1:34.0-1:43.2, keeping "A child with a tablet isn't busy."). The original YouTube video stays unchanged; the site
+    hosts its own trimmed copy like the films and never links to or embeds the full video. Built from the 720p
+    download (landscape, large burned-in captions).
 
 Build: wave 8c in [tasks](../engineering/tasks.md).
 

@@ -1884,12 +1884,49 @@ parallel worktrees; each owns its files so the merges stay mechanical.
 
 ### 8c.6 The expert clip (builder; risk high; after 8c.3 merges)
 
-- **What (D061 item 12):** a trimmed clip of the expert video's general part, introduced as "a video from an expert",
-  with burned-in captions, her credit and a disclosure line; poster first, plays only on tap, nothing loops (D040,
-  D049). The cut, captions, heading, credit, disclosure and placement are chosen by the CMO and a claims review
-  (workflow `wf_7be1470f-7e4`) and fixed here before the build. The source (local only, never committed):
-  `wiki/raw/feedback/advisor-homepage-2026-10-12/expert-video/`.
-- **Owns, acceptance:** written when the cut is chosen.
+- **What (D061 items 12-13):** a 34-second trimmed clip of the expert video, hosted like the films, on the product
+  page. The cut and copy were proposed by the CMO and a claims review (workflow `wf_7be1470f-7e4`) and chosen by the
+  founder. Source (local only, never committed):
+  `wiki/raw/feedback/advisor-homepage-2026-10-12/expert-video/expert-720.mp4` (1280 × 720, 4:46) and `timed.txt`.
+- **The cut:** source 0:00.0-0:24.5 then 1:34.0-1:43.2 (33.7 s). Stretch 1 ends 0.66 s before "Hey, I'm Dr.
+  Chaitra" (0:25.16), so it is never heard; stretch 2 ends 0.9 s before "Here's the scary part" (1:44.08). Frame
+  stretch 2 about 15% tighter so the join reads as a change of shot; a 0.1 s audio crossfade at the join, a 0.15 s
+  fade-in, a 0.3 s fade-out. Landscape 16:9 from the 720p file; no blur or mask (the founder: show it as it is).
+- **Burned-in captions, word for word** (DS 08-accessibility; DS body font; at most 2 lines; about 48-56 px tall at
+  720p so they read at 360 px; white on a translucent dark box, clear of the bottom edge): "Hey, have you ever
+  noticed, / in a room full of people," · "children can be completely / silent and isolated?" · "Not to the peaceful /
+  kind of silence," · "but a heavy digital silence." · "You look around, and every child / is looking into a glowing
+  screen." · "They aren’t talking. / They aren’t playing." · "They’re just consuming." · "I see this every single day
+  / in my practice." · "A child with a tablet / isn’t busy." · "They’re often just alone / in the digital world" ·
+  "that doesn’t talk back." (timings: the CMO's proposal in the workflow result; re-time against the audio). Also
+  burn a small disclosure into the first 5 s: "Made with Kheelona. Chaitra was compensated." (the file can travel
+  without the page).
+- **The file:** H.264 + AAC, faststart, about 3 MB (the films' budget is ≤ 4 MB on play), in `public/video/expert/`
+  with a poster (jpg and webp, the tight front frame at 0:00.2) like the films; a row in assets.md.
+- **The fold (product page, its own fold `id="expert"`, right after the offer card and before 8c.3's steps fold):**
+  eyebrow "A video from an expert"; H2 "Watching isn’t {hand:talking.}"; the poster with a "0:34 · With captions"
+  chip; under it, visible before the tap and in body type: "Chaitra, therapist and developmental coach" and the
+  disclosure "Kheelona made this video with Chaitra and compensated her for it." No other line: nothing says Kheelu
+  fills the gap she describes. The play control's accessible name: "Play the video from an expert: Chaitra,
+  therapist and developmental coach. 34 seconds, with captions." (it does not start with "Play:", so the films'
+  autocapture measure stays comparable, D040). Plays only on tap, with sound; `preload="none"`; lazy poster; no
+  autoplay, muted preview, loop or animated poster (D049). No new event names.
+- **Home (optional):** one text link at the end of Home fold 3, "Watch a video from an expert", to
+  `/products/kheelu#expert`, only if Home stays ≤ 60 KB HTML after 8c.3.
+- **Never:** "Dr.", "doctor", "counsellor", "paediatrician", "recommended by", "approved by", "reviewed by an expert",
+  a link to or embed of the full YouTube video, her and Kheelu in one sentence.
+- **Owns:** `public/video/expert/**`; a content module for the clip (for example `src/content/en-IN/expert-video.ts`);
+  the single-video player (extend FilmsStrip's island or a new `ui` component, after checking the catalogue; register
+  it); the expert fold in `products/kheelu/page.ts` and the product page file; the optional Home link;
+  `test/guards/banned-phrases.data.ts` and its test (entries: "Dr. Chaitra"/"Dr Chaitra"; expert-, therapist- or
+  doctor-"approved" and "recommended by an expert/therapist/doctor"; "speaking fluently within weeks"; "demand of/for
+  phones plummeted"; "four walls of loneliness"; "vocab deficiency"; "biological trade-off"; "ultimate brain
+  exercise"); assets.md and components.md rows; the fold rule in `test/e2e/support/deviations.ts`.
+- **Acceptance:** (1) a test pins the 11 caption strings and the copy; the final mp4, transcribed locally
+  (`whisper-cli`, large-v3), holds no word outside the captions (no "Dr", no "scary"). (2) The file plays on tap only,
+  no bytes before the tap but the lazy poster; keyboard and screen-reader correct. (3) Product page HTML ≤ 60 KB,
+  Lighthouse mobile ≥ 90, axe clean, no sideways scroll at 360/390. (4) `findBanned` passes every new line and the new
+  entries are proven red on planted examples. (5) A deviation row drafted for the founder.
 
 ## Wave 9: beta deploy and beta QA (after wave 8)
 

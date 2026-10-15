@@ -1129,3 +1129,11 @@ half is general (screens, talk), the second half makes results claims about Khee
 a trimmed clip of the general part only; credit "Chaitra, therapist and developmental coach" (no "Dr."); written
 permission on file; paid or given a Kheelu, so a disclosure line. Changes D038 F9 for this video only. The CMO and a
 claims reviewer propose the cut independently (workflow `wf_7be1470f-7e4`); task 8c.6 builds it after 8c.3.
+
+## [2026-10-15 06:11] decision | D061 item 13: the expert clip's details (founder); task 8c.6 specified
+The CMO and a claims review proposed cuts independently (workflow `wf_7be1470f-7e4`): both on the product page after
+the offer, both cut before "Dr." and before every Kheelu claim, both with the disclosure "Kheelona made this video with
+Chaitra and compensated her for it."; the CMO found her coat badge reads "Dr Chaitra C R" beside a medical symbol.
+Founder: no "doctor" in our text, the coat and badge shown as they are (risk accepted), the CMO's 34-second cut, the
+original YouTube video unchanged (the site hosts its own copy, never the full video), built from the 720p download.
+Task 8c.6 in [tasks](engineering/tasks.md) carries the cut, the 11 caption lines, the copy, the guard entries.
