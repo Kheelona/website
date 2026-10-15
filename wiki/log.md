@@ -1220,3 +1220,12 @@ the button, which needs a new rich-text node, and the drop, which breaks the 40-
 dropped. Rows V41, V42, V44, V46, V48 amended; the Gate B pack carries the beta deploy check; structure.md lists
 page-path.ts. Follow-ups: FAQ-answer links in the browser's blue (as the approved mockup's), the LP probe's page-error
 coverage, a few comments still give the expert fold's old place.
+
+## [2026-10-15 11:48] deploy | `beta` `398c5ee` (8c.7, 8c.8): Home's runtime render carries the buy bar; no React #418
+Checkpoint before the push: `npm run verify` 308 files, 6536 passed; build green; Playwright on Home and the product
+page 156 passed; the stand-in run 453 passed (the page-error guard live on all). The first push failed locally (zsh read
+`$H:r` as a modifier; nothing reached GitHub); `git push origin reset/website-v2:refs/heads/beta` then went through.
+Vercel Ready at 06:12:18Z. The runbook's check (§5), run 5.5 minutes later: `HIT, HIT, STALE, HIT`; the HIT after the
+STALE (Vercel's runtime render, still under `"c":["","index"]`) carries `class="kh-buybar`. Chromium on beta at
+390 × 844 and 1440 × 900: Home and the product page each one buy bar, no page or console error (Vercel's feedback
+script excluded). The CMO's m1 is fixed on Vercel.
