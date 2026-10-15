@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { mockupFold } from "../../../../test/support/mockup-compare";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { withFacts } from "../../../../test/support/mockup-facts";
 import { toPlainText } from "@/lib/content/plain-text";
 import { seller } from "../seller";
@@ -38,10 +39,11 @@ describe("the legal template's shared words", () => {
     }
   });
 
+  /* As D063 item 2 rules the closes (task Q2.3; seller-facts.ts): WhatsApp, the call off. */
   it("carries the help line of every chilli button, seller.help itself, as privacy's and terms' closes print it", () => {
     expect(legalTemplateCopy.help).toBe(seller.help);
     for (const slug of ["privacy", "terms"] as const) {
-      expect(`${seller.help.lead} ${toPlainText(seller.help.contact)}`).toBe(text(mockupFold(slug, ".mk-doc-close .mk-help")));
+      expect(`${seller.help.lead} ${toPlainText(seller.help.contact)}`).toBe(text(withSellerFacts(mockupFold(slug, ".mk-doc-close .mk-help"))));
     }
   });
 

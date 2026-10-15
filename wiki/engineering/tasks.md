@@ -2225,6 +2225,63 @@ As quick batch 1's Q1.5 (D063 items 2-3, confirmed by D064 item 11), word for wo
 - **Owns:** Home folds 3-5 in `pages/home.ts` (new order), the sticky-scroll section (new or a ModesSection variant;
   test, story; components.md row), the product page's expert fold removal, the matching rules in `deviations.ts`.
 
+## The selling update, wave 2 (D064, D065; the copy: wiki/site/d2c-conversion-plan-2026-10-15.md v2)
+
+**The copy is the plan's v2, checked by the guard and the CMO** ([its review](../qa/cmo-review-d2c-plan-v2-2026-10-15.md));
+use its words exactly, its pictures, its cta values (register the new ones in `src/lib/tracking/cta.ts`, tracking
+inventory §6, architecture §8.3 and the registry guard: `hero-film`, `home-why`, `home-asks`, `home-asks-learn`,
+`home-offer`, `product-ask`, `safety-facts`, `guide-answers`; the values that stop firing stay registered). **Main-session
+rulings where the plan defers to the founder (who is asleep):** (a) the WhatsApp bubble stays on every page as D050 set
+it, never hidden on the first screen: crop the hero photo so Kheelu and the hero links stay out of the bubble's column;
+(b) the WhatsApp share text stays as D061 item 7 approved it until the founder signs the plan's §1.7 proposal;
+(c) everything else in the plan stands. Build condition C1: the price line after every button is its own block element.
+Under D062: targeted checks plus `npm run verify` and the build; one review (risk normal or high); screenshots at 360,
+390, 412 and 1440 kept local, phone AND laptop right. Base: wave q2a merged.
+
+### Q2.9 Home, end to end (builder; risk high)
+
+- **What:** the plan's §2 in full: §2.0 the first phone screen (measured, with the CMO's numbers), folds 1-11 in that order
+  (hero words and picture crop on Q2.1's Kabir photo, the films with quotes and the Recognised-by strip, Why it matters,
+  Languages, the sticky-scroll "Kheelu asks. Your child thinks." with six points, the expert clip moved here from the
+  product page, the offer card moved up, the compact safety block, A day with Kheelu, the FAQ re-ordered with the new
+  questions, the close), the title and meta. The compare table, the guides fold and "How we can help, from 3 to 7" leave
+  Home. The sticky scroll (§1.6, D064 item 10): left column sticky from 900 px with the active point's picture, a thin
+  progress line, pinned for about 2 viewports in total at most; phones stacked; reduced motion: no fill, no crossfade.
+  One perk list in `offer.ts` for both offer cards (CMO m8).
+- **Owns:** `pages/home.ts`, Home's page file, `faqs.ts` (Home's questions and the new entries), `offer.ts` (the perk list),
+  the new sections (sticky scroll, day timeline, compact safety block, languages) with tests and stories and
+  components.md rows, `cta.ts` and the tracking registry rows for Home's new values, `first-screen.spec.ts` (Home),
+  Home's rules in `deviations.ts`.
+- **Acceptance:** every line as the plan's v2 and `findBanned` green; Kheelu in the first screen at 390 × 844 and
+  412 × 915 and clear of the bubble; Home HTML ≤ 60 KB; no new motion in the first screen; LCP measured at 360, 390, 412,
+  1440 (the photo high priority only where it is in the first screen, CMO m14); verify and the build green.
+
+### Q2.10 The product page (builder; risk normal)
+
+- **What:** the plan's §3 in full: the first screen (§3.0), folds 1-12 in that order (the offer up, the Recognised-by
+  strip as on Home, the steps with their built heading, the three labelled sample chats as tabs, How it works, the compare
+  table moved from Home, safety as one line "See how we built safety in" to `/safety`, details, the FAQ with "Will
+  Kheelona+ charge me after the 6 months?", the close); the expert fold and the parent-app and safety folds leave the
+  page (Q2.11 moves their content to `/safety`).
+- **Owns:** `products/kheelu/page.ts`, the product page file, its FAQ entries in `faqs.ts` (new ids only), the tabs
+  section (DS Tabs) with test and story, `cta.ts` rows for its new values, its rules in `deviations.ts`.
+
+### Q2.11 `/safety` (builder; risk normal)
+
+- **What:** the plan's §4: the four facts, "What you won’t find in Kheelu" (with the daily limit, CMO m6's "No talking
+  all day."), "Every conversation, word for word" (moved from the product page, with G26's delete-all-chats line), the
+  keys, retention, questions, the close; no duplicate line on the page.
+- **Owns:** `pages/safety.ts`, the safety page file, its rules in `deviations.ts`, the route test.
+
+### Q2.12 Every other page's close: /setup, the guide, the journal, /team, /contact, the store's first screen (builder; risk normal)
+
+- **What:** the plan's §5-§10: /setup's folds 6-8 (G27's deletion sentences off; the new close), the buyer's guide's
+  folds 3, 5, 6, the journal hub and the articles' closes by topic (the six talking guides keep their close without a
+  button, D054 item 16), /team, /contact, and the store's first screen (marketing words only; checkout logic, the price
+  breakdown and the contract fixtures unchanged). The same button, short price line and risk-reversal line as Home.
+- **Owns:** `pages/setup.ts`, `pages/ai-toys-for-kids-in-india.ts` (the guide), the journal's close config (not the
+  posts), `pages/team.ts`, `pages/contact.ts`, the store's marketing words, their rules in `deviations.ts`, route tests.
+
 ## Wave 9: beta deploy and beta QA (after wave 8)
 
 ### 7.2 Beta deploy and beta QA (main session, founder, QA)

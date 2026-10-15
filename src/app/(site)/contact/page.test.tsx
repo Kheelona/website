@@ -10,6 +10,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupRoute, parseMockup, skeleton, words } from "../../../../test/support/mockup-compare";
 
 /* The /contact route (task 5.9; structure §3.1, §5): the page module through PageTemplate with the live offer, thin,
@@ -35,7 +36,9 @@ const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 /* Through the mockup comparison harness, so the close's price line and trust line read as task Q2.8 rules them (D065
  * item 3; the harness's withPriceLine). */
 const mockupDoc = parseMockup("contact");
-const mockupMain = mockupDoc.querySelector("main")!;
+/** The approved main as D063 item 3 rules it (task Q2.3; seller-facts.ts): the seller card without its GSTIN line; the
+ *  number stays on /contact (the E-Commerce Rules). */
+const mockupMain = withSellerFacts(mockupDoc.querySelector("main")!);
 
 async function element(offer: Offer): Promise<ReactElement> {
   getOffer.mockResolvedValue(offer);
@@ -222,9 +225,10 @@ describe("/contact: the rendered page against the approved mockup", () => {
 });
 
 describe("/contact: the seller lines are the footer's", () => {
-  /* The page inside the real site shell, as src/app/(site)/layout.tsx renders it: the seller fold's four lines and the
-   * footer's legal row come from the same values (seller.ts, the seller-lines helper), so they cannot drift. */
-  it("prints the entity, GSTIN, address and contact line exactly as the site's footer, the © year aside", async () => {
+  /* The page inside the real site shell, as src/app/(site)/layout.tsx renders it: the seller fold's lines and the
+   * footer's legal row come from the same values (seller.ts), so they cannot drift. Neither prints a GSTIN (D063 item
+   * 3); the seller fold's contact line keeps the number, the footer's does not (D063 item 2; task Q2.3). */
+  it("prints the entity and the address exactly as the site's footer, the © year aside; the number on the page alone", async () => {
     const offer = buildOffer("token");
     const html = renderToStaticMarkup(
       <SiteShell offer={offer} stickyBar={stickyBarPaths()}>
@@ -235,11 +239,14 @@ describe("/contact: the seller lines are the footer's", () => {
     const address = doc.querySelector('main section[aria-labelledby="seller-title"] address')!;
     const page = [address.querySelector("strong.kh-title")!, ...address.querySelectorAll(":scope > span")].map((el) => el.innerHTML);
     const footer = Array.from(doc.querySelectorAll("footer .kh-footer__legal > span"))
-      .slice(0, 4)
+      .slice(0, 3)
       .map((el) => el.innerHTML);
-    expect(page).toHaveLength(4);
-    expect(page).toEqual([footer[0].replace(/^© \d{4} /, ""), ...footer.slice(1)]);
-    expect(page[1]).toMatch(/^GSTIN [0-9A-Z]{15}$/);
+    expect(page).toHaveLength(3);
+    expect(page.slice(0, 2)).toEqual([footer[0].replace(/^© \d{4} /, ""), footer[1]]);
+    expect(doc.body.textContent).not.toContain("GSTIN");
+    expect(page[2]).toContain('href="tel:+919187546483"');
+    expect(footer[2]).not.toContain("tel:");
+    expect(footer[2]).toContain('href="https://wa.me/919187546483"');
   });
 });
 

@@ -8,6 +8,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { CLAIM_FIXES, KHEELONA_PLUS } from "../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupRoute, parseMockup, trustLinkHref } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 import { faqs } from "../faqs";
@@ -155,7 +156,8 @@ describe("store page module: fold 3, the form and what sits beside the pay butto
     expect(storePage.beside.trust).toEqual(TRUST_FULL.map((id) => trustItems[id]));
     expect(storePage.beside.trust.map((item) => ({ icon: item.icon, label: plain(item.label), href: item.href }))).toEqual(trustOf(the("ul.mk-trust", beside)));
     expect(plain(storePage.beside.payment)).toBe(seen(the("p.mk-muted", beside)));
-    const help = the("p.mk-help", beside);
+    /* The help line as D063 item 2 rules it: WhatsApp, the call off (task Q2.3; seller-facts.ts). */
+    const help = withSellerFacts(the("p.mk-help", beside));
     expect(`${plain(storePage.beside.help.lead)} ${plain(storePage.beside.help.contact)}`).toBe(seen(help));
     expect(storePage.beside.help.contact).toBe(seller.help.contact);
   });

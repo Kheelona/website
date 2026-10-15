@@ -2,7 +2,9 @@ import { render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { ICON_PATHS } from "@/assets/icons.generated";
+import { WHATSAPP_GLYPH } from "@/assets/whatsapp-logo.generated";
 import { asIconName, ContentIcon, Icon } from "./Icon";
+import { SITE_DRAWINGS } from "./site-drawings";
 
 /* The arrow as mockup/build.mjs inlines it (home.html fold 1, hero CTA): the DS Phosphor Bold path of
    design-system/project/assets/Icons/arrow-right.svg, hand-copied from the built mockup. */
@@ -39,6 +41,33 @@ describe("Icon", () => {
     expect(left).not.toBe(ARROW_RIGHT);
     expect(left).toContain('d="M228,128a12,12,0,0,1-12,12H69l51.52,51.51');
   });
+
+  /* D064 item 3 (task Q2.4): the WhatsApp logo is Wikimedia Commons' WhatsApp.svg wherever a link or button names the DS
+     `whatsapp-logo` icon (the help lines, /contact's button, the store's and /thanks' buttons through Button), in one
+     colour (currentColor) on the same grid and footprint; every other name keeps its DS drawing. */
+  it("draws whatsapp-logo from the site's Wikimedia logo, one colour, in the DS icon markup", () => {
+    const { container } = render(<Icon name="whatsapp-logo" />);
+    const svg = container.querySelector("svg")!;
+    expect(svg).toHaveClass("kh-icon");
+    expect(svg).toHaveAttribute("viewBox", "0 0 256 256");
+    expect(svg.querySelectorAll("path")).toHaveLength(1);
+    expect(svg.querySelector("path")).toHaveAttribute("d", WHATSAPP_GLYPH);
+    expect(svg.querySelector("path")).not.toHaveAttribute("fill");
+    expect(WHATSAPP_GLYPH).not.toBe(ICON_PATHS["whatsapp-logo"]);
+  });
+
+  it("replaces that one drawing only (SITE_DRAWINGS)", () => {
+    expect(SITE_DRAWINGS).toEqual({ "whatsapp-logo": WHATSAPP_GLYPH });
+  });
+
+  it("draws every other DS icon from its DS path", () => {
+    for (const name of Object.keys(ICON_PATHS) as (keyof typeof ICON_PATHS)[]) {
+      if (name === "whatsapp-logo") continue;
+      const { container, unmount } = render(<Icon name={name} />);
+      expect(container.querySelector("path"), name).toHaveAttribute("d", ICON_PATHS[name]);
+      unmount();
+    }
+  });
 });
 
 /* Content names its icons as strings (IconRef, src/content/types.ts); Icon takes the generated IconName union. The one
@@ -67,6 +96,9 @@ describe("ContentIcon", () => {
 
   it("is exactly the Icon of that name", () => {
     expect(renderToStaticMarkup(<ContentIcon name="arrow-right" />)).toBe(ARROW_RIGHT);
+    // Content's WhatsApp links (contact.ts, the product page's help line) get the Wikimedia logo too (D064 item 3).
+    expect(renderToStaticMarkup(<ContentIcon name="whatsapp-logo" />)).toBe(renderToStaticMarkup(<Icon name="whatsapp-logo" />));
+    expect(renderToStaticMarkup(<ContentIcon name="whatsapp-logo" />)).toContain(`d="${WHATSAPP_GLYPH}"`);
   });
 
   it("fails the render on a content icon the DS lacks", () => {

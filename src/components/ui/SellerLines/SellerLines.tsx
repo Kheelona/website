@@ -2,23 +2,23 @@ import { clsx } from "clsx";
 import type { ReactNode } from "react";
 
 /**
- * The four seller lines (legal entity, GSTIN, registered address, contact), printed character for character the
- * same wherever they appear (components §1, §2 SellerBlock). The shells and SellerBlock pass them from
- * content/en-IN/seller.ts; the contact slot takes `RichText` (the phone and email links).
+ * The seller lines (legal entity, registered address, contact), printed character for character the same wherever they
+ * appear (components §1, §2 SellerBlock). The shells and SellerBlock pass them from content/en-IN/seller.ts; the contact
+ * slot takes `RichText` (the WhatsApp, email and, on /contact only, phone links). The mockups' GSTIN line came off the
+ * website (D063 item 3, D064 item 11; task Q2.3), so no shape prints one.
  *
  * Three approved shapes, each its page's order:
- * - `footer`: four spans, entity, GSTIN, address, contact, inside the footer's `kh-footer__legal` row
+ * - `footer`: three spans, entity, address, contact, inside the footer's `kh-footer__legal` row
  *   (partials/footer.html); the footer adds its own lines after them.
- * - `block`: the contact page's `<address class="kh-body-l">`, the entity in `strong.kh-title`, then the same three
+ * - `block`: the contact page's `<address class="kh-body-l">`, the entity in `strong.kh-title`, then the other two
  *   lines as spans, in the footer's order (contact.html fold 4).
- * - `store`: the store footer's `<address class="kh-body-s">`, the entity in `strong`, then address, GSTIN and
- *   contact, broken by `<br>` (store.html fold 7).
+ * - `store`: the store footer's `<address class="kh-body-s">`, the entity in `strong`, then address and contact, broken
+ *   by `<br>` (store.html fold 7).
  */
 export type SellerLinesVariant = "footer" | "block" | "store";
 
 export interface SellerLinesProps {
   entity: ReactNode;
-  gstin: ReactNode;
   address: ReactNode;
   contact: ReactNode;
   variant?: SellerLinesVariant;
@@ -26,7 +26,7 @@ export interface SellerLinesProps {
   className?: string;
 }
 
-export function SellerLines({ entity, gstin, address, contact, variant = "footer", className }: SellerLinesProps) {
+export function SellerLines({ entity, address, contact, variant = "footer", className }: SellerLinesProps) {
   if (variant === "store") {
     return (
       <address className={clsx("kh-body-s", className)}>
@@ -34,15 +34,12 @@ export function SellerLines({ entity, gstin, address, contact, variant = "footer
         <br />
         {address}
         <br />
-        {gstin}
-        <br />
         {contact}
       </address>
     );
   }
   const lines = (
     <>
-      <span>{gstin}</span>
       <span>{address}</span>
       <span>{contact}</span>
     </>

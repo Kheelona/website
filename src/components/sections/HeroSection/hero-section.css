@@ -65,7 +65,8 @@
   .ks-hero .ks-hero__phone-art {
     margin-top: var(--space-5);
   }
-  .ks-hero .ks-hero__phone-art ~ .kh-art {
+  /* The approved board, or since task Q2.1 Home's 4:5 photo crop (D064 item 4), gives way to the phone picture. */
+  .ks-hero .ks-hero__phone-art ~ :is(.kh-art, .ks-hero-photo) {
     display: none;
   }
   /* Task 8c.5 (the 8c merge's follow-up): after the phone board the help line sits where a phone's screen can end, so

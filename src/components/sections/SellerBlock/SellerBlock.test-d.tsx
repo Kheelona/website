@@ -9,7 +9,7 @@
 import { SellerBlock } from "./SellerBlock";
 
 const MODES = { token: "Token words", full: "Full words" } as const;
-const LINES = { entity: "Kheelona Robotics Private Limited", gstin: "GSTIN 29AAMCK1530E1ZN", address: "Bengaluru", contact: "[hello](mailto:hello@kheelona.com)" };
+const LINES = { entity: "Kheelona Robotics Private Limited", address: "Bengaluru", contact: "[hello](mailto:hello@kheelona.com)" };
 
 export const accepted = () => (
   <>
@@ -26,6 +26,8 @@ export const misuses = () => (
     <SellerBlock context="contact" title="x" intro={MODES} lines={LINES} />
     {/* @ts-expect-error nor a seller line */}
     <SellerBlock context="contact" title="x" intro="x" lines={{ ...LINES, address: MODES }} />
+    {/* @ts-expect-error no GSTIN line: the website prints none (D063 item 3) */}
+    <SellerBlock context="contact" title="x" intro="x" lines={{ ...LINES, gstin: "GSTIN 29AAMCK1530E1ZN" }} />
     {/* @ts-expect-error nor the legal line's text */}
     <SellerBlock context="legal" line={{ text: MODES }} />
     {/* @ts-expect-error nor its lead */}

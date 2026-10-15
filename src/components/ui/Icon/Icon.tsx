@@ -1,6 +1,7 @@
 import { ICON_PATHS, type IconName } from "@/assets/icons.generated";
 import type { IconRef } from "@/content/types";
 import { Glyph } from "./Glyph";
+import { SITE_DRAWINGS } from "./site-drawings";
 
 export type { IconName };
 
@@ -16,12 +17,12 @@ export interface IconProps {
 /**
  * DS Icon (design-system/project/components/Icon) by name: a Phosphor Bold path on the shared 256 grid, filled
  * with currentColor and sized in em by `kh-icon`. Markup as mockup/build.mjs inlines `{{icon:…}}`, drawn by
- * `Glyph`. Server component: it reads the whole icon map (`ICON_PATHS`, about 30 KB), so a client island never
- * imports it; an island draws its own icons with `Glyph` or `IconButton` and the named `ICON_*` constants
- * (task 2.11, `test/guards/client-icons.test.ts`).
+ * `Glyph`; `whatsapp-logo` draws the site's WhatsApp logo instead (`SITE_DRAWINGS`, D064 item 3). Server component: it reads the
+ * whole icon map (`ICON_PATHS`, about 30 KB), so a client island never imports it; an island draws its own icons with
+ * `Glyph` or `IconButton` and the named `ICON_*` constants (task 2.11, `test/guards/client-icons.test.ts`).
  */
 export function Icon({ name, label, className }: IconProps) {
-  return <Glyph d={ICON_PATHS[name]} label={label} className={className} />;
+  return <Glyph d={SITE_DRAWINGS[name] ?? ICON_PATHS[name]} label={label} className={className} />;
 }
 
 /**

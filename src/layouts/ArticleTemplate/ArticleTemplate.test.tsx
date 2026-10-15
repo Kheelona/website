@@ -1,5 +1,6 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { withSellerFacts } from "../../../test/e2e/support/seller-facts";
 import { mockupFold, skeleton, words } from "../../../test/support/mockup-compare";
 import { STORE_URL } from "@/config/site";
 import { organization } from "@/content/en-IN/organization";
@@ -47,9 +48,10 @@ const OPTIONS = {
 
 /** The mockup's main, its addresses read as the build's: the related rows link each guide's own page, as the copy
  *  pages' "Real URL" column says (the mockup links the hub's topic while a guide waits for its rewrite;
- *  articles.test.ts maps the titles to the slugs), and the mockup's store page is the store host. */
+ *  articles.test.ts maps the titles to the slugs), and the mockup's store page is the store host. The close's help line
+ *  and the safe-AI-toy guide's contact line as D063 item 2 rules them (task Q2.3; seller-facts.ts). */
 function approvedMain(slug: Slug): Element {
-  const main = mockupFold(`story-${slug}`, "main").cloneNode(true) as Element;
+  const main = withSellerFacts(mockupFold(`story-${slug}`, "main"));
   main.querySelectorAll(".mk-related a.kh-listitem").forEach((row, i) => row.setAttribute("href", `/stories/${approvedArticle(slug).related[i]}`));
   main.querySelectorAll('a[href="store.html"]').forEach((link) => link.setAttribute("href", STORE_URL));
   return main;

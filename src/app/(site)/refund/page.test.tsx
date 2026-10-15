@@ -10,6 +10,7 @@ import { pageMeta } from "@/lib/seo/metadata";
 import { revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupFold, skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 
@@ -31,8 +32,9 @@ beforeAll(async () => {
 const SOURCE = readFileSync("src/app/(site)/refund/page.tsx", "utf8");
 const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 const approvedMain = mockupFold("refund", "main");
-/** The approved page with the founder's page facts applied (task 6.7; D055 items 1-8; test/e2e/support/page-facts.ts). */
-const mockupMain = withFacts(approvedMain, PAGE_FACTS.refund.edits);
+/** The approved page with the founder's page facts applied (task 6.7; D055 items 1-8; test/e2e/support/page-facts.ts),
+ *  then D063 item 3: the seller sentence without the GSTIN (task Q2.3; seller-facts.ts). */
+const mockupMain = withSellerFacts(withFacts(approvedMain, PAGE_FACTS.refund.edits));
 
 /** As LegalTemplate.test.tsx compares a legal page with its mockup (the build's own type steps and family modifiers
  *  dropped, the mockup's value markers unwrapped). */

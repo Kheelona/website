@@ -4,6 +4,7 @@ import type { Page } from "@playwright/test";
 import { STORYBOOK_PORT } from "./support/env";
 import { expect, hideForParity, PLANTS, requiresServer, settle, test } from "./support/fixtures";
 import { CHUNK_MAX_DIFF_RATIO, HEIGHT_TOLERANCE, captureChunks, mainText, pageHeight, sentenceDiff, sentences } from "./support/parity";
+import { ruleMockupPage } from "./support/seller-facts";
 import { APPROVED_WIDTHS, type Viewport } from "./support/viewports";
 
 /* The legal template against the four approved legal pages (task 4.3; tasks.md 4.3 "Test": visual parity with fixture
@@ -81,6 +82,9 @@ for (const slug of SLUGS) {
         ).toBe(false);
 
         const { page: mockup } = await harness.openMockup(slug, vp);
+        // The seller sentence without the GSTIN and the close's help line without the call (D063 items 2-3; task Q2.3;
+        // support/seller-facts.ts): the template prints both from seller.ts. The document's own lines keep the number.
+        await ruleMockupPage(mockup, ["main"]);
         await mockup.addStyleTag({ content: MAIN_ONLY });
         await hideForParity(mockup);
         await settle(mockup);

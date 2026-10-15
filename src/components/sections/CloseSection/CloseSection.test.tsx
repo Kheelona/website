@@ -9,6 +9,7 @@ import { TRUST_COMPACT, trustItems, type TrustId } from "@/content/en-IN/trust";
 import type { ArtBoardRef } from "@/content/types";
 import { buildOffer } from "@/lib/offer/offer";
 import type { CtaSecondary, SellingContext } from "../CtaBlock/cta-block.types";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { addClass, builtMarkup, canonical, mockupFold, renderedElement, STORE, without } from "../../../../test/support/mockup-compare";
 import { CloseSection } from "./CloseSection";
 import { CLAMPED_SPLIT_COLUMN_SIZES } from "./close-art";
@@ -115,8 +116,9 @@ const CASES: Case[] = [
     {
       variant: "links",
       heading: { title: "Stuck? {hand:We’ll help.}" },
+      /* WhatsApp or email, the call off (D063 item 2; task Q2.3). */
       contact:
-        "[WhatsApp](https://wa.me/919187546483) or [call us on {nowrap:+91 91875 46483}](tel:+919187546483), or email [hello@kheelona.com](mailto:hello@kheelona.com). Tell us your order number, and what you see on Kheelu and in the app.",
+        "[WhatsApp](https://wa.me/919187546483) or email [hello@kheelona.com](mailto:hello@kheelona.com). Tell us your order number, and what you see on Kheelu and in the app.",
       action: { label: "All the ways to reach us", href: "/contact", variant: "secondary", icon: "chat-circle-dots" },
       meet: { lead: "Don’t have Kheelu yet?", link: "[Meet Kheelu](/products/kheelu)" },
     },
@@ -134,9 +136,13 @@ const adjustFor = (config: CloseSectionConfig) => (el: Element) => {
   addClass(el, ".ks-beside--center .kh-trustline", "ks-trustline--center");
   if (config.variant === "split" && config.cta.layout === "full") addClass(el, ".kh-split .ks-help", "ks-cta__full-help");
 };
+/* Every close as D063 items 2-3 rule its mockup (task Q2.3; test/e2e/support/seller-facts.ts): the help and contact
+   lines keep WhatsApp and the email, without the number. */
+const ruledFold = (slug: string, fold: string) => withSellerFacts(mockupFold(slug, fold));
+
 describe("CloseSection: every close of the approved mockup, exactly (art aside)", () => {
   it.each(CASES)("%s", (_name, slug, fold, config) => {
-    const expected = builtMarkup([without(mockupFold(slug, fold), ".kh-art")], { renames: RENAMES, adjust: adjustFor(config) });
+    const expected = builtMarkup([without(ruledFold(slug, fold), ".kh-art")], { renames: RENAMES, adjust: adjustFor(config) });
     const actual = canonical(without(renderedElement(<CloseSection {...config} {...context()} />), ".kh-art"));
     expect(actual).toBe(expected);
   });
@@ -258,7 +264,7 @@ describe("CenterClose (close-fold.tsx)", () => {
 
   it.each(CENTER)("%s: the mockup's centred close, exactly", (_name, slug, fold, config) => {
     if (config.variant !== "center") throw new Error("a centred close");
-    const expected = builtMarkup([mockupFold(slug, fold)], { renames: RENAMES, adjust: adjustFor(config) });
+    const expected = builtMarkup([ruledFold(slug, fold)], { renames: RENAMES, adjust: adjustFor(config) });
     expect(canonical(renderedElement(<CenterClose {...config} {...context()} />))).toBe(expected);
   });
 

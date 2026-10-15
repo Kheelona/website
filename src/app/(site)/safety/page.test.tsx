@@ -9,6 +9,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { CLAIM_FIXES, COPY_FIXES, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { parseMockup, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 
@@ -35,8 +36,9 @@ const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
  * item 3; the harness's withPriceLine). */
 const mockupDoc = parseMockup("safety");
 const frozenMain = mockupDoc.querySelector("main")!;
-/* Task 7.1b's copy fixes (V19), then task 8b.1's claim fixes (V28; D058) in a pass of their own. */
-const mockupMain = withFacts(withFacts(frozenMain, COPY_FIXES.safety.edits), CLAIM_FIXES.safety.edits);
+/* Task 7.1b's copy fixes (V19), then task 8b.1's claim fixes (V28; D058) in a pass of their own, then D063 item 2: the
+   close's help line without the call (task Q2.3; seller-facts.ts). */
+const mockupMain = withSellerFacts(withFacts(withFacts(frozenMain, COPY_FIXES.safety.edits), CLAIM_FIXES.safety.edits));
 
 /** The page as the site shell holds it: the route's output inside <main>. */
 async function renderPage(offer: Offer) {
@@ -131,11 +133,12 @@ describe("/safety: the rendered page against the approved mockup", () => {
     expect(words(visible(main))).toBe(words(mockupMain));
   });
 
-  it("differs from the frozen mockup only in the lines task 7.1b (V19) and task 8b.1 (V28) changed", async () => {
+  it("differs from the frozen mockup only in the lines task 7.1b (V19), task 8b.1 (V28) and D063 (Q2.3) changed", async () => {
     const { main } = await renderPage(buildOffer("token"));
     const fold = (root: Element, name: string) => root.querySelector(`section[aria-labelledby="${name}"]`)!;
     const changed = foldNames(frozenMain).filter((name) => words(fold(frozenMain, name!)) !== words(fold(mockupMain, name!)));
-    expect(changed).toEqual(["facts-title", "never-title", "controls-title", "kept-title", "faq-title"]);
+    /* The close: its help line without the call (D063 item 2). */
+    expect(changed).toEqual(["facts-title", "never-title", "controls-title", "kept-title", "faq-title", "close-title"]);
     const faq = words(fold(main, "faq-title"));
     for (const line of COPY_FIXES.safety.build) expect(faq).toContain(line);
     for (const line of COPY_FIXES.safety.mockup) expect(faq).not.toContain(line);

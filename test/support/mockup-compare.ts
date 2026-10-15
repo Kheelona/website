@@ -1,5 +1,7 @@
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { ICON_PATHS, type IconName } from "@/assets/icons.generated";
+import { SITE_DRAWINGS } from "@/components/ui/Icon/site-drawings";
 import { navigation } from "@/content/en-IN/navigation";
 import { trustItems } from "@/content/en-IN/trust";
 import { toPlainText } from "@/lib/content/plain-text";
@@ -31,7 +33,9 @@ import { readRepoFile } from "../e2e/support/repo";
  *   task Q2.8; D065 item 3);
  * - classes: each mockup block (`mk-…`) takes its ks- name (components §7), or the name a test's rename table gives
  *   it, or is dropped (`portClass`);
- * - the mockup's value markers (data-src) are review-tool markup that never ships (N22).
+ * - the mockup's value markers (data-src) are review-tool markup that never ships (N22);
+ * - icons: the DS `whatsapp-logo` glyph the mockup inlines is the site's WhatsApp logo (`SITE_DRAWINGS`, swapped in by
+ *   `parseMockup`; D064 item 3, task Q2.4).
  * Tests run from the repository root (`readRepoFile`).
  */
 
@@ -40,10 +44,18 @@ import { readRepoFile } from "../e2e/support/repo";
 /** The store of a build without KH_SITE_ENV ("development", whose store is production's; src/config/env.ts). */
 export const STORE = "https://store.kheelona.com";
 
+/** The DS icon drawings the build replaces, as [the mockup's inlined path, the build's]: the WhatsApp logo is Wikimedia
+ *  Commons' WhatsApp.svg wherever the mockup inlines the DS Phosphor `whatsapp-logo` (D064 item 3, task Q2.4;
+ *  `SITE_DRAWINGS`, which `Icon` draws from). Every reader below sees the build's path; test/guards/generated-icons.test.ts
+ *  still reads the mockup files themselves, so the DS set stays checked against them. */
+const REDRAWN = Object.entries(SITE_DRAWINGS).map(([name, d]) => [ICON_PATHS[name as IconName], d] as const);
+
 /** A built mockup page, parsed fresh: for a test that changes what it reads (a stand-in in place of a slot). It carries
- *  task Q2.8's price lines as the build prints them (`withPriceLine`). */
+ *  the site's icon drawings (`REDRAWN`, task Q2.4) and task Q2.8's price lines as the build prints them (`withPriceLine`). */
 export function parseMockup(slug: string): Document {
-  const doc = new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
+  let html = readRepoFile(`mockup/${slug}.html`);
+  for (const [mockup, built] of REDRAWN) html = html.replaceAll(`<path d="${mockup}">`, `<path d="${built}">`);
+  const doc = new DOMParser().parseFromString(html, "text/html");
   withPriceLine(doc);
   return doc;
 }

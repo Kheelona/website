@@ -2,3 +2,8 @@
    grievance officer) in the DS link colour, each a full tap target (CMO M9). The markup stays the DS's (kh-footer__legal),
    so the rule keeps the mockup's selector; it loads after bundle.css, as the mockup's did. */
 .kh-footer__legal a { display: inline-flex; align-items: center; min-height: var(--tap-min); color: var(--link); }
+
+/* The column links' gaps tightened (D064 item 6, task Q2.4). bundle.css stacks them as 48 px rows (space-3 above and
+   below the 24 px line); here 44 px, the site's smallest tap target (tasks.md SPA 4), still the link's own padding,
+   never a margin, so every pixel between two links belongs to one of them: 10 px, space-2 and half a space-1. */
+.kh-footer__col a { padding-block: calc(var(--space-2) + var(--space-1) / 2); }

@@ -8,6 +8,7 @@
  */
 import type { Page } from "@playwright/test";
 import { ICON_PATHS, type IconName } from "@/assets/icons.generated";
+import { SITE_DRAWINGS } from "@/components/ui/Icon/site-drawings";
 import { HOSTS } from "@/config/env";
 import { expertClip, expertFold } from "@/content/en-IN/expert-video";
 import { filmQuotes } from "@/content/en-IN/films";
@@ -19,8 +20,10 @@ import { inAppNote } from "@/content/en-IN/store/in-app-note";
 import { paymentsLine } from "@/content/en-IN/store/payments-line";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
+import { MOCKUP_SLUGS, type MockupSlug } from "./mockup-text";
 import { PAGE_FACTS, type FactEdit, type PageFacts, type PageFactsSlug } from "./page-facts";
 import { sentences } from "./parity";
+import { sellerFactsHidden, sellerFactsText } from "./seller-facts";
 
 export type VisualDeviation = {
   /** Viewport name from viewports.ts, for example "phone-360x640". */
@@ -313,9 +316,11 @@ const COPY_FIXES_WHOSE = "task 7.1b's copy fixes";
    parity-deviations unit test proves them exactly those). Literal, because Playwright cannot load every content module;
    the content modules' tests hold each literal to the module. */
 
-/** The DS icon as the mockups print it inline (mockup/build.mjs), for an item the fixes add. */
+/** The DS icon as the mockups print it inline (mockup/build.mjs), for an item the fixes add; a drawing the site replaces
+ *  (`SITE_DRAWINGS`: the WhatsApp logo, D064 item 3, task Q2.4) as the build draws it, as the comparison harness reads
+ *  the mockup's own (test/support/mockup-compare.ts `parseMockup`). */
 const icon = (name: IconName) =>
-  `<svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="${ICON_PATHS[name]}"></path></svg>`;
+  `<svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="${SITE_DRAWINGS[name] ?? ICON_PATHS[name]}"></path></svg>`;
 /** An approved element whose words are replaced whole (plain text, or inline markup). */
 const rewrite = (at: string, was: string, now: string): FactEdit => ({ at, was, now, inner: true });
 /** An approved element that comes off, found by a heading or label inside it (`scope`, the element that goes). */
@@ -1627,8 +1632,9 @@ const EXPERT_CLIP_TEXT: TextDeviation = {
 /* Kheelu on the first phone screen (D061 item 1, task 8c.1): under 720 px the hero's art is the board's phone
    composition, 4:3 right under the trust line (the help line and the secondary link follow it), where the approved
    page has the 1:1 board after them. Its words are the approved board's (the text pass compares them); its place and
-   picture are new, so the visual pass compares Home's and the product page's phone heroes without their art on both
-   sides, and every fold below lines up again. Phones only: from 720 px the approved board shows, compared as before.
+   picture are new, so the visual pass compares the product page's phone hero without its art on both sides, and every
+   fold below lines up again. Phones only: from 720 px the approved board shows, compared as before. (Home's hero had
+   the same rule until task Q2.1 gave it the Kabir photo at every width: HOME_HERO_PHOTO.)
    The first screen itself (Kheelu, h1, button, price sentence; the WhatsApp bubble clear of Kheelu and the sticker) is
    test/e2e/first-screen.spec.ts's. */
 const HERO_PHONE_ART_BY = "D061 item 1 (founder, 2026-10-15; task 8c.1; its deviations.md row is the main session's)";
@@ -1648,6 +1654,74 @@ const HERO_PHONE_ART: readonly VisualHide[] = [
     approvedBy: HERO_PHONE_ART_BY,
   },
 ];
+
+/* Home's hero picture is the DS photo library's "Kabir · block rocket" (D064 item 4, task Q2.1), one of the DS web-hero
+   photos (design-system 10-pages.md), where the approved page has the scrapbook board: two crops of it, the 4:5 from
+   720 px and a 16:10 band under 720 px in the phone board's place under the trust line (D061 item 1). Another picture at
+   every width, so the visual pass compares Home's hero without its picture on both sides at every width (the words
+   column, button, price sentence, trust and help lines still compared); the first phone screen with the photo (Kheelu,
+   h1, button, price sentence; the WhatsApp bubble clear of Kheelu and the boy's head) is test/e2e/first-screen.spec.ts's.
+   A photo carries no board, so the board's word sticker ("It asks." / "They think.") went with it: the text pass's rule. */
+export const HOME_HERO_PHOTO = {
+  mockup: ".mk-hero .kh-art",
+  build: ".ks-hero .kh-photo",
+  /** The board's word sticker, its two lines as the text pass reads them. */
+  sticker: ["It asks.", "They think."],
+  approvedBy: "D064 item 4 (founder, 2026-10-15; task Q2.1; its deviations.md row is the main session's)",
+} as const;
+const HOME_HERO_PHOTO_HIDDEN: readonly VisualHide[] = [
+  {
+    side: "mockup",
+    selector: HOME_HERO_PHOTO.mockup,
+    reason: "the approved hero board, at every width: Home's hero picture is the Kabir photo in the build",
+    approvedBy: HOME_HERO_PHOTO.approvedBy,
+  },
+  {
+    side: "build",
+    selector: HOME_HERO_PHOTO.build,
+    reason: "the hero photo's two crops (4:5 from 720 px, 16:10 under the trust line on phones): a new picture, its alt compared by the unit tests",
+    approvedBy: HOME_HERO_PHOTO.approvedBy,
+  },
+];
+const HOME_HERO_PHOTO_TEXT: TextDeviation = {
+  mockup: oneOf(HOME_HERO_PHOTO.sticker),
+  reason: "the hero board's word sticker went with the board: Home's hero picture is the Kabir photo, which carries no sticker",
+  approvedBy: HOME_HERO_PHOTO.approvedBy,
+};
+
+/* Home's films in the founder's order (D064 item 1, task Q2.1): the films list's 1, 4, 7, 2, 5, 6, 3 on Home's strip (the
+   2nd film replaced by the 4th, the 3rd by the 7th); the list, and so the product page's and the store's strips, keep the
+   approved order. The same seven films in other places: the text pass reads sentences in any order and needs no rule,
+   and the visual pass compares Home's films fold without its strip of films on both sides (its heading, controls,
+   proof line and CTA block still compared; the tiles themselves are the product page's to compare). */
+export const HOME_FILMS_ORDER = {
+  mockup: ".mk-films-wrap [data-films]",
+  build: ".ks-films-wrap [data-films]",
+  approvedBy: "D064 item 1 (founder, 2026-10-15; task Q2.1; its deviations.md row is the main session's)",
+} as const;
+const HOME_FILMS_ORDER_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as const).map((side) => ({
+  side,
+  selector: HOME_FILMS_ORDER[side],
+  reason: "Home's strip shows the films in the founder's order (the list's 1, 4, 7, 2, 5, 6, 3): the same films in other places",
+  approvedBy: HOME_FILMS_ORDER.approvedBy,
+}));
+
+/* Home's close board top-aligned with the offer card on laptops (D064 item 5, task Q2.1): from 900 px, where the split
+   begins, the board (the girl in the mustard frock beside Kheelu) starts level with the card's top instead of centred
+   beside the taller column. The same board in another place, from 900 px only (below it the columns stack, as
+   approved): the visual pass compares the close without its board on both sides there; the text pass needs no rule. */
+export const HOME_OFFER_ART = {
+  mockup: "#close .kh-split > .kh-art",
+  build: "#close .kh-split > .kh-art",
+  approvedBy: "D064 item 5 (founder, 2026-10-15; task Q2.1; its deviations.md row is the main session's)",
+} as const;
+const HOME_OFFER_ART_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as const).map((side) => ({
+  side,
+  selector: HOME_OFFER_ART[side],
+  media: "(min-width: 900px)",
+  reason: "the close's board starts level with the offer card's top on laptops, where the approved split centres it",
+  approvedBy: HOME_OFFER_ART.approvedBy,
+}));
 
 export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   store: [
@@ -1681,14 +1755,18 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   ],
   /* The screen-time guide card's line (V18, task 7.1b), then the parent-app bullets and the safety bodies (V26, task 8b.1),
      then the fourth question (task 8c.4, D061), compared by the text pass; then the offer card's later price and the
-     share link the build adds (task 8c.2, D061); then the quotes and the strip (task 8c.3); then the hero's phone art (task 8c.1, D061 item 1), under 720 px only. */
+     share link the build adds (task 8c.2, D061); then the quotes and the strip (task 8c.3); then the hero's picture, the
+     Kabir photo at every width (task Q2.1, D064 item 4, in place of task 8c.1's phone-board rule); then the films' order
+     and, from 900 px, the close's board (task Q2.1, D064 items 1 and 5). */
   home: [
     ...factsHidden(COPY_FIXES.home, COPY_FIXES_WHOSE),
     ...factsHidden(CLAIM_FIXES.home, CLAIM_FIXES_WHOSE),
     ...factsHidden(FAQ_FIXES.home, FAQ_FIXES_WHOSE),
     ...offerAdditionsHidden("home"),
     ...proofHidden("home"),
-    ...HERO_PHONE_ART,
+    ...HOME_HERO_PHOTO_HIDDEN,
+    ...HOME_FILMS_ORDER_HIDDEN,
+    ...HOME_OFFER_ART_HIDDEN,
   ],
   /* The open FAQ answer (V19, task 7.1b), then the facts, controls and retention card (V28, task 8b.1), compared by the
      text pass. */
@@ -1838,9 +1916,10 @@ export const PRICE_LINE_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as 
 /** The rules every page shares, in order: the tap areas' (task 7.1a), then task Q2.8's price lines. */
 export const SHARED_HIDDEN: readonly VisualHide[] = [...TAP_AREA_HIDDEN, ...PRICE_LINE_HIDDEN];
 
-/** Every rule the visual pass applies to one page: the rules every page shares (SHARED_HIDDEN), then the page's own. */
+/** Every rule the visual pass applies to one page: the rules every page shares (SHARED_HIDDEN), then the page's own,
+ *  then D063's for that page (task Q2.3; seller-facts.ts). */
 export function visualHidden(slug: string): readonly VisualHide[] {
-  return [...SHARED_HIDDEN, ...(VISUAL_HIDDEN[slug] ?? [])];
+  return [...SHARED_HIDDEN, ...(VISUAL_HIDDEN[slug] ?? []), ...sellerHidden(slug)];
 }
 
 const hidingStyle = (rules: readonly VisualHide[], side: VisualHide["side"]): string => {
@@ -1864,11 +1943,16 @@ export function hiddenCss(slug: string, side: VisualHide["side"]): string {
   return hidingStyle(VISUAL_HIDDEN[slug] ?? [], side);
 }
 
+/** The style of D063's rules for one page on one side (task Q2.3), or "" on a page the ruling does not change. */
+export function sellerHiddenCss(slug: string, side: VisualHide["side"]): string {
+  return hidingStyle(sellerHidden(slug), side);
+}
+
 /** Hides one side's approved elements on the page (before it is settled and measured): the rules every page shares,
- *  then the page's own, each as a style of its own; prints each rule it applies under `label`, the calling spec's name
- *  ("visual-parity", "thanks-paid"; task 4.9 item 6). */
+ *  then the page's own, then D063's, each as a style of its own; prints each rule it applies under `label`, the calling
+ *  spec's name ("visual-parity", "thanks-paid"; task 4.9 item 6). */
 export async function hideDeviations(page: Page, slug: string, side: VisualHide["side"], label: string): Promise<void> {
-  for (const css of [sharedHiddenCss(side), hiddenCss(slug, side)]) if (css) await page.addStyleTag({ content: css });
+  for (const css of [sharedHiddenCss(side), hiddenCss(slug, side), sellerHiddenCss(slug, side)]) if (css) await page.addStyleTag({ content: css });
   for (const rule of visualHidden(slug).filter((r) => r.side === side)) {
     console.log(`[${label}] ${slug}: ${rule.selector} hidden in the ${side}${rule.media ? ` at ${rule.media}` : ""} (${rule.approvedBy}): ${rule.reason}`);
   }
@@ -1920,7 +2004,16 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
      (task 8c.2, D061): OFFER_ADDITIONS above. The quotes and the strip (task 8c.3): PROOF_ADDITIONS above. Then D058's
      claim fixes (V26, task 8b.1), and the fourth question in the parent's words, which the text pass does read (task 8c.4,
      D061): FAQ_FIXES above. */
-  home: [factsRule(COPY_FIXES.home), factsRule(OFFER_ADDITIONS.home), proofText("home"), factsRule(CLAIM_FIXES.home), factsRule(FAQ_FIXES.home)],
+  home: [
+    factsRule(COPY_FIXES.home),
+    factsRule(OFFER_ADDITIONS.home),
+    proofText("home"),
+    /* The hero board's word sticker, gone with the board (task Q2.1, D064 item 4): HOME_HERO_PHOTO above. Before the
+       claim fixes, which only the FAQ fix may follow (pages/parity-deviations.test.ts). */
+    HOME_HERO_PHOTO_TEXT,
+    factsRule(CLAIM_FIXES.home),
+    factsRule(FAQ_FIXES.home),
+  ],
   "meet-kheelu": [
     {
       /* The product details fold without JavaScript (wiki/qa/deviations.md V3): the tab row stays hidden and the three
@@ -2062,7 +2155,15 @@ export function priceLineText(slug: string): readonly TextDeviation[] {
   return PRICE_LINE_ROWS_SLUGS.includes(slug) ? [PRICE_LINE_TEXT, PRICE_LINE_ROWS_TEXT] : [PRICE_LINE_TEXT];
 }
 
-/** Every rule the text pass applies to one page: task Q2.8's (priceLineText), then the page's own. */
+/* D063 items 2-3 (task Q2.3; seller-facts.ts): the GSTIN off the website and the number only on /contact and the legal
+   pages. One shared ruling, as TAP_AREA_HIDDEN is: never a row per page key. Its rules for one page are read from the
+   frozen mockup as the ruling rewrites it, and applied after the page's own. */
+const isMockupSlug = (slug: string): slug is MockupSlug => (MOCKUP_SLUGS as readonly string[]).includes(slug);
+const sellerText = (slug: string): readonly TextDeviation[] => (isMockupSlug(slug) ? sellerFactsText(slug) : []);
+const sellerHidden = (slug: string): readonly VisualHide[] => (isMockupSlug(slug) ? sellerFactsHidden(slug) : []);
+
+/** Every rule the text pass applies to one page: task Q2.8's (priceLineText), then the page's own (TEXT_DEVIATIONS),
+ *  then D063's. */
 export function textDeviations(slug: string): readonly TextDeviation[] {
-  return [...priceLineText(slug), ...(TEXT_DEVIATIONS[slug] ?? [])];
+  return [...priceLineText(slug), ...(TEXT_DEVIATIONS[slug] ?? []), ...sellerText(slug)];
 }

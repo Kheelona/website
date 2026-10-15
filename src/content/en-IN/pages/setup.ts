@@ -22,8 +22,6 @@ import { seller } from "../seller";
  * data. The four steps are the page's HowTo (architecture §9.2). The support line is read from seller.ts, never retyped.
  */
 
-const { phone, tel, whatsapp, email } = seller.support;
-
 /** The parent app's listings, as the live site links them (D055 item 26; its llms.txt at the tag archive/pre-reset-2026-10-10). */
 const APP_STORE = "https://apps.apple.com/in/app/kheelona/id6792490581";
 const GOOGLE_PLAY = "https://play.google.com/store/apps/details?id=com.kheelona.toyapp";
@@ -152,7 +150,8 @@ export const setupPage = {
       config: {
         variant: "links",
         heading: { title: "Stuck? {hand:We’ll help.}" },
-        contact: `[WhatsApp](${whatsapp}) or [call us on {nowrap:${phone}}](${tel}), or email [${email}](mailto:${email}). Tell us your order number, and what you see on Kheelu and in the app.`,
+        /* WhatsApp or email: the call came off (D063 item 2, D064 item 11; task Q2.3). */
+        contact: `${seller.support.reach}. Tell us your order number, and what you see on Kheelu and in the app.`,
         action: { label: "All the ways to reach us", href: "/contact", variant: "secondary", icon: "chat-circle-dots" },
         meet: { lead: "Don’t have Kheelu yet?", link: "[Meet Kheelu](/products/kheelu)" },
       },

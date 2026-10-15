@@ -10,7 +10,9 @@ import { websiteNode } from "@/lib/seo/schema/website";
  * `organizationFacts()` wherever the Organization input is needed again, so nothing restates it.
  *
  * Only what content holds goes in: no description and no `memberOf` (the proof gate is lifted, D054 item 20, but
- * /team states no relationship with the programmes it names: B26, team.md).
+ * /team states no relationship with the programmes it names: B26, team.md), and no `taxId` or contact `telephone`
+ * (every page prints this graph; D063 items 2-3: no GSTIN on the website, the number only on /contact and the legal
+ * pages).
  */
 
 /** The site's language: the root layout's `<html lang>` (src/app/layout.tsx) and the WebSite node's `inLanguage`. */
@@ -26,7 +28,6 @@ export function organizationFacts(org: ContentOrganization): SchemaOrganization 
   return {
     name: org.name,
     legalName: org.legalName,
-    taxId: org.taxId,
     logo: org.logo,
     image: org.image,
     foundingDate: org.foundingDate as `${number}`,
@@ -44,7 +45,6 @@ export function organizationFacts(org: ContentOrganization): SchemaOrganization 
     contactPoint: {
       contactType: contactPoint.contactType,
       email: contactPoint.email,
-      telephone: contactPoint.telephone,
       url: contactPoint.url,
       areaServed: contactPoint.areaServed,
       availableLanguage: contactPoint.availableLanguage,

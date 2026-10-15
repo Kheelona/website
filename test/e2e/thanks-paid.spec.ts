@@ -2,7 +2,8 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import type { Page } from "@playwright/test";
 import { THANKS_PAID } from "../fixtures/store/thanks-paid";
-import { TEXT_DEVIATIONS, hideDeviations } from "./support/deviations";
+import { hideDeviations, textDeviations } from "./support/deviations";
+import { ruleMockupPage } from "./support/seller-facts";
 import { STORYBOOK_PORT } from "./support/env";
 import { expect, forceMotionEnd, hideForParity, PLANTS, requiresServer, settle, test } from "./support/fixtures";
 import { CHUNK_MAX_DIFF_RATIO, HEIGHT_TOLERANCE, captureChunks, mainText, pageHeight, sentenceDiff, sentences } from "./support/parity";
@@ -92,6 +93,9 @@ test.describe("/thanks paid-state parity: the ThanksPaid story against store-con
       ).toBe(false);
 
       const { page: mockup } = await harness.openMockup(SLUG, vp);
+      // The help fold's line, the store header's and the footer's lines without the GSTIN and the number (D063 items
+      // 2-3; task Q2.3; support/seller-facts.ts): the story prints them from seller.ts.
+      await ruleMockupPage(mockup, ["main", "header.mk-store-head", "footer.mk-store-foot"]);
       await fillSampleSlots(mockup);
 
       const context = await harness.context(vp);
@@ -105,8 +109,8 @@ test.describe("/thanks paid-state parity: the ThanksPaid story against store-con
       await plant(story);
 
       /* The words of <main>, with the bubble hidden (its laptop label is not the mockup's) but before the payments line
-         is: its move is accepted by its rule (V1). */
-      const rules = TEXT_DEVIATIONS[SLUG] ?? [];
+         is: its move is accepted by its rule (V1); the help line without the call by D063's (task Q2.3). */
+      const rules = textDeviations(SLUG);
       const diff = sentenceDiff(sentences(await mainText(mockup)), sentences(await mainText(story)));
       const accepted = [...diff.missing.filter((s) => rules.some((r) => r.mockup.test(s))), ...diff.extra.filter((s) => rules.some((r) => r.build?.test(s)))];
       if (accepted.length) console.log(`[thanks-paid] ${vp.name}: accepted text deviations (${rules.map((r) => r.approvedBy).join("; ")}):\n  ${accepted.join("\n  ")}`);

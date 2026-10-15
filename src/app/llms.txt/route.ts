@@ -104,7 +104,8 @@ export function llmsText(offer: Offer): string {
 
   lines.push("", "## Contact", "");
   lines.push(`- ${say(seller.help.contact)} · ${seller.support.email}`);
-  lines.push(`- ${say(`${seller.grievance.line.lead} ${seller.grievance.line.text}`)}`);
+  /* The number only on /contact and the legal pages (D063 item 2, D064 item 11; task Q2.3): the officer's line without it. */
+  lines.push(`- ${say(`${seller.grievance.footerLine.lead} ${seller.grievance.footerLine.text}`)}`);
 
   lines.push("", "## Company", "", `- ${org.legalName}`, `- ${seller.origin.line}`);
   for (const founder of org.founders ?? []) lines.push(`- ${founder.name}: ${founder.jobTitle}`);

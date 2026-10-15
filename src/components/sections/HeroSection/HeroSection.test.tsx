@@ -232,12 +232,86 @@ describe("HeroSection: the phone board (D061 item 1)", () => {
   });
 });
 
+/* Task Q2.1 (D064 item 4): Home's hero picture is the DS photo library's "Kabir · block rocket", one of the DS web-hero
+ * photos (design-system 10-pages.md, "Choosing pictures for a page"), in place of the board: `photo` gives its two crops
+ * (scripts/assets/build-hero-crops.mjs), the 4:5 DS photo frame from 720 px and a 16:10 band under 720 px, which takes
+ * the phone board's place right under the trust line (D061 item 1; hero-section.css), so Kabir and Kheelu are whole on
+ * the first phone screen (test/e2e/first-screen.spec.ts). The words column is the approved one; a photo carries no
+ * board, so no word sticker. */
+const KABIR = "A boy in round glasses and an olive T-shirt kneels on a patterned rug, grinning as he stacks wooden blocks into a tall tower, with Kheelu sitting beside it.";
+const HOME_PHOTO = {
+  image: raster("kabir-02-block-rocket-4x5.jpg", 1200, 1500, KABIR),
+  phone: raster("kabir-02-block-rocket-16x10.jpg", 1600, 1000, KABIR),
+};
+const PHOTO_SIZES = {
+  phone: "(min-width: 720px) 1px, calc(100vw - 32px)",
+  image: "(min-width: 1296px) 480px, (min-width: 900px) 40vw, (min-width: 720px) 480px, 1px",
+};
+
+describe("HeroSection: the photo (Home since task Q2.1, D064 item 4)", () => {
+  const hero = heroOf("home");
+  const props: HeroSectionProps = { variant: "art", heading: headingOf(hero), photo: HOME_PHOTO };
+  const split = (container: Element) => container.querySelector(".kh-split")!;
+
+  it("keeps Home's approved words column: the hero heading, then the CTA slot", () => {
+    const { container } = render(<HeroSection {...props} cta={CTA} />);
+    const expected = withCtaSlot(hero).querySelector(".kh-split")!.firstElementChild!;
+    expect(shape(split(container).firstElementChild!)).toEqual(shape(expected));
+    expect(words(split(container).firstElementChild!.textContent)).toBe(words(expected.textContent));
+    expect(container.querySelector("section")).toHaveAttribute("aria-labelledby", "hero-title");
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+  });
+
+  it("shows the photo in its two crops, the phone crop first: DS photo frames with the larger radius, each at its own ratio, one alt", () => {
+    const { container } = render(<HeroSection {...props} cta={CTA} />);
+    // The 4:5 crop stops at 480 px between 720 and 899 px through ArtBoard's tablet clamp (ks-art--clamp, art-board.css).
+    expect([...split(container).children].map((el) => el.className)).toEqual([
+      "",
+      "kh-photo kh-photo--xl ks-hero__phone-art",
+      "kh-photo kh-photo--xl ks-hero-photo ks-art--clamp",
+    ]);
+    const [phone, image] = [...split(container).querySelectorAll<HTMLImageElement>("figure.kh-photo > img")];
+    expect(phone.style.getPropertyValue("--kh-ratio")).toBe("1600 / 1000");
+    expect(image.style.getPropertyValue("--kh-ratio")).toBe("1200 / 1500");
+    expect([phone.getAttribute("alt"), image.getAttribute("alt")]).toEqual([KABIR, KABIR]);
+    expect(split(container).querySelector("figcaption")).toBeNull();
+  });
+
+  it("gives each crop one LCP image at its own widths: the phone crop under 720 px, the 4:5 crop from 720 px (480 px wide until the split)", () => {
+    const { container } = render(<HeroSection {...props} cta={CTA} />);
+    const high = [...container.querySelectorAll("img")].filter((img) => img.getAttribute("fetchpriority") === "high");
+    expect(high).toHaveLength(2);
+    expect(high.map((img) => img.getAttribute("src"))).toEqual([expect.stringContaining("kabir-02-block-rocket-16x10"), expect.stringContaining("kabir-02-block-rocket-4x5")]);
+    for (const img of high) expect(img).toHaveAttribute("loading", "eager");
+    expect(high.map((img) => img.getAttribute("sizes"))).toEqual([PHOTO_SIZES.phone, PHOTO_SIZES.image]);
+    expect(container.querySelectorAll("img")).toHaveLength(2);
+  });
+
+  it("draws no board and no word sticker, and nothing in it moves (D049 pick 2)", () => {
+    const { container } = render(<HeroSection {...props} cta={CTA} />);
+    expect(container.querySelector(".kh-art, .kh-sticker")).toBeNull();
+    STILL(container);
+  });
+});
+
 /* The visual pass's hero rules (test/e2e/support/deviations.ts; tasks.md SPA 1): on a phone the build's hero art is the
  * D061 phone board, in another place than the approved board, so under 720 px both sides compare the hero without its
- * art (the folds below then line up); from 720 px nothing is hidden and the approved board is compared as before. */
-describe("HeroSection: the visual pass's hero rules (D061 item 1)", () => {
+ * art (the folds below then line up); from 720 px nothing is hidden and the approved board is compared as before. Home's
+ * hero picture is the photo since task Q2.1 (D064 item 4), another picture at every width: both sides compare its hero
+ * without the picture at every width, the words column still compared. */
+describe("HeroSection: the visual pass's hero rules (D061 item 1, D064 item 4)", () => {
   const PHONES = "(max-width: 719px)";
-  it.each(["home", "meet-kheelu"])("%s: the hero art hidden on both sides under 720 px only", (slug) => {
+  it("home: the approved board and the photo hidden at every width, each on its own side", () => {
+    expect(hiddenCss("home", "mockup").split("\n")[0]).toContain(".mk-hero .kh-art");
+    expect(hiddenCss("home", "build").split("\n")[0]).toContain(".ks-hero .kh-photo");
+    const hero = VISUAL_HIDDEN.home.filter((rule) => /hero/.test(rule.selector));
+    expect(hero.map((rule) => [rule.side, rule.selector, rule.media])).toEqual([
+      ["mockup", ".mk-hero .kh-art", undefined],
+      ["build", ".ks-hero .kh-photo", undefined],
+    ]);
+  });
+
+  it.each(["meet-kheelu"])("%s: the hero art hidden on both sides under 720 px only", (slug) => {
     expect(hiddenCss(slug, "mockup")).toContain(`@media ${PHONES} { .mk-hero .kh-art { display: none !important; } }`);
     expect(hiddenCss(slug, "build")).toContain(`@media ${PHONES} { .ks-hero .kh-art { display: none !important; } }`);
     const hero = VISUAL_HIDDEN[slug].filter((rule) => /hero/.test(rule.selector));

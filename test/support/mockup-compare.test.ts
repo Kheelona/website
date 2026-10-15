@@ -1,6 +1,8 @@
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { ICON_WHATSAPP_LOGO } from "@/assets/icons.generated";
+import { WHATSAPP_GLYPH } from "@/assets/whatsapp-logo.generated";
 import {
   addClass,
   asBuilt,
@@ -55,6 +57,20 @@ describe("reading the mockup", () => {
     expect(fresh).not.toBe(mockupPage("home"));
     fresh.querySelector("main")!.remove();
     expect(mockupPage("home").querySelector("main")).not.toBeNull();
+  });
+
+  /* D064 item 3 (task Q2.4): the build draws the WhatsApp logo from Wikimedia Commons where the mockup inlines the DS
+     Phosphor glyph, so the harness reads the mockup's whatsapp-logo path as the build's, and nothing else. */
+  it("reads the mockup's DS whatsapp-logo glyph as the site's WhatsApp logo, every other icon as inlined", () => {
+    const raw = readRepoFile("mockup/contact.html");
+    expect(raw).toContain(`d="${ICON_WHATSAPP_LOGO}"`);
+    const paths = Array.from(parseMockup("contact").querySelectorAll("svg.kh-icon > path")).map((p) => p.getAttribute("d"));
+    expect(paths).toContain(WHATSAPP_GLYPH);
+    expect(paths).not.toContain(ICON_WHATSAPP_LOGO);
+    const others = [...raw.matchAll(/<path d="([^"]+)"><\/path>/g)].map((m) => m[1]).filter((d) => d !== ICON_WHATSAPP_LOGO);
+    expect(others.length).toBeGreaterThan(0);
+    for (const d of others) expect(paths).toContain(d);
+    expect(mockupPage("contact").querySelector(`path[d="${ICON_WHATSAPP_LOGO}"]`)).toBeNull();
   });
 
   it("mockupCtaRun: the actions row holding the chilli button and every element after it in its column", () => {

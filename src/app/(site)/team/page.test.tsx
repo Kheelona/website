@@ -10,6 +10,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { CLAIM_FIXES } from "../../../../test/e2e/support/deviations";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { parseMockup, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 
@@ -36,7 +37,9 @@ const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 /* Through the mockup comparison harness, so the close's price line and trust line read as task Q2.8 rules them (D065
  * item 3; the harness's withPriceLine). */
 const mockupDoc = parseMockup("team");
-const mockupMain = mockupDoc.querySelector("main")!;
+/** The approved main as D063 item 2 rules it (task Q2.3; seller-facts.ts): fold 2's answer and the close's help line
+ *  without the number. */
+const mockupMain = withSellerFacts(mockupDoc.querySelector("main")!);
 
 const APPROVED_LEDE = "Kheelu is designed by parents in Bengaluru. You’re trusting us near your child, so here is who we are.";
 const CMO_LEDE =

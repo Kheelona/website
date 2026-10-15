@@ -13,6 +13,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { ROOT } from "../../../../../test/e2e/support/repo";
 import { approvedArticle } from "../../../../../test/fixtures/journal/approved";
 import { type CopyFold, copyFold, copyLines, glanceRow, readCopyPage } from "../../../../../test/support/copy-page";
+import { withSellerFacts } from "../../../../../test/e2e/support/seller-facts";
 import { mockupFold, portClass, skeleton, words } from "../../../../../test/support/mockup-compare";
 import { TEAM_BYLINE } from "../../organization";
 import type { ArticleSlug } from "../../routes";
@@ -429,9 +430,10 @@ describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) =
     const built = document.createElement("div");
     built.append(...[main.querySelector(".ks-related")!, main.querySelector("#close")!].map((n) => n.cloneNode(true)));
     const reference = document.createElement("div");
+    /* The close's help line without the call (D063 item 2; task Q2.3; seller-facts.ts). */
     reference.append(
       ...[mockupFold("story-learning-toys-for-a-three-year-old", ".mk-related"), mockupFold("story-learning-toys-for-a-three-year-old", "#close")].map((n) =>
-        n.cloneNode(true),
+        withSellerFacts(n),
       ),
     );
     /* The article's own: its three guides, by their card titles and pages; the mockup's store page is the store host. */

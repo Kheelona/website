@@ -12,7 +12,7 @@ import { AnswerSection } from "./AnswerSection";
 export const TEAM_ANSWER: Omit<Answer, "detail"> = {
   question: "Who makes Kheelu?",
   answer:
-    "Kheelona Robotics Private Limited, a small company in Bengaluru, makes Kheelu. Its three co-founders are Apoorva Sahu, Aman Soni and Kashyap C.R. Kheelu is designed by parents in Bengaluru and made in India. You can reach the team on [WhatsApp](https://wa.me/919187546483) or by phone at {nowrap:[+91 91875 46483](tel:+919187546483)}, or at [hello@kheelona.com](mailto:hello@kheelona.com).",
+    "Kheelona Robotics Private Limited, a small company in Bengaluru, makes Kheelu. Its three co-founders are Apoorva Sahu, Aman Soni and Kashyap C.R. Kheelu is designed by parents in Bengaluru and made in India. You can reach the team on [WhatsApp](https://wa.me/919187546483) or at [hello@kheelona.com](mailto:hello@kheelona.com).",
 };
 
 const meta = {

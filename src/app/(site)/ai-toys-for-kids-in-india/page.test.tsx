@@ -11,6 +11,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { CLAIM_FIXES, COPY_FIXES } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { parseMockup, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 
@@ -51,10 +52,9 @@ const mockupDoc = parseMockup("ai-toys-for-kids-in-india");
 /* The approved main with its copy fix applied: the age answer's "At 3" sentence in the site's one wording (CMO review A
  * M8; deviations.ts COPY_FIXES, V22); then task 8b.1's claim fixes (D058; CLAIM_FIXES, V31) in a pass of their own:
  * check 4, Kheelu's answers and the age answer in the live team's code-checked words. */
-const mockupMain = withFacts(
-  withFacts(mockupDoc.querySelector("main")!, COPY_FIXES["ai-toys-for-kids-in-india"].edits),
-  CLAIM_FIXES["ai-toys-for-kids-in-india"].edits,
-);
+const mockupMain = withSellerFacts(
+  withFacts(withFacts(mockupDoc.querySelector("main")!, COPY_FIXES["ai-toys-for-kids-in-india"].edits), CLAIM_FIXES["ai-toys-for-kids-in-india"].edits),
+); /* Then D063 item 2: the close's help line without the call (task Q2.3; seller-facts.ts). */
 
 /** The page as the site shell holds it: the route's output inside <main>. */
 async function renderPage(offer: Offer) {

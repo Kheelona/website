@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { render, screen, within } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -18,6 +20,7 @@ import {
   VISUAL_HIDDEN,
 } from "../../../../test/e2e/support/deviations";
 import { findBanned } from "../../../../test/guards/banned-phrases.data";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { builtMarkup, canonical, mockupFold, renderedElement, STORE, without } from "../../../../test/support/mockup-compare";
 import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../test/support/mockup-facts";
 import { OfferSection } from "./OfferSection";
@@ -71,8 +74,8 @@ type Slug = "home" | "meet-kheelu";
  *  and the product card's perk read D058 item 3's sentence (deviations.md V26, V27; CLAIM_FIXES). */
 const claimFixed = (slug: Slug) => withFacts(withFacts(mockupFold(slug, "main"), editsBeforeClaimFixes(slug)), CLAIM_FIXES[slug].edits);
 /** A page's fold as approved, with the page's accepted changes applied, then task 8c.2's: the later price on the card and
- *  the share link under it (D061; OFFER_ADDITIONS). */
-const approvedFold = (slug: Slug, fold: string) => withFacts(claimFixed(slug), OFFER_ADDITIONS[slug].edits).querySelector(fold)!;
+ *  the share link under it (D061; OFFER_ADDITIONS); then D063's: the help line's call off (task Q2.3). */
+const approvedFold = (slug: Slug, fold: string) => withSellerFacts(withFacts(claimFixed(slug), OFFER_ADDITIONS[slug].edits)).querySelector(fold)!;
 /* A perk's words are always in a span (OfferCard), so a value-marked perk keeps its span. */
 const KEEP = ".kh-offer__list span";
 
@@ -119,6 +122,26 @@ describe("OfferSection: variants", () => {
     expect(board.children).toHaveLength(4);
     expect(board.querySelector("svg.ks-doodle")).toHaveAttribute("data-draw");
     expect(board.querySelector('img[loading="eager"]')).toBeNull();
+  });
+
+  /* Task Q2.1 (D064 item 5): on laptops Home's board (the girl in the mustard frock beside Kheelu) starts level with the
+     card's top. The DS split centres its two columns (bundle.css:1136), so beside the taller column the board started
+     around the card's "Today, refundable" row. One rule from 900 px, where the split begins, on the board beside an offer
+     card; the column and the markup are as approved. Its effect is measured in a browser (the task report). */
+  it("close: the board top-aligned with the card from 900 px, where the split begins, by one rule on the board beside a card", () => {
+    const css = readFileSync(join(process.cwd(), "src/components/sections/OfferSection/offer-section.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    const media = [...css.matchAll(/@media \(min-width: 900px\) \{([\s\S]*?)\n\}/g)].map((m) => m[1]);
+    const rules = media.flatMap((block) => [...block.matchAll(/([^{}]+)\{([^}]*)\}/g)].map(([, selector, body]) => ({ selector: selector.trim(), body })));
+    const aligned = rules.filter((r) => /align-self:\s*start;/.test(r.body));
+    expect(aligned.map((r) => r.selector)).toEqual([".kh-split:has(> :first-child > .kh-offer) > .kh-art"]);
+    expect(css.split(aligned[0].selector)).toHaveLength(2);
+    // It reaches Home's board, and neither the product page's photo nor any other block of either fold.
+    const home = renderedElement(<OfferSection {...HOME} {...context()} />);
+    const product = renderedElement(<OfferSection {...PRODUCT} {...context()} />);
+    const split = home.querySelector(".kh-split")!;
+    expect(split.firstElementChild?.firstElementChild).toHaveClass("kh-offer");
+    expect(split.lastElementChild).toHaveClass("kh-art");
+    expect(product.querySelectorAll(".kh-split > .kh-art")).toHaveLength(0);
   });
 
   it("photo: the section id offer (the page's #offer fragment), a plain card, the square photo beside it", () => {

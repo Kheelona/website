@@ -8,6 +8,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { ARTICLE_CLAIM_FIXES, RETENTION, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../../test/e2e/support/deviations";
 import type { PageFacts } from "../../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../../test/e2e/support/parity";
+import { withSellerFacts } from "../../../../../test/e2e/support/seller-facts";
 import { approvedArticle } from "../../../../../test/fixtures/journal/approved";
 import { mockupFold, skeleton, words } from "../../../../../test/support/mockup-compare";
 import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../../test/support/mockup-facts";
@@ -56,7 +57,8 @@ function approvedColumn(slug: string): Element {
   const fold = mockupFold(`story-${slug}`, ".mk-story-body").cloneNode(true) as Element;
   fold.querySelectorAll('.mk-part a[href="stories.html#ai-and-safety"]').forEach((a) => a.setAttribute("href", "/stories/ai-toys-and-indias-data-law"));
   for (const span of RULED_NOWRAP[slug] ?? []) wrapNowrap(fold, span);
-  return withFacts(fold, claimFixes(slug)?.edits ?? []);
+  /* Then D063 item 2: the safe-AI-toy guide's contact line, WhatsApp or the email, the call off (task Q2.3). */
+  return withSellerFacts(withFacts(fold, claimFixes(slug)?.edits ?? []));
 }
 
 /* The no-wrap spans the journal's adapter adds where an approved guide left an age bare (journal-pipeline §5.2: every
@@ -153,10 +155,13 @@ describe("the page-specific rules (tasks.md 5.6)", () => {
     expect(section.querySelector(":scope > h2")?.textContent).toBe("Brain development toys for a 3-year-old: what the label means");
   });
 
-  it("words the safe-AI-toy guide's contact line from the seller's help line, never a retyped number (seller.ts, D032)", () => {
-    const contact = columnStrings(safeAiToy).filter((s) => s.includes(seller.support.phone));
+  /* WhatsApp or the email, never the number (D063 item 2; task Q2.3). */
+  it("words the safe-AI-toy guide's contact line from the seller's WhatsApp-or-email phrase (seller.ts), with no number", () => {
+    const strings = columnStrings(safeAiToy);
+    const contact = strings.filter((s) => s.includes(seller.support.whatsapp));
     expect(contact).toHaveLength(1);
-    expect(contact[0].endsWith(`you can ask us anything: ${seller.help.contact}.`)).toBe(true);
+    expect(contact[0].endsWith(`you can ask us anything: ${seller.support.reach}.`)).toBe(true);
+    expect(strings.filter((s) => s.includes(seller.support.phone) || s.includes("tel:"))).toEqual([]);
   });
 
   /* Until 8b.2e it also held the module's source free of a typed "36 months". A post prints the line as literal text;

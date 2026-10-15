@@ -48,4 +48,10 @@
     justify-self: start;
     max-width: calc(var(--space-10) * 4); /* 4 × 128 = 512 */
   }
+  /* Home's close (variant close; task Q2.1, D064 item 5): the board starts level with the offer card's top. The DS split
+     centres its columns (bundle.css:1136), which beside the taller column (card, Kheelona+ line, trust row, help line,
+     share link) put the board's top around the card's "Today, refundable" row. Without :has() it stays centred. */
+  .kh-split:has(> :first-child > .kh-offer) > .kh-art {
+    align-self: start;
+  }
 }
