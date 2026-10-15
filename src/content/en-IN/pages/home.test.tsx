@@ -7,7 +7,20 @@ import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
-import { CLAIM_FIXES, COPY_FIXES, FAQ_FIXES, NOT_RIGHT_QUESTION, OFFER_ADDITIONS, PROOF_ADDITIONS, PROOF_ADDITIONS_APPROVED, TEAM_STRIP_BUILD, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import {
+  CLAIM_FIXES,
+  COPY_FIXES,
+  FAQ_FIXES,
+  HOME_FILMS_ORDER,
+  HOME_OFFER_ART,
+  NOT_RIGHT_QUESTION,
+  OFFER_ADDITIONS,
+  PROOF_ADDITIONS,
+  PROOF_ADDITIONS_APPROVED,
+  TEAM_STRIP_BUILD,
+  TEXT_DEVIATIONS,
+  VISUAL_HIDDEN,
+} from "../../../../test/e2e/support/deviations";
 import { sentences } from "../../../../test/e2e/support/parity";
 import { findBanned } from "../../../../test/guards/banned-phrases.data";
 import { filmQuotes, films } from "../films";
@@ -50,9 +63,24 @@ const staticImport = vi.hoisted(() => async (file: string) => {
 vi.mock("@ds/assets/Cast/advik-sticker.png", () => staticImport("design-system/project/assets/Cast/advik-sticker.png"));
 vi.mock("@ds/assets/Kheelu/kheelu-front-sticker.png", () => staticImport("design-system/project/assets/Kheelu/kheelu-front-sticker.png"));
 
-const MOCKUP = withFacts(
-  withFacts(withFacts(withFacts(mockupFold("home", "main"), COPY_FIXES.home.edits), CLAIM_FIXES.home.edits), OFFER_ADDITIONS.home.edits),
-  FAQ_FIXES.home.edits,
+/** D064 item 1 (task Q2.1): Home's strip plays the films list's 2nd film 4th and its 3rd 7th, each swapped with the film
+ *  that replaces it, so the list's 1, 4, 7, 2, 5, 6, 3. The list itself (films.ts) keeps the approved order, which the
+ *  product page and the store show. */
+const HOME_FILM_ORDER = [1, 4, 7, 2, 5, 6, 3].map((n) => films[n - 1].id);
+/** The approved page with Home's strip in that order: each film's chip, length, poster, play button and caption move
+ *  with it, as one list item. */
+function inHomeFilmOrder(main: Element): Element {
+  const strip = main.querySelector("[data-films]")!;
+  const byId = new Map([...strip.children].map((li) => [li.getAttribute("data-video-id"), li]));
+  strip.replaceChildren(...HOME_FILM_ORDER.map((id) => byId.get(id)!));
+  return main;
+}
+
+const MOCKUP = inHomeFilmOrder(
+  withFacts(
+    withFacts(withFacts(withFacts(mockupFold("home", "main"), COPY_FIXES.home.edits), CLAIM_FIXES.home.edits), OFFER_ADDITIONS.home.edits),
+    FAQ_FIXES.home.edits,
+  ),
 );
 const LABELS = ["hero-title", "ask-title", "why-title", "what-title", "see-title", "safety-title", "compare-title", "guides-title", "faq-title", "close-title"];
 
@@ -131,10 +159,13 @@ describe("Home: the folds of the approved page", () => {
     expect(BUILT.querySelector(`${hide} .kh-faq__q`)?.textContent).toBe(NOT_RIGHT_QUESTION.build);
   });
 
-  it("differs from the frozen mockup only in the lines task 7.1b (V18), task 8b.1 (V26) and task 8c.4 changed", () => {
+  it("differs from the frozen mockup only in the lines task 7.1b (V18), task 8b.1 (V26) and task 8c.4 changed, and the films' order (Q2.1)", () => {
     const frozen = mockupFold("home", "main");
     const changed = LABELS.filter((label) => words(fold(frozen, label)) !== words(fold(MOCKUP, label)));
-    expect(changed).toEqual(["see-title", "safety-title", "guides-title", "faq-title", "close-title"]);
+    expect(changed).toEqual(["ask-title", "see-title", "safety-title", "guides-title", "faq-title", "close-title"]);
+    // The films fold changes in its order alone: the same films, words and pictures.
+    const tiles = (main: Element) => all(fold(main, "ask-title"), "[data-video-id]").map((li) => words(li));
+    expect(tiles(MOCKUP).sort()).toEqual(tiles(frozen).sort());
     for (const line of CLAIM_FIXES.home.build) expect(words(BUILT)).toContain(line);
     // Each block the visual pass hides for the claim fixes is found once on the page as it renders.
     for (const hide of CLAIM_FIXES.home.hidden.both) expect(BUILT.querySelectorAll(hide), hide).toHaveLength(1);
@@ -193,6 +224,55 @@ describe("Home: the folds of the approved page", () => {
     expect(ctaValues(MOCKUP)).toEqual(values);
     expect(ctaValues(BUILT)).toEqual(values);
     expect(all(BUILT, ".kh-btn--cta").map((b) => b.getAttribute("data-ph-capture-attribute-cta"))).toEqual(["hero", "see-it-ask", "safety", "finale"]);
+  });
+});
+
+describe("Home: the films in the founder's order (D064 item 1, task Q2.1)", () => {
+  const ids = (main: Element) => all(fold(main, "ask-title"), "[data-video-id]").map((li) => li.getAttribute("data-video-id"));
+
+  it("shows the list's 1, 4, 7, 2, 5, 6, 3: the 2nd film replaced by the 4th and the 3rd by the 7th", () => {
+    expect(HOME_FILM_ORDER).toEqual([
+      "learning-by-asking",
+      "a-mother-joins-in",
+      "a-father-speaks",
+      "first-conversations",
+      "counting-out-loud",
+      "a-story-in-two-languages",
+      "a-parent-speaks",
+    ]);
+    expect(ids(TOKEN.whole.querySelector("main")!)).toEqual(HOME_FILM_ORDER);
+    expect(ids(FULL.whole.querySelector("main")!)).toEqual(HOME_FILM_ORDER);
+  });
+
+  it("keeps the films list itself in the approved order, which the product page and the store show", () => {
+    expect(films.map((f) => f.id)).toEqual(ids(mockupFold("home", "main")));
+  });
+
+  it("hides for the pixels the strip's films on both sides, each found once on its side; the text pass needs no rule", () => {
+    const rules = VISUAL_HIDDEN.home.filter((r) => r.approvedBy === HOME_FILMS_ORDER.approvedBy);
+    expect(rules.map((r) => [r.side, r.selector, r.media])).toEqual([
+      ["mockup", HOME_FILMS_ORDER.mockup, undefined],
+      ["build", HOME_FILMS_ORDER.build, undefined],
+    ]);
+    expect(mockupFold("home", "main").querySelectorAll(HOME_FILMS_ORDER.mockup)).toHaveLength(1);
+    expect(TOKEN.whole.querySelectorAll(HOME_FILMS_ORDER.build)).toHaveLength(1);
+    // The text pass compares sentences in any order (sentenceDiff), so the same films in other places differ in nothing.
+    expect(TEXT_DEVIATIONS.home.filter((r) => r.approvedBy === HOME_FILMS_ORDER.approvedBy)).toEqual([]);
+  });
+});
+
+describe("Home: the close's board top-aligned with the offer card on laptops (D064 item 5, task Q2.1)", () => {
+  it("hides for the pixels the board on both sides from 900 px only, each found once in the close on its side", () => {
+    const rules = VISUAL_HIDDEN.home.filter((r) => r.approvedBy === HOME_OFFER_ART.approvedBy);
+    expect(rules.map((r) => [r.side, r.selector, r.media])).toEqual([
+      ["mockup", HOME_OFFER_ART.mockup, "(min-width: 900px)"],
+      ["build", HOME_OFFER_ART.build, "(min-width: 900px)"],
+    ]);
+    const board = (main: Element, selector: string) => [...main.querySelectorAll(selector)];
+    expect(board(mockupFold("home", "main"), HOME_OFFER_ART.mockup).map((el) => el.closest("section")?.id)).toEqual(["close"]);
+    expect(board(TOKEN.whole.querySelector("main")!, HOME_OFFER_ART.build).map((el) => el.closest("section")?.id)).toEqual(["close"]);
+    // Its place moves, not its words: nothing for the text pass.
+    expect(TEXT_DEVIATIONS.home.filter((r) => r.approvedBy === HOME_OFFER_ART.approvedBy)).toEqual([]);
   });
 });
 

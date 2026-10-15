@@ -51,6 +51,21 @@ const [aiMode, storyMode, bluetoothMode] = product.modes;
 /** The language chips: each language in its own script with its English name; English, the page's own, alone. */
 const LANGUAGE_CHIPS = product.languages.map(({ name, native, lang }) => (native === name ? { native } : { native, english: name, lang }));
 
+type FilmId = (typeof films)[number]["id"];
+/** D064 item 1 (task Q2.1): Home's strip plays the films list's 2nd film 4th and its 3rd 7th, each swapped with the film
+ *  that replaces it (the list's 1, 4, 7, 2, 5, 6, 3). The list keeps the approved order for the product page and the
+ *  store; the quotes' "Watch the film" finds its film by id wherever it sits. */
+const HOME_FILM_ORDER: readonly FilmId[] = [
+  "learning-by-asking",
+  "a-mother-joins-in",
+  "a-father-speaks",
+  "first-conversations",
+  "counting-out-loud",
+  "a-story-in-two-languages",
+  "a-parent-speaks",
+];
+const homeFilms = HOME_FILM_ORDER.map((id) => films.find((film) => film.id === id)!);
+
 /** The checkable facts line under the safety fold, shared with the product page and llms.txt (trust.ts). Every icon is
  *  a DS icon (trust.test.ts), which the line's DS icon name requires. */
 const SAFETY_FACTS_LINE = SAFETY_FACTS.map(({ icon, text }) => ({ icon: icon as IconName, text }));
@@ -117,8 +132,8 @@ export const homePage = {
       cta: heroCta,
     },
 
-    /* Fold 2 · See it ask: the seven parent films (D040), then two parents' own words from them, each playing its film
-       (task 8c.3, D061 item 4; the proof line covers them). */
+    /* Fold 2 · See it ask: the seven parent films (D040) in Home's order (D064 item 1), then two parents' own words from
+       them, each playing its film (task 8c.3, D061 item 4; the proof line covers them). */
     {
       kind: "films-strip",
       config: {
@@ -128,7 +143,7 @@ export const homePage = {
           lead: "Real children, real families. Press play on any of them.",
           id: "ask-title",
         },
-        films,
+        films: homeFilms,
         labels: filmsStrip,
         proof: { text: "Kids doing the talking. Parents, in their own words.", size: "body-s" },
         posters: "eager-low",

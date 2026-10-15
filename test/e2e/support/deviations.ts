@@ -1601,6 +1601,40 @@ const HERO_PHONE_ART: readonly VisualHide[] = [
   },
 ];
 
+/* Home's films in the founder's order (D064 item 1, task Q2.1): the films list's 1, 4, 7, 2, 5, 6, 3 on Home's strip (the
+   2nd film replaced by the 4th, the 3rd by the 7th); the list, and so the product page's and the store's strips, keep the
+   approved order. The same seven films in other places: the text pass reads sentences in any order and needs no rule,
+   and the visual pass compares Home's films fold without its strip of films on both sides (its heading, controls,
+   proof line and CTA block still compared; the tiles themselves are the product page's to compare). */
+export const HOME_FILMS_ORDER = {
+  mockup: ".mk-films-wrap [data-films]",
+  build: ".ks-films-wrap [data-films]",
+  approvedBy: "D064 item 1 (founder, 2026-10-15; task Q2.1; its deviations.md row is the main session's)",
+} as const;
+const HOME_FILMS_ORDER_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as const).map((side) => ({
+  side,
+  selector: HOME_FILMS_ORDER[side],
+  reason: "Home's strip shows the films in the founder's order (the list's 1, 4, 7, 2, 5, 6, 3): the same films in other places",
+  approvedBy: HOME_FILMS_ORDER.approvedBy,
+}));
+
+/* Home's close board top-aligned with the offer card on laptops (D064 item 5, task Q2.1): from 900 px, where the split
+   begins, the board (the girl in the mustard frock beside Kheelu) starts level with the card's top instead of centred
+   beside the taller column. The same board in another place, from 900 px only (below it the columns stack, as
+   approved): the visual pass compares the close without its board on both sides there; the text pass needs no rule. */
+export const HOME_OFFER_ART = {
+  mockup: "#close .kh-split > .kh-art",
+  build: "#close .kh-split > .kh-art",
+  approvedBy: "D064 item 5 (founder, 2026-10-15; task Q2.1; its deviations.md row is the main session's)",
+} as const;
+const HOME_OFFER_ART_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as const).map((side) => ({
+  side,
+  selector: HOME_OFFER_ART[side],
+  media: "(min-width: 900px)",
+  reason: "the close's board starts level with the offer card's top on laptops, where the approved split centres it",
+  approvedBy: HOME_OFFER_ART.approvedBy,
+}));
+
 export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   store: [
     {
@@ -1633,7 +1667,7 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   ],
   /* The screen-time guide card's line (V18, task 7.1b), then the parent-app bullets and the safety bodies (V26, task 8b.1),
      then the fourth question (task 8c.4, D061), compared by the text pass; then the offer card's later price and the
-     share link the build adds (task 8c.2, D061); then the quotes and the strip (task 8c.3); then the hero's phone art (task 8c.1, D061 item 1), under 720 px only. */
+     share link the build adds (task 8c.2, D061); then the quotes and the strip (task 8c.3); then the hero's phone art (task 8c.1, D061 item 1), under 720 px only; then the films' order and, from 900 px, the close's board (task Q2.1, D064 items 1 and 5). */
   home: [
     ...factsHidden(COPY_FIXES.home, COPY_FIXES_WHOSE),
     ...factsHidden(CLAIM_FIXES.home, CLAIM_FIXES_WHOSE),
@@ -1641,6 +1675,8 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...offerAdditionsHidden("home"),
     ...proofHidden("home"),
     ...HERO_PHONE_ART,
+    ...HOME_FILMS_ORDER_HIDDEN,
+    ...HOME_OFFER_ART_HIDDEN,
   ],
   /* The open FAQ answer (V19, task 7.1b), then the facts, controls and retention card (V28, task 8b.1), compared by the
      text pass. */
