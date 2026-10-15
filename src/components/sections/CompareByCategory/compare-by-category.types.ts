@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { Copy, Offer } from "@/content/types";
 import type { SectionHeading, SectionLink } from "@/components/sections/FeatureSplit/section-parts";
 
@@ -44,4 +45,7 @@ export interface CompareByCategoryConfig {
 
 export interface CompareByCategoryProps extends CompareByCategoryConfig {
   readonly offer?: Offer;
+  /** The page's CTA block right after the comparison, before any link (the product page's `product-compare`, D066 item 3,
+   *  task Q2.17), composed by the section registry; Home's fold has none. */
+  readonly cta?: ReactNode;
 }

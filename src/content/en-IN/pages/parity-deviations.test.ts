@@ -11,7 +11,6 @@ import { buildOffer } from "@/lib/offer/offer";
 import {
   CLAIM_FIXES,
   type ClaimFixesSlug,
-  CLOSE_EYEBROW,
   CLOSE_SEE_HOW,
   CLOSES_ALIKE,
   CLOSES_ALIKE_LAYOUT_HIDDEN,
@@ -22,6 +21,10 @@ import {
   FAQ_FIXES,
   FOOTER_FIX,
   FOOTER_PROMISE,
+  FOUNDER_ANSWERS,
+  FOUNDER_ANSWERS_APPROVED,
+  FOUNDER_ANSWERS_PASSES,
+  type FounderAnswersSlug,
   passesBeforeClosesAlike,
   passesBeforeSellingCloses,
   PRICE_LINE,
@@ -42,7 +45,7 @@ import { sentences } from "../../../../test/e2e/support/parity";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { findBanned } from "../../../../test/guards/banned-phrases.data";
 import { mockupFold } from "../../../../test/support/mockup-compare";
-import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../test/support/mockup-facts";
+import { blockSentences, factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../test/support/mockup-facts";
 import { setupPage } from "./setup";
 import { teamPage } from "./team";
 
@@ -316,8 +319,10 @@ describe.each(Object.keys(CLAIM_FIXES) as ClaimFixesSlug[])("%s: task 8b.1's cla
     const mine = rules.filter((r) => r.approvedBy === fixes.approvedBy);
     expect(mine).toHaveLength(1);
     // Only a rule whose edits apply to the page as these leave it follows: task 8c.4's FAQ fixes (D061), then task
-    // Q2.12's selling closes (D065), then task Q2.15's consistency review.
-    const later = new Set<string>([...Object.values(FAQ_FIXES), ...Object.values(SELLING_CLOSES), ...Object.values(CLOSES_ALIKE)].map((f) => f.approvedBy));
+    // Q2.12's selling closes (D065), then task Q2.15's consistency review, then task Q2.17's founder answers (D066).
+    const later = new Set<string>(
+      [...Object.values(FAQ_FIXES), ...Object.values(SELLING_CLOSES), ...Object.values(CLOSES_ALIKE), ...Object.values(FOUNDER_ANSWERS)].map((f) => f.approvedBy),
+    );
     expect(rules.slice(rules.indexOf(mine[0]) + 1).filter((r) => !later.has(r.approvedBy))).toEqual([]);
     expect(ruleReach(base, fixes.edits, mine[0])).toEqual({ excused: once(fixes.mockup), accepted: once(fixes.build) });
     expect(mine[0].jsOff).toBeUndefined();
@@ -383,8 +388,9 @@ describe.each(Object.keys(SELLING_CLOSES) as SellingClosesSlug[])("%s: task Q2.1
 });
 
 /* Task Q2.15 (the consistency review's rulings, 2026-10-15; test/e2e/support/deviations.ts CLOSES_ALIKE): the closes
- * labelled and linked alike ("Pre-order" over every selling close, CON-6; "See how Kheelu works" under the journal's,
- * CON-7) and /safety's first question with non-breaking hyphens (QAP-6). On each page the rule excuses and accepts exactly
+ * linked alike ("See how Kheelu works" under the journal's, CON-7; the "Pre-order" eyebrow over the closes that had none,
+ * CON-6, came off again, D066 item 4) and /safety's first question with non-breaking hyphens (QAP-6). On each page the
+ * rule excuses and accepts exactly
  * the sentences its edits change, against the frozen mockup with every earlier rule of the page applied (its selling
  * close's last), it is the page's last rule, and it adds no banned phrase. The route and content tests hold each page's
  * build to that edited mockup, markup and words alike. */
@@ -398,11 +404,11 @@ describe.each(Object.keys(CLOSES_ALIKE) as ClosesAlikeSlug[])("%s: task Q2.15's 
     expect(fixes.build.length).toBeGreaterThan(0);
   });
 
-  it("is the page's last rule, which excuses and accepts exactly those sentences and no other line", () => {
+  it("is the page's last rule but task Q2.17's, which excuses and accepts exactly those sentences and no other line", () => {
     const rules = TEXT_DEVIATIONS[slug] ?? [];
     const mine = rules.filter((r) => r.approvedBy === fixes.approvedBy);
     expect(mine).toHaveLength(1);
-    expect(rules.at(-1)).toBe(mine[0]);
+    expect(rules.slice(rules.indexOf(mine[0]) + 1).map((r) => r.approvedBy)).toEqual(slug in FOUNDER_ANSWERS ? [FOUNDER_ANSWERS_APPROVED] : []);
     expect(ruleReach(base, fixes.edits, mine[0])).toEqual({ excused: once(fixes.mockup), accepted: once(fixes.build) });
     expect(mine[0].jsOff).toBeUndefined();
   });
@@ -428,10 +434,11 @@ describe.each(Object.keys(CLOSES_ALIKE) as ClosesAlikeSlug[])("%s: task Q2.15's 
     for (const rule of layout) expect(edited.querySelectorAll(rule.selector).length, rule.selector).toBe(/^story-|^stories$/.test(slug) ? 2 : 1);
   });
 
-  it("adds only the eyebrow, the link's words and the hyphens: no banned phrase, no number, no GST", () => {
+  it("adds only the link's words and the hyphens, never an eyebrow (D066 item 4): no banned phrase, no number, no GST", () => {
     for (const line of fixes.build) expect(line).not.toMatch(/incl\. GST|first 500|₹|\+91|91875/);
     expect(findBanned(fixes.build.join("\n"))).toEqual([]);
-    expect(fixes.build.every((line) => line === CLOSE_EYEBROW || line === CLOSE_SEE_HOW.build || line.includes("‑"))).toBe(true);
+    expect(fixes.build.every((line) => line === CLOSE_SEE_HOW.build || line.includes("‑"))).toBe(true);
+    expect(withFacts(base, fixes.edits).querySelectorAll("#close .kh-eyebrow")).toHaveLength(base.querySelectorAll("#close .kh-eyebrow").length);
   });
 
   it("names the consistency review and this task as its approval, for the main session's deviations.md row", () => {
@@ -450,6 +457,63 @@ describe("task Q2.15's layout hides, on every page they name", () => {
       ["build", "#close .kh-split", "(min-width: 900px)"],
     ]);
     expect(mockupFold("ai-toys-for-kids-in-india", "main").querySelectorAll(guide[0].selector)).toHaveLength(1);
+  });
+
+  /* The centred closes whose words the review left as the mockups' (D066 item 4 took their "Pre-order" eyebrow off again):
+     only their button row in the one CTA shape is hidden, on both sides, each found once in the approved page; and no
+     text rule of the review's stays on them. */
+  it("hide /team's, /contact's and the 404's button row alone, found once in each approved close, with no text rule of the review's", () => {
+    for (const slug of ["team", "contact", "404"]) {
+      expect(slug in CLOSES_ALIKE, slug).toBe(false);
+      const rules = CLOSES_ALIKE_LAYOUT_HIDDEN[slug];
+      expect(rules.map((r) => [r.side, r.selector]), slug).toEqual([
+        ["mockup", "#close .kh-section__actions:has(> .kh-btn--cta)"],
+        ["build", "#close .kh-section__actions:has(> .kh-btn--cta)"],
+      ]);
+      expect(mockupFold(slug, "main").querySelectorAll(rules[0].selector), slug).toHaveLength(1);
+      expect(mockupFold(slug, "main").querySelectorAll("#close .kh-eyebrow"), slug).toHaveLength(0);
+      expect((VISUAL_HIDDEN[slug] ?? []).filter((r) => r.approvedBy === rules[0].approvedBy), slug).toEqual(rules);
+      expect((TEXT_DEVIATIONS[slug] ?? []).filter((r) => r.approvedBy === rules[0].approvedBy), slug).toEqual([]);
+    }
+  });
+});
+
+/* Task Q2.17 (D066, the founder's answers on the built selling update; test/e2e/support/deviations.ts FOUNDER_ANSWERS): on
+ * each page the rule excuses and accepts exactly the sentences its edits change, against the frozen mockup with every
+ * earlier rule of the page applied (FOUNDER_ANSWERS_PASSES), it is the page's last rule, it adds no banned phrase, and the
+ * pre-launch test (G29, D066 item 6) is gone from the page as the edits leave it. Each route's test holds the build to that
+ * edited mockup, markup and words alike. */
+describe.each(Object.keys(FOUNDER_ANSWERS) as FounderAnswersSlug[])("%s: task Q2.17's founder answers (D066) as a parity deviation", (slug) => {
+  const fixes = FOUNDER_ANSWERS[slug];
+  const base = FOUNDER_ANSWERS_PASSES[slug].reduce<Element>((el, pass) => withFacts(el, pass), mockupFold(slug, "main"));
+  const once = (lines: readonly string[]) => [...new Set(lines)];
+
+  it("lists exactly the sentences the edits change, against the mockup with every earlier rule of the page applied", () => {
+    expect(factSentences(base, fixes.edits)).toEqual({ missing: [...fixes.mockup], extra: [...fixes.build] });
+    expect(fixes.mockup.length + fixes.build.length).toBeGreaterThan(0);
+  });
+
+  it("is the page's last text rule, which excuses and accepts exactly those sentences and no other line", () => {
+    const rules = TEXT_DEVIATIONS[slug] ?? [];
+    const mine = rules.filter((r) => r.approvedBy === fixes.approvedBy && r.reason === fixes.reason);
+    expect(mine).toHaveLength(1);
+    expect(rules.at(-1)).toBe(mine[0]);
+    expect(ruleReach(base, fixes.edits, mine[0])).toEqual({ excused: once(fixes.mockup), accepted: once(fixes.build) });
+    expect(mine[0].jsOff).toBeUndefined();
+  });
+
+  it("hides nothing of its own for the pixels: each block it changes is closed, or already hidden by an earlier rule", () => {
+    expect(fixes.hidden).toEqual({ both: [], mockup: [], build: [] });
+    expect((VISUAL_HIDDEN[slug] ?? []).filter((r) => r.approvedBy === fixes.approvedBy)).toEqual([]);
+  });
+
+  it("takes the pre-launch test off the page (D066 item 6), adds no banned phrase, and names D066 and this task as its approval", () => {
+    const edited = blockSentences(withFacts(base, fixes.edits)).join("\n");
+    expect(blockSentences(base).join("\n")).toMatch(/before launch/i);
+    expect(edited).not.toMatch(/before launch|make it say/i);
+    expect(findBanned(fixes.build.join("\n"))).toEqual([]);
+    expect(fixes.approvedBy).toBe(FOUNDER_ANSWERS_APPROVED);
+    expect(FOUNDER_ANSWERS_APPROVED).toMatch(/^D066 items .* \(founder, 2026-10-16; task Q2\.17; deviations\.md rows to come\)$/);
   });
 });
 

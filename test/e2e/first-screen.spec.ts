@@ -32,8 +32,9 @@ const tapViewport = VIEWPORTS[0];
  * there Kheelu and the boy's head are their boxes in the crop that shows (PHOTO_CROPS), and a photo has no word sticker.
  * Since task Q2.9 (the selling update: the founder's 5-line H1, D065 item 1; the main session's ruling (a): the bubble
  * stays persistent, D050) the phone crop stops short of the bubble's column (hero-section.css), so Kheelu ends on the
- * first screen at 390 x 844 and 412 x 915 with the column clear beside it; and on Home the hero's words (the eyebrow,
- * the h1, the lead and the price line) stay clear of the bubble too, not only its links.
+ * first screen at 390 x 844 and 412 x 915 with the column clear beside it. Since task Q2.17 (D066 item 1, "after the
+ * hero", which overturns ruling (a) for Home's first screen) Home's phone screens show no bubble until the hero's button
+ * leaves and the bar shows (the block at the end of the bubble cases); the crop keeps its margin.
  * At 360 x 590 the DS phone hero (the words, the full-width button, the trust line, then the board: design-system
  * 10-pages.md "Phones") leaves 82 px under the price sentence, so the board starts below the fold there: Kheelu's box
  * is printed, not asserted (the task 8c.1 report lists the options for the founder). Build only: the approved mockup
@@ -103,7 +104,8 @@ async function heroArt(page: Page) {
       words: [...document.querySelectorAll("main .ks-hero :is(.kh-eyebrow, h1, .kh-heading__lead, .ks-price)")]
         .filter((el) => el.checkVisibility())
         .map((el) => ({ name: (el.textContent ?? "").trim().slice(0, 40), box: box(el)! })),
-      bubble: bubble?.checkVisibility() ? box(bubble) : null,
+      // Shown, or hidden in place while it waits for the bar (D066 item 1, task Q2.17: visibility hidden on Home's phones).
+      bubble: bubble?.checkVisibility({ visibilityProperty: true }) ? box(bubble) : null,
       width: window.innerWidth,
       height: window.innerHeight,
     };
@@ -257,9 +259,17 @@ for (const slug of FIRST_SCREEN_PAGES) {
         const { page } = await harness.open(route, vp);
         const art = await heroArt(page);
         console.log(`[first-screen] ${route.id} ${vp.name}: bubble ${fmt(art.bubble)}, Kheelu ${fmt(art.kheelu)}, sticker ${fmt(art.sticker)}, child's head ${fmt(art.head)}`);
-        expect(art.bubble, `${route.id} ${vp.name}: the WhatsApp bubble does not show`).not.toBeNull();
         // A board carries Kheelu, the cast sticker and the word sticker; Home's photo (task Q2.1) Kheelu and the boy, no sticker.
         expect(art.kheelu && art.head && (art.photo || art.sticker), `${route.id} ${vp.name}: no Kheelu, word sticker or child in the hero picture that shows`).toBeTruthy();
+        /* Home since task Q2.17 (D066 item 1, "after the hero"): on a phone the bubble waits for the buy bar, which waits
+           for the hero's button, so the first screen shows no bubble at all, and it is not focusable; it comes with the
+           bar (the block below). Clear of the art, the links and the words by its absence. */
+        if (slug === "home") {
+          expect(art.bubble, `${route.id} ${vp.name}: the WhatsApp bubble shows on Home's first phone screen`).toBeNull();
+          expect(await page.locator(".ks-wa").getAttribute("inert"), `${route.id} ${vp.name}: the waiting bubble is focusable`).not.toBeNull();
+          return;
+        }
+        expect(art.bubble, `${route.id} ${vp.name}: the WhatsApp bubble does not show`).not.toBeNull();
         expect(overlap(art.bubble!, art.kheelu!), `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers Kheelu ${fmt(art.kheelu)}`).toBe(false);
         if (art.sticker) expect(overlap(art.bubble!, art.sticker), `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers the word sticker ${fmt(art.sticker)}`).toBe(false);
         expect(overlap(art.bubble!, art.head!), `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers the child's head ${fmt(art.head)}`).toBe(false);
@@ -273,12 +283,72 @@ for (const slug of FIRST_SCREEN_PAGES) {
           covered.map((link) => `"${link.name}" ${fmt(link.box)}`),
           `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers a hero link`,
         ).toEqual([]);
-        // Home's hero words too (task Q2.9; the main session's ruling (a) of the selling update).
-        if (slug === "home") {
-          expect(art.words.length, `${route.id} ${vp.name}: the instrument found no hero words`).toBeGreaterThan(3);
-          const under = art.words.filter((w) => overlap(art.bubble!, w.box)).map((w) => `"${w.name}" ${fmt(w.box)}`);
-          expect(under, `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers the hero's words`).toEqual([]);
-        }
+      });
+    }
+  });
+}
+
+/* Task Q2.17 (D066 item 1, "after the hero"; acceptance): Home's first phone screen at 360 x 640, 390 x 844 and 412 x 915
+ * shows no WhatsApp bubble, so it has one action, Pre-order: the buy bar waits for the hero's button (#hero-cta), and the
+ * bubble with it, hidden in place and inert. Once the button leaves the screen the bar shows, and the bubble with it,
+ * lifted above it (D050); back at the top the bar hides again and the bubble stays, at rest. It is fixed, so its showing
+ * shifts nothing (no layout-shift entry names it). The product page's bar shows from first paint, so its bubble shows
+ * there from the start (the block above). Build only: the approved mockup has no bubble. */
+{
+  const route = mockupRoute("home");
+  const AFTER_HERO_VIEWPORTS: readonly Viewport[] = [kheeluPhone(360, 640), ...KHEELU_VIEWPORTS];
+  /** What the bubble and the bar say: shown or hidden in place, inert, aside, its gap to the screen's foot, the bar. */
+  const bubbleState = (page: Page) =>
+    page.evaluate(() => {
+      const bubble = document.querySelector<HTMLElement>(".ks-wa")!;
+      const root = document.documentElement;
+      return {
+        visibility: getComputedStyle(bubble).visibility,
+        inert: bubble.hasAttribute("inert"),
+        aside: bubble.classList.contains("is-hidden"),
+        gap: Math.round(innerHeight - bubble.getBoundingClientRect().bottom),
+        bar: root.dataset.buybar ?? null,
+        seen: root.hasAttribute("data-buybar-seen"),
+        barHeight: document.querySelector<HTMLElement>(".kh-buybar")?.offsetHeight ?? 0,
+      };
+    });
+  test.describe(`first screen, the WhatsApp bubble after the hero (D066 item 1): ${route.id}`, () => {
+    test.skip(PARITY_TARGET === "mockup", "self-test: the approved mockup has no bubble");
+    gateRouteGroup(route);
+    for (const vp of AFTER_HERO_VIEWPORTS) {
+      test(vp.name, async ({ harness }) => {
+        const { page } = await harness.open(route, vp);
+        await page.evaluate(() => {
+          const w = window as unknown as { __khShifts: string[] };
+          w.__khShifts = [];
+          new PerformanceObserver((list) => {
+            for (const entry of list.getEntries() as unknown as { sources?: { node?: Node | null }[] }[]) {
+              for (const source of entry.sources ?? []) if (source.node instanceof Element && source.node.closest(".ks-wa")) w.__khShifts.push("ks-wa");
+            }
+          }).observe({ type: "layout-shift", buffered: true });
+        });
+        await page.waitForFunction(() => document.documentElement.hasAttribute("data-buybar"), undefined, { timeout: 5_000 });
+        const first = await bubbleState(page);
+        console.log(`[first-screen] ${route.id} ${vp.name}: first screen ${JSON.stringify(first)}`);
+        expect(first, `${route.id} ${vp.name}: the first screen shows the bubble`).toMatchObject({ visibility: "hidden", inert: true, bar: "hidden", seen: false });
+        // Past the hero's button: the bar shows, and the bubble with it, above the bar.
+        const below = await page.locator("#hero-cta").evaluate((el) => Math.ceil(el.getBoundingClientRect().bottom + scrollY) + 1);
+        await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), below);
+        await expect.poll(async () => (await bubbleState(page)).bar).toBe("shown");
+        await expect.poll(async () => (await bubbleState(page)).visibility).toBe("visible");
+        await expect.poll(async () => {
+          const s = await bubbleState(page);
+          return Math.abs(s.gap - s.barHeight - 16) <= 1;
+        }, `${route.id} ${vp.name}: the bubble rises above the bar, 16 px over it`).toBe(true);
+        const shown = await bubbleState(page);
+        console.log(`[first-screen] ${route.id} ${vp.name}: past the hero ${JSON.stringify(shown)}`);
+        expect(shown).toMatchObject({ seen: true, inert: shown.aside });
+        // Back at the top: the bar hides again; the bubble stays (D050), at rest.
+        await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+        await expect.poll(async () => (await bubbleState(page)).bar).toBe("hidden");
+        const top = await bubbleState(page);
+        expect(top, `${route.id} ${vp.name}: back at the top the bubble went again`).toMatchObject({ visibility: "visible", seen: true, inert: top.aside });
+        expect(await page.evaluate(() => (window as unknown as { __khShifts: string[] }).__khShifts)).toEqual([]);
       });
     }
   });

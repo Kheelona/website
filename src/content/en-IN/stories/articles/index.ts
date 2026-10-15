@@ -46,8 +46,8 @@ export interface ArticlePageCopy {
   readonly keep: { readonly title: string; readonly action: { readonly label: string; readonly href: SitePath } };
   /** The journal close (identical to the hub's, stories.md fold 6): the pre-order button with the price beside it. */
   readonly close: {
-    /** The hub's heading, and every guide's whose topic has none of its own below. Each heading carries the eyebrow every
-     *  selling close carries, "Pre-order" (task Q2.15; the consistency review's CON-6). */
+    /** The hub's heading, and every guide's whose topic has none of its own below. No eyebrow, as the approved closes: the
+     *  founder declined the "Pre-order" eyebrow task Q2.15 had added (the consistency review's CON-6; D066 item 4). */
     readonly heading: JournalCloseHeading;
     /** The heading by the article's topic (the D2C plan v2 §7; task Q2.12): a topic named here closes in its own words,
      *  any other in `heading`. A talking guide has no such close (B5). */
@@ -61,15 +61,11 @@ export interface ArticlePageCopy {
   };
 }
 
-/** A journal close's heading: the eyebrow, the title with its one accent, the lead. */
+/** A journal close's heading: the title with its one accent, the lead. */
 interface JournalCloseHeading {
-  readonly eyebrow: Copy;
   readonly title: Copy;
   readonly lead: Copy;
 }
-
-/** The eyebrow over every selling close (Home, the product page, /safety, /setup, the guide; task Q2.15, CON-6). */
-const CLOSE_EYEBROW = "Pre-order";
 
 const HUB_PATH: SitePath = "/stories";
 const hubLink = navigation.main.find((link) => link.href === HUB_PATH);
@@ -90,11 +86,10 @@ export const articlePageCopy = {
   /* story-talking-toys-and-late-talkers.html fold 9 (story-talking-toys-and-late-talkers.md fold 9). */
   keep: { title: "Keep reading", action: { label: "All guides for parents of 3 to 7 year olds", href: HUB_PATH } },
   /* The journal close block, identical to the hub's (stories.md fold 6; story-*.html close). Full mode changes only the
-     price sentence, which the offer words. Since task Q2.15 (the consistency review's CON-6, CON-7) each heading carries
-     the "Pre-order" eyebrow every selling close carries, and the ghost link reads as /team's and /contact's. */
+     price sentence, which the offer words. Since task Q2.15 (the consistency review's CON-7; D066 item 4) the ghost link
+     reads as /team's and /contact's. */
   close: {
     heading: {
-      eyebrow: CLOSE_EYEBROW,
       title: "A toy that {hand:asks back.}",
       lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It answers your child, then asks a question back.",
     },
@@ -105,12 +100,10 @@ export const articlePageCopy = {
        one a parent sets). */
     topicHeadings: {
       "screen-time": {
-        eyebrow: CLOSE_EYEBROW,
         title: "A toy that talks, {hand:with no screen.}",
         lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It answers your child, then asks a question back, and each Kheelu has a daily limit on how long it talks.",
       },
       "ai-and-safety": {
-        eyebrow: CLOSE_EYEBROW,
         title: "A toy you can {hand:check.}",
         lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It has no camera and can’t browse the internet, and you can read every conversation in the parent app.",
       },

@@ -67,7 +67,9 @@ export const STEP_ASIDE_FROM: Readonly<Record<SupportChatContext, string>> = {
  * every page clear of it (whatsapp-float.css). The link is the one client part, `StepAsideLink` (tasks 4.7 and 4.9),
  * the server's markup until it arms: below 900 px it steps aside, off the right edge, while what its context names
  * (`STEP_ASIDE_FROM`: the prices, the store's form, the /thanks address step, the first screens' tap targets) crosses its band or a field of it has
- * focus, so it never covers a price or a field.
+ * focus, so it never covers a price or a field. Since task Q2.17 (D066 item 1, "after the hero") it also waits for the
+ * buy bar on a phone where the bar waits for the hero's Pre-order button (Home): hidden by whatsapp-float.css from first
+ * paint and inert (WAIT_FOR_BAR) until the bar first shows, then it stays; the server's markup is unchanged.
  * PostHog reads `data-ph-capture-attribute-cta="whatsapp-float"`; on /thanks the bubble also carries `ph-no-capture`,
  * so that page keeps zero autocapture events (tracking inventory row 18).
  */

@@ -57,8 +57,8 @@ const OPTIONS = {
  *  and the safe-AI-toy guide's contact line as D063 item 2 rules them (task Q2.3; seller-facts.ts). The close by topic of
  *  the selling update (task Q2.12; the D2C plan v2 §7; SELLING_CLOSES): the safe-AI-toy guide closes on "A toy you can
  *  check."; the learning guide keeps the shared close and the late-talker guide its keep-reading close. The consistency
- *  review's (task Q2.15, CON-6 and CON-7; CLOSES_ALIKE): each button close labelled "Pre-order", its ghost link "See how
- *  Kheelu works". */
+ *  review's (task Q2.15, CON-7; CLOSES_ALIKE): each button close's ghost link "See how Kheelu works", its heading without
+ *  an eyebrow, as the mockups' (D066 item 4). */
 function approvedMain(slug: Slug): Element {
   const key = `story-${slug}`;
   const selling = Object.hasOwn(SELLING_CLOSES, key) ? SELLING_CLOSES[key as keyof typeof SELLING_CLOSES].edits : [];

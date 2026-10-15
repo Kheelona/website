@@ -1,8 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { CtaBlock } from "@/components/sections/CtaBlock/CtaBlock";
+import { cta } from "@/content/en-IN/cta";
+import { seller } from "@/content/en-IN/seller";
+import { TRUST_COMPACT, trustItems } from "@/content/en-IN/trust";
+import { buildOffer } from "@/lib/offer/offer";
 import { CompareByCategory } from "./CompareByCategory";
 
 /* CompareByCategory (task 3.3): Home fold 7 with its approved words (home.html:270-307). Narrower than 720 px it shows
-   the phone cards, from 720 px the DS table. */
+   the phone cards, from 720 px the DS table. Since task Q2.17 the product page's fold ends on a CTA block (the slot). */
 
 const meta = {
   title: "Sections/CompareByCategory",
@@ -62,3 +67,21 @@ type Story = StoryObj<typeof meta>;
 
 /** Home fold 7: cards below 720 px, the table from 720 px, then the guide link (`compare-learn`). */
 export const Home: Story = {};
+
+/** The product page's fold 8 since task Q2.17 (D066 item 3): no guide link, and the page's CTA block right after the
+ *  comparison (`product-compare`), centred under the heading, as the section registry composes it. */
+export const ProductWithButton: Story = {
+  args: {
+    link: undefined,
+    cta: (
+      <CtaBlock
+        cta="product-compare"
+        align="center"
+        trust={TRUST_COMPACT.map((id) => trustItems[id])}
+        offer={buildOffer("token")}
+        ctaLabel={cta.preorder}
+        help={seller.help}
+      />
+    ),
+  },
+};

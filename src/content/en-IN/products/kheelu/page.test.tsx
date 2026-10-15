@@ -15,8 +15,13 @@ import {
   CLAIM_FIXES,
   COPY_FIXES,
   FAQ_FIXES,
+  FOUNDER_ANSWERS,
+  FOUNDER_ANSWERS_APPROVED,
+  G28_LINES,
   LANGUAGES_FAQ,
   OFFER_ADDITIONS,
+  PRICE_LINE,
+  PRODUCT_COMPARE_CTA,
   PRODUCT_CHATS,
   PRODUCT_COMPARE,
   PRODUCT_HERO,
@@ -50,6 +55,7 @@ import { faqs, filmLink } from "../../faqs";
 import { filmQuotes, films } from "../../films";
 import { recognitionStrip } from "../../recognition";
 import { seller } from "../../seller";
+import { TRUST_COMPACT, trustItems } from "../../trust";
 import { kheeluPage } from "./page";
 import { product } from "./product";
 
@@ -113,9 +119,11 @@ const BEFORE_SELLING = withFacts(
   FAQ_FIXES["meet-kheelu"].edits,
 );
 const SELLING = SELLING_UPDATE["meet-kheelu"];
-/** Then task Q2.10's selling update (SELLING_UPDATE) in a pass of its own, and D063 item 2: the help lines without the
- *  call (task Q2.3; seller-facts.ts; the consumer care declaration keeps it, task Q2.10): what the build must say. */
-const MOCKUP = withSellerFacts(withFacts(BEFORE_SELLING, SELLING.edits));
+/** Then task Q2.10's selling update (SELLING_UPDATE) in a pass of its own, then task Q2.17's founder answers in theirs
+ *  (FOUNDER_ANSWERS; D066), and D063 item 2: the help lines without the call (task Q2.3; seller-facts.ts; the consumer
+ *  care declaration keeps it, task Q2.10): what the build must say. */
+const ANSWERS = FOUNDER_ANSWERS["meet-kheelu"];
+const MOCKUP = withSellerFacts(withFacts(withFacts(BEFORE_SELLING, SELLING.edits), ANSWERS.edits));
 /* And the one CTA block shape (task Q2.15, the consistency review's R2): every CTA block's button full width on phones
    with the arrow (test/support/mockup-compare.ts `withOneCtaShape`). */
 withOneCtaShape(MOCKUP);
@@ -337,9 +345,10 @@ describe("the product page in full mode", () => {
   const { main } = rendered(FULL);
 
   it("prints the full-mode price line beside every chilli button and drops the split", () => {
-    // The short price line (D065 item 3; task Q2.8): the hero, the sample chats (task Q2.10) and the close.
+    // The short price line (D065 item 3; task Q2.8): the hero, the sample chats (task Q2.10), the comparison (task Q2.17,
+    // D066 item 3) and the close.
     const whole = rendered(FULL).whole;
-    expect([...whole.querySelectorAll(".ks-price")].map((p) => p.textContent)).toEqual(Array(3).fill("₹7,999 in total, paid in full when you order."));
+    expect([...whole.querySelectorAll(".ks-price")].map((p) => p.textContent)).toEqual(Array(4).fill("₹7,999 in total, paid in full when you order."));
     expect(main.querySelector(".kh-offer__split")).toBeNull();
   });
 
@@ -516,9 +525,10 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
     ]);
     // The route's other rules are P15's (V6, task 4.7), the founder's page facts (V16, task 6.7), task 7.1b's copy fixes
     // (V17), task 8c.2's offer additions (D061, rows numbered at the merge), task 8c.3's added blocks, task Q2.10's
-    // selling update and its added folds, task 8b.1's claim fixes (V27) and task 8c.4's FAQ fix, for both runs: the FAQ
-    // answer, the details, the heading, the sources, the offer's two lines, the added blocks, the selling update's lines,
-    // D058's lines and the languages question read the same with JavaScript off. (Task 8c.6's expert clip left the page.)
+    // selling update and its added folds, task 8b.1's claim fixes (V27), task 8c.4's FAQ fix and task Q2.17's founder
+    // answers (D066), for both runs: the FAQ answer, the details, the heading, the sources, the offer's two lines, the added
+    // blocks, the selling update's lines, D058's lines, the languages question and D066's lines read the same with
+    // JavaScript off. (Task 8c.6's expert clip left the page.)
     expect(TEXT_DEVIATIONS["meet-kheelu"].map((rule) => [rule.approvedBy.slice(0, "deviations.md V3".length), rule.jsOff ?? false])).toEqual([
       ["deviations.md V3", true],
       ["deviations.md V6", false],
@@ -531,6 +541,8 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
       [SELLING_UPDATE_APPROVED.slice(0, "deviations.md V3".length), true],
       ["deviations.md V2", false],
       ["deviations.md V4", false],
+      [FOUNDER_ANSWERS_APPROVED.slice(0, "deviations.md V3".length), false],
+      [FOUNDER_ANSWERS_APPROVED.slice(0, "deviations.md V3".length), false],
     ]);
     expect(TEXT_DEVIATIONS["meet-kheelu"][2].approvedBy).toBe(PAGE_FACTS["meet-kheelu"].approvedBy);
     expect(TEXT_DEVIATIONS["meet-kheelu"][3].approvedBy).toBe(COPY_FIXES["meet-kheelu"].approvedBy);
@@ -541,6 +553,22 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
     expect(TEXT_DEVIATIONS["meet-kheelu"][8].approvedBy).toBe(SELLING_UPDATE_APPROVED);
     expect(TEXT_DEVIATIONS["meet-kheelu"][9].approvedBy).toBe(CLAIM_FIXES["meet-kheelu"].approvedBy);
     expect(TEXT_DEVIATIONS["meet-kheelu"][10].approvedBy).toBe(FAQ_FIXES["meet-kheelu"].approvedBy);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][11].approvedBy).toBe(ANSWERS.approvedBy);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][12].approvedBy).toBe(ANSWERS.approvedBy);
+  });
+
+  /* Task Q2.17 (D066 item 3): the CTA block after the comparison sits in a fold the approved page lacks (SELLING_ADDITIONS),
+     so its lines are accepted by a rule of their own that excuses no approved line, and it needs no pixel hide. */
+  it("accepts the CTA block after the comparison by a rule that takes exactly its lines and excuses nothing", () => {
+    const rule = TEXT_DEVIATIONS["meet-kheelu"][11];
+    const block = [...BUILT.whole.querySelector('section[aria-labelledby="compare-title"]')!.querySelectorAll(".kh-section__actions, .ks-beside")];
+    expect(block).toHaveLength(2);
+    const lines = block.flatMap((el) => blockSentences(el));
+    expect(lines).toEqual([...PRODUCT_COMPARE_CTA]);
+    expect(lines.every((line) => rule.build!.test(line))).toBe(true);
+    for (const line of sentences(words(MOCKUP))) expect(rule.mockup.test(line), line).toBe(false);
+    expect(rule.jsOff).toBeUndefined();
+    expect(VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.approvedBy === FOUNDER_ANSWERS_APPROVED)).toEqual([]);
   });
 
   it("accepts on the build side exactly the stacked panels' lines, as the page prints them, and no other line of the page", () => {
@@ -675,9 +703,10 @@ describe("the product page's selling update (task Q2.10; the D2C plan v2 §3)", 
     expect(kheeluPage.sections.some((s) => s.kind === "films-strip" && "layout" in s.config)).toBe(false);
   });
 
-  it("carries the plan's CTA values in order: product-ask after the sample chats, the safety line's product-safety-learn, no product-safety", () => {
-    expect(values(WHOLE)).toEqual(["product-top", "product-offer", "share-whatsapp", "product-ask", "product-safety-learn", "product-foot"]);
-    expect(WHOLE.querySelectorAll(`a[href="${STORE}"]`)).toHaveLength(4);
+  /* Task Q2.17 (D066 item 3): one more button, right after the comparison, `product-compare`. */
+  it("carries the plan's CTA values in order: product-ask after the sample chats, product-compare after the comparison, the safety line's product-safety-learn, no product-safety", () => {
+    expect(values(WHOLE)).toEqual(["product-top", "product-offer", "share-whatsapp", "product-ask", "product-compare", "product-safety-learn", "product-foot"]);
+    expect(WHOLE.querySelectorAll(`a[href="${STORE}"]`)).toHaveLength(5);
   });
 
   describe("fold 1, the hero", () => {
@@ -766,20 +795,27 @@ describe("the product page's selling update (task Q2.10; the D2C plan v2 §3)", 
     });
   });
 
-  it("fold 7: Good to know says \"instead of guessing\" (D065 item 8) and the daily limit (D065 item 5), in the plan's order", () => {
+  /* Task Q2.17 (D066 item 7, G28's other half, both true): "Between conversations nothing is sent anywhere, and when Kheelu
+     rests, its Wi‑Fi is switched off." after the wake-up line (G28's row: "beside the wake-up button"), before the daily
+     limit, with the DS moon (Kheelu resting). */
+  it("fold 7: Good to know says \"instead of guessing\" (D065 item 8), Wi‑Fi off at rest (D066 item 7) and the daily limit (D065 item 5), in order", () => {
     const know = [...fold("modes-title").querySelectorAll("#know-title ~ ul > li")];
     const lines = know.map(text);
-    expect(lines.slice(0, 5)).toEqual([
+    expect(lines.slice(0, 6)).toEqual([
       "AI mode needs your home Wi‑Fi. Story mode and Bluetooth mode work without it.",
       PRODUCT_KNOW.browse.build,
       PRODUCT_KNOW.wake,
+      G28_LINES.know,
       PRODUCT_KNOW.limit,
       "At setup, you enter your child’s age in the parent app.",
     ]);
-    expect(lines[5]).toBe("It charges with the charger in the box.");
-    expect([...know[3].querySelectorAll("path")].map((path) => path.getAttribute("d"))).toEqual([ICON_PATHS.clock]);
-    // Never that a parent sets the limit (D065 item 5), and no Wi-Fi-at-rest line (G28, still open).
-    expect(text(fold("modes-title"))).not.toMatch(/you set (?:the|its) (?:daily )?limit|Wi‑?Fi off|switched off at rest/i);
+    expect(lines[6]).toBe("It charges with the charger in the box.");
+    expect(G28_LINES.know).toBe("Between conversations nothing is sent anywhere, and when Kheelu rests, its Wi‑Fi is switched off.");
+    expect([...know[3].querySelectorAll("path")].map((path) => path.getAttribute("d"))).toEqual([ICON_PATHS.moon]);
+    expect([...know[4].querySelectorAll("path")].map((path) => path.getAttribute("d"))).toEqual([ICON_PATHS.clock]);
+    expect(findBanned(G28_LINES.know)).toEqual([]);
+    // Never that a parent sets the limit (D065 item 5).
+    expect(text(fold("modes-title"))).not.toMatch(/you set (?:the|its) (?:daily )?limit/i);
   });
 
   it("fold 8: compares by kind of product, moved from Home in its built words, with no link (compare-learn stays Home's)", () => {
@@ -793,8 +829,34 @@ describe("the product page's selling update (task Q2.10; the D2C plan v2 §3)", 
     );
     expect(compare.querySelector(".ks-compare-stack .kh-caption")?.textContent).toBe(PRODUCT_COMPARE.caption);
     expect(compare.querySelector(".kh-compare-wrap")?.getAttribute("aria-label")).toBe("Comparison by kind of product");
-    expect(compare.querySelector("a")).toBeNull();
+    // No link but the fold's button (compare-learn stays Home's).
+    expect([...compare.querySelectorAll("a")].filter((a) => !a.closest(".kh-section__actions, .ks-beside"))).toEqual([]);
     expect(text(compare)).not.toMatch(/Alexa|Echo|ChatGPT|Miko|Tonies|YouTube/);
+  });
+
+  /* Task Q2.17 (D066 item 3; the CMO's CMO-8): a parent who has just compared can act there. The one CTA shape (R2): the
+     button full width on phones with the arrow, its price line a block of its own after it (C1), then the trust line (the
+     risk-reversal line and the delivery line), centred under the centred heading; no help line (§1.1: closes and the store). */
+  it("fold 8: ends on the one CTA block right after the comparison, tracked product-compare: the price line after the button (C1), the trust line, no help line", () => {
+    const compare = fold("compare-title");
+    const button = compare.querySelector<HTMLElement>(".kh-btn--cta")!;
+    expect(compare.querySelectorAll(".kh-btn--cta")).toHaveLength(1);
+    expect(button.getAttribute("data-ph-capture-attribute-cta")).toBe("product-compare");
+    expect(text(button)).toBe("Pre-order Kheelu");
+    expect(button.getAttribute("href")).toBe(STORE);
+    expect(button.className).toContain("kh-btn--block");
+    expect(button.querySelector(".ks-btn__arrow")).not.toBeNull();
+    const row = button.closest(".kh-section__actions")!;
+    expect(row.className).toContain("kh-section__actions--center");
+    expect(row.previousElementSibling?.className).toContain("kh-compare-wrap");
+    const price = compare.querySelector(".ks-price")!;
+    expect(price.tagName).toBe("P");
+    expect(price.textContent).toBe(PRICE_LINE.sentence.build);
+    expect(row.contains(price)).toBe(false);
+    expect([...compare.querySelectorAll(".ks-trust li")].map(text)).toEqual([PRICE_LINE.returns.build, PRICE_LINE.delivery]);
+    expect(compare.querySelector(".ks-help")).toBeNull();
+    const [config] = section("compare-by-category");
+    expect(config.cta).toEqual({ cta: "product-compare", align: "center", trust: TRUST_COMPACT.map((id) => trustItems[id]) });
   });
 
   /* Task Q2.15 (the consistency review's CMO-3, CON-4): "See how we built safety in" is the DS secondary button with the

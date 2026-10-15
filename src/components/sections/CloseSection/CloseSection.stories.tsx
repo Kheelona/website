@@ -106,13 +106,12 @@ export const Guide: Story = {
   },
 };
 
-/** `journal`: the stories hub and article closes; the 4:3 board shows from 900 px. Labelled "Pre-order" as every selling
- *  close since task Q2.15 (CON-6). */
+/** `journal`: the stories hub and article closes; the 4:3 board shows from 900 px. No eyebrow, as the approved closes
+ *  (D066 item 4). */
 export const Journal: Story = {
   args: {
     variant: "journal",
     heading: {
-      eyebrow: "Pre-order",
       title: "A toy that {hand:asks back.}",
       lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It answers your child, then asks a question back.",
     },
@@ -129,11 +128,11 @@ export const Journal: Story = {
   },
 };
 
-/** `center`: the team close (centred heading and block, no art), labelled "Pre-order" since task Q2.15 (CON-6). */
+/** `center`: the team close (centred heading and block, no art; no eyebrow, as the approved close, D066 item 4). */
 export const Center: Story = {
   args: {
     variant: "center",
-    heading: { eyebrow: "Pre-order", title: "Bring Kheelu {hand:home.}" },
+    heading: { title: "Bring Kheelu {hand:home.}" },
     cta: { cta: "finale", trust: COMPACT, helpLine: true, secondary: seeHow },
   },
 };

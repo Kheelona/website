@@ -278,6 +278,14 @@ const CTA_TABLE = {
     pages: PRODUCT,
     note: "placed after Gate A (D065, the selling update): no approved mockup carries it (tracking inventory §6)",
   },
+  "product-compare": {
+    status: "new",
+    reserved: false,
+    role: "preorder",
+    element: 'Product button after the comparison ("Other AI gives answers. Kheelu asks questions.")',
+    pages: PRODUCT,
+    note: "placed after Gate A (D066 item 3, task Q2.17): no approved mockup carries it (tracking inventory §6)",
+  },
   "safety-facts": {
     status: "new",
     reserved: false,

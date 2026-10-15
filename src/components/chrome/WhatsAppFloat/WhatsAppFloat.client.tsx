@@ -17,6 +17,28 @@ import { usePagePath } from "@/lib/page-path";
 /** From this width the bubble never steps aside (whatsapp-float.css's own cut-off). */
 export const LAPTOP_QUERY = "(min-width: 900px)";
 
+/**
+ * Where the bubble waits for the buy bar (D066 item 1, task Q2.17: "after the hero"), exactly as whatsapp-float.css words
+ * its rule: on a phone, with scripting (no script, no bar: the bubble shows as before), on a page that carries the bar
+ * and whose hero's Pre-order button is `#hero-cta` (Home; /contact's `#hero-cta` is its ways-to-reach group), until the
+ * bar has first shown on the page (`html[data-buybar-seen]`, StickyBuyBar). The CSS hides it from first paint; this link
+ * is inert while it waits, so it is never focused while hidden.
+ */
+export const WAIT_FOR_BAR = {
+  media: "(max-width: 899px) and (scripting: enabled)",
+  page: "html:not([data-buybar-seen]):has(.kh-buybar):has(#hero-cta.kh-btn--cta)",
+} as const;
+
+/** True while the bubble waits for the bar: the query matches and the page reads so. A browser that cannot read the
+ *  selector (no `:has()`) drops the CSS rule too, so the bubble neither hides nor turns inert there. */
+export function waitsForBar(root: Element, media: Pick<MediaQueryList, "matches">): boolean {
+  try {
+    return media.matches && root.matches(WAIT_FOR_BAR.page);
+  } catch {
+    return false;
+  }
+}
+
 /** A form field: what a parent types into or picks from. The pay button is not one, nor a hidden input. */
 const FIELDS = "input:not([type=hidden]), select, textarea";
 
@@ -115,8 +137,27 @@ export interface StepAsideLinkProps extends ComponentPropsWithoutRef<"a"> {
 export function StepAsideLink({ from, className, children, ...link }: StepAsideLinkProps) {
   const ref = useRef<HTMLAnchorElement>(null);
   const [aside, setAside] = useState(false);
+  const [waiting, setWaiting] = useState(false);
   // The page (usePagePath: Vercel's "/index" for Home is "/", task 8c.7): a page change re-arms it.
   const pathname = usePagePath();
+
+  /* D066 item 1: inert while it waits for the bar (WAIT_FOR_BAR), read again when the bar marks its first show
+     (html[data-buybar-seen]), when the window crosses the query's width and on every page change. */
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return;
+    const root = document.documentElement;
+    const media = window.matchMedia(WAIT_FOR_BAR.media);
+    const read = () => setWaiting(waitsForBar(root, media));
+    const marks = new MutationObserver(read);
+    marks.observe(root, { attributeFilter: ["data-buybar-seen"] });
+    media.addEventListener("change", read);
+    read();
+    return () => {
+      marks.disconnect();
+      media.removeEventListener("change", read);
+      setWaiting(false);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     const bubble = ref.current;
@@ -138,7 +179,7 @@ export function StepAsideLink({ from, className, children, ...link }: StepAsideL
   }, [from, pathname]);
 
   return (
-    <a ref={ref} {...link} className={clsx(className, aside && "is-hidden")} inert={aside}>
+    <a ref={ref} {...link} className={clsx(className, aside && "is-hidden")} inert={aside || waiting}>
       {children}
     </a>
   );

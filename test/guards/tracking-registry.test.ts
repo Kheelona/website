@@ -811,6 +811,8 @@ describe("cta.ts: the cta values", () => {
         "home-why",
         "product-ask",
         "safety-facts",
+        /* D066 item 3 (task Q2.17): the product page's button after the comparison. */
+        "product-compare",
       ].sort(),
     );
     for (const [value, decision] of AFTER_GATE_A) {

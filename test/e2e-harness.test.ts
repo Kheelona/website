@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { ARTICLE_SLUGS as PLAN_ARTICLES } from "@/content/en-IN/routes";
 import { ARTICLE_CLOSES, stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import {
-  CLOSES_ALIKE,
+  CLOSES_ALIKE_APPROVED,
   FOOTER_COLS_HIDDEN,
   FOOTER_ROWS,
   PRICE_LINE_HIDDEN,
@@ -179,20 +179,19 @@ describe("hideDeviations", () => {
     expect(ruling.mockup.test("WhatsApp or call +91 91875 46483")).toBe(true);
     expect(ruling.build?.test("Message us on WhatsApp.")).toBe(true);
     expect(ruling.mockup.test("Questions?")).toBe(false);
-    /* Besides the price lines' rule every page shares, /contact's main changes nothing the text pass reads but its close's
-       eyebrow (task Q2.15, CON-6) and the seller card's GSTIN line, and a guide the approved mockups do not show has that
-       shared rule alone. */
-    expect(textDeviations("contact").map((r) => r.approvedBy)).toEqual([PRICE_LINE_TEXT.approvedBy, CLOSES_ALIKE.contact.approvedBy, SELLER_FACTS_APPROVED]);
+    /* Besides the price lines' rule every page shares, /contact's main changes nothing the text pass reads but the seller
+       card's GSTIN line (its close's "Pre-order" eyebrow, task Q2.15's, came off again: D066 item 4), and a guide the
+       approved mockups do not show has that shared rule alone. */
+    expect(textDeviations("contact").map((r) => r.approvedBy)).toEqual([PRICE_LINE_TEXT.approvedBy, SELLER_FACTS_APPROVED]);
     expect(textDeviations("article:busy-hands-no-screens")).toEqual([PRICE_LINE_TEXT]);
   });
 
   it("hides /contact's seller card on both sides, its only block D063 rewords (the GSTIN line off)", () => {
-    // The page's own rules: its close's eyebrow, the build's alone (task Q2.15, CON-6), and its button row in the one CTA
-    // shape on both sides (R2).
+    // The page's own rule: its close's button row in the one CTA shape on both sides (task Q2.15, R2); its eyebrow came off
+    // again (D066 item 4).
     expect((VISUAL_HIDDEN.contact ?? []).map((r) => [r.side, r.selector, r.approvedBy])).toEqual([
-      ["build", "#close .kh-eyebrow", CLOSES_ALIKE.contact.approvedBy],
-      ["mockup", "#close .kh-section__actions:has(> .kh-btn--cta)", CLOSES_ALIKE.contact.approvedBy],
-      ["build", "#close .kh-section__actions:has(> .kh-btn--cta)", CLOSES_ALIKE.contact.approvedBy],
+      ["mockup", "#close .kh-section__actions:has(> .kh-btn--cta)", CLOSES_ALIKE_APPROVED],
+      ["build", "#close .kh-section__actions:has(> .kh-btn--cta)", CLOSES_ALIKE_APPROVED],
     ]);
     const contact = visualHidden("contact").filter((r) => r.approvedBy === SELLER_FACTS_APPROVED);
     expect(contact.map((r) => [r.side, r.selector])).toEqual([

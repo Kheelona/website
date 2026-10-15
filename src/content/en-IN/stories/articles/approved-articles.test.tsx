@@ -231,10 +231,9 @@ describe("the safe-AI-toy guide's claim fixes (D058; tasks 8b.2a and 8b.1b)", ()
       ["mockup", ".kh-trust > .kh-trust__item:nth-child(8)", FIXES.approvedBy],
       /* The close's heading and lead in the AI toys and safety topic's words (task Q2.12). */
       ...(["mockup", "build"] as const).map((side) => [side, "#close .kh-heading", SELLING_CLOSES[SLUG].approvedBy]),
-      /* The close's ghost link on both sides and its eyebrow on the build's (task Q2.15: CON-6, CON-7), then its two rows at
-         the DS spacing on both sides (CON-1, CON-7). */
+      /* The close's ghost link on both sides (task Q2.15: CON-7; no eyebrow, D066 item 4), then its two rows at the DS
+         spacing on both sides (CON-1, CON-7). */
       ...(["mockup", "build"] as const).map((side) => [side, "#close .kh-btn--ghost", CLOSES_ALIKE[SLUG].approvedBy]),
-      ["build", "#close .kh-eyebrow", CLOSES_ALIKE[SLUG].approvedBy],
       ...(["mockup", "build"] as const).map((side) => [side, "#close .kh-section__actions", CLOSES_ALIKE[SLUG].approvedBy]),
     ]);
   });

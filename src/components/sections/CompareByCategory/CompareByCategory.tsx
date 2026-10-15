@@ -20,9 +20,10 @@ function markIcon(mark: CompareMark | undefined) {
  * Home fold 7 (task 3.3; components §2; DS gap G-05): Kheelu against kinds of products. Below 720 px one card per row
  * with Kheelu's answer first and the other kinds as a muted list (`ks-compare-stack`, revealing once); from 720 px the
  * DS comparison table (`CompareTable`, a focusable named region) with Kheelu's column marked. The caption follows
- * each; the guide link closes the fold.
+ * each; then the page's CTA block where it has one (`cta`, the product page's `product-compare`, D066 item 3, task
+ * Q2.17); the guide link closes the fold.
  */
-export function CompareByCategory({ heading, label, firstColumn, columns, rows, caption, link, offer }: CompareByCategoryProps) {
+export function CompareByCategory({ heading, label, firstColumn, columns, rows, caption, link, offer, cta }: CompareByCategoryProps) {
   const text = (copy: Copy) => <RichText text={copy} offer={offer} />;
   for (const row of rows) {
     if (row.others.length !== columns.others.length || row.phone.others.length !== columns.others.length) {
@@ -69,6 +70,7 @@ export function CompareByCategory({ heading, label, firstColumn, columns, rows, 
           usIndex={0}
           caption={text(caption)}
         />
+        {cta}
         <SectionLinkRow link={link} center />
       </Container>
     </Section>

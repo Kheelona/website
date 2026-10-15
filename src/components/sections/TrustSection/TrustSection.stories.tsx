@@ -125,11 +125,19 @@ const NEVER = {
 /** Safety fold 3: five "never" items, three then two on laptops. */
 export const Never: Story = { args: NEVER };
 
-/** Safety fold 3 since task Q2.11: six items with the daily limit (D065 item 5), three and three on laptops. */
+/** Safety fold 3 since task Q2.11: six items with the daily limit (D065 item 5), three and three on laptops; since task
+ *  Q2.17 the limit's item adds G28's other half (D066 item 7). */
 export const NeverSix: Story = {
   args: {
     ...NEVER,
-    items: [...NEVER.items, { icon: "clock", title: "No talking all day.", body: "Each Kheelu has a daily limit on how long it talks." }],
+    items: [
+      ...NEVER.items,
+      {
+        icon: "clock",
+        title: "No talking all day.",
+        body: "Each Kheelu has a daily limit on how long it talks, and no conversation runs on without end. When it rests, its Wi‑Fi is off.",
+      },
+    ],
   },
 };
 

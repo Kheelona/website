@@ -354,13 +354,13 @@ describe("Home fold 6 · the expert clip (plan fold 6; D061 items 12-13, D064 it
 describe("Home fold 7 · what you get, and what you pay (plan fold 7; D065 items 3, 4 and 6; CMO M4, m8)", () => {
   const offer = fold("offer-title");
 
-  /* Task Q2.15 (the CMO's built review of the selling update, CMO-7): the lead names its subject, Kheelu, where "There
-     every day at home…" under "What you get, and what you pay." made a parent stop and re-read; the founder signs (D015). */
-  it("heads the card with the built h2 and the plan's lead, its subject named", () => {
+  /* The plan's lead as approved: the founder declined the CMO's "Kheelu is there every day at home…" (CMO-7), which task
+     Q2.15 had built (D066 item 4; task Q2.17). */
+  it("heads the card with the built h2 and the plan's lead, in the plan's words", () => {
     expect(offer.getAttribute("id")).toBe("offer");
     expect(text(offer.querySelector(".kh-eyebrow"))).toBe("Pre-order");
     expect(text(offer.querySelector("h2"))).toBe("What you get, and what you pay.");
-    expect(text(offer.querySelector(".kh-heading__lead"))).toBe("Kheelu is there every day at home, with no screen to switch off.");
+    expect(text(offer.querySelector(".kh-heading__lead"))).toBe("There every day at home, with no screen to switch off.");
     expect(findBanned(text(offer.querySelector(".kh-heading__lead")))).toEqual([]);
   });
 

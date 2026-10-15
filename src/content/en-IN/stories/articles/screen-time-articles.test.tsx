@@ -439,8 +439,8 @@ describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) =
     const built = document.createElement("div");
     built.append(...[main.querySelector(".ks-related")!, main.querySelector("#close")!].map((n) => n.cloneNode(true)));
     const reference = document.createElement("div");
-    /* The close's help line without the call (D063 item 2; task Q2.3; seller-facts.ts); the close labelled "Pre-order" and
-       its ghost link "See how Kheelu works", as the learning-toys article's (task Q2.15, CON-6 and CON-7; CLOSES_ALIKE). */
+    /* The close's help line without the call (D063 item 2; task Q2.3; seller-facts.ts); its ghost link "See how Kheelu
+       works", as the learning-toys article's (task Q2.15, CON-7; CLOSES_ALIKE), and no eyebrow (D066 item 4). */
     const learning = "story-learning-toys-for-a-three-year-old";
     reference.append(
       ...[mockupFold(learning, ".mk-related"), withFacts(mockupFold(learning, "#close"), CLOSES_ALIKE[learning].edits)].map((n) => withSellerFacts(n)),

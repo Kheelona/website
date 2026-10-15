@@ -1948,10 +1948,11 @@ export function passesBeforeSellingCloses(slug: string): readonly (readonly Fact
 }
 
 /* Task Q2.15 (the consistency review wf_78365aa5-dfe, the main session's rulings of 2026-10-15; the CMO's built review
-   of the selling update): the closes labelled and linked alike, page by page. Every selling close carries the eyebrow
-   "Pre-order", as Home's, the product page's, /safety's, /setup's and the guide's already do (CON-6): /team, /contact,
-   the 404, the stories hub and the button-close articles gain it. The ghost link under the hub's and the articles' close
-   reads "See how Kheelu works", as /team's and /contact's (CON-7). /safety's first question breaks no more at its
+   of the selling update): the closes linked alike, page by page. The ghost link under the hub's and the articles' close
+   reads "See how Kheelu works", as /team's and /contact's (CON-7; the founder approved it, D066 item 4). The eyebrow
+   "Pre-order" task Q2.15 put over the /team, /contact, 404, hub and button-close article closes (CON-6) came off again
+   with task Q2.17: the founder declined it (D066 item 4), so those closes read as the mockups' and only their one CTA
+   shape stays (CLOSES_ALIKE_LAYOUT_HIDDEN below). /safety's first question breaks no more at its
    hyphens: "3‑year‑old" with non-breaking hyphens, as the product page's question writes it (QAP-6). In page-facts.ts's
    form, applied after each page's earlier rules (its selling close, task Q2.12's, the last of them): `edits` turn that
    mockup into the build, `mockup` and `build` are the sentences they change (each page's parity-deviations unit test
@@ -1961,49 +1962,26 @@ export function passesBeforeSellingCloses(slug: string): readonly (readonly Fact
 export const CLOSES_ALIKE_APPROVED =
   "the consistency review's rulings (main session, 2026-10-15; the CMO's built review of the selling update; task Q2.15; deviations.md rows to come)";
 const CLOSES_ALIKE_WHOSE = "task Q2.15's consistency review";
-/** The eyebrow over every selling close (CON-6). */
-export const CLOSE_EYEBROW = "Pre-order";
 /** The ghost link under a close, as /team's and /contact's word it (CON-7): the mockup's journal words, then the build's. */
 export const CLOSE_SEE_HOW = { mockup: "See how it works", build: "See how Kheelu works" } as const;
 /** /safety's first question (faqs.ts `age-three`): the approved hyphens, then the non-breaking ones (U+2011, QAP-6). */
 export const SAFETY_AGE_QUESTION = { mockup: "Is Kheelu OK for a 3-year-old?", build: "Is Kheelu OK for a 3‑year‑old?" } as const;
-/** A close's heading with the eyebrow before its title: the title's words and its markup (its one accent). */
-const eyebrowed = (title: { readonly text: string; readonly markup: string }): FactEdit => ({
-  at: "#close-title",
-  was: title.text,
-  now: `<p class="kh-eyebrow">${CLOSE_EYEBROW}</p><h2 class="kh-heading__title" id="close-title">${title.markup}</h2>`,
-});
-const JOURNAL_CLOSE_TITLE = { text: "A toy that asks back.", markup: 'A toy that <span class="kh-hand">asks back.</span>' } as const;
 const seeHowKheelu = rewrite("#close .kh-btn--ghost > span", CLOSE_SEE_HOW.mockup, CLOSE_SEE_HOW.build);
-/** A centred close that gains the eyebrow and nothing else of its words. */
-const centredClose = (title: { readonly text: string; readonly markup: string }): PageFacts => ({
-  edits: [eyebrowed(title)],
-  mockup: [],
-  build: [CLOSE_EYEBROW],
-  /* The eyebrow is the build's alone: hidden on its side, the heading lines up with the mockup's. */
-  hidden: { both: [], mockup: [], build: ["#close .kh-eyebrow"] },
-  reason: "the close labelled as every selling close, with the eyebrow \"Pre-order\" (task Q2.15; the consistency review's CON-6)",
-  approvedBy: CLOSES_ALIKE_APPROVED,
-});
-/** A journal close: the eyebrow, and the ghost link in /team's and /contact's words. */
-const journalClose = (title: { readonly text: string; readonly markup: string }): PageFacts => ({
-  edits: [eyebrowed(title), seeHowKheelu],
+/** A journal close: the ghost link in /team's and /contact's words (its heading as the mockup's, D066 item 4). */
+const JOURNAL_CLOSE: PageFacts = {
+  edits: [seeHowKheelu],
   mockup: [CLOSE_SEE_HOW.mockup],
-  build: [CLOSE_EYEBROW, CLOSE_SEE_HOW.build],
-  /* The ghost link is longer: hidden on both sides; the eyebrow is the build's alone. */
-  hidden: { both: ["#close .kh-btn--ghost"], mockup: [], build: ["#close .kh-eyebrow"] },
-  reason:
-    "the journal close labelled as every selling close (\"Pre-order\", CON-6) and its ghost link worded as /team's and /contact's, \"See how Kheelu works\" (CON-7; task Q2.15)",
+  build: [CLOSE_SEE_HOW.build],
+  /* The ghost link is longer: hidden on both sides. */
+  hidden: { both: ["#close .kh-btn--ghost"], mockup: [], build: [] },
+  reason: "the journal close's ghost link worded as /team's and /contact's, \"See how Kheelu works\" (CON-7; task Q2.15; D066 item 4)",
   approvedBy: CLOSES_ALIKE_APPROVED,
-});
+};
 export const CLOSES_ALIKE = {
-  team: centredClose({ text: "Bring Kheelu home.", markup: 'Bring Kheelu <span class="kh-hand">home.</span>' }),
-  contact: centredClose({ text: "Ready when you are.", markup: 'Ready when <span class="kh-hand">you are.</span>' }),
-  "404": centredClose({ text: "Looking for Kheelu?", markup: 'Looking for <span class="kh-hand">Kheelu?</span>' }),
-  stories: journalClose(JOURNAL_CLOSE_TITLE),
-  "story-learning-toys-for-a-three-year-old": journalClose(JOURNAL_CLOSE_TITLE),
-  /* The AI toys and safety topic's close words (task Q2.12, JOURNAL_SAFETY_CLOSE), then the eyebrow and the link. */
-  "story-what-to-look-for-in-a-safe-ai-toy": journalClose(JOURNAL_SAFETY_CLOSE.build.title),
+  stories: JOURNAL_CLOSE,
+  "story-learning-toys-for-a-three-year-old": JOURNAL_CLOSE,
+  /* After the AI toys and safety topic's close words (task Q2.12, JOURNAL_SAFETY_CLOSE), the link. */
+  "story-what-to-look-for-in-a-safe-ai-toy": JOURNAL_CLOSE,
   safety: {
     edits: [rewrite(".kh-faq__q > span", SAFETY_AGE_QUESTION.mockup, SAFETY_AGE_QUESTION.build)],
     mockup: [SAFETY_AGE_QUESTION.mockup],
@@ -2354,7 +2332,7 @@ export const HOME_SELLING = {
     mockupFolds: ["close-title"],
     buildFold: "offer-title",
     mockup: ["Questions?"],
-    build: ["Pre-order", "Kheelu is there every day at home, with no screen to switch off.", "Kheelona+ is our paid subscription, on top of the free parent app."],
+    build: ["Pre-order", "There every day at home, with no screen to switch off.", "Kheelona+ is our paid subscription, on top of the free parent app."],
     reason: "Fold 7, the offer card moved up from the close (plan fold 7): the lead (CMO M4), the one perk list (CMO m8), the Kheelona+ note, no help line, home-offer",
   },
   safety: {
@@ -2802,6 +2780,120 @@ const SELLING_CHATS_JS_OFF: TextDeviation = {
   approvedBy: SELLING_UPDATE_APPROVED,
 };
 
+/* Task Q2.17 (D066, the founder's answers on the built selling update, 2026-10-16), page by page:
+   - item 6, G29's other half: the pre-launch test is not true, so its line comes off every page that printed it: the
+     product page's Safety tab, /safety's "Replies" answer (faqs.ts child-safety-groups) and /terms section 12, whose
+     sentence keeps "When it isn’t sure, it says it doesn’t know rather than guess." (the legal page stays a draft);
+   - item 7, G28's other half, both true: /safety fold 3's daily-limit item adds that no conversation runs on without end
+     and that Kheelu's Wi‑Fi is off when it rests, and the product page's "Good to know" gains "Between conversations
+     nothing is sent anywhere, and when Kheelu rests, its Wi‑Fi is switched off." after the wake-up line (G28's row asked
+     for it "beside the wake-up button"). Both blocks are hidden for the pixels already: the "never" list whole
+     (SAFETY_SELLING_LAYOUT_HIDDEN) and Good to know whole (SELLING_UPDATE's hide);
+   - item 3, one more button on the product page, right after the comparison (`product-compare`): the comparison is task
+     Q2.10's added fold, so the block's lines take a text rule of their own (PRODUCT_COMPARE_CTA, below), not an edit.
+   In page-facts.ts's form, applied after each page's earlier rules, the last of them in a pass of its own (FOUNDER_ANSWERS
+   _PASSES): `edits` turn that mockup into the build, and `mockup` and `build` are the sentences they change, for the text
+   pass (src/content/en-IN/pages/parity-deviations.test.ts proves them exactly those, and each route's test holds the
+   build to the edited mockup). No pixel hide of its own: the Safety tab's panel and the "Replies" answer are closed (a
+   hidden tab, a closed item), and /terms' paragraph is the claim fixes' build-side hide already (`#toy > p:nth-child(4)`).
+   Literal, because Playwright cannot load every content module; the content modules' tests hold each literal to the
+   module. The deviations.md rows are the main session's, drafted in the task's report; the founder signs the words at
+   Gate B (D015), the legal page with D029's sign-off. */
+export const FOUNDER_ANSWERS_APPROVED = "D066 items 3, 6 and 7 (founder, 2026-10-16; task Q2.17; deviations.md rows to come)";
+/** G29's other half, the pre-launch test, off every page (D066 item 6): each sentence that goes, as its page printed it,
+ *  and /terms' sentence without it. */
+export const PRE_LAUNCH_TEST = {
+  safetyTab: "Tested before launch by trying to make it say unsafe things.",
+  answer: "Before launch, we test it by trying to make it say things it shouldn’t.",
+  terms: {
+    was: "We test it before launch by trying to make it say unsafe things, and when it isn’t sure, it says it doesn’t know rather than guess.",
+    now: "When it isn’t sure, it says it doesn’t know rather than guess.",
+  },
+} as const;
+/** G28's other half, both true (D066 item 7), in the founder's words: /safety fold 3's daily-limit body before and after,
+ *  and the product page's new "Good to know" line. */
+export const G28_LINES = {
+  never: {
+    was: "Each Kheelu has a daily limit on how long it talks.",
+    now: "Each Kheelu has a daily limit on how long it talks, and no conversation runs on without end. When it rests, its Wi‑Fi is off.",
+  },
+  know: "Between conversations nothing is sent anywhere, and when Kheelu rests, its Wi‑Fi is switched off.",
+} as const;
+/** /safety's "Replies" answer as task 8b.1's claim fixes left it (CLAIM_FIXES.safety), its lead in bold. */
+const REPLIES =
+  "its answers are generated by an AI model that is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top. It can’t browse or search the web. When it doesn’t know something, it says so. Before launch, we test it by trying to make it say things it shouldn’t. You can read every conversation.";
+/** /terms section 12's second paragraph as task 8b.1's claim fixes left it (CLAIM_FIXES.terms). */
+const TERMS_TOY =
+  "We test it before launch by trying to make it say unsafe things, and when it isn’t sure, it says it doesn’t know rather than guess. Even so, an answer can sometimes be wrong, so treat its replies as conversation, not advice. Kheelu doesn’t replace you: stay close, and read its conversations in the parent app.";
+export const FOUNDER_ANSWERS = {
+  "meet-kheelu": {
+    edits: [
+      /* Fold 7 (How it works), Good to know: G28's line after the wake-up line, before the daily limit (item 7). */
+      {
+        at: "#know-title ~ ul > li",
+        was: PRODUCT_KNOW.wake,
+        now: `<li>${icon("microphone")}<span>${PRODUCT_KNOW.wake}</span></li><li>${icon("moon")}<span>${G28_LINES.know}</span></li>`,
+      },
+      /* The details' Safety tab: its pre-launch line comes off (item 6). */
+      cutAround("#panel-safety li > span", PRE_LAUNCH_TEST.safetyTab, "li"),
+    ],
+    mockup: [PRE_LAUNCH_TEST.safetyTab],
+    build: [G28_LINES.know],
+    hidden: NO_HIDES,
+    reason:
+      "Good to know with G28's line, Wi‑Fi off at rest and nothing sent between conversations (D066 item 7); the details' Safety tab without the pre-launch test line, which the founder ruled not true (D066 item 6, G29)",
+    approvedBy: FOUNDER_ANSWERS_APPROVED,
+  },
+  safety: {
+    edits: [
+      /* Fold 3, the daily-limit item: G28's other half after the daily limit (item 7). */
+      rewrite(".kh-trust__body", G28_LINES.never.was, G28_LINES.never.now),
+      /* Fold 7, the second question's "Replies" answer: without its pre-launch sentence (item 6). */
+      rewrite("li", `Replies: ${REPLIES}`, `<strong>Replies:</strong> ${REPLIES.replace(` ${PRE_LAUNCH_TEST.answer}`, "")}`),
+    ],
+    mockup: [G28_LINES.never.was, PRE_LAUNCH_TEST.answer],
+    build: sentences(G28_LINES.never.now),
+    hidden: NO_HIDES,
+    reason:
+      "the daily-limit item with G28's other half, no endless conversation and Wi‑Fi off at rest (D066 item 7); the \"Replies\" answer without the pre-launch test sentence, which the founder ruled not true (D066 item 6, G29)",
+    approvedBy: FOUNDER_ANSWERS_APPROVED,
+  },
+  terms: {
+    /* Section 12's second paragraph: its first sentence without the pre-launch test (item 6). */
+    edits: [rewrite("p", TERMS_TOY, TERMS_TOY.replace(PRE_LAUNCH_TEST.terms.was, PRE_LAUNCH_TEST.terms.now))],
+    mockup: [PRE_LAUNCH_TEST.terms.was],
+    build: [PRE_LAUNCH_TEST.terms.now],
+    hidden: NO_HIDES,
+    reason: "section 12 without the pre-launch test, which the founder ruled not true; \"When it isn’t sure, it says it doesn’t know rather than guess.\" stays (D066 item 6, G29; D065 item 8)",
+    approvedBy: FOUNDER_ANSWERS_APPROVED,
+  },
+} as const satisfies Readonly<Record<string, PageFacts>>;
+export type FounderAnswersSlug = keyof typeof FOUNDER_ANSWERS;
+/** Item 3 (D066; the CMO's CMO-8): the product page's CTA block right after the comparison (`product-compare`): its
+ *  button, the short price line and the trust line, each printed once more. The comparison is task Q2.10's added fold
+ *  (SELLING_ADDITIONS), which the approved page lacks and the visual pass hides whole on the build's side, so the block
+ *  needs no hide of its own and no edit: a text rule accepts its lines and excuses nothing. */
+export const PRODUCT_COMPARE_CTA = ["Pre-order Kheelu", ...sentences(PRICE_LINE.sentence.build), PRICE_LINE.returns.build, PRICE_LINE.delivery] as const;
+const PRODUCT_COMPARE_CTA_TEXT: TextDeviation = {
+  mockup: /(?!)/,
+  build: oneOf(PRODUCT_COMPARE_CTA),
+  reason: "the CTA block after the comparison (D066 item 3): its button, the short price line and the trust line, once more each",
+  approvedBy: FOUNDER_ANSWERS_APPROVED,
+};
+/** The passes a page's earlier rules make before task Q2.17's, each a pass of its own, in the order each route's test
+ *  applies them: the mockup the founder's answers start from. */
+export const FOUNDER_ANSWERS_PASSES: Readonly<Record<FounderAnswersSlug, readonly (readonly FactEdit[])[]>> = {
+  "meet-kheelu": [
+    [...PAGE_FACTS["meet-kheelu"].edits, ...COPY_FIXES["meet-kheelu"].edits],
+    CLAIM_FIXES["meet-kheelu"].edits,
+    OFFER_ADDITIONS["meet-kheelu"].edits,
+    FAQ_FIXES["meet-kheelu"].edits,
+    SELLING_UPDATE["meet-kheelu"].edits,
+  ],
+  safety: [COPY_FIXES.safety.edits, CLAIM_FIXES.safety.edits, SAFETY_SELLING.edits, CLOSES_ALIKE.safety.edits],
+  terms: [[...PAGE_FACTS.terms.edits, ...COPY_FIXES.terms.edits], CLAIM_FIXES.terms.edits],
+};
+
 export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   store: [
     {
@@ -2824,11 +2916,11 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...factsHidden(ARTICLE_CLAIM_FIXES["story-what-to-look-for-in-a-safe-ai-toy"], ARTICLE_CLAIM_FIXES_WHOSE),
     /* The close of the AI toys and safety topic (task Q2.12, D065). */
     ...factsHidden(SELLING_CLOSES["story-what-to-look-for-in-a-safe-ai-toy"], SELLING_CLOSES_WHOSE),
-    /* The close's eyebrow and its ghost link, then its rows' spacing (task Q2.15). */
+    /* The close's ghost link, then its rows' spacing (task Q2.15). */
     ...factsHidden(CLOSES_ALIKE["story-what-to-look-for-in-a-safe-ai-toy"], CLOSES_ALIKE_WHOSE),
     ...CLOSES_ALIKE_LAYOUT_HIDDEN["story-what-to-look-for-in-a-safe-ai-toy"],
   ],
-  /* The close's eyebrow and its ghost link, then its rows' spacing (task Q2.15). */
+  /* The close's ghost link, then its rows' spacing (task Q2.15). */
   "story-learning-toys-for-a-three-year-old": [
     ...factsHidden(CLOSES_ALIKE["story-learning-toys-for-a-three-year-old"], CLOSES_ALIKE_WHOSE),
     ...CLOSES_ALIKE_LAYOUT_HIDDEN["story-learning-toys-for-a-three-year-old"],
@@ -2845,7 +2937,7 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     },
     /* The topic's line (V9 as amended in task 7.1b), compared by the text pass. */
     ...factsHidden(COPY_FIXES.stories, COPY_FIXES_WHOSE),
-    /* The close's eyebrow and its ghost link, then its rows' spacing (task Q2.15). */
+    /* The close's ghost link, then its rows' spacing (task Q2.15). */
     ...factsHidden(CLOSES_ALIKE.stories, CLOSES_ALIKE_WHOSE),
     ...CLOSES_ALIKE_LAYOUT_HIDDEN.stories,
   ],
@@ -2923,13 +3015,12 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...factsHidden(CLAIM_FIXES.team, CLAIM_FIXES_WHOSE),
     /* The keys line in G26's words and the close's lead (task Q2.12, D065). */
     ...factsHidden(SELLING_CLOSES.team, SELLING_CLOSES_WHOSE),
-    /* The close's eyebrow, then its button row in the one shape (task Q2.15). */
-    ...factsHidden(CLOSES_ALIKE.team, CLOSES_ALIKE_WHOSE),
+    /* The close's button row in the one shape (task Q2.15; its eyebrow came off again, D066 item 4). */
     ...CLOSES_ALIKE_LAYOUT_HIDDEN.team,
   ],
-  /* The close's eyebrow, then its button row in the one shape (task Q2.15). */
-  contact: [...factsHidden(CLOSES_ALIKE.contact, CLOSES_ALIKE_WHOSE), ...CLOSES_ALIKE_LAYOUT_HIDDEN.contact],
-  "404": [...factsHidden(CLOSES_ALIKE["404"], CLOSES_ALIKE_WHOSE), ...CLOSES_ALIKE_LAYOUT_HIDDEN["404"]],
+  /* The close's button row in the one shape (task Q2.15; its eyebrow came off again, D066 item 4). */
+  contact: CLOSES_ALIKE_LAYOUT_HIDDEN.contact,
+  "404": CLOSES_ALIKE_LAYOUT_HIDDEN["404"],
   setup: [
     ...(["mockup", "build"] as const).map((side) => ({
       /* Step 2 is CMO fix M-S1 in the build (its light without a colour, V8), so it may wrap differently and move every
@@ -3203,10 +3294,10 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     factsRule(ARTICLE_CLAIM_FIXES["story-what-to-look-for-in-a-safe-ai-toy"]),
     /* The close of the AI toys and safety topic (task Q2.12, D065): SELLING_CLOSES above. */
     factsRule(SELLING_CLOSES["story-what-to-look-for-in-a-safe-ai-toy"]),
-    /* The close's eyebrow and its ghost link (task Q2.15): CLOSES_ALIKE above. */
+    /* The close's ghost link (task Q2.15): CLOSES_ALIKE above. */
     factsRule(CLOSES_ALIKE["story-what-to-look-for-in-a-safe-ai-toy"]),
   ],
-  /* The close's eyebrow and its ghost link (task Q2.15): CLOSES_ALIKE above. */
+  /* The close's ghost link (task Q2.15): CLOSES_ALIKE above. */
   "story-learning-toys-for-a-three-year-old": [factsRule(CLOSES_ALIKE["story-learning-toys-for-a-three-year-old"])],
   stories: [
     {
@@ -3217,7 +3308,7 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     },
     /* The screen-time topic's line (V9 as amended in task 7.1b): COPY_FIXES above. */
     factsRule(COPY_FIXES.stories),
-    /* The close's eyebrow and its ghost link (task Q2.15): CLOSES_ALIKE above. */
+    /* The close's ghost link (task Q2.15): CLOSES_ALIKE above. */
     factsRule(CLOSES_ALIKE.stories),
   ],
   /* The screen-time guide card's line and two FAQ answers (V18, task 7.1b): COPY_FIXES above. The answers sit in closed
@@ -3282,11 +3373,22 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     /* The languages question (task 8c.4, D061): FAQ_FIXES above. Its answer sits in a closed item, which the text pass
        does not read; faqs.test.ts and the route's unit test hold it. */
     factsRule(FAQ_FIXES["meet-kheelu"]),
+    /* The founder's answers on the built selling update (task Q2.17, D066): the CTA block after the comparison, then
+       FOUNDER_ANSWERS above, the page's last. */
+    PRODUCT_COMPARE_CTA_TEXT,
+    factsRule(FOUNDER_ANSWERS["meet-kheelu"]),
   ],
   /* The open FAQ answer and the closed one's "At 3:" line (V19, task 7.1b): COPY_FIXES above. The selling update (task
      Q2.11): SAFETY_SELLING above, before D058's claim fixes, which only the FAQ fixes may follow
-     (pages/parity-deviations.test.ts); the text pass applies the rules in any order. */
-  safety: [factsRule(COPY_FIXES.safety), factsRule(SAFETY_SELLING), factsRule(CLAIM_FIXES.safety), factsRule(CLOSES_ALIKE.safety)],
+     (pages/parity-deviations.test.ts); the text pass applies the rules in any order. The founder's answers (task Q2.17,
+     D066): FOUNDER_ANSWERS above, the page's last. */
+  safety: [
+    factsRule(COPY_FIXES.safety),
+    factsRule(SAFETY_SELLING),
+    factsRule(CLAIM_FIXES.safety),
+    factsRule(CLOSES_ALIKE.safety),
+    factsRule(FOUNDER_ANSWERS.safety),
+  ],
   /* The age answer's "At 3" sentence (V22, wave 8 merge): COPY_FIXES above. It sits in a closed item, which the text
      pass does not read; the route's unit test holds it. */
   "ai-toys-for-kids-in-india": [
@@ -3324,12 +3426,7 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     factsRule(CLAIM_FIXES.team),
     /* The keys line in G26's words and the close's lead (task Q2.12, D065): SELLING_CLOSES above. */
     factsRule(SELLING_CLOSES.team),
-    /* The close's eyebrow (task Q2.15): CLOSES_ALIKE above. */
-    factsRule(CLOSES_ALIKE.team),
   ],
-  /* The close's eyebrow (task Q2.15): CLOSES_ALIKE above. */
-  contact: [factsRule(CLOSES_ALIKE.contact)],
-  "404": [factsRule(CLOSES_ALIKE["404"])],
   setup: [
     {
       /* CMO fix M-S1 (task 5.8): step 2's light names no colour (the app's own screen bracketed it). Since D055 item 25
@@ -3362,8 +3459,9 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
   ],
   refund: [pageFacts("refund")],
   shipping: [pageFacts("shipping")],
-  /* Section 8's refund timing (V21, task 7.1b): COPY_FIXES above. */
-  terms: [pageFacts("terms"), factsRule(COPY_FIXES.terms), factsRule(CLAIM_FIXES.terms)],
+  /* Section 8's refund timing (V21, task 7.1b): COPY_FIXES above. Section 12 without the pre-launch test (task Q2.17,
+     D066): FOUNDER_ANSWERS above, the page's last. */
+  terms: [pageFacts("terms"), factsRule(COPY_FIXES.terms), factsRule(CLAIM_FIXES.terms), factsRule(FOUNDER_ANSWERS.terms)],
 };
 
 /** Task Q2.8's lines (PRICE_LINE, above) as the text pass reads a page's main: D028's sentence and the offer card's note

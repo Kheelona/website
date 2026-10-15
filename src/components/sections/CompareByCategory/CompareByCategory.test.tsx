@@ -97,6 +97,22 @@ describe("CompareByCategory (Home fold 7)", () => {
     expect(screen.getByRole("link", { name: "How to choose an AI toy" })).toHaveAttribute("data-ph-capture-attribute-cta", "compare-learn");
   });
 
+  /* Task Q2.17 (D066 item 3): the product page's comparison ends on a CTA block (`product-compare`), right after the
+     comparison: the phone cards and their caption, then the laptop table, then the block, then any link. Home's fold has
+     none, so its markup stays the approved fold's (above). */
+  it("puts the CTA block it is given right after the comparison (the phone cards, then the table), before any link; nothing without one", () => {
+    const slot = <div className="cta-slot">Pre-order Kheelu</div>;
+    const withLink = render(<CompareByCategory {...PROPS} cta={slot} />).container;
+    const block = withLink.querySelector(".cta-slot")!;
+    expect(block.previousElementSibling).toHaveClass("kh-compare-wrap");
+    expect(block.previousElementSibling?.previousElementSibling).toHaveClass("ks-compare-stack");
+    expect(block.nextElementSibling?.querySelector('a[data-ph-capture-attribute-cta="compare-learn"]')).not.toBeNull();
+    const { container } = render(<CompareByCategory {...PROPS} link={undefined} cta={slot} />);
+    expect(container.querySelector(".kh-container")?.lastElementChild).toHaveClass("cta-slot");
+    expect(container.querySelectorAll("a")).toHaveLength(0);
+    expect(render(<CompareByCategory {...PROPS} />).container.querySelector(".cta-slot")).toBeNull();
+  });
+
   it("refuses a row whose cells or phone lines do not match the columns", () => {
     const bad = { ...PROPS, rows: [{ ...PROPS.rows[0], others: PROPS.rows[0].others.slice(1) }] };
     expect(() => render(<CompareByCategory {...bad} />)).toThrow(/CompareByCategory/);

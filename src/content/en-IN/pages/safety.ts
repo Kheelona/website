@@ -126,9 +126,14 @@ export const safetyPage = {
           { icon: "wifi-slash", title: "No web browsing.", body: "It can’t browse or search the web." },
           { icon: "x", title: "No ads.", body: "Not in the toy, and not in the parent app." },
           { icon: "smiley", title: "No secrets.", body: "It never asks your child to keep one from you." },
-          /* G28 (D065 item 5): the daily limit is true and live; the CMO's m6 words (plan v2 §4 fold 3). Nobody is said
-             to set it, and the per-conversation limit stays unsaid (§1.4, §13 item 2). */
-          { icon: "clock", title: "No talking all day.", body: "Each Kheelu has a daily limit on how long it talks." },
+          /* G28 (D065 item 5): the daily limit is true and live; the CMO's m6 title (plan v2 §4 fold 3). Nobody is said to
+             set it. G28's other half, both true (D066 item 7; task Q2.17): no conversation runs on without end, and Kheelu's
+             Wi‑Fi is off when it rests, in the founder's words. */
+          {
+            icon: "clock",
+            title: "No talking all day.",
+            body: "Each Kheelu has a daily limit on how long it talks, and no conversation runs on without end. When it rests, its Wi‑Fi is off.",
+          },
         ],
         link: { label: "How to choose an AI toy: five checks", href: "/ai-toys-for-kids-in-india" },
       },
