@@ -1,0 +1,10 @@
+/* CompareTable (task Q2.16, the consistency review's QAL-7): the caption line under the table, inside the frame. The DS
+   gives it no place (bundle.css styles .kh-compare-wrap and its cells only), so it sat flush against the frame's left
+   border, 1 px in, on the browser's 12 px p margins, where every cell above keeps a 16 px inset (bundle.css .kh-compare
+   th/td: padding space-3 space-4). It takes the cells' inset, its bottom a space-4 clear of the 24 px corner
+   (--radius-l); no margin, so the padding is all the space there is. Home's comparison on laptops; the privacy page's
+   recipients table passes no caption. */
+.kh-compare-wrap > .kh-caption {
+  margin: 0;
+  padding: var(--space-3) var(--space-4) var(--space-4);
+}
