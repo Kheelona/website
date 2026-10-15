@@ -288,4 +288,13 @@ describe("Button CSS", () => {
     expect(ported.length).toBeGreaterThan(0);
     expect(ported).toEqual(declarations("mockup/mockup.css", ".kh-btn--ghost"));
   });
+
+  /* Task Q2.16 (consistency review QAP-7): a ghost or secondary label that wraps ("Read more: what to look for in a safe
+     AI / toy", "All guides for parents of 3 to 7 / year olds") left one word alone on its second line. The label (the
+     button's one `<span>`, a flex item) balances its lines as the titles do (layout.css), with the longhand, so a label
+     that never wraps keeps the DS's no-wrap. */
+  it("balances a wrapping ghost or secondary label, with the longhand only", () => {
+    expect(declarations("src/components/ui/Button/button.css", ".kh-btn--ghost > span, .kh-btn--secondary > span")).toEqual(["text-wrap-style: balance"]);
+    expect(readRepoFile("src/components/ui/Button/button.css")).not.toMatch(/text-wrap\s*:/);
+  });
 });

@@ -1,0 +1,19 @@
+/* FaqList (task Q2.16, the consistency review's QAL-10; D064 item 10): a question row showed only the pointer on
+   hover, where the site's other clickable rows take the band ground (bundle.css a.kh-listitem:hover). On a pointer
+   device the hovered question takes the same ground, rounded as the item's frame (the DS's own focus radius), squared
+   below while its answer is open; its sign, a band circle at rest, takes the raised ground so it stays seen. Pointer
+   devices only, as every hover of the site (a tap leaves none behind); a state that never moves, so reduced motion
+   changes nothing; keyboard focus keeps the DS ring. The open animation is motion.css's (pick 7B). */
+@media (hover: hover) and (pointer: fine) {
+  .kh-faq__q:hover {
+    border-radius: var(--radius-l);
+    background: var(--surface-band);
+  }
+  .kh-faq__item[open] > .kh-faq__q:hover {
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+  }
+  .kh-faq__q:hover .kh-faq__sign {
+    background: var(--surface-raised);
+  }
+}

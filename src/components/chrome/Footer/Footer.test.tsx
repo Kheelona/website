@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { FOOTER_LEGAL, groupFooterLinks } from "../../../../test/e2e/support/deviations";
 import { Footer, type FooterProps } from "./Footer";
 
 /* Footer (task 3.1): the DS Footer as mockup/partials/footer.html writes it. The full element parity with the
@@ -59,18 +60,68 @@ describe("Footer", () => {
     ]);
   });
 
-  /* Three seller lines: the mockup's GSTIN line came off the website (D063 item 3, D064 item 11; task Q2.3). */
-  it("prints the seller lines, then the grievance officer link, each in its own span of the legal row", () => {
+  /* Three seller lines: the mockup's GSTIN line came off the website (D063 item 3, D064 item 11; task Q2.3). Since task
+     Q2.16 (consistency review QAL-1) the contact line and the grievance officer link are one group, so they wrap
+     together: at 1280 px "Grievance officer" fell alone onto a third line, at 1024 px the contact floated at the right
+     edge between the address and it. */
+  it("prints the seller lines, then the contact line and the grievance officer link as one group of the legal row", () => {
     const { container } = render(<Footer {...PROPS} />);
-    const spans = Array.from(container.querySelectorAll(".kh-footer__legal > span"));
-    expect(spans.map((s) => s.textContent)).toEqual(["© 2026 Entity", "1 Road", "WhatsApp", "Grievance officer"]);
-    expect(within(spans[3] as HTMLElement).getByRole("link")).toHaveAttribute("href", "/contact");
+    const parts = Array.from(container.querySelectorAll(".kh-footer__legal > *"));
+    expect(parts.map((p) => `${p.tagName}.${p.className}`)).toEqual(["SPAN.", "SPAN.", "SPAN.ks-footer__links"]);
+    expect(parts.map((p) => p.textContent)).toEqual(["© 2026 Entity", "1 Road", "WhatsAppGrievance officer"]);
+    expect(within(parts[2] as HTMLElement).getAllByRole("link").map((a) => [a.textContent, a.getAttribute("href")])).toEqual([
+      ["WhatsApp", "https://wa.me/91"],
+      ["Grievance officer", "/contact"],
+    ]);
   });
 
-  it("gives the legal row's links the DS link colour and a full tap height (mockup.css:126)", () => {
-    expect(CSS.replace(/\s+/g, " ")).toContain(
-      ".kh-footer__legal a { display: inline-flex; align-items: center; min-height: var(--tap-min); color: var(--link); }",
+  /* The legal row's links in the DS link colour, each a full tap target (CMO M9), now without moving the line (task
+     Q2.16, QAL-1): mockup.css:126 centred each link's words in a 48 px inline-flex box, which set them 16 px below the
+     copyright and the address on the same row at 1440 px. Each link's own padding makes the 48 px (--tap-min: its 16 px
+     line and a space-4 above and below), and its negative margins give the line its height back, as the store footer's
+     links do (store-footer.css). The group wraps its two parts a space-6 apart, so their 48 px targets never overlap
+     where it wraps (343 px and narrower), and a space-4 apart side by side, the row's own column gap. Its own padding
+     below holds its last line's targets inside the row: the footer's bottom clearance keeps the WhatsApp bubble off its
+     lines at the end of the page (whatsapp-float.css), and a target running 16 px out under the row met the bubble at
+     360 x 590 (chrome.spec.ts). */
+  it("keeps each legal link a full tap target on the seller lines' baseline, and the group's targets apart and in the row", () => {
+    const rule = (selector: string) =>
+      new RegExp(`(?:^|})\\s*${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*\\{([^}]*)\\}`).exec(CSS)?.[1].replace(/\s+/g, " ").trim();
+    expect(rule(".kh-footer__legal a")).toBe(
+      "display: inline-block; padding-block: var(--space-4); margin-block: calc(var(--space-4) * -1); color: var(--link);",
     );
+    expect(rule(".ks-footer__links")).toBe("display: flex; flex-wrap: wrap; gap: var(--space-6) var(--space-4); padding-bottom: var(--space-4);");
+    const [line, space4, tapMin] = [16, 16, 48];
+    expect(line + 2 * space4).toBe(tapMin);
+    expect(CSS).not.toContain("inline-flex");
+  });
+
+  /* The chrome's parity tests hold the build's footer to the mockup's (SiteShell.test.tsx and not-found.test.tsx
+     element by element, chrome.spec.ts pixel by pixel). The grouped legal row is one shared rule of deviations.ts
+     (FOOTER_LEGAL, task Q2.16): groupFooterLinks groups the mockup's contact and grievance spans as SellerLines does, and
+     the rules chrome.spec.ts gives the mockup's footer are footer.css's own, after undoing mockup.css:126's 48 px box. */
+  it("hands the chrome's parity tests the build's legal row: the mockup's spans grouped as built, footer.css's own rules", () => {
+    const legalRules = (css: string) =>
+      [...css.matchAll(/(\.kh-footer__legal a|\.ks-footer__links)\s*\{([^}]*)\}/g)].map((m) => `${m[1]} { ${m[2].replace(/\s+/g, " ").trim()} }`);
+    expect(legalRules(CSS)).toHaveLength(2);
+    expect(legalRules(FOOTER_LEGAL.rules)).toEqual(legalRules(CSS));
+    expect(FOOTER_LEGAL.undo).toBe(".kh-footer__legal a { min-height: 0; }");
+    expect(FOOTER_LEGAL.approvedBy).toMatch(/Q2\.16.*QAL-1/);
+
+    const mockup = document.createElement("footer");
+    mockup.innerHTML = `<div class="kh-footer__legal">
+      <span>© 2026 Entity</span>
+      <span>1 Road</span>
+      <span><a href="https://wa.me/91">WhatsApp</a></span>
+      <span><a href="/contact">Grievance officer</a></span>
+    </div>`;
+    expect(groupFooterLinks(mockup)).toBe(mockup);
+    const { container } = render(<Footer {...PROPS} />);
+    const markup = (el: Element) => el.innerHTML.replace(/>\s+</g, "><").trim();
+    expect(markup(mockup.querySelector(".kh-footer__legal")!)).toBe(markup(container.querySelector(".kh-footer__legal")!));
+    /* A row in any other shape is a mistake, never a silent pass. */
+    mockup.innerHTML = `<div class="kh-footer__legal"><span>© 2026 Entity</span><span>1 Road</span></div>`;
+    expect(() => groupFooterLinks(mockup)).toThrow(/kh-footer__legal/);
   });
 
   /* D064 item 6 (task Q2.4): the gaps between a column's links tightened. The DS stacks them as 48 px rows (bundle.css

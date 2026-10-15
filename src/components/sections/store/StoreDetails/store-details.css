@@ -39,12 +39,11 @@
 }
 
 /* Beside the pay button (store.css:62-64). The block follows the button a step closer than CtaBlock's ks-beside
-   (cta-block.css, an earlier file in the compose order, so this later rule wins at equal specificity). */
+   (cta-block.css, an earlier file in the compose order, so this later rule wins at equal specificity). Its trust line
+   keeps TrustLine's own rows (store.css:63's tighter --space-4 left the links 36 px tap rows whose extensions overlapped;
+   task Q2.16, consistency review QAP-8). */
 .ks-pay-beside {
   margin-top: calc(var(--space-3) * -1);
-}
-.ks-pay-beside .ks-trust {
-  row-gap: var(--space-4);
 }
 .ks-pay-beside .ks-help {
   margin-top: var(--space-2);

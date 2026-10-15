@@ -6,7 +6,8 @@ import type { ReactNode } from "react";
  * (home.html fold 7; CompareByCategory shows cards below 720 px) and the privacy page's recipients on laptops
  * (privacy.html part 6). The wrapper scrolls sideways inside itself, so it is a focusable, named region: keyboard
  * users can reach the hidden columns (DS gap G-05; axe `scrollable-region-focusable`). Marked cells take the DS
- * `kh-yes`, `kh-no` and `kh-some` spans; the check and cross are the `Icon` primitive, passed per cell.
+ * `kh-yes`, `kh-no` and `kh-some` spans; the check and cross are the `Icon` primitive, passed per cell. The caption line
+ * closes the region; `compare-table.css` insets it inside the frame as the cells are (task Q2.16, QAL-7).
  */
 export interface CompareCell {
   text: ReactNode;

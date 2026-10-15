@@ -3,7 +3,7 @@ import { dirname } from "node:path";
 import type { BrowserContext, Page, TestInfo } from "@playwright/test";
 import { expect, hideForParity, motionStarted, requiresServer, test, type OpenOptions } from "./support/fixtures";
 import { ORIGINS, REAL_ORIGINS, STORYBOOK_PORT, TARGET } from "./support/env";
-import { FOOTER_ROWS, PRICE_LINE } from "./support/deviations";
+import { FOOTER_LEGAL, FOOTER_ROWS, PRICE_LINE, STORE_HEAD_ROW, groupFooterLinks } from "./support/deviations";
 import { CHUNK_MAX_DIFF_RATIO } from "./support/parity";
 import { builtUrl } from "./support/routes";
 import { ruleMockupPage } from "./support/seller-facts";
@@ -22,7 +22,10 @@ import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
  *     mockup's element screenshot is the golden (git-ignored, D039); at most 2 percent of pixels may differ, as SPA 1.
  *     The mockup's drawer notes and bar line carry task Q2.8's words first (`withPriceLineWords`), so the pixels
  *     compare the same words on both sides; its footer takes the approved link rows first (V54, V64: 44 px on touch,
- *     32 px with a fine pointer; deviations.ts FOOTER_ROWS, task Q2.14), and the built rows are held to those heights.
+ *     32 px with a fine pointer; deviations.ts FOOTER_ROWS, task Q2.14), and the built rows are held to those heights,
+ *     and the build's legal row (the contact line and the grievance officer link one group, on the copyright's line;
+ *     deviations.ts FOOTER_LEGAL, task Q2.16); the store's header takes the build's row first (the logo at its size,
+ *     the help line's link whole; deviations.ts STORE_HEAD_ROW, task Q2.16).
  *   - Sticky bar (G-09, pick 4): hidden while the hero CTA is on screen, shown past it, aside while an inline chilli
  *     button is on screen, inert while hidden, data-buybar and --ks-buybar-h on <html>, gone from 900 px, sliding up
  *     with motion on and only fading with reduced motion. The page's own hero CTA (#hero-cta) is on screen at first
@@ -222,6 +225,10 @@ test.describe("chrome: element parity with mockup/home.html", () => {
       // The footer's link rows as approved after Gate A (V54: 44 px on touch; V64: 32 px with a fine pointer; task Q2.14),
       // given to the mockup's footer, so the pixels compare the columns, their words and places, in the same rows.
       await ref.addStyleTag({ content: FOOTER_ROWS.css });
+      // The legal row as task Q2.16 builds it (QAL-1): the contact line and the grievance officer link one group, each
+      // link's tap target in its own padding, on the copyright's line (deviations.ts FOOTER_LEGAL).
+      await ref.evaluate(groupFooterLinks);
+      await ref.addStyleTag({ content: `${FOOTER_LEGAL.undo}\n${FOOTER_LEGAL.rules}` });
       const page = await openBuilt(harness, vp);
       await hideForParity(page);
       const rows = await footerRows(page);
@@ -266,6 +273,9 @@ test.describe("chrome: store header and footer parity with mockup/store.html", (
       // The header's help line, the seller lines and the grievance line without the GSTIN and the number (D063 items
       // 2-3; task Q2.3; support/seller-facts.ts).
       await ruleMockupPage(ref, ["header.mk-store-head", "footer.mk-store-foot"]);
+      // The header's row as task Q2.16 builds it (QAP-5): the logo at its size, the help line's link whole
+      // (deviations.ts STORE_HEAD_ROW).
+      await ref.addStyleTag({ content: STORE_HEAD_ROW.css });
       const page = await openBuilt(harness, vp, {}, STORE);
       await hideForParity(page);
       compare(testInfo, `chrome-store-header-${vp.name}.png`, await shot(ref, "header.mk-store-head"), await shot(page, "header.ks-store-head"));
@@ -843,8 +853,9 @@ test.describe("chrome: WhatsApp bubble beside the store's prices (task 7.1a; D05
 const PRODUCT: Built = { host: "marketing", path: "/products/kheelu" };
 const phone324 = VIEWPORTS.find((v) => v.width === 324)!;
 const THANKS_PAID_STORY = `http://localhost:${STORYBOOK_PORT}/iframe.html?id=layouts-storeshell--thanks-paid&viewMode=story`;
-/** The prices the site's bubble steps aside from: WhatsAppFloat's STEP_ASIDE_FROM `site`, written here because the
- *  harness does not load components (WhatsAppFloat.test.tsx holds that selector to the prices the components print). */
+/** The prices the site's bubble steps aside from: the prices of WhatsAppFloat's STEP_ASIDE_FROM `site`, written here
+ *  because the harness does not load components (WhatsAppFloat.test.tsx holds that selector to the prices the components
+ *  print). */
 const PRICES = ".ks-price, .kh-offer__prices, .kh-offer__split, .kh-offer__fine";
 
 /** Puts each visible price of the page right under the bubble, where the bubble sits once the bar has settled at that
@@ -956,6 +967,51 @@ test.describe("chrome: WhatsApp bubble beside the prices (task 4.9; D050)", () =
     await field.evaluate((el: HTMLElement) => el.blur());
     await expect.poll(() => bubbleAside(page)).toEqual(AT_REST);
     expect(await sweepBubble(page)).toEqual(["aside", "rest"]);
+  });
+});
+
+/* Task Q2.16 (consistency review QAP-2; D050): at 360 x 640 the resting bubble sat over first-screen tap targets of three
+   marketing pages: /contact's "Call" button (its email button at 360 x 720), the hub's topic chips and the 404's rows. It
+   now steps aside while the block that holds them crosses its band (WhatsAppFloat's STEP_ASIDE_FROM `site`), as Home's
+   hero keeps its links out of the bubble's column (task 8c.5). Checked at every phone of the matrix at first paint, on
+   those targets only: text and other links passing under the persistent bubble mid-page stay D050's accepted cost. The
+   /thanks payments line is the thanks context's (WhatsAppFloat.test.tsx): on the store's /thanks without a token, at
+   360 x 640, the line holding its chargeback link lies in the bubble's band at first paint, so the bubble is aside there
+   (the last case below). */
+const HERO_TARGETS = ".ks-contact-ways a, .ks-topics a, .ks-404__list a";
+const FIRST_SCREENS: readonly Built[] = [
+  { host: "marketing", path: "/contact" },
+  { host: "marketing", path: "/stories" },
+  { host: "marketing", path: "/kh-e2e-no-such-page" },
+];
+const THANKS: Built = { host: "store", path: "/thanks" };
+
+test.describe("chrome: WhatsApp bubble beside the first screens' tap targets (task Q2.16; D050)", () => {
+  for (const route of FIRST_SCREENS) {
+    for (const vp of PHONES) {
+      test(`on ${route.path} it covers none of the hero's tap targets at first paint ${vp.name}`, async ({ harness }) => {
+        const page = await openBuilt(harness, vp, {}, route);
+        expect(await page.locator(HERO_TARGETS).count(), "the page's hero targets").toBeGreaterThan(0);
+        await expect.poll(() => coveredByBubble(page, HERO_TARGETS)).toEqual([]);
+        expect([ASIDE, AT_REST]).toContainEqual(await bubbleAside(page));
+      });
+    }
+  }
+
+  test("the step aside is not vacuous: at rest at 360 x 640 the bubble would cover /contact's call button", async ({ harness }) => {
+    const page = await openBuilt(harness, VIEWPORTS.find((v) => v.width === 360 && v.height === 640)!, {}, FIRST_SCREENS[0]);
+    await expect.poll(() => bubbleAside(page)).toEqual(ASIDE);
+    expect(await coveredAtRest(page, HERO_TARGETS)).toEqual([expect.stringMatching(/^<a\.kh-btn\.kh-btn--secondary/)]);
+    expect(await coveredByBubble(page, HERO_TARGETS)).toEqual([]);
+  });
+
+  test("on the store's /thanks at 360 x 640 it is aside at first paint, clear of the payments line's chargeback link", async ({ harness }) => {
+    const page = await openBuilt(harness, VIEWPORTS.find((v) => v.width === 360 && v.height === 640)!, {}, THANKS);
+    expect(await page.locator(".ks-store-payments a").count(), "the payments line's chargeback link").toBe(1);
+    await expect.poll(() => bubbleAside(page)).toEqual(ASIDE);
+    // Not vacuous: at rest the bubble would sit over the link.
+    expect(await coveredAtRest(page, ".ks-store-payments a")).toEqual(["<a>"]);
+    expect(await coveredByBubble(page, ".ks-store-payments a")).toEqual([]);
   });
 });
 

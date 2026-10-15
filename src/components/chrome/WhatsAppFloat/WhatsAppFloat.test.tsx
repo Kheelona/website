@@ -4,8 +4,12 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { WHATSAPP_LOGO_GROUND, WHATSAPP_LOGO_HANDSET, WHATSAPP_LOGO_RIM, WHATSAPP_LOGO_VIEWBOX } from "@/assets/whatsapp-logo.generated";
 import { CtaBlock } from "@/components/sections/CtaBlock/CtaBlock";
+import { EmptyStateSection } from "@/components/sections/EmptyStateSection/EmptyStateSection";
+import { NOT_FOUND } from "@/components/sections/EmptyStateSection/EmptyStateSection.stories";
 import { FaqSection } from "@/components/sections/FaqSection/FaqSection";
+import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
 import { AddressStep } from "@/components/sections/store/AddressStep/AddressStep";
+import { StorePaymentsLine } from "@/components/sections/store/StorePaymentsLine/StorePaymentsLine";
 import { OfferCard } from "@/components/ui/OfferCard/OfferCard";
 import { PriceSentence } from "@/components/ui/PriceSentence/PriceSentence";
 import { RichText } from "@/components/ui/RichText/RichText";
@@ -381,12 +385,66 @@ describe("WhatsAppFloat: steps aside from the store's form on a phone (task 4.7)
   describe("the site's prices and the /thanks address step (task 4.9)", () => {
     const TOKEN = buildOffer("token");
 
-    it("names each context's regions: the site's prices, the store's #details, the /thanks address step", () => {
+    it("names each context's regions: the site's prices and first-screen tap targets, the store's #details, the /thanks address step and payments line", () => {
       expect(STEP_ASIDE_FROM).toEqual({
-        site: ".ks-price, .kh-offer__prices, .kh-offer__split, .kh-offer__fine",
+        site: ".ks-price, .kh-offer__prices, .kh-offer__split, .kh-offer__fine, .ks-contact-ways, .ks-topics, .ks-404__list",
         store: "#details, .ks-agree, .ks-faq",
-        thanks: "#address",
+        thanks: "#address, .ks-store-payments",
       });
+    });
+
+    /* Task Q2.16 (consistency review QAP-2): at 360 x 640 the resting bubble sat over first-screen tap targets on four
+       pages: /contact's "Call" button (and its email button at 360 x 720), the hub's topic chips, the 404's rows and the
+       /thanks chargeback link. The bubble steps aside from them as it does from the prices (Home's hero already keeps its
+       links out of the bubble's column, task 8c.5). Each region is the block the page renders its targets in, and each
+       target sits inside one, so a new way, topic or row cannot slip past. */
+    it("steps aside from the other first screens' tap targets: /contact's ways, the hub's topics, the 404's rows", () => {
+      const { container } = render(
+        <>
+          <HeroSection
+            variant="contact"
+            heading={{ id: "contact-title", title: "Talk to us." }}
+            ways={[
+              { label: "Message on WhatsApp", href: HREF, icon: "whatsapp-logo" },
+              { label: "Call", href: "tel:+910000000001" },
+              { label: "Email", href: "mailto:hello@example.com", icon: "envelope-simple" },
+            ]}
+          />
+          <HeroSection
+            variant="hub"
+            heading={{ id: "hub-title", title: "The journal." }}
+            topics={{ label: "Topics", id: "topics-label", links: [{ label: "Talking and language", href: "#talking" }, { label: "Learning and play", href: "#learning" }] }}
+          />
+          <EmptyStateSection {...NOT_FOUND} />
+        </>,
+      );
+      const regions = [...container.querySelectorAll(STEP_ASIDE_FROM.site)];
+      expect(regions.map((el) => el.className)).toEqual(["ks-contact-ways", "ks-topics", "kh-list ks-list-reset ks-404__list"]);
+      const targets = [...container.querySelectorAll("a")].filter((a) => !a.closest("h1, .kh-heading"));
+      expect(targets.map((a) => a.textContent)).toEqual(
+        expect.arrayContaining(["Message on WhatsApp", "Call", "Email", "Talking and language", "Learning and play"]),
+      );
+      expect(targets.length).toBe(5 + NOT_FOUND.nav.links.length);
+      for (const a of targets) expect(a.closest(STEP_ASIDE_FROM.site), a.textContent ?? "").not.toBeNull();
+    });
+
+    /* `#hero-cta` names /contact's ways too, but it is also Home's hero Pre-order button (the sticky bar's anchor), which
+       the bubble never covers at rest (task 8c.5): the region is the ways' own class, never the id. */
+    it("never names #hero-cta, which is Home's hero button as well as /contact's ways", () => {
+      expect(STEP_ASIDE_FROM.site.split(", ")).not.toContain("#hero-cta");
+      const { container } = render(
+        <a id="hero-cta" className="kh-btn kh-btn--cta" href="https://store.example.com/">
+          Pre-order
+        </a>,
+      );
+      expect(container.querySelector("#hero-cta")!.closest(STEP_ASIDE_FROM.site)).toBeNull();
+    });
+
+    it("on /thanks also steps aside from the payments line, whose chargeback link sat under it at 360 x 640", () => {
+      const { container } = render(<StorePaymentsLine content={confirmation.payments} newTabNote="(opens in a new tab)" noCapture />);
+      const link = container.querySelector("a")!;
+      expect(link.textContent).toContain(confirmation.payments.link.label);
+      expect(link.closest(STEP_ASIDE_FROM.thanks)).toBe(container.querySelector(".ks-store-payments"));
     });
 
     it("each region the site's selector names holds a price: the sentence beside a button and the offer card's", () => {

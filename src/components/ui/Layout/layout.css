@@ -16,3 +16,18 @@
 .kh-subtitle {
   margin: var(--space-7) 0 var(--space-4);
 }
+
+/* No lone last word in a title (task Q2.16, consistency review QAP-3). The DS balances its section titles
+   (bundle.css .kh-heading__title); its other title classes wrap greedily, so card, step, trust, list-row, FAQ and article
+   titles left one word alone on their last line ("It can't browse the / internet."). This continues the DS's own rule
+   with the same keyword, as the longhand, so each class keeps its wrap mode: .kh-sr headings and the DS's no-wrap list
+   titles stay on one line (the shorthand would reset them to wrap). */
+.kh-title,
+.kh-subtitle,
+.kh-card__title,
+.kh-step__title,
+.kh-trust__title,
+.kh-faq__q,
+.kh-listitem__title {
+  text-wrap-style: balance;
+}

@@ -153,6 +153,8 @@ async function smallTargets(page: Page) {
       const style = getComputedStyle(el);
       const box = el.getBoundingClientRect();
       if (box.width === 0 || box.height === 0 || style.visibility === "hidden") return { kind: "skip" };
+      // An inert target cannot be tapped: the WhatsApp bubble while it steps aside off the screen (task Q2.16, QAP-2).
+      if (el.closest("[inert]")) return { kind: "skip" };
       const own = (el.textContent ?? "").trim().length;
       const around = (el.parentElement?.textContent ?? "").trim().length;
       if (el.tagName === "A" && style.display === "inline" && around > own + 20) return { kind: "inline" };

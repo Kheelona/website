@@ -7,3 +7,11 @@
   white-space: normal;
   padding-block: var(--space-2);
 }
+
+/* A ghost or secondary label that wraps balances its lines, so no word sits alone on the second line (task Q2.16,
+   consistency review QAP-7; as the titles, layout.css). The label is the button's one span, a flex item; the longhand
+   keeps the DS's no-wrap on every label that never wraps. */
+.kh-btn--ghost > span,
+.kh-btn--secondary > span {
+  text-wrap-style: balance;
+}
