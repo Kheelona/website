@@ -27,6 +27,7 @@ import { filmQuotes, films } from "../films";
 import { recognitionStrip } from "../recognition";
 import { photos } from "../stories/photos";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupFold, mockupLinks, skeleton, words } from "../../../../test/support/mockup-compare";
 import { blockSentences, withFacts } from "../../../../test/support/mockup-facts";
 import { homePage } from "./home";
@@ -88,11 +89,14 @@ function withoutHeroPicture(main: Element, selector: string): Element {
   return copy;
 }
 
+/* Then D063 item 2: the hero's and the close's help lines without the call (task Q2.3; seller-facts.ts). */
 const MOCKUP = withoutHeroPicture(
   inHomeFilmOrder(
-    withFacts(
-      withFacts(withFacts(withFacts(mockupFold("home", "main"), COPY_FIXES.home.edits), CLAIM_FIXES.home.edits), OFFER_ADDITIONS.home.edits),
-      FAQ_FIXES.home.edits,
+    withSellerFacts(
+      withFacts(
+        withFacts(withFacts(withFacts(mockupFold("home", "main"), COPY_FIXES.home.edits), CLAIM_FIXES.home.edits), OFFER_ADDITIONS.home.edits),
+        FAQ_FIXES.home.edits,
+      ),
     ),
   ),
   HOME_HERO_PHOTO.mockup,
@@ -168,12 +172,13 @@ describe("Home: the folds of the approved page", () => {
     expect(BUILT.querySelector(`${hide} .kh-faq__q`)?.textContent).toBe(NOT_RIGHT_QUESTION.build);
   });
 
-  it("differs from the frozen mockup only in the lines task 7.1b (V18), task 8b.1 (V26) and task 8c.4 changed, the hero's picture and the films' order (Q2.1)", () => {
+  it("differs from the frozen mockup only in the lines task 7.1b (V18), task 8b.1 (V26), task 8c.4 and D063 changed, the hero's picture and the films' order (Q2.1)", () => {
     const frozen = mockupFold("home", "main");
     const changed = LABELS.filter((label) => words(fold(frozen, label)) !== words(fold(MOCKUP, label)));
     expect(changed).toEqual(["hero-title", "ask-title", "see-title", "safety-title", "guides-title", "faq-title", "close-title"]);
-    // The hero changes in its picture alone: the approved board (and its word sticker) is what the comparison leaves out.
-    expect(words(fold(MOCKUP, "hero-title"))).toBe(words(withoutHeroPicture(fold(frozen, "hero-title"), HOME_HERO_PHOTO.mockup)));
+    // The hero changes in its picture and its help line alone (D063 item 2): the approved board (and its word sticker) is
+    // what the comparison leaves out, and the help line drops the call.
+    expect(words(fold(MOCKUP, "hero-title"))).toBe(words(withoutHeroPicture(fold(withSellerFacts(frozen), "hero-title"), HOME_HERO_PHOTO.mockup)));
     // The films fold changes in its order alone: the same films, words and pictures.
     const tiles = (main: Element) => all(fold(main, "ask-title"), "[data-video-id]").map((li) => words(li));
     expect(tiles(MOCKUP).sort()).toEqual(tiles(frozen).sort());

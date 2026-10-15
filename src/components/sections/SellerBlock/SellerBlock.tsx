@@ -5,8 +5,8 @@ import type { SellerBlockProps } from "./seller-block.types";
 
 /**
  * Who a parent is buying from (architecture §6.1; contact.md fold 4). On the contact page it is its own band fold:
- * the four seller lines in a DS card (`ks-seller`, contact.css:27-28, links 800), character for character as the
- * footer prints them (ui/SellerLines `block`). On a legal page it is the seller line of a part: a card with a bold
+ * the seller lines in a DS card (`ks-seller`, contact.css:27-28, links 800), in the footer's order (ui/SellerLines
+ * `block`); no GSTIN on the website, the number kept here (D063 items 2-3). On a legal page it is the seller line of a part: a card with a bold
  * lead or a plain paragraph, whose links take the legal template's 700 (mockup-css-mapping §6.2). Server component.
  */
 export function SellerBlock(props: SellerBlockProps) {
@@ -21,7 +21,6 @@ export function SellerBlock(props: SellerBlockProps) {
         <SellerLines
           variant="block"
           entity={<RichText text={lines.entity} />}
-          gstin={<RichText text={lines.gstin} />}
           address={<RichText text={lines.address} />}
           contact={<RichText text={lines.contact} />}
         />

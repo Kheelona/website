@@ -4,6 +4,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import * as llmsRoute from "@/app/llms.txt/route";
 import * as pricingRoute from "@/app/pricing.md/route";
 import sitemap from "@/app/sitemap";
+import { GSTIN } from "@/config/site";
 import { faqs } from "@/content/en-IN/faqs";
 import { organization } from "@/content/en-IN/organization";
 import { routes, type RouteEntry } from "@/content/en-IN/routes";
@@ -128,7 +129,9 @@ const MACHINE = [
  */
 const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } & Record<OfferMode, string>> = {
   "llms.txt": {
-    // 2026-10-15: the product page's question "What if my child doesn’t like it, or it stops working?", its answer
+    // 2026-10-15: the contact lines without the number (D063 item 2; task Q2.3): "WhatsApp us · hello@kheelona.com", the
+    // consumer care row the same, and the grievance officer's line without "+91 91875 46483". Earlier the same day:
+    // the product page's question "What if my child doesn’t like it, or it stops working?", its answer
     // unchanged (the CMO's wave 8c review m7; task 8c.8). Earlier the same day: the product page's question "Which
     // languages does Kheelu speak?" and its answer, after the ages (task 8c.5, the 8c merge's follow-up); Home's question
     // "What if my child doesn’t like it?", its answer unchanged (D061, AP-30; task 8c.4).
@@ -137,17 +140,18 @@ const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } 
     // screen-time topic's lead (CMO reviews A M5, B m1), Home's refund and age-3 answers (task 7.1b) and the product's
     // Parent app row "On iPhone and Android." (D055 item 26; task 6.7).
     date: "2026-10-15",
-    token: "9002deae93cdb154fbe699543384fb64a8a3bf730cefd0410a3aa9a91cca6df4",
-    full: "37575b6120c85f0b90487b234b863b7ddaccdc1b4be488e326f50acd7ef64794",
+    token: "94c7aa89b3931a9a4a3226074e52fac1a7964a2ef478924da6ab776fcd431a8b",
+    full: "4e1c7292019cf5ef45396dd2eca4a46535a03e238e58d3e6fa90f4ec9bfc3847",
   },
   "pricing.md": {
-    // 2026-10-15: the product card's perk "Made in India" last among "Included with every Kheelu" (D061 item 10; task
+    // 2026-10-15: the help line without the number, "WhatsApp us · hello@kheelona.com" (D063 item 2; task Q2.3). Earlier
+    // the same day: the product card's perk "Made in India" last among "Included with every Kheelu" (D061 item 10; task
     // 8c.5). 2026-10-14: the Kheelona+ perk in D058 item 3's words and Home's age answer after the code check (task 8b.1,
     // wave 8b merge). Earlier the same day: the age-3 advice in one wording (CMO review A M8; task 7.1b). 2026-10-13: it
     // added the product page's Manufacturer declaration (task 4.5 item 6).
     date: "2026-10-15",
-    token: "deb48accd5d9db1699eac3aa172d5448b2accae41165cbe52e3b064b213724bc",
-    full: "f90f7ec9298153e34c36dcc38aa96545c61b835006666e5d76f83acec4f06818",
+    token: "131d336250729817ceb236461c0c85a24860c3c0329f80767ae72de168c8c95d",
+    full: "77b46a36275fd2461946c08d79a5e3c84fbb1543598f0251f3dbdeed00885aed",
   },
 };
 
@@ -364,10 +368,12 @@ describe.each(MACHINE)("$name", ({ name, route, text, updated, constant, type })
       expect(body()).toMatch(/\bKheelu is the toy that was called Lumi until 5 September 2026\b/);
     });
 
+    /* The help line as every page prints it since D063 item 2 (task Q2.3): WhatsApp, no number, no GSTIN. */
     it("states the entity facts as the pages do (test plan §4.3; architecture §9.3: made in India by Kheelona Robotics)", () => {
-      for (const fact of ["Kheelu by Kheelona", "3 to 7", "Made in India", "Manufacturer: Kheelona Robotics Pvt Ltd", "WhatsApp or call +91 91875 46483"]) {
+      for (const fact of ["Kheelu by Kheelona", "3 to 7", "Made in India", "Manufacturer: Kheelona Robotics Pvt Ltd", "WhatsApp us"]) {
         expect(body(), fact).toContain(fact);
       }
+      expect(body()).not.toMatch(/91875 46483|tel:|GSTIN|29AAMCK1530E1ZN/);
     });
 
     it("ends with its dated constant", () => {
@@ -407,7 +413,7 @@ describe.each(MACHINE)("$name", ({ name, route, text, updated, constant, type })
 
   it("restates no Organization fact by hand: they come from the site shell's mapper (task 3.1)", () => {
     const source = readRepoFile(`src/app/${name}/route.ts`);
-    const facts = [organization.legalName, ...organization.sameAs, ...organization.founders.map((f) => f.name), organization.taxId];
+    const facts = [organization.legalName, ...organization.sameAs, ...organization.founders.map((f) => f.name), GSTIN];
     expect(facts.filter((fact) => source.includes(fact))).toEqual([]);
   });
 });
@@ -415,9 +421,10 @@ describe.each(MACHINE)("$name", ({ name, route, text, updated, constant, type })
 describe("llms.txt", () => {
   const body = (mode: OfferMode = "token") => llmsRoute.llmsText(offerFor(mode));
 
-  it("names the grievance officer with the published line, in both modes (D029, D032)", () => {
+  /* Without the number, as the store footer prints it: it shows only on /contact and the legal pages (D063 item 2). */
+  it("names the grievance officer with the published line, without the number, in both modes (D029, D032, D063)", () => {
     for (const mode of MODES) {
-      expect(body(mode)).toMatch(/\n- Grievance Officer: Aman Soni, Co-Founder and CTO, aman@kheelona\.com, \+91 91875 46483\. We acknowledge every complaint within 48 hours/);
+      expect(body(mode)).toMatch(/\n- Grievance Officer: Aman Soni, Co-Founder and CTO, aman@kheelona\.com\. We acknowledge every complaint within 48 hours/);
     }
   });
 
@@ -459,7 +466,7 @@ describe("the visible-copy check", () => {
       "- Ages: 3 to 7",
       "- Toy-safety certification (BIS): applied for, not yet granted. We show no mark until it is granted.",
       "- Modes: AI mode (home Wi‑Fi) · Story mode (no Wi‑Fi needed) · Bluetooth mode (a paired phone)",
-      "- Consumer care: WhatsApp or call +91 91875 46483 · hello@kheelona.com",
+      "- Consumer care: WhatsApp us · hello@kheelona.com",
       `- [Screen time](${ORIGIN}/stories#screen-time): How much, what the guidelines say, and what to do when the screen goes off.`,
     ];
     expect(unsaid(clean.join("\n"), copy)).toEqual([]);

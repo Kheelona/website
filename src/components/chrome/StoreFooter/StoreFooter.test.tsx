@@ -16,7 +16,7 @@ const PROPS: StoreFooterProps = {
       { label: "Contact", href: "https://kheelona.com/contact" },
     ],
   },
-  seller: { entity: "Entity Ltd", gstin: "GSTIN 123", address: "1 Road", contact: <a href="tel:+91">+91</a> },
+  seller: { entity: "Entity Ltd", address: "1 Road", contact: <a href="https://wa.me/91">WhatsApp</a> },
   grievance: "Grievance Officer: A Person.",
   copyright: "© 2026 Entity Ltd",
 };
@@ -54,12 +54,13 @@ describe("StoreFooter", () => {
     ]);
   });
 
-  it("prints the seller block in the store's order: entity in bold, address, GSTIN, contact", () => {
+  /* The mockup's GSTIN line came off the website (D063 item 3, D064 item 11; task Q2.3). */
+  it("prints the seller block in the store's order: entity in bold, address, contact", () => {
     const { container } = render(<StoreFooter {...PROPS} />);
     const address = container.querySelector("address")!;
     expect(address.querySelector("strong")).toHaveTextContent("Entity Ltd");
-    expect(address.querySelectorAll("br")).toHaveLength(3);
-    expect(address.textContent).toBe("Entity Ltd1 RoadGSTIN 123+91");
+    expect(address.querySelectorAll("br")).toHaveLength(2);
+    expect(address.textContent).toBe("Entity Ltd1 RoadWhatsApp");
   });
 
   it("adds the payments line before the copyright when it is given", () => {

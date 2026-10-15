@@ -4,9 +4,10 @@ import { GSTIN, LEGAL_ENTITY, REGISTERED_ADDRESS_LINE } from "@/config/site";
 import type { Copy } from "@/content/types";
 import type { SectionEntry, SectionEntryOf, SectionKind } from "@/layouts/sections-registry";
 import { toPlainText } from "@/lib/content/plain-text";
-import { gstinLine, grievanceOfficerLine } from "@/lib/content/seller-lines";
+import { grievanceOfficerLine } from "@/lib/content/seller-lines";
 import { buildOffer } from "@/lib/offer/offer";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupRoute } from "../../../../test/support/mockup-compare";
 import { DEFAULT_OG } from "../organization";
 import { WARRANTY_MONTHS } from "../policies";
@@ -204,19 +205,22 @@ describe("fold 4: who you're buying from", () => {
     expect(plain(block.config.intro)).toBe(norm(el.querySelector(".mk-contact-text")?.textContent));
   });
 
-  it("builds the four seller lines from seller.ts and the seller-lines helper, as the site shell's footer does", () => {
-    expect(lines()).toEqual({ entity: seller.legalName, gstin: gstinLine(seller), address: seller.addressLine, contact: seller.support.line });
+  /* No GSTIN on the website (D063 item 3); the contact line keeps the number, which /contact shows by the E-Commerce
+     Rules (D063 item 2; task Q2.3). */
+  it("builds the seller lines from seller.ts: the entity, the address and the contact line with the number", () => {
+    expect(lines()).toEqual({ entity: seller.legalName, address: seller.addressLine, contact: seller.support.line });
   });
 
-  it("prints them character for character as the mockup's address and its footer (without the © 2026)", () => {
-    const address = fold("seller-title").querySelector("address")!;
+  it("prints them character for character as the mockup's address, its GSTIN line off, and its footer's entity and address", () => {
+    const address = withSellerFacts(fold("seller-title").querySelector("address")!);
     const printed = [address.querySelector("strong"), ...address.querySelectorAll(":scope > span")].map((el) => norm(el?.textContent));
-    const built = [lines().entity, lines().gstin, lines().address, lines().contact].map(plain);
+    const built = [lines().entity, lines().address, lines().contact].map(plain);
     expect(built).toEqual(printed);
+    expect(norm(fold("seller-title").querySelector("address")?.textContent), "the approved card").toContain(`GSTIN ${GSTIN}`);
     const footer = Array.from(mockup.querySelectorAll(".kh-footer__legal > span"))
       .slice(0, 4)
       .map((el) => norm(el.textContent));
-    expect(built).toEqual([footer[0].replace(/^© \d{4} /, ""), ...footer.slice(1)]);
+    expect([built[0], built[1], built[2]]).toEqual([footer[0].replace(/^© \d{4} /, ""), footer[2], footer[3]]);
   });
 });
 

@@ -16,7 +16,6 @@ describe("the organization", () => {
   it("is Kheelona, sold by the seller of record", () => {
     expect(organization.name).toBe("Kheelona");
     expect(organization.legalName).toBe(seller.legalName);
-    expect(organization.taxId).toBe(seller.gstin);
     expect(organization.address).toEqual(seller.address);
     expect(organization.country).toBe("IN");
   });
@@ -36,10 +35,15 @@ describe("the organization", () => {
     ]);
   });
 
-  it("carries the support contact point from the seller block (WhatsApp or call, D032)", () => {
+  /* The node prints on every page (the site shell's graph), so it says what every page may: no GSTIN and no number
+     (D063 items 2-3, D064 item 11; task Q2.3). */
+  it("states no GSTIN (taxID): the website prints none", () => {
+    expect(organization).not.toHaveProperty("taxId");
+  });
+
+  it("carries the support contact point from the seller block: WhatsApp and the email, no number (D032, D063 item 2)", () => {
     expect(organization.contactPoint).toEqual({
       email: seller.support.email,
-      telephone: seller.support.phone,
       url: seller.support.whatsapp,
       contactType: "customer support",
       areaServed: "IN",

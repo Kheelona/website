@@ -7,7 +7,9 @@ import { seller } from "./seller";
  * wiki/product/facts.md ("Identity", "Company facts the site uses as proof"). No `memberOf`: D054
  * item 20 lifted the proof gate (F11) and /team now names the programmes, but the page states no
  * relationship with them (B26, team.md), and schema never says more than the page does. Paths are
- * site paths; the builders make them absolute against the canonical origin.
+ * site paths; the builders make them absolute against the canonical origin. No `taxId` and no
+ * contact `telephone`: the node prints on every page, and the website shows no GSTIN and the number
+ * only on /contact and the legal pages (D063 items 2-3, D064 item 11; task Q2.3).
  */
 
 export interface Founder {
@@ -23,8 +25,6 @@ export interface Founder {
 export interface OrganizationFacts {
   readonly name: string;
   readonly legalName: string;
-  /** The GSTIN (schema.org `taxID`). */
-  readonly taxId: string;
   readonly logo: SitePath;
   readonly image: SitePath;
   readonly foundingDate: string;
@@ -33,7 +33,6 @@ export interface OrganizationFacts {
   readonly sameAs: readonly `https://${string}`[];
   readonly contactPoint: {
     readonly email: string;
-    readonly telephone: string;
     /** The channel itself: `contactOption` cannot say WhatsApp (an invalid value in schema.org). */
     readonly url: `https://${string}`;
     readonly contactType: "customer support";
@@ -46,7 +45,6 @@ export interface OrganizationFacts {
 export const organization = {
   name: seller.brand,
   legalName: seller.legalName,
-  taxId: seller.gstin,
   logo: "/brand/logo-mark.png",
   image: "/og.png",
   /* As the live Organization node states it (src/lib/seo.ts at the tag). */
@@ -64,7 +62,6 @@ export const organization = {
   ],
   contactPoint: {
     email: seller.support.email,
-    telephone: seller.support.phone,
     url: seller.support.whatsapp,
     contactType: "customer support",
     areaServed: "IN",

@@ -11,6 +11,7 @@ import { pageMeta } from "@/lib/seo/metadata";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 
@@ -35,8 +36,9 @@ const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 
 const mockupDoc = new DOMParser().parseFromString(readRepoFile("mockup/shipping.html"), "text/html");
 const approvedMain = mockupDoc.querySelector("main")!;
-/** The approved page with the founder's page facts applied (task 6.7; D055 items 7-9; test/e2e/support/page-facts.ts). */
-const mockupMain = withFacts(approvedMain, PAGE_FACTS.shipping.edits);
+/** The approved page with the founder's page facts applied (task 6.7; D055 items 7-9; test/e2e/support/page-facts.ts),
+ *  then D063 item 3: the seller sentence without the GSTIN (task Q2.3; seller-facts.ts). */
+const mockupMain = withSellerFacts(withFacts(approvedMain, PAGE_FACTS.shipping.edits));
 
 /** The page as the site shell holds it: the route's output inside <main>. */
 async function renderPage(offer: Offer) {

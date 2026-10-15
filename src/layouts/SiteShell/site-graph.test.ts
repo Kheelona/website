@@ -12,7 +12,6 @@ describe("organizationFacts", () => {
     expect(organizationFacts(organization)).toEqual({
       name: "Kheelona",
       legalName: "Kheelona Robotics Private Limited",
-      taxId: "29AAMCK1530E1ZN",
       logo: "/brand/logo-mark.png",
       image: "/og.png",
       foundingDate: "2025",
@@ -37,7 +36,6 @@ describe("organizationFacts", () => {
       contactPoint: {
         contactType: "customer support",
         email: "hello@kheelona.com",
-        telephone: "+91 91875 46483",
         url: "https://wa.me/919187546483",
         areaServed: "IN",
         availableLanguage: ["English", "Hindi"],
@@ -82,6 +80,15 @@ describe("siteGraphOf", () => {
     });
     expect((org.founder as unknown[]).length).toBe(3);
     expect(JSON.stringify(graph)).not.toContain("memberOf");
+  });
+
+  /* Every page prints this graph, so it carries neither the GSTIN nor the number (D063 items 2-3, D064 item 11; task
+     Q2.3): the number shows only on /contact and the legal pages, the GSTIN nowhere on the website. */
+  it("states no taxID and no telephone", () => {
+    const org = graph["@graph"][0] as Record<string, unknown>;
+    expect(org).not.toHaveProperty("taxID");
+    expect(org.contactPoint).not.toHaveProperty("telephone");
+    expect(JSON.stringify(graph)).not.toMatch(/29AAMCK1530E1ZN|91875 46483/);
   });
 
   it("states the site's language as the root layout's <html lang>", () => {

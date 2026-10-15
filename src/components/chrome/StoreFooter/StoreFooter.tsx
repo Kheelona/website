@@ -6,9 +6,10 @@ export interface StoreFooterProps {
   /** The policy links' landmark name, the links (marketing-site addresses: MARKETING_ORIGIN + path) and the note each
    *  link reads to screen readers, since each opens in a new tab so a half-filled form survives. */
   policies: { label: string; links: readonly PolicyLink[]; newTabNote: string };
-  /** The four seller lines, printed in the store's order (`SellerLines` store variant). */
-  seller: { entity: ReactNode; gstin: ReactNode; address: ReactNode; contact: ReactNode };
-  /** D032's published grievance line, verbatim. */
+  /** The seller lines, printed in the store's order (`SellerLines` store variant); no GSTIN and no number (D063 items
+   *  2-3). */
+  seller: { entity: ReactNode; address: ReactNode; contact: ReactNode };
+  /** D032's published grievance line, without the number on the store (D063 item 2). */
   grievance: ReactNode;
   /** D042's payments line for the store footer, when the shell has it. */
   payments?: ReactNode;

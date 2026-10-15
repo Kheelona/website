@@ -8,6 +8,7 @@ import { TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "@/content/e
 import { buildOffer } from "@/lib/offer/offer";
 import { CtaBlock } from "./CtaBlock";
 import type { CtaBlockConfig, CtaSecondary, SellingContext } from "./cta-block.types";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { addClass, builtMarkup, mockupCtaRun, mockupFold, renderedMarkup, STORE } from "../../../../test/support/mockup-compare";
 
 /* CtaBlock (task 3.2; architecture §5.2 "Compact CTA block"; home.md "CTA block"). Rendered from the real content
@@ -62,9 +63,10 @@ const PLACEMENTS: Placement[] = [
   ["404 close", "404", "#close", { cta: "finale", align: "center", trust: COMPACT, helpLine: true }],
 ];
 
+/* The help lines as D063 item 2 rules them (task Q2.3; test/e2e/support/seller-facts.ts): WhatsApp, the call off. */
 describe("CtaBlock: every placement of the approved mockup, exactly", () => {
   it.each(PLACEMENTS)("%s", (_name, slug, fold, config) => {
-    const expected = builtMarkup(mockupCtaRun(mockupFold(slug, fold)), { renames: RENAMES, adjust: adjustFor(config.layout) });
+    const expected = builtMarkup(mockupCtaRun(withSellerFacts(mockupFold(slug, fold))), { renames: RENAMES, adjust: adjustFor(config.layout) });
     expect(renderedMarkup(<CtaBlock {...config} {...context()} />)).toBe(expected);
   });
 
@@ -109,13 +111,13 @@ describe("CtaBlock: the block", () => {
     expect(inline).not.toHaveClass("kh-btn--block");
   });
 
-  it("links every trust item to its terms with an accessible name, and the help line to WhatsApp and the phone", () => {
-    render(<CtaBlock {...hero} {...context()} />);
+  it("links every trust item to its terms with an accessible name, and the help line to WhatsApp, never a call (D063)", () => {
+    const { container } = render(<CtaBlock {...hero} {...context()} />);
     // Each to the part of its terms page that keeps the promise (task 7.1a, CMO built-page review C, m8).
     expect(screen.getByRole("link", { name: "Deliveries start mid-November" })).toHaveAttribute("href", "/shipping#when");
     expect(screen.getByRole("link", { name: "7-day returns, no questions asked" })).toHaveAttribute("href", "/refund#returns");
-    expect(screen.getByRole("link", { name: "WhatsApp" })).toHaveAttribute("href", "https://wa.me/919187546483");
-    expect(screen.getByRole("link", { name: "call +91 91875 46483" })).toHaveAttribute("href", "tel:+919187546483");
+    expect(screen.getByRole("link", { name: "WhatsApp us" })).toHaveAttribute("href", "https://wa.me/919187546483");
+    expect(container.querySelector('a[href^="tel:"]')).toBeNull();
   });
 
   /* Task 3.6 item 6: the help line's words are content (`Copy`), which may change with the offer mode or name the

@@ -9,6 +9,7 @@ import { formatDate } from "@/lib/format/date";
 import { buildOffer } from "@/lib/offer/offer";
 import { RETENTION } from "../../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../../test/e2e/support/repo";
+import { GUIDE_CONTACT_LINE } from "../../../../../test/e2e/support/seller-facts";
 import { approvedArticle } from "../../../../../test/fixtures/journal/approved";
 import { type CopyFold, type CopyPage, copyFold, copyLines, copyParagraphs, glanceRow, readCopyPage } from "../../../../../test/support/copy-page";
 import { words } from "../../../../../test/support/mockup-compare";
@@ -133,9 +134,11 @@ function rendered(slug: Parity) {
 }
 
 /** The column's in-text links: not the source markers, the notes' addresses or the help line's WhatsApp and call. */
+/** The in-text links a copy page lists as the site's paths; the seller's contact links (WhatsApp, the email that took
+ *  the call's place by D063 item 2, a call) are the seller's, held by the row-24 rules. */
 function renderedLinks(column: Element): { label: string; href: string }[] {
   return Array.from(column.querySelectorAll("a"))
-    .filter((a) => !a.matches(".ks-src, .ks-sources a") && !/^(?:https:\/\/wa\.me|tel:)/.test(a.getAttribute("href") ?? ""))
+    .filter((a) => !a.matches(".ks-src, .ks-sources a") && !/^(?:https:\/\/wa\.me|tel:|mailto:)/.test(a.getAttribute("href") ?? ""))
     .map((a) => ({ label: norm(a.textContent ?? ""), href: a.getAttribute("href") ?? "" }));
 }
 
@@ -209,10 +212,14 @@ describe.each([...SLUGS, ...APPROVED])("the article %s, as its approved copy pag
      one-tap sentence. A copy page that still prints the Gate A line (until task 8b.2a's corrected copy pages are in) is
      read with that one sentence gone, and nothing else; a corrected copy page is read as it stands. Either way no guide
      prints the withdrawn sentence. */
+  /* D063 item 2 (task Q2.3): the copy page's "WhatsApp or call +91 91875 46483." reads "WhatsApp or email
+     hello@kheelona.com." (seller-facts.ts GUIDE_CONTACT_LINE). */
   it("renders the copy page's reading column word for word: answer, body, sources (the retention line as policies.ts prints it)", () => {
     const copy = norm(columnBlocks(page).map((b) => plainCopy(b.text)).join(" "));
     const column = norm(words(rendered(slug).column));
-    expect(column).toBe(copy.replaceAll(norm(RETENTION.mockup), norm(RETENTION.build)));
+    const calls = ["ai-toys-and-indias-data-law", "what-to-look-for-in-a-safe-ai-toy"].includes(slug);
+    expect(copy.includes(norm(GUIDE_CONTACT_LINE.mockup)), "the copy page's contact line, as approved, on the two guides that give it").toBe(calls);
+    expect(column).toBe(copy.replaceAll(norm(RETENTION.mockup), norm(RETENTION.build)).replaceAll(norm(GUIDE_CONTACT_LINE.mockup), norm(GUIDE_CONTACT_LINE.build)));
     expect(column).not.toContain("You can delete any of them sooner, in one tap.");
   });
 
@@ -294,10 +301,13 @@ describe("the shared facts, as today's modules word them", () => {
     }
   });
 
-  it("words the data-law page's help line from the seller's help line (seller.ts, D032)", () => {
-    const contact = columnStrings(article("ai-toys-and-indias-data-law")).filter((s) => s.includes(seller.support.phone));
+  /* WhatsApp or the email, never the number (D063 item 2; task Q2.3). */
+  it("words the data-law page's contact line from the seller's WhatsApp-or-email phrase (seller.ts), with no number", () => {
+    const strings = columnStrings(article("ai-toys-and-indias-data-law"));
+    const contact = strings.filter((s) => s.includes(seller.support.whatsapp));
     expect(contact).toHaveLength(1);
-    expect(contact[0].endsWith(`tell us: ${seller.help.contact}.`)).toBe(true);
+    expect(contact[0].endsWith(`tell us: ${seller.support.reach}.`)).toBe(true);
+    expect(strings.filter((s) => s.includes(seller.support.phone) || s.includes("tel:"))).toEqual([]);
   });
 
   it("names the languages from the product facts (product.ts)", () => {

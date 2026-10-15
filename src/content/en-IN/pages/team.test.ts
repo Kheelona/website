@@ -9,6 +9,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { CLAIM_FIXES } from "../../../../test/e2e/support/deviations";
 import { ROOT, readRepoBytes, readRepoFile, tagBytes } from "../../../../test/e2e/support/repo";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { withFacts } from "../../../../test/support/mockup-facts";
 import { DEFAULT_OG, organization } from "../organization";
 import { routeFor } from "../routes";
@@ -36,8 +37,8 @@ const plain = (copy: Copy) => toPlainText(copy, token);
 
 const mockup = new DOMParser().parseFromString(readRepoFile("mockup/team.html"), "text/html");
 /* With task 8b.1's claim fixes applied (D058; deviations.md V30): Aman's job line and fold 4's keys line in the live team's
-   code-checked words. */
-const main = withFacts(mockup.querySelector("main")!, CLAIM_FIXES.team.edits);
+   code-checked words; then D063 item 2: fold 2's answer and the close's help line without the number (task Q2.3). */
+const main = withSellerFacts(withFacts(mockup.querySelector("main")!, CLAIM_FIXES.team.edits));
 const fold = (labelledBy: string) => {
   const el = main.querySelector(`[aria-labelledby="${labelledBy}"]`);
   if (!el) throw new Error(`mockup/team.html has no fold labelled by #${labelledBy}`);
@@ -191,22 +192,23 @@ describe("fold 1: the hero, with the CMO's first-screen fix (M-T1)", () => {
 describe("fold 2: who makes Kheelu? (the answer-first block)", () => {
   const who = entry("answer-section");
 
-  it("is the team answer, its question and its 50 words the mockup's, word for word", () => {
+  /* "or by phone at +91 91875 46483," came off (D063 item 2; task Q2.3): 43 words, inside the answer-first 40-60. */
+  it("is the team answer, its question and its words the mockup's, word for word, the number off", () => {
     const el = fold("who-title");
     expect(who.config.variant).toBe("team");
     expect(who.config.id ?? "who-title").toBe("who-title");
     expect(plain(who.config.question)).toBe(headingOf(el).title);
     const answer = plain(who.config.answer);
     expect(answer).toBe(norm(el.querySelector("p")?.textContent));
-    expect(answer.split(/\s+/)).toHaveLength(50);
+    expect(answer.split(/\s+/)).toHaveLength(43);
   });
 
-  it("links WhatsApp, the phone and the email as the mockup does, from the seller's support line (D032)", () => {
+  it("links WhatsApp and the email as the mockup does, from the seller's support line (D032), and no phone (D063)", () => {
     const hrefs = [...String(who.config.answer).matchAll(/\]\(([^)]+)\)/g)].map((m) => m[1]);
     const printed = Array.from(fold("who-title").querySelectorAll("p a")).map((a) => a.getAttribute("href"));
     expect(hrefs).toEqual(printed);
-    expect(hrefs).toEqual([seller.support.whatsapp, seller.support.tel, `mailto:${seller.support.email}`]);
-    expect(String(who.config.answer)).toContain(`{nowrap:[${seller.support.phone}](${seller.support.tel})}`);
+    expect(hrefs).toEqual([seller.support.whatsapp, `mailto:${seller.support.email}`]);
+    expect(String(who.config.answer)).not.toContain(seller.support.phone);
   });
 
   /* Equal values cannot tell a read from a retyped copy, which would go stale the day the shared module changes; the
@@ -214,7 +216,7 @@ describe("fold 2: who makes Kheelu? (the answer-first block)", () => {
   it("reads the company, the founders and the support line by reference, never retyped", () => {
     const fold2 = SOURCE.slice(SOURCE.indexOf('kind: "answer-section"'), SOURCE.indexOf('kind: "founders-section"'));
     expect(fold2).toContain("question:");
-    for (const text of [seller.legalName, seller.support.phone, seller.support.email, ...organization.founders.map((f) => f.name)]) {
+    for (const text of [seller.legalName, seller.support.email, ...organization.founders.map((f) => f.name)]) {
       expect(plain(who.config.answer)).toContain(text);
       expect(fold2, text).not.toContain(text);
       expect(SOURCE.replace(String(teamPage.meta.description), ""), text).not.toContain(text);

@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { MARKETING_ORIGIN } from "@/config/env";
 import { confirmation } from "@/content/en-IN/store/confirmation";
+import { withSellerFacts } from "../../../../../test/e2e/support/seller-facts";
 import { mockupFold, skeleton, words } from "../../../../../test/support/mockup-compare";
 import { HelpBlock } from "./HelpBlock";
 
@@ -9,8 +10,9 @@ import { HelpBlock } from "./HelpBlock";
    plain words, and the refund page. On the store host a policy page is the marketing site's (as the store footer's
    links, StoreShell), so the mockup's "refund.html" is read as MARKETING_ORIGIN + /refund. */
 
+/** The fold as the store prints it, its help line as D063 item 2 rules it (the call off; task Q2.3). */
 function asOnTheStore(fold: Element): Element {
-  const copy = fold.cloneNode(true) as Element;
+  const copy = withSellerFacts(fold);
   copy.querySelector('a[href="refund.html"]')!.setAttribute("href", `${MARKETING_ORIGIN}/refund`);
   return copy;
 }
@@ -30,8 +32,8 @@ describe("HelpBlock", () => {
     const line = container.querySelector(".ks-help")!;
     expect(line.className).toBe("kh-body ks-help");
     expect(line.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
-    expect(screen.getByRole("link", { name: "WhatsApp" })).toHaveAttribute("href", "https://wa.me/919187546483");
-    expect(screen.getByRole("link", { name: "call +91 91875 46483" })).toHaveAttribute("href", "tel:+919187546483");
+    expect(screen.getByRole("link", { name: "WhatsApp us" })).toHaveAttribute("href", "https://wa.me/919187546483");
+    expect(line.querySelector('a[href^="tel:"]')).toBeNull();
     expect(screen.getByRole("link", { name: "hello@kheelona.com" })).toHaveAttribute("href", "mailto:hello@kheelona.com");
   });
 

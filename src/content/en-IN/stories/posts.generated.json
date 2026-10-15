@@ -856,16 +856,16 @@
               },
               {
                 "type": "text",
-                "text": " or "
+                "text": " or email "
               },
               {
                 "type": "text",
-                "text": "call +91 91875 46483",
+                "text": "hello@kheelona.com",
                 "marks": [
                   {
                     "type": "link",
                     "attrs": {
-                      "href": "tel:+919187546483"
+                      "href": "mailto:hello@kheelona.com"
                     }
                   }
                 ]
@@ -8207,16 +8207,16 @@
               },
               {
                 "type": "text",
-                "text": " or "
+                "text": " or email "
               },
               {
                 "type": "text",
-                "text": "call +91 91875 46483",
+                "text": "hello@kheelona.com",
                 "marks": [
                   {
                     "type": "link",
                     "attrs": {
-                      "href": "tel:+919187546483"
+                      "href": "mailto:hello@kheelona.com"
                     }
                   }
                 ]

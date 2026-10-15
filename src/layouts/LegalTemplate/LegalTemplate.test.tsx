@@ -1,7 +1,9 @@
 import { render, screen, within } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
+import { withSellerFacts } from "../../../test/e2e/support/seller-facts";
 import { mockupFold, skeleton, words, type SkeletonOptions } from "../../../test/support/mockup-compare";
+import { GSTIN } from "@/config/site";
 import { legalTemplateCopy } from "@/content/en-IN/legal/shared";
 import { seller } from "@/content/en-IN/seller";
 import type * as Content from "@/content/types";
@@ -45,7 +47,9 @@ const OPTIONS: SkeletonOptions = {
 };
 
 describe.each(LEGAL_SLUGS)("LegalTemplate: %s, fixture content against the approved page", (slug) => {
-  const mockup = mockupFold(slug, "main");
+  /* As D063 items 2-3 rule it (task Q2.3; seller-facts.ts): the seller sentence without the GSTIN, the close's help line
+     without the call; the document's own lines keep the number. */
+  const mockup = withSellerFacts(mockupFold(slug, "main"));
 
   it("renders the mockup's markup: same elements, classes, ARIA, ids, addresses and order", () => {
     expect(skeleton(mainOf(page(slug)), OPTIONS)).toBe(skeleton(mockup, OPTIONS));
@@ -200,7 +204,7 @@ describe("LegalTemplate: the shared blocks come from seller.ts, never retyped (4
   it("the legal fixtures hold no GSTIN, address, grievance wording or close help line of their own", () => {
     for (const slug of LEGAL_SLUGS) {
       const source = readRepoFile(`test/fixtures/legal/${slug}.ts`);
-      expect(source).not.toContain(seller.gstin);
+      expect(source).not.toContain(GSTIN);
       expect(source).not.toContain("Kokarya");
       expect(source).not.toContain("Grievance Officer");
       expect(source, "the close's help line is seller.help, through the template's words").not.toContain(seller.help.contact);

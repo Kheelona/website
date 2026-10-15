@@ -7,6 +7,7 @@ import { storePage } from "@/content/en-IN/store/store-page";
 import { isSitePath } from "@/lib/links";
 import { buildOffer } from "@/lib/offer/offer";
 import { CLAIM_FIXES } from "../../../../../test/e2e/support/deviations";
+import { withSellerFacts } from "../../../../../test/e2e/support/seller-facts";
 import { mockupDiff, mockupFold, mockupRoute } from "../../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../../test/support/mockup-facts";
 import { PayBeside } from "./StoreDetails";
@@ -44,9 +45,10 @@ function withoutControlIds(source: Element): Element {
 }
 
 /** The mockup's form as the build must print it: the consent box unrequired (the rendered contract keeps the tag's
- *  `required: false`; the shared validator asks for the tick) and the consent links' live `rel` kept (ADR-013). */
+ *  `required: false`; the shared validator asks for the tick), the consent links' live `rel` kept (ADR-013), and the
+ *  help line beside the pay button without the call (D063 item 2; task Q2.3). */
 function approvedForm(): Element {
-  const form = withoutControlIds(mockupFold("store", "form.mk-form"));
+  const form = withoutControlIds(withSellerFacts(mockupFold("store", "form.mk-form")));
   form.querySelector('input[name="accepted"]')!.removeAttribute("required");
   form.querySelectorAll(".kh-check__text a").forEach((a) => a.setAttribute("rel", "noopener noreferrer"));
   return form;

@@ -200,10 +200,15 @@ describe("the facts a guide shares with other pages are today's (row 24)", () =>
     for (const { slug, text } of found) expect(text, slug).toContain(RETENTION_LINE);
   });
 
-  it("prints the help line as seller.ts words it, wherever a guide gives a WhatsApp or call link", () => {
+  /* D063 item 2 (D064 item 11; task Q2.3): the number shows only on /contact and the legal pages, so a guide offers
+     WhatsApp or the email, as seller.ts words the phrase (`support.reach`), and never a call link. */
+  it("prints the contact phrase as seller.ts words it (WhatsApp or email), wherever a guide gives a WhatsApp or call link", () => {
     const found = texts.filter(({ text }) => HELP.test(text));
     expect(found.length).toBeGreaterThan(0);
-    for (const { slug, text } of found) expect(text, slug).toContain(seller.help.contact);
+    for (const { slug, text } of found) {
+      expect(text, slug).toContain(seller.support.reach);
+      expect(text, slug).not.toMatch(/\]\(tel:|91875 46483/);
+    }
   });
 
   it("words the age-3 line as every FAQ answer does: \"If your child is 3, keep a grown-up nearby\" (D057 item 3)", () => {

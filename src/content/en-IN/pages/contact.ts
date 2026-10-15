@@ -1,5 +1,5 @@
 import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
-import { gstinLine, grievanceOfficerLine } from "@/lib/content/seller-lines";
+import { grievanceOfficerLine } from "@/lib/content/seller-lines";
 import { DEFAULT_OG } from "../organization";
 import { WARRANTY_MONTHS } from "../policies";
 import { seller } from "../seller";
@@ -16,8 +16,9 @@ import { TRUST_COMPACT, trustItems } from "../trust";
  * - Fold 3, the grievance officer: D032's published line, verbatim, from the one value in seller.ts through the
  *   seller-lines helper (nothing held together, as privacy and terms print it); the section is `#grievance`, the
  *   footer's target.
- * - Fold 4, who you're buying from: the four seller lines character for character as the footer prints them (the
- *   entity without the footer's "© 2026"), built from seller.ts and the helper, never a typed GSTIN (4.4's guard).
+ * - Fold 4, who you're buying from: the seller lines in the footer's order (the entity without the footer's "© 2026"),
+ *   built from seller.ts. No GSTIN: the website prints none (D063 item 3, D064 item 11; task Q2.3). The contact line
+ *   keeps the number, which shows only here and on the legal pages (D063 item 2; E-Commerce Rules r.4(2)(d)).
  * - Fold 5, the centred close: the page's one chilli button (`finale`), the price sentence from the live offer and the
  *   compact trust pair; no help line, because the whole page is the help line.
  *
@@ -115,14 +116,14 @@ export const contactPage = {
         line: grievanceOfficerLine(seller),
       },
     },
-    /* Fold 4: the seller's legal identity, exactly as the footer prints it. */
+    /* Fold 4: the seller's legal identity, in the footer's order, with the number (D063 item 2). */
     {
       kind: "seller-block",
       config: {
         context: "contact",
         title: "Who you’re {hand:buying from.}",
         intro: "Kheelu is designed here in Bengaluru, by parents who use it at home, and made in India. This is also the company you’re buying from.",
-        lines: { entity: seller.legalName, gstin: gstinLine(seller), address: seller.addressLine, contact: seller.support.line },
+        lines: { entity: seller.legalName, address: seller.addressLine, contact: seller.support.line },
       },
     },
     /* Fold 5: one calm next step; the sticky bar steps aside while this button is on screen. */

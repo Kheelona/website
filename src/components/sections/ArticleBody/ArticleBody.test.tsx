@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import type { ArticlePart, ProseBlock, VideoBlock } from "@/content/types";
 import { ARTICLE_CLAIM_FIXES } from "../../../../test/e2e/support/deviations";
 import type { PageFacts } from "../../../../test/e2e/support/page-facts";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 import { ArticleBody } from "./ArticleBody";
@@ -28,11 +29,12 @@ const OPTIONS = { skip: SLOTS, drop: /^(?:ks-type-.*|ks-src--article)$/ };
  *  it (task 8b.1d): the frozen mockup (D046) with the article's claim fixes applied first (deviations.ts
  *  ARTICLE_CLAIM_FIXES: the safe-AI-toy guide's, D058, deviations.md V37), and its in-text link to the data-law guide
  *  read as the copy page's real URL (copy page fold 4, "Links"; the mockup links the hub's topic). The other two
- *  approved articles have neither, so theirs is the mockup's column as it is. */
+ *  approved articles have neither, so theirs is the mockup's column as it is. Then D063 item 2 (task Q2.3): the
+ *  safe-AI-toy guide's contact line offers WhatsApp or the email, the call off (seller-facts.ts). */
 function approvedColumn(slug: string): Element {
   const fold = mockupFold(slug, ".mk-story-body").cloneNode(true) as Element;
   fold.querySelectorAll('.mk-part a[href="stories.html#ai-and-safety"]').forEach((a) => a.setAttribute("href", "/stories/ai-toys-and-indias-data-law"));
-  return withFacts(fold, (ARTICLE_CLAIM_FIXES as Readonly<Record<string, PageFacts>>)[slug]?.edits ?? []);
+  return withSellerFacts(withFacts(fold, (ARTICLE_CLAIM_FIXES as Readonly<Record<string, PageFacts>>)[slug]?.edits ?? []));
 }
 
 const BELLY = { src: { src: "/belly.png", width: 389, height: 397 } as StaticImageData, alt: "Kheelu’s tummy unit up close." };
@@ -234,7 +236,7 @@ describe("ArticleBody: links and source markers", () => {
   it("routes site links through the site and leaves the rest plain", () => {
     render(<ArticleBody blocks={SAFE_AI_TOY_BODY} sourceLabel={SOURCE_LABEL} />);
     expect(screen.getByRole("link", { name: "Safety page" })).toHaveAttribute("href", "/safety");
-    expect(screen.getByRole("link", { name: "call +91 91875 46483" })).toHaveAttribute("href", "tel:+919187546483");
+    expect(screen.getByRole("link", { name: "hello@kheelona.com" })).toHaveAttribute("href", "mailto:hello@kheelona.com");
   });
 
   it("refuses a marker without the content's marker word, rather than guessing one", () => {

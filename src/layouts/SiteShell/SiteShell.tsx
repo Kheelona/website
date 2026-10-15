@@ -15,7 +15,6 @@ import { organization } from "@/content/en-IN/organization";
 import { seller } from "@/content/en-IN/seller";
 import { TRUST_COMPACT, trustItems } from "@/content/en-IN/trust";
 import type { Offer, SitePath } from "@/content/types";
-import { gstinLine } from "@/lib/content/seller-lines";
 import { jsonLd } from "@/lib/seo/jsonld";
 import { siteGraphOf } from "./site-graph";
 
@@ -46,6 +45,8 @@ export interface SiteShellProps {
  * mounts, once per page, the shared chalk filter of the drawn doodles (`DoodleDefs`, before any doodle), the motion
  * observer (`MotionController`, D049 picks 1 and 3) and the Organization and WebSite JSON-LD (architecture §9.2).
  * Every word, link and price comes from content; `body.ks-has-float` (the bubble's clearance) is the root layout's.
+ * The footer prints no GSTIN and no number, on every page (D063 items 2-3, D064 item 11; task Q2.3): its contact line is
+ * WhatsApp and the email (`seller.support.footerLine`).
  */
 export function SiteShell({ children, offer, stickyBar = [] }: SiteShellProps) {
   const { labels, main, footer } = navigation;
@@ -68,9 +69,8 @@ export function SiteShell({ children, offer, stickyBar = [] }: SiteShellProps) {
         columns={footer.columns}
         seller={{
           entity: <RichText text={seller.copyright} />,
-          gstin: gstinLine(seller),
           address: seller.addressLine,
-          contact: <RichText text={seller.support.line} />,
+          contact: <RichText text={seller.support.footerLine} />,
         }}
         grievance={footer.grievance}
       />

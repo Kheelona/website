@@ -21,7 +21,9 @@ import { TRUST_COMPACT, trustItems } from "../trust";
  * Shared facts are read, never retyped: the founders (names, roles, fragments, profiles) from organization.ts, the
  * company and the support line from seller.ts (D032), the trust pair from trust.ts; the price sentence, the CTA label
  * and the help line come from the offer, cta.ts and seller.ts through the page template. The AboutPage node is
- * described by fold 2's answer (task 4.5 item 5) and named as the live page named it (architecture §9.2).
+ * described by fold 2's answer (task 4.5 item 5) and named as the live page named it (architecture §9.2). Fold 2's
+ * answer reaches the team by WhatsApp and email; its "or by phone at …" came off (D063 item 2, D064 item 11; task Q2.3:
+ * the number shows only on /contact and the legal pages).
  */
 
 const [apoorva, aman, kashyap] = organization.founders;
@@ -90,7 +92,7 @@ export const teamPage = {
         variant: "team",
         id: "who-title",
         question: "Who makes Kheelu?",
-        answer: `${seller.legalName}, a small company in Bengaluru, makes Kheelu. Its three co-founders are ${founderNames}. Kheelu is designed by parents in Bengaluru and made in India. You can reach the team on [WhatsApp](${support.whatsapp}) or by phone at {nowrap:[${support.phone}](${support.tel})}, or at [${support.email}](mailto:${support.email}).`,
+        answer: `${seller.legalName}, a small company in Bengaluru, makes Kheelu. Its three co-founders are ${founderNames}. Kheelu is designed by parents in Bengaluru and made in India. You can reach the team on [WhatsApp](${support.whatsapp}) or at [${support.email}](mailto:${support.email}).`,
       },
     },
     /* Fold 3: a face, a name, a job and a background for each founder, in the order of the live llms.txt (facts.md). */

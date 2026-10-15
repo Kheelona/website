@@ -10,6 +10,7 @@ import { pageMeta } from "@/lib/seo/metadata";
 import { CLAIM_FIXES, PRIVACY_B11_BUILD, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 
@@ -37,8 +38,9 @@ const mockupDoc = new DOMParser().parseFromString(readRepoFile("mockup/privacy.h
 const approvedMain = mockupDoc.querySelector("main")!;
 /** The approved page with the founder's page facts applied (task 6.7), then D058's claim fixes and the parent app's
  *  sections of the live /privacy in a pass of their own (task 8b.1; deviations.ts CLAIM_FIXES.privacy, V32): what the
- *  build must print. */
-const mockupMain = withFacts(withFacts(approvedMain, PAGE_FACTS.privacy.edits), CLAIM_FIXES.privacy.edits);
+ *  build must print; then D063 items 2-3: the seller sentence without the GSTIN, the close's help line without the call
+ *  (task Q2.3; seller-facts.ts). */
+const mockupMain = withSellerFacts(withFacts(withFacts(approvedMain, PAGE_FACTS.privacy.edits), CLAIM_FIXES.privacy.edits));
 
 /** The approved Google Analytics sentence V10 replaces, and the PostHog sentence V10's new one follows. */
 const GA4_APPROVED = "Counts visits and the steps of a pre-order: starting the form, opening and closing the payment window, paying, and saving your address.";

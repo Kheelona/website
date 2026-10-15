@@ -4,7 +4,8 @@ import { SellerBlock } from "./SellerBlock";
 
 /* SellerBlock (task 3.2): who a parent is buying from, from content/en-IN/seller.ts, in its two contexts. */
 
-const sentence = `${seller.legalName}, registered at ${seller.addressLine}. GSTIN ${seller.gstin}.`;
+/* No GSTIN on the website (D063 item 3; task Q2.3). */
+const sentence = `${seller.legalName}, registered at ${seller.addressLine}.`;
 
 const meta: Meta<typeof SellerBlock> = {
   title: "Sections/SellerBlock",
@@ -13,14 +14,14 @@ const meta: Meta<typeof SellerBlock> = {
     context: "contact",
     title: "Who you’re {hand:buying from.}",
     intro: "Kheelu is designed here in Bengaluru, by parents who use it at home, and made in India. This is also the company you’re buying from.",
-    lines: { entity: seller.legalName, gstin: `GSTIN ${seller.gstin}`, address: seller.addressLine, contact: seller.support.line },
+    lines: { entity: seller.legalName, address: seller.addressLine, contact: seller.support.line },
   },
 };
 
 export default meta;
 type Story = StoryObj<typeof SellerBlock>;
 
-/** `contact`: the contact page's fold 4, the four seller lines as the footer prints them (links 800). */
+/** `contact`: the contact page's fold 4, the seller lines in the footer's order, the number kept (links 800). */
 export const Contact: Story = {};
 
 const inSection: Story["render"] = (args) => (
