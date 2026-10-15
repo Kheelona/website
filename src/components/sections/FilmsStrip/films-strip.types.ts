@@ -1,10 +1,12 @@
 import type { ReactNode } from "react";
-import type { Copy, Film, Offer, Tone } from "@/content/types";
+import type { Copy, Film, ImageRef, Offer, SitePath, Tone } from "@/content/types";
 import type { SectionHeading, SectionLink } from "@/components/sections/FeatureSplit/section-parts";
 
 /* FilmsStrip's configuration (task 3.3; components §2; D040): the seven parent films on Home (fold 2), the product page
  * (fold 2) and the store (fold 6), each with its heading and proof line. The films and the strip's own labels are
- * content/en-IN/films.ts (`films`, `filmsStrip`); the page decides how the posters load. */
+ * content/en-IN/films.ts (`films`, `filmsStrip`); the page decides how the posters load. Since task 8c.6 (D061 items
+ * 12-13) the section also shows one landscape film on its own, `layout: "single"`: the expert clip on the product page
+ * (content/en-IN/expert-video.ts), poster first and played on a tap like the films. */
 
 export type FilmsHeading = SectionHeading;
 
@@ -46,6 +48,8 @@ export interface FilmQuotes {
 }
 
 export interface FilmsStripConfig {
+  /** The strip of films (the default). */
+  readonly layout?: "strip";
   /** The section's fragment (`films` on the product page). */
   readonly id?: string;
   readonly heading: FilmsHeading;
@@ -63,10 +67,45 @@ export interface FilmsStripConfig {
   readonly quotes?: FilmQuotes;
 }
 
+/** One landscape film shown on its own (task 8c.6; D061 items 12-13): the expert clip. Every word is content's
+ *  (content/en-IN/expert-video.ts); the captions are burned into the file (DS 08-accessibility, WCAG 1.2.2). */
+export interface SingleFilm {
+  /** The file under public/ ("/video/expert/expert-clip.mp4"), fetched only once the play control is pressed. */
+  readonly video: SitePath;
+  /** The still shown at rest, lazy, with its size (a file under public/). */
+  readonly poster: Extract<ImageRef, { readonly src: SitePath }>;
+  /** The same still as WebP: the video's own poster while the page's optimised still has not loaded yet. */
+  readonly still: SitePath;
+  /** On the poster: "0:34 · With captions". The play control says the same in words, so screen readers skip the chip. */
+  readonly chip: string;
+  /** The play control's accessible name. */
+  readonly play: string;
+  /** The video's accessible name once it plays. */
+  readonly name: string;
+  /** Under the poster, visible before the tap, in body type: who is speaking. */
+  readonly credit: string;
+  /** Under the credit, visible before the tap, in body type: the disclosure (the clip was made with Kheelona and its
+   *  speaker paid). Required: the fold never shows the clip without it. */
+  readonly disclosure: string;
+}
+
+/** The single film's fold (task 8c.6): its own section, the centred heading, the poster with its chip and play control,
+ *  then the credit and the disclosure. */
+export interface FilmsSingleConfig {
+  readonly layout: "single";
+  /** The section's fragment (`expert`). */
+  readonly id: string;
+  readonly heading: FilmsHeading;
+  readonly film: SingleFilm;
+}
+
 export interface FilmsStripSlots {
   readonly offer?: Offer;
   /** After the strip: the page's CTA block (CtaBlock, task 3.2, composed by the section registry; Home fold 2). */
   readonly after?: ReactNode;
 }
 
-export type FilmsStripProps = FilmsStripConfig & FilmsStripSlots;
+/** Either layout's configuration, as a page's content lists the fold (the section registry's `films-strip` entry). */
+export type FilmsConfig = FilmsStripConfig | FilmsSingleConfig;
+
+export type FilmsStripProps = FilmsConfig & FilmsStripSlots;

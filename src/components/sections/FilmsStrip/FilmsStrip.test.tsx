@@ -1,11 +1,12 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ICON_PLAY } from "@/assets/icons.generated";
+import { expertClip, expertFold } from "@/content/en-IN/expert-video";
 import { filmQuotes, films, filmsStrip } from "@/content/en-IN/films";
 import { COPY_FIXES } from "../../../../test/e2e/support/deviations";
 import { outline, parseMockup } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
-import { FilmsStrip, type FilmsStripProps } from "./FilmsStrip";
+import { FilmsStrip, type FilmsStripConfig, type FilmsStripProps } from "./FilmsStrip";
 import storiesMeta, * as stories from "./FilmsStrip.stories";
 
 /* FilmsStrip (task 3.3; components §2; D040, D049 pick 8; architecture §10, §11.2 row 8): the seven parent films on Home
@@ -36,7 +37,7 @@ function withAfterSlot(section: Element): Element {
 }
 
 /** The films as content holds them (content/en-IN/films.ts), read from the approved strip. */
-const filmsFrom = (section: Element): FilmsStripProps["films"] =>
+const filmsFrom = (section: Element): FilmsStripConfig["films"] =>
   [...section.querySelectorAll(".mk-film")].map((li) => {
     const img = li.querySelector("img")!;
     const id = li.getAttribute("data-video-id")!;
@@ -53,7 +54,7 @@ const filmsFrom = (section: Element): FilmsStripProps["films"] =>
 const LABELS = filmsStrip;
 
 const home = strip("home");
-const PROPS: FilmsStripProps = {
+const PROPS: FilmsStripConfig = {
   heading: {
     eyebrow: "See it ask",
     title: "Kheelu asks. Watch them {hand:think.}",
@@ -266,7 +267,7 @@ describe("FilmsStrip: the film in focus (D049 pick 8)", () => {
    (ui/Quote), each with a "Watch the film" button that plays its film in the strip through the island: no video before
    the tap, a native button for the keyboard, a name that says which film. */
 describe("FilmsStrip: parents' own words (task 8c.3)", () => {
-  const QUOTED: FilmsStripProps = { ...PROPS, quotes: filmQuotes };
+  const QUOTED: FilmsStripConfig = { ...PROPS, quotes: filmQuotes };
   const watchButtons = () => [...document.querySelectorAll<HTMLButtonElement>(".ks-film-quote button")];
   const chipOf = (id: string) => films.find((f) => f.id === id)!.chip;
 
@@ -351,6 +352,122 @@ describe("FilmsStrip: parents' own words (task 8c.3)", () => {
   });
 });
 
+/* Task 8c.6 (D061 items 12-13): one landscape film on its own, the expert clip on the product page. No mockup has it (a
+   deviation row for the founder); it is composed from the strip's own parts: the band-less section with the centred
+   heading, the DS chip, the DS primary play button in the strip's place, and the strip's playback (one <video>, only
+   after the tap; focus on the film; paused once it has been half on screen and leaves; focus back at the end). */
+describe("FilmsStrip: one film on its own (task 8c.6)", () => {
+  const SINGLE: FilmsStripProps = expertFold;
+  const film = expertClip;
+  const playControl = () => document.querySelector<HTMLButtonElement>("button.ks-film__play")!;
+
+  it("is its own fold: the section named by its centred heading, the poster in a 16:9 figure, the credit and the disclosure under it", () => {
+    const { container } = render(<FilmsStrip {...SINGLE} after={<div className="after-slot" />} />);
+    const section = container.firstElementChild!;
+    expect(section.tagName).toBe("SECTION");
+    expect(section).toHaveAttribute("id", "expert");
+    expect(section).toHaveAttribute("aria-labelledby", "expert-title");
+    expect(section.className).toBe("kh-section");
+    const heading = section.querySelector(".kh-heading")!;
+    expect(heading).toHaveClass("kh-heading--center");
+    expect(norm(heading.querySelector(".kh-eyebrow")?.textContent)).toBe("A video from an expert");
+    expect(heading.querySelector("h2#expert-title")?.textContent).toBe("Watching isn’t talking.");
+    expect(heading.querySelector("h2 .kh-hand")?.textContent).toBe("talking.");
+    // The figure: the frame (poster, chip, play control), then the credit and the disclosure, in body type, in that order.
+    const figure = section.querySelector(".kh-container > figure.ks-clip")!;
+    expect([...figure.children].map((el) => el.className)).toEqual(["ks-clip__frame", "ks-clip__credit"]);
+    expect(figure.lastElementChild?.tagName).toBe("FIGCAPTION");
+    expect([...figure.querySelectorAll("figcaption > p")].map((p) => [p.className, p.textContent])).toEqual([
+      ["kh-body", film.credit],
+      ["kh-body", film.disclosure],
+    ]);
+    expect(container.querySelector(".ks-clip + .after-slot")).not.toBeNull();
+    // Nothing of the strip: no list, no controls, no proof line, no reveal.
+    expect(section.querySelector("ul, .ks-films-ctrl, .ks-films-proof, [data-reveal]")).toBeNull();
+  });
+
+  it("shows the poster lazily at the clip's own size, with its alt, the chip on it hidden from screen readers", () => {
+    const { container } = render(<FilmsStrip {...SINGLE} />);
+    const frame = container.querySelector(".ks-clip__frame")!;
+    const poster = frame.querySelector("img")!;
+    expect(poster).toHaveAttribute("loading", "lazy");
+    expect(poster).not.toHaveAttribute("fetchpriority");
+    expect(poster).toHaveAttribute("alt", film.poster.alt);
+    expect(poster).toHaveAttribute("width", "1280");
+    expect(poster).toHaveAttribute("height", "720");
+    expect(poster.getAttribute("sizes")).toBe("(min-width: 1024px) 944px, (min-width: 720px) calc(100vw - 64px), calc(100vw - 32px)");
+    const chip = frame.querySelector(".ks-clip__chip")!;
+    expect(chip).toHaveAttribute("aria-hidden", "true");
+    expect(chip.querySelector(".kh-chip")?.textContent).toBe(film.chip);
+  });
+
+  it("has no <video> and fetches no film at rest; one DS primary play control, named as the plan says", () => {
+    const { container } = render(<FilmsStrip {...SINGLE} />);
+    expect(container.querySelector("video")).toBeNull();
+    const buttons = container.querySelectorAll("button");
+    expect(buttons).toHaveLength(1);
+    expect(playControl()).toHaveClass("kh-iconbtn", "kh-iconbtn--primary", "kh-iconbtn--l", "ks-film__play");
+    expect(playControl()).toHaveAccessibleName(film.play);
+    expect(playControl().querySelector("svg path")?.getAttribute("d")).toBe(ICON_PLAY);
+    expect(container.innerHTML).not.toContain(film.video);
+  });
+
+  it("a tap swaps the poster for the film with native controls and sound, focused and playing", async () => {
+    const focused: Element[] = [];
+    const focusSpy = vi.spyOn(HTMLElement.prototype, "focus").mockImplementation(function (this: HTMLElement) {
+      focused.push(this);
+    });
+    const { container } = render(<FilmsStrip {...SINGLE} />);
+    await act(async () => fireEvent.click(playControl()));
+    const video = container.querySelector("video")!;
+    expect(video.closest(".ks-clip__frame")).not.toBeNull();
+    expect(video.getAttribute("src")).toBe(film.video);
+    expect(video.controls).toBe(true);
+    expect(video.muted).toBe(false);
+    expect(video).toHaveAttribute("playsinline");
+    expect(video).toHaveAttribute("preload", "none");
+    expect(video).not.toHaveAttribute("autoplay");
+    expect(video).not.toHaveAttribute("loop");
+    expect(video).toHaveAttribute("aria-label", film.name);
+    // jsdom loads no image, so the poster is the WebP still rather than the shown still's address.
+    expect(video).toHaveAttribute("poster", film.still);
+    expect(playControl()).toHaveAttribute("hidden");
+    expect(focused).toEqual([video]);
+    expect(play).toHaveBeenCalledTimes(1);
+    focusSpy.mockRestore();
+  });
+
+  it("pauses once it has been half on screen and leaves, never before", async () => {
+    const { container } = render(<FilmsStrip {...SINGLE} />);
+    await act(async () => fireEvent.click(playControl()));
+    const video = container.querySelector("video")!;
+    const away = TestObserver.all.find((o) => o.targets.includes(video))!;
+    expect(away.options.threshold).toBe(0.5);
+    act(() => away.callback([{ target: video, intersectionRatio: 0.2, isIntersecting: true }]));
+    expect(pause).not.toHaveBeenCalled();
+    act(() => away.callback([{ target: video, intersectionRatio: 0.9, isIntersecting: true }]));
+    act(() => away.callback([{ target: video, intersectionRatio: 0.3, isIntersecting: true }]));
+    expect(pause).toHaveBeenCalled();
+  });
+
+  it("brings the poster back when the film ends and returns focus to the play control", async () => {
+    const { container } = render(<FilmsStrip {...SINGLE} />);
+    await act(async () => fireEvent.click(playControl()));
+    await act(async () => fireEvent.ended(container.querySelector("video")!));
+    expect(container.querySelector("video")).toBeNull();
+    expect(playControl()).not.toHaveAttribute("hidden");
+    expect(document.activeElement).toBe(playControl());
+  });
+
+  it("refuses a clip without its credit or its disclosure", () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    for (const missing of ["credit", "disclosure"] as const) {
+      expect(() => render(<FilmsStrip {...SINGLE} film={{ ...film, [missing]: " " }} />)).toThrow(new RegExp(missing));
+    }
+    vi.mocked(console.error).mockRestore();
+  });
+});
+
 /* Task 3.6 item 19: films.spec.ts and motion-films.spec.ts run on these stories, so the stories show the content itself
    (content/en-IN/films.ts), never a retyped copy: the specs then test what the pages publish. */
 describe("FilmsStrip: the stories show the content", () => {
@@ -361,6 +478,10 @@ describe("FilmsStrip: the stories show the content", () => {
       expect(story.args?.films ?? storiesMeta.args.films).toBe(films);
       expect(story.args?.labels ?? storiesMeta.args.labels).toBe(filmsStrip);
     }
+  });
+
+  it("the expert clip's story is the product page's own fold, the very config (task 8c.6)", () => {
+    expect(stories.Expert.args).toBe(expertFold);
   });
 
   it("Home and the product page show the parents' quotes from content; the store shows none (task 8c.3)", () => {

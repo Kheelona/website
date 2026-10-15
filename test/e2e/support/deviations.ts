@@ -9,6 +9,7 @@
 import type { Page } from "@playwright/test";
 import { ICON_PATHS, type IconName } from "@/assets/icons.generated";
 import { HOSTS } from "@/config/env";
+import { expertClip, expertFold } from "@/content/en-IN/expert-video";
 import { filmQuotes } from "@/content/en-IN/films";
 import { faqs } from "@/content/en-IN/faqs";
 import { navigation } from "@/content/en-IN/navigation";
@@ -1514,6 +1515,32 @@ const proofText = (slug: ProofSlug): TextDeviation => ({
   reason: "the lines of the blocks task 8c.3 adds: parents' quotes, the recognition strip, and on the product page the four steps and the example conversation",
   approvedBy: PROOF_ADDITIONS_APPROVED,
 });
+/* Wave 8c, task 8c.6 (D061 items 12-13, the founder after the CMO's and the claims review's proposals): the expert clip,
+   a fold the approved page does not have, on the product page right after the offer card and before task 8c.3's steps:
+   the eyebrow, the heading, the poster with its chip and play control, then the credit and the disclosure. Nothing of
+   the approved page changes, so the pixels compare the page without it (the build side hides it and every fold below
+   lines up), and the text pass accepts its lines on the build side only. Its words are read from its content module
+   (content/en-IN/expert-video.ts imports no image, so Playwright loads it); the eyebrow renders in capitals, as the
+   browser reports it. The deviations.md row (V48) is the main session's, drafted in the task's report. */
+export const EXPERT_CLIP_APPROVED = "D061 items 12-13 (founder, 2026-10-15; task 8c.6; deviations.md V48 to come)";
+/** The fold, by its heading, and every line it prints, in order. */
+export const EXPERT_CLIP = {
+  selector: 'section[aria-labelledby="expert-title"]',
+  build: [expertFold.heading.eyebrow, toPlainText(expertFold.heading.title), expertClip.chip, expertClip.credit, expertClip.disclosure],
+} as const;
+const EXPERT_CLIP_HIDDEN: VisualHide = {
+  side: "build",
+  selector: EXPERT_CLIP.selector,
+  reason: "the expert clip task 8c.6 adds after the offer card (D061 items 12-13); the approved page has none, so the pixels compare without it",
+  approvedBy: EXPERT_CLIP_APPROVED,
+};
+/** Nothing of the approved page is excused (a regex no sentence matches); the fold's lines are accepted. */
+const EXPERT_CLIP_TEXT: TextDeviation = {
+  mockup: /(?!)/,
+  build: oneOf([expertFold.heading.eyebrow.toUpperCase(), ...EXPERT_CLIP.build.flatMap((line) => sentences(line))]),
+  reason: "the lines of the expert clip task 8c.6 adds: its eyebrow, heading, chip, credit and disclosure",
+  approvedBy: EXPERT_CLIP_APPROVED,
+};
 /* Kheelu on the first phone screen (D061 item 1, task 8c.1): under 720 px the hero's art is the board's phone
    composition, 4:3 right under the trust line (the help line and the secondary link follow it), where the approved
    page has the 1:1 board after them. Its words are the approved board's (the text pass compares them); its place and
@@ -1650,6 +1677,8 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...offerAdditionsHidden("meet-kheelu"),
     /* The quotes, the strip, the steps and the example (task 8c.3). */
     ...proofHidden("meet-kheelu"),
+    /* The expert clip after the offer card (task 8c.6, D061 items 12-13). */
+    EXPERT_CLIP_HIDDEN,
     /* The hero's phone art (D061 item 1, task 8c.1), under 720 px only. */
     ...HERO_PHONE_ART,
   ],
@@ -1819,6 +1848,8 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     /* The quotes, the strip, the steps and the example (task 8c.3): PROOF_ADDITIONS above, before the claim fixes, which
        stay last. */
     proofText("meet-kheelu"),
+    /* The expert clip's lines (task 8c.6, D061 items 12-13): EXPERT_CLIP above. */
+    EXPERT_CLIP_TEXT,
     /* D058's claim fixes (V27, task 8b.1): CLAIM_FIXES above. */
     factsRule(CLAIM_FIXES["meet-kheelu"]),
     /* The languages question (task 8c.4, D061): FAQ_FIXES above. Its answer sits in a closed item, which the text pass

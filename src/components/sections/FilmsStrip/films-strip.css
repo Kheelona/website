@@ -42,13 +42,17 @@
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
-.ks-film__frame {
+/* A film's frame: each tile of the strip, and the single film on its own (task 8c.6, at its own 16:9, below). */
+.ks-film__frame,
+.ks-clip__frame {
   position: relative;
-  aspect-ratio: 9 / 16;
   max-width: 100%;
   overflow: hidden;
   border-radius: var(--radius-l);
   background: var(--ink-900);
+}
+.ks-film__frame {
+  aspect-ratio: 9 / 16;
   /* Phones: the film in focus is snapped at the strip's start, so it grows into the gap after it, never past the
      strip's edge; the last film, snapped at the end, grows back into the gap before it. */
   transform-origin: 0 50%;
@@ -75,7 +79,9 @@
   }
 }
 .ks-film__frame > img,
-.ks-film__frame > video {
+.ks-film__frame > video,
+.ks-clip__frame > img,
+.ks-clip__frame > video {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -132,6 +138,33 @@
   align-self: stretch;
 }
 
+/* One film on its own (task 8c.6; D061 items 12-13): the expert clip on the product page. No mockup has it (deviation
+   row drafted in the task report); it is the strip's frame at the film's own 16:9, the DS chip on the poster, the
+   strip's play button in the middle, and under it the credit and the disclosure in body type, centred like the heading
+   above. The film covers the chip once it plays (it comes after it in the frame). Nothing moves (D049). */
+.ks-clip {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+}
+.ks-clip__frame {
+  aspect-ratio: 16 / 9;
+}
+.ks-clip__chip {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  margin: 0;
+}
+.ks-clip__credit {
+  display: grid;
+  gap: var(--space-1);
+  text-align: center;
+}
+.ks-clip__credit > p {
+  margin: 0;
+}
+
 @media (min-width: 720px) {
   /* Three at rest; the montage in the centre, the parent film to its right (founder, 2026-09-19). The centre film is
      the one in focus, so it grows from its middle. */
@@ -144,8 +177,9 @@
   }
 }
 @media (min-width: 1024px) {
-  /* Keeps a 9:16 film inside a laptop screen. */
-  .ks-films-wrap {
+  /* Keeps a 9:16 film inside a laptop screen; the single film takes the strip's width. */
+  .ks-films-wrap,
+  .ks-clip {
     max-width: calc(var(--content-max) - var(--space-10) * 2);
     margin-inline: auto;
   }
