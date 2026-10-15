@@ -3,7 +3,7 @@ import { dirname } from "node:path";
 import type { BrowserContext, Page, TestInfo } from "@playwright/test";
 import { expect, hideForParity, motionStarted, requiresServer, test, type OpenOptions } from "./support/fixtures";
 import { ORIGINS, REAL_ORIGINS, STORYBOOK_PORT, TARGET } from "./support/env";
-import { PRICE_LINE } from "./support/deviations";
+import { FOOTER_ROWS, PRICE_LINE } from "./support/deviations";
 import { CHUNK_MAX_DIFF_RATIO } from "./support/parity";
 import { builtUrl } from "./support/routes";
 import { ruleMockupPage } from "./support/seller-facts";
@@ -21,7 +21,8 @@ import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
  *     bar at the two phone widths, where they exist), and the store header and footer against mockup/store.html. The
  *     mockup's element screenshot is the golden (git-ignored, D039); at most 2 percent of pixels may differ, as SPA 1.
  *     The mockup's drawer notes and bar line carry task Q2.8's words first (`withPriceLineWords`), so the pixels
- *     compare the same words on both sides.
+ *     compare the same words on both sides; its footer takes the approved link rows first (V54, V64: 44 px on touch,
+ *     32 px with a fine pointer; deviations.ts FOOTER_ROWS, task Q2.14), and the built rows are held to those heights.
  *   - Sticky bar (G-09, pick 4): hidden while the hero CTA is on screen, shown past it, aside while an inline chilli
  *     button is on screen, inert while hidden, data-buybar and --ks-buybar-h on <html>, gone from 900 px, sliding up
  *     with motion on and only fading with reduced motion. The page's own hero CTA (#hero-cta) is on screen at first
@@ -207,14 +208,27 @@ async function scrollToY(page: Page, y: number): Promise<void> {
 
 /* ── Element parity with the mockup ─────────────────────────────────────────────────────────────────────────── */
 
+/** The footer's link rows as built: each column link's height, rounded. */
+function footerRows(page: Page): Promise<number[]> {
+  return page.locator("footer.kh-footer .kh-footer__col a").evaluateAll((links) => links.map((a) => Math.round(a.getBoundingClientRect().height)));
+}
+
 test.describe("chrome: element parity with mockup/home.html", () => {
   for (const vp of APPROVED_WIDTHS) {
     test(`nav and footer ${vp.name}`, async ({ harness }, testInfo) => {
       const ref = await openMockup(harness, "home", vp);
       // The footer's legal row without the GSTIN and the number (D063 items 2-3; task Q2.3; support/seller-facts.ts).
       await ruleMockupPage(ref, ["footer.kh-footer"]);
+      // The footer's link rows as approved after Gate A (V54: 44 px on touch; V64: 32 px with a fine pointer; task Q2.14),
+      // given to the mockup's footer, so the pixels compare the columns, their words and places, in the same rows.
+      await ref.addStyleTag({ content: FOOTER_ROWS.css });
       const page = await openBuilt(harness, vp);
       await hideForParity(page);
+      const rows = await footerRows(page);
+      console.log(`[chrome] footer rows ${vp.name}: ${rows.length} links, ${[...new Set(rows)].join(", ")} px (${FOOTER_ROWS.approvedBy})`);
+      expect(rows.length, "the footer's column links").toBeGreaterThan(0);
+      expect(new Set(rows), `the footer's link rows at ${vp.name}`).toEqual(new Set([vp.isMobile ? FOOTER_ROWS.touch : FOOTER_ROWS.fine]));
+      expect(await footerRows(ref), "the mockup's re-ruled rows equal the build's").toEqual(rows);
       compare(testInfo, `chrome-nav-${vp.name}.png`, await shot(ref, "nav.kh-nav"), await shot(page, "nav.kh-nav"));
       for (const p of [ref, page]) await p.addStyleTag({ content: WITHOUT_MAIN });
       compare(testInfo, `chrome-footer-${vp.name}.png`, await shot(ref, "footer.kh-footer"), await shot(page, "footer.kh-footer"));

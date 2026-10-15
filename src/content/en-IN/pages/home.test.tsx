@@ -9,13 +9,14 @@ import { pageMeta } from "@/lib/seo/metadata";
 import { findBanned } from "../../../../test/guards/banned-phrases.data";
 import { htmlToText } from "../../../../test/e2e/support/mockup-text";
 import {
-  HOME_FOOTER_COLS_HIDDEN,
+  FOOTER_COLS_HIDDEN,
   HOME_SELLING,
   HOME_SELLING_APPROVED,
   HOME_SELLING_HIDDEN,
   HOME_SELLING_TEXT,
   TEXT_DEVIATIONS,
   VISUAL_HIDDEN,
+  visualHidden,
   type HomeSellingFold,
 } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
@@ -640,7 +641,8 @@ describe("Home: the parity rules of the selling update (deviations.ts HOME_SELLI
     for (const rule of rules) expect(doc[rule.side].querySelectorAll(rule.selector), `${rule.side} ${rule.selector}`).toHaveLength(1);
     expect(rules.filter((r) => r.side === "mockup")).toHaveLength(10);
     expect(rules.filter((r) => r.side === "build")).toHaveLength(LABELS.length);
-    expect(VISUAL_HIDDEN.home).toEqual(expect.arrayContaining([...HOME_FOOTER_COLS_HIDDEN]));
+    // The footer's columns by the rule every page shares since task Q2.14 (V54, V64), no longer one of Home's own.
+    expect(visualHidden("home")).toEqual(expect.arrayContaining([...FOOTER_COLS_HIDDEN]));
   });
 
   it("is a text rule a fold, before the claim fixes (which only the FAQ fix may follow)", () => {

@@ -2287,16 +2287,6 @@ export const HOME_SELLING_HIDDEN: readonly VisualHide[] = Object.values(HOME_SEL
     ? []
     : [{ side: "build" as const, selector: `main > section[aria-labelledby="${fold.buildFold}"]`, reason: fold.reason, approvedBy: HOME_SELLING_APPROVED }]),
 ]);
-/** The footer's link columns, on both sides, on Home only: task Q2.4 closed their gaps (D064 item 6), which every other
- *  page absorbs inside the 2 % height tolerance; with Home's folds hidden the visual pass compares little but the nav
- *  and the footer, so the shorter columns alone exceed it. The footer's words are compared by the text pass of no page
- *  (it is outside main) and by chrome.spec.ts. */
-export const HOME_FOOTER_COLS_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as const).map((side) => ({
-  side,
-  selector: "footer.kh-footer .kh-footer__cols",
-  reason: "the footer's link columns, their gaps closed by task Q2.4 (D064 item 6): on Home, with its folds hidden (task Q2.9), they alone exceed the height tolerance",
-  approvedBy: "D064 item 6 (founder, 2026-10-15; task Q2.4), on Home since task Q2.9",
-}));
 /** One text rule a fold: its approved lines excused, its new lines accepted, each also in capitals (an eyebrow). */
 export const HOME_SELLING_TEXT: readonly TextDeviation[] = Object.values(HOME_SELLING as Readonly<Record<string, HomeSellingFold>>).map((fold) => ({
   mockup: fold.mockup.length ? oneOf([...fold.mockup, ...fold.mockup.map((line) => line.toUpperCase())]) : /(?!)/,
@@ -2645,7 +2635,6 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   home: [
     /* Task Q2.9: every fold of both sides (HOME_SELLING above); the earlier rules below hide parts of them again. */
     ...HOME_SELLING_HIDDEN,
-    ...HOME_FOOTER_COLS_HIDDEN,
     ...factsHidden(COPY_FIXES.home, COPY_FIXES_WHOSE),
     ...factsHidden(CLAIM_FIXES.home, CLAIM_FIXES_WHOSE),
     ...factsHidden(FAQ_FIXES.home, FAQ_FIXES_WHOSE),
@@ -2817,8 +2806,37 @@ export const PRICE_LINE_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as 
   };
 });
 
-/** The rules every page shares, in order: the tap areas' (task 7.1a), then task Q2.8's price lines. */
-export const SHARED_HIDDEN: readonly VisualHide[] = [...TAP_AREA_HIDDEN, ...PRICE_LINE_HIDDEN];
+/* The footer's link rows (V54, task Q2.4, D064 item 6: 44 px rows on touch; V64, task Q2.12, the main session's ruling of
+   the selling update: 32 px rows with a fine pointer), on every marketing page: the footer is 44, 32 and about 80 px
+   shorter than the approved mockup's at 360, 390 and 1440, so every page's last chunk (and at 1440 its height) would
+   differ by the columns alone. The pixels compare each page without the columns, on both sides; the footer's words and
+   links are in no page's text pass (the footer is outside main), so chrome.spec.ts compares the footer itself, columns
+   included, against mockup/home.html with the approved rows given to the mockup (FOOTER_ROWS). One shared rule for
+   every page, as the tap areas' and the price lines', never a row per page key (Home had its own until task Q2.14). */
+const FOOTER_ROWS_APPROVED =
+  "deviations.md V54 (founder, D064 item 6, 2026-10-15; task Q2.4) and V64 (main session, the selling update, 2026-10-15; task Q2.12); one shared rule since task Q2.14";
+export const FOOTER_COLS_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as const).map((side) => ({
+  side,
+  selector: "footer.kh-footer .kh-footer__cols",
+  reason:
+    "the footer's link columns, in shorter rows than the mockup's (44 px on touch, 32 px with a fine pointer), compared by chrome.spec.ts with the approved rows; hidden on both sides so each page's last chunk lines up",
+  approvedBy: FOOTER_ROWS_APPROVED,
+}));
+/** The footer's approved link rows (V54, V64) as CSS for the mockup's footer, so chrome.spec.ts compares the columns'
+ *  pixels with the rows as approved: footer.css's two `.kh-footer__col a` rules, rule for rule (e2e-harness.test.ts holds
+ *  them equal). `touch` and `fine` are the rows' heights in px (a 24 px line and its padding), as the spec measures them. */
+export const FOOTER_ROWS = {
+  css:
+    ".kh-footer__col a { padding-block: calc(var(--space-2) + var(--space-1) / 2); }\n" +
+    "@media (hover: hover) and (pointer: fine) { .kh-footer__col a { padding-block: var(--space-1); } }",
+  touch: 44,
+  fine: 32,
+  approvedBy: FOOTER_ROWS_APPROVED,
+} as const;
+
+/** The rules every page shares, in order: the tap areas' (task 7.1a), task Q2.8's price lines, then the footer's
+ *  columns (V54, V64; task Q2.14). */
+export const SHARED_HIDDEN: readonly VisualHide[] = [...TAP_AREA_HIDDEN, ...PRICE_LINE_HIDDEN, ...FOOTER_COLS_HIDDEN];
 
 /** Every rule the visual pass applies to one page: the rules every page shares (SHARED_HIDDEN), then the page's own,
  *  then D063's for that page (task Q2.3; seller-facts.ts). */

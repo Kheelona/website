@@ -1,8 +1,11 @@
 import type { Page } from "@playwright/test";
+import postcss, { type AtRule } from "postcss";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ARTICLE_SLUGS as PLAN_ARTICLES } from "@/content/en-IN/routes";
 import { ARTICLE_CLOSES, stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import {
+  FOOTER_COLS_HIDDEN,
+  FOOTER_ROWS,
   PRICE_LINE_HIDDEN,
   PRICE_LINE_TEXT,
   SHARED_HIDDEN,
@@ -17,6 +20,7 @@ import {
   textDeviations,
   visualHidden,
 } from "./e2e/support/deviations";
+import { readRepoFile } from "./e2e/support/repo";
 import { SELLER_FACTS_APPROVED } from "./e2e/support/seller-facts";
 import { ARTICLE_SLUGS, articleClose, NOT_FOUND_PATH, snapshotPosts, sweepRoutes } from "./e2e/support/routes";
 
@@ -99,9 +103,10 @@ describe("hideDeviations", () => {
   });
 
   /* Since task 7.1a every page shares one rule (TAP_AREA_HIDDEN, the tap-area row V23: a help line under a trust line sits
-     lower in the build), and since task Q2.8 a second (PRICE_LINE_HIDDEN: the price lines D065 item 3 rewords), applied
-     before the page's own, so no page is without them. A guide the approved mockups do not show has no rule of its own
-     and none of D063's (task Q2.3: the ruling reads the mockups). */
+     lower in the build), since task Q2.8 a second (PRICE_LINE_HIDDEN: the price lines D065 item 3 rewords), and since
+     task Q2.14 a third (FOOTER_COLS_HIDDEN: the footer's link rows, V54 and V64), applied before the page's own, so no
+     page is without them. A guide the approved mockups do not show has no rule of its own and none of D063's (task Q2.3:
+     the ruling reads the mockups). */
   it("applies the rules every page shares to a page with none of its own on that side, and prints exactly those", async () => {
     const log = vi.spyOn(console, "log").mockImplementation(() => {});
     const { page, styles } = fakePage();
@@ -116,14 +121,50 @@ describe("hideDeviations", () => {
     expect(log.mock.calls.map(([line]) => String(line))).toEqual(shared.map((r) => `[visual-parity] ${slug}: ${r.selector} hidden in the build (${r.approvedBy}): ${r.reason}`));
   });
 
-  it("puts the shared rules first, the tap areas' then the price lines', then the page's own, then D063's (task Q2.3)", () => {
-    expect(SHARED_HIDDEN).toEqual([...TAP_AREA_HIDDEN, ...PRICE_LINE_HIDDEN]);
+  it("puts the shared rules first, the tap areas' then the price lines' then the footer's columns', then the page's own, then D063's (task Q2.3)", () => {
+    expect(SHARED_HIDDEN).toEqual([...TAP_AREA_HIDDEN, ...PRICE_LINE_HIDDEN, ...FOOTER_COLS_HIDDEN]);
     const own = VISUAL_HIDDEN.store ?? [];
     expect(visualHidden("store").slice(0, SHARED_HIDDEN.length)).toEqual(SHARED_HIDDEN);
     expect(visualHidden("store").slice(SHARED_HIDDEN.length, SHARED_HIDDEN.length + own.length)).toEqual(own);
     const ruling = visualHidden("store").slice(SHARED_HIDDEN.length + own.length);
     expect(ruling.length).toBeGreaterThan(0);
     for (const rule of ruling) expect(rule.approvedBy).toBe(SELLER_FACTS_APPROVED);
+  });
+
+  /* Task Q2.14 (V54, V64): the footer's link rows are shorter than the approved mockup's on every marketing page (44 px on
+     touch, 32 px with a fine pointer), so each page's last chunk compares the footer without its columns, on both sides,
+     by one shared rule; no page lists it again. chrome.spec.ts compares the columns themselves, with the approved rows
+     (FOOTER_ROWS) given to the mockup's footer: those rows are footer.css's own, rule for rule. */
+  it("hides the footer's link columns on both sides of every page by one shared rule (V54, V64), and no page again", () => {
+    expect(FOOTER_COLS_HIDDEN.map((r) => [r.side, r.selector])).toEqual([
+      ["mockup", "footer.kh-footer .kh-footer__cols"],
+      ["build", "footer.kh-footer .kh-footer__cols"],
+    ]);
+    for (const rule of FOOTER_COLS_HIDDEN) {
+      expect(rule.approvedBy).toMatch(/\bV54\b.*\bV64\b/);
+      expect(rule.reason.length).toBeGreaterThan(40);
+    }
+    for (const slug of ["home", "safety", "contact", "privacy", "article:busy-hands-no-screens"]) {
+      expect(visualHidden(slug), slug).toEqual(expect.arrayContaining([...FOOTER_COLS_HIDDEN]));
+    }
+    for (const [slug, rules] of Object.entries(VISUAL_HIDDEN)) {
+      expect(rules.filter((r) => r.selector.includes("kh-footer__cols")), slug).toEqual([]);
+    }
+  });
+
+  it("re-rules the mockup's footer with the approved rows, which are footer.css's own (V54, V64)", () => {
+    const rows = (css: string) => {
+      const out: string[] = [];
+      postcss.parse(css).walkRules(".kh-footer__col a", (rule) => {
+        const at = rule.parent?.type === "atrule" ? `@media ${(rule.parent as AtRule).params} ` : "";
+        rule.walkDecls((decl) => void out.push(`${at}${decl.prop}: ${decl.value}`));
+      });
+      return out;
+    };
+    expect(rows(FOOTER_ROWS.css)).toEqual(rows(readRepoFile("src/components/chrome/Footer/footer.css")));
+    expect(rows(FOOTER_ROWS.css)).toHaveLength(2);
+    expect(FOOTER_ROWS).toMatchObject({ touch: 44, fine: 32 });
+    expect(FOOTER_ROWS.approvedBy).toBe(FOOTER_COLS_HIDDEN[0].approvedBy);
   });
 
   it("gives the text pass task Q2.8's rules, then each page's own, then D063's, which excuse the help line and accept its new words", () => {
