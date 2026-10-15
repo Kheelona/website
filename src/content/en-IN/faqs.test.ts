@@ -14,6 +14,7 @@ import {
   type FaqFixesSlug,
   LANGUAGES_FAQ,
   NOT_RIGHT_QUESTION,
+  RETURNS_QUESTION,
   TEXT_DEVIATIONS,
   VISUAL_HIDDEN,
 } from "../../../test/e2e/support/deviations";
@@ -33,7 +34,9 @@ import { product } from "./products/kheelu/product";
  * timing, /safety's age-3 lines and its pointer to the next question; then with task 8b.1's claim fixes
  * (CLAIM_FIXES; deviations V26-V31, D058): the age answers' mechanism in the live team's words, no
  * "or delete" in the first-week answer, and /safety's "Replies" line without the closed library; then with task 8c.4's
- * FAQ fixes (FAQ_FIXES; D061): Home's fourth question in the parent's words, and the product page's languages question. */
+ * FAQ fixes (FAQ_FIXES; D061): Home's fourth question in the parent's words, and the product page's languages question;
+ * and since task 8c.8 (the CMO's wave 8c review, m7, m8) the product page's sixth question in the same words as Home's,
+ * and the languages answer's film name a link to that film's tile. */
 
 const token = buildOffer("token");
 const full = buildOffer("full");
@@ -149,8 +152,10 @@ describe("P15: the shared answer gives D033's remedy for a faulty Kheelu (deviat
   });
 
   it("changes only that sentence: every other word is the approved mockup's", () => {
+    // The mockup's item by its approved question (task 8c.8 rewords the question, RETURNS_QUESTION; the answer stays).
     const doc = new DOMParser().parseFromString(readRepoFile("mockup/meet-kheelu.html"), "text/html");
-    const item = Array.from(doc.querySelectorAll(".kh-faq__item")).find((el) => norm(el.querySelector(".kh-faq__q span")?.textContent) === plain(faqs[P15.id].question, token));
+    const item = Array.from(doc.querySelectorAll(".kh-faq__item")).find((el) => norm(el.querySelector(".kh-faq__q span")?.textContent) === RETURNS_QUESTION.mockup);
+    expect(item).toBeDefined();
     expect(answer()).toBe(norm(item?.querySelector(".kh-faq__a > p")?.textContent).replace(P15.mockup, P15.build));
   });
 
@@ -279,6 +284,42 @@ describe("task 8c.4: the FAQ wording and the languages answer (D061)", () => {
   });
 });
 
+/* Task 8c.8 (the CMO's review of wave 8c on the beta, m7 and m8; the main session's rulings, 2026-10-15): the product page
+   asked "What if it isn’t right for us, or stops working?" while Home asks the parent's own fear (V41), so the two selling
+   pages disagreed: the product page's question takes Home's words and keeps its second half, the answer unchanged; it
+   renders on the page, in the FAQPage JSON-LD and in /llms.txt from this one item. And the languages answer named a film
+   about 12,000 px above it that the reader could not reach from the answer: the film's name is now an in-page link to that
+   film's tile in the strip (the tile carries the film's id), which the strip's island plays as a quote's "Watch the film"
+   plays it; the words, and so the JSON-LD and /llms.txt, are unchanged. */
+describe("task 8c.8: the product page's sixth question and the languages answer's film (CMO wave 8c m7, m8)", () => {
+  const filmSix = films.find((f) => f.id === "a-story-in-two-languages")!;
+
+  it("asks Home's question with the product page's second half, the answer unchanged, in both offer modes", () => {
+    expect(RETURNS_QUESTION).toEqual({
+      mockup: "What if it isn’t right for us, or stops working?",
+      build: "What if my child doesn’t like it, or it stops working?",
+    });
+    expect(plain(faqs["returns-and-warranty"].question, token)).toBe(RETURNS_QUESTION.build);
+    expect(plain(faqs["returns-and-warranty"].question, full)).toBe(RETURNS_QUESTION.build);
+    expect(RETURNS_QUESTION.build.startsWith(NOT_RIGHT_QUESTION.build.replace(/\?$/, ","))).toBe(true);
+  });
+
+  it("is the question /llms.txt asks, with the same answer, never the old one", () => {
+    for (const offer of [token, full]) {
+      const body = llmsText(offer);
+      expect(body).toContain(`\n### ${RETURNS_QUESTION.build}\n\n${plain(faqs["returns-and-warranty"].answer, offer)}\n`);
+      expect(body).not.toContain(RETURNS_QUESTION.mockup);
+    }
+  });
+
+  it("links the film's name in the languages answer to that film's tile, the words unchanged", () => {
+    expect(faqs.languages.answer).toContain(`[“${filmSix.chip}”](#${filmSix.id})`);
+    expect(LANGUAGES_FAQ.film).toEqual({ name: `“${filmSix.chip}”`, href: `#${filmSix.id}` });
+    expect(plain(faqs.languages.answer, token)).toBe(LANGUAGES_FAQ.answer);
+    expect(llmsText(token)).toContain(`\n${LANGUAGES_FAQ.answer}\n`);
+  });
+});
+
 describe.each(Object.keys(FAQ_FIXES) as FaqFixesSlug[])("%s: task 8c.4's FAQ fixes (D061) as a parity deviation", (slug) => {
   const fixes = FAQ_FIXES[slug];
   /* The mockup as the page's earlier rules leave it: its page facts and copy fixes, then task 8b.1's claim fixes. */
@@ -311,7 +352,7 @@ describe.each(Object.keys(FAQ_FIXES) as FaqFixesSlug[])("%s: task 8c.4's FAQ fix
    * information; the founder signs the rows at Gate B (D015). The row numbers are the main session's to assign. */
   it("names its deviations.md row, the main session's D061 ruling (AP-30), the founder's Gate B signature and this task", () => {
     expect(fixes.approvedBy).toMatch(
-      /^deviations\.md V\d+ \(the main session's D061 ruling \(AP-30\), for the founder's signature at Gate B \(D015\), 2026-10-15; .*task 8c\.4\)$/,
+      /^deviations\.md V\d+ \(the main session's D061 ruling \(AP-30\), for the founder's signature at Gate B \(D015\), 2026-10-15; .*task 8c\.4(?:; amended by task 8c\.8 \(CMO wave 8c review m\d+(?:, m\d+)*\))?\)$/,
     );
   });
 });

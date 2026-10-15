@@ -128,16 +128,17 @@ const MACHINE = [
  */
 const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } & Record<OfferMode, string>> = {
   "llms.txt": {
-    // 2026-10-15: the product page's question "Which languages does Kheelu speak?" and its answer, after the ages (task
-    // 8c.5, the 8c merge's follow-up). Earlier the same day: Home's question "What if my child doesn’t like it?", its
-    // answer unchanged (D061, AP-30; task 8c.4).
+    // 2026-10-15: the product page's question "What if my child doesn’t like it, or it stops working?", its answer
+    // unchanged (the CMO's wave 8c review m7; task 8c.8). Earlier the same day: the product page's question "Which
+    // languages does Kheelu speak?" and its answer, after the ages (task 8c.5, the 8c merge's follow-up); Home's question
+    // "What if my child doesn’t like it?", its answer unchanged (D061, AP-30; task 8c.4).
     // 2026-10-14: the live team's code check (D058; task 8b.1, wave 8b merge): the Microphone and Parent app rows, the
     // safety mechanism, the age answer, the first-week answer and the Kheelona+ perk. Earlier the same day: the
     // screen-time topic's lead (CMO reviews A M5, B m1), Home's refund and age-3 answers (task 7.1b) and the product's
     // Parent app row "On iPhone and Android." (D055 item 26; task 6.7).
     date: "2026-10-15",
-    token: "94dc89555ebab4873663caa318cdba1d97ba72d71b6129c8e173618e691d2712",
-    full: "29e3309917b44039b66f8948754f4dcee4ba0eec1c393e733834d87078955174",
+    token: "9002deae93cdb154fbe699543384fb64a8a3bf730cefd0410a3aa9a91cca6df4",
+    full: "37575b6120c85f0b90487b234b863b7ddaccdc1b4be488e326f50acd7ef64794",
   },
   "pricing.md": {
     // 2026-10-15: the product card's perk "Made in India" last among "Included with every Kheelu" (D061 item 10; task
