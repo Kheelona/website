@@ -108,17 +108,22 @@ describe("FoundersSection: parts", () => {
 
   /* Task Q2.16 (the consistency review's QAL-6): the DS's three columns start at 720 px (bundle.css .kh-cols--3), where
      the 96 px badge beside the name left it 62-131 px: "Apoorva" ran past its card's edge at 720, every name wrapped at
-     900 and "Apoorva / Sahu" at 1024. While the three columns are narrow (720-1199 px) the badge sits above the name and
-     role; at every width the head aligns to the top, so one founder's two-line role no longer lifts his name (9 px at
-     1440). Phones (one column) and 1200 px up keep the badge beside the name. */
-  it("stacks the badge above the name while the three columns are narrow, and tops the heads at every width", () => {
+     900 and "Apoorva / Sahu" at 1024. The badge now sits above the name and role wherever the card cannot give them a
+     160 px column beside it (the longest name, "Apoorva Sahu", is 150 px): the head wraps, so no name breaks at any width.
+     That is 720 px to about 1100 px, and the narrowest phones; 1200 px up and the common phones keep the badge beside
+     the name. A media query cannot say it: 1200 px is no DS breakpoint (token-exceptions.ts DS_BREAKPOINTS), and
+     1024 px still broke "Apoorva / Sahu". At every width the head aligns to the top, so one founder's two-line role no
+     longer lifts his name (9 px at 1440). */
+  it("puts the badge above the name and role wherever a name could not keep one line beside it, the heads top-aligned", () => {
     const css = readRepoFile("src/components/sections/FoundersSection/founders-section.css").replace(/\/\*[\s\S]*?\*\//g, "");
-    const head = /\.ks-founder__head \{([^}]*)\}/.exec(css)?.[1].replace(/\s+/g, " ").trim();
-    expect(head).toBe("display: flex; align-items: flex-start; gap: var(--space-4);");
-    expect(css).toMatch(
-      /@media \(min-width: 720px\) and \(max-width: 1199px\) \{\s*\.ks-founder__head \{\s*flex-direction: column;\s*gap: var\(--space-3\);\s*\}\s*\}/,
-    );
+    const rule = (selector: string) => new RegExp(`${selector.replace(/[.]/g, "\\.")} \\{([^}]*)\\}`).exec(css)?.[1].replace(/\s+/g, " ").trim();
+    expect(rule(".ks-founder__head")).toBe("display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--space-3) var(--space-4);");
+    expect(rule(".ks-founder__who")).toBe("display: grid; flex: 1 1 calc(var(--space-10) + var(--space-6)); gap: var(--space-1); min-width: 0;");
+    expect(css).not.toContain("@media");
     expect(css).not.toContain("align-items: center");
+    const [badge, space4, space6, space10, longestName] = [96, 16, 32, 128, 150];
+    expect(space10 + space6).toBeGreaterThan(longestName);
+    expect(badge + space4 + space10 + space6).toBe(272);
   });
 
   it("gives the name the person's fragment, so a byline can point at it", () => {
