@@ -19,7 +19,7 @@ sources:
   - "lsof on ports 3456, 3460, 54321, 2026-10-10"
   - "Vercel build log of dpl_ErceHcr19K9gTeNb256WdbyvSojC (beta f2491b0), pasted by the founder, 2026-10-14"
   - node_modules/next/dist/server/lib/route-cache-key.js and build/index.js (Next 16.3.8)
-  - "wiki/qa/cmo-review-wave-8c-2026-10-15.md (m1) and tasks.md 8c.7 (beta's Home flight data, curl by the main session)"
+  - "[cmo-review-wave-8c](../qa/cmo-review-wave-8c-2026-10-15.md) (m1) and tasks.md 8c.7 (beta's Home flight data, curl by the main session)"
   - node_modules/next/dist/client/components/router-reducer/create-initial-router-state.js and client/react-client-callbacks/report-global-error.js (Next 16.3.8)
 ---
 
@@ -147,7 +147,7 @@ CP = `docs/checkpoints/`. Code references (`src/`, `package.json`, `tools/`, `ne
   (`test/e2e/support/fixtures.ts`); after each beta deploy Home's runtime render (a `HIT` after a `STALE`, at least
   300 s after the build; a `PRERENDER` answer is the build's copy, which always has the bar) must carry
   `class="kh-buybar` ([build runbook](build-runbook.md) §5). *CMO wave 8c review m1
-  (`wiki/qa/cmo-review-wave-8c-2026-10-15.md`); the main session's curl of beta's `/` and `/products/kheelu`;
+  ([cmo-review-wave-8c](../qa/cmo-review-wave-8c-2026-10-15.md)); the main session's curl of beta's `/` and `/products/kheelu`;
   [tasks](tasks.md) 8c.7.*
 - **The free Supabase tier pauses after a quiet week.** `vercel.json` runs a daily cron on `/api/health`
   so a parent's first order is not the request that wakes it. *WS §8.25-k L846; vercel.json.*

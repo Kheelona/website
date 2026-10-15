@@ -92,6 +92,8 @@ src/
     journal/                 the dashboard post contract (post.ts) and its validator (validate.ts, no imports) (8b.2b);
                              the adapter into Article comes with 8b.2d (journal-pipeline §4)
     format/                  the one ₹ and date formatter
+    page-path.ts             usePagePath(): usePathname() with a trailing /index folded into its parent; the shell's
+                             one path reader (Vercel renders Home as /index; 8c.7, lessons §1)
     store/ email/            checkout server code (frozen, ADR-013)
     fbq.ts posthog.ts campaign.ts click-id.ts trailing-slash.ts security-headers.ts   (frozen)
   features/preorder/         the checkout: components (presentation restyled), lib (frozen)

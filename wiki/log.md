@@ -1205,3 +1205,18 @@ the credit clear of the bubble, the example's closing line dropped). m9 and m12 
 ## [2026-10-15 09:59] decision | D061 item 15: no disclosure line under the parents' quotes (founder)
 The CMO's m9 asked whether either family got Kheelu free or at a discount. Founder: "No need to add any line". Recorded
 with the endorsement-guidelines risk accepted, as for the films (D040); the expert clip keeps its disclosure.
+
+## [2026-10-15 11:21] build | 8c.7 and 8c.8 merged; rulings; docs
+Workflow `wf_71b12167-174`: 8c.7 passed its second adversarial review (round 1 found the beta check read the build's
+prerender, not Vercel's runtime render: the runbook's loop now waits 5 minutes and reads a HIT after a STALE); 8c.8
+passed first time. 8c.7: `src/lib/page-path.ts` (`usePagePath()`, `/index` folded to `/`) read by StickyBuyBar,
+NavBar, WhatsAppFloat and MotionController (MetaPixel and PostHogGate untouched), a whole-tree rule that only it reads
+the raw path, tests with the path mocked to `/index`, a page-error and hydration guard on every e2e spec (the LP
+probe's own browser not yet covered: follow-up). 8c.8: the strip after the offer (offer card 3,102 → 2,828 px at 390),
+the clip re-encoded (captions' foot at 69%, ruled over 80% on the builder's evidence of Chrome's control row; the
+disclosure at caption size; the poster's face clear; 700 px cap from 720 px; credit left on phones), the product FAQ's
+"What if my child doesn't like it, or it stops working?", "Two languages" an in-page link that plays film 6 (ruled over
+the button, which needs a new rich-text node, and the drop, which breaks the 40-word rule), the example's closing line
+dropped. Rows V41, V42, V44, V46, V48 amended; the Gate B pack carries the beta deploy check; structure.md lists
+page-path.ts. Follow-ups: FAQ-answer links in the browser's blue (as the approved mockup's), the LP probe's page-error
+coverage, a few comments still give the expert fold's old place.

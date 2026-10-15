@@ -80,7 +80,8 @@ derived read times on two guides with no mockup (the-gentle-way-off-the-phone 3 
   that lands at 2.6 s or 3.2 s by run. Re-measure on mains power; if still below 90, look at when the tags load on the
   hub. Every other page passes (local 94-98; with the tags, home 92 and the store 91 on 5 runs).
 - `README.md` and `docs/store-go-live.md` rewritten for the new site (from task 6.3).
-- Wave 8c (D061): the founder signs V38-V46 (and V47-V48 when 8c.5 and 8c.6 land); the share message (V40) is opened on an
+- After every `beta` deploy and on production after the merge: the deploy check of [build runbook](../engineering/build-runbook.md) §5 (task 8c.7): Home's HTML **as Vercel's runtime renders it** (a `HIT` after a `STALE`, at least 5 minutes after Ready) carries the buy bar's element, so React #418 is gone.
+- Wave 8c (D061): the founder signs V38-V48; the share message (V40) is opened on an
   Android and an iOS WhatsApp: if the ₹ sign garbles, the payload takes an "Rs" price form (src/lib/offer/), never a typed amount.
 - The first production build on Vercel is the first to run postbuild step 10 in production on Vercel's layout
   ([lessons §1](../engineering/lessons.md#1-nextjs-16-and-vercel-behaviour); proven locally through a stub adapter,

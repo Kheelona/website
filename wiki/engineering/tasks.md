@@ -1960,7 +1960,7 @@ parallel worktrees; each owns its files so the merges stay mechanical.
 
 - **Found by the CMO's wave 8c review on beta** (wiki/qa/cmo-review-wave-8c-2026-10-15.md m1): Home throws React
   hydration error #418 on every load on beta. Cause (main session, 2026-10-15): Vercel re-renders Home in its runtime
-  (ISR, `x-vercel-cache: STALE`) under the route segments `["", "index"]` (beta's Home flight data `"c":["","index"]`),
+  (ISR: `STALE` serves the old copy while the re-render starts; the runtime render answers `HIT` after it) under the route segments `["", "index"]` (beta's Home flight data `"c":["","index"]`),
   so `usePathname()` returns `/index` on the server and `/` in the browser. `StickyBuyBar.client.tsx` then leaves the bar
   out of the server HTML (Home has no `kh-buybar` element on beta; the product page has it) and the browser adds it:
   the trees differ and React rebuilds the page in the browser. A local build, even through a stub adapter, prerenders
