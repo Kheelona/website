@@ -445,6 +445,122 @@ describe("the D061 entries: the advisor's stale facts, the idea not one phrasing
   });
 });
 
+/* The expert clip (D061 items 12-13, 2026-10-15; task 8c.6). The founder's own expert video comes back as a 34-second
+ * clip of its general part, credited "Chaitra, therapist and developmental coach": our words never call her a doctor
+ * (her coat's badge shows it, as it is), never make her Kheelona's or Kheelu's endorser, and never carry the video's
+ * claims the cut leaves out (results about Kheelu, D038; unanchored brain and development framing, D016). One entry per
+ * idea, each a row of claims.md §4's expert table; each planted line is the video's own words (the 720p download's
+ * transcript, local only) or, for the endorsement, the plan's never-list. VARIANTS holds other phrasings of each idea;
+ * NEAR_MISSES the approved lines nearest to one (the fold's own words, the D025 line, the journal's advice to talk to a
+ * doctor), and lines that share an entry's words without its claim. */
+describe("the expert-clip entries: never a doctor, an endorsement or the video's cut claims (task 8c.6)", () => {
+  const EXPERT = [
+    "dr-chaitra",
+    "expert-endorsement",
+    "fluent-within-weeks",
+    "phone-demand-plummeted",
+    "four-walls-of-loneliness",
+    "vocab-deficiency",
+    "biological-trade-off",
+    "ultimate-brain-exercise",
+  ];
+
+  it("reads the eight entries from claims.md §4's expert table, each a row of its own", () => {
+    const md = readRepoFile("wiki/product/claims.md");
+    const table = md.slice(md.indexOf("**The expert clip (D061 items 12-13"), md.indexOf("### 4.1"));
+    const rows = table
+      .split("\n")
+      .filter((l) => l.startsWith("| ") && /\| BANNED 2026-10-15 \(D061 items 12-13\)/.test(l))
+      .map((l) => l.split(" | ")[0].replace(/^\|\s*/, ""));
+    expect(rows).toHaveLength(EXPERT.length);
+    expect(BANNED_PHRASES.filter((e) => rows.some((r) => r.startsWith(e.claimsRow))).map((e) => e.id)).toEqual(EXPERT);
+    expect(BANNED_PHRASES.filter((e) => EXPERT.includes(e.id)).every((e) => e.kind === "claim")).toBe(true);
+  });
+
+  const VARIANTS: readonly (readonly [string, string])[] = [
+    ["dr-chaitra", "Hey, I’m Dr. Chaitra."],
+    ["dr-chaitra", "A video from Dr Chaitra C R."],
+    ["dr-chaitra", "DR. CHAITRA, THERAPIST"],
+    ["dr-chaitra", "Watch Doctor Chaitra explain screen time."],
+    ["dr-chaitra", "Dr.Chaitra on silence"],
+    ["expert-endorsement", "Recommended by an expert."],
+    ["expert-endorsement", "Expert-approved."],
+    ["expert-endorsement", "A therapist-recommended toy for talking."],
+    ["expert-endorsement", "Doctor approved and parent loved."],
+    ["expert-endorsement", "Approved by a child development expert."],
+    ["expert-endorsement", "Endorsed by therapists across India."],
+    ["expert-endorsement", "Reviewed by an expert."],
+    ["expert-endorsement", "As recommended by doctors, Kheelu gets children talking."],
+    ["fluent-within-weeks", "I watched kids who were previously quiet started speaking fluently within weeks."],
+    ["fluent-within-weeks", "Quiet children become fluent in weeks."],
+    ["fluent-within-weeks", "Speaking fluently within a few weeks of play."],
+    ["fluent-within-weeks", "Your child could be talking fluently in just two months."],
+    ["phone-demand-plummeted", "And the most amazing part, their demand of phones plummeted."],
+    ["phone-demand-plummeted", "Demand for screens dropped."],
+    ["phone-demand-plummeted", "Their asking for the tablet fell away."],
+    ["four-walls-of-loneliness", "We are seeing a rise in what I call the four walls of loneliness in children nowadays."],
+    ["four-walls-of-loneliness", "THE FOUR WALLS OF LONELINESS"],
+    ["vocab-deficiency", "First, there’s the vocab deficiency."],
+    ["vocab-deficiency", "Screens cause vocabulary deficiencies."],
+    ["biological-trade-off", "It’s a biological trade-off."],
+    ["biological-trade-off", "Screen time is a biological tradeoff."],
+    ["ultimate-brain-exercise", "Speech is the ultimate brain exercise."],
+    ["ultimate-brain-exercise", "Talking is the ultimate brain workout."],
+  ];
+
+  /* The expert fold's own words and the burned captions (expert-video.ts), the D025 line, the journal's advice, and
+   * lines that share an entry's words without its claim. */
+  const NEAR_MISSES = [
+    "A video from an expert",
+    "Watching isn’t talking.",
+    "Chaitra, therapist and developmental coach",
+    "Kheelona made this video with Chaitra and compensated her for it.",
+    "Made with Kheelona. Chaitra was compensated.",
+    "Play the video from an expert: Chaitra, therapist and developmental coach. 34 seconds, with captions.",
+    "I see this every single day in my practice.",
+    "They’re often just alone in the digital world that doesn’t talk back.",
+    "Kheelu is a toy, not a therapy or treatment. If you’re worried about your child’s speech, talk to your paediatrician.",
+    "Talk to your child’s doctor if:",
+    "When should you ask your doctor?",
+    "Share your concerns with your child’s doctor and ask about developmental screening.",
+    "A cardboard kitchen, a doctor set, a box of mismatched figures.",
+    "A habit backed by experts.",
+    "Approved by the founder on 11 October 2026.",
+    "Bilingual children become fluent in both languages over the years.",
+    "She is fluent in Kannada and English.",
+    "Kids ask for the phone when they are bored.",
+    "Demand for Kheelu has been high.",
+    "Four walls, one window and a reading nook.",
+    "Iron deficiency is common.",
+    "Every choice is a trade-off.",
+    "The ultimate guide to screen time by age.",
+    "Back-and-forth talk is how a child’s brain builds language.",
+  ];
+
+  it.each(VARIANTS)("%s is red on “%s”", (id, line) => {
+    expect(findBanned(line).map((h) => h.id)).toContain(id);
+  });
+
+  it.each(NEAR_MISSES)("passes “%s”", (line) => {
+    expect(findBanned(line)).toEqual([]);
+  });
+
+  it("names every expert-clip idea in VARIANTS, and each planted line is the video's own words or the plan's never-list", () => {
+    expect([...new Set(VARIANTS.map(([id]) => id))].sort()).toEqual([...EXPERT].sort());
+    const planted = Object.fromEntries(BANNED_PHRASES.filter((e) => EXPERT.includes(e.id)).map((e) => [e.id, e.planted]));
+    expect(planted).toEqual({
+      "dr-chaitra": "Hey, I'm Dr. Chaitra.",
+      "expert-endorsement": "Recommended by an expert.",
+      "fluent-within-weeks": "I watched kids who were previously quiet started speaking fluently within weeks.",
+      "phone-demand-plummeted": "And the most amazing part, their demand of phones plummeted.",
+      "four-walls-of-loneliness": "We are seeing a rise in what I call the four walls of loneliness in children nowadays.",
+      "vocab-deficiency": "First, there's the vocab deficiency.",
+      "biological-trade-off": "It's a biological trade-off.",
+      "ultimate-brain-exercise": "Speech is the ultimate brain exercise.",
+    });
+  });
+});
+
 describe("src/content carries no banned phrase", () => {
   it("checks every string of every content module", () => {
     const files = listFiles(["src/content"]).filter((p) => /\.(ts|tsx)$/.test(p) && !/\.test\.tsx?$/.test(p));

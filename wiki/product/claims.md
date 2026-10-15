@@ -26,6 +26,7 @@ sources:
   - "wiki/qa/live-main-reconciliation-2026-10-14.md §2 (origin/main c630a49, #19), quoted there"
   - "wiki/decisions/D061-advisor-proposal-what-we-take-2026-10-15.md and wiki/qa/cmo-review-advisor-proposal-2026-10-15.md (§4's D061 table, the advisor's stale facts; task 8c.4, 2026-10-15)"
   - "git grep of src/ at archive/pre-reset-2026-10-10 for the D061 wordings (2026-10-15): \"ages 3+\" and \"Ships 20 October 2026\" live; no cash on delivery, part-price button, pilot homes or safety certification"
+  - "wiki/raw/feedback/advisor-homepage-2026-10-12/expert-video/timed.txt (the expert video's transcript, local and git-ignored; §4's expert table, task 8c.6, 2026-10-15)"
 ---
 
 # Claims register
@@ -260,6 +261,28 @@ offer terms, a `claim` entry for the rest), red on the advisor's own lines and g
 | "Real pilot homes" | BANNED 2026-10-15 (D061): not every film was shot at home ([D057](../decisions/D057-journal-from-dashboard-and-three-wordings-2026-10-14.md) item 2); a film's tag is the chip and caption [D040](../decisions/D040-films-move-to-new-site.md) gives it | `pilot-homes` (claim); the advisor's document (AP-09) | No | BANNED. "Real pilot families" and "pilot families, filmed with their permission" (`/terms`, `/privacy`) pass, and so does "Real children in real homes." (store) |
 | "Backed by" over the programmes: "Backed by top programs", "NVIDIA-backed", "Supported by NVIDIA Inception", "Funded by Karnataka Elevate" | BANNED 2026-10-15 (D061): the strip names the programmes only, with no relationship (B26; [D054](../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 20); "Backed by" reads as an investment claim we cannot make (the live `/team`, V6 QA M1) | `backed-by` (claim); the advisor's document (AP-27) | No: the live `/team` dropped it | BANNED: "Backed by" as a label (a line's or a sentence's first words, alone, before a colon or before "top programmes"), "backed by" top accelerators or incubators, and backed, funded or supported by a named programme anywhere. Say "Recognised by." with the names, as `/team` does. Advice "backed by research", "by a large study", "by experts" or "by the American Academy of Pediatrics" is not this claim, and a journal line with it must not stop the build |
 | "Safety certified", "certified safe", "BIS certified" | BANNED 2026-10-15 (D061): Kheelu's toy-safety (BIS) licence is applied for, not granted ([§6](#6-certifications)) | `safety-certified` (claim); the advisor's document (AP-27, "[Safety certified · confirm]") | No | BANNED until a licence is granted. Say "Toy-safety certification (BIS): applied for, not yet granted." |
+
+**The expert clip (D061 items 12-13, 2026-10-15; task 8c.6).** The founder's own expert video (4:46) comes back as a
+34-second clip of its general part (screens and talk), cut before she introduces herself and before every line about
+Kheelu, credited "Chaitra, therapist and developmental coach", with a disclosure beside it
+([D061](../decisions/D061-advisor-proposal-what-we-take-2026-10-15.md) items 12-13; the clip's words are
+`src/content/en-IN/expert-video.ts`). This changes §3's "A named advisor" row for this one video: she is shown as an
+expert on talk and screens in general, never as Kheelona's advisor. One row per idea the site must still never say; each
+is a `claim` entry of `test/guards/banned-phrases.data.ts`, red on the video's own words (the 720p download's
+transcript, `wiki/raw/feedback/advisor-homepage-2026-10-12/expert-video/timed.txt`, local and git-ignored) and green on
+every approved page, copy block, `src/` string and the journal snapshot (`banned-phrases.test.ts`, "the expert-clip
+entries").
+
+| Wording | Status and reason | Guard / source | Still live? | Site |
+|---|---|---|---|---|
+| "Dr. Chaitra", "Dr Chaitra", "Doctor Chaitra" | BANNED 2026-10-15 (D061 items 12-13): our words never call her a doctor (item 13); her coat and its badge ("Dr Chaitra C R") are shown as they are, the founder's accepted risk | `dr-chaitra` (claim); the video at 0:25, left out of the cut | No | BANNED. Say "Chaitra, therapist and developmental coach". |
+| An expert's endorsement: "expert-approved", "therapist-recommended", "doctor approved", "recommended by an expert", "approved by a doctor", "reviewed by an expert" | BANNED 2026-10-15 (D061 items 12-13): she speaks about talk and screens in general; nothing makes her Kheelona's advisor or Kheelu's endorser, and no line puts her and Kheelu in one sentence | `expert-endorsement` (claim); tasks.md 8c.6, "Never" | No | BANNED. Advice to talk to a doctor or a paediatrician (D025) stays. |
+| "Speaking fluently within weeks" and any speech result in days, weeks or months | BANNED 2026-10-15 (D061 items 12-13): a results claim about Kheelu from the video's second half, which the cut leaves out ([D038](../decisions/D038-trust-content-rulings.md): no pilot results; D025) | `fluent-within-weeks` (claim); the video at 3:40 | No | BANNED |
+| "Their demand of phones plummeted", demand for screens dropped | BANNED 2026-10-15 (D061 items 12-13): a results claim about Kheelu from the video's second half (D038: no pilot results) | `phone-demand-plummeted` (claim); the video at 3:53 | No | BANNED |
+| "The four walls of loneliness" | BANNED 2026-10-15 (D061 items 12-13): the video's own unanchored framing of children's development, from the part the cut leaves out ([D016](../decisions/D016-brain-wording.md)) | `four-walls-of-loneliness` (claim); the video at 0:47 | No | BANNED |
+| "The vocab deficiency", a vocabulary deficiency | BANNED 2026-10-15 (D061 items 12-13): an unanchored deficit claim about children's language, from the part the cut leaves out (D016, D025) | `vocab-deficiency` (claim); the video at 0:56 | No | BANNED |
+| "A biological trade-off" | BANNED 2026-10-15 (D061 items 12-13): an unanchored brain claim about screen time, from the part the cut leaves out (D016) | `biological-trade-off` (claim); the video at 1:45 | No | BANNED |
+| "Speech is the ultimate brain exercise" | BANNED 2026-10-15 (D061 items 12-13): an unanchored brain claim, from the part the cut leaves out (D016, brain wording) | `ultimate-brain-exercise` (claim); the video at 2:05 | No | BANNED |
 
 ### 4.1 The retired microphone wording
 

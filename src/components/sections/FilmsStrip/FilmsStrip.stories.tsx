@@ -1,19 +1,27 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Button } from "@/components/ui/Button/Button";
 import { Actions } from "@/components/ui/Layout/Layout";
+import { expertFold } from "@/content/en-IN/expert-video";
 import { filmQuotes, films, filmsStrip } from "@/content/en-IN/films";
 import { FilmsStrip } from "./FilmsStrip";
+import type { FilmsSingleConfig, FilmsStripConfig, FilmsStripSlots } from "./films-strip.types";
 
 /* FilmsStrip (task 3.3): the seven parent films (D040) as Home (fold 2), the product page (fold 2) and the store
    (fold 6) show them, with the films and the strip's labels from content (content/en-IN/films.ts, task 3.6) and the
    files under public/video/moments (Storybook serves public/). test/e2e/films.spec.ts and motion-films.spec.ts run on
    these stories, so they test what the pages publish. The CTA block after Home's strip is the page's (CtaBlock, task
    3.2); a plain chilli button stands in for it. Home and the product page show the parents' quotes under the strip,
-   each with its "Watch the film" button (task 8c.3, D061 item 4); the store does not. */
+   each with its "Watch the film" button (task 8c.3, D061 item 4); the store does not. The expert clip (task 8c.6) is the
+   section's single layout, typed on its own: the strip stories' args never reach it but as props it ignores. */
+
+/** The strip's props: the stories' shared args fill the strip layout. */
+type StripProps = FilmsStripConfig & FilmsStripSlots;
+/** The section as the strip stories see it (it takes either layout; these stories give it the strip's). */
+const Strip: (props: StripProps) => ReturnType<typeof FilmsStrip> = FilmsStrip;
 
 const meta = {
   title: "Sections/FilmsStrip",
-  component: FilmsStrip,
+  component: Strip,
   args: {
     heading: {
       eyebrow: "See it ask",
@@ -26,7 +34,7 @@ const meta = {
     proof: { text: "Kids doing the talking. Parents, in their own words.", size: "body-s" },
     posters: "eager-low",
   },
-} satisfies Meta<typeof FilmsStrip>;
+} satisfies Meta<StripProps>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -60,6 +68,10 @@ export const Product: Story = {
     posters: "lazy",
   },
 };
+
+/** The product page's expert clip (`#expert`, task 8c.6, D061 items 12-13): one landscape film on its own, the page's
+ *  own fold from content (content/en-IN/expert-video.ts), its files under public/video/expert. */
+export const Expert: StoryObj<Meta<FilmsSingleConfig & FilmsStripSlots>> = { args: expertFold };
 
 /** The store's fold 6: below every money answer, with the way back to the form. */
 export const Store: Story = {

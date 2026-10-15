@@ -8,8 +8,9 @@ import { Chip } from "@/components/ui/Chip/Chip";
 import { Glyph } from "@/components/ui/Icon/Glyph";
 import { IconButton } from "@/components/ui/IconButton/IconButton";
 import { imageSource } from "@/components/ui/Photo/image";
+import { useFilmPlayback } from "./film-playback";
 import { focusedTile, INITIAL_VIEW, positionText, stripView, type StripView } from "./films-view";
-import type { FilmTile, FilmsStripConfig, FilmsStripLabels } from "./films-strip.types";
+import type { FilmTile, FilmsStripConfig, FilmsStripLabels, SingleFilm } from "./films-strip.types";
 
 /** The strip's central band, the root of the focus observer: the middle third of the track (D049 pick 8). */
 const CENTRAL_BAND = "0px -33% 0px -33%";
@@ -34,10 +35,6 @@ export interface FilmsStripIslandProps {
   /** Between the strip and its controls: the proof line, rendered by the server part. */
   readonly children?: ReactNode;
 }
-
-/** What is playing: the film, the poster it keeps on screen while the film loads, and whether it was started from a
- *  quote below the strip (then the strip is scrolled to it, and focusing it must not scroll a second time). */
-type Playing = { id: string; poster: string; fromQuote: boolean };
 
 /** One step of the strip: a film plus the gap (mockup.js: the second film's left minus the first's). */
 function pitchOf(track: HTMLElement): number {
@@ -64,14 +61,12 @@ const sameView = (a: StripView, b: StripView) => a.from === b.from && a.to === b
  */
 export function FilmsStripIsland({ films, labels, posters, sizes, quotes, children }: FilmsStripIslandProps) {
   const track = useRef<HTMLUListElement>(null);
-  const video = useRef<HTMLVideoElement>(null);
   const frames = useRef(new Map<string, HTMLDivElement>());
-  const returnFocus = useRef<string | null>(null);
-  /** The quote's button that started the film playing, if one did: focus goes back to it when the film ends. */
-  const origin = useRef<HTMLElement | null>(null);
+  /** A film's own play button, where focus goes back when the film ends (unless a quote's button started it). */
+  const controlOf = useCallback((id: string) => frames.current.get(id)?.querySelector("button"), []);
+  const { video, playing, start: startFilm, ended } = useFilmPlayback(controlOf);
   const [view, setView] = useState<StripView>(INITIAL_VIEW);
   const [focus, setFocus] = useState<string | null>(null);
-  const [playing, setPlaying] = useState<Playing | null>(null);
 
   // Where the strip is, on load, on every scroll and whenever the track changes size.
   useEffect(() => {
@@ -119,41 +114,12 @@ export function FilmsStripIsland({ films, labels, posters, sizes, quotes, childr
     return () => band.disconnect();
   }, [films]);
 
-  // A film just mounted: focus it, play it (a refused autoplay leaves the native controls), and pause it off screen
-  // once it has been on screen: a film started from a quote is still being scrolled to when the observer first reports.
-  useEffect(() => {
-    const v = video.current;
-    if (!playing || !v) return;
-    v.focus(playing.fromQuote ? { preventScroll: true } : undefined);
-    v.play()?.catch(() => {});
-    if (typeof IntersectionObserver === "undefined") return;
-    let seen = false;
-    const away = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.intersectionRatio >= 0.5) seen = true;
-          else if (seen) (entry.target as HTMLVideoElement).pause();
-        }
-      },
-      { threshold: 0.5 },
-    );
-    away.observe(v);
-    return () => away.disconnect();
-  }, [playing]);
-
-  // A film ended: its poster is back; give focus back to the button that started it.
-  useEffect(() => {
-    if (playing || !returnFocus.current) return;
-    (origin.current ?? frames.current.get(returnFocus.current)?.querySelector("button"))?.focus();
-    returnFocus.current = null;
-    origin.current = null;
-  }, [playing]);
-
-  const start = useCallback((film: FilmTile, from: HTMLElement | null = null) => {
-    origin.current = from;
-    const poster = frames.current.get(film.id)?.querySelector("img")?.currentSrc ?? "";
-    setPlaying({ id: film.id, poster, fromQuote: from !== null });
-  }, []);
+  // Playing (film-playback.ts): a tap mounts the film with the poster already on screen, focused and playing; a quote's
+  // button that started it gets focus back at the end.
+  const start = useCallback(
+    (film: FilmTile, from: HTMLElement | null = null) => startFilm(film.id, frames.current.get(film.id)?.querySelector("img")?.currentSrc ?? "", from),
+    [startFilm],
+  );
 
   // "Watch the film" under a quote: bring the film's tile to the middle of the screen, then play it there.
   const watch = useCallback(
@@ -220,10 +186,7 @@ export function FilmsStripIsland({ films, labels, posters, sizes, quotes, childr
                     playsInline
                     preload="none"
                     aria-label={name}
-                    onEnded={() => {
-                      returnFocus.current = film.id;
-                      setPlaying(null);
-                    }}
+                    onEnded={() => ended(film.id)}
                   />
                 )}
               </div>
@@ -265,5 +228,57 @@ export function FilmsStripIsland({ films, labels, posters, sizes, quotes, childr
         </div>
       )}
     </>
+  );
+}
+
+export interface FilmClipIslandProps {
+  readonly film: SingleFilm;
+  /** The frame's rendered width at each layout, for the poster. */
+  readonly sizes: string;
+}
+
+/** The single film's one id in the playback hook. */
+const CLIP = "clip";
+
+/**
+ * The single film's island (task 8c.6; D061 items 12-13): the frame of FilmsStrip's `single` layout, the expert clip.
+ * At rest the poster (lazy), the chip on it (hidden from screen readers: the play control says the same in words) and
+ * the DS primary play control in the strip's place; no `<video>` and no byte of the film before the tap. A tap mounts
+ * the film over the poster with native controls and sound, focused and playing, exactly as a strip film plays
+ * (film-playback.ts); it pauses once it has been half on screen and leaves; at the end the poster is back and focus
+ * returns to the play control. No autoplay, muted preview, loop or moving poster (D049); no tracking event.
+ */
+export function FilmClipIsland({ film, sizes }: FilmClipIslandProps) {
+  const frame = useRef<HTMLDivElement>(null);
+  const controlOf = useCallback(() => frame.current?.querySelector("button"), []);
+  const { video, playing, start, ended } = useFilmPlayback(controlOf);
+  return (
+    <div className="ks-clip__frame" ref={frame}>
+      <Image {...imageSource(film.poster)} alt={film.poster.alt} sizes={sizes} loading="lazy" />
+      <p className="ks-clip__chip" aria-hidden="true">
+        <Chip label={film.chip} />
+      </p>
+      <IconButton
+        icon={ICON_PLAY}
+        label={film.play}
+        variant="primary"
+        size="l"
+        className="ks-film__play"
+        hidden={playing !== null}
+        onClick={() => start(CLIP, frame.current?.querySelector("img")?.currentSrc ?? "")}
+      />
+      {playing && (
+        <video
+          ref={video}
+          src={film.video}
+          poster={playing.poster || film.still}
+          controls
+          playsInline
+          preload="none"
+          aria-label={film.name}
+          onEnded={() => ended(CLIP)}
+        />
+      )}
+    </div>
   );
 }

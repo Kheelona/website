@@ -13,6 +13,8 @@ import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../.
 import {
   CLAIM_FIXES,
   COPY_FIXES,
+  EXPERT_CLIP,
+  EXPERT_CLIP_APPROVED,
   FAQ_FIXES,
   OFFER_ADDITIONS,
   PROOF_ADDITIONS,
@@ -30,6 +32,7 @@ import { ROOT } from "../../../../../test/e2e/support/repo";
 import { mockupRoute as mockupPageRoute } from "../../../../../test/e2e/support/routes";
 import { mockupLinks, mockupPage, STORE, words } from "../../../../../test/support/mockup-compare";
 import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../../test/support/mockup-facts";
+import { expertClip, expertFold } from "../../expert-video";
 import { faqs } from "../../faqs";
 import { filmQuotes, films } from "../../films";
 import { recognitionStrip } from "../../recognition";
@@ -60,13 +63,13 @@ const FULL = buildOffer("full");
 
 /** The page as the site shell holds it: the template's output in `main#main`. `main` is the page without the blocks
  *  task 8c.3 adds (PROOF_ADDITIONS; D061 item 4 and the main session's rulings: the parents' quotes, the recognition
- *  strip, the four steps and the example conversation), what must equal the approved page; `whole` is the page as it
- *  renders, on which those blocks are tested below. */
+ *  strip, the four steps and the example conversation) and without task 8c.6's expert clip (EXPERT_CLIP; D061 items
+ *  12-13), what must equal the approved page; `whole` is the page as it renders, on which those blocks are tested below. */
 function rendered(offer: Offer) {
   const html = `<!doctype html><html><body><main id="main">${renderToStaticMarkup(<PageTemplate page={kheeluPage} offer={offer} path={PATH} />)}</main></body></html>`;
   const whole = new DOMParser().parseFromString(html, "text/html");
   const doc = whole.cloneNode(true) as Document;
-  for (const selector of PROOF_ADDITIONS["meet-kheelu"].selectors) for (const el of doc.querySelectorAll(selector)) el.remove();
+  for (const selector of [...PROOF_ADDITIONS["meet-kheelu"].selectors, EXPERT_CLIP.selector]) for (const el of doc.querySelectorAll(selector)) el.remove();
   return { html, doc, main: doc.querySelector("main")!, whole: whole.querySelector("main")! };
 }
 
@@ -420,6 +423,7 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
       ...faq.hidden.build.map((selector) => ["build", selector, faq.approvedBy]),
       ...additions.hidden.build.map((selector) => ["build", selector, additions.approvedBy]),
       ...PROOF_ADDITIONS["meet-kheelu"].selectors.map((selector) => ["build", selector, PROOF_ADDITIONS_APPROVED]),
+      ["build", EXPERT_CLIP.selector, EXPERT_CLIP_APPROVED],
     ]);
     for (const selector of additions.hidden.build) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
     for (const selector of claims.hidden.both) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
@@ -448,9 +452,10 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
       expect.objectContaining({ mockup: /^Specs$/, jsOff: true }),
     ]);
     // The route's other rules are P15's (V6, task 4.7), the founder's page facts (V16, task 6.7), task 7.1b's copy fixes
-    // (V17), task 8c.2's offer additions (D061, rows numbered at the merge), task 8c.3's added blocks, task 8b.1's claim
-    // fixes (V27) and task 8c.4's FAQ fix, for both runs: the FAQ answer, the details, the heading, the sources, the
-    // offer's two lines, the added blocks, D058's lines and the languages question read the same with JavaScript off.
+    // (V17), task 8c.2's offer additions (D061, rows numbered at the merge), task 8c.3's added blocks, task 8c.6's expert
+    // clip, task 8b.1's claim fixes (V27) and task 8c.4's FAQ fix, for both runs: the FAQ answer, the details, the
+    // heading, the sources, the offer's two lines, the added blocks, the clip's lines, D058's lines and the languages
+    // question read the same with JavaScript off.
     expect(TEXT_DEVIATIONS["meet-kheelu"].map((rule) => [rule.approvedBy.slice(0, "deviations.md V3".length), rule.jsOff ?? false])).toEqual([
       ["deviations.md V3", true],
       ["deviations.md V6", false],
@@ -458,6 +463,7 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
       ["deviations.md V1", false],
       ["deviations.md ro", false],
       [PROOF_ADDITIONS_APPROVED.slice(0, "deviations.md V3".length), false],
+      [EXPERT_CLIP_APPROVED.slice(0, "deviations.md V3".length), false],
       ["deviations.md V2", false],
       ["deviations.md V4", false],
     ]);
@@ -465,8 +471,9 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
     expect(TEXT_DEVIATIONS["meet-kheelu"][3].approvedBy).toBe(COPY_FIXES["meet-kheelu"].approvedBy);
     expect(TEXT_DEVIATIONS["meet-kheelu"][4].approvedBy).toBe(OFFER_ADDITIONS["meet-kheelu"].approvedBy);
     expect(TEXT_DEVIATIONS["meet-kheelu"][5].approvedBy).toBe(PROOF_ADDITIONS_APPROVED);
-    expect(TEXT_DEVIATIONS["meet-kheelu"][6].approvedBy).toBe(CLAIM_FIXES["meet-kheelu"].approvedBy);
-    expect(TEXT_DEVIATIONS["meet-kheelu"][7].approvedBy).toBe(FAQ_FIXES["meet-kheelu"].approvedBy);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][6].approvedBy).toBe(EXPERT_CLIP_APPROVED);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][7].approvedBy).toBe(CLAIM_FIXES["meet-kheelu"].approvedBy);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][8].approvedBy).toBe(FAQ_FIXES["meet-kheelu"].approvedBy);
   });
 
   it("accepts on the build side exactly the stacked panels' lines, as the page prints them, and no other line of the page", () => {
@@ -514,12 +521,13 @@ describe("the product page's added blocks (task 8c.3)", () => {
       });
   };
 
-  it("orders the page at every width: hero, films with the quotes, the strip, the offer, the steps and the example, then the rest", () => {
+  it("orders the page at every width: hero, films with the quotes, the strip, the offer, the expert clip (8c.6), the steps and the example, then the rest", () => {
     expect(folds(WHOLE).map(name)).toEqual([
       "hero-title",
       "films-title",
       "recognised-title",
       "offer-title",
+      "expert-title",
       "steps-title",
       "example-title",
       "modes-title",
@@ -618,5 +626,67 @@ describe("the product page's added blocks (task 8c.3)", () => {
       expect(findBanned(line), line).toEqual([]);
       expect(line).not.toMatch(/\b[0-2]\s*(?:years?|yrs?|months?)\b|toddler|baby|babies/i);
     }
+  });
+});
+
+/* Task 8c.6 (D061 items 12-13): the expert clip, a fold the approved page does not have, right after the offer card and
+   before the four steps. Its markup and playback are FilmsStrip's test's (the section's single layout); its words and
+   files are expert-video.test.ts's; here, its place, the page's content feeding it, and the deviation rules for it. */
+describe("the product page's expert clip (task 8c.6)", () => {
+  const WHOLE = BUILT.whole;
+  const fold = () => folds(WHOLE).find((f) => name(f) === "expert-title")!;
+
+  it("sits right after the offer card and before the four steps, as its own fold #expert", () => {
+    const order = folds(WHOLE).map(name);
+    expect(order.indexOf("expert-title")).toBe(order.indexOf("offer-title") + 1);
+    expect(order.indexOf("steps-title")).toBe(order.indexOf("expert-title") + 1);
+    expect(fold().id).toBe("expert");
+    expect(WHOLE.querySelectorAll("#expert")).toHaveLength(1);
+  });
+
+  it("is the content's fold, the very config: the heading, the poster, the play control, then the credit and the disclosure", () => {
+    const entry = kheeluPage.sections.find((s) => s.kind === "films-strip" && "layout" in s.config && s.config.layout === "single");
+    expect(entry?.config).toBe(expertFold);
+    expect(entry).not.toHaveProperty("cta");
+    const f = fold();
+    expect(text(f.querySelector("h2"))).toBe("Watching isn’t talking.");
+    expect(text(f.querySelector(".kh-eyebrow"))).toBe(expertFold.heading.eyebrow);
+    expect(f.querySelector("button.ks-film__play")?.getAttribute("aria-label")).toBe(expertClip.play);
+    expect([...f.querySelectorAll("figcaption > p")].map((p) => text(p))).toEqual([expertClip.credit, expertClip.disclosure]);
+  });
+
+  it("loads only its poster, lazily, and no film before a tap", () => {
+    const pictures = [...fold().querySelectorAll("img")];
+    expect(pictures).toHaveLength(1);
+    expect(pictures[0].getAttribute("loading")).toBe("lazy");
+    expect(pictures[0].hasAttribute("fetchpriority")).toBe(false);
+    expect(WHOLE.querySelector("video, source, link[rel=preload][as=video]")).toBeNull();
+  });
+
+  it("never names Kheelu, a doctor or Dr. in the fold: nothing says Kheelu fills the gap she describes (D061 item 13)", () => {
+    const printed = text(fold());
+    expect(printed).not.toMatch(/kheelu/i);
+    expect(printed).not.toMatch(/\bdr\b\.?|doctor|counsel+or|recommended by|approved by/i);
+  });
+
+  it("hides for the pixels exactly the fold, found once on the page and gone from the page compared", () => {
+    const hides = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.approvedBy === EXPERT_CLIP_APPROVED);
+    expect(hides.map((r) => [r.side, r.selector, r.media])).toEqual([["build", EXPERT_CLIP.selector, undefined]]);
+    expect(WHOLE.querySelectorAll(EXPERT_CLIP.selector)).toHaveLength(1);
+    expect(WHOLE.querySelector(EXPERT_CLIP.selector)).toBe(fold());
+    expect(BUILT.main.querySelectorAll(EXPERT_CLIP.selector)).toHaveLength(0);
+  });
+
+  it("accepts in the text pass every line the fold prints, eyebrow in capitals too, and excuses no approved line", () => {
+    const rule = TEXT_DEVIATIONS["meet-kheelu"].find((r) => r.approvedBy === EXPERT_CLIP_APPROVED)!;
+    const squash = (s: string) => s.replace(/\s/g, "");
+    expect(squash(fold().textContent ?? "")).toBe(squash(EXPERT_CLIP.build.join("")));
+    for (const line of EXPERT_CLIP.build) for (const s of sentences(line)) expect(rule.build!.test(s), s).toBe(true);
+    expect(rule.build!.test(expertFold.heading.eyebrow.toUpperCase())).toBe(true);
+    for (const line of sentences(words(MOCKUP))) expect(rule.mockup.test(line), line).toBe(false);
+  });
+
+  it("passes the claims guard on every line it prints", () => {
+    for (const line of EXPERT_CLIP.build) expect(findBanned(line), line).toEqual([]);
   });
 });

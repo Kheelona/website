@@ -17,6 +17,7 @@ import type { TrustItem } from "@/content/types";
 import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
 import { withoutHiddenRows } from "@/lib/content/placeholder";
 import { cta } from "../../cta";
+import { expertFold } from "../../expert-video";
 import { faqs, pickFaqs } from "../../faqs";
 import { filmQuotes, films, filmsStrip } from "../../films";
 import { offerCopy } from "../../offer";
@@ -36,7 +37,8 @@ import { product, type Mode } from "./product";
  * `{price:…}` tokens and the delivery line `{delivery}`: the template resolves them from the live offer (ADR-005).
  * Added after Gate A (task 8c.3; D061 item 4 and the main session's rulings; deviation rows to come): the parents' quotes
  * under the films (films.ts), the "Recognised by." strip after them (recognition.ts, the /team strip as built), and,
- * between the offer and "How it works", four plain steps and the labelled example conversation.
+ * between the offer and "How it works", four plain steps and the labelled example conversation. Then task 8c.6 (D061 items
+ * 12-13): the expert clip, its own fold right after the offer card and before the steps (expert-video.ts).
  */
 
 const trust = (ids: readonly TrustId[]): TrustItem[] => ids.map((id) => trustItems[id]);
@@ -145,6 +147,9 @@ export const kheeluPage = {
         photo: { src: kheeluOnFur, alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." },
       },
     },
+    /* The expert clip, its own fold right after the offer card (task 8c.6; D061 items 12-13): 34 seconds on screens and
+       talk, poster first and played on a tap, the credit and the disclosure under it (expert-video.ts). */
+    { kind: "films-strip", config: expertFold },
     /* The loop in four plain steps, just before "How it works" (task 8c.3; D061's rulings, the CMO's AP-14): the button
        first (D018), answer then ask back (D017), and "remembers" beside the parent reading every conversation (D036 #2).
        On the band, so it stands apart from the offer above and the example below. */

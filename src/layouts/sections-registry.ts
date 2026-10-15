@@ -22,7 +22,7 @@ import type { FaqSectionConfig } from "@/components/sections/FaqSection/faq-sect
 import { FeatureSplit } from "@/components/sections/FeatureSplit/FeatureSplit";
 import type { FeatureSplitConfig } from "@/components/sections/FeatureSplit/feature-split.types";
 import { FilmsStrip } from "@/components/sections/FilmsStrip/FilmsStrip";
-import type { FilmsStripConfig } from "@/components/sections/FilmsStrip/films-strip.types";
+import type { FilmsConfig } from "@/components/sections/FilmsStrip/films-strip.types";
 import { FoundersSection } from "@/components/sections/FoundersSection/FoundersSection";
 import type { FoundersSectionConfig } from "@/components/sections/FoundersSection/founders-section.types";
 import { GrievanceBlock } from "@/components/sections/GrievanceBlock/GrievanceBlock";
@@ -85,8 +85,9 @@ export interface SectionEntries {
   "hero-section":
     | { readonly config: HeroWithCta; readonly cta?: CtaBlockConfig }
     | { readonly config: Exclude<HeroSectionConfig, HeroWithCta>; readonly cta?: never };
-  /** The CTA block goes after the strip (Home fold 2). */
-  "films-strip": { readonly config: FilmsStripConfig; readonly cta?: CtaBlockConfig };
+  /** The CTA block goes after the strip (Home fold 2). Either layout: the strip, or one film on its own (`single`, the
+   *  product page's expert clip, task 8c.6). */
+  "films-strip": { readonly config: FilmsConfig; readonly cta?: CtaBlockConfig };
   /** `ticks` takes setup's Wi-Fi tip after its checklist (setup.html fold 2). */
   "feature-split":
     | { readonly config: TicksSplit; readonly tip?: Copy }
