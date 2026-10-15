@@ -1808,16 +1808,18 @@ export const TAP_AREA_HIDDEN: readonly VisualHide[] = [
 /* Task Q2.8's lines (PRICE_LINE, above), on every page that sells: the short price line is a line or two shorter than
    D028's sentence, and the risk-reversal line wraps the compact trust line otherwise, so every chunk below each button
    would shift. The pixels compare the pages without them, on both sides: the price line beside each button and the
-   trust line right after it, the offer cards' fine print, and the store's first-screen trust line (the store's price
-   stays D028's). The checkout's form keeps its sentence and its full row, so nothing inside a form is hidden. Their words
-   are compared by the text pass (PRICE_LINE_TEXT); their markup by the unit tests through the mockup comparison harness.
-   One shared rule for every page, as the tap areas', never a row per page key. */
+   trust line right after it, the offer cards' fine print, the store's first-screen trust line (the store's price stays
+   D028's), and the phone buy bar's small line, which fits on one line at 390 px where the mockup's wraps to two, so the
+   bar (and the page's foot, which keeps clear of it) would sit lower in the mockup in every chunk that shows it. The
+   checkout's form keeps its sentence and its full row, so nothing inside a form is hidden. Their words are compared by
+   the text pass (PRICE_LINE_TEXT) and the unit tests through the mockup comparison harness (the bar's, which sits outside
+   main, by the shell's). One shared rule for every page, as the tap areas', never a row per page key. */
 const PRICE_LINE_HIDDEN_REASON = "a line task Q2.8 rewords (D065 item 3), compared by the text pass; hidden on both sides so the chunks below line up";
 export const PRICE_LINE_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as const).map((side) => {
   const p = side === "mockup" ? "mk" : "ks";
   return {
     side,
-    selector: `.${p}-price:not(form *), .${p}-price:not(form *) + .${p}-trust, .kh-offer__fine, #store-price + .${p}-trust`,
+    selector: `.${p}-price:not(form *), .${p}-price:not(form *) + .${p}-trust, .kh-offer__fine, #store-price + .${p}-trust, .kh-buybar__small`,
     reason: PRICE_LINE_HIDDEN_REASON,
     approvedBy: PRICE_LINE_APPROVED,
   };
