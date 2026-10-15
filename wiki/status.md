@@ -23,16 +23,14 @@ check the deploy, report to the founder.
 **Branch:** `reset/website-v2` (`0f438089`). **Beta (public, D060):** `beta` at `398c5ee` (wave 8c); betawebsite and
 betastore.kheelona.com. **Production:** `main` `8c4718a`, untouched until Gate B. Beta QA (task 7.2) on hold.
 
-**Rulings taken while the founder sleeps (to report):** the WhatsApp bubble stays persistent on Home's first phone screen
-(D050; plan §13 item 7 is the founder's), with the hero photo cropped clear of it; the share text stays as D061 item 7
-until the founder signs plan §1.7 (§13 item 9); §13 items 1-6 and 8 as recommended; the product page's statutory
-"Consumer care" row keeps the phone.
+**Overnight rulings, answered by the founder in D066:** the bubble after the hero on Home's phones (overturned); the
+share text signed; one more button after the product compare table; only "See how Kheelu works" of three wordings;
+Home's length kept; the pre-launch test line removed; G28's two lines added.
 
-**Waiting on the founder:** sign plan §1.7 (share text) and §13 item 7 (bubble); F7 (what keeps working after 6 months of
-Kheelona+, and its price); G28's other half (Wi-Fi at rest, per-conversation limit) and G29's pre-launch test before
-Gate B; G18, G21, G27 (built as recommended), G32; for Aman G31 and G33 (`/privacy` after G26); the Vercel toolbar off for the beta project; sign V1-V57 and the legal pages at Gate B;
-forward [For the advisor](brand/for-the-advisor.md) and [For Aman](engineering/for-aman.md) (G25 patch, G31, the
-journal's backend changes); Meta automatic events off (D056); F4 values before dispatch; the WhatsApp ₹ check.
+**Waiting on the founder:** F7 (what keeps working after the 6 months of Kheelona+, and its price; asked again before
+Gate B); G18, G21, G32; for Aman G25, G31 and G33 (`/privacy` after G26); the Vercel toolbar off for the beta project;
+sign V1-V64+ and the legal pages at Gate B; forward [For the advisor](brand/for-the-advisor.md) and
+[For Aman](engineering/for-aman.md); Meta automatic events off (D056); F4 values before dispatch; the WhatsApp ₹ check.
 **Deferred to the final pass (D062):** full Playwright re-based on the approved beta (cta.spec, parity), Lighthouse on
 mains power, the CMO's built-page review, beta QA, tracking evidence, accessibility, store and payment sandbox,
 production integrations, legal sign-off, the Gate B pack; the buy bar's small line wraps at 360 (Q2.8 notes).
