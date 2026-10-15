@@ -105,7 +105,7 @@ export const confirmation = {
   },
   linkNeededHelp: {
     lead: "Cannot find the email?",
-    contact: `${seller.help.contact} and a person will pull up your order and add your address for you.`,
+    contact: `${seller.support.message} and a person will pull up your order and add your address for you.`,
   },
   cannotOpen: {
     title: "We cannot open that order right now.",
@@ -164,7 +164,7 @@ export const confirmation = {
   },
   help: {
     heading: "Need anything?",
-    contact: `${seller.help.contact}, quoting your order number, or email [${email}](mailto:${email}).`,
+    contact: `${seller.support.message}, quoting your order number, or email [${email}](mailto:${email}).`,
     undo: `Changed your mind? Until we dispatch your Kheelu, message us with your order number and we refund everything you paid, with no fee and no reason needed. After delivery, you can still return it within ${RETURN_DAYS} days, no questions asked. Nothing is ever charged automatically.`,
     refund: { label: "Refunds and returns", href: "/refund" },
   },

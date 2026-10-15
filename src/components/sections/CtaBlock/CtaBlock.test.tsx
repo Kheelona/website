@@ -120,8 +120,8 @@ describe("CtaBlock: the block", () => {
     expect(screen.getByRole("link", { name: "Deliveries start mid-November" })).toHaveAttribute("href", "/shipping#when");
     // The one risk-reversal line (task Q2.8; D065 item 3), to the refund page's part that keeps its first promise.
     expect(screen.getByRole("link", { name: "Full refund until dispatch · 7-day returns" })).toHaveAttribute("href", "/refund#before-dispatch");
-    // The help line without the call (D063 item 2, task Q2.3).
-    expect(screen.getByRole("link", { name: "WhatsApp us" })).toHaveAttribute("href", "https://wa.me/919187546483");
+    // The help line without the call (D063 item 2, task Q2.3), in the D2C plan v2 §1.1's words (task Q2.14).
+    expect(screen.getByRole("link", { name: "Message us on WhatsApp" })).toHaveAttribute("href", "https://wa.me/919187546483");
     expect(container.querySelector('a[href^="tel:"]')).toBeNull();
   });
 

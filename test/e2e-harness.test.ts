@@ -135,7 +135,7 @@ describe("hideDeviations", () => {
     expect(more).toEqual([]);
     expect(ruling.approvedBy).toBe(SELLER_FACTS_APPROVED);
     expect(ruling.mockup.test("WhatsApp or call +91 91875 46483")).toBe(true);
-    expect(ruling.build?.test("WhatsApp us")).toBe(true);
+    expect(ruling.build?.test("Message us on WhatsApp.")).toBe(true);
     expect(ruling.mockup.test("Questions?")).toBe(false);
     /* Besides the price lines' rule every page shares, /contact's main changes nothing the text pass reads but the seller
        card's GSTIN line, and a guide the approved mockups do not show has that shared rule alone. */

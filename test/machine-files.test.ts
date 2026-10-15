@@ -130,7 +130,9 @@ const MACHINE = [
  */
 const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } & Record<OfferMode, string>> = {
   "llms.txt": {
-    // 2026-10-15 (task Q2.9, the selling update): the price question is /pricing.md's ("How much is Kheelu?", `how-much`,
+    // 2026-10-15 (task Q2.14): the contact line in the help line's words, "Message us on WhatsApp: https://wa.me/…" (the
+    // D2C plan v2 §1.1, CMO m9; seller.ts `support.message`), the email on its own line as before. Earlier the same day
+    // (task Q2.9, the selling update): the price question is /pricing.md's ("How much is Kheelu?", `how-much`,
     // with its GST: Home's answer lost it, D065 item 3; the machine files keep it, task Q2.8), and the contact line shows
     // the WhatsApp address as plain text, "WhatsApp us: https://wa.me/…", the email on its own line; the product page's consumer
     // care declaration carries the number again (task Q2.10, the Legal Metrology rules), and the file leaves the call line
@@ -145,11 +147,12 @@ const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } 
     // screen-time topic's lead (CMO reviews A M5, B m1), Home's refund and age-3 answers (task 7.1b) and the product's
     // Parent app row "On iPhone and Android." (D055 item 26; task 6.7).
     date: "2026-10-15",
-    token: "45e3a668fc3cd929fd2bca2eb398e545864387ad2212b65b072dbb942340d111",
-    full: "c4306286d78d620b4b0c419e9b8fce2022c37760c3de84e1f3cac9614659dcf3",
+    token: "4a879ff3f8b868ef9a93c5e69094ecaf561cab781c2cce59f71e28c37967ba77",
+    full: "b4c46e22dbd458e3a26cc6e1cade7e1c029a8a7cf92ce3470fbdadda4e5bcd5f",
   },
   "pricing.md": {
-    // 2026-10-15 (task Q2.9, the selling update): "Included with every Kheelu" is the offer cards' one perk list (CMO m8):
+    // 2026-10-15 (task Q2.14): the contact line as /llms.txt's, "Message us on WhatsApp: https://wa.me/…" (the help line's
+    // words, the D2C plan v2 §1.1). Earlier the same day (task Q2.9, the selling update): "Included with every Kheelu" is the offer cards' one perk list (CMO m8):
     // the delivery line with the dispatch order, Kheelona+ with "Nothing renews without you." (D065 item 6), no GST
     // invoice line (it stays in the price answer); the contact lines as /llms.txt's, "WhatsApp us: https://wa.me/…" and
     // the email on its own line (task Q2.9; the main session at the q2b merge). Earlier the same day: the help line without the number, "WhatsApp us · hello@kheelona.com" (D063 item 2; task Q2.3). Earlier
@@ -158,8 +161,8 @@ const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } 
     // wave 8b merge). Earlier the same day: the age-3 advice in one wording (CMO review A M8; task 7.1b). 2026-10-13: it
     // added the product page's Manufacturer declaration (task 4.5 item 6).
     date: "2026-10-15",
-    token: "d4184b3b956229251e3b208d75093577f09aeebfc692596f4dea564746301b54",
-    full: "5e53b39c08df708742ba34a83a5681913f135bec54a192b69c59653ec9a77421",
+    token: "a00a2069bfbfee8f50ad639674fe7b7d88a6a363bcc0e6854b10e08e65d0c03e",
+    full: "29026846bcb6eedcd24c93e2cace50234b251847eda0f47a86cd7f81520fec92",
   },
 };
 
@@ -384,7 +387,7 @@ describe.each(MACHINE)("$name", ({ name, route, text, updated, constant, type })
        rules), which the files leave out of their restatement (D063 item 2: the number only on /contact and the legal
        pages). */
     it("states the entity facts as the pages do (test plan §4.3; architecture §9.3: made in India by Kheelona Robotics)", () => {
-      for (const fact of ["Kheelu by Kheelona", "3 to 7", "Made in India", "Manufacturer: Kheelona Robotics Pvt Ltd", `- WhatsApp us: ${seller.support.whatsapp}\n- hello@kheelona.com\n`]) {
+      for (const fact of ["Kheelu by Kheelona", "3 to 7", "Made in India", "Manufacturer: Kheelona Robotics Pvt Ltd", `- Message us on WhatsApp: ${seller.support.whatsapp}\n- hello@kheelona.com\n`]) {
         expect(body(), fact).toContain(fact);
       }
       expect(body()).not.toMatch(/91875 46483|tel:|GSTIN|29AAMCK1530E1ZN/);
@@ -481,7 +484,7 @@ describe("the visible-copy check", () => {
       "- Toy-safety certification (BIS): applied for, not yet granted. We show no mark until it is granted.",
       "- Modes: AI mode (home Wi‑Fi) · Story mode (no Wi‑Fi needed) · Bluetooth mode (a paired phone)",
       "- Consumer care: hello@kheelona.com",
-      `- WhatsApp us: ${seller.support.whatsapp}`,
+      `- Message us on WhatsApp: ${seller.support.whatsapp}`,
       "- hello@kheelona.com",
       `- [Screen time](${ORIGIN}/stories#screen-time): How much, what the guidelines say, and what to do when the screen goes off.`,
     ];

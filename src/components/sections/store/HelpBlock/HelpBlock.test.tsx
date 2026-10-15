@@ -32,7 +32,7 @@ describe("HelpBlock", () => {
     const line = container.querySelector(".ks-help")!;
     expect(line.className).toBe("kh-body ks-help");
     expect(line.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
-    expect(screen.getByRole("link", { name: "WhatsApp us" })).toHaveAttribute("href", "https://wa.me/919187546483");
+    expect(screen.getByRole("link", { name: "Message us on WhatsApp" })).toHaveAttribute("href", "https://wa.me/919187546483");
     expect(line.querySelector('a[href^="tel:"]')).toBeNull();
     expect(screen.getByRole("link", { name: "hello@kheelona.com" })).toHaveAttribute("href", "mailto:hello@kheelona.com");
   });

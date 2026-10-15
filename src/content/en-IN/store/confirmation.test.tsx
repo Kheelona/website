@@ -189,7 +189,7 @@ describe("fold 5, help and changing your mind", () => {
   });
 
   it("builds the help line on the support line and the return window on the policy, never retyped", () => {
-    expect(confirmation.help.contact.startsWith(seller.help.contact)).toBe(true);
+    expect(confirmation.help.contact.startsWith(seller.support.message)).toBe(true);
     expect(confirmation.help.contact).toContain(`(mailto:${seller.support.email})`);
     expect(confirmation.help.undo).toContain(`within ${RETURN_DAYS} days`);
   });
@@ -209,7 +209,7 @@ describe("the other states, in the live page's words", () => {
     expect(live).toContain(`> ${linkNeeded.heading} </h1>`);
     expect(live).toContain(fillSlots(linkNeeded.lede, {}));
     expect(confirmation.linkNeededHelp.lead).toBe("Cannot find the email?");
-    expect(confirmation.linkNeededHelp.contact).toBe(`${seller.help.contact} and a person will pull up your order and add your address for you.`);
+    expect(confirmation.linkNeededHelp.contact).toBe(`${seller.support.message} and a person will pull up your order and add your address for you.`);
     expect(live).toContain("and a person will pull up your order and add your address for you.");
   });
 
@@ -369,7 +369,7 @@ describe("/thanks, the page", () => {
     order();
     const { container } = await page();
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("We need your link again.");
-    expect(screen.getByRole("link", { name: "WhatsApp us" })).toHaveAttribute("href", seller.support.whatsapp);
+    expect(screen.getByRole("link", { name: "Message us on WhatsApp" })).toHaveAttribute("href", seller.support.whatsapp);
     expect(container.querySelector('a[href^="tel:"]')).toBeNull();
     expect(container.textContent).toContain("Cannot find the email?");
     expect(container.textContent).not.toContain(REF);
