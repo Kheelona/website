@@ -53,9 +53,11 @@
     width: 100%;
     max-width: calc(var(--space-10) * 3 + var(--space-7)); /* 3 × 128 + 48 = 432 */
   }
+  /* The board has no width of its own (its layers are placed absolutely), so it takes the column's, as the photo does. */
   .ks-offer-photo,
   .ks-offer-art {
     justify-self: start;
+    width: 100%;
     max-width: calc(var(--space-10) * 4); /* 4 × 128 = 512 */
   }
   .ks-offer-split > .ks-offer-photo,

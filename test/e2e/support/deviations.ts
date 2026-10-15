@@ -2016,6 +2016,39 @@ export const CLOSES_ALIKE = {
 } as const satisfies Readonly<Record<string, PageFacts>>;
 export type ClosesAlikeSlug = keyof typeof CLOSES_ALIKE;
 
+/** The blocks task Q2.15 lays out anew without rewording, which no sentence rule can name (hiddenProblems needs a changed
+ *  sentence inside), on both sides, so the chunks below line up; their markup is held by the sections' and routes' unit
+ *  tests (the mockup read in the one shape, `withOneCtaShape`):
+ *  - the centred closes' button row (/team, /contact, the 404): the one CTA block shape (the consistency review's R2), full
+ *    width on phones with the arrow, where the mockup's was a 217 px pill; inline with the arrow from 720 px;
+ *  - the journal closes' two actions rows (the hub, the button-close articles): the DS --space-6 above each, as every
+ *    other close's (CON-1, CON-7), where the mockup's were --space-5 (stories.css:45);
+ *  - the guide's close from 900 px: its words in the DS 7:5 column beside the board (CON-11), where the mockup's split
+ *    is even. */
+const closeLayout = (selector: string, reason: string, media?: string): VisualHide[] =>
+  (["mockup", "build"] as const).map((side) => ({ side, selector, ...(media ? { media } : {}), reason, approvedBy: CLOSES_ALIKE_APPROVED }));
+const CENTRED_BUTTON_ROW = closeLayout(
+  "#close .kh-section__actions:has(> .kh-btn--cta)",
+  "the close's button in the one CTA block shape (R2): full width with the arrow on phones, inline with it from 720 px",
+);
+const JOURNAL_ROWS = closeLayout(
+  "#close .kh-section__actions",
+  "the journal close's button and ghost-link rows, --space-6 below the lines above them as every close's (CON-1, CON-7)",
+);
+export const CLOSES_ALIKE_LAYOUT_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
+  team: CENTRED_BUTTON_ROW,
+  contact: CENTRED_BUTTON_ROW,
+  "404": CENTRED_BUTTON_ROW,
+  stories: JOURNAL_ROWS,
+  "story-learning-toys-for-a-three-year-old": JOURNAL_ROWS,
+  "story-what-to-look-for-in-a-safe-ai-toy": JOURNAL_ROWS,
+  "ai-toys-for-kids-in-india": closeLayout(
+    "#close .kh-split",
+    "the guide close's words in the DS 7:5 column beside the board, so its trust line keeps one row (CON-11)",
+    "(min-width: 900px)",
+  ),
+};
+
 /** The passes a page's earlier rules make before task Q2.15's, each a pass of its own: those before task Q2.12's, then
  *  its selling close (where the page has one). The mockup the consistency review's edits start from is the frozen one
  *  through every pass. */
@@ -2397,23 +2430,6 @@ const HOME_OFFER_ART_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as con
   approvedBy: HOME_OFFER_ART.approvedBy,
 }));
 
-/* One offer fold (task Q2.15; the consistency review's CON-3, QAL-2, CMO-2): from 900 px both offer folds share one
-   composition, the picture top-aligned with the card as Home's board is (D064 item 5). The product page's photo, which
-   the approved split centres beside the taller column, so starts level with the card's top: the same photo in another
-   place, from 900 px only (below it the columns stack, as approved). The visual pass compares the fold without the photo
-   on both sides there; the card, the two rows and the share link still compared (the rows' words by the text pass). */
-export const PRODUCT_OFFER_PHOTO = {
-  mockup: "#offer .mk-offer-photo",
-  build: "#offer .ks-offer-photo",
-  approvedBy: "the consistency review's rulings (main session, 2026-10-15; task Q2.15: CON-3, QAL-2, CMO-2, D064 item 5; its deviations.md row is the main session's)",
-} as const;
-const PRODUCT_OFFER_PHOTO_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as const).map((side) => ({
-  side,
-  selector: PRODUCT_OFFER_PHOTO[side],
-  media: "(min-width: 900px)",
-  reason: "the offer photo starts level with the card's top on laptops (one offer fold with Home's), where the approved split centres it",
-  approvedBy: PRODUCT_OFFER_PHOTO.approvedBy,
-}));
 
 /* The selling update on the product page (task Q2.10; D064 items 2 and 8, D065 items 1, 3-6 and 8, the main session's
    rulings of 2026-10-15; the copy: the D2C plan v2 §3, checked by the claims guard and the CMO). Two groups, as the
@@ -2808,11 +2824,15 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...factsHidden(ARTICLE_CLAIM_FIXES["story-what-to-look-for-in-a-safe-ai-toy"], ARTICLE_CLAIM_FIXES_WHOSE),
     /* The close of the AI toys and safety topic (task Q2.12, D065). */
     ...factsHidden(SELLING_CLOSES["story-what-to-look-for-in-a-safe-ai-toy"], SELLING_CLOSES_WHOSE),
-    /* The close's eyebrow and its ghost link (task Q2.15). */
+    /* The close's eyebrow and its ghost link, then its rows' spacing (task Q2.15). */
     ...factsHidden(CLOSES_ALIKE["story-what-to-look-for-in-a-safe-ai-toy"], CLOSES_ALIKE_WHOSE),
+    ...CLOSES_ALIKE_LAYOUT_HIDDEN["story-what-to-look-for-in-a-safe-ai-toy"],
   ],
-  /* The close's eyebrow and its ghost link (task Q2.15). */
-  "story-learning-toys-for-a-three-year-old": factsHidden(CLOSES_ALIKE["story-learning-toys-for-a-three-year-old"], CLOSES_ALIKE_WHOSE),
+  /* The close's eyebrow and its ghost link, then its rows' spacing (task Q2.15). */
+  "story-learning-toys-for-a-three-year-old": [
+    ...factsHidden(CLOSES_ALIKE["story-learning-toys-for-a-three-year-old"], CLOSES_ALIKE_WHOSE),
+    ...CLOSES_ALIKE_LAYOUT_HIDDEN["story-learning-toys-for-a-three-year-old"],
+  ],
   /* The 3-6-9-12 card (V9) is hidden in the approved hub, so its screen-time topic lists the build's five guides in the
      build's order and every fold below it lines up. The mockup alone: hidden there, the topic's rows reflow into the
      build's grid (two columns from 900 px), and the build has nothing of the card to hide. */
@@ -2825,8 +2845,9 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     },
     /* The topic's line (V9 as amended in task 7.1b), compared by the text pass. */
     ...factsHidden(COPY_FIXES.stories, COPY_FIXES_WHOSE),
-    /* The close's eyebrow and its ghost link (task Q2.15). */
+    /* The close's eyebrow and its ghost link, then its rows' spacing (task Q2.15). */
     ...factsHidden(CLOSES_ALIKE.stories, CLOSES_ALIKE_WHOSE),
+    ...CLOSES_ALIKE_LAYOUT_HIDDEN.stories,
   ],
   /* The screen-time guide card's line (V18, task 7.1b), then the parent-app bullets and the safety bodies (V26, task 8b.1),
      then the fourth question (task 8c.4, D061), compared by the text pass; then the offer card's later price and the
@@ -2861,6 +2882,8 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   "ai-toys-for-kids-in-india": [
     ...factsHidden(CLAIM_FIXES["ai-toys-for-kids-in-india"], CLAIM_FIXES_WHOSE),
     ...factsHidden(SELLING_CLOSES["ai-toys-for-kids-in-india"], SELLING_CLOSES_WHOSE),
+    /* The close's words in the 7:5 column from 900 px (task Q2.15). */
+    ...CLOSES_ALIKE_LAYOUT_HIDDEN["ai-toys-for-kids-in-india"],
   ],
   team: [
     /* What still differs on purpose (V7): the hero lead (CMO M-T1), and the mockup's placeholders that the founder's
@@ -2900,12 +2923,13 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...factsHidden(CLAIM_FIXES.team, CLAIM_FIXES_WHOSE),
     /* The keys line in G26's words and the close's lead (task Q2.12, D065). */
     ...factsHidden(SELLING_CLOSES.team, SELLING_CLOSES_WHOSE),
-    /* The close's eyebrow (task Q2.15). */
+    /* The close's eyebrow, then its button row in the one shape (task Q2.15). */
     ...factsHidden(CLOSES_ALIKE.team, CLOSES_ALIKE_WHOSE),
+    ...CLOSES_ALIKE_LAYOUT_HIDDEN.team,
   ],
-  /* The close's eyebrow (task Q2.15). */
-  contact: factsHidden(CLOSES_ALIKE.contact, CLOSES_ALIKE_WHOSE),
-  "404": factsHidden(CLOSES_ALIKE["404"], CLOSES_ALIKE_WHOSE),
+  /* The close's eyebrow, then its button row in the one shape (task Q2.15). */
+  contact: [...factsHidden(CLOSES_ALIKE.contact, CLOSES_ALIKE_WHOSE), ...CLOSES_ALIKE_LAYOUT_HIDDEN.contact],
+  "404": [...factsHidden(CLOSES_ALIKE["404"], CLOSES_ALIKE_WHOSE), ...CLOSES_ALIKE_LAYOUT_HIDDEN["404"]],
   setup: [
     ...(["mockup", "build"] as const).map((side) => ({
       /* Step 2 is CMO fix M-S1 in the build (its light without a colour, V8), so it may wrap differently and move every
@@ -2943,8 +2967,6 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
        comparison and the safety line it adds. */
     ...factsHidden(SELLING_UPDATE["meet-kheelu"], SELLING_UPDATE_WHOSE),
     ...sellingAdditionsHidden("meet-kheelu"),
-    /* The offer photo top-aligned with the card from 900 px, one offer fold with Home's (task Q2.15). */
-    ...PRODUCT_OFFER_PHOTO_HIDDEN,
   ],
   /* The Google Analytics block's paragraph and the PostHog block's first one say more in the build (V10), so they wrap
      to more lines and every block below would shift; the pixels compare the page without the two paragraphs on both

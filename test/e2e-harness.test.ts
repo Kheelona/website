@@ -187,8 +187,13 @@ describe("hideDeviations", () => {
   });
 
   it("hides /contact's seller card on both sides, its only block D063 rewords (the GSTIN line off)", () => {
-    // The page's own rule: its close's eyebrow, the build's alone (task Q2.15, CON-6).
-    expect((VISUAL_HIDDEN.contact ?? []).map((r) => [r.side, r.selector, r.approvedBy])).toEqual([["build", "#close .kh-eyebrow", CLOSES_ALIKE.contact.approvedBy]]);
+    // The page's own rules: its close's eyebrow, the build's alone (task Q2.15, CON-6), and its button row in the one CTA
+    // shape on both sides (R2).
+    expect((VISUAL_HIDDEN.contact ?? []).map((r) => [r.side, r.selector, r.approvedBy])).toEqual([
+      ["build", "#close .kh-eyebrow", CLOSES_ALIKE.contact.approvedBy],
+      ["mockup", "#close .kh-section__actions:has(> .kh-btn--cta)", CLOSES_ALIKE.contact.approvedBy],
+      ["build", "#close .kh-section__actions:has(> .kh-btn--cta)", CLOSES_ALIKE.contact.approvedBy],
+    ]);
     const contact = visualHidden("contact").filter((r) => r.approvedBy === SELLER_FACTS_APPROVED);
     expect(contact.map((r) => [r.side, r.selector])).toEqual([
       ["mockup", ".kh-footer__legal"],

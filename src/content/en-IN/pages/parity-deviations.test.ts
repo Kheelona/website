@@ -14,6 +14,7 @@ import {
   CLOSE_EYEBROW,
   CLOSE_SEE_HOW,
   CLOSES_ALIKE,
+  CLOSES_ALIKE_LAYOUT_HIDDEN,
   type ClosesAlikeSlug,
   COPY_FIXES,
   type CopyFixesSlug,
@@ -408,10 +409,23 @@ describe.each(Object.keys(CLOSES_ALIKE) as ClosesAlikeSlug[])("%s: task Q2.15's 
 
   it("hides for the pixels the blocks it lists, in VISUAL_HIDDEN in its order, each found once on its side and holding a sentence its edits change", () => {
     expect(hiddenProblems(base, fixes)).toEqual([]);
-    const rules = (VISUAL_HIDDEN[slug] ?? []).filter((r) => r.approvedBy === fixes.approvedBy);
+    const layout = new Set(CLOSES_ALIKE_LAYOUT_HIDDEN[slug] ?? []);
+    const rules = (VISUAL_HIDDEN[slug] ?? []).filter((r) => r.approvedBy === fixes.approvedBy && !layout.has(r));
     const sel = (side: string) => rules.filter((r) => r.side === side).map((r) => r.selector);
     expect(sel("mockup")).toEqual([...fixes.hidden.both, ...fixes.hidden.mockup]);
     expect(sel("build")).toEqual([...fixes.hidden.both, ...fixes.hidden.build]);
+  });
+
+  /* The blocks the review lays out anew without rewording (the centred closes' button row in the one CTA shape, the
+     journal closes' rows at the DS spacing; deviations.ts CLOSES_ALIKE_LAYOUT_HIDDEN): after the page's facts hides, on
+     both sides, each finding its rows in the approved page as the edits leave it. */
+  it("hides after them, on both sides, the blocks it lays out anew without rewording, each found on the page", () => {
+    const layout = CLOSES_ALIKE_LAYOUT_HIDDEN[slug] ?? [];
+    const mine = (VISUAL_HIDDEN[slug] ?? []).filter((r) => r.approvedBy === fixes.approvedBy);
+    expect(mine.slice(mine.length - layout.length)).toEqual(layout);
+    expect(layout.map((r) => r.side)).toEqual(layout.length ? ["mockup", "build"] : []);
+    const edited = withFacts(base, fixes.edits);
+    for (const rule of layout) expect(edited.querySelectorAll(rule.selector).length, rule.selector).toBe(/^story-|^stories$/.test(slug) ? 2 : 1);
   });
 
   it("adds only the eyebrow, the link's words and the hyphens: no banned phrase, no number, no GST", () => {
@@ -422,6 +436,20 @@ describe.each(Object.keys(CLOSES_ALIKE) as ClosesAlikeSlug[])("%s: task Q2.15's 
 
   it("names the consistency review and this task as its approval, for the main session's deviations.md row", () => {
     expect(fixes.approvedBy).toMatch(/^the consistency review's rulings \(main session, 2026-10-15; .*task Q2\.15; deviations\.md rows to come\)$/);
+  });
+});
+
+describe("task Q2.15's layout hides, on every page they name", () => {
+  it("sit in each page's VISUAL_HIDDEN, and the guide's close split (CON-11) is hidden from 900 px only, found once", () => {
+    for (const [slug, rules] of Object.entries(CLOSES_ALIKE_LAYOUT_HIDDEN)) {
+      for (const rule of rules) expect(VISUAL_HIDDEN[slug] ?? [], slug).toContain(rule);
+    }
+    const guide = CLOSES_ALIKE_LAYOUT_HIDDEN["ai-toys-for-kids-in-india"];
+    expect(guide.map((r) => [r.side, r.selector, r.media])).toEqual([
+      ["mockup", "#close .kh-split", "(min-width: 900px)"],
+      ["build", "#close .kh-split", "(min-width: 900px)"],
+    ]);
+    expect(mockupFold("ai-toys-for-kids-in-india", "main").querySelectorAll(guide[0].selector)).toHaveLength(1);
   });
 });
 

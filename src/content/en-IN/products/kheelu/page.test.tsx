@@ -22,7 +22,6 @@ import {
   PRODUCT_HERO,
   PRODUCT_KNOW,
   PRODUCT_OFFER_ALT,
-  PRODUCT_OFFER_PHOTO,
   PRODUCT_SAFETY_LINE,
   PROOF_ADDITIONS,
   PROOF_ADDITIONS_APPROVED,
@@ -461,17 +460,13 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
     const faq = FAQ_FIXES["meet-kheelu"];
     const additions = OFFER_ADDITIONS["meet-kheelu"];
     // The hero's phone art (D061 item 1, task 8c.1) is hidden under 720 px only, on both sides: HeroSection's test holds it.
-    // The offer photo from 900 px, top-aligned with the card as Home's board (task Q2.15: one offer fold), on both sides.
-    const scoped = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.media);
-    expect(scoped.map((r) => [r.side, r.selector, r.media])).toEqual([
+    // (The offer photo, top-aligned with the card from 900 px since task Q2.15, needs no hide: under the pixels' other
+    // hides the photo is the split's tallest column, where centred and top-aligned are the same place.)
+    const phonesOnly = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.media);
+    expect(phonesOnly.map((r) => [r.side, r.selector, r.media])).toEqual([
       ["mockup", ".mk-hero .kh-art", "(max-width: 719px)"],
       ["build", ".ks-hero .kh-art", "(max-width: 719px)"],
-      ["mockup", "#offer .mk-offer-photo", "(min-width: 900px)"],
-      ["build", "#offer .ks-offer-photo", "(min-width: 900px)"],
     ]);
-    expect(scoped.slice(2).every((r) => r.approvedBy === PRODUCT_OFFER_PHOTO.approvedBy)).toBe(true);
-    expect(BUILT.main.querySelectorAll(PRODUCT_OFFER_PHOTO.build)).toHaveLength(1);
-    expect(APPROVED.querySelectorAll(PRODUCT_OFFER_PHOTO.mockup)).toHaveLength(1);
     const others = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.approvedBy !== FACTS.approvedBy && r.approvedBy !== SELLING_UPDATE_APPROVED && !r.media);
     expect(selling.length).toBeGreaterThan(0);
     expect(others.map((r) => [r.side, r.selector, r.approvedBy])).toEqual([

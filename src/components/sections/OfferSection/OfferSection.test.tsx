@@ -146,6 +146,9 @@ describe("OfferSection: variants", () => {
     const where = (declaration: RegExp) => rules.filter((r) => declaration.test(r.body)).map((r) => r.selector);
     expect(where(/align-self:\s*start;/)).toEqual([".ks-offer-split > .ks-offer-photo, .ks-offer-split > .ks-offer-art"]);
     expect(where(/justify-self:\s*start;/)).toEqual([".ks-offer-photo, .ks-offer-art"]);
+    // The board has no width of its own (its layers are placed absolutely): started at the column's edge it takes the
+    // column's width, up to 512 px, or it would shrink to nothing beside the card (the task's screenshots at 1440).
+    expect(rules.find((r) => r.selector === ".ks-offer-photo, .ks-offer-art")?.body).toMatch(/width:\s*100%;/);
     expect(where(/grid-template-columns:\s*minmax\(0, 5fr\) minmax\(0, 6fr\);/)).toEqual([".ks-offer-split"]);
     expect(where(/justify-items:\s*end;/)).toEqual([".ks-offer-col"]);
     expect(where(/max-width:\s*calc\(var\(--space-10\) \* 3 \+ var\(--space-7\)\);/)).toEqual([".ks-offer-col > .kh-offer, .ks-offer-col > .kh-trustline, .ks-offer-col > .ks-offer-share"]);
