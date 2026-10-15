@@ -5,7 +5,8 @@ import type { IconName } from "@/components/ui/Icon/Icon";
 
 /* HeroSection's configuration (task 3.3; components §2): the first fold of a page, never revealed and with still
  * doodles (D049 pick 2). Layouts from the approved mockup:
- * - `art`: Home (D045), the hero heading and the CTA block beside the scrapbook board;
+ * - `art`: Home (D045), the hero heading and the CTA block beside the scrapbook board, or since task Q2.1 (D064 item 4)
+ *   beside a library photo (`photo`) in its place;
  * - `product`: the product page, the same with the word sticker moved clear of the child's face;
  *   both may carry the board's phone composition (`phoneLayers`, D061 item 1);
  * - `answer`: an answer-first heading beside a photo or a board (safety, the buyer's guide, team), or alone (setup);
@@ -34,6 +35,18 @@ export interface HeroWay {
   readonly icon?: IconName;
 }
 
+/**
+ * A library photo as the hero's picture (task Q2.1, D064 item 4: Home's "Kabir · block rocket"), in two crops cut from
+ * its DS master by scripts/assets/build-hero-crops.mjs, each keeping the child and Kheelu whole and each shown whole at
+ * its own ratio: `image` from 720 px, the DS photo frame's 4:5 (480 px wide at most until the split begins at 900 px);
+ * `phone` under 720 px, in the board's phone place right under the trust line (D061 item 1), short enough for Kheelu to
+ * end on the first screen. Both carry the photo's one alt.
+ */
+export interface HeroPhoto {
+  readonly image: ImageRef;
+  readonly phone: ImageRef;
+}
+
 export type HeroSectionConfig =
   | {
       readonly variant: "art" | "product";
@@ -47,6 +60,15 @@ export type HeroSectionConfig =
        * Without it the hero is the approved fold.
        */
       readonly phoneLayers?: readonly ArtLayer[];
+      readonly photo?: never;
+    }
+  | {
+      /** Home since task Q2.1 (D064 item 4): the hero heading and the CTA block beside the photo, in place of the board. */
+      readonly variant: "art";
+      readonly heading: HeroHeading;
+      readonly photo: HeroPhoto;
+      readonly art?: never;
+      readonly phoneLayers?: never;
     }
   | { readonly variant: "answer"; readonly heading: HeroHeading; readonly media?: HeroMedia }
   | { readonly variant: "contact"; readonly heading: HeroHeading; readonly ways: readonly HeroWay[] }

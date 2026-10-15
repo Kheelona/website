@@ -1579,8 +1579,9 @@ const EXPERT_CLIP_TEXT: TextDeviation = {
 /* Kheelu on the first phone screen (D061 item 1, task 8c.1): under 720 px the hero's art is the board's phone
    composition, 4:3 right under the trust line (the help line and the secondary link follow it), where the approved
    page has the 1:1 board after them. Its words are the approved board's (the text pass compares them); its place and
-   picture are new, so the visual pass compares Home's and the product page's phone heroes without their art on both
-   sides, and every fold below lines up again. Phones only: from 720 px the approved board shows, compared as before.
+   picture are new, so the visual pass compares the product page's phone hero without its art on both sides, and every
+   fold below lines up again. Phones only: from 720 px the approved board shows, compared as before. (Home's hero had
+   the same rule until task Q2.1 gave it the Kabir photo at every width: HOME_HERO_PHOTO.)
    The first screen itself (Kheelu, h1, button, price sentence; the WhatsApp bubble clear of Kheelu and the sticker) is
    test/e2e/first-screen.spec.ts's. */
 const HERO_PHONE_ART_BY = "D061 item 1 (founder, 2026-10-15; task 8c.1; its deviations.md row is the main session's)";
@@ -1600,6 +1601,40 @@ const HERO_PHONE_ART: readonly VisualHide[] = [
     approvedBy: HERO_PHONE_ART_BY,
   },
 ];
+
+/* Home's hero picture is the DS photo library's "Kabir · block rocket" (D064 item 4, task Q2.1), one of the DS web-hero
+   photos (design-system 10-pages.md), where the approved page has the scrapbook board: two crops of it, the 4:5 from
+   720 px and a 16:10 band under 720 px in the phone board's place under the trust line (D061 item 1). Another picture at
+   every width, so the visual pass compares Home's hero without its picture on both sides at every width (the words
+   column, button, price sentence, trust and help lines still compared); the first phone screen with the photo (Kheelu,
+   h1, button, price sentence; the WhatsApp bubble clear of Kheelu and the boy's head) is test/e2e/first-screen.spec.ts's.
+   A photo carries no board, so the board's word sticker ("It asks." / "They think.") went with it: the text pass's rule. */
+export const HOME_HERO_PHOTO = {
+  mockup: ".mk-hero .kh-art",
+  build: ".ks-hero .kh-photo",
+  /** The board's word sticker, its two lines as the text pass reads them. */
+  sticker: ["It asks.", "They think."],
+  approvedBy: "D064 item 4 (founder, 2026-10-15; task Q2.1; its deviations.md row is the main session's)",
+} as const;
+const HOME_HERO_PHOTO_HIDDEN: readonly VisualHide[] = [
+  {
+    side: "mockup",
+    selector: HOME_HERO_PHOTO.mockup,
+    reason: "the approved hero board, at every width: Home's hero picture is the Kabir photo in the build",
+    approvedBy: HOME_HERO_PHOTO.approvedBy,
+  },
+  {
+    side: "build",
+    selector: HOME_HERO_PHOTO.build,
+    reason: "the hero photo's two crops (4:5 from 720 px, 16:10 under the trust line on phones): a new picture, its alt compared by the unit tests",
+    approvedBy: HOME_HERO_PHOTO.approvedBy,
+  },
+];
+const HOME_HERO_PHOTO_TEXT: TextDeviation = {
+  mockup: oneOf(HOME_HERO_PHOTO.sticker),
+  reason: "the hero board's word sticker went with the board: Home's hero picture is the Kabir photo, which carries no sticker",
+  approvedBy: HOME_HERO_PHOTO.approvedBy,
+};
 
 /* Home's films in the founder's order (D064 item 1, task Q2.1): the films list's 1, 4, 7, 2, 5, 6, 3 on Home's strip (the
    2nd film replaced by the 4th, the 3rd by the 7th); the list, and so the product page's and the store's strips, keep the
@@ -1667,14 +1702,16 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   ],
   /* The screen-time guide card's line (V18, task 7.1b), then the parent-app bullets and the safety bodies (V26, task 8b.1),
      then the fourth question (task 8c.4, D061), compared by the text pass; then the offer card's later price and the
-     share link the build adds (task 8c.2, D061); then the quotes and the strip (task 8c.3); then the hero's phone art (task 8c.1, D061 item 1), under 720 px only; then the films' order and, from 900 px, the close's board (task Q2.1, D064 items 1 and 5). */
+     share link the build adds (task 8c.2, D061); then the quotes and the strip (task 8c.3); then the hero's picture, the
+     Kabir photo at every width (task Q2.1, D064 item 4, in place of task 8c.1's phone-board rule); then the films' order
+     and, from 900 px, the close's board (task Q2.1, D064 items 1 and 5). */
   home: [
     ...factsHidden(COPY_FIXES.home, COPY_FIXES_WHOSE),
     ...factsHidden(CLAIM_FIXES.home, CLAIM_FIXES_WHOSE),
     ...factsHidden(FAQ_FIXES.home, FAQ_FIXES_WHOSE),
     ...offerAdditionsHidden("home"),
     ...proofHidden("home"),
-    ...HERO_PHONE_ART,
+    ...HOME_HERO_PHOTO_HIDDEN,
     ...HOME_FILMS_ORDER_HIDDEN,
     ...HOME_OFFER_ART_HIDDEN,
   ],
@@ -1884,7 +1921,16 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
      (task 8c.2, D061): OFFER_ADDITIONS above. The quotes and the strip (task 8c.3): PROOF_ADDITIONS above. Then D058's
      claim fixes (V26, task 8b.1), and the fourth question in the parent's words, which the text pass does read (task 8c.4,
      D061): FAQ_FIXES above. */
-  home: [factsRule(COPY_FIXES.home), factsRule(OFFER_ADDITIONS.home), proofText("home"), factsRule(CLAIM_FIXES.home), factsRule(FAQ_FIXES.home)],
+  home: [
+    factsRule(COPY_FIXES.home),
+    factsRule(OFFER_ADDITIONS.home),
+    proofText("home"),
+    /* The hero board's word sticker, gone with the board (task Q2.1, D064 item 4): HOME_HERO_PHOTO above. Before the
+       claim fixes, which only the FAQ fix may follow (pages/parity-deviations.test.ts). */
+    HOME_HERO_PHOTO_TEXT,
+    factsRule(CLAIM_FIXES.home),
+    factsRule(FAQ_FIXES.home),
+  ],
   "meet-kheelu": [
     {
       /* The product details fold without JavaScript (wiki/qa/deviations.md V3): the tab row stays hidden and the three

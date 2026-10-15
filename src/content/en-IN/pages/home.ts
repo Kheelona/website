@@ -1,13 +1,13 @@
-import advikSticker from "@ds/assets/Cast/advik-sticker.png";
 import myraSticker from "@ds/assets/Cast/myra-sticker.png";
 import kheeluSticker from "@ds/assets/Kheelu/kheelu-front-sticker.png";
 import iraStory from "@ds/assets/Photo library/ira-01-story-on-the-bed-web.webp";
 import kabirImagining from "@ds/assets/Photo library/kabir-01-imagining-space-web.webp";
 import flowerChilli from "@ds/assets/Shapes/flower-chilli.svg";
-import sunSun from "@ds/assets/Shapes/sun-sun.svg";
 import appActivity from "@/assets/app/app-activity.webp";
 import appPrivacy from "@/assets/app/app-privacy.webp";
 import appTranscript from "@/assets/app/app-transcript.webp";
+import kabirRocketPhone from "@/assets/hero/kabir-02-block-rocket-16x10.jpg";
+import kabirRocketHero from "@/assets/hero/kabir-02-block-rocket-4x5.jpg";
 import type { CtaBlockConfig } from "@/components/sections/CtaBlock/cta-block.types";
 import type { IconName } from "@/components/ui/Icon/Icon";
 import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
@@ -18,6 +18,7 @@ import { DEFAULT_OG } from "../organization";
 import { RETENTION_LINE } from "../policies";
 import { product } from "../products/kheelu/product";
 import { recognitionStrip } from "../recognition";
+import { photos } from "../stories/photos";
 import { topics, type TopicId } from "../stories/topics";
 import { SAFETY_FACTS, TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "../trust";
 
@@ -26,17 +27,22 @@ import { SAFETY_FACTS, TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } fro
  * the hero D045), rendered by PageTemplate from `src/app/(site)/page.tsx`. Visible words are the mockup's; the meta,
  * the full-mode words and the three untracked links' targets are the copy page's (wiki/site/pages/home.md;
  * architecture §6.3). Added after Gate A (task 8c.3; D061 item 4 and the main session's rulings; deviation rows to come):
- * two parents' quotes under the films, and the "Recognised by." strip after them. Shared facts come from their one
+ * two parents' quotes under the films, and the "Recognised by." strip after them. Changed in quick batch 2 (task Q2.1,
+ * D064 items 1 and 4): the hero's picture, the Kabir photo, and the films' order on Home. Shared facts come from their one
  * module: the films and the parents' quotes, the recognition strip, the FAQ answers, the trust items and the
  * safety facts line, the CTA links, the retention line, the modes and languages, the stories topics.
  *
- * Motion (D049): the hero board's doodle stays still (pick 2: a hero never draws); the imagination frame's doodles and
- * the close board's heart draw themselves below the first screen (pick 3). The hero board's largest sticker is the
+ * Motion (D049): the hero's photo stays still (pick 2: a hero never moves); the imagination frame's doodles and
+ * the close board's heart draw themselves below the first screen (pick 3). The hero photo's crop at each width is the
  * page's one LCP image (HeroSection). FAQPage = fold 4's answer-first block (`faq: true`) and the six answers of fold 8
  * (wave-4 close; home.md fold 8).
  */
 
 const trust = (ids: readonly TrustId[]) => ids.map((id) => trustItems[id]);
+
+/** The hero photo's alt (task Q2.1): the DS photo's one alt, the journal photo table's for the same photo (one alt per
+ *  image, journal pipeline §8.2), on both crops. */
+const KABIR_ROCKET_ALT = photos["kabir-02-block-rocket"].image.alt;
 const COMPACT = trust(TRUST_COMPACT);
 
 /** The caption under the parent app's real screens (folds 5 and 6). */
@@ -94,7 +100,12 @@ export const homePage = {
     og: { image: "/og/kheelu.jpg", alt: DEFAULT_OG.alt },
   },
   sections: [
-    /* Fold 1 · Hero (D045). */
+    /* Fold 1 · Hero (D045). Its picture since task Q2.1 (D064 item 4): the DS photo library's "Kabir · block rocket", one
+       of the DS web-hero photos (design-system 10-pages.md), in place of the scrapbook board, in two crops cut from its
+       2K master by scripts/assets/build-hero-crops.mjs, each keeping Kabir and Kheelu whole: the 4:5 crop from 720 px,
+       and under 720 px a 16:10 band in the phone board's place right under the trust line (D061 item 1), short enough
+       for Kheelu to end on the first screen at 390 x 844 and 412 x 915, with Kheelu out of the column the WhatsApp
+       bubble rests in (first-screen.spec.ts). Still (D049 pick 2). The words are D045's, unchanged. */
     {
       kind: "hero-section",
       config: {
@@ -105,29 +116,10 @@ export const homePage = {
           lead: "A screen-free plush toy by Kheelona. It answers your child first, then asks a question back, so they do the thinking.",
           id: "hero-title",
         },
-        art: {
-          tone: "blue",
-          label: "Kheelu by Kheelona, the cream plush rabbit with rainbow ears, beside a smiling boy",
-          layers: [
-            { image: { src: sunSun, alt: "" }, left: 6, width: 30, top: 8 },
-            { image: { src: advikSticker, alt: "" }, left: 38, width: 54, bottom: 0 },
-            { image: { src: kheeluSticker, alt: "" }, left: 2, width: 44, bottom: 2, rotate: -6 },
-            { doodle: { name: "chalk-question-mark" }, left: 43, width: 13, top: 2, rotate: 10 },
-          ],
-          sticker: { tone: "sun", variant: "round", tilt: 8, lead: "It asks.", lines: ["They think."] },
+        photo: {
+          image: { src: kabirRocketHero, alt: KABIR_ROCKET_ALT },
+          phone: { src: kabirRocketPhone, alt: KABIR_ROCKET_ALT },
         },
-        /* D061 item 1 (task 8c.1): the same board on a phone, on a 4:3 board under the trust line (HeroSection), so
-           Kheelu is wholly on the first screen at 390 x 844 and 412 x 915; the same files in the DS order (10-pages.md,
-           the scrapbook board): the word sticker in the top left corner (HeroSection), the shape in the top right one,
-           the boy bottom-aligned, Kheelu tilted beside him, clear of his face and raised so it ends inside 844 px, and
-           the question mark between their heads. The boy ends at 82 % of the board, so the right-hand column, which the
-           WhatsApp bubble covers wherever a phone's screen ends, holds only the shape and the blue. */
-        phoneLayers: [
-          { image: { src: sunSun, alt: "" }, right: 3, width: 18, top: 5 },
-          { image: { src: advikSticker, alt: "" }, left: 52, width: 30, bottom: 0 },
-          { image: { src: kheeluSticker, alt: "" }, left: 32, width: 27, bottom: 16, rotate: -6 },
-          { doodle: { name: "chalk-question-mark" }, left: 45, width: 8, top: 22, rotate: 10 },
-        ],
       },
       cta: heroCta,
     },
