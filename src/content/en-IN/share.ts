@@ -15,6 +15,11 @@ import type { OfferShareCopy } from "@/content/types";
  *   text), names the advance only as refundable (DARK-03), never "first 500" (D041 as D061 changed it allows that line on
  *   the cards alone). Its first two sentences follow the approved H1 (D045). Full mode has no advance, so its last
  *   sentence is the approved full-mode price sentence (home.md "At a glance"; offer.ts `sentence.full`).
+ * - For the founder's sign-off: the prices reach the payload as the site prints them, with the rupee sign, because the
+ *   message takes tokens only (task 8c.2). The live site's message wrote "Rs" instead: its note
+ *   (WHATSAPP_SHARE_HREF, src/config/site.ts) says the rupee sign garbles in some WhatsApp clients. Before Gate B the
+ *   message is opened on an Android and an iOS WhatsApp; if the sign garbles, the main session decides whether the
+ *   payload takes an "Rs" form of the token (a new price format in src/lib/offer/, never a typed amount).
  * - The address is kheelona.com, tagged as docs/utm-conventions.md says for a link a parent passes on in WhatsApp
  *   (source `whatsapp`, medium `referral`, campaign `<yyyy-mm>-<slug>`): exactly what `npm run utm -- --source=whatsapp
  *   --medium=referral --campaign=2026-10-share --path=/` prints (share.test.ts). It is only ever words inside the
