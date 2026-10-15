@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { GSTIN, SUPPORT_WHATSAPP_DISPLAY } from "@/config/site";
 import { readRepoFile } from "../e2e/support/repo";
 import { MOCKUP_SLUGS } from "../e2e/support/mockup-text";
+import { sentenceDiff } from "../e2e/support/parity";
 import { blockSentences } from "./mockup-facts";
 import {
   SELLER_FACTS_COUNTS,
@@ -20,6 +21,9 @@ const NUMBER = SUPPORT_WHATSAPP_DISPLAY;
 const PHONE = new RegExp(`${NUMBER.replace("+", "\\+")}|tel:`);
 /** The pages that keep the number in their <main> (the E-Commerce Rules, r.4(2)(d); D063 item 2). */
 const KEEPS_NUMBER = new Set(["contact", "privacy", "terms", "refund", "shipping"]);
+/** The product page's Legal Metrology declaration row, which keeps the number since task Q2.10 (the Packaged Commodities
+ *  Rules ask for a consumer-care number): the one place in that page's <main>. */
+const CONSUMER_CARE = /<div><dt>Consumer care<\/dt><dd>[\s\S]*?<\/dd><\/div>/g;
 const raw = (slug: string) => readRepoFile(`mockup/${slug}.html`);
 const mainOf = (html: string) => html.slice(html.search(/<main\b/i), html.search(/<\/main>/i) + "</main>".length);
 /** The chrome: the body outside <main> (the head is the page's meta; /contact's description keeps the number). */
@@ -34,7 +38,13 @@ describe("the seller-facts ruling of the approved mockups (D063 items 2-3)", () 
     const ruled = withSellerFactsHtml(raw(slug));
     expect(ruled).not.toContain(GSTIN);
     expect(outsideMain(ruled), "chrome").not.toMatch(PHONE);
-    if (!KEEPS_NUMBER.has(slug)) expect(mainOf(ruled), "main").not.toMatch(PHONE);
+    if (slug === "meet-kheelu") {
+      const rows = mainOf(ruled).match(CONSUMER_CARE) ?? [];
+      expect(rows, "one consumer care row").toHaveLength(1);
+      expect(rows[0], "the consumer care row keeps the number and its call link").toMatch(new RegExp(`call ${NUMBER.replace("+", "\\+")}</a>`));
+      expect(rows[0]).toContain('href="tel:');
+      expect(mainOf(ruled).replace(CONSUMER_CARE, ""), "main, the consumer care row aside").not.toMatch(PHONE);
+    } else if (!KEEPS_NUMBER.has(slug)) expect(mainOf(ruled), "main").not.toMatch(PHONE);
     else expect(mainOf(ruled), "main keeps the number").toContain(NUMBER);
   });
 
@@ -68,10 +78,9 @@ describe("the seller-facts ruling of the approved mockups (D063 items 2-3)", () 
   it.each(MOCKUP_SLUGS.map((s) => [s] as const))("%s: the text pass's sentences are exactly those the ruling changes in <main>", (slug) => {
     const doc = new DOMParser().parseFromString(raw(slug), "text/html");
     const main = doc.querySelector("main")!;
-    const before = blockSentences(main);
-    const after = blockSentences(withSellerFacts(main));
-    const missing = before.filter((s) => !after.includes(s));
-    const extra = after.filter((s) => !before.includes(s));
+    /* Counted, as the text pass diffs a page (sentenceDiff): on the product page the help lines' "WhatsApp or call …"
+       goes four times while the consumer care row keeps it once (task Q2.10). */
+    const { missing, extra } = sentenceDiff(blockSentences(main), blockSentences(withSellerFacts(main)));
     /* A rule is a set of sentences: the order they are listed in means nothing. */
     const { mockup, build } = sellerFactsSentences(slug);
     expect({ mockup: [...mockup].sort(), build: [...build].sort() }).toEqual({ mockup: missing.sort(), build: extra.sort() });

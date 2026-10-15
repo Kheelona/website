@@ -129,7 +129,9 @@ const MACHINE = [
  */
 const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } & Record<OfferMode, string>> = {
   "llms.txt": {
-    // 2026-10-15: the contact lines without the number (D063 item 2; task Q2.3): "WhatsApp us · hello@kheelona.com", the
+    // 2026-10-15: the product page's consumer care declaration carries the number again (task Q2.10, the Legal Metrology
+    // rules); the file leaves the call line out, "Consumer care: hello@kheelona.com", and its contact line is the footers'
+    // "WhatsApp · hello@kheelona.com" (D063 item 2). Earlier the same day: the contact lines without the number (D063 item 2; task Q2.3): "WhatsApp us · hello@kheelona.com", the
     // consumer care row the same, and the grievance officer's line without "+91 91875 46483". Earlier the same day:
     // the product page's question "What if my child doesn’t like it, or it stops working?", its answer
     // unchanged (the CMO's wave 8c review m7; task 8c.8). Earlier the same day: the product page's question "Which
@@ -140,18 +142,20 @@ const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } 
     // screen-time topic's lead (CMO reviews A M5, B m1), Home's refund and age-3 answers (task 7.1b) and the product's
     // Parent app row "On iPhone and Android." (D055 item 26; task 6.7).
     date: "2026-10-15",
-    token: "94c7aa89b3931a9a4a3226074e52fac1a7964a2ef478924da6ab776fcd431a8b",
-    full: "4e1c7292019cf5ef45396dd2eca4a46535a03e238e58d3e6fa90f4ec9bfc3847",
+    token: "304072b9b969c4ef210bf4cb2f0b49847306719f9e32aa306fe6a237503cc758",
+    full: "227b7112cdac9566ad82b8e3d025457c227c256a4b7a6f270e0ffee8b07d9629",
   },
   "pricing.md": {
-    // 2026-10-15: the help line without the number, "WhatsApp us · hello@kheelona.com" (D063 item 2; task Q2.3). Earlier
+    // 2026-10-15: the contact line is the footers' "WhatsApp · hello@kheelona.com" (task Q2.10: the product page's consumer
+    // care declaration, which the line restated, carries the number again for the Legal Metrology rules; D063 item 2).
+    // Earlier the same day: the help line without the number, "WhatsApp us · hello@kheelona.com" (D063 item 2; task Q2.3). Earlier
     // the same day: the product card's perk "Made in India" last among "Included with every Kheelu" (D061 item 10; task
     // 8c.5). 2026-10-14: the Kheelona+ perk in D058 item 3's words and Home's age answer after the code check (task 8b.1,
     // wave 8b merge). Earlier the same day: the age-3 advice in one wording (CMO review A M8; task 7.1b). 2026-10-13: it
     // added the product page's Manufacturer declaration (task 4.5 item 6).
     date: "2026-10-15",
-    token: "131d336250729817ceb236461c0c85a24860c3c0329f80767ae72de168c8c95d",
-    full: "77b46a36275fd2461946c08d79a5e3c84fbb1543598f0251f3dbdeed00885aed",
+    token: "b8de07d4231e3ea85dda848699a55612ba0714df893a63694357cd99a8c74411",
+    full: "df5abfcc05e253b4f0e4af0c877eb23ba5f8d7eb6c91bedc18182b71acdb1285",
   },
 };
 
@@ -368,9 +372,12 @@ describe.each(MACHINE)("$name", ({ name, route, text, updated, constant, type })
       expect(body()).toMatch(/\bKheelu is the toy that was called Lumi until 5 September 2026\b/);
     });
 
-    /* The help line as every page prints it since D063 item 2 (task Q2.3): WhatsApp, no number, no GSTIN. */
+    /* The contact line as the footers print it since D063 item 2 (task Q2.3): WhatsApp and the email, no number, no
+       GSTIN. Since task Q2.10 the product page's consumer care declaration carries the number (the Legal Metrology
+       rules), which the files leave out of their restatement (D063 item 2: the number only on /contact and the legal
+       pages), so their contact line is the footers' own. */
     it("states the entity facts as the pages do (test plan §4.3; architecture §9.3: made in India by Kheelona Robotics)", () => {
-      for (const fact of ["Kheelu by Kheelona", "3 to 7", "Made in India", "Manufacturer: Kheelona Robotics Pvt Ltd", "WhatsApp us"]) {
+      for (const fact of ["Kheelu by Kheelona", "3 to 7", "Made in India", "Manufacturer: Kheelona Robotics Pvt Ltd", "- WhatsApp · hello@kheelona.com\n"]) {
         expect(body(), fact).toContain(fact);
       }
       expect(body()).not.toMatch(/91875 46483|tel:|GSTIN|29AAMCK1530E1ZN/);
@@ -466,7 +473,8 @@ describe("the visible-copy check", () => {
       "- Ages: 3 to 7",
       "- Toy-safety certification (BIS): applied for, not yet granted. We show no mark until it is granted.",
       "- Modes: AI mode (home Wi‑Fi) · Story mode (no Wi‑Fi needed) · Bluetooth mode (a paired phone)",
-      "- Consumer care: WhatsApp us · hello@kheelona.com",
+      "- Consumer care: hello@kheelona.com",
+      "- WhatsApp · hello@kheelona.com",
       `- [Screen time](${ORIGIN}/stories#screen-time): How much, what the guidelines say, and what to do when the screen goes off.`,
     ];
     expect(unsaid(clean.join("\n"), copy)).toEqual([]);

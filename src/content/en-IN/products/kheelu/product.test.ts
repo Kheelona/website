@@ -25,8 +25,9 @@ const doc = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mock
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const approved = doc("meet-kheelu");
 /** The approved page with the founder's page facts applied (test/e2e/support/page-facts.ts), and task 7.1b's copy fixes,
- *  then task 8b.1's claim fixes in a pass of their own (test/e2e/support/deviations.ts), then D063 item 2: the consumer
- *  care row without the call (task Q2.3; test/e2e/support/seller-facts.ts). */
+ *  then task 8b.1's claim fixes in a pass of their own (test/e2e/support/deviations.ts), then D063 item 2 (task Q2.3;
+ *  test/e2e/support/seller-facts.ts), which leaves the consumer care row with its number since task Q2.10 (the Legal
+ *  Metrology declaration). */
 const page = withSellerFacts(withFacts(withFacts(approved.querySelector("main")!, editsBeforeClaimFixes("meet-kheelu")), CLAIM_FIXES["meet-kheelu"].edits));
 const offer = buildOffer("token");
 const text = (value: RichTextString) => toPlainText(value, offer);
@@ -87,6 +88,21 @@ describe("the details panels (product fold 7)", () => {
     expect(contentRows(product.declarations)).toEqual(rowsOf(page.querySelector(".mk-declare dl")));
     expect(product.declarations.map((r) => r.term)).toEqual(["MRP", "Country of origin", "Manufacturer", "Consumer care"]);
     expect(JSON.stringify(product.declarations)).toContain("{price:mrp}");
+  });
+
+  /* Task Q2.10 (the main session's statutory ruling, 2026-10-15): the Legal Metrology (Packaged Commodities) Rules ask the
+     declarations for a consumer-care number, so the row carries the support number again with the email, as approved at
+     Gate A (meet-kheelu.html fold 7), when D063 item 2 (task Q2.3) had left it "WhatsApp us". The one place on the page
+     the number shows (test/guards/seller-facts-on-pages.test.ts). */
+  it("declares consumer care with the support number and its call link, then the email, read from the seller facts (Legal Metrology)", () => {
+    const care = product.declarations.find((r) => r.term === "Consumer care")!;
+    expect(Array.isArray(care.value)).toBe(true);
+    const [line, mail] = care.value as readonly RichTextString[];
+    expect([text(line), text(mail)]).toEqual([`WhatsApp or call ${seller.support.phone}`, seller.support.email]);
+    expect(line).toBe(`[WhatsApp](${seller.support.whatsapp}) or {nowrap:[call ${seller.support.phone}](${seller.support.tel})}`);
+    expect(mail).toBe(`[${seller.support.email}](mailto:${seller.support.email})`);
+    // Read from the seller facts, never typed here.
+    expect(readRepoFile("src/content/en-IN/products/kheelu/product.ts")).not.toMatch(/91875|tel:\+|wa\.me/);
   });
 
   it("names the manufacturer and origin from the seller block, never retyped", () => {

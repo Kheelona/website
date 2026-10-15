@@ -147,9 +147,15 @@ export const product = {
     { term: "Manufacturer", value: seller.manufacturer },
     { term: "Net quantity", value: "{ph:F4 net quantity}" },
     { term: "Month and year of manufacture", value: "{ph:F4 month and year of manufacture}" },
+    /* The consumer-care number the Legal Metrology (Packaged Commodities) Rules ask the declarations for (task Q2.10, the
+       main session's ruling): WhatsApp or a call, as approved at Gate A, then the email; the one place outside /contact
+       and the legal pages that shows the number (D063 item 2; test/guards/seller-facts-on-pages.test.ts). */
     {
       term: "Consumer care",
-      value: [seller.help.contact, `[${seller.support.email}](mailto:${seller.support.email})`],
+      value: [
+        `[WhatsApp](${seller.support.whatsapp}) or {nowrap:[call ${seller.support.phone}](${seller.support.tel})}`,
+        `[${seller.support.email}](mailto:${seller.support.email})`,
+      ],
     },
   ], "value"),
   schema: {

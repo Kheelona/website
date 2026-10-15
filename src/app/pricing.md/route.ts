@@ -77,7 +77,8 @@ export function pricingText(offer: Offer): string {
     ...ABOUT.flatMap((id) => [`### ${plain(faqs[id].question)}`, "", plain(faqs[id].answer), ""]),
     `- ${seller.origin.line}`,
     `- ${maker.term}: ${plain(maker.value as string)}`,
-    `- ${plain(seller.help.contact)} · ${seller.support.email}`,
+    /* The footers' contact line: WhatsApp and the email (D063 item 2; task Q2.10). */
+    `- ${plain(seller.support.footerLine)}`,
     "",
     `Last updated: ${PRICING_UPDATED}`,
     "",

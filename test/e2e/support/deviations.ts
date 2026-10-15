@@ -1886,8 +1886,10 @@ export const SELLING_UPDATE = {
        close below line up. The two folds that leave: the mockup's side. The daily limit: the build's. */
     hidden: {
       both: [
-        'section[aria-labelledby="hero-title"] .kh-eyebrow',
-        'section[aria-labelledby="hero-title"] .kh-heading__lead',
+        /* The hero's eyebrow and lead, named by the page's one h1 beside them, so the hero's own rules (HERO_PHONE_ART, the
+           phone board) stay the only ones that name the hero (HeroSection.test.tsx). */
+        ".kh-eyebrow:has(~ h1)",
+        "h1 ~ .kh-heading__lead",
         "#know-title ~ ul > li:nth-child(2)",
         'section[aria-labelledby="faq-title"] .kh-faq',
       ],
