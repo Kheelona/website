@@ -2318,6 +2318,24 @@ const HOME_OFFER_ART_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as con
   approvedBy: HOME_OFFER_ART.approvedBy,
 }));
 
+/* One offer fold (task Q2.15; the consistency review's CON-3, QAL-2, CMO-2): from 900 px both offer folds share one
+   composition, the picture top-aligned with the card as Home's board is (D064 item 5). The product page's photo, which
+   the approved split centres beside the taller column, so starts level with the card's top: the same photo in another
+   place, from 900 px only (below it the columns stack, as approved). The visual pass compares the fold without the photo
+   on both sides there; the card, the two rows and the share link still compared (the rows' words by the text pass). */
+export const PRODUCT_OFFER_PHOTO = {
+  mockup: "#offer .mk-offer-photo",
+  build: "#offer .ks-offer-photo",
+  approvedBy: "the consistency review's rulings (main session, 2026-10-15; task Q2.15: CON-3, QAL-2, CMO-2, D064 item 5; its deviations.md row is the main session's)",
+} as const;
+const PRODUCT_OFFER_PHOTO_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as const).map((side) => ({
+  side,
+  selector: PRODUCT_OFFER_PHOTO[side],
+  media: "(min-width: 900px)",
+  reason: "the offer photo starts level with the card's top on laptops (one offer fold with Home's), where the approved split centres it",
+  approvedBy: PRODUCT_OFFER_PHOTO.approvedBy,
+}));
+
 /* The selling update on the product page (task Q2.10; D064 items 2 and 8, D065 items 1, 3-6 and 8, the main session's
    rulings of 2026-10-15; the copy: the D2C plan v2 §3, checked by the claims guard and the CMO). Two groups, as the
    tasks before it split theirs:
@@ -2833,6 +2851,8 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
        comparison and the safety line it adds. */
     ...factsHidden(SELLING_UPDATE["meet-kheelu"], SELLING_UPDATE_WHOSE),
     ...sellingAdditionsHidden("meet-kheelu"),
+    /* The offer photo top-aligned with the card from 900 px, one offer fold with Home's (task Q2.15). */
+    ...PRODUCT_OFFER_PHOTO_HIDDEN,
   ],
   /* The Google Analytics block's paragraph and the PostHog block's first one say more in the build (V10), so they wrap
      to more lines and every block below would shift; the pixels compare the page without the two paragraphs on both

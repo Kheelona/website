@@ -22,6 +22,7 @@ import {
   PRODUCT_HERO,
   PRODUCT_KNOW,
   PRODUCT_OFFER_ALT,
+  PRODUCT_OFFER_PHOTO,
   PRODUCT_SAFETY_LINE,
   PROOF_ADDITIONS,
   PROOF_ADDITIONS_APPROVED,
@@ -302,15 +303,17 @@ describe("the product page as rendered (token mode)", () => {
   });
 
   /* Task Q2.8 (D065 item 3; the D2C plan v2 §1.1, product folds 3 and 12): the one risk-reversal line under every button,
-     first, the delivery line second; the offer card's row adds the card's third row; the close carries the trust line. */
+     first, the delivery line second; the offer card adds the card's third row (its own list since task Q2.15, the
+     consistency review's CON-3); the close carries the trust line. */
   it("leads every trust line beside a button with the risk-reversal line, the delivery line second", () => {
     const row = (el: Element) => [...el.querySelectorAll("li")].map((li) => text(li));
     const LINE = ["Full refund until dispatch · 7-day returns", "Deliveries start mid-November"];
-    // The linked trust lines (`ks-trust`; the safety facts line is not linked).
-    const rows = [...RENDERED.main.querySelectorAll(".ks-trust")].map(row);
+    // The linked trust lines (`ks-trust`; the safety facts line is not linked), the offer card's third row aside.
+    const rows = [...RENDERED.main.querySelectorAll(".ks-trust:not(.ks-offer-third)")].map(row);
     expect(rows.length).toBeGreaterThanOrEqual(3);
-    for (const r of rows) expect(r.slice(0, 2)).toEqual(LINE);
-    expect(row(BUILT.main.querySelector("#offer .ks-trust")!)).toEqual([...LINE, "6-month warranty", "UPI, card or net banking"]);
+    for (const r of rows) expect(r).toEqual(LINE);
+    expect([...BUILT.main.querySelectorAll("#offer .ks-trust")].map(row)).toEqual([LINE, ["6-month warranty", "UPI, card or net banking"]]);
+    expect(BUILT.main.querySelector("#offer .ks-trust + .ks-trust")?.getAttribute("class")).toBe("kh-trustline ks-trust ks-offer-third");
     expect(row(BUILT.main.querySelector("#close .ks-trust")!)).toEqual(LINE);
     expect(rows.flat()).not.toContain("7-day returns, no questions asked");
     // Each item keeps its one icon from trust.ts: the returns arrow, then the truck.
@@ -458,11 +461,17 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
     const faq = FAQ_FIXES["meet-kheelu"];
     const additions = OFFER_ADDITIONS["meet-kheelu"];
     // The hero's phone art (D061 item 1, task 8c.1) is hidden under 720 px only, on both sides: HeroSection's test holds it.
-    const phonesOnly = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.media);
-    expect(phonesOnly.map((r) => [r.side, r.selector, r.media])).toEqual([
+    // The offer photo from 900 px, top-aligned with the card as Home's board (task Q2.15: one offer fold), on both sides.
+    const scoped = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.media);
+    expect(scoped.map((r) => [r.side, r.selector, r.media])).toEqual([
       ["mockup", ".mk-hero .kh-art", "(max-width: 719px)"],
       ["build", ".ks-hero .kh-art", "(max-width: 719px)"],
+      ["mockup", "#offer .mk-offer-photo", "(min-width: 900px)"],
+      ["build", "#offer .ks-offer-photo", "(min-width: 900px)"],
     ]);
+    expect(scoped.slice(2).every((r) => r.approvedBy === PRODUCT_OFFER_PHOTO.approvedBy)).toBe(true);
+    expect(BUILT.main.querySelectorAll(PRODUCT_OFFER_PHOTO.build)).toHaveLength(1);
+    expect(APPROVED.querySelectorAll(PRODUCT_OFFER_PHOTO.mockup)).toHaveLength(1);
     const others = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.approvedBy !== FACTS.approvedBy && r.approvedBy !== SELLING_UPDATE_APPROVED && !r.media);
     expect(selling.length).toBeGreaterThan(0);
     expect(others.map((r) => [r.side, r.selector, r.approvedBy])).toEqual([
