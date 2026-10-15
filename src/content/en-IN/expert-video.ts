@@ -37,12 +37,22 @@ export const expertCaptions = [
   { lines: ["that doesn’t talk back."], from: 31.75, to: 33.7 },
 ] as const satisfies readonly BurnedCaption[];
 
-/** Burned into the first five seconds, so the file carries its disclosure wherever it travels without the page. */
+/** A note burned into the clip, not a caption of what she says: drawn at caption size in as many short lines as keep it
+ *  clear of her face, and when it shows (seconds of the clip). */
+export interface BurnedNote {
+  readonly lines: readonly [string, ...string[]];
+  readonly from: number;
+  readonly to: number;
+}
+
+/** Burned into the first five seconds, so the file carries its disclosure wherever it travels without the page. Since
+ *  task 8c.8 (the CMO's wave 8c review, m4) it is drawn at caption size, top left, so a phone can read it, in four short
+ *  lines that keep it over the blinds, left of her face (the words unchanged). */
 export const expertBurnedDisclosure = {
-  lines: ["Made with Kheelona.", "Chaitra was compensated."],
+  lines: ["Made with", "Kheelona.", "Chaitra was", "compensated."],
   from: 0,
   to: 5,
-} as const satisfies BurnedCaption;
+} as const satisfies BurnedNote;
 
 /** The clip as the fold shows it: the files under public/video/expert, the chip, the play control's name, the credit
  *  and the disclosure, visible before the tap. */

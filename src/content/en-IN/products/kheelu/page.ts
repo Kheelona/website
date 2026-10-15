@@ -38,7 +38,10 @@ import { product, type Mode } from "./product";
  * Added after Gate A (task 8c.3; D061 item 4 and the main session's rulings; deviation rows to come): the parents' quotes
  * under the films (films.ts), the "Recognised by." strip after them (recognition.ts, the /team strip as built), and,
  * between the offer and "How it works", four plain steps and the labelled example conversation. Then task 8c.6 (D061 items
- * 12-13): the expert clip, its own fold right after the offer card and before the steps (expert-video.ts).
+ * 12-13): the expert clip, its own fold right after the offer card and before the steps (expert-video.ts). Then task 8c.8
+ * (the CMO's review of wave 8c, m2 and m11; the main session's rulings): the strip moves from before the offer to right
+ * after the offer column, before the expert clip, and the example conversation ends on the child's answer, without its
+ * closing sentence, which step 3 already says.
  */
 
 const trust = (ids: readonly TrustId[]): TrustItem[] => ids.map((id) => trustItems[id]);
@@ -131,12 +134,12 @@ export const kheeluPage = {
         posters: "lazy",
         /* Two parents' own words from the films, each playing its film (task 8c.3, D061 item 4). */
         quotes: filmQuotes,
+        /* Each tile carries its film's id: the languages answer's film name links to film 6 and plays it here (task 8c.8,
+           the CMO's wave 8c review m8). */
+        anchored: true,
       },
     },
-    /* "Recognised by." after the films, before the offer (task 8c.3; D061's rulings): the /team strip as built (D054
-       item 20), read from the team page, names only. */
-    { kind: "recognition-strip", config: recognitionStrip },
-    /* Fold 3 · The offer card beside the product photo. */
+    /* Fold 3 · The offer card beside the product photo; the films lead straight to it (task 8c.8, m2). */
     {
       kind: "offer-section",
       config: {
@@ -147,8 +150,12 @@ export const kheeluPage = {
         photo: { src: kheeluOnFur, alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." },
       },
     },
-    /* The expert clip, its own fold right after the offer card (task 8c.6; D061 items 12-13): 34 seconds on screens and
-       talk, poster first and played on a tap, the credit and the disclosure under it (expert-video.ts). */
+    /* "Recognised by." (task 8c.3; D061's rulings): the /team strip as built (D054 item 20), read from the team page, names
+       only. Since task 8c.8 (the CMO's wave 8c review, m2) right after the offer column, which ends on the share link, and
+       before the expert clip: before the offer it pushed the offer card about 680 px down a phone page. */
+    { kind: "recognition-strip", config: recognitionStrip },
+    /* The expert clip, its own fold after the offer card and the strip (task 8c.6; D061 items 12-13; task 8c.8): 34 seconds
+       on screens and talk, poster first and played on a tap, the credit and the disclosure under it (expert-video.ts). */
     { kind: "films-strip", config: expertFold },
     /* The loop in four plain steps, just before "How it works" (task 8c.3; D061's rulings, the CMO's AP-14): the button
        first (D018), answer then ask back (D017), and "remembers" beside the parent reading every conversation (D036 #2).
@@ -177,7 +184,8 @@ export const kheeluPage = {
     },
     /* Right after the steps: what asking back sounds like, home.md fold 2 variant b word for word (task 8c.3; the CMO's
        AP-15). The label sits above the exchange and is never removed: we wrote it, no child said it. Without the
-       ImaginationFrame and its doodles, inside the page's HTML budget. */
+       ImaginationFrame and its doodles, inside the page's HTML budget. Since task 8c.8 (the CMO's wave 8c review, m11)
+       without variant b's closing sentence: step 3 above already says it answers first and asks back. */
     {
       kind: "example-conversation",
       config: {
@@ -192,7 +200,6 @@ export const kheeluPage = {
           },
           { speaker: "child", who: "Your child", text: "“My shadow?”" },
         ],
-        after: "It answers first, then asks a question back. That’s how your child ends up doing the thinking.",
       },
     },
     /* Fold 4 · How it works: the three modes, the languages, Good to know. */

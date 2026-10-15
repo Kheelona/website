@@ -1158,19 +1158,33 @@ export function editsBeforeClaimFixes(slug: string): readonly FactEdit[] {
    founder signs both at Gate B (D015). In page-facts.ts's form, applied after a page's claim fixes (task 8b.1), whose
    first-week answer the new question follows: `edits` turn that mockup into the build, and `mockup` and `build` are the
    sentences they change, for the text pass (faqs.test.ts proves them exactly those). Literal, because Playwright cannot
-   load every content module; faqs.test.ts holds each literal to faqs.ts. */
+   load every content module; faqs.test.ts holds each literal to faqs.ts.
+   Task 8c.8 (the CMO's review of wave 8c, m7 and m8; the main session's rulings, 2026-10-15) adds to the product page's
+   rule: its sixth question takes Home's words with its own second half, "What if my child doesn’t like it, or it stops
+   working?" (the answer unchanged), and the languages answer's film name links to that film's tile in the strip (the words
+   unchanged). */
 
 /** Home's fourth question (faqs.ts `not-right-for-us`), in the parent's words; its answer stays word for word. */
 export const NOT_RIGHT_QUESTION = {
   mockup: "What if it isn’t right for us?",
   build: "What if my child doesn’t like it?",
 } as const;
-/** The product page's new question (faqs.ts `languages`), as the page prints it. */
+/** The product page's sixth question (faqs.ts `returns-and-warranty`) in Home's words since task 8c.8 (m7), its second
+ *  half kept; the answer stays as P15 left it (V6). */
+export const RETURNS_QUESTION = {
+  mockup: "What if it isn’t right for us, or stops working?",
+  build: "What if my child doesn’t like it, or it stops working?",
+} as const;
+/** The product page's new question (faqs.ts `languages`), as the page prints it. Since task 8c.8 (m8) the film's name is
+ *  an in-page link to film 6's tile, which carries the film's id; the strip's island plays the film when it is pressed. */
 export const LANGUAGES_FAQ = {
   question: "Which languages does Kheelu speak?",
   answer:
     "Kheelu speaks up to 10 languages at launch, including English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French. In AI mode, it can switch between them mid-sentence: when your child changes language, Kheelu changes with them. You can watch it happen in the film “Two languages”.",
+  film: { name: "“Two languages”", href: "#a-story-in-two-languages" },
 } as const;
+/** The languages answer as the page marks it up: the film's name a link to its tile (task 8c.8). */
+const LANGUAGES_ANSWER_MARKUP = LANGUAGES_FAQ.answer.replace(LANGUAGES_FAQ.film.name, `<a href="${LANGUAGES_FAQ.film.href}">${LANGUAGES_FAQ.film.name}</a>`);
 /** The product page's seventh question as task 8b.1's claim fix leaves it (V27, without "or delete"): the new one
  *  follows it, so the speech question and its source stay last, beside the D025 line. */
 const FIRST_WEEK = {
@@ -1185,9 +1199,10 @@ const faqItem = (question: string, answer: string) =>
 const faqAt = (n: number) => `section[aria-labelledby="faq-title"] .kh-faq__item:nth-child(${n})`;
 /** D061 lists both among the main session's rulings, each signed as a deviation row for the founder's information; the
  *  founder signs the rows at Gate B (D015). V41 and V42 are provisional: the main session numbers the rows at the merge
- *  (wiki/qa/deviations.md ends at V37 today) and the product page's test pins the prefix ("deviations.md V4"). */
-const faqApproved = (row: string, page: string) =>
-  `deviations.md ${row} (the main session's D061 ruling (AP-30), for the founder's signature at Gate B (D015), 2026-10-15; ${page}; CMO review of the advisor's proposal; task 8c.4)`;
+ *  (wiki/qa/deviations.md ends at V37 today) and the product page's test pins the prefix ("deviations.md V4"). Task 8c.8's
+ *  two changes amend V42's row (m7, m8: the main session's rulings on the CMO's wave 8c review), named after it. */
+const faqApproved = (row: string, page: string, more = "") =>
+  `deviations.md ${row} (the main session's D061 ruling (AP-30), for the founder's signature at Gate B (D015), 2026-10-15; ${page}; CMO review of the advisor's proposal; task 8c.4${more})`;
 
 export const FAQ_FIXES = {
   home: {
@@ -1201,18 +1216,21 @@ export const FAQ_FIXES = {
   },
   "meet-kheelu": {
     edits: [
+      rewrite(".kh-faq__q span", RETURNS_QUESTION.mockup, RETURNS_QUESTION.build),
       {
         at: ".kh-faq__item",
         was: `${FIRST_WEEK.question}${FIRST_WEEK.answer}`,
-        now: `${faqItem(FIRST_WEEK.question, FIRST_WEEK.answer)}${faqItem(LANGUAGES_FAQ.question, LANGUAGES_FAQ.answer)}`,
+        now: `${faqItem(FIRST_WEEK.question, FIRST_WEEK.answer)}${faqItem(LANGUAGES_FAQ.question, LANGUAGES_ANSWER_MARKUP)}`,
       },
     ],
-    mockup: [],
-    build: [LANGUAGES_FAQ.question, ...sentences(LANGUAGES_FAQ.answer)],
-    /* A ninth question: one more row moves the close below it; the build's alone holds it. */
-    hidden: { both: [], mockup: [], build: [faqAt(8)] },
-    reason: "the product page answers \"Which languages does Kheelu speak?\" after the first-week question: the named languages and the ceiling, switching mid-sentence in AI mode (facts.md; D017; film 6)",
-    approvedBy: faqApproved("V42", "meet-kheelu.md fold 8"),
+    mockup: [RETURNS_QUESTION.mockup],
+    build: [RETURNS_QUESTION.build, LANGUAGES_FAQ.question, ...sentences(LANGUAGES_FAQ.answer)],
+    /* The sixth question (task 8c.8) is six characters longer and may wrap to another height, moving every row below it:
+       both sides. A ninth question: one more row moves the close below it; the build's alone holds it. */
+    hidden: { both: [faqAt(6)], mockup: [], build: [faqAt(8)] },
+    reason:
+      "the product page answers \"Which languages does Kheelu speak?\" after the first-week question: the named languages and the ceiling, switching mid-sentence in AI mode (facts.md; D017; film 6), the film's name a link that plays it (task 8c.8); and its sixth question in Home's words, \"What if my child doesn’t like it, or it stops working?\" (task 8c.8, the CMO's wave 8c review m7)",
+    approvedBy: faqApproved("V42", "meet-kheelu.md fold 8", "; amended by task 8c.8 (CMO wave 8c review m7, m8)"),
   },
 } as const satisfies Readonly<Record<string, PageFacts>>;
 export type FaqFixesSlug = keyof typeof FAQ_FIXES;
@@ -1482,7 +1500,8 @@ export const PROOF_STEPS_BUILD = [
   "It remembers earlier conversations, so it can pick up where your child stopped. You can read every one of them.",
 ] as const;
 /** The example conversation on the product page, word for word as home.md fold 2 variant b, line by line as it shows:
- *  the heading, the label, each speaker and their words, then the line after. */
+ *  the heading, the label, each speaker and their words. Since task 8c.8 (the CMO's wave 8c review, m11) without variant
+ *  b's closing sentence, which step 3 already says (V46 amended). */
 export const PROOF_EXAMPLE_BUILD = [
   "What asking back sounds like.",
   "Illustrative example, not a recording.",
@@ -1492,7 +1511,6 @@ export const PROOF_EXAMPLE_BUILD = [
   "“The moon is very, very far away. So when the trees zoom past, the moon seems to stay with you. What else looks like it follows you?”",
   "Your child",
   "“My shadow?”",
-  "It answers first, then asks a question back. That’s how your child ends up doing the thinking.",
 ] as const;
 /** The strip's words as the page prints them: its heading and the programmes shown as text (the NVIDIA and nasscom
  *  marks carry theirs as alt text; TEAM_STRIP_BUILD, held to team.ts by its parity test). */

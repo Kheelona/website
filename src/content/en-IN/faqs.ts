@@ -29,6 +29,11 @@ import { product } from "./products/kheelu/product";
  * Since task 8c.4 (D061; the CMO's review of the advisor's proposal, AP-30) Home's fourth question is the parent's own
  * fear, "What if my child doesn’t like it?", its answer unchanged; and the product page answers which languages Kheelu
  * speaks (facts.md, Languages), the names and the ceiling read from product.ts, never typed here.
+ *
+ * Since task 8c.8 (the CMO's review of wave 8c, m7 and m8; the main session's rulings, 2026-10-15) the product page's sixth
+ * question takes Home's words with its own second half, "What if my child doesn’t like it, or it stops working?" (its
+ * answer unchanged), and the languages answer's film name is an in-page link to that film's tile in the strip, which the
+ * strip's island plays as a quote's "Watch the film" plays it (the words unchanged, so the JSON-LD and llms.txt too).
  */
 
 /** The age answers' close (Home fold 8, the product page's FAQ 3): the age set at setup, then the mechanism in the live
@@ -44,6 +49,12 @@ function film(id: string): Film {
   const found = films.find((f) => f.id === id);
   if (!found) throw new Error(`faqs.ts: no film "${id}" in films.ts`);
   return found;
+}
+
+/** A film's name as an in-page link to its tile in the strip (FilmsStrip gives each tile its film's id): the strip's island
+ *  plays the film when the link is pressed, and without JavaScript the link still takes the reader to it (task 8c.8). */
+function filmLink(id: string): string {
+  return `[“${film(id).chip}”](#${film(id).id})`;
 }
 
 /** The announced languages as one list ("A, B … and H"), in the product's order. */
@@ -128,7 +139,7 @@ export const faqs = {
   },
   "returns-and-warranty": {
     id: "returns-and-warranty",
-    question: "What if it isn’t right for us, or stops working?",
+    question: "What if my child doesn’t like it, or it stops working?",
     answer: `Return it within ${RETURN_DAYS} days of delivery, no questions asked; opened is fine if it comes back undamaged and complete. Pickup is free. Arrived faulty? Tell us within ${FAULTY_REPORT_DAYS} days for a replacement or a full refund. The ${WARRANTY_MONTHS}-month warranty covers manufacturing defects, not drops, water damage or misuse: we repair it, or replace it if the repair doesn’t work.`,
   },
   "after-the-first-week": {
@@ -138,11 +149,12 @@ export const faqs = {
       "No toy can promise that. Kheelu remembers earlier conversations, so it can pick up where your child stopped instead of starting over. Story mode adds stories, poems and jingles, with no Wi‑Fi needed. You can read any conversation in the parent app.",
   },
   /* The languages (task 8c.4, D061): facts.md's row, switching mid-sentence as D017 approved it, in AI mode as film 6's
-     caption says; after the first-week question, so the speech question stays last, beside its D025 line. */
+     caption says; after the first-week question, so the speech question stays last, beside its D025 line. The film's name
+     links to its tile in the strip, which carries the film's id (task 8c.8, m8): pressed, the strip plays it there. */
   languages: {
     id: "languages",
     question: "Which languages does Kheelu speak?",
-    answer: `Kheelu speaks up to ${product.languageCeiling} languages at launch, including ${LANGUAGE_LIST}. In AI mode, it can switch between them mid-sentence: when your child changes language, Kheelu changes with them. You can watch it happen in the film “${film("a-story-in-two-languages").chip}”.`,
+    answer: `Kheelu speaks up to ${product.languageCeiling} languages at launch, including ${LANGUAGE_LIST}. In AI mode, it can switch between them mid-sentence: when your child changes language, Kheelu changes with them. You can watch it happen in the film ${filmLink("a-story-in-two-languages")}.`,
   },
   speech: {
     id: "speech",

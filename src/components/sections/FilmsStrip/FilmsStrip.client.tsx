@@ -32,6 +32,8 @@ export interface FilmsStripIslandProps {
   readonly sizes: string;
   /** After the controls: the parents' quotes, each with the button that plays its film here. */
   readonly quotes?: QuotedFilms;
+  /** Each tile takes its film's id, and an in-page link to it plays the film here (task 8c.8). */
+  readonly anchored?: boolean;
   /** Between the strip and its controls: the proof line, rendered by the server part. */
   readonly children?: ReactNode;
 }
@@ -53,13 +55,15 @@ const sameView = (a: StripView, b: StripView) => a.from === b.from && a.to === b
  *   one film at a time; once it has been at least half on screen it pauses when less than half of it is; the poster
  *   comes back when it ends, and focus returns to the button that started it;
  * - "Watch the film" under a parent's quote (task 8c.3) scrolls the strip to that film (smooth unless reduced motion)
- *   and plays it the same way;
+ *   and plays it the same way; so does, where the strip is `anchored` (each tile carrying its film's id), an in-page link
+ *   to a film's tile anywhere on the page (`#<film id>`; the product page's languages answer, task 8c.8), whose press
+ *   keeps the address as it was (without JavaScript the link still takes the reader to the film);
  * - the film most inside the strip's central band takes `is-focus` (one observer whose root is the track), which
  *   motion.css scales to `--ks-film-focus` (nothing with reduced motion).
  * Icons only through `IconButton`, `Glyph` and the named `ICON_*` constants (client-safe, task 2.11); the quote's button
  * is the DS Button markup written out, as CopyLinkButton's is (an island never imports ui/Button).
  */
-export function FilmsStripIsland({ films, labels, posters, sizes, quotes, children }: FilmsStripIslandProps) {
+export function FilmsStripIsland({ films, labels, posters, sizes, quotes, anchored = false, children }: FilmsStripIslandProps) {
   const track = useRef<HTMLUListElement>(null);
   const frames = useRef(new Map<string, HTMLDivElement>());
   /** A film's own play button, where focus goes back when the film ends (unless a quote's button started it). */
@@ -131,6 +135,22 @@ export function FilmsStripIsland({ films, labels, posters, sizes, quotes, childr
     [start],
   );
 
+  // An in-page link to one of these films (task 8c.8): a plain press plays it here as a quote's button does, and the
+  // address stays as it was; a press that opens a new tab or window, or a link to anything else, is left to the browser.
+  useEffect(() => {
+    if (!anchored) return;
+    const press = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href^="#"]') : null;
+      const film = link && films.find((f) => link.getAttribute("href") === `#${f.id}`);
+      if (!link || !film) return;
+      event.preventDefault();
+      watch(film, link);
+    };
+    document.addEventListener("click", press);
+    return () => document.removeEventListener("click", press);
+  }, [anchored, films, watch]);
+
   const step = useCallback((direction: 1 | -1) => {
     const t = track.current;
     if (!t) return;
@@ -146,7 +166,7 @@ export function FilmsStripIsland({ films, labels, posters, sizes, quotes, childr
           const eager = posters === "eager-low" && i < 3;
           const name = `${film.chip}. ${film.caption}`;
           return (
-            <li key={film.id} className={clsx("ks-film", focus === film.id && "is-focus")} data-video-id={film.id}>
+            <li key={film.id} id={anchored ? film.id : undefined} className={clsx("ks-film", focus === film.id && "is-focus")} data-video-id={film.id}>
               <p className="ks-film__meta">
                 <Chip label={film.chip} onBand />
                 <span className="kh-label-s ks-film__time">

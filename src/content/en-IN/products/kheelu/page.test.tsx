@@ -16,11 +16,13 @@ import {
   EXPERT_CLIP,
   EXPERT_CLIP_APPROVED,
   FAQ_FIXES,
+  LANGUAGES_FAQ,
   OFFER_ADDITIONS,
   PROOF_ADDITIONS,
   PROOF_ADDITIONS_APPROVED,
   PROOF_EXAMPLE_BUILD,
   PROOF_STEPS_BUILD,
+  RETURNS_QUESTION,
   TEXT_DEVIATIONS,
   VISUAL_HIDDEN,
 } from "../../../../../test/e2e/support/deviations";
@@ -420,6 +422,7 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
     expect(others.map((r) => [r.side, r.selector, r.approvedBy])).toEqual([
       ...(["mockup", "build"] as const).flatMap((side) => ["#films-title", "#src-1"].map((selector) => [side, selector, COPY_FIXES["meet-kheelu"].approvedBy])),
       ...(["mockup", "build"] as const).flatMap((side) => claims.hidden.both.map((selector) => [side, selector, claims.approvedBy])),
+      ...(["mockup", "build"] as const).flatMap((side) => faq.hidden.both.map((selector) => [side, selector, faq.approvedBy])),
       ...faq.hidden.build.map((selector) => ["build", selector, faq.approvedBy]),
       ...additions.hidden.build.map((selector) => ["build", selector, additions.approvedBy]),
       ...PROOF_ADDITIONS["meet-kheelu"].selectors.map((selector) => ["build", selector, PROOF_ADDITIONS_APPROVED]),
@@ -521,12 +524,12 @@ describe("the product page's added blocks (task 8c.3)", () => {
       });
   };
 
-  it("orders the page at every width: hero, films with the quotes, the strip, the offer, the expert clip (8c.6), the steps and the example, then the rest", () => {
+  it("orders the page at every width: hero, films with the quotes, the offer, the strip (8c.8), the expert clip (8c.6), the steps and the example, then the rest", () => {
     expect(folds(WHOLE).map(name)).toEqual([
       "hero-title",
       "films-title",
-      "recognised-title",
       "offer-title",
+      "recognised-title",
       "expert-title",
       "steps-title",
       "example-title",
@@ -550,7 +553,14 @@ describe("the product page's added blocks (task 8c.3)", () => {
     expect(WHOLE.querySelector("video")).toBeNull();
   });
 
-  it("shows the team's strip as built, after the films and before the offer, its marks lazy", () => {
+  /* Task 8c.8 (the CMO's wave 8c review, m2): the strip stood between the films and the offer, pushing the offer card
+     about 680 px down a phone page; it now follows the offer column (the share link the column ends on), before the
+     expert clip, so the films lead straight to the offer. */
+  it("shows the team's strip as built, right after the offer column and before the expert clip (task 8c.8), its marks lazy", () => {
+    const order = folds(WHOLE).map(name);
+    expect(order.indexOf("recognised-title")).toBe(order.indexOf("offer-title") + 1);
+    expect(order.indexOf("offer-title")).toBe(order.indexOf("films-title") + 1);
+    expect(fold("offer-title").querySelector(".ks-offer-share")).not.toBeNull();
     const strip = fold("recognised-title");
     expect(text(strip.querySelector("h2"))).toBe(recognitionStrip.title);
     expect(strip.querySelectorAll(".ks-recognition__item")).toHaveLength(recognitionStrip.items.length);
@@ -567,7 +577,10 @@ describe("the product page's added blocks (task 8c.3)", () => {
     expect(steps.querySelector("[data-reveal]")).toBeNull();
   });
 
-  it("shows the example conversation word for word as home.md fold 2 variant b, the label above the exchange", () => {
+  /* Task 8c.8 (the CMO's wave 8c review, m11): step 3 already says it, so the exchange ends on the child's answer, without
+     variant b's closing sentence ("It answers first, then asks a question back. That's how your child ends up doing the
+     thinking."). */
+  it("shows the example conversation word for word as home.md fold 2 variant b, the label above the exchange, without its closing sentence (task 8c.8)", () => {
     const example = fold("example-title");
     expect(example.className).toBe("kh-section");
     expect([...example.querySelectorAll("#example-title .kh-hand")].map((s) => s.textContent)).toEqual(["asking back"]);
@@ -575,10 +588,12 @@ describe("the product page's added blocks (task 8c.3)", () => {
       text(example.querySelector("#example-title")),
       text(example.querySelector(".ks-exchange__note")),
       ...[...example.querySelectorAll(".ks-exchange__line")].flatMap((li) => [text(li.querySelector(".ks-exchange__who")), text(li).slice(text(li.querySelector(".ks-exchange__who")).length)]),
-      text(example.querySelector(".ks-exchange__after")),
     ];
     expect(shown).toEqual([...PROOF_EXAMPLE_BUILD]);
-    expect(PROOF_EXAMPLE_BUILD.map(plainQuotes)).toEqual(variantB());
+    expect(example.querySelector(".ks-exchange__after")).toBeNull();
+    expect(PROOF_EXAMPLE_BUILD.map(plainQuotes)).toEqual(variantB().slice(0, -1));
+    expect(variantB().at(-1)).toBe("It answers first, then asks a question back. That's how your child ends up doing the thinking.");
+    expect(text(WHOLE)).not.toContain("ends up doing the thinking");
     // The label names the exchange; no doodle and no picture in the fold (the page's HTML budget, task 8c.3).
     expect(example.querySelector(`ol[aria-labelledby="${example.querySelector(".ks-exchange__note")?.id}"]`)).not.toBeNull();
     expect(example.querySelector("img, svg.ks-doodle, [data-reveal]")).toBeNull();
@@ -636,9 +651,10 @@ describe("the product page's expert clip (task 8c.6)", () => {
   const WHOLE = BUILT.whole;
   const fold = () => folds(WHOLE).find((f) => name(f) === "expert-title")!;
 
-  it("sits right after the offer card and before the four steps, as its own fold #expert", () => {
+  it("sits right after the strip that follows the offer column (task 8c.8) and before the four steps, as its own fold #expert", () => {
     const order = folds(WHOLE).map(name);
-    expect(order.indexOf("expert-title")).toBe(order.indexOf("offer-title") + 1);
+    expect(order.indexOf("expert-title")).toBe(order.indexOf("recognised-title") + 1);
+    expect(order.indexOf("recognised-title")).toBe(order.indexOf("offer-title") + 1);
     expect(order.indexOf("steps-title")).toBe(order.indexOf("expert-title") + 1);
     expect(fold().id).toBe("expert");
     expect(WHOLE.querySelectorAll("#expert")).toHaveLength(1);
@@ -693,5 +709,41 @@ describe("the product page's expert clip (task 8c.6)", () => {
 
   it("passes the claims guard on every line it prints", () => {
     for (const line of EXPERT_CLIP.build) expect(findBanned(line), line).toEqual([]);
+  });
+});
+
+/* Task 8c.8 (the CMO's review of wave 8c on the beta, m7 and m8; the main session's rulings, 2026-10-15): the questions
+   fold's two changes, on the page as it renders and in its FAQPage JSON-LD. The sixth question takes Home's words with its
+   own second half (the answer unchanged), and the languages answer's film name links to that film's tile in the strip, so
+   a parent can play it from the answer (the strip's island; FilmsStrip's test). */
+describe("the product page's questions after the CMO's wave 8c review (task 8c.8)", () => {
+  const WHOLE = BUILT.whole;
+  const item = (n: number) => WHOLE.querySelectorAll("#faq .kh-faq__item")[n - 1];
+  type Question = { name: string; acceptedAnswer: { text: string } };
+  const faqPage = (offer: Offer): Question[] => {
+    const [block] = jsonLdBlocks(rendered(offer).html) as { "@graph": { "@type": string; mainEntity?: Question[] }[] }[];
+    return block["@graph"].find((n) => n["@type"] === "FAQPage")?.mainEntity ?? [];
+  };
+
+  it("m7: asks \"What if my child doesn’t like it, or it stops working?\", the answer unchanged, on the page and in the JSON-LD", () => {
+    expect(text(item(6).querySelector(".kh-faq__q"))).toBe(RETURNS_QUESTION.build);
+    expect(text(item(6).querySelector(".kh-faq__a"))).toBe(toPlainText(faqs["returns-and-warranty"].answer, TOKEN));
+    expect(text(WHOLE)).not.toContain(RETURNS_QUESTION.mockup);
+    for (const offer of [TOKEN, FULL]) {
+      const sixth = faqPage(offer)[5];
+      expect(sixth.name).toBe(RETURNS_QUESTION.build);
+      expect(sixth.acceptedAnswer.text).toBe(toPlainText(faqs["returns-and-warranty"].answer, offer));
+    }
+  });
+
+  it("m8: links the languages answer's film name to film 6's tile in the strip, the words unchanged on the page and in the JSON-LD", () => {
+    const answer = item(8).querySelector(".kh-faq__a")!;
+    expect(text(answer)).toBe(LANGUAGES_FAQ.answer);
+    const links = [...answer.querySelectorAll("a")];
+    expect(links.map((a) => [a.getAttribute("href"), a.textContent])).toEqual([[LANGUAGES_FAQ.film.href, LANGUAGES_FAQ.film.name]]);
+    const tile = WHOLE.querySelector(LANGUAGES_FAQ.film.href)!;
+    expect(tile.closest("section")?.id).toBe("films");
+    expect(tile.getAttribute("data-video-id")).toBe(LANGUAGES_FAQ.film.href.slice(1));
+    expect(faqPage(TOKEN)[7].acceptedAnswer.text).toBe(LANGUAGES_FAQ.answer);
   });
 });
