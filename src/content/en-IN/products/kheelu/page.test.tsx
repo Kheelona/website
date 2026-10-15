@@ -27,7 +27,9 @@ import {
   PROOF_ADDITIONS_APPROVED,
   PROOF_EXAMPLE_BUILD,
   PROOF_STEPS_BUILD,
+  PRODUCT_RECOGNISED,
   RETURNS_QUESTION,
+  SCREEN_TIME_FAQ,
   SELLING_ADDITIONS,
   SELLING_UPDATE,
   SELLING_UPDATE_APPROVED,
@@ -474,11 +476,18 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
     const gone = (selector: string) => /^#app\b|safety-title/.test(selector);
     expect(claims.hidden.both.filter(gone)).toHaveLength(4);
     for (const selector of claims.hidden.both) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(gone(selector) ? 0 : 1);
-    // The build's alone holds the languages question: its hide finds it, and nothing else, on the page as it renders.
+    // The build's alone holds the languages question: its hide finds it on the page the FAQ fixes start from (faqs.test.ts
+    // proves it there). On the page as it renders, the selling update's questions move every item after the price question
+    // (task Q2.13 puts Home's screen-time question fifth, in the delivery question's place, so the languages question is
+    // ninth), and the selling update hides the questions' list whole on both sides: the hide finds one item of that list.
+    const LIST = 'section[aria-labelledby="faq-title"] .kh-faq';
+    expect(SELLING.hidden.both).toContain(LIST);
     for (const selector of faq.hidden.build) {
       expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
-      expect(text(BUILT.main.querySelector(`${selector} .kh-faq__q`))).toBe(toPlainText(faqs.languages.question, TOKEN));
+      expect(BUILT.main.querySelector(selector)?.closest(LIST), selector).not.toBeNull();
     }
+    const questions = [...BUILT.main.querySelectorAll(`${LIST} .kh-faq__q`)].map(text);
+    expect(questions.indexOf(toPlainText(faqs.languages.question, TOKEN))).toBe(8);
     expect(BUILT.main.querySelectorAll("#films-title")).toHaveLength(1);
     expect(BUILT.main.querySelectorAll("#src-1")).toHaveLength(1);
   });
@@ -567,16 +576,32 @@ describe("the product page's added blocks (task 8c.3)", () => {
     expect(WHOLE.querySelector("video")).toBeNull();
   });
 
-  /* Task 8c.8 (the CMO's wave 8c review, m2): the strip follows the offer column, so the films lead straight to the offer. */
-  it("shows the team's strip as built, right after the offer column (task 8c.8), its marks lazy", () => {
+  /* Task 8c.8 (the CMO's wave 8c review, m2): the strip follows the offer column, so the films lead straight to the offer.
+     Since task Q2.13 (the D2C plan v2 §3 fold 4; the CMO's m10) it is Home's label strip: the small label "Recognised by"
+     over the team's row, no heading. */
+  it("shows the team's strip right after the offer column (task 8c.8), as Home's label strip (task Q2.13), its marks lazy", () => {
     const order = folds(WHOLE).map(name);
     expect(order.indexOf("recognised-title")).toBe(order.indexOf("offer-title") + 1);
     expect(order.indexOf("offer-title")).toBe(order.indexOf("films-title") + 1);
     expect(fold("offer-title").querySelector(".ks-offer-share")).not.toBeNull();
     const strip = fold("recognised-title");
-    expect(text(strip.querySelector("#recognised-title"))).toBe(recognitionStrip.title);
+    const label = strip.querySelector("#recognised-title")!;
+    expect(label.tagName).toBe("P");
+    expect(label.className).toBe("kh-label-s ks-recognition__label");
+    expect(text(label)).toBe(PRODUCT_RECOGNISED);
+    expect(strip.querySelector("h2, h3")).toBeNull();
+    expect(strip.classList.contains("ks-recognised")).toBe(true);
     expect(strip.querySelectorAll(".ks-recognition__item")).toHaveLength(recognitionStrip.items.length);
     expect([...strip.querySelectorAll("img")].map((img) => img.getAttribute("loading"))).toEqual(["lazy", "lazy", "lazy"]);
+  });
+
+  it("takes Home's label strip config: the team's programmes, the label \"Recognised by\", on the page's own background", () => {
+    const strips = kheeluPage.sections.filter((s) => s.kind === "recognition-strip");
+    expect(strips).toHaveLength(1);
+    const [{ config }] = strips;
+    expect(config).toEqual({ ...recognitionStrip, title: PRODUCT_RECOGNISED, variant: "label" });
+    // The text pass accepts the label (the strip is the build's alone, PROOF_ADDITIONS hides it for the pixels).
+    expect(TEXT_DEVIATIONS["meet-kheelu"].some((rule) => rule.build?.test(PRODUCT_RECOGNISED))).toBe(true);
   });
 
   /* The built step heading stays (the D2C plan v2 §3 fold 5; the CMO's m7; the main session's ruling on §13 item 8 (a)). */
@@ -781,10 +806,37 @@ describe("the product page's selling update (task Q2.10; the D2C plan v2 §3)", 
   describe("fold 11, the questions", () => {
     const shown = (offer: Offer) => [...rendered(offer).whole.querySelectorAll("#faq .kh-faq__item")].map((item) => text(item.querySelector(".kh-faq__q")));
 
-    it("asks the plan's questions in its order: the price question, then the Kheelona+ question after the first-week one, no delivery question", () => {
-      const ids = ["do-the-thinking", "talks-back", "right-for-a-three-year-old", "cost-and-advance", "returns-and-warranty", "after-the-first-week", "after-six-months", "languages", "speech"] as const;
+    it("asks the plan's questions in its order: the price question, Home's screen-time question, then the Kheelona+ question after the first-week one, no delivery question", () => {
+      const ids = [
+        "do-the-thinking",
+        "talks-back",
+        "right-for-a-three-year-old",
+        "cost-and-advance",
+        "screen-time-in-disguise",
+        "returns-and-warranty",
+        "after-the-first-week",
+        "after-six-months",
+        "languages",
+        "speech",
+      ] as const;
       for (const offer of [TOKEN, FULL]) expect(shown(offer)).toEqual(ids.map((id) => toPlainText(faqs[id].question, offer)));
       expect(shown(TOKEN)).not.toContain("When does delivery start?");
+    });
+
+    /* Task Q2.13 (the D2C plan v2 §3 fold 11, question 5: "As Home's question 4"): the one faqs.ts entry Home lists, so the
+       words are Home's on both pages; fifth, after the price question, where the delivery question stood. */
+    it("asks Home's \"Isn’t this just screen time in disguise?\" fifth, after the price question, from the one faqs.ts entry", () => {
+      const [faqFold] = section("faq-section");
+      const ids = faqFold.config.items.map((item) => item.id);
+      expect(ids.indexOf("screen-time-in-disguise")).toBe(ids.indexOf("cost-and-advance") + 1);
+      expect(faqFold.config.items[ids.indexOf("screen-time-in-disguise")]).toBe(faqs["screen-time-in-disguise"]);
+      const fifth = [...WHOLE.querySelectorAll("#faq .kh-faq__item")][4];
+      expect(text(fifth.querySelector(".kh-faq__q"))).toBe(SCREEN_TIME_FAQ.question);
+      expect(text(fifth.querySelector(".kh-faq__a"))).toBe(SCREEN_TIME_FAQ.answer);
+      for (const offer of [TOKEN, FULL]) {
+        expect(toPlainText(faqs["screen-time-in-disguise"].question, offer)).toBe(SCREEN_TIME_FAQ.question);
+        expect(toPlainText(faqs["screen-time-in-disguise"].answer, offer)).toBe(SCREEN_TIME_FAQ.answer);
+      }
     });
 
     it("answers the price question with the total and no GST, balance or first 500 (D065 items 3-4), in both modes", () => {

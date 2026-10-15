@@ -57,6 +57,8 @@ const PAGES: Readonly<Record<string, readonly FaqId[]>> = {
     "talks-back",
     "right-for-a-three-year-old",
     "cost-and-advance",
+    /* Home's question, fifth here since task Q2.13 (the D2C plan v2 §3 fold 11: "As Home's question 4"). */
+    "screen-time-in-disguise",
     "returns-and-warranty",
     "after-the-first-week",
     "after-six-months",
@@ -71,6 +73,14 @@ const PAGES: Readonly<Record<string, readonly FaqId[]>> = {
 /** Items no page lists, kept for a machine file: the guide's approved price answer, which /pricing.md reads (task Q2.12
  *  took it off the guide; task Q2.8 lets a machine file keep "incl. GST"). */
 const MACHINE_ONLY: readonly FaqId[] = ["how-much"];
+/** Items two pages list, where the plan asks for the same question on both (task Q2.13): one entry, so the same words on
+ *  both pages and in both FAQPages. Home's screen-time question on the product page (the D2C plan v2 §3 fold 11,
+ *  question 5: "As Home's question 4"). Every other item is on exactly one page. */
+const SHARED: Readonly<Partial<Record<FaqId, readonly string[]>>> = {
+  "screen-time-in-disguise": ["home", "meet-kheelu"],
+};
+/** The pages that list an item, in PAGES's order. */
+const pagesOf = (id: FaqId) => Object.entries(PAGES).filter(([, ids]) => ids.includes(id)).map(([slug]) => slug);
 
 /** P15's default (open questions §P; applied by task 4.7, deviation V6): the shared answer to "What if it isn’t right
  *  for us, or stops working?" gives D033's remedy for a faulty Kheelu, a replacement or a full refund (Rule 7(4)), as
@@ -106,9 +116,10 @@ describe("ids", () => {
     }
   });
 
-  it("cover every page's FAQ, each item on exactly one page, or kept for a machine file alone", () => {
-    const listed = Object.values(PAGES).flat();
-    expect(new Set(listed).size).toBe(listed.length);
+  it("cover every page's FAQ, each item on exactly one page but the plan's shared ones, or kept for a machine file alone", () => {
+    const listed = [...new Set(Object.values(PAGES).flat())];
+    for (const ids of Object.values(PAGES)) expect(new Set(ids).size).toBe(ids.length);
+    expect(Object.fromEntries(listed.filter((id) => pagesOf(id).length > 1).map((id) => [id, pagesOf(id)]))).toEqual(SHARED);
     expect(listed.filter((id) => MACHINE_ONLY.includes(id))).toEqual([]);
     expect([...listed, ...MACHINE_ONLY].sort()).toEqual(Object.keys(faqs).sort());
     expect(readRepoFile("src/app/pricing.md/route.ts")).toContain('faqs["how-much"]');

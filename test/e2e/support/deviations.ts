@@ -2333,11 +2333,14 @@ const HOME_OFFER_ART_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as con
      fourth, the daily limit (D065 item 5); the parent-app fold and the safety fold off the page (D064 item 2: their
      words move to /safety, task Q2.11); the price answer with the total and no GST, balance or first 500 (D065 items
      3-4); "When does delivery start?" off (the offer card and the trust line carry the date) and "Will Kheelona+ charge me
-     after the 6 months?" after the first-week question (D065 item 6, the CMO's M5).
+     after the 6 months?" after the first-week question (D065 item 6, the CMO's M5). Then task Q2.13 (the follow-ups of
+     the q2b merge): the offer card as both cards print it (PRODUCT_OFFER_CARD: the Kheelona+ note in the card, the price
+     once, no help line; §3 fold 3, the CMO's m9), and Home's "Isn’t this just screen time in disguise?" fifth, in the
+     delivery question's place (§3 fold 11, question 5).
    - SELLING_ADDITIONS: the blocks the approved page has nothing for, added on the build's side alone: the comparison
      moved from Home (§3 fold 8) and the safety line pointing to /safety (fold 9). The three sample chats (fold 6) are
      task 8c.3's example fold on tabs (ExampleConversation, task Q2.10), which PROOF_ADDITIONS already hides; their new
-     lines are accepted here.
+     lines are accepted here, and since task Q2.13 the recognition strip's label as Home's (§3 fold 4).
    The expert clip (task 8c.6) left the page for Home (task Q2.9), so its rules left this page's lists. Literal, as the
    rest of this file (Playwright loads it): the route's unit test (products/kheelu/page.test.tsx) holds every literal to
    the content modules. The deviations.md rows are the main session's, drafted in the task's report. */
@@ -2385,6 +2388,17 @@ export const AFTER_SIX_MONTHS = {
   answer:
     "No, not unless you sign up for it yourself. Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. Nothing renews without you.",
 } as const;
+/** Home's fourth question (faqs.ts `screen-time-in-disguise`, task Q2.9), the product page's fifth since task Q2.13 (the
+ *  D2C plan v2 §3 fold 11, question 5: "As Home's question 4"), after the price question, in the delivery question's
+ *  place. The one entry, so the words are Home's on both pages. */
+export const SCREEN_TIME_FAQ = {
+  question: "Isn’t this just screen time in disguise?",
+  answer:
+    "No. There’s no screen to watch: your child talks, listens and does the thinking. Each Kheelu has a daily limit on how long it talks, and in the parent app you can see how long your child talked each day.",
+} as const;
+/** The recognition strip's label on the product page since task Q2.13 (the D2C plan v2 §3 fold 4, the CMO's m10): Home's
+ *  small label, no heading, no full stop (the team page's heading keeps "Recognised by."). */
+export const PRODUCT_RECOGNISED = "Recognised by";
 /** That answer's first and last sentences: the page prints the middle one already (the claim-fixed Kheelona+ line). */
 const AFTER_SIX_MONTHS_LINES = {
   no: sentences(AFTER_SIX_MONTHS.answer)[0],
@@ -2445,9 +2459,15 @@ export const SELLING_UPDATE = {
       /* Folds 5 and 6, the parent app and the safety fold, off the page (D064 item 2; task Q2.11 takes their words to /safety). */
       cutAround("#app-title", "Every conversation, word for word.", "section"),
       cutAround("#safety-title", "Safety you can check.", "section"),
-      /* Fold 8: the price answer; the delivery question off; the Kheelona+ question after the first-week one. */
+      /* Fold 8: the price answer; in the delivery question's place, Home's screen-time question (task Q2.13); the Kheelona+
+         question after the first-week one. */
       rewrite(".kh-faq__a > p", PRODUCT_PRICE_ANSWER.mockup, PRODUCT_PRICE_ANSWER.build),
-      cutAround(".kh-faq__q span", PRODUCT_DELIVERY_QUESTION, ".kh-faq__item"),
+      {
+        at: ".kh-faq__q span",
+        was: PRODUCT_DELIVERY_QUESTION,
+        scope: ".kh-faq__item",
+        now: faqItem(SCREEN_TIME_FAQ.question, SCREEN_TIME_FAQ.answer),
+      },
       {
         at: ".kh-faq__item",
         was: `${FIRST_WEEK.question}${FIRST_WEEK.answer}`,
@@ -2505,8 +2525,10 @@ export const SELLING_UPDATE = {
       "A reserved Kheelu is sent once the rest of the price is paid.",
     ],
     /* In order of first appearance: the hero's words; the Kheelona+ question's last sentence, first printed by the card's
-       Kheelona+ perk (the one perk list), then the card's note (task Q2.13); Good to know's two lines; the price answer;
-       the Kheelona+ question and its first sentence (its second is the card's Kheelona+ line, on the page before). */
+       Kheelona+ perk (the one perk list), then the card's note (task Q2.13); Good to know's two lines; the screen-time
+       answer's "No.", first printed by the first question's answer (task Q2.13); the price answer; the screen-time
+       question and the rest of its answer (task Q2.13); the Kheelona+ question and its first sentence (its second is the
+       card's Kheelona+ line, on the page before). */
     build: [
       PRODUCT_HERO.eyebrow.build,
       PRODUCT_HERO.lead.build,
@@ -2514,7 +2536,10 @@ export const SELLING_UPDATE = {
       OFFER_NOTE,
       sentences(PRODUCT_KNOW.browse.build)[1],
       PRODUCT_KNOW.limit,
+      sentences(SCREEN_TIME_FAQ.answer)[0],
       ...sentences(PRODUCT_PRICE_ANSWER.build),
+      SCREEN_TIME_FAQ.question,
+      ...sentences(SCREEN_TIME_FAQ.answer).slice(1),
       AFTER_SIX_MONTHS.question,
       AFTER_SIX_MONTHS_LINES.no,
     ],
@@ -2538,7 +2563,7 @@ export const SELLING_UPDATE = {
       build: [".ks-offer__note"],
     },
     reason:
-      "the selling update on the product page: the hero's eyebrow and lead, no help line in the hero; the offer card with the Kheelona+ note, the price once and no help line under it (task Q2.13); the parent-app and safety folds moved to /safety; Good to know with \"instead of guessing\" and the daily limit; the price answer with the total and no GST; the delivery question off and the Kheelona+ question on (D064, D065; the D2C plan v2 §3)",
+      "the selling update on the product page: the hero's eyebrow and lead, no help line in the hero; the offer card with the Kheelona+ note, the price once and no help line under it (task Q2.13); the parent-app and safety folds moved to /safety; Good to know with \"instead of guessing\" and the daily limit; the price answer with the total and no GST; the delivery question off, Home's screen-time question in its place (task Q2.13) and the Kheelona+ question on (D064, D065; the D2C plan v2 §3)",
     approvedBy: SELLING_UPDATE_APPROVED,
   },
 } as const satisfies Readonly<Record<string, PageFacts>>;
@@ -2604,6 +2629,9 @@ export const SELLING_ADDITIONS = {
       ...PRODUCT_CHATS.dosa,
       ...PRODUCT_CHATS.spider,
       PRODUCT_CHATS.after,
+      /* The recognition strip's label since task Q2.13 (Home's label strip, §3 fold 4; the strip is task 8c.3's block,
+         PROOF_ADDITIONS, whose heading was "Recognised by."). */
+      PRODUCT_RECOGNISED,
     ],
   },
 } as const;
@@ -2621,7 +2649,8 @@ const sellingAdditionsText = (slug: keyof typeof SELLING_ADDITIONS): TextDeviati
   return {
     mockup: /(?!)/,
     build: oneOf([...lines, PRODUCT_COMPARE.eyebrow.toUpperCase()]),
-    reason: "the lines of the folds and tabs task Q2.10 adds: the comparison, the safety line, the sample chats' tabs and their two new exchanges",
+    reason:
+      "the lines of the folds and tabs task Q2.10 adds: the comparison, the safety line, the sample chats' tabs and their two new exchanges; and the recognition strip's label as Home's (task Q2.13)",
     approvedBy: SELLING_UPDATE_APPROVED,
   };
 };

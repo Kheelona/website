@@ -168,12 +168,13 @@ export const kheeluPage = {
         photo: { src: kheeluOnFur, alt: "Kheelu by Kheelona, the cream plush rabbit that talks back, with rainbow ears and a speaker in its tummy." },
       },
     },
-    /* "Recognised by." (task 8c.3; D061's rulings): the /team strip as built (D054 item 20), read from the team page, names
-       only. Since task 8c.8 (the CMO's wave 8c review, m2) right after the offer column, which ends on the share link:
-       before the offer it pushed the offer card about 680 px down a phone page. (Its small-label form, as on Home, is
-       RecognitionStrip's `label` variant, task Q2.9's; the main session switches it at the merge: the D2C plan v2 §3
-       fold 4, the CMO's m10.) The expert clip that followed it went to Home with task Q2.10 (task Q2.9; D064 item 8). */
-    { kind: "recognition-strip", config: recognitionStrip },
+    /* "Recognised by" (task 8c.3; D061's rulings): the /team strip's programmes (D054 item 20), read from the team page,
+       names only. Since task 8c.8 (the CMO's wave 8c review, m2) right after the offer column, which ends on the share link:
+       before the offer it pushed the offer card about 680 px down a phone page. Since task Q2.13 (the D2C plan v2 §3 fold 4,
+       the CMO's m10) as Home shows it: the small label "Recognised by" over the row, no heading (RecognitionStrip `label`);
+       on the page's own background, as the offer fold above it. The expert clip that followed it went to Home with task
+       Q2.10 (task Q2.9; D064 item 8). */
+    { kind: "recognition-strip", config: { ...recognitionStrip, title: "Recognised by", variant: "label" } },
     /* The loop in four plain steps, just before "How it works" (task 8c.3; D061's rulings, the CMO's AP-14): the button
        first (D018), answer then ask back (D017), and "remembers" beside the parent reading every conversation (D036 #2).
        On the band, so it stands apart from the offer above and the example below. */
@@ -368,10 +369,10 @@ export const kheeluPage = {
         link: { label: "Read the returns and warranty terms", href: "/refund" },
       },
     },
-    /* The questions (the D2C plan v2 §3 fold 11; task Q2.10): the price question with the total and no GST, the Kheelona+
-       question after the first-week one; "When does delivery start?" left the page (the offer card and the trust line
-       carry the date). Then the D025 line, its source and the help line. (The plan's fifth, "Isn’t this just screen time
-       in disguise?", is task Q2.9's new faqs.ts entry: the main session lists it after the price question at the merge.) */
+    /* The questions (the D2C plan v2 §3 fold 11; task Q2.10): the price question with the total and no GST, then Home's
+       "Isn’t this just screen time in disguise?" (task Q2.13: question 5, "As Home's question 4", the one faqs.ts entry),
+       the Kheelona+ question after the first-week one; "When does delivery start?" left the page (the offer card and the
+       trust line carry the date). Then the D025 line, its source and the help line. */
     {
       kind: "faq-section",
       config: {
@@ -382,6 +383,7 @@ export const kheeluPage = {
           "talks-back",
           "right-for-a-three-year-old",
           "cost-and-advance",
+          "screen-time-in-disguise",
           "returns-and-warranty",
           "after-the-first-week",
           "after-six-months",
