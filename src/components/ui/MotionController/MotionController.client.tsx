@@ -25,7 +25,7 @@ import { usePagePath } from "@/lib/page-path";
  * It renders nothing and changes only opacity and transform (motion.css), so it shifts no layout. */
 
 /** A section heading's one accent (DS 10-pages.md:39: one Hand phrase or one Mark per heading). */
-const HEADING_ACCENT =":is(h2, h3) :is(.kh-hand, .kh-mark)";
+const HEADING_ACCENT = ":is(h2, h3) :is(.kh-hand, .kh-mark)";
 const TARGETS = `[data-reveal]:not(.is-in), [data-draw]:not(.is-in), ${HEADING_ACCENT}:not(.is-in)`;
 /** Targets that draw: their animations run on their paths or their ::after, so a draw is finished with the subtree's. */
 const DRAWS = `[data-draw], ${HEADING_ACCENT}`;

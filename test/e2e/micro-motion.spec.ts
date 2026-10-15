@@ -230,3 +230,34 @@ test("an in-page jump lands below the sticky nav on a laptop", async ({ harness 
   expect(where.nav).toBe(72);
   expect(Math.abs(where.faq - where.nav), "the questions' heading just below the bar").toBeLessThanOrEqual(2);
 });
+
+/* A page's own sticky element sits below the stuck bar (Q2.5 review): the legal contents panel sticks from 1024 px
+ * (legal-template.css), a DS gap below the bar's room (--ks-nav-clearance), so the bar never covers its top or its
+ * "Contents" heading; the reference pages' scrolling list still ends inside the screen. */
+for (const width of [1024, 1440]) {
+  test(`a legal page's sticky contents sit below the sticky nav at ${width} px`, async ({ harness }) => {
+    for (const slug of ["privacy", "terms", "refund", "shipping"] as const) {
+      const { page } = await harness.open(mockupRoute(slug), wide(width), { reducedMotion: "reduce" });
+      await page.evaluate(() => window.scrollTo(0, 1500));
+      await page.waitForTimeout(200);
+      const where = await page.evaluate(() => {
+        const toc = document.querySelector<HTMLElement>(".ks-toc")!;
+        const box = toc.getBoundingClientRect();
+        const title = toc.querySelector<HTMLElement>("#toc-title")!.getBoundingClientRect();
+        return {
+          nav: Math.round(document.querySelector("nav.kh-nav")!.getBoundingClientRect().bottom),
+          top: Math.round(box.top),
+          bottom: Math.round(box.bottom),
+          reference: toc.closest(".ks-doc--reference") !== null,
+          // What a visitor sees at the middle of the "Contents" heading: the heading, not the bar.
+          titleSeen: toc.contains(document.elementFromPoint(title.left + title.width / 2, title.top + title.height / 2)),
+          screen: window.innerHeight,
+        };
+      });
+      expect(where.nav, `${slug}: the bar is stuck`).toBe(72);
+      expect(where.top, `${slug}: the contents panel's top below the bar`).toBeGreaterThanOrEqual(where.nav);
+      expect(where.titleSeen, `${slug}: the "Contents" heading is not under the bar`).toBe(true);
+      if (where.reference) expect(where.bottom, `${slug}: the scrolling list ends inside the screen`).toBeLessThanOrEqual(where.screen);
+    }
+  });
+}

@@ -441,13 +441,17 @@
     gap: var(--space-8);
     align-items: start;
   }
+  /* The panel sticks a DS gap below the marketing nav, which sticks from 900 px (task Q2.5; nav-bar.css sets the room
+     it takes, --ks-nav-clearance, 72 px). Without a stuck bar (the story, which has no nav) the room is 0 and the panel
+     sits where the mockup has it (privacy.css:84, top --space-5). */
   .ks-toc {
     position: sticky;
-    top: var(--space-5);
+    top: calc(var(--ks-nav-clearance, 0px) + var(--space-5));
   }
-  /* Reference: the long list scrolls in its own box beside the text (privacy.css:84). */
+  /* Reference: the long list scrolls in its own box beside the text (privacy.css:84), between the bar and the
+     screen's foot. */
   .ks-doc--reference .ks-toc {
-    max-height: calc(100vh - var(--space-5) * 2);
+    max-height: calc(100vh - var(--ks-nav-clearance, 0px) - var(--space-5) * 2);
     overflow-y: auto;
   }
   .ks-doc-help {

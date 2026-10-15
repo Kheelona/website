@@ -5,14 +5,19 @@
    links and hides the menu button there, and the phone buy bar is hidden from there), the bar sticks to the top with
    its button, so a laptop always has a buy button in view; the button came at 1024 px until then, which left 900 to
    1023 px with neither it nor the buy bar. Sticky moves nothing in the flow (no layout shift), on the DS's sticky layer,
-   only the marketing nav (`nav.kh-nav`: the store's header is a `header.kh-nav` and stays put). An in-page jump (#faq,
-   a legal part) lands below the bar: the page's scroll padding is the DS bar's height (bundle.css .kh-nav min-height
-   72 px, 64 + 8). */
+   only the marketing nav (`nav.kh-nav`: the store's header is a `header.kh-nav` and stays put). The room the stuck bar
+   takes is one value, --ks-nav-clearance, the DS bar's height (bundle.css .kh-nav min-height 72 px, 64 + 8), set only
+   where the bar sticks: an in-page jump (#faq, a legal part) lands below the bar through the page's scroll padding, and
+   a page's own sticky element (the legal contents panel, legal-template.css) sits a gap below it; without a stuck bar
+   the room is 0, so each stays where the mockup has it (review of Q2.5). */
 .ks-nav-cta { display: none; }
 @media (min-width: 900px) {
   .ks-nav-cta { display: inline-flex; }
   nav.kh-nav { position: sticky; top: 0; z-index: var(--z-sticky); }
-  html:has(> body > nav.kh-nav) { scroll-padding-top: calc(var(--space-8) + var(--space-2)); }
+  html:has(> body > nav.kh-nav) {
+    --ks-nav-clearance: calc(var(--space-8) + var(--space-2));
+    scroll-padding-top: var(--ks-nav-clearance);
+  }
 }
 
 /* D064 item 10: the link's hover line slides in. It is the DS's own hover line (bundle.css: Sunshine, --stroke-focus

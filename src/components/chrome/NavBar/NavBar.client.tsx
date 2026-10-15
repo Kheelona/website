@@ -49,9 +49,9 @@ export interface NavMenuButtonProps {
 }
 
 /**
- * The phone menu button (`kh-nav__menu`, hidden from 1024 px by bundle.css): opens the drawer as a modal dialog
- * (`showModal()`, so focus moves inside and the page behind goes inert) and reports `aria-expanded` until the dialog
- * closes, however it closes (Escape, the close button, the backdrop, a link).
+ * The phone menu button (`kh-nav__menu`, hidden from 900 px by bundle.css; this said 1024 px until Q2.5): opens the
+ * drawer as a modal dialog (`showModal()`, so focus moves inside and the page behind goes inert) and reports
+ * `aria-expanded` until the dialog closes, however it closes (Escape, the close button, the backdrop, a link).
  */
 export function NavMenuButton({ label, controls }: NavMenuButtonProps) {
   const [expanded, setExpanded] = useState(false);

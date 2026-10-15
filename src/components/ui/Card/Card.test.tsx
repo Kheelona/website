@@ -235,4 +235,14 @@ describe("Card: the lifted state of a card with a link (task Q2.5)", () => {
     expect(row.matches(".kh-card:has(.kh-card__link)")).toBe(true);
     expect(card(<Card title="x" body="no link" />).matches(".kh-card:has(.kh-card__link)")).toBe(false);
   });
+
+  /* Q2.5 review: a revealed card would never lift. Its reveal's end state (motion.css, html.js-motion
+   * [data-reveal].is-in: transform none) outranks the lift, and the reveal's slower transition replaces the card's. No
+   * card has both today (the revealing ones have no link; CardGrid reveals its list, not the cards), so Card refuses
+   * the pair rather than let a lift go missing silently: reveal the list or section around a linked card instead. */
+  it("refuses reveal with a link or a links row: the reveal's end state would cancel the lift", () => {
+    expect(() => render(<Card title="x" reveal link={{ href: "/a", label: "A" }} />)).toThrow(/reveal/);
+    expect(() => render(<Card title="x" reveal links={[{ href: "/b", label: "B" }]} />)).toThrow(/reveal/);
+    expect(() => render(<Card title="x" reveal links={[]} />)).not.toThrow();
+  });
 });

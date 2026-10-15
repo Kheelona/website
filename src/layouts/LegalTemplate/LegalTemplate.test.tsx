@@ -400,8 +400,15 @@ describe("legal-template.css: one file, two families (mockup-css-mapping §6.1-6
     expect(css).toMatch(/\.ks-doc--reference \.ks-doc__part :is\(p, ul, ol\) \{\s*max-width: var\(--measure\);/);
   });
 
+  /* Task Q2.5 review: from 900 px the marketing nav sticks to the top (nav-bar.css), so the panel sticks a DS gap below
+     the room it takes (--ks-nav-clearance, 72 px) instead of under it. Where no bar sticks (no nav, as in the story, or a
+     nav that does not stick) the room is 0 and the panel sits where the mockup has it (privacy.css:84, top --space-5). */
+  it("the contents panel sticks a DS gap below the sticky nav's room, or the mockup's gap without one (privacy.css:84)", () => {
+    expect(css).toMatch(/\.ks-toc \{\s*position: sticky;\s*top: calc\(var\(--ks-nav-clearance, 0px\) \+ var\(--space-5\)\);\s*\}/);
+  });
+
   it("only reference's contents list scrolls in its own box and takes compact rows under a mouse (privacy.css:84, 93-95)", () => {
-    expect(css).toMatch(/\.ks-doc--reference \.ks-toc \{\s*max-height: calc\(100vh - var\(--space-5\) \* 2\);\s*overflow-y: auto;/);
+    expect(css).toMatch(/\.ks-doc--reference \.ks-toc \{\s*max-height: calc\(100vh - var\(--ks-nav-clearance, 0px\) - var\(--space-5\) \* 2\);\s*overflow-y: auto;/);
     expect(css).toMatch(/@media \(min-width: 1024px\) and \(pointer: fine\) \{\s*\.ks-doc--reference \.ks-toc a \{/);
   });
 

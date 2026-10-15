@@ -702,8 +702,11 @@ animated) and its link's arrow nudges `--ks-nudge`, as do a ghost link's end arr
 arrow; the nav link's hover line (the DS's sun line, `nav-bar.css` `::after`) slides in from the left; a tag or chip
 that is a link or button presses half a `--space-1`; the FAQ sign turns as before. **Sticky nav:** from 900 px (the DS
 laptop width, where the buy bar is gone) `nav.kh-nav` sticks at `top: 0` on `--z-sticky` with its `navbar` chilli
-button (before, the button came at 1024 px), and the page's `scroll-padding-top` is the bar's 72 px so in-page jumps
-land below it. Guards: `motion-properties.test.ts` (contract classes, presets, pointer-only hovers with focus twins,
+button (before, the button came at 1024 px); the room it takes, `--ks-nav-clearance` (72 px, set on `<html>` only where
+the bar sticks), is the page's `scroll-padding-top`, so in-page jumps land below it, and offsets a page's own sticky
+element (the legal contents panel, `legal-template.css`; a later sticky column's `top` is the same
+`calc(var(--ks-nav-clearance, 0px) + <its gap>)`); the visual-parity harness puts the bar back in the flow and the room to 0 (`hideForParity`), as the
+approved mockup's nav does not stick. Guards: `motion-properties.test.ts` (contract classes, presets, pointer-only hovers with focus twins,
 reduced motion); browser checks `test/e2e/micro-motion.spec.ts`.
 
 ### 11.3 Class contract between motion.css and components

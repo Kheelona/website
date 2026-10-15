@@ -138,9 +138,13 @@ describe("NavBar", () => {
     expect(rules().filter((r) => r.media !== WIDE && r.decls.position === "sticky")).toEqual([]);
   });
 
+  /* Q2.5 review: the room the stuck bar takes is one value, --ks-nav-clearance, set only where the bar sticks. The
+     page's scroll padding reads it, and so does any of the page's own sticky elements (the legal contents panel), so
+     each sits below the bar on a laptop and where it always did without the bar (a phone, a story with no nav). */
   it("lands an in-page jump below the sticky bar: scroll-padding-top equals the DS bar's height, from 900 px only", () => {
-    const padding = declsOf("html:has(> body > nav.kh-nav)", WIDE)["scroll-padding-top"];
-    expect(padding).toBe("calc(var(--space-8) + var(--space-2))");
+    const html = declsOf("html:has(> body > nav.kh-nav)", WIDE);
+    expect(html).toEqual({ "--ks-nav-clearance": "calc(var(--space-8) + var(--space-2))", "scroll-padding-top": "var(--ks-nav-clearance)" });
+    expect(rules().filter((r) => r.media !== WIDE && "--ks-nav-clearance" in r.decls)).toEqual([]);
     const navHeight = Number(/\.kh-nav \{[^}]*min-height: (\d+)px/.exec(BUNDLE)![1]);
     const space = (n: number) => Number(new RegExp(`--space-${n}: (\\d+)px`).exec(TOKENS)![1]);
     expect(space(8) + space(2)).toBe(navHeight);
