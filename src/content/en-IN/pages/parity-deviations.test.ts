@@ -11,7 +11,6 @@ import { buildOffer } from "@/lib/offer/offer";
 import {
   CLAIM_FIXES,
   type ClaimFixesSlug,
-  CLOSE_EYEBROW,
   CLOSE_SEE_HOW,
   CLOSES_ALIKE,
   CLOSES_ALIKE_LAYOUT_HIDDEN,
@@ -383,8 +382,9 @@ describe.each(Object.keys(SELLING_CLOSES) as SellingClosesSlug[])("%s: task Q2.1
 });
 
 /* Task Q2.15 (the consistency review's rulings, 2026-10-15; test/e2e/support/deviations.ts CLOSES_ALIKE): the closes
- * labelled and linked alike ("Pre-order" over every selling close, CON-6; "See how Kheelu works" under the journal's,
- * CON-7) and /safety's first question with non-breaking hyphens (QAP-6). On each page the rule excuses and accepts exactly
+ * linked alike ("See how Kheelu works" under the journal's, CON-7; the "Pre-order" eyebrow over the closes that had none,
+ * CON-6, came off again, D066 item 4) and /safety's first question with non-breaking hyphens (QAP-6). On each page the
+ * rule excuses and accepts exactly
  * the sentences its edits change, against the frozen mockup with every earlier rule of the page applied (its selling
  * close's last), it is the page's last rule, and it adds no banned phrase. The route and content tests hold each page's
  * build to that edited mockup, markup and words alike. */
@@ -428,10 +428,11 @@ describe.each(Object.keys(CLOSES_ALIKE) as ClosesAlikeSlug[])("%s: task Q2.15's 
     for (const rule of layout) expect(edited.querySelectorAll(rule.selector).length, rule.selector).toBe(/^story-|^stories$/.test(slug) ? 2 : 1);
   });
 
-  it("adds only the eyebrow, the link's words and the hyphens: no banned phrase, no number, no GST", () => {
+  it("adds only the link's words and the hyphens, never an eyebrow (D066 item 4): no banned phrase, no number, no GST", () => {
     for (const line of fixes.build) expect(line).not.toMatch(/incl\. GST|first 500|₹|\+91|91875/);
     expect(findBanned(fixes.build.join("\n"))).toEqual([]);
-    expect(fixes.build.every((line) => line === CLOSE_EYEBROW || line === CLOSE_SEE_HOW.build || line.includes("‑"))).toBe(true);
+    expect(fixes.build.every((line) => line === CLOSE_SEE_HOW.build || line.includes("‑"))).toBe(true);
+    expect(withFacts(base, fixes.edits).querySelectorAll("#close .kh-eyebrow")).toHaveLength(base.querySelectorAll("#close .kh-eyebrow").length);
   });
 
   it("names the consistency review and this task as its approval, for the main session's deviations.md row", () => {
@@ -450,6 +451,24 @@ describe("task Q2.15's layout hides, on every page they name", () => {
       ["build", "#close .kh-split", "(min-width: 900px)"],
     ]);
     expect(mockupFold("ai-toys-for-kids-in-india", "main").querySelectorAll(guide[0].selector)).toHaveLength(1);
+  });
+
+  /* The centred closes whose words the review left as the mockups' (D066 item 4 took their "Pre-order" eyebrow off again):
+     only their button row in the one CTA shape is hidden, on both sides, each found once in the approved page; and no
+     text rule of the review's stays on them. */
+  it("hide /team's, /contact's and the 404's button row alone, found once in each approved close, with no text rule of the review's", () => {
+    for (const slug of ["team", "contact", "404"]) {
+      expect(slug in CLOSES_ALIKE, slug).toBe(false);
+      const rules = CLOSES_ALIKE_LAYOUT_HIDDEN[slug];
+      expect(rules.map((r) => [r.side, r.selector]), slug).toEqual([
+        ["mockup", "#close .kh-section__actions:has(> .kh-btn--cta)"],
+        ["build", "#close .kh-section__actions:has(> .kh-btn--cta)"],
+      ]);
+      expect(mockupFold(slug, "main").querySelectorAll(rules[0].selector), slug).toHaveLength(1);
+      expect(mockupFold(slug, "main").querySelectorAll("#close .kh-eyebrow"), slug).toHaveLength(0);
+      expect((VISUAL_HIDDEN[slug] ?? []).filter((r) => r.approvedBy === rules[0].approvedBy), slug).toEqual(rules);
+      expect((TEXT_DEVIATIONS[slug] ?? []).filter((r) => r.approvedBy === rules[0].approvedBy), slug).toEqual([]);
+    }
   });
 });
 

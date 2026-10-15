@@ -66,8 +66,8 @@ function builtMain(page: PageContent = sized(hubPage)): HTMLElement {
  * class, as HeroSection.test.tsx reads it.
  */
 function approvedMain(): Element {
-  /* The close's help line without the call (D063 item 2; task Q2.3; seller-facts.ts); the close labelled "Pre-order" and
-     its ghost link "See how Kheelu works" (task Q2.15, CON-6 and CON-7; CLOSES_ALIKE). */
+  /* The close's help line without the call (D063 item 2; task Q2.3; seller-facts.ts); the close's ghost link "See how
+     Kheelu works" (task Q2.15, CON-7; CLOSES_ALIKE), its heading as the mockup's (no eyebrow, D066 item 4). */
   const main = withSellerFacts(withFacts(withFacts(mockupFold("stories", "main"), COPY_FIXES.stories.edits), CLOSES_ALIKE.stories.edits));
   addClass(main, ".mk-journal-intro header.kh-heading--hero", "ks-hero-words");
   main.querySelectorAll(".mk-later").forEach((label) => label.remove());

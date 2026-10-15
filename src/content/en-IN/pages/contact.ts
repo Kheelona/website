@@ -131,8 +131,7 @@ export const contactPage = {
       kind: "close-section",
       config: {
         variant: "center",
-        /* "Pre-order", as every selling close is labelled (task Q2.15; the consistency review's CON-6). */
-        heading: { eyebrow: "Pre-order", title: "Ready when {hand:you are.}" },
+        heading: { title: "Ready when {hand:you are.}" },
         cta: {
           cta: "finale",
           trust: TRUST_COMPACT.map((id) => trustItems[id]),

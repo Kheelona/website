@@ -29,7 +29,7 @@ const contentSentences = (module: unknown) => stringsOf(module).flatMap((s) => s
 const html = readRepoFile("mockup/stories.html");
 const hub = new DOMParser().parseFromString(html, "text/html");
 const mockupMain = sentences(htmlToText(hub.querySelector("main")!.outerHTML));
-/** The later rules on the hub: the topic line's (task 7.1b), then the close's eyebrow and ghost link (task Q2.15, proven in
+/** The later rules on the hub: the topic line's (task 7.1b), then the close's ghost link (task Q2.15, proven in
  *  src/content/en-IN/pages/parity-deviations.test.ts with the consistency review's other pages). */
 const LATER = new Set<string>([COPY_FIXES.stories.approvedBy, CLOSES_ALIKE.stories.approvedBy]);
 /** The card's rules: every stories rule but the later ones. */

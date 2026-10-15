@@ -51,12 +51,12 @@ describe("the words every article page shares (story-*.html)", () => {
     expect(articlePageCopy.related).toEqual({ title: "Related guides" });
   });
 
-  /* Task Q2.15 (the consistency review's CON-6, CON-7): the close labelled as every selling close, "Pre-order", and its
-     ghost link worded as /team's and /contact's, "See how Kheelu works", which reads clearly out of context. */
+  /* Task Q2.15 (the consistency review's CON-7; D066 item 4): the ghost link worded as /team's and /contact's, "See how
+     Kheelu works", which reads clearly out of context. No eyebrow over the heading, as the mockup's: the founder declined
+     the "Pre-order" eyebrow task Q2.15 had added (CON-6). */
   it("closes with the journal close of the hub: heading, finale button, compact trust line, help line, the ghost link", () => {
     const { close } = articlePageCopy;
     expect(close.heading).toEqual({
-      eyebrow: "Pre-order",
       title: "A toy that {hand:asks back.}",
       lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It answers your child, then asks a question back.",
     });
@@ -75,12 +75,10 @@ describe("the words every article page shares (story-*.html)", () => {
     const { topicHeadings } = articlePageCopy.close;
     expect(topicHeadings).toEqual({
       "screen-time": {
-        eyebrow: "Pre-order",
         title: "A toy that talks, {hand:with no screen.}",
         lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It answers your child, then asks a question back, and each Kheelu has a daily limit on how long it talks.",
       },
       "ai-and-safety": {
-        eyebrow: "Pre-order",
         title: "A toy you can {hand:check.}",
         lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It has no camera and can’t browse the internet, and you can read every conversation in the parent app.",
       },

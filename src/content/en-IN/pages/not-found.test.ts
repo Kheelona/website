@@ -99,8 +99,8 @@ describe("the 404's folds (structure §5: EmptyStateSection, then CloseSection)"
   it("fold 2 is the centred close: one chilli button (finale), the compact trust line and the help line", () => {
     const config = close();
     if (config.variant !== "center") throw new Error(`the 404 close is ${config.variant}, not center`);
-    // Labelled as every selling close (task Q2.15; the consistency review's CON-6), where the mockup's has no eyebrow.
-    expect(config.heading).toEqual({ eyebrow: "Pre-order", title: "Looking for {hand:Kheelu?}" });
+    // No eyebrow, as the mockup's: the founder declined task Q2.15's "Pre-order" over it (CON-6; D066 item 4).
+    expect(config.heading).toEqual({ title: "Looking for {hand:Kheelu?}" });
     expect(config.cta.cta).toBe("finale");
     expect(config.cta.trust.map((item) => item.id)).toEqual(TRUST_COMPACT);
     expect(config.cta.helpLine).toBe(true);

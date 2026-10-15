@@ -69,7 +69,7 @@ const PRODUCT: OfferSectionConfig = {
 /** Home's offer since task Q2.9 (the selling update; the D2C plan v2 §2 fold 7): moved up to fold 7, so not the close. */
 const HOME_OFFER: OfferSectionConfig = {
   variant: "home",
-  heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}", lead: "Kheelu is there every day at home, with no screen to switch off." },
+  heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}", lead: "There every day at home, with no screen to switch off." },
   cta: "home-offer",
   cardLabel: "Kheelu offer",
   note: PLUS_NOTE,
@@ -321,7 +321,7 @@ describe("OfferSection: home (Home's offer, moved up; task Q2.9)", () => {
     const region = screen.getByRole("region", { name: "What you get, and what you pay." });
     expect(region).toHaveAttribute("id", "offer");
     expect(region).toHaveAttribute("aria-labelledby", "offer-title");
-    expect(region.querySelector(".kh-heading--center .kh-heading__lead")?.textContent).toBe("Kheelu is there every day at home, with no screen to switch off.");
+    expect(region.querySelector(".kh-heading--center .kh-heading__lead")?.textContent).toBe("There every day at home, with no screen to switch off.");
   });
 
   it("names the card as a region without an id of its own, its button home-offer, and the plan's Kheelona+ note in it", () => {

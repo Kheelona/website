@@ -32,7 +32,7 @@ const meta: Meta<typeof OfferSection> = {
     ctaLabel: cta.preorder,
     help: seller.help,
     variant: "home",
-    heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}", lead: "Kheelu is there every day at home, with no screen to switch off." },
+    heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}", lead: "There every day at home, with no screen to switch off." },
     cta: "home-offer",
     cardLabel: "Kheelu offer",
     note: PLUS_NOTE,

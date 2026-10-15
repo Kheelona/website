@@ -405,9 +405,9 @@ describe("fold 6: the close", () => {
     const el = fold("close-title");
     expect(config.heading.title).toBe("Bring Kheelu {hand:home.}");
     expect(plain(config.heading.title)).toBe(headingOf(el).title);
-    // Labelled as every selling close (task Q2.15; the consistency review's CON-6), where the mockup's has no eyebrow.
+    // No eyebrow, as the mockup's: the founder declined task Q2.15's "Pre-order" over it (CON-6; D066 item 4).
     expect(headingOf(el).eyebrow).toBeUndefined();
-    expect(config.heading.eyebrow).toBe("Pre-order");
+    expect(config.heading.eyebrow).toBeUndefined();
     expect(config.heading.lead).toBe(TEAM_CLOSE_LEAD);
     expect(plain(config.heading.lead!)).toBe(headingOf(el).lead);
     expect(TEAM_CLOSE_LEAD).toBe("Designed by parents in Bengaluru. Made in India.");

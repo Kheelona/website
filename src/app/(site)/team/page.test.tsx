@@ -9,7 +9,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
-import { CLAIM_FIXES, CLOSES_ALIKE, SELLING_CLOSES } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, SELLING_CLOSES } from "../../../../test/e2e/support/deviations";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { parseMockup, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
@@ -63,10 +63,11 @@ const PHOTOS = [
  *  gone), each background line the live bio's, and fold 5's line the strip's visible names (the two marks that name
  *  their programmes carry no text); and Aman's job line and fold 4's keys line in the live team's code-checked words
  *  (task 8b.1; D058; deviations.md V30, CLAIM_FIXES.team); then the selling update's (task Q2.12; D065 item 7; the D2C plan
- *  v2 §8; SELLING_CLOSES.team): the keys line in G26's words and the close's lead; then the consistency review's (task
- *  Q2.15, CON-6; CLOSES_ALIKE.team): the close labelled "Pre-order". Every other word stays the mockup's. */
+ *  v2 §8; SELLING_CLOSES.team): the keys line in G26's words and the close's lead. The close has no eyebrow, as the
+ *  mockup's: the founder declined the "Pre-order" task Q2.15 had put over it (CON-6; D066 item 4). Every other word stays
+ *  the mockup's. */
 function expectedMain(): Element {
-  const copy = withFacts(withFacts(withFacts(mockupMain, CLAIM_FIXES.team.edits), SELLING_CLOSES.team.edits), CLOSES_ALIKE.team.edits);
+  const copy = withFacts(withFacts(mockupMain, CLAIM_FIXES.team.edits), SELLING_CLOSES.team.edits);
   const lede = copy.querySelector('section[aria-labelledby="hero-title"] .kh-heading__lead')!;
   expect(lede.textContent).toBe(APPROVED_LEDE);
   lede.textContent = CMO_LEDE;

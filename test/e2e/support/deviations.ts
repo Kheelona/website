@@ -1948,10 +1948,11 @@ export function passesBeforeSellingCloses(slug: string): readonly (readonly Fact
 }
 
 /* Task Q2.15 (the consistency review wf_78365aa5-dfe, the main session's rulings of 2026-10-15; the CMO's built review
-   of the selling update): the closes labelled and linked alike, page by page. Every selling close carries the eyebrow
-   "Pre-order", as Home's, the product page's, /safety's, /setup's and the guide's already do (CON-6): /team, /contact,
-   the 404, the stories hub and the button-close articles gain it. The ghost link under the hub's and the articles' close
-   reads "See how Kheelu works", as /team's and /contact's (CON-7). /safety's first question breaks no more at its
+   of the selling update): the closes linked alike, page by page. The ghost link under the hub's and the articles' close
+   reads "See how Kheelu works", as /team's and /contact's (CON-7; the founder approved it, D066 item 4). The eyebrow
+   "Pre-order" task Q2.15 put over the /team, /contact, 404, hub and button-close article closes (CON-6) came off again
+   with task Q2.17: the founder declined it (D066 item 4), so those closes read as the mockups' and only their one CTA
+   shape stays (CLOSES_ALIKE_LAYOUT_HIDDEN below). /safety's first question breaks no more at its
    hyphens: "3‑year‑old" with non-breaking hyphens, as the product page's question writes it (QAP-6). In page-facts.ts's
    form, applied after each page's earlier rules (its selling close, task Q2.12's, the last of them): `edits` turn that
    mockup into the build, `mockup` and `build` are the sentences they change (each page's parity-deviations unit test
@@ -1961,49 +1962,26 @@ export function passesBeforeSellingCloses(slug: string): readonly (readonly Fact
 export const CLOSES_ALIKE_APPROVED =
   "the consistency review's rulings (main session, 2026-10-15; the CMO's built review of the selling update; task Q2.15; deviations.md rows to come)";
 const CLOSES_ALIKE_WHOSE = "task Q2.15's consistency review";
-/** The eyebrow over every selling close (CON-6). */
-export const CLOSE_EYEBROW = "Pre-order";
 /** The ghost link under a close, as /team's and /contact's word it (CON-7): the mockup's journal words, then the build's. */
 export const CLOSE_SEE_HOW = { mockup: "See how it works", build: "See how Kheelu works" } as const;
 /** /safety's first question (faqs.ts `age-three`): the approved hyphens, then the non-breaking ones (U+2011, QAP-6). */
 export const SAFETY_AGE_QUESTION = { mockup: "Is Kheelu OK for a 3-year-old?", build: "Is Kheelu OK for a 3‑year‑old?" } as const;
-/** A close's heading with the eyebrow before its title: the title's words and its markup (its one accent). */
-const eyebrowed = (title: { readonly text: string; readonly markup: string }): FactEdit => ({
-  at: "#close-title",
-  was: title.text,
-  now: `<p class="kh-eyebrow">${CLOSE_EYEBROW}</p><h2 class="kh-heading__title" id="close-title">${title.markup}</h2>`,
-});
-const JOURNAL_CLOSE_TITLE = { text: "A toy that asks back.", markup: 'A toy that <span class="kh-hand">asks back.</span>' } as const;
 const seeHowKheelu = rewrite("#close .kh-btn--ghost > span", CLOSE_SEE_HOW.mockup, CLOSE_SEE_HOW.build);
-/** A centred close that gains the eyebrow and nothing else of its words. */
-const centredClose = (title: { readonly text: string; readonly markup: string }): PageFacts => ({
-  edits: [eyebrowed(title)],
-  mockup: [],
-  build: [CLOSE_EYEBROW],
-  /* The eyebrow is the build's alone: hidden on its side, the heading lines up with the mockup's. */
-  hidden: { both: [], mockup: [], build: ["#close .kh-eyebrow"] },
-  reason: "the close labelled as every selling close, with the eyebrow \"Pre-order\" (task Q2.15; the consistency review's CON-6)",
-  approvedBy: CLOSES_ALIKE_APPROVED,
-});
-/** A journal close: the eyebrow, and the ghost link in /team's and /contact's words. */
-const journalClose = (title: { readonly text: string; readonly markup: string }): PageFacts => ({
-  edits: [eyebrowed(title), seeHowKheelu],
+/** A journal close: the ghost link in /team's and /contact's words (its heading as the mockup's, D066 item 4). */
+const JOURNAL_CLOSE: PageFacts = {
+  edits: [seeHowKheelu],
   mockup: [CLOSE_SEE_HOW.mockup],
-  build: [CLOSE_EYEBROW, CLOSE_SEE_HOW.build],
-  /* The ghost link is longer: hidden on both sides; the eyebrow is the build's alone. */
-  hidden: { both: ["#close .kh-btn--ghost"], mockup: [], build: ["#close .kh-eyebrow"] },
-  reason:
-    "the journal close labelled as every selling close (\"Pre-order\", CON-6) and its ghost link worded as /team's and /contact's, \"See how Kheelu works\" (CON-7; task Q2.15)",
+  build: [CLOSE_SEE_HOW.build],
+  /* The ghost link is longer: hidden on both sides. */
+  hidden: { both: ["#close .kh-btn--ghost"], mockup: [], build: [] },
+  reason: "the journal close's ghost link worded as /team's and /contact's, \"See how Kheelu works\" (CON-7; task Q2.15; D066 item 4)",
   approvedBy: CLOSES_ALIKE_APPROVED,
-});
+};
 export const CLOSES_ALIKE = {
-  team: centredClose({ text: "Bring Kheelu home.", markup: 'Bring Kheelu <span class="kh-hand">home.</span>' }),
-  contact: centredClose({ text: "Ready when you are.", markup: 'Ready when <span class="kh-hand">you are.</span>' }),
-  "404": centredClose({ text: "Looking for Kheelu?", markup: 'Looking for <span class="kh-hand">Kheelu?</span>' }),
-  stories: journalClose(JOURNAL_CLOSE_TITLE),
-  "story-learning-toys-for-a-three-year-old": journalClose(JOURNAL_CLOSE_TITLE),
-  /* The AI toys and safety topic's close words (task Q2.12, JOURNAL_SAFETY_CLOSE), then the eyebrow and the link. */
-  "story-what-to-look-for-in-a-safe-ai-toy": journalClose(JOURNAL_SAFETY_CLOSE.build.title),
+  stories: JOURNAL_CLOSE,
+  "story-learning-toys-for-a-three-year-old": JOURNAL_CLOSE,
+  /* After the AI toys and safety topic's close words (task Q2.12, JOURNAL_SAFETY_CLOSE), the link. */
+  "story-what-to-look-for-in-a-safe-ai-toy": JOURNAL_CLOSE,
   safety: {
     edits: [rewrite(".kh-faq__q > span", SAFETY_AGE_QUESTION.mockup, SAFETY_AGE_QUESTION.build)],
     mockup: [SAFETY_AGE_QUESTION.mockup],
@@ -2354,7 +2332,7 @@ export const HOME_SELLING = {
     mockupFolds: ["close-title"],
     buildFold: "offer-title",
     mockup: ["Questions?"],
-    build: ["Pre-order", "Kheelu is there every day at home, with no screen to switch off.", "Kheelona+ is our paid subscription, on top of the free parent app."],
+    build: ["Pre-order", "There every day at home, with no screen to switch off.", "Kheelona+ is our paid subscription, on top of the free parent app."],
     reason: "Fold 7, the offer card moved up from the close (plan fold 7): the lead (CMO M4), the one perk list (CMO m8), the Kheelona+ note, no help line, home-offer",
   },
   safety: {
@@ -2824,11 +2802,11 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...factsHidden(ARTICLE_CLAIM_FIXES["story-what-to-look-for-in-a-safe-ai-toy"], ARTICLE_CLAIM_FIXES_WHOSE),
     /* The close of the AI toys and safety topic (task Q2.12, D065). */
     ...factsHidden(SELLING_CLOSES["story-what-to-look-for-in-a-safe-ai-toy"], SELLING_CLOSES_WHOSE),
-    /* The close's eyebrow and its ghost link, then its rows' spacing (task Q2.15). */
+    /* The close's ghost link, then its rows' spacing (task Q2.15). */
     ...factsHidden(CLOSES_ALIKE["story-what-to-look-for-in-a-safe-ai-toy"], CLOSES_ALIKE_WHOSE),
     ...CLOSES_ALIKE_LAYOUT_HIDDEN["story-what-to-look-for-in-a-safe-ai-toy"],
   ],
-  /* The close's eyebrow and its ghost link, then its rows' spacing (task Q2.15). */
+  /* The close's ghost link, then its rows' spacing (task Q2.15). */
   "story-learning-toys-for-a-three-year-old": [
     ...factsHidden(CLOSES_ALIKE["story-learning-toys-for-a-three-year-old"], CLOSES_ALIKE_WHOSE),
     ...CLOSES_ALIKE_LAYOUT_HIDDEN["story-learning-toys-for-a-three-year-old"],
@@ -2845,7 +2823,7 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     },
     /* The topic's line (V9 as amended in task 7.1b), compared by the text pass. */
     ...factsHidden(COPY_FIXES.stories, COPY_FIXES_WHOSE),
-    /* The close's eyebrow and its ghost link, then its rows' spacing (task Q2.15). */
+    /* The close's ghost link, then its rows' spacing (task Q2.15). */
     ...factsHidden(CLOSES_ALIKE.stories, CLOSES_ALIKE_WHOSE),
     ...CLOSES_ALIKE_LAYOUT_HIDDEN.stories,
   ],
@@ -2923,13 +2901,12 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...factsHidden(CLAIM_FIXES.team, CLAIM_FIXES_WHOSE),
     /* The keys line in G26's words and the close's lead (task Q2.12, D065). */
     ...factsHidden(SELLING_CLOSES.team, SELLING_CLOSES_WHOSE),
-    /* The close's eyebrow, then its button row in the one shape (task Q2.15). */
-    ...factsHidden(CLOSES_ALIKE.team, CLOSES_ALIKE_WHOSE),
+    /* The close's button row in the one shape (task Q2.15; its eyebrow came off again, D066 item 4). */
     ...CLOSES_ALIKE_LAYOUT_HIDDEN.team,
   ],
-  /* The close's eyebrow, then its button row in the one shape (task Q2.15). */
-  contact: [...factsHidden(CLOSES_ALIKE.contact, CLOSES_ALIKE_WHOSE), ...CLOSES_ALIKE_LAYOUT_HIDDEN.contact],
-  "404": [...factsHidden(CLOSES_ALIKE["404"], CLOSES_ALIKE_WHOSE), ...CLOSES_ALIKE_LAYOUT_HIDDEN["404"]],
+  /* The close's button row in the one shape (task Q2.15; its eyebrow came off again, D066 item 4). */
+  contact: CLOSES_ALIKE_LAYOUT_HIDDEN.contact,
+  "404": CLOSES_ALIKE_LAYOUT_HIDDEN["404"],
   setup: [
     ...(["mockup", "build"] as const).map((side) => ({
       /* Step 2 is CMO fix M-S1 in the build (its light without a colour, V8), so it may wrap differently and move every
@@ -3203,10 +3180,10 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     factsRule(ARTICLE_CLAIM_FIXES["story-what-to-look-for-in-a-safe-ai-toy"]),
     /* The close of the AI toys and safety topic (task Q2.12, D065): SELLING_CLOSES above. */
     factsRule(SELLING_CLOSES["story-what-to-look-for-in-a-safe-ai-toy"]),
-    /* The close's eyebrow and its ghost link (task Q2.15): CLOSES_ALIKE above. */
+    /* The close's ghost link (task Q2.15): CLOSES_ALIKE above. */
     factsRule(CLOSES_ALIKE["story-what-to-look-for-in-a-safe-ai-toy"]),
   ],
-  /* The close's eyebrow and its ghost link (task Q2.15): CLOSES_ALIKE above. */
+  /* The close's ghost link (task Q2.15): CLOSES_ALIKE above. */
   "story-learning-toys-for-a-three-year-old": [factsRule(CLOSES_ALIKE["story-learning-toys-for-a-three-year-old"])],
   stories: [
     {
@@ -3217,7 +3194,7 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     },
     /* The screen-time topic's line (V9 as amended in task 7.1b): COPY_FIXES above. */
     factsRule(COPY_FIXES.stories),
-    /* The close's eyebrow and its ghost link (task Q2.15): CLOSES_ALIKE above. */
+    /* The close's ghost link (task Q2.15): CLOSES_ALIKE above. */
     factsRule(CLOSES_ALIKE.stories),
   ],
   /* The screen-time guide card's line and two FAQ answers (V18, task 7.1b): COPY_FIXES above. The answers sit in closed
@@ -3324,12 +3301,7 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     factsRule(CLAIM_FIXES.team),
     /* The keys line in G26's words and the close's lead (task Q2.12, D065): SELLING_CLOSES above. */
     factsRule(SELLING_CLOSES.team),
-    /* The close's eyebrow (task Q2.15): CLOSES_ALIKE above. */
-    factsRule(CLOSES_ALIKE.team),
   ],
-  /* The close's eyebrow (task Q2.15): CLOSES_ALIKE above. */
-  contact: [factsRule(CLOSES_ALIKE.contact)],
-  "404": [factsRule(CLOSES_ALIKE["404"])],
   setup: [
     {
       /* CMO fix M-S1 (task 5.8): step 2's light names no colour (the app's own screen bracketed it). Since D055 item 25

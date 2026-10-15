@@ -9,11 +9,9 @@ import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
-import { CLOSES_ALIKE } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupRoute, parseMockup, skeleton, withOneCtaShape, words } from "../../../../test/support/mockup-compare";
-import { withFacts } from "../../../../test/support/mockup-facts";
 
 /* The /contact route (task 5.9; structure §3.1, §5): the page module through PageTemplate with the live offer, thin,
  * rewritten in place, and as a whole page equal to the approved mockup's <main> (mockup/contact.html, D046): the same
@@ -40,9 +38,9 @@ const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 const mockupDoc = parseMockup("contact");
 /** The approved main as D063 item 3 rules it (task Q2.3; seller-facts.ts): the seller card without its GSTIN line; the
  *  number stays on /contact (the E-Commerce Rules). Its close's button in the one CTA block shape (task Q2.15, the
- *  consistency review's R2: full width on phones with the arrow), its heading labelled "Pre-order" as every selling close
- *  (task Q2.15, CON-6; deviations.ts CLOSES_ALIKE). */
-const mockupMain = withSellerFacts(withFacts(mockupDoc.querySelector("main")!, CLOSES_ALIKE.contact.edits));
+ *  consistency review's R2: full width on phones with the arrow); its heading as the mockup's, without the "Pre-order"
+ *  eyebrow task Q2.15 had added (CON-6), which the founder declined (D066 item 4). */
+const mockupMain = withSellerFacts(mockupDoc.querySelector("main")!);
 withOneCtaShape(mockupMain);
 
 async function element(offer: Offer): Promise<ReactElement> {

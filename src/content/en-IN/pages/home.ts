@@ -295,8 +295,8 @@ export const homePage = {
       kind: "offer-section",
       config: {
         variant: "home",
-        /* The lead names its subject (task Q2.15; the CMO's built review, CMO-7; the founder signs, D015). */
-        heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}", lead: "Kheelu is there every day at home, with no screen to switch off." },
+        /* The plan's lead (the D2C plan v2 §2 fold 7); the founder declined the CMO's "Kheelu is there…" (D066 item 4). */
+        heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}", lead: "There every day at home, with no screen to switch off." },
         cta: "home-offer",
         cardLabel: "Kheelu offer",
         note: PLUS_NOTE,
