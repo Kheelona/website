@@ -213,7 +213,9 @@ describe("Home: the hero (D045) and the first screen", () => {
     expect(phone[0].className).toBe(`${approved.className} ${PHONE_ART.slice(1)}`);
     const files = (board: Element) => all(board, ".kh-art__layer").map((layer) => layer.getAttribute("src")).sort();
     expect(files(phone[0])).toEqual(files(approved));
-    expect(phone[0].querySelector(".kh-sticker")?.outerHTML).toBe(approved.querySelector(".kh-sticker")?.outerHTML);
+    // The same words; on the phone board top left (ks-hero-sticker), out of the WhatsApp bubble's column.
+    expect(phone[0].querySelector(".kh-sticker")?.textContent).toBe(approved.querySelector(".kh-sticker")?.textContent);
+    expect(phone[0].querySelector(".kh-sticker")?.classList.contains("ks-hero-sticker")).toBe(true);
     expect(all(phone[0], "[data-draw], [data-reveal]")).toEqual([]);
   });
 

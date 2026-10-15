@@ -95,14 +95,14 @@ export const kheeluPage = {
         },
         /* D061 item 1 (task 8c.1): the same board on a phone, 16:10 under the trust line, so Kheelu is wholly on the
            first screen at 390 x 844 and 412 x 915; the same files in the DS order (10-pages.md, the scrapbook board):
-           the star behind Kheelu's ears, Myra bottom-aligned, Kheelu tilted in front of her, the speech bubble by her
-           head, the word sticker in the free top corner, clear of her face, and the bottom right corner, where the
-           WhatsApp bubble sits at 390 px, left plain. */
+           the star in the bottom left corner, Myra bottom-aligned on the right, Kheelu tilted in front of her, the
+           speech bubble by her head, and the word sticker top left as on the approved board, so the right-hand column,
+           which the WhatsApp bubble covers, holds only Myra's shoulder and the blue. */
         phoneLayers: [
-          { image: { src: starSun, alt: "" }, left: 4, width: 20, top: 6 },
-          { image: { src: myraSticker, alt: "" }, left: 32, width: 34, bottom: 0 },
-          { image: { src: kheeluSticker, alt: "" }, left: 3, width: 33, bottom: 4, rotate: -5 },
-          { doodle: { name: "chalk-speech-bubble" }, left: 24, width: 11, top: 4, rotate: -8 },
+          { image: { src: starSun, alt: "" }, left: 3, width: 18, bottom: 5 },
+          { image: { src: myraSticker, alt: "" }, left: 59, width: 34, bottom: 0 },
+          { image: { src: kheeluSticker, alt: "" }, left: 37, width: 30, bottom: 4, rotate: -5 },
+          { doodle: { name: "chalk-speech-bubble" }, left: 50, width: 11, top: 3, rotate: -8 },
         ],
       },
       cta: { cta: "product-top", arrow: true, block: true, layout: "stack", trust: COMPACT, helpLine: true },

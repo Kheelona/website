@@ -57,17 +57,17 @@ export const HomeArt: Story = {
       sticker: { ...STICKER, tilt: 8 },
     },
     phoneLayers: [
-      { image: { src: sunSun, alt: "" }, left: 4, width: 20, top: 6 },
-      { image: { src: advikSticker, alt: "" }, left: 32, width: 34, bottom: 0 },
-      { image: { src: kheeluSticker, alt: "" }, left: 3, width: 33, bottom: 4, rotate: -6 },
-      { doodle: { name: "chalk-question-mark" }, left: 26, width: 8, top: 4, rotate: 10 },
+      { image: { src: sunSun, alt: "" }, left: 3, width: 18, bottom: 5 },
+      { image: { src: advikSticker, alt: "" }, left: 59, width: 34, bottom: 0 },
+      { image: { src: kheeluSticker, alt: "" }, left: 37, width: 30, bottom: 4, rotate: -6 },
+      { doodle: { name: "chalk-question-mark" }, left: 52, width: 8, top: 3, rotate: 10 },
     ],
     cta: cta("hero"),
   },
 };
 
 /** The product page: the word sticker top left, clear of Myra's face; under 720 px the phone composition (D061 item 1),
- *  its sticker in the board's free top corner. */
+ *  its sticker top left too. */
 export const Product: Story = {
   args: {
     variant: "product",
@@ -89,10 +89,10 @@ export const Product: Story = {
       sticker: { ...STICKER, tilt: -8 },
     },
     phoneLayers: [
-      { image: { src: starSun, alt: "" }, left: 4, width: 20, top: 6 },
-      { image: { src: myraSticker, alt: "" }, left: 32, width: 34, bottom: 0 },
-      { image: { src: kheeluSticker, alt: "" }, left: 3, width: 33, bottom: 4, rotate: -5 },
-      { doodle: { name: "chalk-speech-bubble" }, left: 24, width: 11, top: 4, rotate: -8 },
+      { image: { src: starSun, alt: "" }, left: 3, width: 18, bottom: 5 },
+      { image: { src: myraSticker, alt: "" }, left: 59, width: 34, bottom: 0 },
+      { image: { src: kheeluSticker, alt: "" }, left: 37, width: 30, bottom: 4, rotate: -5 },
+      { doodle: { name: "chalk-speech-bubble" }, left: 50, width: 11, top: 3, rotate: -8 },
     ],
     cta: cta("product-top"),
   },

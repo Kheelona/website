@@ -32,7 +32,11 @@ const tapViewport = VIEWPORTS[0];
  * predates D061, so the calibration blocks never measure Kheelu. */
 const kheeluPhone = (width: number, height: number): Viewport => ({ name: `phone-${width}x${height}`, width, height, isMobile: true, group: "phone" });
 const KHEELU_VIEWPORTS: readonly Viewport[] = [kheeluPhone(390, 844), kheeluPhone(412, 915)];
-const BUBBLE_VIEWPORTS: readonly Viewport[] = [kheeluPhone(360, 590), ...KHEELU_VIEWPORTS];
+/* The bubble also at every phone of the audit matrix (test plan §3): a phone's screen ends at any height, and wherever
+   it ends the bubble sits in the board's right-hand column, so the word sticker and Kheelu stay out of that column. */
+const BUBBLE_VIEWPORTS: readonly Viewport[] = [kheeluPhone(360, 590), ...KHEELU_VIEWPORTS, ...VIEWPORTS.filter((v) => v.group === "phone")].filter(
+  (v, i, all) => all.findIndex((w) => w.name === v.name) === i,
+);
 
 type Box = { top: number; bottom: number; left: number; right: number };
 

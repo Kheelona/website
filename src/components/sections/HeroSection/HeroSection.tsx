@@ -61,8 +61,17 @@ export function HeroSection(props: HeroSectionProps) {
                 {title}
                 {props.cta}
               </div>
-              {/* D061 item 1: the phone board first; hero-section.css shows it under 720 px, under the trust line. */}
-              {phoneLayers && <HeroBoard art={{ ...art, layers: phoneLayers }} sizes={PHONE_SIZES} ratio={PHONE_RATIO} className="ks-hero__phone-art" />}
+              {/* D061 item 1: the phone board first; hero-section.css shows it under 720 px, under the trust line. Its
+                  word sticker sits top left on both pages, out of the column the WhatsApp bubble covers (D050). */}
+              {phoneLayers && (
+                <HeroBoard
+                  art={{ ...art, layers: phoneLayers }}
+                  sizes={PHONE_SIZES}
+                  ratio={PHONE_RATIO}
+                  stickerClass="ks-hero-sticker"
+                  className="ks-hero__phone-art"
+                />
+              )}
               <HeroBoard
                 art={art}
                 sizes={phoneLayers ? FROM_TABLET_SIZES : undefined}

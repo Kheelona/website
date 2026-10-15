@@ -21,7 +21,9 @@
   right: 4%;
   top: 6%;
 }
-/* Product page: the word sticker sits top left, clear of the child's face (meet-kheelu.css:8, .mk-hero-sticker). */
+/* Product page: the word sticker sits top left, clear of the child's face (meet-kheelu.css:8, .mk-hero-sticker). The
+   phone board's sticker sits there too, on both pages (D061 item 1): out of the right-hand column, which the WhatsApp
+   bubble (D050) covers wherever the screen's bottom edge falls. */
 .ks-hero .kh-art .ks-hero-sticker {
   left: 5%;
   right: auto;
