@@ -137,6 +137,15 @@ const C4 = `A part-price in the pre-order button`;
 const C5 = `"Real pilot homes"`;
 const C6 = `"Backed by" over the programmes`;
 const C7 = `"Safety certified"`;
+/* The rows the expert clip added (D061 items 12-13; task 8c.6): one per idea. */
+const E1 = `"Dr. Chaitra", "Dr Chaitra"`;
+const E2 = `An expert's endorsement`;
+const E3 = `"Speaking fluently within weeks"`;
+const E4 = `"Their demand of phones plummeted"`;
+const E5 = `"The four walls of loneliness"`;
+const E6 = `"The vocab deficiency"`;
+const E7 = `"A biological trade-off"`;
+const E8 = `"Speech is the ultimate brain exercise"`;
 
 const APOS = "['’]";
 
@@ -247,6 +256,12 @@ const BACKED_BY = [
   `\\b${anyCase("(?:backed|supported|funded|endorsed|sponsored|invested in|incubated|accelerated|mentored)(?: by)?")}\\b[^.?!\\n]{0,40}?\\b${PROGRAMME}\\b`,
   `\\b${PROGRAMME}\\b[^.?!\\n]{0,40}?\\b${anyCase("(?:backs|backed|funds|funded|invests? in|invested in|endorses|endorsed|sponsors|sponsored)")}\\b`,
 ].join("|");
+/** Who an endorsement would cite (D061 items 12-13, task 8c.6): an expert, a therapist, a doctor or a specialist, one or
+ *  many, a child-development one too. A paediatrician is left out: the D025 line and the journal tell parents to talk to
+ *  theirs, and no endorsement reads "talk to". */
+const ENDORSER = `(?:child[- ]development )?(?:experts?|therapists?|doctors?|specialists?)`;
+/** Up to two small words before a span of time ("within a few weeks", "in just two months"). */
+const SOON = `(?:(?:a few|just|only|about|two|three|four|six|\\d+) ){0,2}`;
 /** Words just before a certification that deny it: "not yet safety certified". */
 const NOT_YET = `(?<!\\b(?:no|not|never|not yet|not been|isn${APOS}t|isn${APOS}t yet|aren${APOS}t|aren${APOS}t yet) )`;
 
@@ -341,6 +356,15 @@ export const BANNED_PHRASES: readonly BannedPhrase[] = [
   { id: "pilot-homes", kind: "claim", claimsRow: C5, pattern: /\bpilot[- ](?:homes?|households?|houses?)\b/i, planted: "Real pilot homes", why: "D057 item 2, D061: not every film was shot at home. \"Real pilot families\" (/terms, /privacy) and \"Real children in real homes.\" pass." },
   { id: "backed-by", kind: "claim", claimsRow: C6, pattern: new RegExp(BACKED_BY), planted: "Backed by top programs", why: "B26, D054 item 20, D061: the strip names the programmes only, with no relationship; \"Backed by\" reads as an investment claim (the live /team dropped it, V6 QA M1). The bare label is banned at a label's or a sentence's start (alone, before a colon or before \"top programmes\"); \"backed by\" top accelerators or incubators, or a named programme, anywhere. \"Recognised by.\" and advice \"backed by research\", \"by a large study\" or \"by experts\" pass. Compiled without `i` so the programmes keep their case (\"elevate\", \"inception\")." },
   { id: "safety-certified", kind: "claim", claimsRow: C7, pattern: new RegExp(`${NOT_YET}\\b(?:toy[- ])?safety[- ]certified\\b|${NOT_YET}\\bcertified (?:as )?(?:safe|child[- ]safe|kid[- ]safe|toy[- ]safe|non[- ]toxic)\\b|${NOT_YET}\\bcertified for (?:toy |child |children${APOS}s |kids${APOS} )?safety\\b|${NOT_YET}\\b(?:BIS|ISI)[- ](?:certified|approved|marked|licensed)\\b(?! (?:charger|adapter|power))`, "i"), planted: "Safety certified", why: "Claims §6, D061: Kheelu's toy-safety (BIS) licence is applied for, not granted. \"Toy-safety certification (BIS): applied for, not yet granted.\" and \"not yet safety certified\" pass." },
+  // ── The expert clip (D061 items 12-13; task 8c.6): never a doctor, an endorsement or the claims the cut leaves out ──
+  { id: "dr-chaitra", kind: "claim", claimsRow: E1, pattern: /\b(?:Dr|Doctor)\b\.?\s*Chaitra\b/i, planted: "Hey, I'm Dr. Chaitra.", why: "D061 item 13: our words never call her a doctor. Her credit is \"Chaitra, therapist and developmental coach\"; her coat and its badge are shown as they are (the founder's accepted risk). The video says it at 0:25, which the cut leaves out." },
+  { id: "expert-endorsement", kind: "claim", claimsRow: E2, pattern: new RegExp(`\\b${ENDORSER}[- ](?:approved|recommended|endorsed)\\b|\\b(?:approved|recommended|endorsed|reviewed|vetted) by (?:an? |our |the |leading |top )?${ENDORSER}\\b`, "i"), planted: "Recommended by an expert.", why: "D061 items 12-13 (amending D038 F9 for this video only): she is shown as an expert speaking about talk and screens in general, never as Kheelona's advisor and never endorsing Kheelu. Advice to talk to a doctor, \"backed by experts\" and \"Approved by the founder\" pass." },
+  { id: "fluent-within-weeks", kind: "claim", claimsRow: E3, pattern: new RegExp(`\\bfluent(?:ly)?\\b[^.?!\\n]{0,40}?\\b(?:within|in) ${SOON}(?:days?|weeks?|months?)\\b`, "i"), planted: "I watched kids who were previously quiet started speaking fluently within weeks.", why: "D061 item 12, D038 (no pilot results), D025: a speech result about Kheelu from the video's second half, which the cut leaves out. Being fluent in a language, or over the years, passes." },
+  { id: "phone-demand-plummeted", kind: "claim", claimsRow: E4, pattern: /\b(?:demand|asking|asks?) (?:of|for) (?:the |their |a |his |her )?(?:phones?|screens?|tablets?|devices?|mobiles?)\b[^.?!\n]{0,30}?\b(?:plummet\w*|drop\w*|fell|fall(?:s|en|ing)?|vanish\w*|disappear\w*|went down)\b/i, planted: "And the most amazing part, their demand of phones plummeted.", why: "D061 item 12, D038 (no pilot results): a results claim about Kheelu from the video's second half, which the cut leaves out. A child asking for a phone, said plainly, passes." },
+  { id: "four-walls-of-loneliness", kind: "claim", claimsRow: E5, pattern: /\bfour walls of loneliness\b/i, planted: "We are seeing a rise in what I call the four walls of loneliness in children nowadays.", why: "D061 item 12, D016: the video's own unanchored framing of children's development, from the part the cut leaves out." },
+  { id: "vocab-deficiency", kind: "claim", claimsRow: E6, pattern: /\bvocab(?:ulary)? deficienc(?:y|ies)\b/i, planted: "First, there's the vocab deficiency.", why: "D061 item 12, D016, D025: an unanchored deficit claim about children's language from the part the cut leaves out." },
+  { id: "biological-trade-off", kind: "claim", claimsRow: E7, pattern: /\bbiological trade[- ]?offs?\b/i, planted: "It's a biological trade-off.", why: "D061 item 12, D016: an unanchored brain claim about screen time from the part the cut leaves out." },
+  { id: "ultimate-brain-exercise", kind: "claim", claimsRow: E8, pattern: /\bultimate brain (?:exercise|workout)s?\b/i, planted: "Speech is the ultimate brain exercise.", why: "D061 item 12, D016 (brain wording): an unanchored brain claim from the part the cut leaves out." },
   // ── en-IN spelling (N24): src/content strings and rendered text only ──
   { id: "us-color", kind: "spelling", claimsRow: "N24", pattern: /\bcolor(?:s|ed|ful|ing|way|ways)?\b/i, planted: "Pick a color.", why: "en-IN: colour." },
   { id: "us-center", kind: "spelling", claimsRow: "N24", pattern: /\bcent(?:er|ers|ered|ering)\b/, allowSentence: /^center$/, planted: "Put it in the center.", why: "en-IN: centre. Proper nouns (\"Center on the Developing Child\", \"Synergy Center\") are capitalised and pass. A string that is only \"center\" is a layout value (a CTA block's `align`), not copy." },
