@@ -23,6 +23,18 @@
   color: var(--link);
   font-weight: 800; /* ds-weight-800: mockup.css:30 */
 }
+/* A help line's one link is a 44 x 44 tap target (task Q2.14; tasks.md SPA 4; first-screen.spec.ts "tap targets"): the
+   help line of every close and of the store, "Questions? Message us on WhatsApp.", whose link is too short since the
+   call came off (task Q2.3) to be read as a link inside running text. Its own padding, --space-3 above and below the
+   words (the 20 px body-s line makes a 44 px box; no bigger font), so the area and the focus ring are the link's.
+   Inline padding moves no line. A line with two links (/thanks, /setup's contact line) keeps the 28 px box above, as
+   task 7.1a ruled. Under a trust line the area meets the last few pixels of the trust links' invisible extensions
+   inside the --space-5 gap (the approved mockup's help links reached as far, mockup.css:31), never their words
+   (tap-areas.spec.ts). */
+.ks-help a:only-of-type {
+  padding-block: var(--space-3);
+  margin-block: calc(var(--space-3) * -1);
+}
 /* A help line right under a trust line keeps clear of the trust links' tap areas (task 7.1a, B1): each reaches 12 px
    above and below its link (trust-line.css), so the two lines sit two extensions apart, --space-5 (24 px). Here in
    block flow (the heroes of Home and the product page, Home's close, the product page's close); the grids that space

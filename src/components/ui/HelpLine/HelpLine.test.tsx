@@ -1,5 +1,7 @@
 import { render, screen } from "@testing-library/react";
+import postcss, { type Rule } from "postcss";
 import { describe, expect, it } from "vitest";
+import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { HelpLine } from "./HelpLine";
 
 const icon = <svg className="kh-icon" data-icon="whatsapp-logo" aria-hidden="true" />;
@@ -99,5 +101,56 @@ describe("HelpLine", () => {
     expect(p.className).toBe("kh-body-s ks-help ks-store-head__help");
     expect(p.querySelector("svg")).toBeNull();
     expect(p.textContent).toBe("Need help? WhatsApp or call +91 91875 46483");
+  });
+});
+
+/* Task Q2.14 (tasks.md SPA 4; first-screen.spec.ts "tap targets"): a help line's one link ("Questions? Message us on
+   WhatsApp.", every close's and the store's) is a 44 x 44 target by its own padding, --space-3 above and below its words
+   (no bigger font). A line with two links (/thanks, /setup's contact line) keeps the 28 px link box of task 7.1a, so a
+   link's area never lies over the words of the link on the line above it. The rules are read from help-line.css and
+   matched against the rendered lines. */
+describe("HelpLine: the tap target", () => {
+  const rules = new Map<string, Record<string, string>>();
+  postcss.parse(readRepoFile("src/components/ui/HelpLine/help-line.css")).walkRules((rule: Rule) => {
+    for (const selector of rule.selectors) {
+      const decls: Record<string, string> = { ...rules.get(selector) };
+      rule.walkDecls((decl) => void (decls[decl.prop] = decl.value));
+      rules.set(selector, decls);
+    }
+  });
+  /** The padding a link gets from the last rule that matches it, as the cascade gives it (equal origin, later wins). */
+  const paddingOf = (link: Element) => [...rules].filter(([selector, decls]) => link.matches(selector) && decls["padding-block"]).at(-1)?.[1];
+
+  it("pads a help line's one link to a 44 px target with DS space tokens, its reach --space-3 above and below", () => {
+    const { container } = render(
+      <HelpLine
+        icon={icon}
+        lead="Questions?"
+        contact={
+          <>
+            <a href="https://wa.me/919187546483">Message us on WhatsApp</a>.
+          </>
+        }
+      />,
+    );
+    const link = container.querySelector("a")!;
+    expect(paddingOf(link)).toEqual({ "padding-block": "var(--space-3)", "margin-block": "calc(var(--space-3) * -1)" });
+  });
+
+  it("keeps the 28 px link box on a line with two links, whose areas would lie over each other's words (task 7.1a)", () => {
+    const { container } = render(
+      <HelpLine
+        size="body"
+        contact={
+          <>
+            <a href="https://wa.me/919187546483">Message us on WhatsApp</a>, quoting your order number, or email{" "}
+            <a href="mailto:hello@kheelona.com">hello@kheelona.com</a>.
+          </>
+        }
+      />,
+    );
+    for (const link of container.querySelectorAll("a")) {
+      expect(paddingOf(link), link.textContent!).toMatchObject({ "padding-block": "var(--space-1)", "margin-block": "calc(var(--space-1) * -1)" });
+    }
   });
 });
