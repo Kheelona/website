@@ -8,7 +8,6 @@ import {
 import { DELIVERY_SCHEMA_DATE, DELIVERY_TEXT } from "@/content/en-IN/delivery";
 import { offerCopy } from "@/content/en-IN/offer";
 import type { Offer, OfferCard, OfferCopy, OfferMode, OfferShare, PriceKey } from "@/content/types";
-import { pickMode } from "@/lib/content/mode";
 import { toPlainText } from "@/lib/content/plain-text";
 import { formatInr } from "@/lib/format/inr";
 
@@ -44,7 +43,7 @@ export function offerPrices(mode: OfferMode): Readonly<Record<PriceKey, string>>
 }
 
 function offerCard(mode: OfferMode, copy: OfferCopy): OfferCard {
-  const card = { product: copy.card.product, priceNote: pickMode(copy.card.priceNote, mode), perks: copy.card.perks };
+  const card = { product: copy.card.product, perks: copy.card.perks };
   /* Full mode has no advance, so its card has no split (DS gap G-08), and no later price: the later price is the price
      then (D061 item 3). */
   if (mode !== "token") return card;
@@ -67,6 +66,7 @@ export function buildOffer(mode: OfferMode, copy: OfferCopy = offerCopy): Offer 
     headlinePaise: headlinePaise(mode),
     prices: offerPrices(mode),
     sentence: copy.sentence[mode],
+    priceLine: copy.priceLine[mode],
     sticky: copy.sticky[mode],
     card: offerCard(mode, copy),
     plus: copy.plus,

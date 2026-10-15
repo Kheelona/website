@@ -5,9 +5,10 @@ import { offerWords, PriceSentence } from "@/components/ui/PriceSentence/PriceSe
 
 /**
  * The DS OfferCard (`kh-offer`), composed for the live mode (architecture §5.2, ADR-005, G-08): the product, the
- * headline price and its note, the token-mode split (what is paid when), the perks, the pre-order button and the
- * price sentence as fine print. In full mode the split is left out, whatever is passed (DS gap G-08: the DS card
- * always draws it). Home's close (home.html fold 9) and the product page (meet-kheelu.html fold 3).
+ * headline price, the token-mode split (what is paid when), the perks, the pre-order button and the short price line as
+ * fine print. In full mode the split is left out, whatever is passed (DS gap G-08: the DS card always draws it). Home's
+ * close (home.html fold 9) and the product page (meet-kheelu.html fold 3). The amount takes no note beside it since task
+ * Q2.8 (D065 item 3: no "incl. GST" on the selling pages; the split's two rows keep their amounts).
  *
  * The amounts and the offer's own strings come from the offer view model; the perks come from the offer's card
  * for the placement (icon slot: `Icon`; text slot: `RichText`); the button slot takes `PreorderButton`, which alone
@@ -43,7 +44,6 @@ export function OfferCard({ offer, perks, action, label, id, className }: OfferC
       <p className="kh-offer__product">{offer.card.product}</p>
       <div className="kh-offer__prices">
         <span className="kh-offer__price">{offer.prices.headline}</span>
-        <span className="kh-body-s">{offerWords(offer.card.priceNote, offer, "OfferCard price note")}</span>
         {later !== undefined && <p className="kh-body-s ks-offer__later">{offerWords(later, offer, "OfferCard later price")}</p>}
       </div>
       {split.length > 0 && (

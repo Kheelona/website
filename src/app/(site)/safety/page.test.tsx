@@ -9,8 +9,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { CLAIM_FIXES, COPY_FIXES, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
-import { readRepoFile } from "../../../../test/e2e/support/repo";
-import { words } from "../../../../test/support/mockup-compare";
+import { parseMockup, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 
 /* The /safety route (task 5.3; structure §3.1, §5): the page module through PageTemplate with the live offer, thin, and
@@ -32,7 +31,9 @@ beforeAll(async () => {
 const SOURCE = readFileSync("src/app/(site)/safety/page.tsx", "utf8");
 const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 
-const mockupDoc = new DOMParser().parseFromString(readRepoFile("mockup/safety.html"), "text/html");
+/* Through the mockup comparison harness, so the close's price line and trust line read as task Q2.8 rules them (D065
+ * item 3; the harness's withPriceLine). */
+const mockupDoc = parseMockup("safety");
 const frozenMain = mockupDoc.querySelector("main")!;
 /* Task 7.1b's copy fixes (V19), then task 8b.1's claim fixes (V28; D058) in a pass of their own. */
 const mockupMain = withFacts(withFacts(frozenMain, COPY_FIXES.safety.edits), CLAIM_FIXES.safety.edits);
@@ -152,9 +153,9 @@ describe("/safety: the rendered page against the approved mockup", () => {
   it("changes only the price sentence in full mode (D028; safety copy, fold 8)", async () => {
     const token = await renderPage(buildOffer("token"));
     const full = await renderPage(buildOffer("full"));
-    const sentence = (offer: Offer) => toPlainText(offer.sentence, offer);
+    const sentence = (offer: Offer) => toPlainText(offer.priceLine, offer);
     expect(full.main.querySelector("#close .ks-price")?.textContent).toBe(sentence(buildOffer("full")));
-    expect(full.main.querySelector("#close .ks-price")?.textContent).toBe("₹7,999 (incl. GST), paid in full when you order.");
+    expect(full.main.querySelector("#close .ks-price")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
     const others = (main: Element) => {
       const copy = visible(main);
       copy.querySelectorAll(".ks-price").forEach((n) => n.remove());

@@ -19,6 +19,16 @@ export const trustItems = {
     label: `${RETURN_DAYS}-day returns, no questions asked`,
     href: "/refund#returns",
   },
+  /* The one risk-reversal line (task Q2.8; D065 item 3, the main session's ruling 3 of the selling update, 2026-10-15),
+     in the same words everywhere it shows: the refund page's first promise (its part "Cancelling before dispatch.":
+     everything paid is refundable in full before dispatch), then the returns window from the policy. It opens that
+     part, which the returns part follows. The returns promise's icon: it takes that promise's place beside the buttons. */
+  "risk-reversal": {
+    id: "risk-reversal",
+    icon: "arrow-counter-clockwise",
+    label: `Full refund until dispatch · ${RETURN_DAYS}-day returns`,
+    href: "/refund#before-dispatch",
+  },
   "warranty-6-months": {
     id: "warranty-6-months",
     icon: "shield-check",
@@ -36,11 +46,13 @@ export const trustItems = {
 
 export type TrustId = keyof typeof trustItems;
 
-/** The compact micro-line beside the inline CTAs and on most closes: delivery and returns, the
- *  two items brief §9.1 puts next to every CTA (home.md "CTA block"). */
-export const TRUST_COMPACT: readonly TrustId[] = ["deliveries-start", "returns-7-days"];
+/** The compact micro-line beside the inline CTAs, on most closes, in the drawer's note and on the store's first screen:
+ *  delivery and returns, the two items brief §9.1 puts next to every CTA (home.md "CTA block"). Since task Q2.8 the
+ *  returns promise is the risk-reversal line (D065 item 3). */
+export const TRUST_COMPACT: readonly TrustId[] = ["deliveries-start", "risk-reversal"];
 
-/** The full row at Home's close and on the store (home.md "CTA block"; CMO pass M14). */
+/** The full row at Home's close and on the store, beside the pay button (home.md "CTA block"; CMO pass M14): the
+ *  returns promise as approved, so the checkout's row is unchanged (task Q2.8). */
 export const TRUST_FULL: readonly TrustId[] = ["returns-7-days", "warranty-6-months", "payment-methods", "delivery-included"];
 
 /** The three checkable facts under the safety folds of Home and the product page (not linked). */

@@ -283,10 +283,9 @@ describe("the product page as rendered (token mode)", () => {
 describe("the product page in full mode", () => {
   const { main } = rendered(FULL);
 
-  it("prints the full-mode price sentence beside every chilli button and drops the split", () => {
-    expect([...main.querySelectorAll(".ks-price")].map((p) => p.textContent)).toEqual(
-      Array(3).fill("₹7,999 (incl. GST), paid in full when you order."),
-    );
+  it("prints the full-mode price line beside every chilli button and drops the split", () => {
+    // The short price line (D065 item 3; task Q2.8).
+    expect([...main.querySelectorAll(".ks-price")].map((p) => p.textContent)).toEqual(Array(3).fill("₹7,999 in total, paid in full when you order."));
     expect(main.querySelector(".kh-offer__split")).toBeNull();
   });
 

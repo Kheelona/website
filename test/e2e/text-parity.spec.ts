@@ -1,5 +1,5 @@
 import { PARITY_TARGET } from "./support/env";
-import { TEXT_DEVIATIONS, parityElsewhere } from "./support/deviations";
+import { parityElsewhere, textDeviations } from "./support/deviations";
 import { expect, forceMotionEnd, gateRouteGroup, test } from "./support/fixtures";
 import { mainText, sentenceDiff, sentences } from "./support/parity";
 import { mockupRoutes } from "./support/routes";
@@ -17,7 +17,8 @@ import { APPROVED_WIDTHS } from "./support/viewports";
 const vp = APPROVED_WIDTHS[1];
 
 function unexplained(slug: string, missing: string[], extra: string[]) {
-  const rules = TEXT_DEVIATIONS[slug] ?? [];
+  // The rule every page shares (task Q2.8's price lines), then the page's own.
+  const rules = textDeviations(slug);
   const applied: string[] = [];
   const keepMissing = missing.filter((s) => {
     const rule = rules.find((r) => r.mockup.test(s));

@@ -45,6 +45,7 @@ describe("StoreTop", () => {
     expect(h1.closest("section")).toHaveAttribute("aria-labelledby", h1.id);
   });
 
+  // The checkout keeps D028's sentence, GST and the breakdown with it, in both modes (D065 item 3; task Q2.8).
   it("puts the price sentence in the first screen with the offer's amounts, in both modes", () => {
     const { rerender } = render(<StoreTop content={content} offer={token} newTabNote={NOTE} />);
     expect(document.getElementById("store-price")).toHaveTextContent(
@@ -57,11 +58,12 @@ describe("StoreTop", () => {
   it("opens each trust item's terms on the marketing site in a new tab, and says so to screen readers", () => {
     render(<StoreTop content={content} offer={token} newTabNote={NOTE} />);
     const links = within(screen.getByRole("list")).getAllByRole("link");
+    // The store's top marketing line takes the one risk-reversal line (task Q2.8; D065 item 3).
     expect(links.map((a) => [a.getAttribute("href"), a.getAttribute("target"), a.getAttribute("rel")])).toEqual([
       [`${MARKETING_ORIGIN}/shipping#when`, "_blank", "noopener"],
-      [`${MARKETING_ORIGIN}/refund#returns`, "_blank", "noopener"],
+      [`${MARKETING_ORIGIN}/refund#before-dispatch`, "_blank", "noopener"],
     ]);
-    expect(links.map((a) => a.textContent)).toEqual([`Deliveries start mid-November${NOTE}`, `7-day returns, no questions asked${NOTE}`]);
+    expect(links.map((a) => a.textContent)).toEqual([`Deliveries start mid-November${NOTE}`, `Full refund until dispatch · 7-day returns${NOTE}`]);
   });
 
   it("loads the small Kheelu at once, as the first screen's one image (eager, fetchpriority high), at its rendered widths", () => {

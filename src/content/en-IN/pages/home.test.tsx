@@ -338,10 +338,11 @@ describe("Home: the page's FAQPage (wave-4 close; architecture §9.2; home.md fo
 describe("Home: full mode (ADR-005)", () => {
   const main = FULL.doc.querySelector("main")!;
 
-  it("prints the paid-in-full sentence beside every chilli button, and no advance anywhere", () => {
+  it("prints the paid-in-full price line beside every chilli button, and no advance anywhere", () => {
     const sentences = all(main, ".ks-price, .kh-offer__fine").map((p) => p.textContent);
     expect(sentences.length).toBeGreaterThanOrEqual(4);
-    for (const s of sentences) expect(s).toBe("₹7,999 (incl. GST), paid in full when you order.");
+    // The short price line (D065 item 3; task Q2.8).
+    for (const s of sentences) expect(s).toBe("₹7,999 in total, paid in full when you order.");
     expect(main.querySelector(".kh-offer__split")).toBeNull();
     expect(main.textContent).not.toContain("₹499");
     expect(main.textContent).not.toContain("₹4,500");
@@ -350,8 +351,8 @@ describe("Home: full mode (ADR-005)", () => {
   it("keeps every other word and fold", () => {
     expect(folds(main).map((f) => f.getAttribute("aria-labelledby"))).toEqual(LABELS);
     for (const label of ["ask-title", "why-title", "what-title", "see-title", "compare-title", "guides-title"]) {
-      expect(words(fold(main, label)).replaceAll("₹7,999 (incl. GST), paid in full when you order.", "")).toBe(
-        words(fold(BUILT, label)).replaceAll("Reserve yours for ₹499 today, refundable until dispatch, then pay ₹4,500 before delivery: ₹4,999 in total (incl. GST).", ""),
+      expect(words(fold(main, label)).replaceAll("₹7,999 in total, paid in full when you order.", "")).toBe(
+        words(fold(BUILT, label)).replaceAll("₹499 today, refundable. ₹4,999 in total.", ""),
       );
     }
   });

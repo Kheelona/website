@@ -8,7 +8,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { CLAIM_FIXES, KHEELONA_PLUS } from "../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
-import { mockupRoute, trustLinkHref } from "../../../../test/support/mockup-compare";
+import { mockupRoute, parseMockup, trustLinkHref } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 import { faqs } from "../faqs";
 import { films, filmsStrip } from "../films";
@@ -31,7 +31,10 @@ const full = buildOffer("full");
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const plain = (copy: Copy) => toPlainText(copy, token);
 
-const mockup = new DOMParser().parseFromString(readRepoFile("mockup/store.html"), "text/html");
+/* Through the mockup comparison harness: the first screen's trust line takes the risk-reversal line (task Q2.8, D065 item
+ * 3, which lets the store's top marketing line take it); the store's price and everything at the checkout stay as
+ * approved. */
+const mockup = parseMockup("store");
 const main = mockup.querySelector("main")!;
 function the(selector: string, root: ParentNode = main): Element {
   const el = root.querySelector(selector);

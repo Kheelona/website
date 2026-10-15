@@ -240,7 +240,7 @@ describe("CloseSection: full mode (ADR-005)", () => {
     const PRICE = /<p( id="[^"]*")? class="kh-body-s ks-price">[^<]*<\/p>/;
     const token = renderToStaticMarkup(<CloseSection {...config} {...context(TOKEN)} />);
     const full = renderToStaticMarkup(<CloseSection {...config} {...context(FULL)} />);
-    expect(full.match(PRICE)?.[0]).toContain("₹7,999 (incl. GST), paid in full when you order.");
+    expect(full.match(PRICE)?.[0]).toContain("₹7,999 in total, paid in full when you order.");
     expect(full.replace(PRICE, "")).toBe(token.replace(PRICE, ""));
   });
 });
@@ -266,7 +266,7 @@ describe("CenterClose (close-fold.tsx)", () => {
     const PRICE = /<p( id="[^"]*")? class="kh-body-s ks-price">[^<]*<\/p>/;
     const token = renderToStaticMarkup(<CenterClose {...config} {...context(TOKEN)} />);
     const full = renderToStaticMarkup(<CenterClose {...config} {...context(FULL)} />);
-    expect(full.match(PRICE)?.[0]).toContain("₹7,999 (incl. GST), paid in full when you order.");
+    expect(full.match(PRICE)?.[0]).toContain("₹7,999 in total, paid in full when you order.");
     expect(full.replace(PRICE, "")).toBe(token.replace(PRICE, ""));
   });
 });

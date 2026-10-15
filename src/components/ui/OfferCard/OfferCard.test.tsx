@@ -4,7 +4,9 @@ import type { Offer } from "@/content/types";
 import { OfferCard } from "./OfferCard";
 
 /* Hand-written offers in both modes (ADR-005). The token-mode card carries the split; the view model leaves it out
-   in full mode (src/content/types.ts OfferCard.split), and the card must not show one even if it is passed. */
+   in full mode (src/content/types.ts OfferCard.split), and the card must not show one even if it is passed. Since task
+   Q2.8 (D065 item 3: no GST on the selling pages) the amount takes no note and the fine print is the short price line;
+   the split's two rows keep their amounts. */
 const SPLIT = [
   { label: "Today, refundable", price: "token" },
   { label: "Before delivery", price: "balance" },
@@ -15,8 +17,9 @@ const TOKEN: Offer = {
   prices: { token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999", launch: "₹4,999" },
   sentence:
     "Reserve yours for {price:token} today, refundable until dispatch, then pay {price:balance} before delivery: {price:headline} in total (incl. GST).",
-  sticky: { big: "{price:token} today", small: "refundable · {price:headline} total (incl. GST)" },
-  card: { product: "Kheelu", priceNote: "incl. GST", split: SPLIT, perks: { home: [], product: [] } },
+  priceLine: "{price:token} today, refundable. {price:headline} in total.",
+  sticky: { big: "{price:token} today", small: "refundable · {price:headline} in total" },
+  card: { product: "Kheelu", split: SPLIT, perks: { home: [], product: [] } },
   plus: "Every Kheelu comes with 6 months of Kheelona+.",
   delivery: "Deliveries start mid-November",
   availabilityStarts: "2026-11-15",
@@ -27,7 +30,8 @@ const FULL: Offer = {
   headlinePaise: 799_900,
   prices: { ...TOKEN.prices, headline: "₹7,999" },
   sentence: "{price:full} (incl. GST), paid in full when you order.",
-  card: { product: "Kheelu", priceNote: "incl. GST", perks: { home: [], product: [] } },
+  priceLine: "{price:full} in total, paid in full when you order.",
+  card: { product: "Kheelu", perks: { home: [], product: [] } },
 };
 
 const icon = (name: string) => <svg className="kh-icon" data-icon={name} aria-hidden="true" />;
@@ -59,11 +63,13 @@ describe("OfferCard", () => {
       "P.kh-offer__fine",
     ]);
     expect(el.querySelector(".kh-offer__product")?.textContent).toBe("Kheelu");
-    expect(el.querySelector(".kh-offer__prices")?.innerHTML).toBe('<span class="kh-offer__price">₹4,999</span><span class="kh-body-s">incl. GST</span>');
+    expect(el.querySelector(".kh-offer__prices")?.innerHTML).toBe('<span class="kh-offer__price">₹4,999</span>');
     expect(el.querySelector(".kh-offer__split")?.innerHTML).toBe("<span>Today, refundable</span><b>₹499</b><span>Before delivery</span><b>₹4,500</b>");
-    expect(el.querySelector(".kh-offer__fine")?.textContent).toBe(
-      "Reserve yours for ₹499 today, refundable until dispatch, then pay ₹4,500 before delivery: ₹4,999 in total (incl. GST).",
-    );
+    expect(el.querySelector(".kh-offer__fine")?.textContent).toBe("₹499 today, refundable. ₹4,999 in total.");
+  });
+
+  it("says no GST anywhere on the card, in either mode (D065 item 3)", () => {
+    for (const offer of [TOKEN, FULL]) expect(card(<OfferCard offer={offer} perks={PERKS} action={action} />).textContent).not.toMatch(/GST/);
   });
 
   it("lists each perk as icon, then its words in a span", () => {
@@ -79,8 +85,8 @@ describe("OfferCard", () => {
   it("omits the split in full mode and shows the full price and the full-mode sentence (G-08)", () => {
     const el = card(<OfferCard offer={FULL} perks={PERKS} action={action} />);
     expect(el.querySelector(".kh-offer__split")).toBeNull();
-    expect(el.querySelector(".kh-offer__price")?.textContent).toBe("₹7,999");
-    expect(el.querySelector(".kh-offer__fine")?.textContent).toBe("₹7,999 (incl. GST), paid in full when you order.");
+    expect(el.querySelector(".kh-offer__prices")?.innerHTML).toBe('<span class="kh-offer__price">₹7,999</span>');
+    expect(el.querySelector(".kh-offer__fine")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
   });
 
   it("never shows a split in full mode, even if one is passed by mistake", () => {
@@ -108,7 +114,7 @@ describe("OfferCard", () => {
   it("prints the later price in token mode as a plain line under the amount, in the card's later-price place", () => {
     const el = card(<OfferCard offer={withLater(TOKEN)} perks={PERKS} action={action} />);
     expect(el.querySelector(".kh-offer__prices")?.innerHTML).toBe(
-      '<span class="kh-offer__price">₹4,999</span><span class="kh-body-s">incl. GST</span>' +
+      '<span class="kh-offer__price">₹4,999</span>' +
         '<p class="kh-body-s ks-offer__later">₹4,999 for the first 500 units. ₹7,999 once they are gone.</p>',
     );
   });
@@ -136,7 +142,9 @@ describe("OfferCard", () => {
   });
 
   it("refuses rich text in the offer's own strings instead of flattening it", () => {
-    const linked = { ...TOKEN, card: { ...TOKEN.card, priceNote: "[incl. GST](/terms)" } };
-    expect(() => render(<OfferCard offer={linked} perks={PERKS} action={action} />)).toThrow(/OfferCard price note/);
+    const linked = { ...TOKEN, card: { ...TOKEN.card, split: [{ label: "[Today](/terms)", price: "token" as const }] } };
+    expect(() => render(<OfferCard offer={linked} perks={PERKS} action={action} />)).toThrow(/OfferCard split label/);
+    const fine = { ...TOKEN, priceLine: "{hand:Today}" };
+    expect(() => render(<OfferCard offer={fine} perks={PERKS} action={action} />)).toThrow(/words and amounts/);
   });
 });

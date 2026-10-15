@@ -17,10 +17,11 @@ const token: Offer = {
   prices: { token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999", launch: "₹4,999" },
   sentence:
     "Reserve yours for {price:token} today, refundable until dispatch, then pay {price:balance} before delivery: {price:headline} in total (incl. GST).",
-  sticky: { big: "{price:token} today", small: "refundable · {price:headline} total (incl. GST)" },
+  /* D065 item 3 (task Q2.8): the short price line is the card's fine print; the amount takes no note. */
+  priceLine: "{price:token} today, refundable. {price:headline} in total.",
+  sticky: { big: "{price:token} today", small: "refundable · {price:headline} in total" },
   card: {
     product: "Kheelu",
-    priceNote: "incl. GST",
     split: [
       { label: "Today, refundable", price: "token" },
       { label: "Before delivery", price: "balance" },
@@ -40,7 +41,9 @@ const full: Offer = {
   headlinePaise: 799_900,
   prices: { ...token.prices, headline: "₹7,999" },
   sentence: "{price:full} (incl. GST), paid in full when you order.",
-  card: { product: "Kheelu", priceNote: "incl. GST", perks: { home: [], product: [] } },
+  priceLine: "{price:full} in total, paid in full when you order.",
+  sticky: { big: "{price:full}", small: "Paid in full · {delivery}" },
+  card: { product: "Kheelu", perks: { home: [], product: [] } },
 };
 
 /* Stand-in for PreorderButton (task 2.2): its markup. */

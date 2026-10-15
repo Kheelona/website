@@ -2,10 +2,12 @@ import { describe, expect, it } from "vitest";
 import { ICON_PATHS, type IconName } from "@/assets/icons.generated";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
+import { PRICE_LINE } from "../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../test/e2e/support/repo";
 import { refundPage } from "./legal/refund";
 import { shippingPage } from "./legal/shipping";
 import { termsPage } from "./legal/terms";
+import { RETURN_DAYS } from "./policies";
 import { SAFETY_FACTS, TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "./trust";
 
 /* Trust items (architecture §6.1, strategy §3.2; task 2.1 acceptance 2): each a short promise
@@ -13,7 +15,12 @@ import { SAFETY_FACTS, TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } fro
  * compact micro-line and the full four-item row). Checked item by item against the approved
  * mockups: label, page and icon. Since task 7.1a (CMO built-page review C, m8) each link opens the
  * part of its terms page that keeps the promise, where the mockup links the page's top: the page is
- * the mockup's, the part one its legal module prints (checked below). */
+ * the mockup's, the part one its legal module prints (checked below).
+ *
+ * Task Q2.8 (D065 item 3; the main session's ruling 3 of the selling update, 2026-10-15): one risk-reversal line, in the
+ * same words everywhere it shows, "Full refund until dispatch · 7-day returns", built from the refund page's promise and
+ * the returns window. It takes the returns promise's place in the compact line beside every button (and the store's first
+ * screen); the full row (Home's close, the store's pay button) keeps the returns promise as approved. */
 
 const doc = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
@@ -66,6 +73,7 @@ describe("trust items", () => {
     expect(Object.fromEntries(Object.values(trustItems).map((item) => [item.id, item.href]))).toEqual({
       "deliveries-start": "/shipping#when",
       "returns-7-days": "/refund#returns",
+      "risk-reversal": "/refund#before-dispatch",
       "warranty-6-months": "/refund#faulty",
       "payment-methods": "/terms#payment",
       "delivery-included": "/shipping#where",
@@ -81,13 +89,50 @@ describe("trust items", () => {
   });
 });
 
+/** The compact line as the approved mockups print it (Gate A, D046), before task Q2.8's risk-reversal line took the
+ *  returns promise's place. */
+const APPROVED_COMPACT: readonly TrustId[] = ["deliveries-start", "returns-7-days"];
+
+describe("the risk-reversal line (task Q2.8; D065 item 3)", () => {
+  const item = trustItems["risk-reversal"];
+
+  it("reads the one line in the task's words, its returns window from the policy", () => {
+    expect(item.label).toBe(`Full refund until dispatch · ${RETURN_DAYS}-day returns`);
+    expect(toPlainText(item.label, offer)).toBe("Full refund until dispatch · 7-day returns");
+  });
+
+  it("opens the refund page's part that keeps its first promise, which says the refund is in full before dispatch", () => {
+    const [, part] = item.href.split("#");
+    const promise = refundPage.parts.find((p) => p.id === part);
+    expect(promise?.title).toBe("Cancelling before dispatch.");
+    expect(JSON.stringify(promise?.blocks)).toContain("refundable in full at any time before your Kheelu is dispatched");
+  });
+
+  it("draws the returns promise's icon, so it reads as that promise's place in the line", () => {
+    expect(item.icon).toBe(trustItems["returns-7-days"].icon);
+  });
+
+  it("is the build side of the price-line deviation's trust words (deviations.ts PRICE_LINE, which spells them out)", () => {
+    expect(PRICE_LINE.returns).toEqual({
+      mockup: toPlainText(trustItems["returns-7-days"].label, offer),
+      build: toPlainText(item.label, offer),
+    });
+    expect(PRICE_LINE.delivery).toBe(toPlainText(trustItems["deliveries-start"].label, offer));
+  });
+
+  it("takes the returns promise's place in the compact line beside every button; the full row keeps the returns promise", () => {
+    expect(TRUST_COMPACT).toEqual(APPROVED_COMPACT.map((id) => (id === "returns-7-days" ? "risk-reversal" : id)));
+    expect(TRUST_FULL).toEqual(["returns-7-days", "warranty-6-months", "payment-methods", "delivery-included"]);
+  });
+});
+
 describe("the rows, as the approved mockups print them", () => {
   const home = doc("home");
   const homeRows = Array.from(home.querySelectorAll("ul.kh-trustline.mk-trust"));
 
   it("the compact micro-line beside every inline CTA (Home hero, fold 2, fold 6)", () => {
     expect(homeRows.length).toBeGreaterThanOrEqual(4);
-    for (const row of homeRows.slice(0, 3)) expect(rowOf(row)).toEqual(rowFor(TRUST_COMPACT));
+    for (const row of homeRows.slice(0, 3)) expect(rowOf(row)).toEqual(rowFor(APPROVED_COMPACT));
   });
 
   it("the full four-item row at the close (Home fold 9)", () => {
@@ -96,14 +141,14 @@ describe("the rows, as the approved mockups print them", () => {
 
   it("the same rows on the store page, whose links open in a new tab (store.html)", () => {
     const rows = Array.from(doc("store").querySelectorAll("ul.kh-trustline.mk-trust"));
-    expect(rowOf(rows[0])).toEqual(rowFor(TRUST_COMPACT));
+    expect(rowOf(rows[0])).toEqual(rowFor(APPROVED_COMPACT));
     expect(rowOf(rows[1])).toEqual(rowFor(TRUST_FULL));
   });
 
   it("the compact line on every other page's close", () => {
     for (const slug of ["safety", "ai-toys-for-kids-in-india", "stories", "team", "contact", "404"]) {
       const row = doc(slug).querySelector("ul.kh-trustline.mk-trust");
-      expect(rowOf(row!), slug).toEqual(rowFor(TRUST_COMPACT));
+      expect(rowOf(row!), slug).toEqual(rowFor(APPROVED_COMPACT));
     }
   });
 

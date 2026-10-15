@@ -21,8 +21,9 @@ describe("(site) layout", () => {
     const { default: SiteLayout } = await import("./layout");
     render(await SiteLayout({ children: <p>the page</p> }));
     expect(screen.getByRole("main")).toHaveTextContent("the page");
-    expect(document.querySelector(".kh-drawer__note")?.textContent).toBe("₹7,999 (incl. GST), paid in full when you order.");
-    expect(document.querySelector(".kh-buybar__big")?.textContent).toBe("₹7,999 (incl. GST)");
+    // The short price line and the bar's amount without GST (D065 item 3; task Q2.8).
+    expect(document.querySelector(".kh-drawer__note")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
+    expect(document.querySelector(".kh-buybar__big")?.textContent).toBe("₹7,999");
   });
 
   it("gives the buy bar its paths: Home has it, Setup does not", async () => {

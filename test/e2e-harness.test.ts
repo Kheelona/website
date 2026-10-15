@@ -2,7 +2,16 @@ import type { Page } from "@playwright/test";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ARTICLE_SLUGS as PLAN_ARTICLES } from "@/content/en-IN/routes";
 import { ARTICLE_CLOSES, stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
-import { TAP_AREA_HIDDEN, VISUAL_HIDDEN, hiddenCss, hideDeviations, sharedHiddenCss, visualHidden } from "./e2e/support/deviations";
+import {
+  PRICE_LINE_HIDDEN,
+  SHARED_HIDDEN,
+  TAP_AREA_HIDDEN,
+  VISUAL_HIDDEN,
+  hiddenCss,
+  hideDeviations,
+  sharedHiddenCss,
+  visualHidden,
+} from "./e2e/support/deviations";
 import { ARTICLE_SLUGS, articleClose, NOT_FOUND_PATH, snapshotPosts, sweepRoutes } from "./e2e/support/routes";
 
 /* The e2e harness's shared pieces that task 4.9 item 6 changed, where they can be read without a browser.
@@ -84,21 +93,23 @@ describe("hideDeviations", () => {
   });
 
   /* Since task 7.1a every page shares one rule (TAP_AREA_HIDDEN, the tap-area row V23: a help line under a trust line sits
-     lower in the build), applied before the page's own, so no page is without one. */
+     lower in the build), and since task Q2.8 a second (PRICE_LINE_HIDDEN: the price lines D065 item 3 rewords), applied
+     before the page's own, so no page is without them. */
   it("applies the rules every page shares to a page with none of its own on that side, and prints exactly those", async () => {
     const log = vi.spyOn(console, "log").mockImplementation(() => {});
     const { page, styles } = fakePage();
     expect(VISUAL_HIDDEN.contact ?? []).toEqual([]);
     expect(hiddenCss("contact", "build")).toBe("");
     await hideDeviations(page, "contact", "build", "visual-parity");
-    const shared = TAP_AREA_HIDDEN.filter((r) => r.side === "build");
+    const shared = SHARED_HIDDEN.filter((r) => r.side === "build");
     expect(styles).toEqual([`${shared.map((r) => r.selector).join(", ")} { display: none !important; }`]);
     expect(styles).toEqual([sharedHiddenCss("build")]);
     expect(log.mock.calls.map(([line]) => String(line))).toEqual(shared.map((r) => `[visual-parity] contact: ${r.selector} hidden in the build (${r.approvedBy}): ${r.reason}`));
   });
 
-  it("puts the shared rules first, then the page's own", () => {
-    expect(visualHidden("store").slice(0, TAP_AREA_HIDDEN.length)).toEqual(TAP_AREA_HIDDEN);
-    expect(visualHidden("store").slice(TAP_AREA_HIDDEN.length)).toEqual(VISUAL_HIDDEN.store);
+  it("puts the shared rules first, the tap areas' then the price lines', then the page's own", () => {
+    expect(SHARED_HIDDEN).toEqual([...TAP_AREA_HIDDEN, ...PRICE_LINE_HIDDEN]);
+    expect(visualHidden("store").slice(0, SHARED_HIDDEN.length)).toEqual(SHARED_HIDDEN);
+    expect(visualHidden("store").slice(SHARED_HIDDEN.length)).toEqual(VISUAL_HIDDEN.store);
   });
 });

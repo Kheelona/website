@@ -44,7 +44,7 @@ describe("/stories/[slug]", () => {
     const { default: StoryPage } = await import("./page");
     const { container } = render(await StoryPage(params("learning-toys-for-a-three-year-old")));
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Learning toys for a 3-year-old, skill by skill");
-    expect(container.querySelector("#close .ks-price")?.textContent).toBe("₹7,999 (incl. GST), paid in full when you order.");
+    expect(container.querySelector("#close .ks-price")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
     expect(getOffer).toHaveBeenCalled();
   });
 

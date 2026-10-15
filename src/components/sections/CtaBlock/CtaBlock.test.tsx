@@ -113,7 +113,8 @@ describe("CtaBlock: the block", () => {
     render(<CtaBlock {...hero} {...context()} />);
     // Each to the part of its terms page that keeps the promise (task 7.1a, CMO built-page review C, m8).
     expect(screen.getByRole("link", { name: "Deliveries start mid-November" })).toHaveAttribute("href", "/shipping#when");
-    expect(screen.getByRole("link", { name: "7-day returns, no questions asked" })).toHaveAttribute("href", "/refund#returns");
+    // The one risk-reversal line (task Q2.8; D065 item 3), to the refund page's part that keeps its first promise.
+    expect(screen.getByRole("link", { name: "Full refund until dispatch · 7-day returns" })).toHaveAttribute("href", "/refund#before-dispatch");
     expect(screen.getByRole("link", { name: "WhatsApp" })).toHaveAttribute("href", "https://wa.me/919187546483");
     expect(screen.getByRole("link", { name: "call +91 91875 46483" })).toHaveAttribute("href", "tel:+919187546483");
   });
@@ -154,12 +155,33 @@ describe("CtaBlock: the block", () => {
   });
 });
 
+/* D065 item 3 (task Q2.8): GST and the payment breakdown only at checkout, so no block beside a button names GST or the
+   balance, in either mode; its price line is the short one and its compact trust line ends with the risk-reversal line. */
+describe("CtaBlock: the short price line and the risk-reversal line (D065 item 3)", () => {
+  it.each(PLACEMENTS)("%s: no GST and no balance, in either mode", (_name, _slug, _fold, config) => {
+    for (const offer of [TOKEN, FULL]) {
+      const text = render(<CtaBlock {...config} {...context(offer)} />).container.textContent ?? "";
+      expect(text).not.toMatch(/GST/);
+      expect(text).not.toContain(offer.prices.balance);
+    }
+  });
+
+  it("prints the short price line beside the button, and the risk-reversal line in the compact trust line", () => {
+    const { container } = render(<CtaBlock {...PLACEMENTS[0][3]} {...context()} />);
+    expect(container.querySelector(".ks-price")?.textContent).toBe("₹499 today, refundable. ₹4,999 in total.");
+    expect([...container.querySelectorAll(".kh-trustline a")].map((a) => a.textContent)).toEqual([
+      "Deliveries start mid-November",
+      "Full refund until dispatch · 7-day returns",
+    ]);
+  });
+});
+
 describe("CtaBlock: full mode (the offer after the capped units, ADR-005)", () => {
   const PRICE = /<p( id="[^"]*")? class="kh-body-s ks-price">[^<]*<\/p>/;
 
-  it.each(PLACEMENTS)("%s: the full-mode price sentence, everything else unchanged", (_name, _slug, _fold, config) => {
+  it.each(PLACEMENTS)("%s: the full-mode price line, everything else unchanged", (_name, _slug, _fold, config) => {
     const full = render(<CtaBlock {...config} {...context(FULL)} />).container;
-    expect(within(full).getByText("₹7,999 (incl. GST), paid in full when you order.")).toHaveClass("kh-body-s", "ks-price");
+    expect(within(full).getByText("₹7,999 in total, paid in full when you order.")).toHaveClass("kh-body-s", "ks-price");
     expect(full.textContent).not.toMatch(/₹499|₹4,500|₹4,999/);
     const tokenHtml = renderToStaticMarkup(<CtaBlock {...config} {...context(TOKEN)} />);
     const fullHtml = renderToStaticMarkup(<CtaBlock {...config} {...context(FULL)} />);

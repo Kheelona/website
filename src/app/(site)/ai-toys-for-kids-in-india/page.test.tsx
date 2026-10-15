@@ -11,8 +11,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { CLAIM_FIXES, COPY_FIXES } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
-import { readRepoFile } from "../../../../test/e2e/support/repo";
-import { words } from "../../../../test/support/mockup-compare";
+import { parseMockup, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 
 /* The /ai-toys-for-kids-in-india route (task 5.4; structure §3.1, §5): the buyer's guide module through PageTemplate with
@@ -46,7 +45,9 @@ async function route(mode: OfferMode): Promise<GuideRoute> {
 const SOURCE = readFileSync(`src/app/(site)${PATH}/page.tsx`, "utf8");
 const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 
-const mockupDoc = new DOMParser().parseFromString(readRepoFile("mockup/ai-toys-for-kids-in-india.html"), "text/html");
+/* Through the mockup comparison harness, so the close's price line and trust line read as task Q2.8 rules them (D065
+ * item 3; the harness's withPriceLine). */
+const mockupDoc = parseMockup("ai-toys-for-kids-in-india");
 /* The approved main with its copy fix applied: the age answer's "At 3" sentence in the site's one wording (CMO review A
  * M8; deviations.ts COPY_FIXES, V22); then task 8b.1's claim fixes (D058; CLAIM_FIXES, V31) in a pass of their own:
  * check 4, Kheelu's answers and the age answer in the live team's code-checked words. */
@@ -158,8 +159,8 @@ describe("/ai-toys-for-kids-in-india: the rendered page against the approved moc
     const token = await renderPage(buildOffer("token"));
     const full = await renderPage(buildOffer("full"));
     const offer = buildOffer("full");
-    expect(full.main.querySelector("#close .ks-price")?.textContent).toBe(toPlainText(offer.sentence, offer));
-    expect(full.main.querySelector("#close .ks-price")?.textContent).toBe("₹7,999 (incl. GST), paid in full when you order.");
+    expect(full.main.querySelector("#close .ks-price")?.textContent).toBe(toPlainText(offer.priceLine, offer));
+    expect(full.main.querySelector("#close .ks-price")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
     const answers = (main: Element) => Array.from(main.querySelectorAll(".kh-faq__a")).map((a) => words(a));
     expect(answers(full.main).at(-1)).toBe(
       "Kheelu is ₹7,999 (incl. GST), paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking, and you get a GST invoice. Deliveries start mid-November. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.",
@@ -197,14 +198,14 @@ describe("/ai-toys-for-kids-in-india: the rendered page against the approved moc
         .map((a) => a.getAttribute("href")!)
         .filter((h) => !/^(?:#|https?:|tel:)/.test(h));
     // The close's trust links open their part of the terms page (task 7.1a, CMO built-page review C, m8); the mockup
-    // links the pages' tops.
+    // links the pages' tops. The risk-reversal line opens the refund page's first part (task Q2.8; D065 item 3).
     expect(internal(main)).toEqual([
       "/stories/what-to-look-for-in-a-safe-ai-toy",
       "/safety",
       "/products/kheelu",
       "/safety",
       "/shipping#when",
-      "/refund#returns",
+      "/refund#before-dispatch",
     ]);
     expect(internal(mockupMain).filter((h) => h !== "store.html")).toEqual([
       "story-what-to-look-for-in-a-safe-ai-toy.html",

@@ -37,7 +37,8 @@ const PROPS: NavDrawerProps = {
   ],
   ctaLabel: "Pre-order Kheelu",
   offer,
-  note: "Deliveries start mid-November · 7-day returns, no questions asked",
+  /* SiteShell's note: the compact trust line, its returns promise the risk-reversal line since task Q2.8. */
+  note: "Deliveries start mid-November · Full refund until dispatch · 7-day returns",
 };
 
 const CSS = readFileSync("src/components/chrome/NavDrawer/nav-drawer.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ");
@@ -89,7 +90,7 @@ describe("NavDrawer", () => {
     expect(chevron.querySelector("path")).toHaveAttribute("d", ICON_CARET_RIGHT);
   });
 
-  it("ends with the large full-width chilli button and the two notes: the price sentence, then delivery and returns", () => {
+  it("ends with the large full-width chilli button and the two notes: the short price line, then delivery and returns", () => {
     const { container } = render(<NavDrawer {...PROPS} />);
     const cta = container.querySelector(".kh-drawer__panel > .kh-drawer__cta") as HTMLElement;
     const [button, price, note] = Array.from(cta.children);
@@ -98,16 +99,15 @@ describe("NavDrawer", () => {
     expect(button).toHaveAttribute("data-ph-capture-attribute-cta", "navbar-mobile");
     expect(button).toHaveTextContent("Pre-order Kheelu");
     expect(price.className).toBe("kh-drawer__note");
-    expect(price.textContent).toBe(
-      "Reserve yours for ₹499 today, refundable until dispatch, then pay ₹4,500 before delivery: ₹4,999 in total (incl. GST).",
-    );
+    // The short price line beside the drawer's button (D065 item 3; task Q2.8).
+    expect(price.textContent).toBe("₹499 today, refundable. ₹4,999 in total.");
     expect(note.className).toBe("kh-drawer__note");
-    expect(note.textContent).toBe("Deliveries start mid-November · 7-day returns, no questions asked");
+    expect(note.textContent).toBe("Deliveries start mid-November · Full refund until dispatch · 7-day returns");
   });
 
-  it("follows the offer's mode: the full-mode sentence when the store has moved to full price", () => {
+  it("follows the offer's mode: the full-mode price line when the store has moved to full price", () => {
     const { container } = render(<NavDrawer {...PROPS} offer={buildOffer("full")} />);
-    expect(container.querySelector(".kh-drawer__note")?.textContent).toBe("₹7,999 (incl. GST), paid in full when you order.");
+    expect(container.querySelector(".kh-drawer__note")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
   });
 
   it("closes from the close button, from any link, and from the backdrop, but not from a click inside the panel", () => {

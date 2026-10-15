@@ -70,14 +70,13 @@ export type OfferCardPlacement = "home" | "product";
 
 /**
  * The offer card (DS OfferCard, `kh-offer`) for the current mode. Its amount is
- * the offer's `prices.headline`, its fine print the offer's `sentence`, and its
+ * the offer's `prices.headline`, with no note beside it (D065 item 3: no "incl. GST" on
+ * the selling pages; task Q2.8), its fine print the offer's `priceLine`, and its
  * button the placement's CTA; `ui/OfferCard` takes the perks for its placement.
  */
 export interface OfferCard {
   /** The product line: "Kheelu". */
   readonly product: string;
-  /** Beside the amount: "incl. GST". */
-  readonly priceNote: RichTextString;
   /** Token mode only; absent in full mode, whose composed block has no split (G-08). */
   readonly split?: readonly OfferSplitRow[];
   /** Token mode only (D061 item 3; task 8c.2): the later price as a plain line in the DS card's later-price place, under
@@ -122,8 +121,12 @@ export interface Offer {
    *  full mode), full (FULL), mrp (MRP, its own value per D034) and launch
    *  (LAUNCH in both modes: a reservation's total). */
   readonly prices: Readonly<Record<PriceKey, string>>;
-  /** The D028 price sentence for this mode (it may carry price tokens). */
+  /** The D028 price sentence for this mode (it may carry price tokens): the checkout's, where GST and the payment
+   *  breakdown stay (the store's first screen, the pre-order form, /terms, /pricing.md; D065 item 3). */
   readonly sentence: RichTextString;
+  /** The short price line beside every button on the selling pages, for this mode (D065 item 3; task Q2.8): the
+   *  advance and the total, no GST and no balance. */
+  readonly priceLine: RichTextString;
   /** The phone buy bar's two lines for this mode. */
   readonly sticky: OfferSticky;
   /** The offer card for this mode. */
@@ -142,8 +145,7 @@ export interface Offer {
 
 /** The offer card as content/en-IN/offer.ts holds it: the split and the later price are written once and the view
  *  model leaves them out in full mode. */
-export interface OfferCardCopy extends Omit<OfferCard, "priceNote" | "split" | "later"> {
-  readonly priceNote: Copy;
+export interface OfferCardCopy extends Omit<OfferCard, "split" | "later"> {
   readonly split: readonly OfferSplitRow[];
   /** The later-price line (token mode only, D061 item 3); a locale without one shows none. */
   readonly later?: RichTextString;
@@ -153,6 +155,7 @@ export interface OfferCardCopy extends Omit<OfferCard, "priceNote" | "split" | "
  *  module ends with `satisfies OfferCopy`; src/lib/offer/offer.ts picks a mode. */
 export interface OfferCopy {
   readonly sentence: ModeVariant;
+  readonly priceLine: ModeVariant;
   readonly sticky: ModeVariant<OfferSticky>;
   readonly card: OfferCardCopy;
   readonly plus: RichTextString;

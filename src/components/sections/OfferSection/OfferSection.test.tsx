@@ -362,8 +362,9 @@ describe("OfferSection: full mode (ADR-005, G-08)", () => {
     const token = renderedElement(<OfferSection {...config} {...context(TOKEN)} />);
     expect(full.querySelector(".kh-offer__split")).toBeNull();
     expect(token.querySelector(".kh-offer__split")).not.toBeNull();
-    expect(full.querySelector(".kh-offer__prices")?.textContent).toBe("₹7,999(incl. GST)");
-    expect(full.querySelector(".kh-offer__fine")?.textContent).toBe("₹7,999 (incl. GST), paid in full when you order.");
+    // No note beside the amount and the short price line as fine print (D065 item 3; task Q2.8).
+    expect(full.querySelector(".kh-offer__prices")?.textContent).toBe("₹7,999");
+    expect(full.querySelector(".kh-offer__fine")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
     expect(full.textContent).not.toMatch(/₹499|₹4,500|₹4,999/);
     for (const part of [".kh-offer__list", ".ks-trust", ".ks-help"]) {
       expect(full.querySelector(part)?.outerHTML, part).toBe(token.querySelector(part)?.outerHTML);
