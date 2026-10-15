@@ -1882,6 +1882,15 @@ parallel worktrees; each owns its files so the merges stay mechanical.
   `test/e2e/support/deviations.ts`.
 - **Acceptance:** the perk on both cards in both modes; `findBanned` green; text parity green with the new rule.
 
+### 8c.6 The expert clip (builder; risk high; after 8c.3 merges)
+
+- **What (D061 item 12):** a trimmed clip of the expert video's general part, introduced as "a video from an expert",
+  with burned-in captions, her credit and a disclosure line; poster first, plays only on tap, nothing loops (D040,
+  D049). The cut, captions, heading, credit, disclosure and placement are chosen by the CMO and a claims review
+  (workflow `wf_7be1470f-7e4`) and fixed here before the build. The source (local only, never committed):
+  `wiki/raw/feedback/advisor-homepage-2026-10-12/expert-video/`.
+- **Owns, acceptance:** written when the cut is chosen.
+
 ## Wave 9: beta deploy and beta QA (after wave 8)
 
 ### 7.2 Beta deploy and beta QA (main session, founder, QA)

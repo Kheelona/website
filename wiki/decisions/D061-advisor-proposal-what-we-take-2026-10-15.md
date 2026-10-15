@@ -67,7 +67,18 @@ founder's; the founder answered each.
 9. **Home fold 5 keeps its approved heading** ("You see every conversation.").
 10. **Made in India** (confirms D034): already in the footer and the product page's "Country of origin"; also as a
     perk on both offer cards (task 8c.5, after 8c.2 merges).
-11. **Nothing else comes back** (no counsellor video, no statistics tiles, no "coming soon").
+11. **Nothing else comes back** (no statistics tiles, no "coming soon"), **except the expert video** (item 12).
+12. **The expert video comes back, introduced as "a video from an expert"** (founder: "This will be a better
+    wording."). It is the founder's own YouTube video "Expert talking on how Kheelona is helping kids" (4:46). Its first
+    half is general (screens, talk); its second half makes results claims about Kheelu ("speaking fluently within
+    weeks", "the results were shocking", "their demand of phones plummeted", Kheelu as "the best gift" for "a child's
+    brain") that the site cannot carry (D016, D038 no pilot results, the endorsement rules). The founder chose: **a
+    trimmed clip of only the general part**, cut before she speaks about Kheelu, with burned-in captions, hosted like
+    the films (poster first, plays on tap); credit **"Chaitra, therapist and developmental coach"** (without "Dr.",
+    though she says it in the video); her **written permission is on file** with the founder; she was **paid or given a
+    Kheelu**, so a **disclosure line** sits beside the clip. This changes D038's F9 ("no child-development advisor:
+    every advisor reference is dropped") for this one video: she is shown as an expert speaking about talk and
+    screens in general, never as Kheelona's advisor. Task 8c.6.
 
 Build: wave 8c in [tasks](../engineering/tasks.md).
 

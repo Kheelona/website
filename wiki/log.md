@@ -1121,3 +1121,11 @@ art's Kheelu on the first phone screen (what 8c.1 builds); no label line; the sh
 8c.2 builds); no cash on delivery (revisit after launch); Home fold 5 keeps its heading; Made in India (already decided
 in D034 and on the site: footer, "Country of origin"; now also a perk on the offer cards, new task 8c.5 after 8c.2);
 nothing else from the rejected list. None of the answers changes the running build.
+
+## [2026-10-15 05:39] decision | D061 item 12: the expert video comes back as a trimmed clip (founder); cut proposals running
+The founder asked to keep the counsellor's video, as "a video from an expert". It is the founder's own YouTube video
+(4:46). Downloaded locally (audio, captions, 720p video; kept git-ignored in the advisor's folder) and read: the first
+half is general (screens, talk), the second half makes results claims about Kheelu the site cannot carry. Founder:
+a trimmed clip of the general part only; credit "Chaitra, therapist and developmental coach" (no "Dr."); written
+permission on file; paid or given a Kheelu, so a disclosure line. Changes D038 F9 for this video only. The CMO and a
+claims reviewer propose the cut independently (workflow `wf_7be1470f-7e4`); task 8c.6 builds it after 8c.3.
