@@ -1247,3 +1247,8 @@ the guard does not catch "at their own pace", "a tutor" or "grows with them", so
 ([D063](decisions/D063-quick-batch-1-choices-2026-10-15.md)). Six builders under D062's quick rules: Q1.1 hero, Q1.2
 "What is Kheelu?" sticky scroll, Q1.3 safety collapsible, Q1.4 films order, offer alignment, footer gaps, Q1.5 GSTIN and
 phone, Q1.6 the WhatsApp logo from Wikimedia Commons.
+
+## [2026-10-15 12:33] build | Quick batch 1 on hold at the founder's word ("hold it")
+Workflow `wf_3b6c14b5-b84` stopped before any builder committed; the six empty worktrees removed. Nothing running.
+The batch stays specified in [tasks](engineering/tasks.md) (Q1.1-Q1.6) and [D063](decisions/D063-quick-batch-1-choices-2026-10-15.md),
+ready to start again when the founder says go. Beta unchanged at `398c5ee`.

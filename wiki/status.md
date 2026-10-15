@@ -7,7 +7,7 @@ sources: [log.md, open-questions.md]
 
 # Status (2026-10-14)
 
-**NOW: quick visual changes, batch by batch, until the site is final (D062, 2026-10-15); detailed QA and integrations after. Summary to resume from: [project summary](engineering/project-summary.md). Quick batch 1 building (D063: hero photo, sticky-scroll year by year, safety collapsible, films order, offer alignment, footer gaps, GSTIN and phone, WhatsApp logo).**
+**NOW: quick visual changes, batch by batch, until the site is final (D062, 2026-10-15); detailed QA and integrations after. Summary to resume from: [project summary](engineering/project-summary.md). Quick batch 1 ON HOLD (founder, 2026-10-15; specified in tasks Q1.1-Q1.6, nothing built yet; D063: hero photo, sticky-scroll year by year, safety collapsible, films order, offer alignment, footer gaps, GSTIN and phone, WhatsApp logo).**
 **Phase:** **5, build, wave 8 of 10 closed** (Phase 6 QA round 1 and its fixes done) (Gate A approved D046; Phase 4 plan done 2026-10-12). The
 founder asked for the full website with animation on **betawebsite.kheelona.com** and
 **betastore.kheelona.com** before it goes live (D048). Plan: [tasks](engineering/tasks.md) (10 waves),
