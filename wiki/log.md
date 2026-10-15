@@ -1238,3 +1238,12 @@ quick review only for a risky change, push `beta`, docs updated; the full Playwr
 and the integrations deferred to the final pass; the non-negotiables kept. [Project summary](engineering/project-summary.md)
 written: where it lives, what is built (waves 1-8c), the decisions, the quality at `398c5ee`, how a batch runs,
 what is deferred, what waits on the founder, and the first quick-change batch.
+
+## [2026-10-15 12:31] decision | D063 and quick batch 1 handed to the build workflow (`wf_3b6c14b5-b84`, base `23d83d31`)
+The founder chose the hero photo B2 (Advik · studio hug) from a sheet of 13 candidates in five kinds, and kept the
+phone number only on `/contact` and the legal pages' seller block (E-Commerce Rules r.4(2)(d)); the GSTIN comes off
+the site; the year-by-year content adapted to the claims rules by the main session (all lines `findBanned`-clean;
+the guard does not catch "at their own pace", "a tutor" or "grows with them", so they were dropped by hand)
+([D063](decisions/D063-quick-batch-1-choices-2026-10-15.md)). Six builders under D062's quick rules: Q1.1 hero, Q1.2
+"What is Kheelu?" sticky scroll, Q1.3 safety collapsible, Q1.4 films order, offer alignment, footer gaps, Q1.5 GSTIN and
+phone, Q1.6 the WhatsApp logo from Wikimedia Commons.
