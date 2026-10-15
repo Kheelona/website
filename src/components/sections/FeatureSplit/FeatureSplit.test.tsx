@@ -203,6 +203,16 @@ describe("FeatureSplit: app-screens", () => {
     );
   });
 
+  /* Task Q2.16 (the consistency review's QAL-4): from 900 px, where kh-split puts the controls in the text column beside
+     the privacy screen, the DS's two-column trust grid (from 720 px) left "Your child's age." 119-137 px wide, 11-13
+     lines, at 900-1024. There the controls stack in one column, as Home's safety lines do (.ks-safe-lines); below 900 px
+     the list runs the full width and keeps two columns from 720 px, its odd last control spanning both (CMO m2). */
+  it("stacks the safety page's controls in one column beside the privacy screen, from 900 px only", () => {
+    const css = readRepoFile("src/components/sections/FeatureSplit/feature-split.css");
+    expect(css).toMatch(/@media \(min-width: 900px\) \{\s*\.kh-trust\.ks-sf-controls \{\s*grid-template-columns: minmax\(0, 1fr\);\s*\}\s*\}/);
+    expect(css.match(/\.ks-sf-controls[^{]*\{[^}]*grid-template-columns/g)).toHaveLength(1);
+  });
+
   it("gives the safety page one screen only (AppScreens `safety` takes one)", () => {
     const two = {
       variant: "app-screens",

@@ -38,6 +38,15 @@
 .ks-sf-controls .kh-trust__body {
   text-wrap: pretty;
 }
+/* Beside the privacy screen (from 900 px, where kh-split goes two columns) the controls stack in one column, as Home's
+   safety lines do (.ks-safe-lines): the DS's two columns from 720 px left "Your child's age." 119-137 px wide, 11-13
+   lines, at 900-1024 (task Q2.16, the consistency review's QAL-4; safety.css:24 had two then one). Below 900 px the list
+   runs the full width: two columns from 720 px, the odd last control across both (ks-trust--span-last, CMO m2). */
+@media (min-width: 900px) {
+  .kh-trust.ks-sf-controls {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 
 /* The guide's plush or robot fold: a measured paragraph, then Kheelu alone on a 4:3 board, 1:1 from 900 px
    (ai-toys-for-kids-in-india.css:30-33; mockup-css-mapping rows 11-13; the 480 px tablet clamp is ArtBoard's). */
