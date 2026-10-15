@@ -843,8 +843,9 @@ test.describe("chrome: WhatsApp bubble beside the store's prices (task 7.1a; D05
 const PRODUCT: Built = { host: "marketing", path: "/products/kheelu" };
 const phone324 = VIEWPORTS.find((v) => v.width === 324)!;
 const THANKS_PAID_STORY = `http://localhost:${STORYBOOK_PORT}/iframe.html?id=layouts-storeshell--thanks-paid&viewMode=story`;
-/** The prices the site's bubble steps aside from: WhatsAppFloat's STEP_ASIDE_FROM `site`, written here because the
- *  harness does not load components (WhatsAppFloat.test.tsx holds that selector to the prices the components print). */
+/** The prices the site's bubble steps aside from: the prices of WhatsAppFloat's STEP_ASIDE_FROM `site`, written here
+ *  because the harness does not load components (WhatsAppFloat.test.tsx holds that selector to the prices the components
+ *  print). */
 const PRICES = ".ks-price, .kh-offer__prices, .kh-offer__split, .kh-offer__fine";
 
 /** Puts each visible price of the page right under the bubble, where the bubble sits once the bar has settled at that
@@ -956,6 +957,39 @@ test.describe("chrome: WhatsApp bubble beside the prices (task 4.9; D050)", () =
     await field.evaluate((el: HTMLElement) => el.blur());
     await expect.poll(() => bubbleAside(page)).toEqual(AT_REST);
     expect(await sweepBubble(page)).toEqual(["aside", "rest"]);
+  });
+});
+
+/* Task Q2.16 (consistency review QAP-2; D050): at 360 x 640 the resting bubble sat over first-screen tap targets of three
+   marketing pages: /contact's "Call" button (its email button at 360 x 720), the hub's topic chips and the 404's rows. It
+   now steps aside while the block that holds them crosses its band (WhatsAppFloat's STEP_ASIDE_FROM `site`), as Home's
+   hero keeps its links out of the bubble's column (task 8c.5). Checked at every phone of the matrix at first paint, on
+   those targets only: text and other links passing under the persistent bubble mid-page stay D050's accepted cost. The
+   /thanks payments line is the store context's (WhatsAppFloat.test.tsx). */
+const HERO_TARGETS = ".ks-contact-ways a, .ks-topics a, .ks-404__list a";
+const FIRST_SCREENS: readonly Built[] = [
+  { host: "marketing", path: "/contact" },
+  { host: "marketing", path: "/stories" },
+  { host: "marketing", path: "/kh-e2e-no-such-page" },
+];
+
+test.describe("chrome: WhatsApp bubble beside the first screens' tap targets (task Q2.16; D050)", () => {
+  for (const route of FIRST_SCREENS) {
+    for (const vp of PHONES) {
+      test(`on ${route.path} it covers none of the hero's tap targets at first paint ${vp.name}`, async ({ harness }) => {
+        const page = await openBuilt(harness, vp, {}, route);
+        expect(await page.locator(HERO_TARGETS).count(), "the page's hero targets").toBeGreaterThan(0);
+        await expect.poll(() => coveredByBubble(page, HERO_TARGETS)).toEqual([]);
+        expect([ASIDE, AT_REST]).toContainEqual(await bubbleAside(page));
+      });
+    }
+  }
+
+  test("the step aside is not vacuous: at rest at 360 x 640 the bubble would cover /contact's call button", async ({ harness }) => {
+    const page = await openBuilt(harness, VIEWPORTS.find((v) => v.width === 360 && v.height === 640)!, {}, FIRST_SCREENS[0]);
+    await expect.poll(() => bubbleAside(page)).toEqual(ASIDE);
+    expect(await coveredAtRest(page, HERO_TARGETS)).toEqual([expect.stringMatching(/^<a\.kh-btn\.kh-btn--secondary/)]);
+    expect(await coveredByBubble(page, HERO_TARGETS)).toEqual([]);
   });
 });
 

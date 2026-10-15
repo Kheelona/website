@@ -38,11 +38,17 @@ export interface WhatsAppFloatProps {
  *   (CMO built-page review C, B1). The store page and the event pages share this context.
  * - `thanks` (task 4.9 item 2): the paid page's address step, holding the address form (AddressStep's own `#address`;
  *   the page itself is unchanged, ADR-013).
+ * - Hero tap targets (task Q2.16, consistency review QAP-2: task 8c.5's rule for Home's hero carried to the other first
+ *   screens): at 360 x 640 the resting bubble sat over /contact's "Call" button (its email button at 360 x 720), the
+ *   hub's topic chips, the 404's rows and /thanks's chargeback link. `site` adds the blocks that hold them, /contact's
+ *   ways (`ks-contact-ways`; never `#hero-cta`, which is also Home's hero button), the hub's topics (`ks-topics`) and the
+ *   404's list (`ks-404__list`), each of which offers its own way to reach the team; `thanks` adds the payments line
+ *   (StorePaymentsLine, `ks-store-payments`). Text passing under the bubble mid-page stays D050's accepted cost.
  */
 export const STEP_ASIDE_FROM: Readonly<Record<SupportChatContext, string>> = {
-  site: ".ks-price, .kh-offer__prices, .kh-offer__split, .kh-offer__fine",
+  site: ".ks-price, .kh-offer__prices, .kh-offer__split, .kh-offer__fine, .ks-contact-ways, .ks-topics, .ks-404__list",
   store: "#details, .ks-agree, .ks-faq",
-  thanks: "#address",
+  thanks: "#address, .ks-store-payments",
 };
 
 /**
@@ -60,7 +66,7 @@ export const STEP_ASIDE_FROM: Readonly<Record<SupportChatContext, string>> = {
  * focus (motion.css, D050 row); it hides while a modal dialog is open, and `body.ks-has-float` keeps the last content of
  * every page clear of it (whatsapp-float.css). The link is the one client part, `StepAsideLink` (tasks 4.7 and 4.9),
  * the server's markup until it arms: below 900 px it steps aside, off the right edge, while what its context names
- * (`STEP_ASIDE_FROM`: the prices, the store's form, the /thanks address step) crosses its band or a field of it has
+ * (`STEP_ASIDE_FROM`: the prices, the store's form, the /thanks address step, the first screens' tap targets) crosses its band or a field of it has
  * focus, so it never covers a price or a field.
  * PostHog reads `data-ph-capture-attribute-cta="whatsapp-float"`; on /thanks the bubble also carries `ph-no-capture`,
  * so that page keeps zero autocapture events (tracking inventory row 18).
