@@ -128,3 +128,10 @@
 .ks-safe-split {
   align-items: start;
 }
+/* On phones the block's one screen is a size smaller than the safety page's (232 px, not 272), so the fold stays short
+   on a long page (the D2C plan v2 §1.6's phone length); from 900 px it is the DS device's 300 px beside the lines. */
+@media (max-width: 899px) {
+  .ks-safe-split .ks-shots--safety .kh-device {
+    width: min(100%, calc(var(--space-10) * 2 - var(--space-5))); /* 2 × 128 − 24 = 232 */
+  }
+}

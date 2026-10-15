@@ -59,7 +59,7 @@ describe("DayTimeline: the fold", () => {
     const img = figure.querySelector(".kh-device img")!;
     expect(img).toHaveAttribute("alt", SCREEN.alt);
     expect(img).toHaveAttribute("loading", "lazy");
-    expect(img).toHaveAttribute("sizes", "(min-width: 900px) 300px, 272px");
+    expect(img).toHaveAttribute("sizes", "(min-width: 900px) 300px, 232px");
     expect(figure.querySelector("figcaption")?.textContent).toBe(CONFIG.screen.caption);
   });
 
@@ -71,7 +71,9 @@ describe("DayTimeline: the fold", () => {
   it("joins the circles with a hairline through the gap, on DS tokens only", () => {
     expect(CSS).toMatch(/\.ks-day__moment:not\(:last-child\)::before \{[^}]*width: var\(--stroke-hair\);[^}]*background: var\(--border-strong\);/);
     expect(CSS).toMatch(/\.ks-day__icon \{[^}]*background: var\(--tone\);[^}]*color: var\(--on-tone\);/);
-    expect(CSS).not.toMatch(/#[0-9a-f]{3,6}\b|\d+px|transition|animation/i);
+    expect(CSS.replace(/@media[^{]*/g, "")).not.toMatch(/#[0-9a-f]{3,6}\b|\d+px|transition|animation/i);
+    // On phones the screen is 232 px, a size under the safety page's 272 (the page's length on a phone).
+    expect(CSS).toMatch(/@media \(max-width: 899px\) \{\s*\.ks-day-split \.ks-shots--safety \.kh-device \{\s*width: min\(100%, calc\(var\(--space-10\) \* 2 - var\(--space-5\)\)\);/);
   });
 });
 

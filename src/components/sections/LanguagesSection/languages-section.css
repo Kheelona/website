@@ -1,14 +1,14 @@
 /* LanguagesSection (task Q2.9; the D2C plan v2 §2 fold 4). No approved mockup fold: the languages were a line of Home's
    "What is Kheelu?" fold (ModesSection); here they are a fold of their own beside one film. The chips keep the DS
    LanguageChips as they are, a step under the heading; the film is the expert clip's frame upright (films-strip.css,
-   `ks-clip__frame--portrait`), a phone's width, centred under the words on phones and beside them from 900 px, where it
+   `ks-clip__frame--portrait`), 232 px wide on phones (the size of Home's app screens there), centred under the words on phones and beside them from 900 px, where it
    is the narrow column's picture. The caption under it is the clip's (`ks-clip__credit`: centred, and on phones started
    at the left and kept out of the WhatsApp bubble's column). */
 .ks-langs-chips {
   margin-top: var(--space-5);
 }
 .ks-clip.ks-langs-film {
-  width: min(100%, calc(var(--space-10) * 2 + var(--space-4))); /* 2 × 128 + 16 = 272 */
+  width: min(100%, calc(var(--space-10) * 2 - var(--space-5))); /* 2 × 128 − 24 = 232 */
   margin-inline: auto;
 }
 @media (min-width: 900px) {

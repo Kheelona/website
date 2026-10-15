@@ -25,6 +25,10 @@ const FROM_TABLET_SIZES = "(min-width: 1296px) 480px, (min-width: 900px) 40vw, (
  *  board, ai-toys-for-kids-in-india.css:30, 1:1 from 900 px). The DS recipe's 1:1 or 4:5 board would end 122 or 212 px
  *  below a 390 x 844 screen on Home; at 4:3 Kheelu, placed by the content's `phoneLayers`, ends inside it. */
 const PHONE_RATIO = "4 / 3";
+/** The hero photo's phone crop (task Q2.1) under 720 px: the column less the WhatsApp bubble's (--space-8, 64 px) since
+ *  task Q2.9 (hero-section.css), so Kheelu keeps out of the persistent bubble's corner (D050; the main session's ruling
+ *  (a) on the selling update); 1 px from 720 px. */
+const PHOTO_PHONE_SIZES = "(min-width: 720px) 1px, calc(100vw - 96px)";
 /** The hero photo's 4:5 crop (task Q2.1): from 720 px, at most 480 px wide until the split begins at 900 px
  *  (ArtBoard's tablet clamp, `ks-art--clamp`), the split's narrow column from 900 px; 1 px under 720 px. */
 const PHOTO_FROM_TABLET_SIZES = "(min-width: 1296px) 480px, (min-width: 900px) 40vw, (min-width: 720px) 480px, 1px";
@@ -194,7 +198,7 @@ function HeroBoard({ art, stickerClass, clamp, sizes, ratio, className }: HeroBo
 function HeroPhotos({ photo }: { photo: HeroPhoto }) {
   return (
     <>
-      <Photo image={photo.phone} sizes={PHONE_SIZES} ratio={cssRatio(photo.phone)} xl lcp className="ks-hero__phone-art" />
+      <Photo image={photo.phone} sizes={PHOTO_PHONE_SIZES} ratio={cssRatio(photo.phone)} xl lcp className="ks-hero__phone-art" />
       <Photo image={photo.image} sizes={PHOTO_FROM_TABLET_SIZES} ratio={cssRatio(photo.image)} xl lcp className="ks-hero-photo ks-art--clamp" />
     </>
   );

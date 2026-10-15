@@ -253,6 +253,10 @@ describe("FeatureSplit: app-screens compact (Home's safety block, task Q2.9)", (
   it("lays the promises out in one quiet column, on DS tokens", () => {
     const css = readRepoFile("src/components/sections/FeatureSplit/feature-split.css");
     expect(css).toMatch(/\.kh-trust\.ks-safe-lines \{\s*grid-template-columns: minmax\(0, 1fr\);\s*gap: var\(--space-3\);\s*margin-top: var\(--space-6\);\s*\}/);
+    // The one screen 232 px on phones and tablets, its image asked for at that width.
+    expect(css).toMatch(/@media \(max-width: 899px\) \{\s*\.ks-safe-split \.ks-shots--safety \.kh-device \{\s*width: min\(100%, calc\(var\(--space-10\) \* 2 - var\(--space-5\)\)\);/);
+    const { container } = render(<FeatureSplit {...COMPACT} offer={offer} />);
+    expect(container.querySelector(".ks-shots img")).toHaveAttribute("sizes", "(min-width: 900px) 300px, 232px");
   });
 });
 

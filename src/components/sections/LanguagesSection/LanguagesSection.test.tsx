@@ -70,7 +70,7 @@ describe("LanguagesSection: the fold", () => {
     expect(poster).toHaveAttribute("loading", "lazy");
     expect(poster).not.toHaveAttribute("fetchpriority");
     expect(poster).toHaveAttribute("alt", CONFIG.film.poster.alt);
-    expect(poster).toHaveAttribute("sizes", "(min-width: 900px) 300px, 272px");
+    expect(poster).toHaveAttribute("sizes", "(min-width: 900px) 300px, 232px");
     expect(container.querySelector("video")).toBeNull();
     expect(within(figure).getByRole("button")).toHaveAccessibleName(CONFIG.film.play);
     expect(figure.querySelector("figcaption > p.kh-body")?.textContent).toBe(CONFIG.film.caption);
@@ -82,7 +82,7 @@ describe("LanguagesSection: the fold", () => {
   });
 
   it("keeps the film at a phone's width, centred, and beside the words from 900 px, on DS tokens only", () => {
-    expect(CSS).toMatch(/\.ks-clip\.ks-langs-film \{[^}]*width: min\(100%, calc\(var\(--space-10\) \* 2 \+ var\(--space-4\)\)\);[^}]*margin-inline: auto;/);
+    expect(CSS).toMatch(/\.ks-clip\.ks-langs-film \{[^}]*width: min\(100%, calc\(var\(--space-10\) \* 2 - var\(--space-5\)\)\);[^}]*margin-inline: auto;/);
     expect(CSS).toMatch(/@media \(min-width: 900px\) \{\s*\.ks-clip\.ks-langs-film \{\s*width: calc\(var\(--space-9\) \* 3 \+ var\(--space-3\)\);/);
     // No literal colour or length in a declaration (the DS breakpoint in the @media prelude is the DS's own).
     expect(CSS.replace(/@media[^{]*/g, "")).not.toMatch(/#[0-9a-f]{3,6}\b|\d+px/i);

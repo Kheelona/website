@@ -3,6 +3,7 @@ import type { StaticImageData } from "next/image";
 import { describe, expect, it, vi } from "vitest";
 import type { ArtBoardRef } from "@/content/types";
 import { VISUAL_HIDDEN, hiddenCss } from "../../../../test/e2e/support/deviations";
+import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { outline, parseMockup, type Renames } from "../../../../test/support/mockup-compare";
 import { HeroSection, type HeroSectionProps } from "./HeroSection";
 
@@ -243,8 +244,12 @@ const HOME_PHOTO = {
   image: raster("kabir-02-block-rocket-4x5.jpg", 1200, 1500, KABIR),
   phone: raster("kabir-02-block-rocket-16x10.jpg", 1600, 1000, KABIR),
 };
+/* Since task Q2.9 (the main session's ruling (a) on the selling update: the WhatsApp bubble stays persistent, D050) the
+   phone crop stops short of the bubble's column, its 56 px and --space-2 beside it (--space-8), as the hero's help line
+   did (task 8c.5): with the founder's 5-line H1 a full-width crop ended Kheelu's feet 2 px below a 390 x 844 screen and
+   7 px from the bubble. */
 const PHOTO_SIZES = {
-  phone: "(min-width: 720px) 1px, calc(100vw - 32px)",
+  phone: "(min-width: 720px) 1px, calc(100vw - 96px)",
   image: "(min-width: 1296px) 480px, (min-width: 900px) 40vw, (min-width: 720px) 480px, 1px",
 };
 
@@ -285,6 +290,11 @@ describe("HeroSection: the photo (Home since task Q2.1, D064 item 4)", () => {
     for (const img of high) expect(img).toHaveAttribute("loading", "eager");
     expect(high.map((img) => img.getAttribute("sizes"))).toEqual([PHOTO_SIZES.phone, PHOTO_SIZES.image]);
     expect(container.querySelectorAll("img")).toHaveLength(2);
+  });
+
+  it("keeps the phone crop out of the WhatsApp bubble's column under 720 px (task Q2.9; D050 persistent)", () => {
+    const css = readRepoFile("src/components/sections/HeroSection/hero-section.css").replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(css).toMatch(/@media \(max-width: 719px\) \{[^@]*\.ks-hero \.kh-photo\.ks-hero__phone-art \{\s*width: calc\(100% - var\(--space-8\) - env\(safe-area-inset-right\)\);\s*\}/);
   });
 
   it("draws no board and no word sticker, and nothing in it moves (D049 pick 2)", () => {

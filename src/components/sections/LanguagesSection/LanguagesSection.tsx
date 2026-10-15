@@ -8,8 +8,8 @@ import type { LanguagesSectionConfig } from "./languages-section.types";
 
 export type { LanguagesFilm, LanguagesSectionConfig } from "./languages-section.types";
 
-/** The film's width: 272 px on phones and tablets, 300 px beside the words from 900 px (languages-section.css). */
-const FILM_SIZES = "(min-width: 900px) 300px, 272px";
+/** The film's width: 232 px on phones and tablets, 300 px beside the words from 900 px (languages-section.css). */
+const FILM_SIZES = "(min-width: 900px) 300px, 232px";
 
 export type LanguagesSectionProps = LanguagesSectionConfig & {
   /** For any amount in the words (none today); every line goes through RichText. */

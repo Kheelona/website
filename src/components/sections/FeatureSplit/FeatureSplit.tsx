@@ -29,6 +29,8 @@ const SCREEN_SIZES = {
   home: "(min-width: 900px) 280px, calc((100vw - 48px) / 2)",
   product: "(min-width: 900px) 260px, calc((100vw - 48px) / 2)",
   safety: "(min-width: 900px) 300px, 272px",
+  /* Home's compact safety block (task Q2.9): the safety page's phone, 232 px under 900 px (feature-split.css). */
+  compact: "(min-width: 900px) 300px, 232px",
 } as const;
 /** The setup photos: the tummy-unit crop up to 384 px, the phone screenshot at 288 px (setup.css:30, 33). */
 const FIT_SIZES = { belly: "(min-width: 416px) 384px, calc(100vw - 32px)", shot: "288px" } as const;
@@ -201,7 +203,7 @@ function AppScreensBody({ config, title, text, after }: { config: Extract<Featur
             <TrustList items={trustItems(config.items, text)} reveal className="ks-safe-lines" />
             <SectionLinkRow link={link} />
           </div>
-          <AppScreens variant="safety" screens={[screens.images[0]]} sizes={SCREEN_SIZES.safety} caption={caption} reveal />
+          <AppScreens variant="safety" screens={[screens.images[0]]} sizes={SCREEN_SIZES.compact} caption={caption} reveal />
         </Split>
         {after}
       </>

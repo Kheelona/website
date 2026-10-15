@@ -9,8 +9,8 @@ import type { DayTimelineConfig } from "./day-timeline.types";
 
 export type { DayMoment, DayTimelineConfig } from "./day-timeline.types";
 
-/** The one phone screen: 272 px, 300 from 900 px (AppScreens `safety`, the DS device as it is). */
-const SCREEN_SIZES = "(min-width: 900px) 300px, 272px";
+/** The one phone screen: 232 px under 900 px (day-timeline.css), 300 from 900 px (AppScreens `safety`, the DS device). */
+const SCREEN_SIZES = "(min-width: 900px) 300px, 232px";
 
 export type DayTimelineProps = DayTimelineConfig & {
   /** For any amount in the words (none today); every line goes through RichText. */

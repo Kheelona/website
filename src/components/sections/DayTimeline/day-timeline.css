@@ -53,3 +53,10 @@
   max-width: var(--measure);
   margin: var(--space-6) 0 0;
 }
+/* On phones the screen is a size smaller than the safety page's (232 px, not 272), so the fold stays short on a long
+   page; from 900 px it is the DS device's 300 px beside the moments. */
+@media (max-width: 899px) {
+  .ks-day-split .ks-shots--safety .kh-device {
+    width: min(100%, calc(var(--space-10) * 2 - var(--space-5))); /* 2 × 128 − 24 = 232 */
+  }
+}
