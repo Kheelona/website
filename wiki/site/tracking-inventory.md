@@ -282,6 +282,16 @@ any other host load none of the three.
 | `product-top` | /products/kheelu | `src/app/(site)/products/kheelu/page.tsx:167` |
 | `product-foot` | /products/kheelu | `src/app/(site)/products/kheelu/page.tsx:363` |
 
+- **New values placed after Gate A** (not on production; no approved mockup carries them). Every value the rebuild
+  places is in [architecture §8.3](../engineering/architecture.md#83-cta-values-data-ph-capture-attribute-cta-reconciled-from-the-mockups);
+  these are the ones a founder decision added after the mockups were frozen (D046). The eight above never change.
+  `test/guards/tracking-registry.test.ts` holds this table to the registry (`src/lib/tracking/cta.ts`).
+
+| New `cta` value | Where | Decision |
+|---|---|---|
+| `whatsapp-float` | The WhatsApp chat bubble, every page (`src/components/chrome/WhatsAppFloat/WhatsAppFloat.tsx`) | [D050](../decisions/D050-whatsapp-chat-button.md) |
+| `share-whatsapp` | The "Know a parent who needs this? Share Kheelu on WhatsApp" link under the offer card on `/` and `/products/kheelu` (`src/components/sections/OfferSection/OfferSection.tsx`, task 8c.2) | [D061](../decisions/D061-advisor-proposal-what-we-take-2026-10-15.md) |
+
 - **Custom funnel events:** the same six names and parameters as GA4 (table in section 3), fired by
   `phCapture` beside each `track()` call (`analytics.ts:66`, `:72`, `:78`, `:113-118`, `:128`, `:133`).
   The `begin_checkout` PostHog payload equals GA4's; `purchase` carries `transaction_id`, `currency`,

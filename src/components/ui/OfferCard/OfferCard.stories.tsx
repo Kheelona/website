@@ -25,6 +25,8 @@ const token: Offer = {
       { label: "Today, refundable", price: "token" },
       { label: "Before delivery", price: "balance" },
     ],
+    /* D061 item 3 (task 8c.2): the later price, token mode only, as offer.ts holds it. */
+    later: "{price:headline} for the first 500 units. {price:full} once they are gone.",
     perks: { home: [], product: [] },
   },
   /* D058 item 3, as offer.ts prints it (task 8b.1b). */
@@ -76,7 +78,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Token mode: the split shows (Home's close). */
+/** Token mode: the later price under the amount (D061 item 3) and the split (Home's close). */
 export const TokenMode: Story = {};
-/** Full mode: no split, the full price (G-08). */
+/** Full mode: no later price, no split, the full price (G-08). */
 export const FullMode: Story = { args: { offer: full } };

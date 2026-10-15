@@ -12,6 +12,10 @@ import { offerWords, PriceSentence } from "@/components/ui/PriceSentence/PriceSe
  * The amounts and the offer's own strings come from the offer view model; the perks come from the offer's card
  * for the placement (icon slot: `Icon`; text slot: `RichText`); the button slot takes `PreorderButton`, which alone
  * writes the CTA tracking value. The card never moves on arrival (architecture §11.2), so it takes no reveal hook.
+ *
+ * The later price (D061 item 3; task 8c.2): in token mode only, a plain line in the DS card's later-price place, the
+ * prices row where the DS draws `was`, on a row of its own (`ks-offer__later`, offer-card.css). Never the DS's
+ * `kh-offer__was`, which strikes the price through: not lawful until the later price has been charged (PRICE-01).
  */
 export interface OfferPerk {
   icon: ReactNode;
@@ -33,12 +37,14 @@ export interface OfferCardProps {
 export function OfferCard({ offer, perks, action, label, id, className }: OfferCardProps) {
   const Root = label !== undefined ? "section" : "div";
   const split = offer.mode === "token" ? (offer.card.split ?? []) : [];
+  const later = offer.mode === "token" ? offer.card.later : undefined;
   return (
     <Root className={clsx("kh-offer", className)} id={id} aria-label={label}>
       <p className="kh-offer__product">{offer.card.product}</p>
       <div className="kh-offer__prices">
         <span className="kh-offer__price">{offer.prices.headline}</span>
         <span className="kh-body-s">{offerWords(offer.card.priceNote, offer, "OfferCard price note")}</span>
+        {later !== undefined && <p className="kh-body-s ks-offer__later">{offerWords(later, offer, "OfferCard later price")}</p>}
       </div>
       {split.length > 0 && (
         <div className="kh-offer__split">

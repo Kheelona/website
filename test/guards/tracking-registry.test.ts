@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
@@ -717,6 +717,15 @@ describe("events.ts: architecture §8.2 and the new events", () => {
 
 const INVENTORY_CTAS = table(section(INVENTORY, "## 6. "), ["cta value", "Where", "File"]);
 const ARCH_CTAS = table(section(ARCHITECTURE, "### 8.3 "), ["Value", "Status", "Element", "Pages"]);
+/** Inventory §6's second table: the values a founder decision placed after Gate A, which no approved mockup carries
+ *  (D050's bubble, D061's share link), each with its decision's id. */
+const AFTER_GATE_A: ReadonlyMap<string, string> = new Map(
+  table(section(INVENTORY, "## 6. "), ["New cta value", "Where", "Decision"]).map(([value, , decision]) => [
+    code(value)[0],
+    /\bD\d{3}\b/.exec(decision)?.[0] ?? "",
+  ]),
+);
+const decisionFiles = () => readdirSync(join(ROOT, "wiki/decisions"));
 
 /** The Pages cell of architecture §8.3 as registry placements. */
 function placements(cell: string): string[] {
@@ -776,6 +785,27 @@ describe("cta.ts: the cta values", () => {
     expect(spec("whatsapp-float")).toMatchObject({ status: "new", reserved: false, role: "chat", pages: ["every-page"] });
   });
 
+  /* Task 8c.2: the share link under the offer cards (D061; the main session's ruling, CMO review AP-28). */
+  it("share-whatsapp is D061's share link: new, secondary, on Home and the product page", () => {
+    expect(read("wiki/decisions/D061-advisor-proposal-what-we-take-2026-10-15.md")).toContain("Share Kheelu on WhatsApp");
+    expect(spec("share-whatsapp")).toMatchObject({
+      status: "new",
+      reserved: false,
+      role: "secondary",
+      pages: ["/", "/products/kheelu"],
+    });
+    expect(AFTER_GATE_A.get("share-whatsapp")).toBe("D061");
+  });
+
+  it("lists in inventory §6 every value a founder decision placed after Gate A: each new, never reserved, its decision on file", () => {
+    expect([...AFTER_GATE_A.keys()].sort()).toEqual(["share-whatsapp", "whatsapp-float"]);
+    for (const [value, decision] of AFTER_GATE_A) {
+      expect(CTA_VALUES, `${value} is not in cta.ts`).toContain(value);
+      expect(spec(value)).toMatchObject({ status: "new", reserved: false });
+      expect(decisionFiles().some((f) => f.startsWith(`${decision}-`)), `${decision} has no file in wiki/decisions`).toBe(true);
+    }
+  });
+
   it("spells every value in kebab-case (structure §2)", () => {
     for (const v of CTA_VALUES) expect(v).toMatch(/^[a-z]+(-[a-z]+)*$/);
   });
@@ -833,6 +863,8 @@ describe("cta.ts: placements match the approved mockups", () => {
     const html = read(`mockup/${page.file}.html`);
     const found = [...new Set([...html.matchAll(/data-ph-capture-attribute-cta="([^"]+)"/g)].map((m) => m[1]))];
     const expected = CTA_VALUES.filter((v) => {
+      /* A value a founder decision placed after Gate A is in no mockup (inventory §6, the second table; the next test). */
+      if (AFTER_GATE_A.has(v)) return false;
       const where: readonly string[] = CTAS[v].pages;
       return (
         where.includes(page.route) ||
@@ -842,5 +874,12 @@ describe("cta.ts: placements match the approved mockups", () => {
       /* "every-page" (the D050 bubble) is not in the mockups: D050 came after Gate A. */
     });
     expect(sorted(found)).toEqual(sorted(expected));
+  });
+
+  it("finds no value placed after Gate A in any approved mockup (D050, D061 came after it)", () => {
+    for (const page of MOCKUP_PAGES) {
+      const html = read(`mockup/${page.file}.html`);
+      for (const value of AFTER_GATE_A.keys()) expect(html, `${page.file} carries ${value}`).not.toContain(`data-ph-capture-attribute-cta="${value}"`);
+    }
   });
 });

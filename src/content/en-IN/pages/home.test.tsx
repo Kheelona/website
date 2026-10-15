@@ -7,7 +7,7 @@ import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
-import { CLAIM_FIXES, COPY_FIXES, FAQ_FIXES, NOT_RIGHT_QUESTION } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, COPY_FIXES, FAQ_FIXES, NOT_RIGHT_QUESTION, OFFER_ADDITIONS } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { mockupFold, mockupLinks, skeleton, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
@@ -29,9 +29,11 @@ import { homePage } from "./home";
  * COPY_FIXES.home): the screen-time guide card's line (CMO review A M5), and in the FAQ the age-3 advice (A M8) and the
  * refund timing (D056 item 4). Then the founder's D058 (task 8b.1; deviation V26; CLAIM_FIXES.home): fold 5's bullets,
  * fold 6's safety items and its privacy screen's alt, the age answer and the Kheelona+ line follow the live team's code
- * check. Then the founder's D061 (task 8c.4; FAQ_FIXES.home): the fourth question in the parent's words, "What if my
- * child doesn’t like it?", its answer unchanged (AP-30). MOCKUP below is the approved page with exactly those applied,
- * the claim fixes in a pass of their own and the FAQ fix in one after them.
+ * check. Then D061 item 3 and the share link (task 8c.2; OFFER_ADDITIONS.home): the offer card's later price in token
+ * mode and "Know a parent who needs this? Share Kheelu on WhatsApp" under it, tracked share-whatsapp. Then the founder's
+ * D061 (task 8c.4; FAQ_FIXES.home): the fourth question in the parent's words, "What if my child doesn’t like it?", its
+ * answer unchanged (AP-30). MOCKUP below is the approved page with exactly those applied, the claim fixes, the offer
+ * additions and the FAQ fix each in a pass of its own, in that order.
  */
 
 /* The hero board's two stickers as Next imports them (`{ src, width, height }`, the size read from the DS file), where
@@ -44,7 +46,10 @@ const staticImport = vi.hoisted(() => async (file: string) => {
 vi.mock("@ds/assets/Cast/advik-sticker.png", () => staticImport("design-system/project/assets/Cast/advik-sticker.png"));
 vi.mock("@ds/assets/Kheelu/kheelu-front-sticker.png", () => staticImport("design-system/project/assets/Kheelu/kheelu-front-sticker.png"));
 
-const MOCKUP = withFacts(withFacts(withFacts(mockupFold("home", "main"), COPY_FIXES.home.edits), CLAIM_FIXES.home.edits), FAQ_FIXES.home.edits);
+const MOCKUP = withFacts(
+  withFacts(withFacts(withFacts(mockupFold("home", "main"), COPY_FIXES.home.edits), CLAIM_FIXES.home.edits), OFFER_ADDITIONS.home.edits),
+  FAQ_FIXES.home.edits,
+);
 const LABELS = ["hero-title", "ask-title", "why-title", "what-title", "see-title", "safety-title", "compare-title", "guides-title", "faq-title", "close-title"];
 
 /** The copy page's targets for the three untracked links whose mockup address was a page of the review build. */
@@ -162,7 +167,8 @@ describe("Home: the folds of the approved page", () => {
   });
 
   it("carries the approved tracking values in page order (architecture §8.3; home.md CTA tracking values)", () => {
-    const values = ["hero", "hero-learn", "see-it-ask", "see-it-ask-learn", "safety", "safety-learn", "compare-learn", "faq-more", "finale"];
+    // share-whatsapp: the share link under the offer card (D061, task 8c.2), in the mockup through OFFER_ADDITIONS.home.
+    const values = ["hero", "hero-learn", "see-it-ask", "see-it-ask-learn", "safety", "safety-learn", "compare-learn", "faq-more", "finale", "share-whatsapp"];
     expect(ctaValues(MOCKUP)).toEqual(values);
     expect(ctaValues(BUILT)).toEqual(values);
     expect(all(BUILT, ".kh-btn--cta").map((b) => b.getAttribute("data-ph-capture-attribute-cta"))).toEqual(["hero", "see-it-ask", "safety", "finale"]);

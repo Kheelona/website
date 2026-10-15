@@ -1,13 +1,14 @@
 import type { ReactNode } from "react";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { ContentIcon } from "@/components/ui/Icon/Icon";
-import { Container, Section, SectionHead, Split } from "@/components/ui/Layout/Layout";
+import { Actions, Container, Section, SectionHead, Split } from "@/components/ui/Layout/Layout";
 import { OfferCard } from "@/components/ui/OfferCard/OfferCard";
 import { Photo } from "@/components/ui/Photo/Photo";
 import { PreorderButton } from "@/components/ui/PreorderButton/PreorderButton";
 import { RichText } from "@/components/ui/RichText/RichText";
 import type { OfferCardPlacement } from "@/content/types";
 import { CloseArt } from "../CloseSection/close-art";
+import { SecondaryLink } from "../CtaBlock/CtaBlock";
 import { SellingHelpLine, SellingTrustLine } from "../CtaBlock/selling-lines";
 import type { OfferSectionProps } from "./offer-section.types";
 
@@ -24,6 +25,10 @@ const OFFER_PHOTO_SIZES = "(min-width: 1024px) 512px, (min-width: 900px) 480px, 
  * centred heading, the DS OfferCard for the live mode (G-08: no split in full mode), the linked trust row and the help
  * line, beside the art board (Home's close) or the product photo (the product page). The card's button is the
  * placement's `PreorderButton`. Server component; never revealed on arrival (the offer card and the price, §11.2).
+ *
+ * Since task 8c.2 (D061, after Gate A): the card prints the later price in token mode (OfferCard), and the column ends
+ * with the share link, "Know a parent who needs this? Share Kheelu on WhatsApp", for both placements, from the offer's
+ * `share` (content/en-IN/share.ts through src/lib/offer/offer.ts), never from the page files.
  */
 export function OfferSection(props: OfferSectionProps) {
   const { variant, heading, cta, trust, offer, ctaLabel, help } = props;
@@ -40,10 +45,18 @@ export function OfferSection(props: OfferSectionProps) {
       id={variant === "close" ? "offer" : undefined}
     />
   );
+  /* The share link, last in the column under both cards (D061; task 8c.2): a ghost link through Button, never chilli
+     and never the bubble's green (D050), tracked `share-whatsapp`. Its words and its message come with the offer. */
+  const share = offer.share && (
+    <Actions className="ks-offer-share">
+      <SecondaryLink link={{ label: offer.share.label, href: offer.share.href, cta: "share-whatsapp", variant: "ghost" }} />
+    </Actions>
+  );
   const lines = (
     <>
       <SellingTrustLine items={trust} offer={offer} />
       <SellingHelpLine help={help} offer={offer} />
+      {share}
     </>
   );
   let body: ReactNode;

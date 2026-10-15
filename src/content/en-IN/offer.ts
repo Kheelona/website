@@ -1,4 +1,5 @@
 import type { IconText, OfferCopy } from "@/content/types";
+import { share } from "./share";
 
 /**
  * The offer's words in both modes (architecture §6.1, ADR-005); src/lib/offer/offer.ts picks the
@@ -10,6 +11,9 @@ import type { IconText, OfferCopy } from "@/content/types";
  * (home.md "At a glance", "Phone sticky bar" and fold 9 "Full mode"; D028 wording). Kheelona+ is
  * the founder's D058 item 3 sentence, in both places (task 8b.1; home.md fold 9, meet-kheelu.md
  * fold 3): the parent app is free, Kheelona+ a paid subscription on top of it, and no feature list.
+ *
+ * Task 8c.2 (D061 item 3, after Gate A): the later price on both offer cards, in token mode only, as a plain line (never
+ * struck through, no counter, no "save"; PRICE-01, DARK-01), and the share link under both cards (share.ts).
  */
 
 /** D058 item 3, verbatim: which features stay free is not decided, so the sentence lists none. */
@@ -46,6 +50,9 @@ export const offerCopy = {
       { label: "Before delivery", price: "balance" },
     ],
     perks: { home: homePerks, product: productPerks },
+    /* D061 item 3, verbatim: token mode only (the view model leaves it out in full mode, when the later price is the
+       price). */
+    later: "{price:headline} for the first 500 units. {price:full} once they are gone.",
   },
   /* The phone buy bar (partials/buybar.html); full mode: home.md "Phone sticky bar". */
   sticky: {
@@ -55,4 +62,6 @@ export const offerCopy = {
   /* Under Home's card, and at the start of the store's small print and /terms section 3; nothing after six months (D041
      F7). */
   plus: PLUS,
+  /* Under both offer cards (D061; share.ts). */
+  share,
 } satisfies OfferCopy;

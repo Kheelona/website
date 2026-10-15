@@ -80,8 +80,31 @@ export interface OfferCard {
   readonly priceNote: RichTextString;
   /** Token mode only; absent in full mode, whose composed block has no split (G-08). */
   readonly split?: readonly OfferSplitRow[];
+  /** Token mode only (D061 item 3; task 8c.2): the later price as a plain line in the DS card's later-price place, under
+   *  the amount: "{price:headline} for the first 500 units. {price:full} once they are gone." Absent in full mode. Never
+   *  a struck-through price, a counter or "save" (PRICE-01, DARK-01). */
+  readonly later?: RichTextString;
   /** The same in both modes. */
   readonly perks: Readonly<Record<OfferCardPlacement, readonly IconText[]>>;
+}
+
+/** The "Share Kheelu on WhatsApp" link under the offer cards (D061; task 8c.2), resolved for the live mode. */
+export interface OfferShare {
+  /** The link's words: the live site's WHATSAPP_SHARE_LABEL. */
+  readonly label: string;
+  /** WhatsApp's share link with the message: the mode's words, then the tagged kheelona.com address, encoded. */
+  readonly href: `https://wa.me/?text=${string}`;
+}
+
+/** The share link as content/en-IN/share.ts holds it. */
+export interface OfferShareCopy {
+  readonly label: string;
+  /** WhatsApp's own share link, with no number: the parent picks who gets the message. */
+  readonly href: "https://wa.me/";
+  /** The message's words, in both modes: every amount a `{price:…}` token. */
+  readonly text: ModeVariant;
+  /** The kheelona.com address the message ends with, tagged as docs/utm-conventions.md says (tools/utm/build-link.mjs). */
+  readonly address: string;
 }
 
 /**
@@ -112,13 +135,18 @@ export interface Offer {
   readonly delivery: string;
   /** The schema date the delivery line stands for, `DELIVERY_SCHEMA_DATE` (D037). */
   readonly availabilityStarts: IsoDate;
+  /** The share link under the offer cards, for this mode (D061; task 8c.2). Every offer built from the content carries
+   *  it (src/lib/offer/offer.ts); a locale without share copy has none. */
+  readonly share?: OfferShare;
 }
 
-/** The offer card as content/en-IN/offer.ts holds it: the split is written once
- *  and the view model leaves it out in full mode. */
-export interface OfferCardCopy extends Omit<OfferCard, "priceNote" | "split"> {
+/** The offer card as content/en-IN/offer.ts holds it: the split and the later price are written once and the view
+ *  model leaves them out in full mode. */
+export interface OfferCardCopy extends Omit<OfferCard, "priceNote" | "split" | "later"> {
   readonly priceNote: Copy;
   readonly split: readonly OfferSplitRow[];
+  /** The later-price line (token mode only, D061 item 3); a locale without one shows none. */
+  readonly later?: RichTextString;
 }
 
 /** The shape of content/en-IN/offer.ts, both modes (architecture §6.1): the
@@ -128,6 +156,8 @@ export interface OfferCopy {
   readonly sticky: ModeVariant<OfferSticky>;
   readonly card: OfferCardCopy;
   readonly plus: RichTextString;
+  /** The share link under the offer cards (content/en-IN/share.ts; D061). */
+  readonly share?: OfferShareCopy;
 }
 
 /* ── Placeholders ─────────────────────────────────────────────────────────── */

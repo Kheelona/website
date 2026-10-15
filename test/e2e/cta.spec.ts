@@ -1,6 +1,7 @@
+import { CTAS, CTA_VALUES } from "@/lib/tracking/cta";
 import { readRepoFile } from "./support/repo";
 import { MOCKUP_SLUGS, type MockupSlug } from "./support/mockup-text";
-import { mockupRoutes, sweepRoutes } from "./support/routes";
+import { mockupRoutes, sweepRoutes, type Route } from "./support/routes";
 import { PARITY_TARGET, REAL_ORIGINS, TARGET } from "./support/env";
 import { expect, gateRouteGroup, test } from "./support/fixtures";
 import { VIEWPORTS } from "./support/viewports";
@@ -10,13 +11,17 @@ import { VIEWPORTS } from "./support/viewports";
  * On every built page: every chilli link (a.kh-btn--cta) reads exactly "Pre-order Kheelu", goes
  * exactly to STORE_URL (https://store.kheelona.com on L; betastore on beta) in the same tab, and
  * carries data-ph-capture-attribute-cta with a registered value. The set of values on a page
- * equals the set its approved mockup carries, plus "whatsapp-float" (the D050 bubble, every page).
+ * equals the set its approved mockup carries, plus the values a founder placed after Gate A:
+ * "whatsapp-float" (the D050 bubble, every page) and "share-whatsapp" (D061's share link under the
+ * offer card, task 8c.2), each on the routes the registry (src/lib/tracking/cta.ts) places it.
  * The reserved values "home-arc" and "compare" appear nowhere. The store's pay button is a submit
  * button, not a link, and carries no value (inventory: not tagged). The phone buy bar's value,
  * "sticky-bar", is on exactly the routes whose `buybar` says so (task 4.9: articles by their close).
  *
- * Registered values: every value the approved mockup uses anywhere, plus "whatsapp-float". The
- * registry itself (src/lib/tracking/cta.ts, task 1.4) is checked against them by its own guards.
+ * Registered values: every value the approved mockup uses anywhere, plus the values a founder placed
+ * after Gate A: whatsapp-float (D050) and share-whatsapp (D061); tracking inventory §6 lists them.
+ * The registry itself (task 1.4) is checked against them by its own guards
+ * (test/guards/tracking-registry.test.ts).
  */
 
 const LABEL = "Pre-order Kheelu";
@@ -24,17 +29,41 @@ const LABEL = "Pre-order Kheelu";
 const STORE_URL = PARITY_TARGET === "mockup" ? "store.html" : TARGET === "beta" ? "https://betastore.kheelona.com" : REAL_ORIGINS.store;
 const RESERVED = ["home-arc", "compare"];
 const D050 = "whatsapp-float";
+/** The share link under the offer cards (D061, task 8c.2). */
+const D061 = "share-whatsapp";
+/** The values a founder decision placed after Gate A (inventory §6, the second table): no approved mockup carries them. */
+const AFTER_GATE_A: readonly string[] = [D050, D061];
 
 function mockupValues(slug: MockupSlug): string[] {
   const html = readRepoFile(`mockup/${slug}.html`);
   return [...new Set([...html.matchAll(/data-ph-capture-attribute-cta="([^"]+)"/g)].map((m) => m[1]))].sort();
 }
-const REGISTERED = new Set([...MOCKUP_SLUGS.flatMap(mockupValues), D050]);
+const MOCKUP_VALUES: ReadonlySet<string> = new Set(MOCKUP_SLUGS.flatMap(mockupValues));
+const REGISTERED = new Set([...MOCKUP_VALUES, ...AFTER_GATE_A]);
+
+/** The values placed after Gate A that a built route carries besides its mockup's: the D050 bubble on every page, and
+ *  each other one where the registry places it on this path (share-whatsapp on / and /products/kheelu). The registry's
+ *  paths are the marketing site's: the store's own "/" is not Home. */
+function afterGateA(route: Pick<Route, "host" | "path">): string[] {
+  return CTA_VALUES.filter((v) => {
+    if (!AFTER_GATE_A.includes(v)) return false;
+    if (v === D050) return true;
+    const where: readonly string[] = CTAS[v].pages;
+    return route.host === "marketing" && where.includes(route.path);
+  });
+}
 
 test.describe("CTA values: the approved mockup (control)", () => {
   test("carries the six live existing values and neither reserved one (of the eight existing)", () => {
     for (const v of ["hero", "navbar", "navbar-mobile", "finale", "product-top", "product-foot"]) expect(REGISTERED.has(v)).toBe(true);
     for (const v of RESERVED) expect(REGISTERED.has(v), `${v} is reserved (A16)`).toBe(false);
+  });
+
+  test("carries none of the values placed after Gate A (D050, D061), each one in the registry", () => {
+    for (const v of AFTER_GATE_A) {
+      expect(MOCKUP_VALUES.has(v), `an approved mockup carries ${v}`).toBe(false);
+      expect(CTA_VALUES, `${v} is not in src/lib/tracking/cta.ts`).toContain(v);
+    }
   });
 });
 
@@ -72,9 +101,10 @@ for (const route of sweepRoutes()) {
         .soft(values.includes("sticky-bar"), `${route.id}: the phone buy bar (sticky-bar) is ${route.buybar ? "missing" : "on a page that has none"}`)
         .toBe(route.buybar);
       if (route.mockup && mockupRoutes().some((r) => r.id === route.id)) {
-        // The D050 bubble came after Gate A: the mockup itself (self-test) does not carry it.
-        const expected = [...new Set([...mockupValues(route.mockup), ...(PARITY_TARGET === "mockup" ? [] : [D050])])].sort();
-        expect(values, `${route.id}: the values on the page differ from its approved mockup plus ${D050}`).toEqual(expected);
+        // The values placed after Gate A (D050, D061): the mockup itself (self-test) carries none of them.
+        const added = PARITY_TARGET === "mockup" ? [] : afterGateA(route);
+        const expected = [...new Set([...mockupValues(route.mockup), ...added])].sort();
+        expect(values, `${route.id}: the values on the page differ from its approved mockup plus ${added.join(", ")}`).toEqual(expected);
       } else {
         expect(values.every((v) => REGISTERED.has(v)), `${route.id}: unregistered values ${values.filter((v) => !REGISTERED.has(v))}`).toBe(true);
       }

@@ -16,6 +16,7 @@ import { product } from "@/content/en-IN/products/kheelu/product";
 import { inAppNote } from "@/content/en-IN/store/in-app-note";
 import { paymentsLine } from "@/content/en-IN/store/payments-line";
 import { toPlainText } from "@/lib/content/plain-text";
+import { buildOffer } from "@/lib/offer/offer";
 import { PAGE_FACTS, type FactEdit, type PageFacts, type PageFactsSlug } from "./page-facts";
 import { sentences } from "./parity";
 
@@ -1211,6 +1212,61 @@ export const FAQ_FIXES = {
 } as const satisfies Readonly<Record<string, PageFacts>>;
 export type FaqFixesSlug = keyof typeof FAQ_FIXES;
 const FAQ_FIXES_WHOSE = "task 8c.4's FAQ fixes (D061)";
+/* Task 8c.2's offer additions (D061 item 3, and the main session's D061 ruling on the share link; the CMO's review,
+   wiki/qa/cmo-review-advisor-proposal-2026-10-15.md, AP-28). Two lines the frozen mockup (D046) does not have, on both
+   offer cards, each a deviation row the main session files in wiki/qa/deviations.md and the founder signs at Gate B
+   (D015):
+   - the later price, in token mode only, a plain line under the amount in the DS card's later-price place (never struck
+     through, no counter, no "save"; PRICE-01, DARK-01): "₹4,999 for the first 500 units. ₹7,999 once they are gone.";
+   - "Know a parent who needs this? Share Kheelu on WhatsApp", the live site's label, last in the offer's column: a ghost
+     link that opens WhatsApp with the message share.ts holds (tracked `share-whatsapp`, architecture §8.3).
+   In page-facts.ts's form, applied after a page's earlier rules (editsBeforeClaimFixes, then CLAIM_FIXES): `edits` add
+   the two lines to that mockup (the help line under the card is written out again, the share link after it), the build
+   prints four sentences more and none fewer, and the pixels compare each page without the two added blocks on the
+   build's side. The text pass reads token mode (no store in the parity build). The share link's address is the offer's
+   own (buildOffer, so the rule follows share.ts; src/content/en-IN/share.test.ts holds its words). OfferSection.test.tsx
+   proves each page's rule against the mockup. */
+const OFFER_LATER = ["₹4,999 for the first 500 units.", "₹7,999 once they are gone."] as const;
+const OFFER_SHARE = ["Know a parent who needs this?", "Share Kheelu on WhatsApp"] as const;
+const OFFER_ADDITIONS_WHOSE = "task 8c.2's offer additions (D061)";
+const OFFER_ADDITIONS_APPROVED =
+  "deviations.md rows for task 8c.2, numbered at the merge (founder, D061 item 3, and the main session's D061 ruling on the share link, 2026-10-15; task 8c.2)";
+/** Each card's help line as the mockup prints it, then the share link after it (mockup markup: `mk-` names, read as the
+ *  build's `ks-` by the comparisons). */
+const helpThenShare = (): string =>
+  `<p class="kh-body-s mk-help">${icon("whatsapp-logo")} Questions? <a href="https://wa.me/919187546483">WhatsApp</a> or <a href="tel:+919187546483" class="mk-nowrap">call +91 91875 46483</a></p>` +
+  `<div class="kh-section__actions mk-offer-share"><a href="${buildOffer("token").share?.href ?? ""}" class="kh-btn kh-btn--ghost" data-ph-capture-attribute-cta="share-whatsapp"><span>${OFFER_SHARE.join(" ")}</span></a></div>`;
+const offerAdditions = (fold: string) => ({
+  edits: [
+    {
+      at: ".kh-offer__prices",
+      was: "₹4,999incl. GST",
+      now: `<span class="kh-offer__price">₹4,999</span><span class="kh-body-s">incl. GST</span><p class="kh-body-s mk-offer__later">${OFFER_LATER.join(" ")}</p>`,
+      inner: true,
+    },
+    { at: `${fold} .mk-help`, was: "Questions? WhatsApp or call +91 91875 46483", now: helpThenShare() },
+  ] satisfies FactEdit[],
+  mockup: [],
+  build: [...OFFER_LATER, ...OFFER_SHARE],
+  /* The later line makes the card taller and the share link the column longer, at every width: each moves what is below
+     it. The build's side alone, as nothing on the mockup's stands for them. */
+  hidden: { both: [], mockup: [], build: [".ks-offer__later", ".ks-offer-share"] },
+  reason: "the later price under the amount while the first-500 price is live, and the share link under the offer card (D061)",
+  approvedBy: OFFER_ADDITIONS_APPROVED,
+});
+export const OFFER_ADDITIONS = {
+  home: offerAdditions("#close"),
+  "meet-kheelu": offerAdditions("#offer"),
+} as const satisfies Readonly<Record<string, PageFacts>>;
+export type OfferAdditionsSlug = keyof typeof OFFER_ADDITIONS;
+/** The pixels' rows for a page's offer additions: the two added blocks, on the build's side. */
+const offerAdditionsHidden = (slug: OfferAdditionsSlug): VisualHide[] =>
+  OFFER_ADDITIONS[slug].hidden.build.map((selector) => ({
+    side: "build",
+    selector,
+    reason: `a line ${OFFER_ADDITIONS_WHOSE} add, which the mockup does not have; compared by the text pass`,
+    approvedBy: OFFER_ADDITIONS_APPROVED,
+  }));
 
 /** A route whose own parity runs would compare a state its mockup does not show, with the spec that proves that
  *  state's parity instead. The visual and text parity specs skip the route on the build and print why (SPA 1 and 2). */
@@ -1411,11 +1467,13 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...factsHidden(COPY_FIXES.stories, COPY_FIXES_WHOSE),
   ],
   /* The screen-time guide card's line (V18, task 7.1b), then the parent-app bullets and the safety bodies (V26, task 8b.1),
-     then the fourth question (task 8c.4, D061), compared by the text pass. */
+     then the fourth question (task 8c.4, D061), compared by the text pass; then the offer card's later price and the
+     share link the build adds (task 8c.2, D061). */
   home: [
     ...factsHidden(COPY_FIXES.home, COPY_FIXES_WHOSE),
     ...factsHidden(CLAIM_FIXES.home, CLAIM_FIXES_WHOSE),
     ...factsHidden(FAQ_FIXES.home, FAQ_FIXES_WHOSE),
+    ...offerAdditionsHidden("home"),
   ],
   /* The open FAQ answer (V19, task 7.1b), then the facts, controls and retention card (V28, task 8b.1), compared by the
      text pass. */
@@ -1483,6 +1541,8 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...factsHidden(CLAIM_FIXES["meet-kheelu"], CLAIM_FIXES_WHOSE),
     /* The languages question, the build's alone (task 8c.4, D061), compared by the text pass. */
     ...factsHidden(FAQ_FIXES["meet-kheelu"], FAQ_FIXES_WHOSE),
+    /* The offer card's later price and the share link the build adds (task 8c.2, D061). */
+    ...offerAdditionsHidden("meet-kheelu"),
   ],
   /* The Google Analytics block's paragraph and the PostHog block's first one say more in the build (V10), so they wrap
      to more lines and every block below would shift; the pixels compare the page without the two paragraphs on both
@@ -1606,9 +1666,10 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     factsRule(COPY_FIXES.stories),
   ],
   /* The screen-time guide card's line and two FAQ answers (V18, task 7.1b): COPY_FIXES above. The answers sit in closed
-     items, which the text pass does not read; Home's unit test holds them. Then D058's claim fixes (V26, task 8b.1), and
-     the fourth question in the parent's words, which the text pass does read (task 8c.4, D061): FAQ_FIXES above. */
-  home: [factsRule(COPY_FIXES.home), factsRule(CLAIM_FIXES.home), factsRule(FAQ_FIXES.home)],
+     items, which the text pass does not read; Home's unit test holds them. The offer card's later price and the share link
+     (task 8c.2, D061): OFFER_ADDITIONS above. Then D058's claim fixes (V26, task 8b.1), and the fourth question in the
+     parent's words, which the text pass does read (task 8c.4, D061): FAQ_FIXES above. */
+  home: [factsRule(COPY_FIXES.home), factsRule(OFFER_ADDITIONS.home), factsRule(CLAIM_FIXES.home), factsRule(FAQ_FIXES.home)],
   "meet-kheelu": [
     {
       /* The product details fold without JavaScript (wiki/qa/deviations.md V3): the tab row stays hidden and the three
@@ -1637,6 +1698,9 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     pageFacts("meet-kheelu"),
     /* The films heading and the sources line (V17, task 7.1b): COPY_FIXES above. */
     factsRule(COPY_FIXES["meet-kheelu"]),
+    /* The offer card's later price and the share link (task 8c.2, D061): OFFER_ADDITIONS above, before D058's claim
+       fixes, which stay the page's last rule. */
+    factsRule(OFFER_ADDITIONS["meet-kheelu"]),
     /* D058's claim fixes (V27, task 8b.1): CLAIM_FIXES above. */
     factsRule(CLAIM_FIXES["meet-kheelu"]),
     /* The languages question (task 8c.4, D061): FAQ_FIXES above. Its answer sits in a closed item, which the text pass

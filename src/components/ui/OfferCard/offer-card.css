@@ -1,0 +1,8 @@
+/* OfferCard (task 8c.2; D061 item 3). The later price sits in the DS card's later-price place, the prices row
+   (kh-offer__prices, where the DS draws `was`), as a plain paragraph on a row of its own under the amount and its note:
+   never beside the amount, where it would read as a second price, and never struck through (PRICE-01). Its type is the
+   DS's kh-body-s, as the note beside the amount; the row's gap spaces it, so it keeps no margin of its own. */
+.ks-offer__later {
+  flex-basis: 100%;
+  margin: 0;
+}

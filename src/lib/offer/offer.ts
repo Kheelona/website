@@ -7,8 +7,9 @@ import {
 } from "@/config/site";
 import { DELIVERY_SCHEMA_DATE, DELIVERY_TEXT } from "@/content/en-IN/delivery";
 import { offerCopy } from "@/content/en-IN/offer";
-import type { Offer, OfferCard, OfferCopy, OfferMode, PriceKey } from "@/content/types";
+import type { Offer, OfferCard, OfferCopy, OfferMode, OfferShare, PriceKey } from "@/content/types";
 import { pickMode } from "@/lib/content/mode";
+import { toPlainText } from "@/lib/content/plain-text";
 import { formatInr } from "@/lib/format/inr";
 
 /**
@@ -44,13 +45,24 @@ export function offerPrices(mode: OfferMode): Readonly<Record<PriceKey, string>>
 
 function offerCard(mode: OfferMode, copy: OfferCopy): OfferCard {
   const card = { product: copy.card.product, priceNote: pickMode(copy.card.priceNote, mode), perks: copy.card.perks };
-  /* Full mode has no advance, so its card has no split (DS gap G-08). */
-  return mode === "token" ? { ...card, split: copy.card.split } : card;
+  /* Full mode has no advance, so its card has no split (DS gap G-08), and no later price: the later price is the price
+     then (D061 item 3). */
+  if (mode !== "token") return card;
+  const { split, later } = copy.card;
+  return later === undefined ? { ...card, split } : { ...card, split, later };
+}
+
+/** The share link for the mode (D061; task 8c.2): WhatsApp's share link with the message the parent sends, its amounts
+ *  resolved as the page resolves them, then the tagged address, all encoded as the WhatsApp bubble encodes its text. */
+function offerShare(copy: OfferCopy, offer: Offer): OfferShare | undefined {
+  if (copy.share === undefined) return undefined;
+  const { label, href, text, address } = copy.share;
+  return { label, href: `${href}?text=${encodeURIComponent(`${toPlainText(text, offer)} ${address}`)}` };
 }
 
 /** The offer for a mode. `copy` is the locale's offer module (en-IN by default). */
 export function buildOffer(mode: OfferMode, copy: OfferCopy = offerCopy): Offer {
-  return {
+  const offer: Offer = {
     mode,
     headlinePaise: headlinePaise(mode),
     prices: offerPrices(mode),
@@ -61,4 +73,6 @@ export function buildOffer(mode: OfferMode, copy: OfferCopy = offerCopy): Offer 
     delivery: DELIVERY_TEXT,
     availabilityStarts: DELIVERY_SCHEMA_DATE,
   };
+  const share = offerShare(copy, offer);
+  return share === undefined ? offer : { ...offer, share };
 }

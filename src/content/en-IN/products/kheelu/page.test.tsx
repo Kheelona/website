@@ -10,7 +10,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../../test/e2e/support/page-checks";
-import { CLAIM_FIXES, COPY_FIXES, FAQ_FIXES, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, COPY_FIXES, FAQ_FIXES, OFFER_ADDITIONS, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../../test/e2e/support/deviations";
 import { htmlToText } from "../../../../../test/e2e/support/mockup-text";
 import { PAGE_FACTS } from "../../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../../test/e2e/support/parity";
@@ -35,8 +35,10 @@ import { product } from "./product";
  * count (D056 item 2) and the sources line in Home's short form (CMO review A M6); then with task 8b.1's claim fixes
  * (deviation V27; CLAIM_FIXES["meet-kheelu"]; D058): Kheelona+ as D058 item 3 words it, the parent app as the live
  * team's code check found it (fold 5 without the four-skills report and its chips), the safety block, specs, Safety
- * tab and two answers in the code-checked words; then with task 8c.4's FAQ fix (FAQ_FIXES["meet-kheelu"]; D061): the
- * questions fold answers "Which languages does Kheelu speak?" after the first-week question.
+ * tab and two answers in the code-checked words; then with task 8c.2's offer additions (OFFER_ADDITIONS["meet-kheelu"];
+ * D061): the card's later price in token mode and the share link under the card, tracked share-whatsapp; then with task
+ * 8c.4's FAQ fix (FAQ_FIXES["meet-kheelu"]; D061): the questions fold answers "Which languages does Kheelu speak?" after
+ * the first-week question.
  */
 
 const PATH = "/products/kheelu";
@@ -53,9 +55,12 @@ function rendered(offer: Offer) {
 const BUILT = rendered(TOKEN);
 const APPROVED = mockupPage("meet-kheelu").querySelector("main")!;
 /** The approved page with the founder's page facts (task 6.7) and task 7.1b's copy fixes applied, then task 8b.1's claim
- *  fixes in a pass of their own, then task 8c.4's FAQ fix in one after them: what the build must say. */
+ *  fixes, task 8c.2's offer additions and task 8c.4's FAQ fix, each in a pass of its own: what the build must say. */
 const MOCKUP = withFacts(
-  withFacts(withFacts(APPROVED, [...PAGE_FACTS["meet-kheelu"].edits, ...COPY_FIXES["meet-kheelu"].edits]), CLAIM_FIXES["meet-kheelu"].edits),
+  withFacts(
+    withFacts(withFacts(APPROVED, [...PAGE_FACTS["meet-kheelu"].edits, ...COPY_FIXES["meet-kheelu"].edits]), CLAIM_FIXES["meet-kheelu"].edits),
+    OFFER_ADDITIONS["meet-kheelu"].edits,
+  ),
   FAQ_FIXES["meet-kheelu"].edits,
 );
 /** The folds: `main`'s sections, in order (React's image preload links and the JSON-LD script left out). */
@@ -142,7 +147,8 @@ describe("the product page as rendered (token mode)", () => {
   it("carries the mockup's CTA values, in order (architecture §8.3; meet-kheelu.md \"CTA tracking values\")", () => {
     const values = (root: Element) => [...root.querySelectorAll("[data-ph-capture-attribute-cta]")].map((el) => el.getAttribute("data-ph-capture-attribute-cta"));
     expect(values(BUILT.main)).toEqual(values(MOCKUP));
-    expect(values(BUILT.main)).toEqual(["product-top", "product-offer", "product-safety", "product-safety-learn", "product-foot"]);
+    // share-whatsapp: the share link under the offer card (D061, task 8c.2), in the mockup through OFFER_ADDITIONS.
+    expect(values(BUILT.main)).toEqual(["product-top", "product-offer", "share-whatsapp", "product-safety", "product-safety-learn", "product-foot"]);
   });
 
   it("names what the mockup names: regions, lists, boards, buttons and markers (aria-label), in order", () => {
@@ -356,15 +362,18 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
     for (const selector of sel("build")) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
   });
 
-  it("leaves beside them only the films heading and the sources line of the copy fixes (V17), then the claim fixes' blocks (V27), then the FAQ fix's question (task 8c.4), each found once on the page as it renders", () => {
+  it("leaves beside them only the films heading and the sources line of the copy fixes (V17), then the claim fixes' blocks (V27), then the FAQ fix's question (task 8c.4), then the offer additions (task 8c.2), each found once on the page as it renders", () => {
     const claims = CLAIM_FIXES["meet-kheelu"];
     const faq = FAQ_FIXES["meet-kheelu"];
+    const additions = OFFER_ADDITIONS["meet-kheelu"];
     const others = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.approvedBy !== FACTS.approvedBy);
     expect(others.map((r) => [r.side, r.selector, r.approvedBy])).toEqual([
       ...(["mockup", "build"] as const).flatMap((side) => ["#films-title", "#src-1"].map((selector) => [side, selector, COPY_FIXES["meet-kheelu"].approvedBy])),
       ...(["mockup", "build"] as const).flatMap((side) => claims.hidden.both.map((selector) => [side, selector, claims.approvedBy])),
       ...faq.hidden.build.map((selector) => ["build", selector, faq.approvedBy]),
+      ...additions.hidden.build.map((selector) => ["build", selector, additions.approvedBy]),
     ]);
+    for (const selector of additions.hidden.build) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
     for (const selector of claims.hidden.both) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
     // The build's alone holds the languages question: its hide finds it, and nothing else, on the page as it renders.
     for (const selector of faq.hidden.build) {
@@ -391,20 +400,23 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
       expect.objectContaining({ mockup: /^Specs$/, jsOff: true }),
     ]);
     // The route's other rules are P15's (V6, task 4.7), the founder's page facts (V16, task 6.7), task 7.1b's copy fixes
-    // (V17), task 8b.1's claim fixes (V27) and task 8c.4's FAQ fix, for both runs: the FAQ answer, the details, the
-    // heading, the sources, D058's lines and the languages question read the same with JavaScript off.
+    // (V17), task 8c.2's offer additions (D061, rows numbered at the merge), task 8b.1's claim fixes (V27) and task 8c.4's
+    // FAQ fix, for both runs: the FAQ answer, the details, the heading, the sources, the offer's two lines, D058's lines
+    // and the languages question read the same with JavaScript off.
     expect(TEXT_DEVIATIONS["meet-kheelu"].map((rule) => [rule.approvedBy.slice(0, "deviations.md V3".length), rule.jsOff ?? false])).toEqual([
       ["deviations.md V3", true],
       ["deviations.md V6", false],
       ["deviations.md V1", false],
       ["deviations.md V1", false],
+      ["deviations.md ro", false],
       ["deviations.md V2", false],
       ["deviations.md V4", false],
     ]);
     expect(TEXT_DEVIATIONS["meet-kheelu"][2].approvedBy).toBe(PAGE_FACTS["meet-kheelu"].approvedBy);
     expect(TEXT_DEVIATIONS["meet-kheelu"][3].approvedBy).toBe(COPY_FIXES["meet-kheelu"].approvedBy);
-    expect(TEXT_DEVIATIONS["meet-kheelu"][4].approvedBy).toBe(CLAIM_FIXES["meet-kheelu"].approvedBy);
-    expect(TEXT_DEVIATIONS["meet-kheelu"][5].approvedBy).toBe(FAQ_FIXES["meet-kheelu"].approvedBy);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][4].approvedBy).toBe(OFFER_ADDITIONS["meet-kheelu"].approvedBy);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][5].approvedBy).toBe(CLAIM_FIXES["meet-kheelu"].approvedBy);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][6].approvedBy).toBe(FAQ_FIXES["meet-kheelu"].approvedBy);
   });
 
   it("accepts on the build side exactly the stacked panels' lines, as the page prints them, and no other line of the page", () => {
