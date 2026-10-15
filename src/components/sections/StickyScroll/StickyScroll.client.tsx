@@ -2,13 +2,14 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 
-/** The reading line: a thin band across the screen a little above its middle. The point crossing it is the one being
- *  read; between two points the last one stays. */
-const READING_BAND = "-40% 0px -55% 0px";
+/** The reading line: a thin band across the upper third of the screen, where the eye reads a point the sticky heading and
+ *  picture sit beside (measured at 1440 x 900: the first point is on it as the fold pins). The point crossing it is the
+ *  one being read; between two points the last one stays. */
+const READING_BAND = "-25% 0px -70% 0px";
 
 /**
  * StickyScroll's island (task Q2.9; the D2C plan v2 §1.6): which point is being read. One IntersectionObserver watches
- * the points (`[data-point]`) against a thin band a little above the screen's middle; the point crossing it marks its
+ * the points (`[data-point]`) against a thin band across the screen's upper third; the point crossing it marks its
  * picture on the stage (`[data-stage] > *`) and every progress step up to it (`[data-progress] > *`) with `data-on`.
  * That is all it does: the crossfade and the fill are sticky-scroll.css's, on DS motion tokens, under
  * `prefers-reduced-motion: no-preference` only, and the stage and the progress line show from 900 px only. Without

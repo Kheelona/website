@@ -69,7 +69,8 @@ describe("StickyScroll: the fold", () => {
     expect(section).toHaveAttribute("id", "asks");
     expect(section.className).toBe("kh-section ks-sticky");
     const grid = section.querySelector(".kh-container > .kh-split.kh-split--wide-end.ks-sticky__grid")!;
-    expect([...grid.children].map((el) => el.className)).toEqual(["ks-sticky__aside", "ks-sticky__points ks-list-reset"]);
+    expect([...grid.children].map((el) => el.className)).toEqual(["ks-sticky__aside", "ks-sticky__main"]);
+    expect(grid.lastElementChild?.firstElementChild?.className).toBe("ks-sticky__points ks-list-reset");
     const aside = grid.firstElementChild!;
     expect([...aside.children].map((el) => el.className)).toEqual(["kh-heading", "ks-sticky__stage", "ks-sticky__progress ks-list-reset"]);
     expect([...aside.querySelectorAll("h2 .kh-hand")].map((s) => s.textContent)).toEqual(["Your child thinks."]);
@@ -128,9 +129,9 @@ describe("StickyScroll: the fold", () => {
     vi.mocked(console.error).mockRestore();
   });
 
-  it("ends on the line, a paragraph and not a heading, then the CTA block, both outside the points and every reveal", () => {
+  it("ends the points' column on the line, a paragraph and not a heading, then the CTA block, outside the points and every reveal", () => {
     const { container } = render(<StickyScroll {...CONFIG} offer={OFFER} cta={<div className="cta-slot" />} />);
-    const line = container.querySelector(".ks-sticky__grid + p.kh-title.ks-sticky__line")!;
+    const line = container.querySelector(".ks-sticky__grid > .ks-sticky__main > .ks-sticky__points + p.kh-title.ks-sticky__line")!;
     expect(line.textContent).toBe(CONFIG.line);
     expect(line.nextElementSibling).toHaveClass("cta-slot");
     expect(container.querySelector(".cta-slot")?.closest("[data-reveal]")).toBeNull();
@@ -141,11 +142,11 @@ describe("StickyScroll: the point being read (the island)", () => {
   const stageOn = (container: HTMLElement) => [...container.querySelectorAll("[data-stage] > *")].map((pic) => pic.hasAttribute("data-on"));
   const stepsOn = (container: HTMLElement) => [...container.querySelectorAll("[data-progress] > *")].map((step) => step.hasAttribute("data-on"));
 
-  it("watches every point against a thin reading line a little above the screen's middle", () => {
+  it("watches every point against a thin reading line across the screen's upper third", () => {
     const { container } = render(<StickyScroll {...CONFIG} offer={OFFER} />);
     expect(TestObserver.all).toHaveLength(1);
     const [observer] = TestObserver.all;
-    expect(observer.options.rootMargin).toBe("-40% 0px -55% 0px");
+    expect(observer.options.rootMargin).toBe("-25% 0px -70% 0px");
     expect(observer.targets).toEqual([...container.querySelectorAll("[data-point]")]);
   });
 

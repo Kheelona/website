@@ -185,7 +185,7 @@ describe("the section registry: slots", () => {
     expect(host.querySelector(".ks-safe-split ~ .kh-section__actions .kh-btn--cta")?.getAttribute("data-ph-capture-attribute-cta")).toBe("safety");
     const asks = { ...ENTRY_FIXTURES["sticky-scroll"], cta: { ...CTA_BLOCK, cta: "home-asks" } } as const satisfies SectionEntry;
     expect(markup(renderSection(asks, ctx))).toBe(markup(<StickyScroll {...asks.config} offer={TOKEN} cta={<CtaBlock {...asks.cta} {...ctx} />} />));
-    expect(dom(renderSection(asks, ctx)).querySelector(".ks-sticky__grid ~ .kh-section__actions .kh-btn--cta")?.getAttribute("data-ph-capture-attribute-cta")).toBe("home-asks");
+    expect(dom(renderSection(asks, ctx)).querySelector(".ks-sticky__main > .ks-sticky__points ~ .kh-section__actions .kh-btn--cta")?.getAttribute("data-ph-capture-attribute-cta")).toBe("home-asks");
   });
 
   it("puts setup's Wi-Fi tip after the checklist of a ticks fold", () => {

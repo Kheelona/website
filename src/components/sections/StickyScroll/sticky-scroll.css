@@ -59,11 +59,18 @@
 .ks-sticky__exchange .kh-label-s {
   display: block;
 }
-/* The line under the points: centred, a reading measure wide. */
+/* The line under the points: centred in the points' column, a reading measure wide. */
 .ks-sticky__line {
   max-width: var(--measure);
   margin: var(--space-7) auto 0;
   text-align: center;
+}
+/* The column's foot: room under the CTA block on laptops, so the sticky picture stays beside the last point while it is
+   read (the island's reading line sits in the screen's upper third). */
+@media (min-width: 900px) {
+  .ks-sticky__main {
+    padding-bottom: var(--space-9);
+  }
 }
 
 /* Laptops: the heading, the stage and the progress line stay in view on the left while the points scroll on the right,
@@ -115,7 +122,7 @@
   }
   .ks-sticky__points {
     gap: var(--space-9);
-    padding-block: var(--space-7);
+    padding-top: var(--space-7);
   }
   .ks-sticky__point {
     grid-template-columns: minmax(0, 1fr);

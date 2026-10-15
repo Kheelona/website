@@ -44,19 +44,21 @@ export function StickyScroll({ id, band, heading, points, line, offer, cta }: St
               ))}
             </ol>
           </div>
-          <ol className="ks-sticky__points ks-list-reset" role="list">
-            {points.map((point, i) => (
-              <li key={i} className="ks-sticky__point" data-point="" data-reveal="">
-                <Thumb picture={point.picture} />
-                <RichText as="h3" className="kh-title ks-sticky__title" text={point.title} offer={offer} />
-                <RichText as="p" className="kh-body ks-sticky__body" text={point.body} offer={offer} />
-                {point.example && <Example example={point.example} id={`${heading.id}-example-${i + 1}`} offer={offer} />}
-              </li>
-            ))}
-          </ol>
+          <div className="ks-sticky__main">
+            <ol className="ks-sticky__points ks-list-reset" role="list">
+              {points.map((point, i) => (
+                <li key={i} className="ks-sticky__point" data-point="" data-reveal="">
+                  <Thumb picture={point.picture} />
+                  <RichText as="h3" className="kh-title ks-sticky__title" text={point.title} offer={offer} />
+                  <RichText as="p" className="kh-body ks-sticky__body" text={point.body} offer={offer} />
+                  {point.example && <Example example={point.example} id={`${heading.id}-example-${i + 1}`} offer={offer} />}
+                </li>
+              ))}
+            </ol>
+            {line !== undefined && <RichText as="p" className="kh-title ks-sticky__line" text={line} offer={offer} />}
+            {cta}
+          </div>
         </StickyScrollIsland>
-        {line !== undefined && <RichText as="p" className="kh-title ks-sticky__line" text={line} offer={offer} />}
-        {cta}
       </Container>
     </Section>
   );
