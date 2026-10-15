@@ -2346,6 +2346,65 @@ Base: the merged wave q2b (`d907e130`).
   **Acceptance:** `npm run verify` green on the whole tree except the two product-page tests Q2.13 owns, the build
   green, the tap targets proven at 360 × 640 on the routes named.
 
+### Q2.15 One CTA block and one offer fold, page by page (builder; risk normal)
+
+Base: `a62247a0` (the selling update merged, q2c merged). From the consistency review `wf_78365aa5-dfe` (four lenses,
+every serious finding verified; [CMO review](../qa/cmo-review-selling-update-built-2026-10-15.md)), main-session rulings
+2026-10-15: **R1** Home's phone length accepted (no cuts) and guarded; **R2** one CTA shape.
+- **R2, one CTA block (CMO-1, QAP-1, QAL-3, CON-1, CON-5):** `CtaBlock` defaults `arrow = true` and `block = true`
+  (full width with the arrow below 720 px, inline from 720 px through `cta-block.css`'s existing rule); the redundant
+  per-page `arrow`/`block` flags leave (home.ts, products/kheelu/page.ts, safety.ts, ai-toys-for-kids-in-india.ts,
+  stories/hub.ts); type docs updated. A centred block under a start-aligned heading follows its heading.
+- **The product close (CON-2):** `product-foot` loses `layout: "full"` so it lays out as every other close.
+- **One offer fold (CON-3, QAL-2, CMO-2):** Home's and the product page's offer folds share one composition from 900 px
+  (the card in one column width, the picture top-aligned beside it, D064 item 5), and both print the trust line and the
+  card's third row as two explicit rows (`trust.ts` gains the third row's ids), so they wrap the same everywhere.
+- **The same links, one look (CMO-3, CON-4, CON-7):** the product page's "See how we built safety in" is the DS secondary
+  button with the shield, as on Home; the ghost link under the closes reads "See how Kheelu works" with the same gap on
+  `/team`, `/contact`, the hub and the articles.
+- **Closes labelled alike (CON-6):** every selling close carries the eyebrow "Pre-order" (Home, product, `/safety`,
+  `/setup` and the guide already do; add it on `/team`, `/contact`, the hub, the articles with a button close, the 404;
+  the six talking guides keep their close without a button).
+- **The drawer's note (CON-8):** the risk-reversal line and the delivery line on two lines, as the trust line reads.
+- **/safety and /setup rhythm (CON-9, QAL-8):** the band alternates again (no two band folds in a row).
+- **Small copy and layout:** Home's offer lead reads "Kheelu is there every day at home, with no screen to switch off."
+  (CMO-7; `findBanned` clean; the founder signs); the clip captions on Home are not narrowed where no bubble can reach
+  (CMO-5); the sticky scroll's point text keeps the DS reading measure on laptops (QAL-11); the guide's close keeps its
+  trust line on one row at 1440 (CON-11); `/safety`'s first question uses non-breaking hyphens ("3‑year‑old", QAP-6).
+- **R1 guard:** a check pins Home at 390 × 844 to the offer heading at or above 7,700 px and the page at or under
+  15,500 px (today 7,569 and 15,027).
+- **Owns:** `sections/CtaBlock`, `sections/OfferSection`, `trust.ts`, the page content modules (home, product, safety,
+  setup, team, contact, the guide, the hub, the 404, the journal close config), `chrome/NavDrawer` (the note),
+  `sections/StickyScroll` and FilmsStrip's single-clip caption CSS, `faqs.ts` (the hyphens), their tests and stories, the
+  per-page blocks of `test/e2e/support/deviations.ts`, the catalogue rows. **Acceptance:** `npm run verify` and the build
+  green; screenshots of every page's CTA blocks and both offer folds at 360, 390, 412 and 1440 kept local.
+
+### Q2.16 Layout and chrome defects from the consistency review (builder; risk normal)
+
+Base: `a62247a0`. Verified findings (`wf_78365aa5-dfe`):
+- **The WhatsApp bubble over hero tap targets (QAP-2):** it steps aside (as it does for prices) while `/contact`'s
+  contact buttons (`.ks-contact-ways`), the hub's topic chips, the 404's list and `/thanks`'s chargeback link cross its
+  band; D050's persistent bubble otherwise unchanged.
+- **Lone last words in titles (QAP-3, QAP-7):** one unlayered composition rule (`ui/Layout/layout.css`) gives the DS's
+  other title classes `text-wrap: pretty` (as the DS balances `.kh-heading__title`); ghost and secondary button labels
+  likewise.
+- **Link colour (QAP-4, QAL-5):** links in FAQ answers and trust-list bodies take the DS link colour
+  (`ui/RichText/rich-text.css`, zero added specificity).
+- **The store's header (QAP-5):** the logo never shrinks; the help line breaks "Questions?" / "Message us on WhatsApp.".
+  The store's trust links under the pay button get the site's tap rows (QAP-8). CSS only; checkout logic and its
+  contract fixtures unchanged.
+- **The footer's legal row (QAL-1):** the contact and the grievance link one group, aligned with the copyright and the
+  address at 1024-1440.
+- **/safety's parent controls (QAL-4):** one column beside the privacy screen from 900 px.
+- **/team's founder cards (QAL-6):** the avatar above the name at 720-1199 px; the heads top-aligned at every width.
+- **The compare table's note (QAL-7):** the caption takes the cells' inset inside the frame.
+- **FAQ rows (QAL-10):** a hover state like the site's other clickable rows (pointer devices only; D064 item 10).
+- **Owns:** `chrome/WhatsAppFloat`, `ui/Layout/layout.css`, `ui/Button` label CSS, `ui/RichText/rich-text.css`,
+  `chrome/StoreHeader`, the store's trust-row CSS, `chrome/Footer` and SellerLines' footer variant,
+  `sections/FeatureSplit/feature-split.css`, `sections/FoundersSection`, `ui/CompareTable` (a new colocated stylesheet),
+  `ui/FaqList` CSS, their tests and stories, the shared rules of `deviations.ts`, the catalogue rows. **Acceptance:**
+  `npm run verify` and the build green; each finding re-measured on the build at the sizes it was found.
+
 ## Wave 9: beta deploy and beta QA (after wave 8)
 
 ### 7.2 Beta deploy and beta QA (main session, founder, QA)

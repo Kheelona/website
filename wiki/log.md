@@ -1362,3 +1362,17 @@ consistency extraction), then one independent verifier per blocking or major fin
 The project summary rewritten for the selling update (waves q2a-q2c, quality at `5b245a26`, the rulings to confirm,
 next steps, waiting on the founder); status and index follow. The consistency review `wf_78365aa5-dfe` was stopped to
 save the usage allowance; resume it with `resumeFromRunId` (finished reviewers replay from cache).
+
+## [2026-10-15 23:30] qa | Consistency review done: 16 serious findings, all confirmed; R1, R2; fixes Q2.15, Q2.16
+`wf_78365aa5-dfe` (resumed after the pause; 20 agents): the CMO, QA phones, QA laptops and a cross-page extraction found
+42 findings; each of the 16 blocking or major ones was confirmed by an independent verifier, none refuted. The CMO's
+[review](qa/cmo-review-selling-update-built-2026-10-15.md): the update sells on every page; the CTA block's four shapes on
+phones is the one major failure. **Rulings (main session):** R1, Home's phone length (about 15,000 px, 18 screens at 390 ×
+844, the offer at screen 9) accepted for launch with no cuts and guarded (offer heading ≤ 7,700 px, page ≤ 15,500 px);
+after launch, compare how far paid phone sessions get from `#asks` to `#offer` (the founder decides any test). R2, one
+CTA shape: full width with the arrow on phones, inline from 720 px. The product FAQ keeps "Still have a question?" (plan
+§3 fold 11 names it). The ghost link under the closes reads "See how Kheelu works" everywhere. Deferred: the laptop hero
+crop still downloads on phones (CMO-9; next/image has no per-viewport priority); an inline buy block after the
+product page's compare table (CMO-8: a new placement, the founder's); Home's hero at 1024 × 768 (QAL-12); the footer's
+full-width layout (QAL-13). Fixes written as tasks Q2.15 (the CTA block, the offer folds, closes, copy and rhythm) and
+Q2.16 (layout and chrome defects).
