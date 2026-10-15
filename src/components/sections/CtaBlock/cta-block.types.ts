@@ -53,25 +53,25 @@ export interface CtaSecondary {
 }
 
 /**
- * How the lines under the button sit, each exactly as the approved mockup lays it out:
- * - `beside` (default): price sentence, trust line and help line grouped (`ks-beside`, mockup.css:27): the safety,
- *   guide, team and 404 closes, Home folds 2 and 6, product fold 6;
+ * How the lines under the button sit, each as the approved mockup lays it out:
+ * - `beside` (default): price sentence, trust line and help line grouped (`ks-beside`, mockup.css:27): every close but
+ *   the journal's (the product close too since task Q2.15, CON-2: its "full" block left), and the blocks inside pages;
  * - `journal`: price sentence and trust line grouped, the help line after the group: the stories hub and article
  *   closes (stories.html, the article mockups);
  * - `stack`: no group, every line straight after the button: the Home and product heroes (the hero section spaces
- *   them, mockup.css:16-19);
- * - `full`: the close's full block (meet-kheelu.html fold 9): no group, the long trust row kept to the reading
- *   measure and the help line a step lower (meet-kheelu.css:104-105).
+ *   them, mockup.css:16-19).
  */
-export type CtaBlockLayout = "beside" | "journal" | "stack" | "full";
+export type CtaBlockLayout = "beside" | "journal" | "stack";
 
 /** One CTA block as a page's content gives it. */
 export interface CtaBlockConfig {
   /** The chilli button's value: a pre-order value of the CTA registry (architecture §8.3), refused otherwise. */
   readonly cta: CtaId;
-  /** The nudging arrow (D049 pick 6): Home and product heroes, the guide, safety, stories and article closes. */
+  /** The nudging arrow (D049 pick 6, D064 item 10). On by default: every CTA block's button has it (task Q2.15, the
+   *  consistency review's R2), so a page's content never sets it. */
   readonly arrow?: boolean;
-  /** Full width on phones, inline from 720 px (DS 10-pages; CMO M4). */
+  /** Full width on phones, inline from 720 px (DS 10-pages; CMO M4; cta-block.css). On by default: every CTA block's
+   *  button is full width on phones (task Q2.15, R2), so a page's content never sets it. */
   readonly block?: boolean;
   /** The button's id: only the Home hero's `hero-cta`, which the sticky bar watches. */
   readonly id?: string;

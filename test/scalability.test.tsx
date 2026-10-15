@@ -40,7 +40,7 @@ const springCampaign = {
     {
       kind: "hero-section",
       config: { variant: "art", heading: { id: "hero-title", eyebrow: "For ages 3 to 7", title: "Fewer screens. {hand:More questions.}" }, art: art("Kheelu beside a child") },
-      cta: { cta: "finale", arrow: true, block: true, layout: "stack", trust: compact, helpLine: true },
+      cta: { cta: "finale", layout: "stack", trust: compact, helpLine: true },
     },
     {
       kind: "films-strip",
@@ -86,7 +86,7 @@ const plushPage = {
     {
       kind: "hero-section",
       config: { variant: "product", heading: { id: "hero-title", title: `Meet ${plushFacts.name}, a toy that {hand:asks back}` }, art: art("The fixture plush") },
-      cta: { cta: "product-top", arrow: true, block: true, layout: "stack", trust: compact, helpLine: true },
+      cta: { cta: "product-top", layout: "stack", trust: compact, helpLine: true },
     },
     {
       kind: "product-details",
@@ -102,7 +102,7 @@ const plushPage = {
     { kind: "faq-section", config: { heading: { id: "faq-title", title: "Questions parents {hand:ask}" }, items: [faqs["cost-and-advance"], faqs["returns-and-warranty"]] } },
     {
       kind: "close-section",
-      config: { variant: "split", heading: { title: "Bring it {hand:home}" }, cta: { cta: "product-foot", layout: "full", trust: full, helpLine: true }, art: art("The fixture plush") },
+      config: { variant: "split", heading: { title: "Bring it {hand:home}" }, cta: { cta: "product-foot", trust: full, helpLine: true }, art: art("The fixture plush") },
     },
   ],
   schema: [

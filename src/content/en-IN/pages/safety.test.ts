@@ -193,7 +193,7 @@ describe("fold 2: the four facts (D020 order, in full)", () => {
   /* The plan v2 §4 fold 2: a worried parent is most convinced here, so the button follows the facts, with the short price
      line and the trust line (task Q2.8's CtaBlock, as on Home), and no help line (closes and the store only, plan §1.1). */
   it("ends with the CTA block: the chilli button tracked `safety-facts`, full width on phones, then the price line and the trust line", () => {
-    expect(facts.cta).toEqual({ cta: "safety-facts", block: true, trust: TRUST_COMPACT.map((id) => trustItems[id]) });
+    expect(facts.cta).toEqual({ cta: "safety-facts", trust: TRUST_COMPACT.map((id) => trustItems[id]) });
     const buttons = Array.from(fold("facts-title").querySelectorAll("[data-ph-capture-attribute-cta]"));
     expect(buttons.map((b) => b.getAttribute("data-ph-capture-attribute-cta"))).toEqual(["safety-facts"]);
   });
@@ -401,7 +401,7 @@ describe("fold 8: the close", () => {
   it("carries the one chilli button (finale, arrow, full width on phones), the compact trust pair and the help line", () => {
     if (close.config.variant !== "split") throw new Error("not the split close");
     const { config } = close;
-    expect(config.cta).toEqual({ cta: "finale", arrow: true, block: true, trust: TRUST_COMPACT.map((id) => trustItems[id]), helpLine: true });
+    expect(config.cta).toEqual({ cta: "finale", trust: TRUST_COMPACT.map((id) => trustItems[id]), helpLine: true });
     const el = fold("close-title");
     expect({ eyebrow: config.heading.eyebrow, title: plain(config.heading.title), lead: plain(config.heading.lead!) }).toEqual({
       eyebrow: headingOf(el).eyebrow,

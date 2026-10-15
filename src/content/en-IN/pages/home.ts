@@ -102,7 +102,8 @@ const LANGUAGE_CHIPS = product.languages.map(({ name, native, lang }) => (native
 /** Film 6, "Two languages", as the languages fold plays it: its chip with its length, the strip's play words. */
 const TWO_LANGUAGES = filmBy("a-story-in-two-languages");
 
-/** Every CTA block of the page but the hero's: the button, the price line, the trust line, centred, no help line. */
+/** A CTA block under a centred heading or line (folds 3 and 5): the button, the price line, the trust line, centred, no
+ *  help line. The button's shape is every block's (task Q2.15: full width on phones, with the arrow). */
 const centred = (value: CtaBlockConfig["cta"], secondary?: CtaSecondary): CtaBlockConfig => ({ cta: value, align: "center", trust: COMPACT, secondary });
 
 export const homePage = {
@@ -134,7 +135,7 @@ export const homePage = {
           phone: { src: kabirRocketPhone, alt: KABIR_ROCKET_ALT },
         },
       },
-      cta: { cta: "hero", id: "hero-cta", priceId: "hero-price", arrow: true, block: true, layout: "stack", trust: COMPACT, secondary: HERO_FILM },
+      cta: { cta: "hero", id: "hero-cta", priceId: "hero-price", layout: "stack", trust: COMPACT, secondary: HERO_FILM },
     },
 
     /* Fold 2 · The seven films in D064's order (D040), the product page's built heading, two parents' own words (D061
@@ -338,7 +339,8 @@ export const homePage = {
           caption: APP_CAPTION,
         },
       },
-      cta: centred("safety", { ...cta.secondary["safety-learn"], variant: "secondary" }),
+      /* Start-aligned, as its heading (task Q2.15; DS 10-pages.md:26 centres actions only under centred headings). */
+      cta: { cta: "safety", trust: COMPACT, secondary: { ...cta.secondary["safety-learn"], variant: "secondary" } },
     },
 
     /* Fold 9 · A day with Kheelu (D065 item 5: the limit, never set by a parent; D044: talking time per day; D027: Story

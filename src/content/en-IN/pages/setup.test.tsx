@@ -85,7 +85,7 @@ const tones = (el: Element) =>
 const SKELETON = {
   rename: { "setup-hero": "ks-hero-words", "steps-4": "ks-steps--four", "setup-copy": "ks-feature-copy" },
   /* And the close's CTA classes, as on every centred close (CtaBlock.test.tsx). */
-  drop: /^ks-(?:list-reset|cta__button|trustline--center)$/,
+  drop: /^ks-(?:list-reset|cta__button|btn__arrow|trustline--center)$/,
 };
 
 const sections: readonly SectionEntry[] = setupPage.sections;

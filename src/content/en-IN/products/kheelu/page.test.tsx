@@ -43,7 +43,7 @@ import { sentences } from "../../../../../test/e2e/support/parity";
 import { ROOT } from "../../../../../test/e2e/support/repo";
 import { mockupRoute as mockupPageRoute } from "../../../../../test/e2e/support/routes";
 import { withSellerFacts } from "../../../../../test/e2e/support/seller-facts";
-import { mockupLinks, mockupPage, STORE, words } from "../../../../../test/support/mockup-compare";
+import { mockupLinks, mockupPage, STORE, withOneCtaShape, words } from "../../../../../test/support/mockup-compare";
 import { blockSentences, factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../../test/support/mockup-facts";
 import { cta } from "../../cta";
 import { faqs, filmLink } from "../../faqs";
@@ -116,6 +116,9 @@ const SELLING = SELLING_UPDATE["meet-kheelu"];
 /** Then task Q2.10's selling update (SELLING_UPDATE) in a pass of its own, and D063 item 2: the help lines without the
  *  call (task Q2.3; seller-facts.ts; the consumer care declaration keeps it, task Q2.10): what the build must say. */
 const MOCKUP = withSellerFacts(withFacts(BEFORE_SELLING, SELLING.edits));
+/* And the one CTA block shape (task Q2.15, the consistency review's R2): every CTA block's button full width on phones
+   with the arrow (test/support/mockup-compare.ts `withOneCtaShape`). */
+withOneCtaShape(MOCKUP);
 /** The folds: `main`'s sections, in order (React's image preload links and the JSON-LD script left out). */
 const folds = (main: Element) => [...main.children].filter((el) => el.tagName === "SECTION");
 const name = (el: Element) => el.getAttribute("aria-labelledby");

@@ -128,7 +128,7 @@ export const kheeluPage = {
         ],
       },
       /* No help line beside the hero's button (the D2C plan v2 §1.1: the closes and the store carry it). */
-      cta: { cta: "product-top", arrow: true, block: true, layout: "stack", trust: COMPACT },
+      cta: { cta: "product-top", layout: "stack", trust: COMPACT },
     },
     /* Fold 2 · The seven parent films (D040), every poster lazy (N19). */
     {
@@ -420,8 +420,10 @@ export const kheeluPage = {
           lead: "For your own child, or as a gift for a 3 to 7 year old in the family.",
         },
         /* The trust line, as beside every button (task Q2.8's review; the D2C plan v2 §1.1, product fold 12): in place of
-           meet-kheelu.html's five-item row; the warranty and the ways to pay sit under the offer card's button. */
-        cta: { cta: "product-foot", id: "reserve", layout: "full", trust: COMPACT, helpLine: true },
+           meet-kheelu.html's five-item row; the warranty and the ways to pay sit under the offer card's button. Since task
+           Q2.15 (the consistency review's CON-2) the lines grouped beside the button, as every other close lays them out
+           (the CTA block's default layout; meet-kheelu.html's "full" block left). */
+        cta: { cta: "product-foot", id: "reserve", trust: COMPACT, helpLine: true },
         art: {
           tone: "sun",
           label: "A smiling girl in a peach kurta beside Kheelu, the cream plush rabbit.",

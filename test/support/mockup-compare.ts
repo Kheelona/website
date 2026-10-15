@@ -132,6 +132,47 @@ export function withPriceLine(root: ParentNode): void {
   }
 }
 
+/* ── One CTA block shape (task Q2.15) ───────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * The one CTA block shape (task Q2.15; the consistency review's R2, CMO-1, QAP-1, QAL-3, CON-1, CON-5): every CTA
+ * block's chilli button is full width on phones (`kh-btn--block`, inline from 720 px through cta-block.css) and ends with
+ * the nudging arrow (D049 pick 6, D064 item 10), where the approved mockup drew some blocks narrow and without it. Read
+ * the mockup's CTA blocks so: each chilli button in an actions row (`.kh-section__actions`, a CTA block's; never the
+ * drawer's, the nav's, the bar's or an offer card's) gains the class and the arrow, as the mockup inlines the icon
+ * (mockup/build.mjs), where it lacks them. A section test applies it in its `adjust`, before the build's own class hooks.
+ */
+export function withOneCtaShape(root: Element): void {
+  const arrow = `<svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="${ICON_PATHS["arrow-right"]}"></path></svg>`;
+  const buttons = [...(root.matches(".kh-section__actions > a.kh-btn--cta") ? [root] : []), ...Array.from(root.querySelectorAll(".kh-section__actions > a.kh-btn--cta"))];
+  for (const button of buttons) {
+    if (!button.classList.contains("kh-btn--block")) {
+      const classes = (button.getAttribute("class") ?? "").split(/\s+/);
+      const after = classes.indexOf("kh-btn--l");
+      classes.splice(after + 1, 0, "kh-btn--block");
+      button.setAttribute("class", classes.join(" "));
+    }
+    if (button.querySelector(":scope > svg") === null) button.insertAdjacentHTML("beforeend", arrow);
+  }
+}
+
+/**
+ * A close whose lines the approved mockup left loose after its button (meet-kheelu.html fold 9, the product close's
+ * "full" block), read with them grouped beside the button as every other close groups them (`mk-beside`,
+ * mockup.css:27): task Q2.15, the consistency review's CON-2. Returns a clone of `fold`; the fold's first actions row
+ * with a chilli button keeps its place, and every element after it in its column moves into the group.
+ */
+export function withLinesBeside(fold: Element): Element {
+  const copy = fold.cloneNode(true) as Element;
+  const row = copy.querySelector(".kh-section__actions > .kh-btn--cta")?.parentElement;
+  if (!row) throw new Error("the fold has no actions row with a chilli button");
+  const group = copy.ownerDocument.createElement("div");
+  group.setAttribute("class", "mk-beside");
+  while (row.nextElementSibling) group.append(row.nextElementSibling);
+  row.after(group);
+  return copy;
+}
+
 const pages = new Map<string, Document>();
 
 /** A built mockup page, parsed once and shared by the test file: read it, never change it (clone first). */

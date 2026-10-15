@@ -271,7 +271,7 @@ describe("fold 3: how Kheelu meets each check", () => {
      close, the chilli button with its arrow (full width on phones), then the price line and the trust line, no help line
      (the plan's §6 fold 3; the close carries it). */
   it("ends on the pre-order button (`guide-answers`), the price line and the trust line, as the mockup with the plan's block", () => {
-    expect(meets.cta).toEqual({ cta: "guide-answers", arrow: true, block: true, trust: TRUST_COMPACT.map((id) => trustItems[id]) });
+    expect(meets.cta).toEqual({ cta: "guide-answers", trust: TRUST_COMPACT.map((id) => trustItems[id]) });
     const buttons = fold("answers-title").querySelectorAll(".kh-btn--cta");
     expect(buttons).toHaveLength(1);
     expect(buttons[0].getAttribute("data-ph-capture-attribute-cta")).toBe("guide-answers");
@@ -403,7 +403,7 @@ describe("fold 6: the close", () => {
     const el = fold("close-title");
     expect(config.tone).toBe("blue");
     expect(el.querySelector(".kh-card")!.classList.contains(`kh-tone-${config.tone}`)).toBe(true);
-    expect(config.cta).toEqual({ cta: "finale", arrow: true, block: true, trust: TRUST_COMPACT.map((id) => trustItems[id]), helpLine: true });
+    expect(config.cta).toEqual({ cta: "finale", trust: TRUST_COMPACT.map((id) => trustItems[id]), helpLine: true });
     expect(el.querySelector(".kh-btn--cta")!.getAttribute("data-ph-capture-attribute-cta")).toBe("finale");
     expect(config.heading.title).toBe("Five checks, answered. Now {hand:meet Kheelu.}");
     expect({ eyebrow: config.heading.eyebrow, title: config.heading.title, lead: plain(config.heading.lead!) }).toEqual({

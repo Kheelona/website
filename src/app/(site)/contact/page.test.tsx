@@ -11,7 +11,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
-import { mockupRoute, parseMockup, skeleton, words } from "../../../../test/support/mockup-compare";
+import { mockupRoute, parseMockup, skeleton, withOneCtaShape, words } from "../../../../test/support/mockup-compare";
 
 /* The /contact route (task 5.9; structure §3.1, §5): the page module through PageTemplate with the live offer, thin,
  * rewritten in place, and as a whole page equal to the approved mockup's <main> (mockup/contact.html, D046): the same
@@ -37,8 +37,10 @@ const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
  * item 3; the harness's withPriceLine). */
 const mockupDoc = parseMockup("contact");
 /** The approved main as D063 item 3 rules it (task Q2.3; seller-facts.ts): the seller card without its GSTIN line; the
- *  number stays on /contact (the E-Commerce Rules). */
+ *  number stays on /contact (the E-Commerce Rules). Its close's button in the one CTA block shape (task Q2.15, the
+ *  consistency review's R2: full width on phones with the arrow). */
 const mockupMain = withSellerFacts(mockupDoc.querySelector("main")!);
+withOneCtaShape(mockupMain);
 
 async function element(offer: Offer): Promise<ReactElement> {
   getOffer.mockResolvedValue(offer);

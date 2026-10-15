@@ -7,8 +7,8 @@ interface CloseBase {
 
 /**
  * The closes of the approved mockup (section `#close`, heading `#close-title`), one variant per layout:
- * - `split`: the words and the CTA block beside an art board: the safety close (`artClamp`) and the product close
- *   (the CTA block's `full` layout);
+ * - `split`: the words and the CTA block beside an art board: the safety close (`artClamp`), the product close and Home's
+ *   close, each with the CTA block's lines grouped beside the button (task Q2.15: the `full` layout left);
  * - `journal`: the stories hub and article closes: the CTA block's `journal` layout, the 4:3 board from 900 px;
  * - `guide`: the buyer's guide close: the split inside a tinted DS card (`ks-gd-close`), the board clamped;
  * - `center`: the team, contact and 404 closes: a centred heading and CTA block, no art;
@@ -19,7 +19,7 @@ interface CloseBase {
 export type CloseSectionConfig =
   | (CloseBase & {
       readonly variant: "split";
-      /** `beside` (the safety close) or `full` (the product close). */
+      /** The CTA block, its lines grouped beside the button (`beside`). */
       readonly cta: Omit<CtaBlockConfig, "align">;
       readonly art: ArtBoardRef;
       /** ArtBoard's 480 px tablet clamp (the safety close; safety.css:52). */

@@ -184,10 +184,9 @@ describe("the hub page", () => {
     if (close.config.variant !== "journal") return;
     expect(close.config.heading).toBe(words.heading);
     expect(close.config.art).toBe(words.art);
+    // The button's shape is every CTA block's by default (task Q2.15, the consistency review's R2): no flag here.
     expect(close.config.cta).toEqual({
       cta: words.cta,
-      arrow: true,
-      block: true,
       trust: words.trust.map((id) => trustItems[id]),
       helpLine: true,
       secondary: words.secondary,

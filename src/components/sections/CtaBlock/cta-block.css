@@ -22,22 +22,14 @@
 
 /* A full-width chilli button on phones only, inline from 720 px (DS 10-pages; CMO M4). One rule for the four the
    mockup wrote per page: mockup.css:85 (.mk-hero .kh-btn--block), safety.css:51 (.mk-sf-cta), ai-toys-for-kids-in-
-   india.css:49 (.mk-gd-cta) and stories.css:130 (.mk-close .kh-btn--block), same declarations. The offer card's button
-   stays full width: it is not a CTA block's. */
+   india.css:49 (.mk-gd-cta) and stories.css:130 (.mk-close .kh-btn--block), same declarations. Since task Q2.15 (the
+   consistency review's R2) every CTA block's button takes it: one shape on every page. The offer card's button stays
+   full width: it is not a CTA block's. */
 @media (min-width: 720px) {
   .ks-cta__button.kh-btn--block {
     display: inline-flex;
     width: auto;
   }
-}
-
-/* The close's full block (layout "full", meet-kheelu.html fold 9): the five-item trust row keeps a reading measure
-   (meet-kheelu.css:104, .mk-close-trust) and the help line sits a step lower (meet-kheelu.css:105, #close .mk-help). */
-.ks-cta__full-trust {
-  max-width: var(--measure);
-}
-.ks-cta__full-help {
-  margin-top: var(--space-5);
 }
 
 /* A secondary link for laptops only (task Q2.9; the D2C plan v2 §2.0, the CMO's M1): Home's hero link "Watch Kheelu ask,

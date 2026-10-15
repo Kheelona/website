@@ -1602,7 +1602,7 @@ const SAFETY_FACTS_LIST = [
   trustLi("hand-heart", "Do you sell my child’s data?", "No. We don’t sell your data, and your child’s data is never used to advertise to them."),
 ].join("");
 const SAFETY_FACTS_CTA =
-  `<div class="kh-section__actions"><a href="store.html" class="kh-btn kh-btn--cta kh-btn--l kh-btn--block" data-ph-capture-attribute-cta="safety-facts"><span>Pre-order Kheelu</span></a></div>` +
+  `<div class="kh-section__actions"><a href="store.html" class="kh-btn kh-btn--cta kh-btn--l kh-btn--block" data-ph-capture-attribute-cta="safety-facts"><span>Pre-order Kheelu</span>${icon("arrow-right")}</a></div>` +
   `<div class="mk-beside"><p class="kh-body-s mk-price">${PRICE_LINE.sentence.build}</p><ul class="kh-trustline mk-trust">` +
   `<li><a href="refund.html#before-dispatch">${icon("arrow-counter-clockwise")}${PRICE_LINE.returns.build}</a></li>` +
   `<li><a href="shipping.html#when">${icon("truck")}<span>${PRICE_LINE.delivery}</span></a></li></ul></div>`;
@@ -1716,10 +1716,11 @@ const SELLING_LINES = [...sentences(PRICE_LINE.sentence.build), PRICE_LINE.retur
 /** A CTA block as the approved mockups print one (mockup.css:27-28; the team and guide closes), with task Q2.8's lines:
  *  the chilli button, then the price line and the trust line (the risk-reversal line first), grouped. The store's address
  *  is the mockup's `store.html`; the trust links read their parts of /refund and /shipping by their words (the harness's
- *  `trustLinkHref`). */
-const ctaBlockMarkup = ({ cta, center = false, arrow = false, block = false }: { cta: string; center?: boolean; arrow?: boolean; block?: boolean }) =>
+ *  `trustLinkHref`). The button in the one CTA block shape since task Q2.15 (the consistency review's R2): full width on
+ *  phones with the arrow. */
+const ctaBlockMarkup =({ cta, center = false }: { cta: string; center?: boolean }) =>
   `<div class="kh-section__actions${center ? " kh-section__actions--center" : ""}">` +
-  `<a href="store.html" class="kh-btn kh-btn--cta kh-btn--l${block ? " kh-btn--block" : ""}" data-ph-capture-attribute-cta="${cta}"><span>Pre-order Kheelu</span>${arrow ? icon("arrow-right") : ""}</a></div>` +
+  `<a href="store.html" class="kh-btn kh-btn--cta kh-btn--l kh-btn--block" data-ph-capture-attribute-cta="${cta}"><span>Pre-order Kheelu</span>${icon("arrow-right")}</a></div>` +
   `<div class="mk-beside${center ? " mk-beside--center" : ""}"><p class="kh-body-s mk-price">${PRICE_LINE.sentence.build}</p>` +
   `<ul class="kh-trustline mk-trust"><li><a href="refund.html">${icon("arrow-counter-clockwise")}${PRICE_LINE.returns.build}</a></li>` +
   `<li><a href="shipping.html">${icon("truck")}${PRICE_LINE.delivery}</a></li></ul></div>`;
@@ -1856,7 +1857,7 @@ export const SELLING_CLOSES = {
       {
         at: 'section[aria-labelledby="answers-title"] .kh-section__actions',
         was: "See the full safety facts",
-        now: `${GUIDE_SAFETY_LINK}${ctaBlockMarkup({ cta: "guide-answers", arrow: true, block: true })}`,
+        now: `${GUIDE_SAFETY_LINK}${ctaBlockMarkup({ cta: "guide-answers" })}`,
       },
       {
         at: ".kh-faq__item",

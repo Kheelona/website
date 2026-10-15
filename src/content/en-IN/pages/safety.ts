@@ -76,7 +76,7 @@ export const safetyPage = {
     {
       kind: "trust-section",
       faq: true,
-      cta: { cta: "safety-facts", block: true, trust: COMPACT },
+      cta: { cta: "safety-facts", trust: COMPACT },
       config: {
         variant: "facts",
         id: "facts",
@@ -276,7 +276,7 @@ export const safetyPage = {
           title: "Check it all for yourself, {hand:at home.}",
           lead: "The wake-up button, the light and every conversation in the parent app: you can check each one once it’s home.",
         },
-        cta: { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true },
+        cta: { cta: "finale", trust: COMPACT, helpLine: true },
         art: {
           tone: "blue",
           label: "A laughing girl in a peach kurta beside Kheelu, the cream plush rabbit.",

@@ -9,7 +9,7 @@ import starSun from "@ds/assets/Shapes/star-sun.svg";
 import { DoodleDefs } from "@/components/ui/Doodle/DoodleDefs";
 import { cta } from "@/content/en-IN/cta";
 import { seller } from "@/content/en-IN/seller";
-import { TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "@/content/en-IN/trust";
+import { TRUST_COMPACT, trustItems, type TrustId } from "@/content/en-IN/trust";
 import { buildOffer } from "@/lib/offer/offer";
 import type { CtaSecondary } from "../CtaBlock/cta-block.types";
 import { CloseSection } from "./CloseSection";
@@ -42,7 +42,7 @@ const meta: Meta<typeof CloseSection> = {
       title: "Check it all for yourself, {hand:at home.}",
       lead: "The wake-up button, the light and every conversation in the parent app: you can check each one once it’s home.",
     },
-    cta: { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true },
+    cta: { cta: "finale", trust: COMPACT, helpLine: true },
     art: {
       tone: "blue",
       label: "A laughing girl in a peach kurta beside Kheelu, the cream plush rabbit.",
@@ -63,7 +63,7 @@ type Story = StoryObj<typeof CloseSection>;
 /** `split`: the safety close (clamped board, block button with the arrow, help line in the group). */
 export const SplitSafety: Story = {};
 
-/** `split` with the CTA block's `full` layout: the product close (meet-kheelu.html fold 9). */
+/** `split`: the product close (meet-kheelu.html fold 9), its lines grouped beside the button as every close (task Q2.15). */
 export const SplitProduct: Story = {
   args: {
     heading: {
@@ -71,7 +71,7 @@ export const SplitProduct: Story = {
       title: "Bring home a toy that {hand:asks back.}",
       lead: "For your own child, or as a gift for a 3 to 7 year old in the family.",
     },
-    cta: { cta: "product-foot", layout: "full", trust: trust(["deliveries-start", ...TRUST_FULL]), helpLine: true },
+    cta: { cta: "product-foot", id: "reserve", trust: COMPACT, helpLine: true },
     art: {
       tone: "sun",
       label: "A smiling girl in a peach kurta beside Kheelu, the cream plush rabbit.",
@@ -113,7 +113,7 @@ export const Journal: Story = {
       title: "A toy that {hand:asks back.}",
       lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It answers your child, then asks a question back.",
     },
-    cta: { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true, secondary: seeHow },
+    cta: { cta: "finale", trust: COMPACT, helpLine: true, secondary: seeHow },
     art: {
       tone: "sun",
       label: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy.",
