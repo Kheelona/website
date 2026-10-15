@@ -15,6 +15,7 @@
  * Node-only but for `withSellerFacts` (which needs the DOM the unit tests run in), so Playwright loads it. The
  * deviations.md row is the main session's; until then the rows here name the decision.
  */
+import type { Page } from "@playwright/test";
 import { CONTACT_EMAIL, GSTIN, SUPPORT_WHATSAPP_DISPLAY, SUPPORT_WHATSAPP_HREF } from "@/config/site";
 import type { TextDeviation, VisualHide } from "./deviations";
 import { decodeEntities, type MockupSlug } from "./mockup-text";
@@ -181,6 +182,35 @@ export function withSellerFacts(source: Element): Element {
   const ruled = template.content.firstElementChild;
   if (!ruled) throw new Error(`withSellerFacts: the ruled ${source.tagName.toLowerCase()} did not parse`);
   return doc.importNode(ruled, true);
+}
+
+/** The rules as plain data, for a page in the browser (Playwright passes no RegExp). */
+const BROWSER_RULES = SELLER_FACTS_RULES.map((r) => ({
+  from: typeof r.from === "string" ? r.from : null,
+  pattern: typeof r.from === "string" ? null : r.from.source,
+  to: r.to,
+  footerOnly: r.footerOnly === true,
+}));
+
+/** Rules the approved mockup open in a browser page as the build now prints it, inside the elements `selectors` name
+ *  (the chrome a spec compares, or a page's <main>), for the specs whose golden is the live mockup page (chrome.spec.ts,
+ *  legal-template.spec.ts). The marketing footer's rules apply only inside its legal row, as everywhere else. */
+export async function ruleMockupPage(page: Page, selectors: readonly string[]): Promise<void> {
+  await page.evaluate(
+    ({ rules, selectors, footerRow }) => {
+      type Rule = (typeof rules)[number];
+      const apply = (html: string, list: readonly Rule[]) =>
+        list.reduce((out, r) => (r.pattern !== null ? out.replace(new RegExp(r.pattern, "g"), () => r.to) : out.split(r.from!).join(r.to)), html);
+      for (const scope of Array.from(document.querySelectorAll(selectors.join(", ")))) {
+        const rows = [...(scope.matches(footerRow) ? [scope] : []), ...Array.from(scope.querySelectorAll(footerRow))];
+        for (const row of rows) row.innerHTML = apply(row.innerHTML, rules.filter((r) => r.footerOnly));
+        const before = scope.innerHTML;
+        const after = apply(before, rules.filter((r) => !r.footerOnly));
+        if (after !== before) scope.innerHTML = after;
+      }
+    },
+    { rules: BROWSER_RULES, selectors: [...selectors], footerRow: FOOTER_ROW },
+  );
 }
 
 const mainOf = (html: string) => {

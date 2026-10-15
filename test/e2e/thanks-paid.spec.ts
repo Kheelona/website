@@ -3,6 +3,7 @@ import { dirname } from "node:path";
 import type { Page } from "@playwright/test";
 import { THANKS_PAID } from "../fixtures/store/thanks-paid";
 import { hideDeviations, textDeviations } from "./support/deviations";
+import { ruleMockupPage } from "./support/seller-facts";
 import { STORYBOOK_PORT } from "./support/env";
 import { expect, forceMotionEnd, hideForParity, PLANTS, requiresServer, settle, test } from "./support/fixtures";
 import { CHUNK_MAX_DIFF_RATIO, HEIGHT_TOLERANCE, captureChunks, mainText, pageHeight, sentenceDiff, sentences } from "./support/parity";
@@ -92,6 +93,9 @@ test.describe("/thanks paid-state parity: the ThanksPaid story against store-con
       ).toBe(false);
 
       const { page: mockup } = await harness.openMockup(SLUG, vp);
+      // The help fold's line, the store header's and the footer's lines without the GSTIN and the number (D063 items
+      // 2-3; task Q2.3; support/seller-facts.ts): the story prints them from seller.ts.
+      await ruleMockupPage(mockup, ["main", "header.mk-store-head", "footer.mk-store-foot"]);
       await fillSampleSlots(mockup);
 
       const context = await harness.context(vp);

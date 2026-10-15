@@ -5,6 +5,7 @@ import { expect, hideForParity, motionStarted, requiresServer, test, type OpenOp
 import { ORIGINS, REAL_ORIGINS, STORYBOOK_PORT, TARGET } from "./support/env";
 import { CHUNK_MAX_DIFF_RATIO } from "./support/parity";
 import { builtUrl } from "./support/routes";
+import { ruleMockupPage } from "./support/seller-facts";
 import { STAND_IN_ON, STAND_IN_PENDING, ensureStandIn, signedEventRoute } from "./support/store-stand-in";
 import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
 
@@ -191,6 +192,8 @@ test.describe("chrome: element parity with mockup/home.html", () => {
   for (const vp of APPROVED_WIDTHS) {
     test(`nav and footer ${vp.name}`, async ({ harness }, testInfo) => {
       const ref = await openMockup(harness, "home", vp);
+      // The footer's legal row without the GSTIN and the number (D063 items 2-3; task Q2.3; support/seller-facts.ts).
+      await ruleMockupPage(ref, ["footer.kh-footer"]);
       const page = await openBuilt(harness, vp);
       await hideForParity(page);
       compare(testInfo, `chrome-nav-${vp.name}.png`, await shot(ref, "nav.kh-nav"), await shot(page, "nav.kh-nav"));
@@ -227,6 +230,9 @@ test.describe("chrome: store header and footer parity with mockup/store.html", (
           .find((p) => /Payments by Razorpay/.test(p.textContent ?? ""))
           ?.remove();
       });
+      // The header's help line, the seller lines and the grievance line without the GSTIN and the number (D063 items
+      // 2-3; task Q2.3; support/seller-facts.ts).
+      await ruleMockupPage(ref, ["header.mk-store-head", "footer.mk-store-foot"]);
       const page = await openBuilt(harness, vp, {}, STORE);
       await hideForParity(page);
       compare(testInfo, `chrome-store-header-${vp.name}.png`, await shot(ref, "header.mk-store-head"), await shot(page, "header.ks-store-head"));
