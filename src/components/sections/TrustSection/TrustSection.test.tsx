@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
+import postcss, { type Rule } from "postcss";
 import { describe, expect, it } from "vitest";
+import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { outline, parseMockup, type Renames } from "../../../../test/support/mockup-compare";
 import { TrustSection, type TrustItemCopy } from "./TrustSection";
 
@@ -153,6 +155,30 @@ describe("TrustSection: never (safety fold 3)", () => {
     expect(words(container.textContent)).toBe(words(fold.textContent));
     expect(container.querySelector("ul.kh-trust")).toHaveAttribute("data-reveal");
     expect(screen.getByRole("link", { name: "How to choose an AI toy: five checks" })).toHaveClass("kh-btn--ghost");
+  });
+
+  /* From 1024 px the list is a six-column grid, each item two columns wide, three to a row (safety.css:16-18). The
+     approved five widen the last row's two items to half the width each; since task Q2.11 the list may hold six (the
+     daily limit, D065 item 5), which make two full rows of three, so only a last row of exactly two widens. */
+  it("lays out three per row from 1024 px and widens only a last row of two: five as three then two, six as three and three", () => {
+    const laptop: { selector: string; span: string }[] = [];
+    postcss.parse(readRepoFile("src/components/sections/TrustSection/trust-section.css")).walkAtRules("media", (media) => {
+      if (media.params !== "(min-width: 1024px)") return;
+      media.walkRules((rule: Rule) =>
+        rule.walkDecls("grid-column", (decl) => void laptop.push(...rule.selectors.map((selector) => ({ selector, span: decl.value })))),
+      );
+    });
+    const spans = (count: number) => {
+      const list = document.createElement("ul");
+      list.className = "kh-trust ks-sf-never";
+      list.innerHTML = '<li class="kh-trust__item"></li>'.repeat(count);
+      document.body.append(list);
+      const result = Array.from(list.children).map((item) => laptop.filter((r) => item.matches(r.selector)).at(-1)?.span);
+      list.remove();
+      return result;
+    };
+    expect(spans(5)).toEqual(["span 2", "span 2", "span 2", "span 3", "span 3"]);
+    expect(spans(6)).toEqual(Array(6).fill("span 2"));
   });
 });
 

@@ -124,6 +124,18 @@ export const Never: Story = {
   },
 };
 
+/** Safety fold 3 since task Q2.11: six items with the daily limit (D065 item 5), three and three on laptops. */
+export const NeverSix: Story = {
+  args: {
+    ...Never.args,
+    variant: "never",
+    items: [
+      ...(Never.args?.items ?? []),
+      { icon: "clock", title: "No talking all day.", body: "Each Kheelu has a daily limit on how long it talks." },
+    ],
+  },
+};
+
 /** Buyer's guide fold 3: the five answers, the pointer line, the secondary link. */
 export const Meets: Story = {
   args: {
