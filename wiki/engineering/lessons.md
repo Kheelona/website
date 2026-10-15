@@ -134,18 +134,21 @@ CP = `docs/checkpoints/`. Code references (`src/`, `package.json`, `tools/`, `ne
   Vercel's layout locally, build with `NEXT_ADAPTER_PATH` set to a stub adapter
   (`module.exports = { name: "probe", async onBuildComplete() {} }`). *Vercel build log of
   dpl_ErceHcr19K9gTeNb256WdbyvSojC, 2026-10-14; [log](../log.md) 2026-10-14.*
-- **On Vercel, Home re-renders in the runtime as `/index`.** Vercel's ISR re-render of Home (`x-vercel-cache: STALE`)
-  runs under the route segments `["", "index"]` (beta's flight data `"c":["","index"]`), so `usePathname()` reads
-  `/index` on the server, while the browser's router starts from `location.href` and reads `/`
+- **On Vercel, Home re-renders in the runtime as `/index`.** Vercel's ISR re-render of Home (once its `revalidate = 300`
+  has run out: the next request gets the old copy as `x-vercel-cache: STALE` and starts the re-render, whose HTML then
+  answers as `HIT`) runs under the route segments `["", "index"]` (beta's flight data `"c":["","index"]`), so
+  `usePathname()` reads `/index` on the server, while the browser's router starts from `location.href` and reads `/`
   (`create-initial-router-state.js`, Next 16.3.8). The buy bar, rendered from the path, was missing from beta's server
   HTML and the browser added it: React error #418 on every load of Home. React rebuilt the page in the browser, so every
   check of the page still passed, and a local build, even through a stub adapter, prerenders Home with `/`. Shell
   components read the path through `useSitePath()` (`src/lib/site-path.ts` folds a trailing `/index` into its parent;
   its test refuses any other `usePathname` reader but the Meta Pixel and the PostHog gate, which read it in effects
   only); the e2e harness fails a test on any page error and on a hydration message in the console
-  (`test/e2e/support/fixtures.ts`); after each beta deploy Home's HTML must carry `class="kh-buybar`
-  ([build runbook](build-runbook.md) §5). *CMO wave 8c review m1 (`wiki/qa/cmo-review-wave-8c-2026-10-15.md`); the
-  main session's curl of beta's `/` and `/products/kheelu`; [tasks](tasks.md) 8c.7.*
+  (`test/e2e/support/fixtures.ts`); after each beta deploy Home's runtime render (a `HIT` after a `STALE`, at least
+  300 s after the build; a `PRERENDER` answer is the build's copy, which always has the bar) must carry
+  `class="kh-buybar` ([build runbook](build-runbook.md) §5). *CMO wave 8c review m1
+  (`wiki/qa/cmo-review-wave-8c-2026-10-15.md`); the main session's curl of beta's `/` and `/products/kheelu`;
+  [tasks](tasks.md) 8c.7.*
 - **The free Supabase tier pauses after a quiet week.** `vercel.json` runs a daily cron on `/api/health`
   so a parent's first order is not the request that wakes it. *WS §8.25-k L846; vercel.json.*
 

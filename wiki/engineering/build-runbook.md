@@ -156,5 +156,19 @@ task ids and titles from [tasks](tasks.md) "Wave 2" (2.1-2.10).
   §5.3 (bubble hover instant; hidden bar `inert`), §11.2-§11.3 (doodle selector, FAQ sign, the
   `data-scroll-behavior` hook), §12/§17 (Devanagari subset); tasks.md 2.3, 3.1, 6.3 and two guard-owner rows.
 - **`beta` exists on GitHub** (2026-10-12, `24e92e3` = main + `vercel.json` with `"beta": false`, so Vercel builds nothing). When the new site is ready: merge `reset/website-v2` into a local `beta` (no force), flip `"beta": true` per architecture §15.3, push with `git push origin beta:refs/heads/beta`.
-- **Beta deploy check, after every `beta` deployment is Ready** (task 8c.7; [lessons §1](lessons.md#1-nextjs-16-and-vercel-behaviour), Home rendered as `/index`): Home's HTML carries the buy bar's element. `curl -s -H "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" https://betawebsite.kheelona.com/ | grep -q 'class="kh-buybar' && echo "bar present" || echo "BAR MISSING"` prints `bar present` (the secret from the environment, to the beta host only, N5; never printed). Run it twice, so the second answer is Vercel's runtime re-render (`x-vercel-cache: STALE` or `HIT`), not only the build's prerender; `BAR MISSING` means the bar is not in the server HTML and the browser throws React #418. The beta Playwright run (`KH_E2E_TARGET=beta`) then fails any page with an uncaught error or a hydration message (the harness's page-error guard). The same line belongs in the Gate B pack.
+- **Beta deploy check, after every `beta` deployment is Ready** (task 8c.7; [lessons §1](lessons.md#1-nextjs-16-and-vercel-behaviour), Home rendered as `/index`): Home's HTML **as Vercel's runtime renders it** carries the buy bar's element. The build's prerender is rendered with `/` and always has the bar, so the check must read a runtime render, and Home has `revalidate = 300` (`src/app/(site)/page.tsx`). Which render answered is in `x-vercel-cache`: `PRERENDER`, or any answer within 300 s of the build, is only the build's prerender; `STALE` is the old copy, served while the runtime re-render starts in the background; only a `HIT` that follows a `STALE` is the runtime render (the `/index` one). (1) Wait at least 5 minutes after the deployment is Ready. (2) Run the loop below (zsh or bash, curl 7.84 or later for `%header{}`; the secret from the environment, to the beta host only, N5, never printed). It requests `/` every 10 s and prints each `x-vercel-cache`; the first request after the wait should answer `STALE` and start the re-render. (3) Once a `HIT` follows a `STALE`, it greps that same answer's HTML: `bar present` passes; `BAR MISSING` means the bar is not in the server HTML and the browser throws React #418; `NO RUNTIME RENDER` (about 7 minutes without a `HIT` after a `STALE`) proves nothing: read the printed answers and run it again.
+
+  ```sh
+  f=$(mktemp); seen=; ok=
+  for i in $(seq 40); do
+    c=$(curl -s -o "$f" -w '%header{x-vercel-cache}' -H "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" https://betawebsite.kheelona.com/)
+    echo "x-vercel-cache: $c"
+    if [ -n "$seen" ] && [ "$c" = HIT ]; then ok=1; grep -q 'class="kh-buybar' "$f" && echo "bar present" || echo "BAR MISSING"; break; fi
+    [ "$c" = STALE ] && seen=1
+    sleep 10
+  done
+  [ -n "$ok" ] || echo "NO RUNTIME RENDER"; rm -f "$f"
+  ```
+
+  The beta Playwright run (`KH_E2E_TARGET=beta`) then fails any page with an uncaught error or a hydration message (the harness's page-error guard). The same check belongs in the Gate B pack.
 - **Beta domains done** (2026-10-12): both attached to branch `beta`, Valid Configuration; until the first `beta` deployment Vercel still serves the live site there (checked 16:25: 200, `x-robots-tag: noindex, nofollow`, no GA4 or Meta by host lists), harmless.
