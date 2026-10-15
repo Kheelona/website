@@ -42,12 +42,13 @@ const AGE_SETUP =
   "At setup, you enter your child’s age in the parent app. You can change it later. The AI model gets child-safety rules for that age, with Google’s safety filters on top.";
 
 /** Home's full-mode price answer since task Q2.9: the D2C plan v2's words (§2 fold 10; D065 item 3: no GST on a selling
- *  page, so no "incl. GST" and no invoice line). */
+ *  page, so no "incl. GST" and no invoice line). The guide asks the same question since task Q2.12 (§6 fold 5), from Home's
+ *  entry itself since task Q2.13. */
 const FULL_PRICE_ANSWER = `Kheelu is {price:full} in total, paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking. {delivery}. If it isn’t right for your family, you can return it within ${RETURN_DAYS} days of delivery, no questions asked.`;
 
-/** The full-mode price answer with GST (ai-toys… copy), which Home's question took until task Q2.9: still the guide's
- *  `how-much` (until the guide takes Home's answer, the D2C plan v2 §6, task Q2.12) and the machine files' price answer,
- *  which may keep "incl. GST" (task Q2.8: /llms.txt and /pricing.md are not selling pages). */
+/** The full-mode price answer with GST (ai-toys… copy), which Home's question took until task Q2.9 and the guide until
+ *  task Q2.12: now only `how-much`, the machine files' price answer, which /pricing.md and /llms.txt read and which may
+ *  keep "incl. GST" (task Q2.8: they are not selling pages). No page shows it. */
 const FULL_PRICE_ANSWER_WITH_GST = `Kheelu is {price:full} (incl. GST), paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking, and you get a GST invoice. {delivery}. If it isn’t right for your family, you can return it within ${RETURN_DAYS} days of delivery, no questions asked.`;
 
 /** A film by its id (films.ts), so an answer can name it by its chip. */
@@ -87,7 +88,7 @@ export const faqs = {
   },
   /* Rewritten by task Q2.9 (the D2C plan v2 §2 fold 10; D065 items 3-4): the total first, no GST, no MRP, no "first 500"
      (the offer cards' line alone says it) and no balance amount; no refund sentence either, which the question before it
-     and the trust line carry (CMO m2). */
+     and the trust line carry (CMO m2). The guide's fifth question too (§6 fold 5 names it; task Q2.13). */
   "price-and-advance": {
     id: "price-and-advance",
     question: { token: "How much is Kheelu, and how does the advance work?", full: "How much is Kheelu?" },
@@ -269,19 +270,9 @@ export const faqs = {
       full: FULL_PRICE_ANSWER_WITH_GST,
     },
   },
-  /* The guide's price question since the selling update (task Q2.12; D065 items 3-4; the D2C plan v2 §6 fold 5, which
-     takes Home's rewritten answer, §2 fold 10 question 3): the total, the refundable advance and the rest before delivery,
-     with no "incl. GST", no MRP, no first 500 and no balance amount on a selling page. `how-much` above stays as it is:
-     /pricing.md, a machine file, still reads it (task Q2.8). */
-  "price-in-total": {
-    id: "price-in-total",
-    question: { token: "How much is Kheelu, and how does the advance work?", full: "How much is Kheelu?" },
-    answer: {
-      token:
-        "Kheelu is {price:headline} in total, with delivery anywhere in India included. A refundable {price:token} reserves yours today, and the rest is due before delivery, by a payment link we send you. You can pay by UPI, card or net banking.",
-      full: `Kheelu is {price:full} in total, paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking. {delivery}. If it isn’t right for your family, you can return it within ${RETURN_DAYS} days of delivery, no questions asked.`,
-    },
-  },
+  /* The guide's price question since the selling update (task Q2.12; the D2C plan v2 §6 fold 5) is Home's
+     `price-and-advance` (task Q2.13: the guide's copy of its words, `price-in-total`, left). `how-much` above stays as it
+     is: the machine files read it (task Q2.8). */
 
   /* ── The store (fold 5) ── */
   "paying-today": {

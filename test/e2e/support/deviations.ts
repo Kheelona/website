@@ -1688,7 +1688,8 @@ export const SAFETY_SELLING_LAYOUT_HIDDEN: readonly VisualHide[] = [
      registered under D065), the price line and the trust line, no help line, no picture;
    - the buyer's guide: fold 3's "Every conversation" answer in G26's words and its "Open internet" answer's last sentence
      as D065 item 8 confirms it, then a button after the fold (`guide-answers`), the price line and the trust line; fold 5's
-     price question is Home's rewritten one (no GST, no first 500, no balance), faqs.ts `price-in-total`;
+     price question is Home's rewritten one (no GST, no first 500, no balance), faqs.ts `price-and-advance` (Home's own
+     entry since task Q2.13, as the plan's §6 names it; the guide's copy of its words, `price-in-total`, left);
    - /team: fold 4's keys line in G26's words, and the close's new lead "Designed by parents in Bengaluru. Made in India.";
    - the journal: the close by topic (§7), so the safe-AI-toy guide (AI toys and safety) closes on "A toy you can check."
      (the hub and the learning guides keep the built close; the talking guides keep their keep-reading close, D054 item
@@ -1772,7 +1773,8 @@ export const GUIDE_ANSWERS = {
 /** The guide's fold 3 link row as the approved mockup prints it; the new CTA block follows it. */
 const GUIDE_SAFETY_LINK = `<div class="kh-section__actions"><a href="safety.html" class="kh-btn kh-btn--secondary">${icon("shield-check")}<span>See the full safety facts</span></a></div>`;
 /** The guide's fifth question: the approved one (faqs.ts `how-much`, as the mockup prints it), then Home's rewritten price
- *  answer (the plan's §2 fold 10 question 3 and §6 fold 5; faqs.ts `price-in-total`), in token mode. */
+ *  answer (the plan's §2 fold 10 question 3 and §6 fold 5; faqs.ts `price-and-advance`, Home's entry, since task Q2.13),
+ *  in token mode. */
 export const GUIDE_PRICE_FAQ = {
   mockup: {
     question: "How much is Kheelu?",
