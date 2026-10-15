@@ -133,4 +133,16 @@ describe("Layout CSS", () => {
       expect(declarations(CSS, selector), selector).toEqual(declarations("mockup/mockup.css", selector));
     }
   });
+
+  /* Task Q2.16 (consistency review QAP-3): card, step, trust, list-row, FAQ and article titles left one word alone on
+     their last line ("It can't browse the / internet.") while section titles never do, because the DS balances
+     `.kh-heading__title` (bundle.css) and its other title classes wrap greedily. One composition rule continues the DS's
+     own: the same `balance` keyword, as the longhand, so each class keeps its wrap mode (the shorthand would reset it and
+     wrap the DS's visually hidden `.kh-sr` headings and its no-wrap list titles). */
+  it("balances the DS's other title classes as the DS balances its section titles, with the longhand only", () => {
+    const TITLES = ".kh-title, .kh-subtitle, .kh-card__title, .kh-step__title, .kh-trust__title, .kh-faq__q, .kh-listitem__title";
+    expect(declarations(CSS, TITLES)).toEqual(["text-wrap-style: balance"]);
+    expect(declarations("design-system/project/components/bundle.css", ".kh-heading__title")).toContain("text-wrap: balance");
+    expect(readRepoFile(CSS)).not.toMatch(/text-wrap\s*:/);
+  });
 });
