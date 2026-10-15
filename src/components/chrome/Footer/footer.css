@@ -1,7 +1,15 @@
-/* Footer (task 3.1): mockup/mockup.css:126, ported verbatim. The legal row's links (the phone number, the email and the
-   grievance officer) in the DS link colour, each a full tap target (CMO M9). The markup stays the DS's (kh-footer__legal),
-   so the rule keeps the mockup's selector; it loads after bundle.css, as the mockup's did. */
-.kh-footer__legal a { display: inline-flex; align-items: center; min-height: var(--tap-min); color: var(--link); }
+/* Footer (task 3.1): mockup/mockup.css:126. The legal row's links (WhatsApp, the email and the grievance officer) in the
+   DS link colour, each a full tap target (CMO M9); the rule keeps the mockup's selector and loads after bundle.css.
+   Task Q2.16 (consistency review QAL-1): the mockup centred each link's words in a 48 px inline-flex box, which set them
+   16 px below the copyright and the address on the same row at 1440 px. Each link's own padding now makes the 48 px
+   (--tap-min: the row's 16 px line and a space-4 above and below) and its negative margins give the line its height
+   back, as the store footer's links do (store-footer.css), so every word of the row shares one baseline. */
+.kh-footer__legal a { display: inline-block; padding-block: var(--space-4); margin-block: calc(var(--space-4) * -1); color: var(--link); }
+/* The contact line and the grievance officer link, one group (SellerLines' footer `links`): they wrap together, beside
+   the address on a wide row, on a row of their own below it from 1280 px down, in the phones' order. Side by side a
+   space-4 apart, the row's own column gap; where the group wraps (343 px and narrower) a space-6 apart, so the two 48 px
+   targets never overlap (a tap on the lower half of "WhatsApp" opened the grievance officer). */
+.ks-footer__links { display: flex; flex-wrap: wrap; gap: var(--space-6) var(--space-4); }
 
 /* The column links' gaps tightened (D064 item 6, task Q2.4). bundle.css stacks them as 48 px rows (space-3 above and
    below the 24 px line); here 44 px, the site's smallest tap target (tasks.md SPA 4), still the link's own padding,

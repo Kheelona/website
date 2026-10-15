@@ -19,9 +19,22 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** The footer's legal row (the footer adds its own lines after these three). */
+/** The footer's legal row, without links: the three seller lines as spans. */
 export const Footer: Story = {
   args: { entity: "© 2026 Kheelona Robotics Private Limited" },
+  render: (args) => (
+    <footer className="kh-footer">
+      <div className="kh-footer__legal">
+        <SellerLines {...args} variant="footer" />
+      </div>
+    </footer>
+  ),
+};
+
+/** The footer's legal row as the site prints it (task Q2.16): the grievance officer link joins the contact line in one
+ *  group (`ks-footer__links`), so the two wrap together and share the copyright's line on a wide screen. */
+export const FooterWithLinks: Story = {
+  args: { entity: "© 2026 Kheelona Robotics Private Limited", links: <a href="/contact#grievance">Grievance officer</a> },
   render: (args) => (
     <footer className="kh-footer">
       <div className="kh-footer__legal">

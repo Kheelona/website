@@ -28,6 +28,31 @@ describe("SellerLines", () => {
     expect(spans.map((s) => s.textContent)).toEqual([LINES.entity, LINES.address, CONTACT_TEXT]);
   });
 
+  /* Task Q2.16 (consistency review QAL-1): the footer passes its grievance officer link as `links`, which joins the
+     contact line in one group (`ks-footer__links`, footer.css), so the two wrap together instead of the grievance link
+     falling alone onto a line of its own at 1280 px. */
+  it("with links, prints the contact line and the links as one group after the entity and the address", () => {
+    const { container } = render(
+      <div className="kh-footer__legal">
+        <SellerLines {...LINES} variant="footer" links={<a href="/contact#grievance">Grievance officer</a>} />
+      </div>,
+    );
+    const parts = [...(container.firstElementChild as HTMLElement).children];
+    expect(parts.map((p) => `${p.tagName}.${p.className}`)).toEqual(["SPAN.", "SPAN.", "SPAN.ks-footer__links"]);
+    expect(parts.slice(0, 2).map((p) => p.textContent)).toEqual([LINES.entity, LINES.address]);
+    const group = [...parts[2].children];
+    expect(group.map((c) => c.tagName)).toEqual(["SPAN", "A"]);
+    expect(group.map((c) => c.textContent)).toEqual([CONTACT_TEXT, "Grievance officer"]);
+  });
+
+  it("takes links in the footer shape only", () => {
+    for (const variant of ["block", "store"] as const) {
+      expect(() => render(<SellerLines {...LINES} variant={variant} links={<a href="/contact#grievance">Grievance officer</a>} />), variant).toThrow(
+        /footer/,
+      );
+    }
+  });
+
   it("defaults to the footer spans", () => {
     const { container } = render(
       <div>

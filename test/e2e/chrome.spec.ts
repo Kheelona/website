@@ -3,7 +3,7 @@ import { dirname } from "node:path";
 import type { BrowserContext, Page, TestInfo } from "@playwright/test";
 import { expect, hideForParity, motionStarted, requiresServer, test, type OpenOptions } from "./support/fixtures";
 import { ORIGINS, REAL_ORIGINS, STORYBOOK_PORT, TARGET } from "./support/env";
-import { FOOTER_ROWS, PRICE_LINE } from "./support/deviations";
+import { FOOTER_LEGAL, FOOTER_ROWS, PRICE_LINE, groupFooterLinks } from "./support/deviations";
 import { CHUNK_MAX_DIFF_RATIO } from "./support/parity";
 import { builtUrl } from "./support/routes";
 import { ruleMockupPage } from "./support/seller-facts";
@@ -22,7 +22,9 @@ import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
  *     mockup's element screenshot is the golden (git-ignored, D039); at most 2 percent of pixels may differ, as SPA 1.
  *     The mockup's drawer notes and bar line carry task Q2.8's words first (`withPriceLineWords`), so the pixels
  *     compare the same words on both sides; its footer takes the approved link rows first (V54, V64: 44 px on touch,
- *     32 px with a fine pointer; deviations.ts FOOTER_ROWS, task Q2.14), and the built rows are held to those heights.
+ *     32 px with a fine pointer; deviations.ts FOOTER_ROWS, task Q2.14), and the built rows are held to those heights,
+ *     and the build's legal row (the contact line and the grievance officer link one group, on the copyright's line;
+ *     deviations.ts FOOTER_LEGAL, task Q2.16).
  *   - Sticky bar (G-09, pick 4): hidden while the hero CTA is on screen, shown past it, aside while an inline chilli
  *     button is on screen, inert while hidden, data-buybar and --ks-buybar-h on <html>, gone from 900 px, sliding up
  *     with motion on and only fading with reduced motion. The page's own hero CTA (#hero-cta) is on screen at first
@@ -222,6 +224,10 @@ test.describe("chrome: element parity with mockup/home.html", () => {
       // The footer's link rows as approved after Gate A (V54: 44 px on touch; V64: 32 px with a fine pointer; task Q2.14),
       // given to the mockup's footer, so the pixels compare the columns, their words and places, in the same rows.
       await ref.addStyleTag({ content: FOOTER_ROWS.css });
+      // The legal row as task Q2.16 builds it (QAL-1): the contact line and the grievance officer link one group, each
+      // link's tap target in its own padding, on the copyright's line (deviations.ts FOOTER_LEGAL).
+      await ref.evaluate(groupFooterLinks);
+      await ref.addStyleTag({ content: `${FOOTER_LEGAL.undo}\n${FOOTER_LEGAL.rules}` });
       const page = await openBuilt(harness, vp);
       await hideForParity(page);
       const rows = await footerRows(page);

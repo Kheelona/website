@@ -27,8 +27,10 @@ export interface FooterProps {
 /**
  * The marketing site's footer: the DS Footer (`kh-footer`) exactly as mockup/partials/footer.html composes it, the logo,
  * the promise and the made-in line, three link columns, then the legal row with the seller lines (`SellerLines`
- * footer variant) and the grievance officer link. footer.css ports mockup.css:126, the legal row's links in the DS
- * link colour with a full tap height (CMO M9). Server component; every word and link comes from content by props.
+ * footer variant) and the grievance officer link, which since task Q2.16 joins the contact line in one group
+ * (`ks-footer__links`), so the two wrap together and line up with the copyright and the address. footer.css gives the
+ * legal row's links the DS link colour and a full tap height without moving the line (CMO M9; QAL-1). Server component;
+ * every word and link comes from content by props.
  */
 export function Footer({ logoAlt, promise, made, columns, seller, grievance }: FooterProps) {
   return (
@@ -51,10 +53,7 @@ export function Footer({ logoAlt, promise, made, columns, seller, grievance }: F
         ))}
       </div>
       <div className="kh-footer__legal">
-        <SellerLines variant="footer" {...seller} />
-        <span>
-          <Link href={grievance.href}>{grievance.label}</Link>
-        </span>
+        <SellerLines variant="footer" {...seller} links={<Link href={grievance.href}>{grievance.label}</Link>} />
       </div>
     </footer>
   );

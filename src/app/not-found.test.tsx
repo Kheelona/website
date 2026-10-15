@@ -9,7 +9,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { freshBuiltPages } from "../../test/e2e/support/page-checks";
 import { ROOT } from "../../test/e2e/support/repo";
 import { isStillLegacy } from "../../test/guards/legacy-paths";
-import { FOOTER_FIX } from "../../test/e2e/support/deviations";
+import { FOOTER_FIX, groupFooterLinks } from "../../test/e2e/support/deviations";
 import { withSellerFacts } from "../../test/e2e/support/seller-facts";
 import { mockupDiff, mockupPage } from "../../test/support/mockup-compare";
 import { withFacts } from "../../test/support/mockup-facts";
@@ -70,8 +70,10 @@ describe("not-found: the page equals the approved mockup (mockup/404.html)", () 
     const { container } = await page();
     const approved = mockup.querySelector(mockupSelector);
     /* The footer's promise reads "No web browsing." since task 8b.1 (D058 item 1; deviations.ts FOOTER_FIX), and its
-       legal row has no GSTIN and no number since D063 items 2-3 (task Q2.3; seller-facts.ts). */
-    const ref = approved && mockupSelector === "footer.kh-footer" ? withSellerFacts(withFacts(approved, [FOOTER_FIX])) : approved;
+       legal row has no GSTIN and no number since D063 items 2-3 (task Q2.3; seller-facts.ts), its contact line and
+       grievance officer link one group since task Q2.16 (deviations.ts FOOTER_LEGAL, groupFooterLinks). */
+    const ref =
+      approved && mockupSelector === "footer.kh-footer" ? groupFooterLinks(withSellerFacts(withFacts(approved, [FOOTER_FIX]))) : approved;
     const built = container.querySelector(builtSelector);
     expect(ref, mockupSelector).not.toBeNull();
     expect(built, builtSelector).not.toBeNull();

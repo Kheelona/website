@@ -2910,6 +2910,49 @@ export const FOOTER_ROWS = {
   approvedBy: FOOTER_ROWS_APPROVED,
 } as const;
 
+/* The footer's legal row (task Q2.16, the consistency review's QAL-1), on every marketing page: the contact line and the
+   grievance officer link are one group (SellerLines' footer `links`, `span.ks-footer__links`), so they wrap together,
+   and each link keeps its 48 px tap target in its own padding instead of mockup.css:126's inline-flex box, so the links
+   share the copyright's and the address's line. The pages' visual pass already hides the legal row on both sides
+   (seller-facts.ts, D063); the chrome's parity tests compare it, so they give the mockup's footer the build's row: its
+   spans grouped (groupFooterLinks; SiteShell.test.tsx and not-found.test.tsx element by element, chrome.spec.ts pixel
+   by pixel) and, in chrome.spec.ts, footer.css's two rules after undoing mockup.css:126's 48 px box (FOOTER_LEGAL).
+   One shared rule for every page, as the footer's rows are. */
+const FOOTER_LEGAL_APPROVED =
+  "tasks.md Q2.16 (main session, 2026-10-15; the consistency review's QAL-1, wf_78365aa5-dfe); its deviations.md row is the main session's";
+/** The build's legal-row rules for the mockup's footer (chrome.spec.ts): footer.css's own, rule for rule (Footer.test.tsx
+ *  holds them equal), after `undo`, the part of mockup.css:126 footer.css no longer sets. */
+export const FOOTER_LEGAL = {
+  rules:
+    ".kh-footer__legal a { display: inline-block; padding-block: var(--space-4); margin-block: calc(var(--space-4) * -1); color: var(--link); }\n" +
+    ".ks-footer__links { display: flex; flex-wrap: wrap; gap: var(--space-6) var(--space-4); }",
+  undo: ".kh-footer__legal a { min-height: 0; }",
+  approvedBy: FOOTER_LEGAL_APPROVED,
+} as const;
+
+/** Groups the last two spans of each footer legal row under `root` (the mockup's contact line, then its grievance
+ *  officer span) as the build prints them: one `span.ks-footer__links` holding the contact's span and the grievance
+ *  officer's link. Returns `root`. Self-contained, so a spec can hand it to the browser (`page.evaluate(groupFooterLinks)`
+ *  groups the open page's document); the unit tests call it on a clone. A row of any other shape throws. */
+export function groupFooterLinks<T extends ParentNode>(root: T): T;
+export function groupFooterLinks(): Document;
+export function groupFooterLinks(root?: ParentNode): ParentNode {
+  const scope = root ?? document;
+  for (const row of Array.from(scope.querySelectorAll(".kh-footer__legal"))) {
+    const spans = Array.from(row.children);
+    if (spans.length !== 4 || spans.some((el) => el.tagName !== "SPAN") || !spans[3].querySelector("a")) {
+      throw new Error(`groupFooterLinks: a .kh-footer__legal of ${spans.length} children, not the mockup's four spans (the last a link)`);
+    }
+    const [contact, grievance] = spans.slice(2);
+    const group = row.ownerDocument.createElement("span");
+    group.className = "ks-footer__links";
+    contact.before(group);
+    group.append(contact, ...Array.from(grievance.childNodes));
+    grievance.remove();
+  }
+  return scope;
+}
+
 /** The rules every page shares, in order: the tap areas' (task 7.1a), task Q2.8's price lines, then the footer's
  *  columns (V54, V64; task Q2.14). */
 export const SHARED_HIDDEN: readonly VisualHide[] = [...TAP_AREA_HIDDEN, ...PRICE_LINE_HIDDEN, ...FOOTER_COLS_HIDDEN];
