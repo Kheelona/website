@@ -5,7 +5,7 @@ updated: 2026-10-15
 sources: [log.md, open-questions.md]
 ---
 
-# Status (2026-10-15 19:30 IST)
+# Status (2026-10-15 23:40 IST)
 
 **NOW: the selling update (D064, D065), in the quick-changes phase (D062): quick checks per batch, detailed QA and the
 integrations once the founder calls the site final.** Summary to resume from: [project summary](engineering/project-summary.md).
@@ -16,10 +16,11 @@ tests, build green; rows V49-V57. **The new cta values are registered** (`ffa029
 **Wave 2 (q2b) merged** (2026-10-15 19:10: Q2.9 Home end to end, Q2.10 the product page, Q2.11 `/safety`, Q2.12 every
 other page's close and the footer's laptop rows; rows V58-V64; verify 6894 passed and 2 product-page parity tests red,
 the build green). **Fix wave q2c merged** (verify 6917, build green; `5b245a26`): Q2.13 the offer cards, the product page,
-the guide; Q2.14 the help line's words and tap target, the footer's parity rule, `/privacy` against G26. **Resumed 2026-10-15:** a
-consistency review of every page at 360/390/412/1440 (`wf_78365aa5-dfe`, resumable). **Next:** resume it, fix what it confirms, push `beta`,
-check the deploy, report to the founder.
-**Branch:** `reset/website-v2` (`5b245a26`). **Beta (public, D060):** `beta` at `398c5ee` (wave 8c); betawebsite and
+the guide; Q2.14 the help line's words and tap target, the footer's parity rule, `/privacy` against G26. **Consistency review done** (`wf_78365aa5-dfe`: 16 serious findings, all confirmed;
+rulings R1 Home's length accepted and guarded, R2 one CTA shape). **Fix wave q2d running** (`wf_409ee373-453`, base
+`cffb759d`): Q2.15 one CTA block and one offer fold, Q2.16 layout and chrome defects. **Next:** merge, verify and build,
+push `beta`, check the deploy, report to the founder.
+**Branch:** `reset/website-v2` (`cffb759d`). **Beta (public, D060):** `beta` at `398c5ee` (wave 8c); betawebsite and
 betastore.kheelona.com. **Production:** `main` `8c4718a`, untouched until Gate B. Beta QA (task 7.2) on hold.
 
 **Rulings taken while the founder sleeps (to report):** the WhatsApp bubble stays persistent on Home's first phone screen
