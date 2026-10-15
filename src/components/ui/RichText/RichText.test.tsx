@@ -212,4 +212,18 @@ describe("RichText CSS", () => {
     expect(declarations(CSS, selector)).toEqual(["color: var(--link)"]);
     expect(declarations(CSS, selector)).toEqual(declarations("mockup/mockup.css", selector));
   });
+
+  /* Task Q2.16 (consistency review QAP-4, QAL-5): five links from content strings showed the browser's own blue, the
+     only ones on the site: /setup's "App Store" and "Google Play" in a trust-list body, and three in FAQ answers (the
+     product page's "Two languages", /safety's "the four facts at the top of this page", the guide's "safety page"). No
+     rule above reaches `.kh-trust__body` or `.kh-faq__a`, and the app loads no global link colour. The rule adds no
+     specificity (`:where()`, an element selector of 0,0,1), so every component's own link rule still wins (the legal
+     pages' bold reference links, the FAQ's source markers, the buttons). */
+  it("gives links in FAQ answers and trust-list bodies the DS link colour, at zero added specificity", () => {
+    const selector = ":where(.kh-trust__body, .kh-faq__a) a:where(:not(.kh-btn))";
+    expect(declarations(CSS, selector)).toEqual(["color: var(--link)"]);
+    const rule = postcss.parse(readRepoFile(CSS)).nodes.find((n) => n.type === "rule" && n.selectors.join(", ") === selector);
+    expect((rule as postcss.Rule).selectors).toHaveLength(1);
+    expect((rule as postcss.Rule).selector.replace(/:where\([^)]*\)+/g, "").trim()).toBe("a");
+  });
 });

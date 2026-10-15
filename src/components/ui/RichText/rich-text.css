@@ -11,3 +11,11 @@
 .kh-body-s a:not(.kh-btn) {
   color: var(--link);
 }
+
+/* Links in a trust-list body or an FAQ answer take the DS link colour too (task Q2.16, consistency review QAP-4, QAL-5):
+   /setup's app-store links and three FAQ answers' links showed the browser's own blue, since no rule above reaches them
+   and the app loads no global link colour. Zero added specificity (an element selector), so every component's own link
+   rule still wins. */
+:where(.kh-trust__body, .kh-faq__a) a:where(:not(.kh-btn)) {
+  color: var(--link);
+}
