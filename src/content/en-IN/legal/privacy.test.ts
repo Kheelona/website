@@ -383,16 +383,23 @@ describe("the privacy page: the founder's page facts (D055)", () => {
     expect(partText("store")).toContain("If you start a pre-order and don’t pay, the details you entered are still saved, as an unpaid order. We keep them until you ask us to delete them.");
   });
 
-  /* D058 item 1 (task 8b.1; the live /privacy, map §1 P10-P12): no one-tap delete. Removing a chat hides it on that phone,
-     and item 17's limit stays said plainly; deleting the account is what deletes. */
+  /* D058 item 1 (task 8b.1; the live /privacy, map §1 P10-P12): removing a chat hides it on that phone, and item 17's limit
+     stays said plainly; deleting the account deletes. G26 (D065 item 7; task Q2.14): "Delete all chats" in the app deletes
+     the chats from our servers, so the settings list gains it and the way to delete a child's conversations names it.
+     Nothing else changes: what removing one chat does, and whether "Delete all chats" reaches Kheelu's memory or the
+     training data, is not on file (G33). */
   it("says what the app's privacy settings do, what removing a chat does not reach (item 17; D058), and promises nothing about backups", () => {
     const rights = partText("rights");
     expect(rights).toContain("In the app’s privacy settings, you can:");
-    for (const item of ["turn off Save voice recordings, to keep the text of conversations only;", "download your child’s data;", "delete your account."]) {
-      expect(rights).toContain(item);
-    }
+    const list = part("rights").blocks.find((b) => b.kind === "list");
+    expect(list?.kind === "list" && list.items).toEqual([
+      "turn off Save voice recordings, to keep the text of conversations only;",
+      "download your child’s data;",
+      "delete all chats, which deletes them from our servers;",
+      "delete your account.",
+    ]);
     expect(rights).toContain(
-      "Removing a chat in the parent app hides it on that phone only. It is not removed from our servers, from Kheelu’s memory, or from the data our model trains on. To delete your child’s conversations, delete your account, or write to us.",
+      "Removing a chat in the parent app hides it on that phone only. It is not removed from our servers, from Kheelu’s memory, or from the data our model trains on. To delete your child’s conversations, use “Delete all chats” in the app, delete your account, or write to us.",
     );
     expect(rights).toContain("Deleting your account deletes the account, your child’s profile, and their conversations and voice recordings.");
     expect(rights).not.toMatch(/one tap|backups/);

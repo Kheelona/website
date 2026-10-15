@@ -458,14 +458,22 @@ export const privacyPage = {
         { kind: "p", text: "In the app’s privacy settings, you can:" },
         {
           kind: "list",
-          items: ["turn off Save voice recordings, to keep the text of conversations only;", "download your child’s data;", "delete your account."],
+          /* G26 (D065 item 7; task Q2.14): "Delete all chats" in the app now deletes the chats from our servers. */
+          items: [
+            "turn off Save voice recordings, to keep the text of conversations only;",
+            "download your child’s data;",
+            "delete all chats, which deletes them from our servers;",
+            "delete your account.",
+          ],
         },
-        /* No one-tap delete (map §1 P11-P12): removing a chat hides it on that phone, with D055 item 17's limit said
-           plainly; deleting the account deletes. No line on backups. */
+        /* Removing one chat hides it on that phone, with D055 item 17's limit said plainly (map §1 P11-P12); "Delete all
+           chats" deletes them from our servers (G26, D065 item 7); deleting the account deletes. What removing one chat
+           does now, and whether "Delete all chats" reaches Kheelu's memory or the training data, is not on file (G33), so
+           those words stay as they are. No line on backups. */
         { kind: "h3", text: "Removing a chat, or deleting your account." },
         {
           kind: "p",
-          text: "Removing a chat in the parent app hides it on that phone only. It is not removed from our servers, from Kheelu’s memory, or from the data our model trains on. To delete your child’s conversations, delete your account, or write to us.",
+          text: "Removing a chat in the parent app hides it on that phone only. It is not removed from our servers, from Kheelu’s memory, or from the data our model trains on. To delete your child’s conversations, use “Delete all chats” in the app, delete your account, or write to us.",
         },
         { kind: "p", text: "Deleting your account deletes the account, your child’s profile, and their conversations and voice recordings." },
         { kind: "h3", text: "Asking us." },

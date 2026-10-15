@@ -943,20 +943,22 @@ export const CLAIM_FIXES = {
         "If you close your parent-app account: we keep your child’s conversations and recordings until their 36 months end.",
         "<strong>If you delete your parent-app account:</strong> we delete the account, your child’s profile, and their conversations and recordings.",
       ),
-      /* Section 9: the app's privacy settings, then what removing a chat and deleting the account do. */
+      /* Section 9: the app's privacy settings, then what removing a chat and deleting the account do. Since G26 (D065
+         item 7; task Q2.14) the settings list names "delete all chats, which deletes them from our servers;" and the way to
+         delete a child's conversations starts with it; the block hides already serve (the list, the paragraph). */
       {
         at: "h3",
         was: "Deleting a conversation.",
         now:
           '<h3 class="kh-subtitle">In the parent app.</h3><p>In the app’s privacy settings, you can:</p>' +
-          "<ul><li>turn off Save voice recordings, to keep the text of conversations only;</li><li>download your child’s data;</li><li>delete your account.</li></ul>" +
+          "<ul><li>turn off Save voice recordings, to keep the text of conversations only;</li><li>download your child’s data;</li><li>delete all chats, which deletes them from our servers;</li><li>delete your account.</li></ul>" +
           '<h3 class="kh-subtitle">Removing a chat, or deleting your account.</h3>',
       },
       {
         at: "p",
         was: "In the parent app, you can delete any conversation in one tap. It disappears from your app straight away. It is not removed from Kheelu’s memory, or from the data our model trains on.",
         now:
-          "<p>Removing a chat in the parent app hides it on that phone only. It is not removed from our servers, from Kheelu’s memory, or from the data our model trains on. To delete your child’s conversations, delete your account, or write to us.</p>" +
+          "<p>Removing a chat in the parent app hides it on that phone only. It is not removed from our servers, from Kheelu’s memory, or from the data our model trains on. To delete your child’s conversations, use “Delete all chats” in the app, delete your account, or write to us.</p>" +
           "<p>Deleting your account deletes the account, your child’s profile, and their conversations and voice recordings.</p>",
       },
     ],
@@ -1035,11 +1037,12 @@ export const CLAIM_FIXES = {
       "In the app’s privacy settings, you can:",
       "turn off Save voice recordings, to keep the text of conversations only;",
       "download your child’s data;",
+      "delete all chats, which deletes them from our servers;",
       "delete your account.",
       "Removing a chat, or deleting your account.",
       "Removing a chat in the parent app hides it on that phone only.",
       "It is not removed from our servers, from Kheelu’s memory, or from the data our model trains on.",
-      "To delete your child’s conversations, delete your account, or write to us.",
+      "To delete your child’s conversations, use “Delete all chats” in the app, delete your account, or write to us.",
       "Deleting your account deletes the account, your child’s profile, and their conversations and voice recordings.",
     ],
     /* Every block whose words change, on both sides; on the build's side alone the blocks it adds (section 2's two new
@@ -1065,7 +1068,7 @@ export const CLAIM_FIXES = {
       build: ["#kheelu > p:nth-child(8)", "#kheelu > p:nth-child(12)", "#rights > ul:nth-child(4)", "#rights > h3:nth-child(5)", "#rights > p:nth-child(6)", "#rights > p:nth-child(7)"],
     },
     reason:
-      "/privacy in the live team's code-checked words, with the parent app's sections of the live /privacy (#18): a couple of minutes, the voice to Kheelona's servers and the processors named (some outside India), Save voice recordings, the child's profile, the account and Kheelu's setup, no location, removing a chat against deleting the account, no one-tap delete",
+      "/privacy in the live team's code-checked words, with the parent app's sections of the live /privacy (#18): a couple of minutes, the voice to Kheelona's servers and the processors named (some outside India), Save voice recordings, the child's profile, the account and Kheelu's setup, no location, removing a chat against deleting the account, no one-tap delete; then “Delete all chats”, which deletes them from our servers (G26, D065 item 7; task Q2.14)",
     approvedBy: claimsApproved("V32", "privacy.md"),
   },
   /* /terms (after the founder's page facts, V14, and task 7.1b's fixes, V21): Kheelona+, the mechanism, and the parent
