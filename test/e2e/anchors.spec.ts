@@ -15,7 +15,9 @@ import { VIEWPORTS, type Viewport } from "./support/viewports";
  *     Home has no "See all questions" (`faq-more` stops firing on Home: the D2C plan v2 §2 fold 10, ruling 1), so the
  *     check follows Home's one remaining link into a part of the product page: the sticky scroll's "See how it works"
  *     (`home-asks-learn`, to /products/kheelu#modes). On a laptop the part lands just below the nav, which sticks from
- *     900 px (task Q2.5; the page's scroll padding is the bar's height); on a phone, at the top.
+ *     900 px (task Q2.5; the page's scroll padding is the bar's height); on a phone, at the top. The check still crosses
+ *     a collapsing tabs box (task Q2.13): the sample chats' DS Tabs (task Q2.10) sit above #modes and collapse to one
+ *     panel once the page's script runs, after Next has scrolled, as the details tabs did above the questions.
  *   - m8: every trust item links to the part of its terms page it promises (returns, the warranty, paying, when and
  *     where deliveries go), and that part exists on the page.
  *   - QA-005: the footer's "Grievance officer" opens the grievance officer's block on /contact.
@@ -149,6 +151,20 @@ test.describe("anchors: Home's “See how it works” lands at the product page'
         await settled(page);
         const bar = vp.width >= 900 ? await page.locator("nav.kh-nav").evaluate((n) => Math.round(n.getBoundingClientRect().bottom)) : 0;
         expect(Math.abs((await topOf(page, `#${HOME_TO_MODES.id}`)) - bar), "the modes sit at the top of the screen, below the sticky nav on a laptop").toBeLessThanOrEqual(2);
+        // The landing crossed a tabs box that collapsed on the way (task Q2.13): the sample chats' tabs, above #modes,
+        // enhanced to one shown panel (enhance-tabs.ts: `is-tabs`, the others `hidden`). Were they to move below the part,
+        // this case would stop proving M2, and a case reaching a fragment below a tabs box would have to replace it.
+        const crossed = await page.evaluate((id) => {
+          const target = document.getElementById(id)!;
+          return Array.from(document.querySelectorAll(".kh-tabs[data-tabs]"))
+            .filter((box) => box.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING)
+            .map((box) => ({
+              fold: box.closest("section")?.getAttribute("aria-labelledby") ?? null,
+              tabs: box.classList.contains("is-tabs"),
+              shown: box.querySelectorAll(":scope > .kh-tabs__panel:not([hidden])").length,
+            }));
+        }, HOME_TO_MODES.id);
+        expect(crossed, "a collapsing tabs box sits above the part the link lands on").toEqual([{ fold: "example-title", tabs: true, shown: 1 }]);
       });
     }
   }
