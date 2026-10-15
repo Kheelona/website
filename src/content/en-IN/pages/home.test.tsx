@@ -335,6 +335,25 @@ describe("Home: the page's FAQPage (wave-4 close; architecture §9.2; home.md fo
   });
 });
 
+/* Task Q2.8 (D065 item 3; the D2C plan v2 §1.1, Home fold 7): the one risk-reversal line under every button, first in its
+   trust line, the delivery line second; the offer card's row adds its third row, the warranty and the ways to pay. */
+describe("Home: the one risk-reversal line under every button (task Q2.8)", () => {
+  // The linked trust lines (`ks-trust`; the safety facts line is not linked).
+  const rows = all(TOKEN.whole.querySelector("main")!, ".ks-trust").map((row) => all(row, "li").map((li) => li.textContent));
+  const LINE = ["Full refund until dispatch · 7-day returns", "Deliveries start mid-November"];
+
+  it("leads every trust line beside a button with it, the delivery line second", () => {
+    expect(rows.length).toBeGreaterThanOrEqual(4);
+    for (const row of rows) expect(row.slice(0, 2)).toEqual(LINE);
+  });
+
+  it("gives the offer card's row the card's third row, the warranty and the ways to pay, and no other promise", () => {
+    const card = all(fold(BUILT, "close-title"), ".ks-trust li").map((li) => li.textContent);
+    expect(card).toEqual([...LINE, "6-month warranty", "UPI, card or net banking"]);
+    expect(rows.flat()).not.toContain("7-day returns, no questions asked");
+  });
+});
+
 describe("Home: full mode (ADR-005)", () => {
   const main = FULL.doc.querySelector("main")!;
 

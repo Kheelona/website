@@ -52,8 +52,13 @@ export type TrustId = keyof typeof trustItems;
  *  v2 §1.1, item 1 and item 2), so on a 360 x 590 phone the risk-reversal row stays on the first screen (§2.0, §3.0). */
 export const TRUST_COMPACT: readonly TrustId[] = ["risk-reversal", "deliveries-start"];
 
-/** The full row at Home's close and on the store, beside the pay button (home.md "CTA block"; CMO pass M14): the
- *  returns promise as approved, so the checkout's row is unchanged (task Q2.8). */
+/** The offer cards' row, under each card's button (task Q2.8's review; the D2C plan v2 §1.1 "Offer cards only, a third
+ *  row", Home fold 7, product fold 3): the trust line, then the card's third row, the warranty and the ways to pay. */
+export const TRUST_OFFER: readonly TrustId[] = [...TRUST_COMPACT, "warranty-6-months", "payment-methods"];
+
+/** The full row on the store, beside the pay button (home.md "CTA block"; CMO pass M14): the returns promise as
+ *  approved, so the checkout's row is unchanged (task Q2.8). Home's close card took the offer cards' row (TRUST_OFFER)
+ *  in the task's review. */
 export const TRUST_FULL: readonly TrustId[] = ["returns-7-days", "warranty-6-months", "payment-methods", "delivery-included"];
 
 /** The three checkable facts under the safety folds of Home and the product page (not linked). */

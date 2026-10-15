@@ -21,7 +21,7 @@ import {
   without,
   words,
 } from "./mockup-compare";
-import { PRICE_LINE, PRICE_LINE_HIDDEN, PRICE_LINE_TEXT } from "../e2e/support/deviations";
+import { PRICE_LINE, PRICE_LINE_HIDDEN, PRICE_LINE_TEXT, priceLineText } from "../e2e/support/deviations";
 import { sentenceDiff, sentences } from "../e2e/support/parity";
 import { ROOT, readRepoFile } from "../e2e/support/repo";
 import { blockSentences } from "./mockup-facts";
@@ -119,6 +119,25 @@ describe("reading the mockup with task Q2.8's price lines (withPriceLine)", () =
     expect(linkWords(form)[0]).toBe(returns.mockup);
   });
 
+  /* The task's review (the D2C plan v2 §1.1; Home fold 7, product folds 3 and 12): the rows under the offer cards'
+     buttons are the trust line, then the card's third row (warranty, the ways to pay); the product close's is the trust
+     line. Outside the checkout's form only: the store's pay-button row stays as approved (above). */
+  it("rewrites the rows beside the offer cards' buttons and the product close as the build prints them", () => {
+    const { warranty, payment } = PRICE_LINE.rows;
+    const LINE = [returns.build, delivery];
+    const home = parseMockup("home");
+    expect(linkWords(home.querySelectorAll("ul.mk-trust")[3])).toEqual([...LINE, warranty, payment]);
+    const product = parseMockup("meet-kheelu");
+    expect([...product.querySelectorAll("ul.mk-trust")].map(linkWords)).toEqual([LINE, [...LINE, warranty, payment], LINE, LINE]);
+    // Each link as the build links it (trust.ts), the delivery line's included.
+    expect(mockupLinks(product.querySelector("#offer ul.mk-trust")!)).toEqual(["/refund#before-dispatch", "/shipping#when", "/refund#faulty", "/terms#payment"]);
+    expect(mockupLinks(product.querySelector("ul.mk-close-trust")!)).toEqual(["/refund#before-dispatch", "/shipping#when"]);
+    // The delivery line the offer row takes is the page's own, its truck icon and its words.
+    const heroDelivery = raw("meet-kheelu").querySelector("ul.mk-trust > li")!;
+    expect(text(heroDelivery)).toBe(delivery);
+    expect(product.querySelectorAll("#offer ul.mk-trust > li")[1].outerHTML).toBe(heroDelivery.outerHTML);
+  });
+
   /* What the parity specs make of it, on every approved page: the text pass's shared rule accepts exactly the sentences
      the lines change in main, and with the pixels' shared hides applied on both sides the page's words line up again,
      but for the card's note, which sits on its amount's row and moves nothing. */
@@ -140,8 +159,9 @@ describe("reading the mockup with task Q2.8's price lines (withPriceLine)", () =
 
   it.each(SLUGS)("%s: the text pass accepts exactly what changes in main, and the hides leave only the card's note", (slug) => {
     const { missing, extra } = sentenceDiff(blockSentences(mainOf(raw(slug))), blockSentences(mainOf(parseMockup(slug))));
-    expect(missing.filter((s) => !PRICE_LINE_TEXT.mockup.test(s))).toEqual([]);
-    expect(extra.filter((s) => !PRICE_LINE_TEXT.build?.test(s))).toEqual([]);
+    const rules = priceLineText(slug);
+    expect(missing.filter((s) => !rules.some((r) => r.mockup.test(s)))).toEqual([]);
+    expect(extra.filter((s) => !rules.some((r) => r.build?.test(s)))).toEqual([]);
     const after = (doc: Document) => {
       const main = mainOf(doc).cloneNode(true) as Element;
       main.querySelectorAll(hidden("mockup").join(", ")).forEach((n) => n.remove());
@@ -152,9 +172,15 @@ describe("reading the mockup with task Q2.8's price lines (withPriceLine)", () =
     expect(left.missing.filter((s) => !sentences(PRICE_LINE.cardNote).includes(s))).toEqual([]);
   });
 
+  /* The offer rows' words come and go on the two pages with an offer card or a full close row, and only there. */
+  it("excuses the offer rows' words on Home and the product page only, after the shared rule", () => {
+    expect(SLUGS.filter((slug) => priceLineText(slug).length > 1).sort()).toEqual(["home", "meet-kheelu"]);
+    for (const slug of SLUGS) expect(priceLineText(slug)[0], slug).toBe(PRICE_LINE_TEXT);
+  });
+
   it("names the same blocks on both sides of the pixels' shared hides, and each one it finds is a line that changes", () => {
     expect(hidden("build")).toEqual(hidden("mockup").map((s) => s.replace(/\bmk-/g, "ks-")));
-    for (const [slug, count] of [["home", 7], ["store", 1]] as const) {
+    for (const [slug, count] of [["home", 8], ["meet-kheelu", 8], ["store", 1]] as const) {
       const found = (doc: Document) => [...mainOf(doc).querySelectorAll(hidden("mockup").join(", "))].map((el) => words(el));
       const [before, after] = [found(raw(slug)), found(parseMockup(slug))];
       expect(before, slug).toHaveLength(count);

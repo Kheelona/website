@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { ICON_PATHS } from "@/assets/icons.generated";
 import { cta } from "@/content/en-IN/cta";
 import { seller } from "@/content/en-IN/seller";
-import { TRUST_FULL, trustItems } from "@/content/en-IN/trust";
+import { TRUST_OFFER, trustItems } from "@/content/en-IN/trust";
 import type { ArtBoardRef, ImageRef, Offer } from "@/content/types";
 import { buildOffer } from "@/lib/offer/offer";
 import type { SellingContext } from "../CtaBlock/cta-block.types";
@@ -52,14 +52,16 @@ const HOME: OfferSectionConfig = {
   heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}" },
   cta: "finale",
   cardLabel: "Kheelu offer",
-  trust: TRUST_FULL.map((id) => trustItems[id]),
+  /* Both cards' row since task Q2.8's review: the trust line, then the card's third row (the D2C plan v2 §1.1; the
+     harness reads the mockup's rows so, test/support/mockup-compare.ts withPriceLine). */
+  trust: TRUST_OFFER.map((id) => trustItems[id]),
   art: HOME_ART,
 };
 const PRODUCT: OfferSectionConfig = {
   variant: "photo",
   heading: { eyebrow: "What you get", title: "Everything that {hand:comes with it.}" },
   cta: "product-offer",
-  trust: (["returns-7-days", "warranty-6-months", "payment-methods"] as const).map((id) => trustItems[id]),
+  trust: TRUST_OFFER.map((id) => trustItems[id]),
   photo: PHOTO,
 };
 

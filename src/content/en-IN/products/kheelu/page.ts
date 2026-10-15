@@ -24,7 +24,7 @@ import { offerCopy } from "../../offer";
 import { RETENTION_LINE, RETURN_DAYS, RETURN_PICKUP_FREE, WARRANTY_MONTHS } from "../../policies";
 import { recognitionStrip } from "../../recognition";
 import { seller } from "../../seller";
-import { SAFETY_FACTS, TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "../../trust";
+import { SAFETY_FACTS, TRUST_COMPACT, TRUST_OFFER, trustItems, type TrustId } from "../../trust";
 import { product, type Mode } from "./product";
 
 /**
@@ -46,10 +46,6 @@ import { product, type Mode } from "./product";
 
 const trust = (ids: readonly TrustId[]): TrustItem[] => ids.map((id) => trustItems[id]);
 const COMPACT = trust(TRUST_COMPACT);
-
-/** The close's full row: the delivery line, then the full four. The close draws "Delivery included anywhere in India"
- *  with the map pin, as meet-kheelu.html fold 9 does (wave-3 close ruling); the trust item keeps one icon for Home. */
-const CLOSE_TRUST = trust(["deliveries-start", ...TRUST_FULL]).map((item) => (item.id === "delivery-included" ? { ...item, icon: "map-pin" } : item));
 
 /** The parent app's real screens (D044, D046) carry the founder-confirmed caption on every page that shows them. */
 const APP_CAPTION = "The Kheelona app is live on Apple’s App Store and the Google Play Store.";
@@ -146,7 +142,9 @@ export const kheeluPage = {
         variant: "photo",
         heading: { eyebrow: "What you get", title: "Everything that {hand:comes with it.}" },
         cta: "product-offer",
-        trust: trust(["returns-7-days", "warranty-6-months", "payment-methods"]),
+        /* Under the card's button, the offer cards' row (task Q2.8's review; the D2C plan v2 §1.1, product fold 3): the one
+           risk-reversal line, the delivery line, then the card's third row. */
+        trust: trust(TRUST_OFFER),
         photo: { src: kheeluOnFur, alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." },
       },
     },
@@ -382,7 +380,9 @@ export const kheeluPage = {
           title: "Bring home a toy that {hand:asks back.}",
           lead: "For your own child, or as a gift for a 3 to 7 year old in the family.",
         },
-        cta: { cta: "product-foot", id: "reserve", layout: "full", trust: CLOSE_TRUST, helpLine: true },
+        /* The trust line, as beside every button (task Q2.8's review; the D2C plan v2 §1.1, product fold 12): in place of
+           meet-kheelu.html's five-item row; the warranty and the ways to pay sit under the offer card's button. */
+        cta: { cta: "product-foot", id: "reserve", layout: "full", trust: COMPACT, helpLine: true },
         art: {
           tone: "sun",
           label: "A smiling girl in a peach kurta beside Kheelu, the cream plush rabbit.",

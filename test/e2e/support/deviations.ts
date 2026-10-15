@@ -1319,13 +1319,18 @@ const offerAdditionsHidden = (slug: OfferAdditionsSlug): VisualHide[] =>
    - the returns promise in the compact trust line (a trust line of exactly the delivery line and that promise: beside
      every button, and on the store's first screen, which may take it) and in the drawer's second note becomes the one
      risk-reversal line, in the same words everywhere it shows, and leads the line, the delivery line second (the D2C
-     plan v2 §1.1: the trust line's item 1 and item 2).
+     plan v2 §1.1: the trust line's item 1 and item 2);
+   - since the task's review, the rows under the other buttons too (the plan's Home fold 7, product folds 3 and 12): the
+     offer cards' rows (Home's close card: returns, warranty, paying, delivery included; the product page's: returns,
+     warranty, paying) become the trust line, then the card's third row (warranty, paying), and the product close's
+     five-item row becomes the trust line.
    The checkout keeps D028's sentence (the store's first screen, `#store-price`, and the form's `mk-price`) and its full
-   trust row, as every full row keeps the returns promise. Literal, as the rest of this file (Playwright loads it):
+   trust row beside the pay button, returns promise and all. Literal, as the rest of this file (Playwright loads it):
    src/lib/offer/offer.test.ts and src/content/en-IN/trust.test.ts hold each line to the content. The mockup comparison
    harness applies these to every mockup a unit test reads (test/support/mockup-compare.ts `withPriceLine`); the text
-   pass excuses them on every page (PRICE_LINE_TEXT, textDeviations), and the pixels hide the reflowed lines on both sides
-   (PRICE_LINE_HIDDEN, visualHidden). The main session files the deviations.md row at the merge; the founder signs the
+   pass excuses them on every page, and the offer rows' words on the two pages that have them (PRICE_LINE_TEXT,
+   PRICE_LINE_ROWS_TEXT, priceLineText), and the pixels hide the reflowed lines on both sides (PRICE_LINE_HIDDEN,
+   visualHidden). The main session files the deviations.md row at the merge; the founder signs the
    words at Gate B (D015). Full mode, which no mockup shows, is the content's (offer.ts). */
 export const PRICE_LINE_APPROVED =
   "D065 item 3 and the main session's ruling 3 of the selling update (founder, 2026-10-15; task Q2.8; deviations.md row to come)";
@@ -1344,6 +1349,8 @@ export const PRICE_LINE = {
   /** The compact trust line's delivery line, which stays: the mockup's first item, the build's second (in the drawer's
    *  second note too). */
   delivery: "Deliveries start mid-November",
+  /** The full rows' other items: the offer cards' third row (warranty, paying) and the item that leaves them. */
+  rows: { warranty: "6-month warranty", payment: "UPI, card or net banking", deliveryIncluded: "Delivery included anywhere in India" },
   reason:
     "the short price line beside every button, no GST note on the offer cards, the buy bar's line in total, and the one risk-reversal line first in the compact trust line and the drawer (D065 item 3: GST and the breakdown only at checkout; D2C plan v2 §1.1)",
   approvedBy: PRICE_LINE_APPROVED,
@@ -1810,7 +1817,8 @@ export const TAP_AREA_HIDDEN: readonly VisualHide[] = [
 /* Task Q2.8's lines (PRICE_LINE, above), on every page that sells: the short price line is a line or two shorter than
    D028's sentence, and the risk-reversal line wraps the compact trust line otherwise, so every chunk below each button
    would shift. The pixels compare the pages without them, on both sides: the price line beside each button and the
-   trust line right after it, the offer cards' fine print, the store's first-screen trust line (the store's price stays
+   trust line right after it, the offer cards' fine print and the trust row after each card (the trust line and the
+   card's third row since the task's review), the store's first-screen trust line (the store's price stays
    D028's), and the phone buy bar's small line, which fits on one line at 390 px where the mockup's wraps to two, so the
    bar (and the page's foot, which keeps clear of it) would sit lower in the mockup in every chunk that shows it. The
    checkout's form keeps its sentence and its full row, so nothing inside a form is hidden. Their words are compared by
@@ -1821,7 +1829,7 @@ export const PRICE_LINE_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as 
   const p = side === "mockup" ? "mk" : "ks";
   return {
     side,
-    selector: `.${p}-price:not(form *), .${p}-price:not(form *) + .${p}-trust, .kh-offer__fine, #store-price + .${p}-trust, .kh-buybar__small`,
+    selector: `.${p}-price:not(form *), .${p}-price:not(form *) + .${p}-trust, .kh-offer__fine, .kh-offer ~ .${p}-trust, #store-price + .${p}-trust, .kh-buybar__small`,
     reason: PRICE_LINE_HIDDEN_REASON,
     approvedBy: PRICE_LINE_APPROVED,
   };
@@ -2034,7 +2042,27 @@ export const PRICE_LINE_TEXT: TextDeviation = {
   approvedBy: PRICE_LINE.approvedBy,
 };
 
-/** Every rule the text pass applies to one page: the rule every page shares (PRICE_LINE_TEXT), then the page's own. */
+/** The offer rows' words (PRICE_LINE, the task's review): under the offer cards' buttons the trust line, then the card's
+ *  third row, and on the product close the trust line. Home's card row loses "Delivery included anywhere in India" (the
+ *  card's perk "Delivery anywhere in India, included" keeps the promise) and gains the delivery line; the product page's
+ *  card row gains the delivery line, and its close loses the warranty, the ways to pay and that line, which its card row
+ *  keeps (but the last). Only on those two pages (PRICE_LINE_ROWS_SLUGS). */
+export const PRICE_LINE_ROWS_TEXT: TextDeviation = {
+  mockup: oneOf([PRICE_LINE.rows.warranty, PRICE_LINE.rows.payment, PRICE_LINE.rows.deliveryIncluded]),
+  build: oneOf([PRICE_LINE.delivery]),
+  reason:
+    "the one risk-reversal line under every button: the offer cards' rows are the trust line, then the card's third row (warranty, the ways to pay), and the product close's the trust line (D2C plan v2 §1.1)",
+  approvedBy: PRICE_LINE.approvedBy,
+};
+const PRICE_LINE_ROWS_SLUGS: readonly string[] = ["home", "meet-kheelu"];
+
+/** Task Q2.8's rules for one page: the rule every page shares (PRICE_LINE_TEXT), then, on the two pages with an offer
+ *  card, the offer rows' (PRICE_LINE_ROWS_TEXT). */
+export function priceLineText(slug: string): readonly TextDeviation[] {
+  return PRICE_LINE_ROWS_SLUGS.includes(slug) ? [PRICE_LINE_TEXT, PRICE_LINE_ROWS_TEXT] : [PRICE_LINE_TEXT];
+}
+
+/** Every rule the text pass applies to one page: task Q2.8's (priceLineText), then the page's own. */
 export function textDeviations(slug: string): readonly TextDeviation[] {
-  return [PRICE_LINE_TEXT, ...(TEXT_DEVIATIONS[slug] ?? [])];
+  return [...priceLineText(slug), ...(TEXT_DEVIATIONS[slug] ?? [])];
 }

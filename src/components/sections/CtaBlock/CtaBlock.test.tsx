@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { ICON_PATHS } from "@/assets/icons.generated";
 import { cta } from "@/content/en-IN/cta";
 import { seller } from "@/content/en-IN/seller";
-import { TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "@/content/en-IN/trust";
+import { TRUST_COMPACT, trustItems, type TrustId } from "@/content/en-IN/trust";
 import { buildOffer } from "@/lib/offer/offer";
 import { CtaBlock } from "./CtaBlock";
 import type { CtaBlockConfig, CtaSecondary, SellingContext } from "./cta-block.types";
@@ -19,10 +19,6 @@ const FULL = buildOffer("full");
 const context = (offer = TOKEN): SellingContext => ({ offer, ctaLabel: cta.preorder, help: seller.help });
 const trust = (ids: readonly TrustId[]) => ids.map((id) => trustItems[id]);
 const COMPACT = trust(TRUST_COMPACT);
-/* The product close draws "Delivery included anywhere in India" with map-pin, as meet-kheelu.html does; the content keeps
-   one icon per item (Home's package), so the product page's config passes map-pin for that item (wave-3 close ruling;
-   task 5.2's config). */
-const PRODUCT_CLOSE_TRUST = trust(["deliveries-start", ...TRUST_FULL]).map((item) => (item.id === "delivery-included" ? { ...item, icon: "map-pin" } : item));
 const secondary = (id: keyof typeof cta.secondary, variant: CtaSecondary["variant"]): CtaSecondary => ({ ...cta.secondary[id], variant });
 /* The untracked ghost links of the closes (the copy names no CTA value for them). */
 const SEE_HOW: CtaSecondary = { label: "See how it works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" };
@@ -51,7 +47,9 @@ const PLACEMENTS: Placement[] = [
   ["Home safety (fold 6)", "home", 'section[aria-labelledby="safety-title"]', { cta: "safety", align: "center", trust: COMPACT, secondary: secondary("safety-learn", "secondary") }],
   ["product hero (fold 1)", "meet-kheelu", 'section[aria-labelledby="hero-title"]', { cta: "product-top", arrow: true, block: true, layout: "stack", trust: COMPACT, helpLine: true }],
   ["product safety (fold 6)", "meet-kheelu", "#safety", { cta: "product-safety", align: "center", trust: COMPACT, secondary: secondary("product-safety-learn", "secondary") }],
-  ["product close (fold 9)", "meet-kheelu", "#close", { cta: "product-foot", layout: "full", trust: PRODUCT_CLOSE_TRUST, helpLine: true }],
+  /* The trust line in place of meet-kheelu.html's five-item row since task Q2.8's review (the D2C plan v2 §1.1; the
+     harness reads the mockup's row so, test/support/mockup-compare.ts withPriceLine). */
+  ["product close (fold 9)", "meet-kheelu", "#close", { cta: "product-foot", layout: "full", trust: COMPACT, helpLine: true }],
   ["safety close", "safety", "#close", { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true }],
   ["guide close", "ai-toys-for-kids-in-india", "#close", { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true }],
   ["stories hub close", "stories", "#close", { cta: "finale", arrow: true, block: true, layout: "journal", trust: COMPACT, helpLine: true, secondary: SEE_HOW }],
@@ -68,8 +66,11 @@ describe("CtaBlock: every placement of the approved mockup, exactly", () => {
     expect(renderedMarkup(<CtaBlock {...config} {...context()} />)).toBe(expected);
   });
 
-  it("the product close draws the map-pin its config passes, as the mockup (no rewrite of the mockup)", () => {
-    const html = renderedMarkup(<CtaBlock {...PLACEMENTS[5][3]} {...context()} />);
+  /* A trust item draws the icon its config passes, not the content's (the product close passed map-pin for "Delivery
+     included anywhere in India" until task Q2.8's review gave that close the trust line). */
+  it("draws the icon its config passes for a trust item (no rewrite of the content)", () => {
+    const pinned = trust(["delivery-included"]).map((item) => ({ ...item, icon: "map-pin" }));
+    const html = renderedMarkup(<CtaBlock {...PLACEMENTS[5][3]} trust={pinned} {...context()} />);
     expect(html).toContain(ICON_PATHS["map-pin"]);
     expect(html).not.toContain(ICON_PATHS.package);
   });

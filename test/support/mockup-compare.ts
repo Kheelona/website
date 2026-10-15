@@ -59,6 +59,21 @@ function trustWords(a: Element): string {
   return wordsOf(copy);
 }
 
+/** The trust rows beside a button outside the checkout's form, by the mockup's words, and the build's (task Q2.8 and its
+ *  review; the D2C plan v2 §1.1): the compact line (every page), Home's close card and the product card (the trust line,
+ *  then the card's third row), and the product close's five-item row (the trust line). */
+const PRICE_LINE_ROWS: readonly { mockup: readonly string[]; build: readonly string[] }[] = (() => {
+  const { returns, delivery, rows } = PRICE_LINE;
+  const line = [returns.build, delivery];
+  const offerRow = [...line, rows.warranty, rows.payment];
+  return [
+    { mockup: [delivery, returns.mockup], build: line },
+    { mockup: [returns.mockup, rows.warranty, rows.payment, rows.deliveryIncluded], build: offerRow },
+    { mockup: [returns.mockup, rows.warranty, rows.payment], build: offerRow },
+    { mockup: [delivery, returns.mockup, rows.warranty, rows.payment, rows.deliveryIncluded], build: line },
+  ];
+})();
+
 /**
  * The selling pages' price lines as the build prints them (task Q2.8; D065 item 3: GST and the payment breakdown only at
  * checkout; test/e2e/support/deviations.ts PRICE_LINE), in place: D028's sentence beside every button outside the
@@ -66,9 +81,11 @@ function trustWords(a: Element): string {
  * the short price line; the "incl. GST" note beside the offer cards' amount comes off; the buy bar's small line says "in
  * total"; the returns promise in a compact trust line (exactly the delivery line, then that promise) and in the drawer's
  * second note reads as the risk-reversal line, whose link then takes its own part of /refund (`trustLinkHref`), and it
- * moves to the front, the delivery line second (the D2C plan v2 §1.1: item 1, item 2), each item with its own icon. The
- * store's price (`#store-price`), the form's sentence and every full trust row stay as approved. Anything that does not
- * read as those lines is left alone.
+ * moves to the front, the delivery line second (the D2C plan v2 §1.1: item 1, item 2), each item with its own icon.
+ * Since the task's review the rows under the other buttons outside the checkout's form follow (`PRICE_LINE_ROWS`): the
+ * offer cards' rows read as the trust line, then the card's third row, and the product close's as the trust line, the
+ * delivery line they gain the page's own (its icon and words). The store's price (`#store-price`), the form's sentence
+ * and the form's full row stay as approved. Anything that does not read as those lines is left alone.
  */
 export function withPriceLine(root: ParentNode): void {
   const { sentence, cardNote, bar, returns, delivery } = PRICE_LINE;
@@ -80,13 +97,26 @@ export function withPriceLine(root: ParentNode): void {
   for (const el of root.querySelectorAll(".kh-drawer__note")) {
     if (wordsOf(el) === `${delivery} · ${returns.mockup}`) el.textContent = `${returns.build} · ${delivery}`;
   }
+  /* The page's own delivery line, before any row is rewritten: an offer row takes a copy of it. */
+  const deliveryItem = Array.from(root.querySelectorAll("ul.mk-trust > li")).find((li) => {
+    const a = li.querySelector(":scope > a");
+    return a !== null && trustWords(a) === delivery;
+  });
   for (const list of root.querySelectorAll("ul.mk-trust")) {
-    const links = Array.from(list.querySelectorAll(":scope > li > a"));
-    if (links.length !== 2 || trustWords(links[0]) !== delivery || trustWords(links[1]) !== returns.mockup) continue;
-    const words = Array.from(links[1].childNodes).find((n) => n.nodeType === 3 && (n.textContent ?? "").trim() === returns.mockup);
-    if (!words) continue;
+    if (list.closest("form")) continue;
+    const items = Array.from(list.querySelectorAll(":scope > li")).map((li) => ({ li, words: trustWords(li.querySelector(":scope > a") ?? li) }));
+    const row = PRICE_LINE_ROWS.find((r) => r.mockup.join("\n") === items.map((item) => item.words).join("\n"));
+    if (!row) continue;
+    const returnsItem = items.find((item) => item.words === returns.mockup)!;
+    const words = Array.from(returnsItem.li.querySelector(":scope > a")!.childNodes).find(
+      (n) => n.nodeType === 3 && (n.textContent ?? "").trim() === returns.mockup,
+    );
+    const builtItem = (w: string) =>
+      w === returns.build ? returnsItem.li : (items.find((item) => item.words === w)?.li ?? (w === delivery ? deliveryItem?.cloneNode(true) : undefined));
+    const built = row.build.map(builtItem);
+    if (!words || built.some((li) => li === undefined)) continue;
     words.textContent = returns.build;
-    list.prepend(links[1].parentElement!);
+    list.replaceChildren(...(built as Node[]));
   }
 }
 
