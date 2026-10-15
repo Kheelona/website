@@ -21,9 +21,13 @@ describe("(site) layout", () => {
     const { default: SiteLayout } = await import("./layout");
     render(await SiteLayout({ children: <p>the page</p> }));
     expect(screen.getByRole("main")).toHaveTextContent("the page");
-    // The short price line and the bar's amount without GST (D065 item 3; task Q2.8).
-    expect(document.querySelector(".kh-drawer__note")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
-    expect(document.querySelector(".kh-buybar__big")?.textContent).toBe("₹7,999");
+    // The short price line, the trust line with the risk-reversal line first, and the bar's amount in total, without GST
+    // (D065 item 3; task Q2.8; the D2C plan v2 §1.1-1.2).
+    expect([...document.querySelectorAll(".kh-drawer__note")].map((note) => note.textContent)).toEqual([
+      "₹7,999 in total, paid in full when you order.",
+      "Full refund until dispatch · 7-day returns · Deliveries start mid-November",
+    ]);
+    expect(document.querySelector(".kh-buybar__big")?.textContent).toBe("₹7,999 in total");
   });
 
   it("gives the buy bar its paths: Home has it, Setup does not", async () => {

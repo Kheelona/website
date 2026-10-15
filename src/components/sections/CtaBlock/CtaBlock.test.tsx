@@ -166,12 +166,13 @@ describe("CtaBlock: the short price line and the risk-reversal line (D065 item 3
     }
   });
 
-  it("prints the short price line beside the button, and the risk-reversal line in the compact trust line", () => {
+  // The D2C plan v2 §1.1: the trust line's item 1 is the risk-reversal line, item 2 the delivery line.
+  it("prints the short price line beside the button, and the risk-reversal line first in the compact trust line", () => {
     const { container } = render(<CtaBlock {...PLACEMENTS[0][3]} {...context()} />);
     expect(container.querySelector(".ks-price")?.textContent).toBe("₹499 today, refundable. ₹4,999 in total.");
     expect([...container.querySelectorAll(".kh-trustline a")].map((a) => a.textContent)).toEqual([
-      "Deliveries start mid-November",
       "Full refund until dispatch · 7-day returns",
+      "Deliveries start mid-November",
     ]);
   });
 });

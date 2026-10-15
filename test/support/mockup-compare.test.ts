@@ -69,6 +69,8 @@ describe("reading the mockup", () => {
    lines as the build prints them, and the checkout's as approved. */
 describe("reading the mockup with task Q2.8's price lines (withPriceLine)", () => {
   const { sentence, cardNote, bar, returns, delivery } = PRICE_LINE;
+  /** A mockup page as approved, without the harness's rewrites. */
+  const raw = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
   const text = (el: Element | null | undefined) => (el?.textContent ?? "").replace(/\s+/g, " ").trim();
   /** A trust line's link words, without the store's visually hidden new-tab note. */
   const linkWords = (list: Element) =>
@@ -93,14 +95,18 @@ describe("reading the mockup with task Q2.8's price lines (withPriceLine)", () =
     expect(text(home.querySelector(".kh-buybar__small"))).toBe(bar.build);
   });
 
-  it("puts the risk-reversal line in each compact trust line and the drawer's note; the full row keeps the returns promise", () => {
+  /* The D2C plan v2 §1.1: the trust line's item 1 is the risk-reversal line, item 2 the delivery line. */
+  it("puts the risk-reversal line first in each compact trust line and the drawer's note, the delivery line second", () => {
     const home = parseMockup("home");
     const rows = [...home.querySelectorAll("ul.mk-trust")].map(linkWords);
-    expect(rows.slice(0, 3)).toEqual([0, 1, 2].map(() => [delivery, returns.build]));
-    expect(rows[3][0]).toBe(returns.mockup);
-    expect(text(home.querySelectorAll(".kh-drawer__note")[1])).toBe(`${delivery} · ${returns.build}`);
+    expect(rows.slice(0, 3)).toEqual([0, 1, 2].map(() => [returns.build, delivery]));
+    expect(text(home.querySelectorAll(".kh-drawer__note")[1])).toBe(`${returns.build} · ${delivery}`);
     // The trust link opens the refund page's part that keeps the promise (trust.ts), as the build links it.
-    expect(mockupLinks(home.querySelector("ul.mk-trust")!)).toEqual(["/shipping#when", "/refund#before-dispatch"]);
+    expect(mockupLinks(home.querySelector("ul.mk-trust")!)).toEqual(["/refund#before-dispatch", "/shipping#when"]);
+    // Each item keeps its own icon: the returns arrow on the risk-reversal line, the truck on the delivery line.
+    const icons = [...home.querySelectorAll("ul.mk-trust")[0].querySelectorAll(":scope > li svg")].map((svg) => svg.outerHTML);
+    const raw0 = [...raw("home").querySelectorAll("ul.mk-trust")[0].querySelectorAll(":scope > li svg")].map((svg) => svg.outerHTML);
+    expect(icons).toEqual([raw0[1], raw0[0]]);
   });
 
   it("keeps the checkout as approved: the store's price and its form keep D028's sentence and the full row; its first screen takes the risk-reversal line", () => {
@@ -108,7 +114,7 @@ describe("reading the mockup with task Q2.8's price lines (withPriceLine)", () =
     expect(text(store.querySelector("#store-price"))).toBe(sentence.mockup);
     expect(text(store.querySelector("form .mk-price"))).toBe(sentence.mockup);
     const [top, form] = [...store.querySelectorAll("ul.mk-trust")];
-    expect(linkWords(top)).toEqual([delivery, returns.build]);
+    expect(linkWords(top)).toEqual([returns.build, delivery]);
     expect(top.querySelectorAll(".kh-sr")).toHaveLength(2);
     expect(linkWords(form)[0]).toBe(returns.mockup);
   });
@@ -119,7 +125,6 @@ describe("reading the mockup with task Q2.8's price lines (withPriceLine)", () =
   const SLUGS = readdirSync(join(ROOT, "mockup"))
     .filter((f) => f.endsWith(".html") && f !== "index.html")
     .map((f) => f.replace(/\.html$/, ""));
-  const raw = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
   /** A page's main as the browser's text reads it (innerText): besides the blocks blockSentences knows, the offer card's
    *  amount row is a flex row (each item on a line of its own) and the store's new-tab note is absolutely positioned (a
    *  line of its own too). */

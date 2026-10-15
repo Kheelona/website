@@ -198,22 +198,24 @@ describe("/ai-toys-for-kids-in-india: the rendered page against the approved moc
         .map((a) => a.getAttribute("href")!)
         .filter((h) => !/^(?:#|https?:|tel:)/.test(h));
     // The close's trust links open their part of the terms page (task 7.1a, CMO built-page review C, m8); the mockup
-    // links the pages' tops. The risk-reversal line opens the refund page's first part (task Q2.8; D065 item 3).
+    // links the pages' tops. The risk-reversal line opens the refund page's first part, and leads the line (task Q2.8;
+    // D065 item 3; the D2C plan v2 §1.1).
     expect(internal(main)).toEqual([
       "/stories/what-to-look-for-in-a-safe-ai-toy",
       "/safety",
       "/products/kheelu",
       "/safety",
-      "/shipping#when",
       "/refund#before-dispatch",
+      "/shipping#when",
     ]);
+    // The mockup as the harness reads it, with task Q2.8's lines: the risk-reversal line first (withPriceLine).
     expect(internal(mockupMain).filter((h) => h !== "store.html")).toEqual([
       "story-what-to-look-for-in-a-safe-ai-toy.html",
       "safety.html",
       "meet-kheelu.html",
       "safety.html",
-      "shipping.html",
       "refund.html",
+      "shipping.html",
     ]);
   });
 

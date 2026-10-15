@@ -37,8 +37,8 @@ const PROPS: NavDrawerProps = {
   ],
   ctaLabel: "Pre-order Kheelu",
   offer,
-  /* SiteShell's note: the compact trust line, its returns promise the risk-reversal line since task Q2.8. */
-  note: "Deliveries start mid-November · Full refund until dispatch · 7-day returns",
+  /* SiteShell's note: the compact trust line, the risk-reversal line first since task Q2.8 (D2C plan v2 §1.1). */
+  note: "Full refund until dispatch · 7-day returns · Deliveries start mid-November",
 };
 
 const CSS = readFileSync("src/components/chrome/NavDrawer/nav-drawer.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ");
@@ -90,7 +90,7 @@ describe("NavDrawer", () => {
     expect(chevron.querySelector("path")).toHaveAttribute("d", ICON_CARET_RIGHT);
   });
 
-  it("ends with the large full-width chilli button and the two notes: the short price line, then delivery and returns", () => {
+  it("ends with the large full-width chilli button and the two notes: the short price line, then the trust line", () => {
     const { container } = render(<NavDrawer {...PROPS} />);
     const cta = container.querySelector(".kh-drawer__panel > .kh-drawer__cta") as HTMLElement;
     const [button, price, note] = Array.from(cta.children);
@@ -98,11 +98,14 @@ describe("NavDrawer", () => {
     expect(button).toHaveAttribute("href", STORE_URL);
     expect(button).toHaveAttribute("data-ph-capture-attribute-cta", "navbar-mobile");
     expect(button).toHaveTextContent("Pre-order Kheelu");
+    // The short price line beside the drawer's button (D065 item 3; task Q2.8), a block of its own after the button, never
+    // inside it (the D2C plan v2 §1.1, build condition C1: joined with a space the two would read as one string).
+    expect(price.tagName).toBe("P");
+    expect(button.contains(price)).toBe(false);
     expect(price.className).toBe("kh-drawer__note");
-    // The short price line beside the drawer's button (D065 item 3; task Q2.8).
     expect(price.textContent).toBe("₹499 today, refundable. ₹4,999 in total.");
     expect(note.className).toBe("kh-drawer__note");
-    expect(note.textContent).toBe("Deliveries start mid-November · Full refund until dispatch · 7-day returns");
+    expect(note.textContent).toBe("Full refund until dispatch · 7-day returns · Deliveries start mid-November");
   });
 
   it("follows the offer's mode: the full-mode price line when the store has moved to full price", () => {

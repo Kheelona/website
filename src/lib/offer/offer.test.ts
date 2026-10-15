@@ -164,8 +164,9 @@ describe("full mode", () => {
     expect(text(offer.priceLine, offer)).toBe("₹7,999 in total, paid in full when you order.");
   });
 
-  it("renders the full-mode sticky bar without GST (home.md, Phone sticky bar; D065 item 3)", () => {
-    expect(text(offer.sticky.big, offer)).toBe("₹7,999");
+  /* The D2C plan v2 §1.2 (the copy page decides the full-mode bar, which no mockup shows; SPA 7): the amount "in total". */
+  it("renders the full-mode sticky bar without GST, the amount in total (D065 item 3; D2C plan v2 §1.2)", () => {
+    expect(text(offer.sticky.big, offer)).toBe("₹7,999 in total");
     expect(text(offer.sticky.small, offer)).toBe("Paid in full · Deliveries start mid-November");
   });
 

@@ -1318,7 +1318,8 @@ const offerAdditionsHidden = (slug: OfferAdditionsSlug): VisualHide[] =>
    - the buy bar's small line says "in total", without GST;
    - the returns promise in the compact trust line (a trust line of exactly the delivery line and that promise: beside
      every button, and on the store's first screen, which may take it) and in the drawer's second note becomes the one
-     risk-reversal line, in the same words everywhere it shows.
+     risk-reversal line, in the same words everywhere it shows, and leads the line, the delivery line second (the D2C
+     plan v2 §1.1: the trust line's item 1 and item 2).
    The checkout keeps D028's sentence (the store's first screen, `#store-price`, and the form's `mk-price`) and its full
    trust row, as every full row keeps the returns promise. Literal, as the rest of this file (Playwright loads it):
    src/lib/offer/offer.test.ts and src/content/en-IN/trust.test.ts hold each line to the content. The mockup comparison
@@ -1338,12 +1339,13 @@ export const PRICE_LINE = {
   cardNote: "incl. GST",
   /** The buy bar's small line. */
   bar: { mockup: "refundable · ₹4,999 total (incl. GST)", build: "refundable · ₹4,999 in total" },
-  /** The compact trust line's second promise: the returns promise, then the risk-reversal line. */
+  /** The compact trust line's returns promise, the mockup's second item, then the risk-reversal line, the build's first. */
   returns: { mockup: "7-day returns, no questions asked", build: "Full refund until dispatch · 7-day returns" },
-  /** The compact trust line's first item, which stays (the drawer's second note starts with it too). */
+  /** The compact trust line's delivery line, which stays: the mockup's first item, the build's second (in the drawer's
+   *  second note too). */
   delivery: "Deliveries start mid-November",
   reason:
-    "the short price line beside every button, no GST note on the offer cards, the buy bar's line in total, and the one risk-reversal line in the compact trust line and the drawer (D065 item 3: GST and the breakdown only at checkout)",
+    "the short price line beside every button, no GST note on the offer cards, the buy bar's line in total, and the one risk-reversal line first in the compact trust line and the drawer (D065 item 3: GST and the breakdown only at checkout; D2C plan v2 §1.1)",
   approvedBy: PRICE_LINE_APPROVED,
 } as const;
 

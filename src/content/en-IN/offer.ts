@@ -70,11 +70,12 @@ export const offerCopy = {
        price). */
     later: "{price:headline} for the first 500 units. {price:full} once they are gone.",
   },
-  /* The phone buy bar (partials/buybar.html); full mode: home.md "Phone sticky bar". No GST on it (D065 item 3; task
-     Q2.8): the small line says "in total", and the full-mode amount stands alone. */
+  /* The phone buy bar (partials/buybar.html); full mode, which no mockup shows: the D2C plan v2 §1.2 (SPA 7: the copy
+     page decides it). No GST on it (D065 item 3; task Q2.8): the token mode's small line and the full mode's amount
+     both say "in total". */
   sticky: {
     token: { big: "{price:token} today", small: "refundable · {price:headline} in total" },
-    full: { big: "{price:full}", small: "Paid in full · {delivery}" },
+    full: { big: "{price:full} in total", small: "Paid in full · {delivery}" },
   },
   /* Under Home's card, and at the start of the store's small print and /terms section 3; nothing after six months (D041
      F7). */

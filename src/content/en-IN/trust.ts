@@ -47,9 +47,10 @@ export const trustItems = {
 export type TrustId = keyof typeof trustItems;
 
 /** The compact micro-line beside the inline CTAs, on most closes, in the drawer's note and on the store's first screen:
- *  delivery and returns, the two items brief §9.1 puts next to every CTA (home.md "CTA block"). Since task Q2.8 the
- *  returns promise is the risk-reversal line (D065 item 3). */
-export const TRUST_COMPACT: readonly TrustId[] = ["deliveries-start", "risk-reversal"];
+ *  returns and delivery, the two items brief §9.1 puts next to every CTA (home.md "CTA block"). Since task Q2.8 the
+ *  returns promise is the risk-reversal line (D065 item 3), and it leads the line, the delivery line second (the D2C plan
+ *  v2 §1.1, item 1 and item 2), so on a 360 x 590 phone the risk-reversal row stays on the first screen (§2.0, §3.0). */
+export const TRUST_COMPACT: readonly TrustId[] = ["risk-reversal", "deliveries-start"];
 
 /** The full row at Home's close and on the store, beside the pay button (home.md "CTA block"; CMO pass M14): the
  *  returns promise as approved, so the checkout's row is unchanged (task Q2.8). */

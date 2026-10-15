@@ -20,7 +20,8 @@ import { SAFETY_FACTS, TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } fro
  * Task Q2.8 (D065 item 3; the main session's ruling 3 of the selling update, 2026-10-15): one risk-reversal line, in the
  * same words everywhere it shows, "Full refund until dispatch · 7-day returns", built from the refund page's promise and
  * the returns window. It takes the returns promise's place in the compact line beside every button (and the store's first
- * screen); the full row (Home's close, the store's pay button) keeps the returns promise as approved. */
+ * screen), first in the line, the delivery line second (the D2C plan v2 §1.1: the line's item 1 and item 2); the store's
+ * full row beside the pay button keeps the returns promise as approved. */
 
 const doc = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
@@ -120,8 +121,14 @@ describe("the risk-reversal line (task Q2.8; D065 item 3)", () => {
     expect(PRICE_LINE.delivery).toBe(toPlainText(trustItems["deliveries-start"].label, offer));
   });
 
-  it("takes the returns promise's place in the compact line beside every button; the full row keeps the returns promise", () => {
-    expect(TRUST_COMPACT).toEqual(APPROVED_COMPACT.map((id) => (id === "returns-7-days" ? "risk-reversal" : id)));
+  /* The D2C plan v2 §1.1 ("Trust line, item 1: the one risk-reversal line; item 2: {delivery}"); its measured first
+     screens keep the risk-reversal row inside 360 x 590 (§2.0, §3.0), which the delivery line first would push below. */
+  it("takes the returns promise's place in the compact line beside every button, first, the delivery line second", () => {
+    expect(TRUST_COMPACT).toEqual(["risk-reversal", "deliveries-start"]);
+    expect([...TRUST_COMPACT].sort()).toEqual(APPROVED_COMPACT.map((id) => (id === "returns-7-days" ? "risk-reversal" : id)).sort());
+  });
+
+  it("leaves the store's full row beside the pay button as approved, the returns promise first", () => {
     expect(TRUST_FULL).toEqual(["returns-7-days", "warranty-6-months", "payment-methods", "delivery-included"]);
   });
 });

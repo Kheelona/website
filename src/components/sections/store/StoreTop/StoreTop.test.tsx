@@ -58,12 +58,12 @@ describe("StoreTop", () => {
   it("opens each trust item's terms on the marketing site in a new tab, and says so to screen readers", () => {
     render(<StoreTop content={content} offer={token} newTabNote={NOTE} />);
     const links = within(screen.getByRole("list")).getAllByRole("link");
-    // The store's top marketing line takes the one risk-reversal line (task Q2.8; D065 item 3).
+    // The store's top marketing line takes the one risk-reversal line, first (task Q2.8; D065 item 3; D2C plan v2 §1.1).
     expect(links.map((a) => [a.getAttribute("href"), a.getAttribute("target"), a.getAttribute("rel")])).toEqual([
-      [`${MARKETING_ORIGIN}/shipping#when`, "_blank", "noopener"],
       [`${MARKETING_ORIGIN}/refund#before-dispatch`, "_blank", "noopener"],
+      [`${MARKETING_ORIGIN}/shipping#when`, "_blank", "noopener"],
     ]);
-    expect(links.map((a) => a.textContent)).toEqual([`Deliveries start mid-November${NOTE}`, `Full refund until dispatch · 7-day returns${NOTE}`]);
+    expect(links.map((a) => a.textContent)).toEqual([`Full refund until dispatch · 7-day returns${NOTE}`, `Deliveries start mid-November${NOTE}`]);
   });
 
   it("loads the small Kheelu at once, as the first screen's one image (eager, fetchpriority high), at its rendered widths", () => {

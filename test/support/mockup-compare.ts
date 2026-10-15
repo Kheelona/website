@@ -65,7 +65,8 @@ function trustWords(a: Element): string {
  * checkout's form (the heroes' and the blocks' `mk-price`, the drawer's first note, the offer cards' fine print) reads as
  * the short price line; the "incl. GST" note beside the offer cards' amount comes off; the buy bar's small line says "in
  * total"; the returns promise in a compact trust line (exactly the delivery line, then that promise) and in the drawer's
- * second note reads as the risk-reversal line, whose link then takes its own part of /refund (`trustLinkHref`). The
+ * second note reads as the risk-reversal line, whose link then takes its own part of /refund (`trustLinkHref`), and it
+ * moves to the front, the delivery line second (the D2C plan v2 §1.1: item 1, item 2), each item with its own icon. The
  * store's price (`#store-price`), the form's sentence and every full trust row stay as approved. Anything that does not
  * read as those lines is left alone.
  */
@@ -77,13 +78,15 @@ export function withPriceLine(root: ParentNode): void {
   for (const el of root.querySelectorAll(".kh-offer__prices > .kh-body-s")) if (wordsOf(el) === cardNote) el.remove();
   for (const el of root.querySelectorAll(".kh-buybar__small")) if (wordsOf(el) === bar.mockup) el.textContent = bar.build;
   for (const el of root.querySelectorAll(".kh-drawer__note")) {
-    if (wordsOf(el) === `${delivery} · ${returns.mockup}`) el.textContent = `${delivery} · ${returns.build}`;
+    if (wordsOf(el) === `${delivery} · ${returns.mockup}`) el.textContent = `${returns.build} · ${delivery}`;
   }
   for (const list of root.querySelectorAll("ul.mk-trust")) {
     const links = Array.from(list.querySelectorAll(":scope > li > a"));
     if (links.length !== 2 || trustWords(links[0]) !== delivery || trustWords(links[1]) !== returns.mockup) continue;
     const words = Array.from(links[1].childNodes).find((n) => n.nodeType === 3 && (n.textContent ?? "").trim() === returns.mockup);
-    if (words) words.textContent = returns.build;
+    if (!words) continue;
+    words.textContent = returns.build;
+    list.prepend(links[1].parentElement!);
   }
 }
 
