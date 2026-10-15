@@ -1389,3 +1389,10 @@ hover on pointer devices. Rulings: `text-wrap-style: balance` over the spec's `p
 words); the founder head's width-dependent wrap (the token guard refuses 1199 px); the out-of-Owns test edits accepted.
 Q2.15's builder stopped on an API timeout (no response for 13 minutes) after committing R2's one CTA shape and the
 product close (`fb3d4ce6`); its offer-fold work was saved as a WIP commit (`b0b3e6df`) and the task resumed.
+
+## [2026-10-16 01:40] decision | D066: the founder's answers on the built selling update
+Asked one by one: the WhatsApp bubble appears after the hero on Home's phones (overturns the overnight ruling); the share
+text signed (no GST); one more Pre-order block after the product page's comparison table; of three wordings only "See
+how Kheelu works" (the offer lead and the closes' eyebrow stay as built, so Q2.15's versions of those two are not taken);
+F7 not decided; G29's pre-launch test line removed everywhere; G28's Wi‑Fi-off-at-rest and no-endless-conversation lines
+added; Home's length kept (R1); G27's sentences stay off. Built as task Q2.17 after Q2.15 merges.
