@@ -7,7 +7,7 @@ import type { SectionEntry, SectionEntryOf, SectionKind } from "@/layouts/sectio
 import { isPlaceholder, placeholderText } from "@/lib/content/placeholder";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { CLAIM_FIXES } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, SELLING_CLOSES, TEAM_CLOSE_LEAD, TEAM_KEYS_LINE } from "../../../../test/e2e/support/deviations";
 import { ROOT, readRepoBytes, readRepoFile, tagBytes } from "../../../../test/e2e/support/repo";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { withFacts } from "../../../../test/support/mockup-facts";
@@ -37,8 +37,10 @@ const plain = (copy: Copy) => toPlainText(copy, token);
 
 const mockup = new DOMParser().parseFromString(readRepoFile("mockup/team.html"), "text/html");
 /* With task 8b.1's claim fixes applied (D058; deviations.md V30): Aman's job line and fold 4's keys line in the live team's
-   code-checked words; then D063 item 2: fold 2's answer and the close's help line without the number (task Q2.3). */
-const main = withSellerFacts(withFacts(mockup.querySelector("main")!, CLAIM_FIXES.team.edits));
+   code-checked words; then the selling update's (task Q2.12; D065 item 7; the D2C plan v2 §8; SELLING_CLOSES) in a pass of
+   its own: the keys line in G26's words and the close's new lead; then D063 item 2: fold 2's answer and the close's help
+   line without the number (task Q2.3). */
+const main = withSellerFacts(withFacts(withFacts(mockup.querySelector("main")!, CLAIM_FIXES.team.edits), SELLING_CLOSES.team.edits));
 const fold = (labelledBy: string) => {
   const el = main.querySelector(`[aria-labelledby="${labelledBy}"]`);
   if (!el) throw new Error(`mockup/team.html has no fold labelled by #${labelledBy}`);
@@ -323,6 +325,13 @@ describe("fold 4: why we build Kheelu", () => {
     expect(plain(c.subtitle!)).toBe(norm(el.querySelector(".mk-team-why .kh-subtitle")?.textContent));
   });
 
+  /* The selling update (task Q2.12; D065 item 7, G26; the D2C plan v2 §8 fold 4): "Delete all chats" there deletes them
+     from our servers, never a one-tap delete and no place named (D058). */
+  it("says the keys line in G26's words: read every conversation, and “Delete all chats” deletes them from our servers", () => {
+    expect(plain(config().copy[2])).toBe(TEAM_KEYS_LINE.build);
+    expect(config().copy.map(plain).join(" ")).not.toMatch(/deleting your account|one tap|in India/i);
+  });
+
   it("quotes Apoorva verbatim beside the words, in the Sunshine tone, his role from organization.ts", () => {
     const el = fold("why-title");
     const { quote } = config();
@@ -386,14 +395,19 @@ describe("fold 5: recognised by, as the live strip (D054 item 20)", () => {
 describe("fold 6: the close", () => {
   const close = entry("close-section");
 
-  it("is centred: the one chilli button (finale), the compact trust pair, the help line, then the ghost link to the product", () => {
+  /* The selling update (task Q2.12; the D2C plan v2 §8 fold 6; D034, the footer's line): the close gains its lead; the
+     button, the price line, the trust line (the risk-reversal line first, task Q2.8), the help line and the ghost link
+     stay, as every close has them (CtaBlock). */
+  it("is centred: the heading with the plan's lead, the one chilli button (finale), the trust line, the help line, then the ghost link to the product", () => {
     if (close.config.variant !== "center") throw new Error("not the centred close");
     const { config } = close;
     const el = fold("close-title");
     expect(config.heading.title).toBe("Bring Kheelu {hand:home.}");
     expect(plain(config.heading.title)).toBe(headingOf(el).title);
     expect(config.heading.eyebrow).toBeUndefined();
-    expect(config.heading.lead).toBeUndefined();
+    expect(config.heading.lead).toBe(TEAM_CLOSE_LEAD);
+    expect(plain(config.heading.lead!)).toBe(headingOf(el).lead);
+    expect(TEAM_CLOSE_LEAD).toBe("Designed by parents in Bengaluru. Made in India.");
     const ghost = el.querySelectorAll(".kh-section__actions a")[1]!;
     expect(ghost.getAttribute("href")).toBe("meet-kheelu.html");
     expect(config.cta).toEqual({

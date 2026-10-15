@@ -24,6 +24,9 @@ import { TRUST_COMPACT, trustItems } from "../trust";
  * described by fold 2's answer (task 4.5 item 5) and named as the live page named it (architecture §9.2). Fold 2's
  * answer reaches the team by WhatsApp and email; its "or by phone at …" came off (D063 item 2, D064 item 11; task Q2.3:
  * the number shows only on /contact and the legal pages).
+ * The selling update (task Q2.12; D065 item 7; the D2C plan v2 §8): fold 4's keys line in G26's words, and the close's
+ * lead "Designed by parents in Bengaluru. Made in India." (the footer's line, D034); the close keeps the button, the price
+ * line, the trust line and the help line every close has (CtaBlock), and no picture.
  */
 
 const [apoorva, aman, kashyap] = organization.founders;
@@ -136,8 +139,9 @@ export const teamPage = {
         copy: [
           "We are parents who build. We watched our own children reach for screens.",
           "Most AI gives children answers. We built a toy that answers, then asks your child a question back, so they do the thinking.",
-          /* No one-tap delete, no safety layer: the live team's code-checked words (D058 item 1; team.md fold 4). */
-          "And you hold the keys. You can read every conversation in the parent app, and delete them all by deleting your account. You set your child’s age, and Kheelu’s AI is given child-safety rules and that age on every conversation.",
+          /* No one-tap delete, no safety layer: the live team's code-checked words (D058 item 1; team.md fold 4), deleting in
+             G26's words (D065 item 7; the D2C plan v2 §8 fold 4). */
+          "And you hold the keys. You can read every conversation in the parent app, and “Delete all chats” there deletes them from our servers. You set your child’s age, and Kheelu’s AI is given child-safety rules and that age on every conversation.",
         ],
         subtitle: "No screen. No camera. It can’t browse the internet.",
         /* Apoorva's live photo in the quote's avatar (task 7.1a; CMO built-page review A, M10): the "AS" initials sat just
@@ -169,12 +173,13 @@ export const teamPage = {
         ],
       },
     },
-    /* Fold 6: the one action, centred, with the price sentence, delivery and returns, and a person to ask. */
+    /* Fold 6: the one action, centred, with the price sentence, delivery and returns, and a person to ask; the lead since
+       the selling update (the D2C plan v2 §8 fold 6). No picture: the page shows no cast child. */
     {
       kind: "close-section",
       config: {
         variant: "center",
-        heading: { title: "Bring Kheelu {hand:home.}" },
+        heading: { title: "Bring Kheelu {hand:home.}", lead: "Designed by parents in Bengaluru. Made in India." },
         cta: {
           cta: "finale",
           trust: TRUST_COMPACT.map((id) => trustItems[id]),
