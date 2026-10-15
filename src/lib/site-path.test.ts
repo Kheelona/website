@@ -43,8 +43,10 @@ describe("useSitePath", () => {
 });
 
 /* The rule that keeps it so: a module under src/ that renders from the page path reads it through useSitePath, never
- * usePathname() itself. Two modules read the browser's path in effects only and stay as they are (tracking parity): the
- * Meta Pixel's page-view-on-route-change and the PostHog gate's replay rule. */
+ * usePathname() itself, nor the segment readers that see the same "index" (useSelectedLayoutSegment(s), useParams), nor
+ * a re-export, require() or import() of next/navigation that would hand them on. Two modules read the browser's path in
+ * effects only and stay as they are (tracking parity): the Meta Pixel's page-view-on-route-change and the PostHog gate's
+ * replay rule. */
 
 const RAW_PATH_ALLOWED = new Set([
   "src/lib/site-path.ts",
@@ -53,10 +55,19 @@ const RAW_PATH_ALLOWED = new Set([
 ]);
 const SOURCE = /\.(?:tsx?|jsx?|mjs)$/;
 const NOT_SHIPPED = /\.(?:test|test-d|spec|stories)\.[cm]?[jt]sx?$/;
-/** Any import from next/navigation that names usePathname, or takes the whole module. */
-const IMPORTS_RAW_PATH = /import\s*(?:\{[^}]*\busePathname\b[^}]*\}|\*\s*as\s+\w+)\s*from\s*["']next\/navigation["']/;
+/** The next/navigation hooks that read the route, which Vercel's runtime render of Home gives as ["", "index"]. */
+const ROUTE_READERS = "usePathname|useSelectedLayoutSegments?|useParams";
+/** An import or a re-export from next/navigation that names a route reader, one that takes the whole module (`* as`,
+ * `export *`), or the module loaded by require() or import(). */
+const IMPORTS_RAW_PATH = new RegExp(
+  [
+    String.raw`\b(?:import|export)\s*\{[^}]*\b(?:${ROUTE_READERS})\b[^}]*\}\s*from\s*["']next/navigation["']`,
+    String.raw`\b(?:import|export)\s*\*\s*(?:as\s+[\w$]+\s*)?from\s*["']next/navigation["']`,
+    String.raw`\b(?:require|import)\s*\(\s*["']next/navigation["']\s*\)`,
+  ].join("|"),
+);
 
-/** The shipped modules, other than the allowed three, that import usePathname from next/navigation. */
+/** The shipped modules, other than the allowed three, that read the route from next/navigation. */
 function rawPathReaders(files: ReadonlyArray<{ path: string; text: string }>): string[] {
   return files
     .filter(({ path }) => SOURCE.test(path) && !NOT_SHIPPED.test(path) && !RAW_PATH_ALLOWED.has(path))
@@ -72,7 +83,7 @@ function sourceTree(): Array<{ path: string; text: string }> {
 }
 
 describe("the page path: one reader (task 8c.7)", () => {
-  it("no shipped module under src/ but site-path.ts and the two tracking gates imports usePathname", () => {
+  it("no shipped module under src/ but site-path.ts and the two tracking gates reads the route from next/navigation", () => {
     const tree = sourceTree();
     expect(tree.length).toBeGreaterThan(100);
     expect(
@@ -89,8 +100,36 @@ describe("the page path: one reader (task 8c.7)", () => {
     expect(plant("src/components/chrome/X/X.client.tsx", `import {\n  useRouter,\n  usePathname,\n} from 'next/navigation';`)).toHaveLength(1);
     expect(plant("src/components/chrome/X/X.client.tsx", `import * as nav from "next/navigation";`)).toHaveLength(1);
     expect(plant("src/components/chrome/X/X.client.tsx", `import { useRouter } from "next/navigation";`)).toEqual([]);
+    expect(plant("src/app/(site)/lp/[slug]/page.tsx", `import { notFound } from "next/navigation";`)).toEqual([]);
     expect(plant("src/components/chrome/X/X.test.tsx", `import { usePathname } from "next/navigation";`)).toEqual([]);
     expect(plant("src/components/chrome/X/X.stories.tsx", `import { usePathname } from "next/navigation";`)).toEqual([]);
     for (const path of RAW_PATH_ALLOWED) expect(plant(path, `import { usePathname } from "next/navigation";`)).toEqual([]);
+  });
+
+  /* The same segments reach every route reader, and a module can hand the hook on or load the whole module without an
+     import statement: each is a reader outside site-path.ts. */
+  it.each([
+    ["a re-export", `export { usePathname } from "next/navigation";`],
+    ["a re-export, renamed, over lines", `export {\n  useRouter,\n  usePathname as path,\n} from 'next/navigation';`],
+    ["a re-export of the whole module", `export * from "next/navigation";`],
+    ["a re-export of the whole module, named", `export * as nav from "next/navigation";`],
+    ["require()", `const nav = require("next/navigation");`],
+    ["a dynamic import()", `const nav = await import("next/navigation");`],
+    ["useSelectedLayoutSegment", `import { useSelectedLayoutSegment } from "next/navigation";`],
+    ["useSelectedLayoutSegments", `import { useRouter, useSelectedLayoutSegments } from "next/navigation";`],
+    ["useParams", `import { useParams } from "next/navigation";`],
+    ["useParams re-exported", `export { useParams } from "next/navigation";`],
+  ])("catches a planted reader: %s", (_, text) => {
+    const plant = (path: string) => rawPathReaders([{ path, text }]);
+    expect(plant("src/components/chrome/X/X.client.tsx")).toEqual(["src/components/chrome/X/X.client.tsx"]);
+    expect(plant("src/components/chrome/X/X.test.tsx")).toEqual([]);
+    for (const path of RAW_PATH_ALLOWED) expect(plant(path)).toEqual([]);
+  });
+
+  it("passes the readers that never see the segments: useRouter, useSearchParams, notFound, redirect", () => {
+    const plant = (text: string) => rawPathReaders([{ path: "src/components/chrome/X/X.client.tsx", text }]);
+    expect(plant(`import { useRouter, useSearchParams } from "next/navigation";`)).toEqual([]);
+    expect(plant(`export { notFound, redirect } from "next/navigation";`)).toEqual([]);
+    expect(plant(`import { usePathnameLabel } from "@/lib/labels";`)).toEqual([]);
   });
 });

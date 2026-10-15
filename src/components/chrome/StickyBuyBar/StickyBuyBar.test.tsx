@@ -170,14 +170,19 @@ describe("StickyBuyBar: the page path as Vercel's runtime render gives it (task 
     const recoverable = vi.fn();
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     let root: ReturnType<typeof hydrateRoot> | undefined;
-    await act(async () => {
-      root = hydrateRoot(container, element, { onRecoverableError: recoverable });
-    });
-    expect(recoverable).not.toHaveBeenCalled();
-    expect(consoleError).not.toHaveBeenCalled();
-    expect(container.querySelector(".kh-buybar")).not.toBeNull();
-    act(() => root?.unmount());
-    consoleError.mockRestore();
+    try {
+      await act(async () => {
+        root = hydrateRoot(container, element, { onRecoverableError: recoverable });
+      });
+      expect(recoverable).not.toHaveBeenCalled();
+      expect(consoleError).not.toHaveBeenCalled();
+      expect(container.querySelector(".kh-buybar")).not.toBeNull();
+    } finally {
+      // A failed expect must not leave a hydrated root, its container or a muted console.error to the tests after it.
+      act(() => root?.unmount());
+      container.remove();
+      consoleError.mockRestore();
+    }
   });
 });
 
