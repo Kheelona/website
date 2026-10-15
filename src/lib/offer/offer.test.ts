@@ -7,10 +7,11 @@ import {
   TOKEN_AMOUNT_PAISE,
 } from "@/config/site";
 import { offerCopy } from "@/content/en-IN/offer";
+import { seller } from "@/content/en-IN/seller";
 import type { Offer, OfferCopy, RichTextString } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
 import { formatInr } from "@/lib/format/inr";
-import { KHEELONA_PLUS } from "../../../test/e2e/support/deviations";
+import { KHEELONA_PLUS, OFFER_ORIGIN_PERK } from "../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../test/e2e/support/repo";
 import { buildOffer, headlinePaise, offerPrices } from "./offer";
 
@@ -90,12 +91,25 @@ describe("token mode", () => {
   });
 
   /* The product card's Kheelona+ perk reads D058 item 3's sentence since task 8b.1 (deviations.md V27): the mockup keeps
-     the approved perk, and only that perk differs. */
-  it("lists each placement's perks exactly as its card (Home fold 9, product fold 3; the product's Kheelona+ perk as D058 words it)", () => {
+     the approved perk, and only that perk differs. Since task 8c.5 (D061 item 10, confirming D034; deviations.md V47)
+     both cards end with the seller's origin line, "Made in India", which the frozen mockup's cards do not have
+     (OFFER_ORIGIN_PERK, the offer rule's own words). */
+  it("lists each placement's perks exactly as its card (Home fold 9, product fold 3; the product's Kheelona+ perk as D058 words it; Made in India last)", () => {
     const perks = (d: Document) => Array.from(d.querySelectorAll(".kh-offer__list li")).map((li) => norm(li.textContent));
-    expect(offer.card.perks.home.map((p) => text(p.text, offer))).toEqual(perks(home));
+    expect(offer.card.perks.home.map((p) => text(p.text, offer))).toEqual([...perks(home), OFFER_ORIGIN_PERK]);
     expect(perks(product)).toContain(KHEELONA_PLUS.perk);
-    expect(offer.card.perks.product.map((p) => text(p.text, offer))).toEqual(perks(product).map((p) => (p === KHEELONA_PLUS.perk ? KHEELONA_PLUS.build : p)));
+    expect(offer.card.perks.product.map((p) => text(p.text, offer))).toEqual([
+      ...perks(product).map((p) => (p === KHEELONA_PLUS.perk ? KHEELONA_PLUS.build : p)),
+      OFFER_ORIGIN_PERK,
+    ]);
+  });
+
+  it("ends both cards with the seller's origin line and its DS icon, house (D061 item 10; map-pin is the delivery perk's)", () => {
+    for (const list of [offer.card.perks.home, offer.card.perks.product]) {
+      expect(list.at(-1)).toEqual({ icon: "house", text: seller.origin.line });
+      expect(list.filter((p) => p.icon === "house")).toHaveLength(1);
+    }
+    expect(OFFER_ORIGIN_PERK).toBe(seller.origin.line);
   });
 
   /* D058 item 3 (task 8b.1; deviations.md V26): the parent app is free and Kheelona+ a paid subscription on top of it, with

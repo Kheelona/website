@@ -29,7 +29,7 @@ export const revalidate = 300;
 
 /** The day this file's body last changed in substance: its prices, its terms or its words. Bump it in the
  *  same commit (the sell-out sweep's Redeploy republishes the full-mode prices under it). */
-export const PRICING_UPDATED = "2026-10-14";
+export const PRICING_UPDATED = "2026-10-15";
 
 /** The entity facts an agent needs beside the price (architecture §9.3): who it is for and the rename note. */
 const ABOUT: readonly FaqId[] = ["what-ages", "same-as-lumi"];

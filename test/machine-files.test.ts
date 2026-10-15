@@ -4,6 +4,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import * as llmsRoute from "@/app/llms.txt/route";
 import * as pricingRoute from "@/app/pricing.md/route";
 import sitemap from "@/app/sitemap";
+import { faqs } from "@/content/en-IN/faqs";
 import { organization } from "@/content/en-IN/organization";
 import { routes, type RouteEntry } from "@/content/en-IN/routes";
 import type { Offer, OfferMode } from "@/content/types";
@@ -127,22 +128,25 @@ const MACHINE = [
  */
 const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } & Record<OfferMode, string>> = {
   "llms.txt": {
-    // 2026-10-15: Home's question "What if my child doesn’t like it?", its answer unchanged (D061, AP-30; task 8c.4).
+    // 2026-10-15: the product page's question "Which languages does Kheelu speak?" and its answer, after the ages (task
+    // 8c.5, the 8c merge's follow-up). Earlier the same day: Home's question "What if my child doesn’t like it?", its
+    // answer unchanged (D061, AP-30; task 8c.4).
     // 2026-10-14: the live team's code check (D058; task 8b.1, wave 8b merge): the Microphone and Parent app rows, the
     // safety mechanism, the age answer, the first-week answer and the Kheelona+ perk. Earlier the same day: the
     // screen-time topic's lead (CMO reviews A M5, B m1), Home's refund and age-3 answers (task 7.1b) and the product's
     // Parent app row "On iPhone and Android." (D055 item 26; task 6.7).
     date: "2026-10-15",
-    token: "b34181eecebea7ec9b419bb909144152479ac3a5cff1e83325e4a449afeb13a0",
-    full: "09a31f6f30fad12445188eb452437905dae14a94a61ca81206bbf132b9d0bee9",
+    token: "94dc89555ebab4873663caa318cdba1d97ba72d71b6129c8e173618e691d2712",
+    full: "29e3309917b44039b66f8948754f4dcee4ba0eec1c393e733834d87078955174",
   },
   "pricing.md": {
-    // 2026-10-14: the Kheelona+ perk in D058 item 3's words and Home's age answer after the code check (task 8b.1, wave
-    // 8b merge). Earlier the same day: the age-3 advice in one wording (CMO review A M8; task 7.1b). 2026-10-13: it
+    // 2026-10-15: the product card's perk "Made in India" last among "Included with every Kheelu" (D061 item 10; task
+    // 8c.5). 2026-10-14: the Kheelona+ perk in D058 item 3's words and Home's age answer after the code check (task 8b.1,
+    // wave 8b merge). Earlier the same day: the age-3 advice in one wording (CMO review A M8; task 7.1b). 2026-10-13: it
     // added the product page's Manufacturer declaration (task 4.5 item 6).
-    date: "2026-10-14",
-    token: "deb48accd5d9db1699eac3aa172d5448b2accae41165cbe52e3b064b213724bc",
-    full: "f90f7ec9298153e34c36dcc38aa96545c61b835006666e5d76f83acec4f06818",
+    date: "2026-10-15",
+    token: "2d95e816c71bd4dda438cfa502110da64bfcf6ecfb9d275837eb175beb29ba4e",
+    full: "b4143787e41060f9032386dffeba968817e231656da759a8d4900861d8d33ca1",
   },
 };
 
@@ -426,6 +430,17 @@ describe("llms.txt", () => {
     for (const r of routes.filter((x) => x.kind !== "article")) expect(urlsIn(body()), r.path).toContain(url(r.path));
     expect(urlsIn(body())).toContain(STORE);
     expect(urlsIn(body())).toContain(`${ORIGIN}/pricing.md`);
+  });
+
+  /* Task 8c.5 (the 8c merge's follow-up): the product page answers "Which languages does Kheelu speak?" since task 8c.4
+     (D061), a question a model is asked about Kheelu; llms.txt answers it too, in the page's words, in both modes. */
+  it("answers which languages Kheelu speaks, the product page's question and answer, in both modes", () => {
+    for (const mode of MODES) {
+      const offer = offerFor(mode);
+      const plain = (text: string) => squash(nodesToPlainText(parseRichText(text), offer));
+      expect(body(mode)).toContain(`\n### ${plain(faqs.languages.question as string)}\n\n${plain(faqs.languages.answer as string)}\n`);
+    }
+    expect(body()).toContain("\n### Which languages does Kheelu speak?\n");
   });
 });
 

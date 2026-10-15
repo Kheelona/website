@@ -62,6 +62,8 @@ const meta = {
       { icon: icon("package"), text: "In the box: Kheelu plush toy, charger and quick-start card" },
       { icon: icon("map-pin"), text: "Delivery anywhere in India, included" },
       { icon: icon("check-circle"), text: "A GST invoice with every order" },
+      /* D061 item 10 (task 8c.5): Made in India, last on both cards, as offer.ts lists it. */
+      { icon: icon("house"), text: "Made in India" },
     ],
   },
   parameters: { layout: "padded" },
