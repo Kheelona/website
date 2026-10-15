@@ -91,6 +91,11 @@ founder's; the founder answered each.
     first screen; the headline, button and price sentence keep their approved order (D045, D028). Neither option (the
     price sentence or the lead line moved below a wider 22:10 picture) was taken.
 
+15. **No disclosure line under the parents' quotes** (founder, 2026-10-15, after the CMO's wave 8c review m9 asked
+    whether either family got Kheelu free or at a discount): "No need to add any line". The founder did not say whether
+    the families paid; as for the films (D040), the endorsement-guidelines risk (CCPA 2022, ECOM-16) of quotes without a
+    disclosure is the founder's to accept, and is accepted. The expert clip keeps its disclosure (item 12).
+
 Build: wave 8c in [tasks](../engineering/tasks.md).
 
 **Approved by.** Founder (items 1-4). **Date.** 2026-10-15.

@@ -1201,3 +1201,7 @@ the offer, the clip re-encoded with raised captions, a readable disclosure and a
 laptops, the FAQ's "What if my child doesn't like it, or it stops working?", the film button in the languages answer,
 the credit clear of the bubble, the example's closing line dropped). m9 and m12 are the founder's (workflow
 `wf_71b12167-174`, base `1963f060`).
+
+## [2026-10-15 09:59] decision | D061 item 15: no disclosure line under the parents' quotes (founder)
+The CMO's m9 asked whether either family got Kheelu free or at a discount. Founder: "No need to add any line". Recorded
+with the endorsement-guidelines risk accepted, as for the films (D040); the expert clip keeps its disclosure.
