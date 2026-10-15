@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { hydrateRoot } from "react-dom/client";
+import { renderToString } from "react-dom/server";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { ICON_LIST } from "@/assets/icons.generated";
 import { STORE_URL } from "@/config/site";
@@ -125,5 +127,48 @@ describe("NavBar", () => {
     const button = screen.getByRole("button", { name: "Menu" });
     await userEvent.click(button);
     expect(button).toHaveAttribute("aria-expanded", "false");
+  });
+});
+
+/* Vercel re-renders Home in its runtime under the route segments ["", "index"], so usePathname() reads "/index" on the
+   server and "/" in the browser (task 8c.7; CMO wave 8c review m1). The current link reads the path through useSitePath
+   (src/lib/site-path.ts), so the server HTML marks what the browser marks. A link to Home makes the difference visible
+   (the approved four links have none). */
+describe("NavBar: the page path as Vercel's runtime render gives it (task 8c.7)", () => {
+  const WITH_HOME: NavBarProps = { ...PROPS, links: [{ label: "Home", href: "/" }, ...PROPS.links] };
+  const serverHtml = (props: NavBarProps, pathname: string) => {
+    nav.pathname = pathname;
+    return renderToString(<NavBar {...props} />);
+  };
+
+  it.each([
+    ["the approved links", "/index", "/", PROPS],
+    ["a link to Home", "/index", "/", WITH_HOME],
+    ["a link to Home", "/stories/index", "/stories", WITH_HOME],
+  ] as const)("with %s, renders on %s exactly as on %s", (_, runtime, browser, props) => {
+    expect(serverHtml(props, runtime)).toBe(serverHtml(props, browser));
+  });
+
+  it('marks Home\'s link on /index, as on "/"', () => {
+    nav.pathname = "/index";
+    const { container } = render(<NavBar {...WITH_HOME} />);
+    expect(Array.from(container.querySelectorAll('.kh-nav__link[aria-current="page"]')).map((a) => a.textContent)).toEqual(["Home"]);
+  });
+
+  it("hydrates the server HTML rendered as /index in the browser at / without a mismatch (React #418)", async () => {
+    const container = document.createElement("div");
+    container.innerHTML = serverHtml(WITH_HOME, "/index");
+    document.body.appendChild(container);
+    nav.pathname = "/";
+    const recoverable = vi.fn();
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    let root: ReturnType<typeof hydrateRoot> | undefined;
+    await act(async () => {
+      root = hydrateRoot(container, <NavBar {...WITH_HOME} />, { onRecoverableError: recoverable });
+    });
+    expect(recoverable).not.toHaveBeenCalled();
+    expect(consoleError).not.toHaveBeenCalled();
+    act(() => root?.unmount());
+    consoleError.mockRestore();
   });
 });

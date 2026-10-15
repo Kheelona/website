@@ -1,8 +1,8 @@
 "use client";
 
 import clsx from "clsx";
-import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type ComponentPropsWithoutRef } from "react";
+import { useSitePath } from "@/lib/site-path";
 
 /* The WhatsApp bubble's one client part (D050: it never covers a price or a form field). Below 900 px the bubble steps
  * aside while what its context names (WhatsAppFloat's STEP_ASIDE_FROM: the site's prices, task 4.9; the store's form,
@@ -115,7 +115,8 @@ export interface StepAsideLinkProps extends ComponentPropsWithoutRef<"a"> {
 export function StepAsideLink({ from, className, children, ...link }: StepAsideLinkProps) {
   const ref = useRef<HTMLAnchorElement>(null);
   const [aside, setAside] = useState(false);
-  const pathname = usePathname();
+  // The page (useSitePath: Vercel's "/index" for Home is "/", task 8c.7): a page change re-arms it.
+  const pathname = useSitePath();
 
   useEffect(() => {
     const bubble = ref.current;
