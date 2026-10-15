@@ -4,9 +4,18 @@ import type { Copy } from "@/content/types";
 import type { SectionEntry, SectionEntryOf, SectionKind } from "@/layouts/sections-registry";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { CLAIM_FIXES, COPY_FIXES } from "../../../../test/e2e/support/deviations";
+import {
+  CLAIM_FIXES,
+  COPY_FIXES,
+  SAFETY_SELLING,
+  SAFETY_SELLING_LAYOUT_HIDDEN,
+  SAFETY_SELLING_LINES,
+  TEXT_DEVIATIONS,
+  VISUAL_HIDDEN,
+} from "../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
-import { withFacts } from "../../../../test/support/mockup-facts";
+import { mockupFold } from "../../../../test/support/mockup-compare";
+import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../test/support/mockup-facts";
 import { faqs } from "../faqs";
 import { DEFAULT_OG } from "../organization";
 import { RETENTION_LINE, RETENTION_MONTHS } from "../policies";
@@ -18,8 +27,10 @@ import { safetyPage } from "./safety";
  * each fold's words, icons, alt texts and links equal to the built mockup (mockup/safety.html, D046), the rules the copy
  * page sets for this page (D020 order and fold 2 in the FAQPage; certification "applied for, not yet granted", no mark;
  * "safe" only inside the two questions parents type; no placeholder, no typed amount), and the shared content it reads
- * by reference (faqs.ts, policies.ts, trust.ts), never retyped. The mockup is read with task 7.1b's copy fixes (V19)
- * and task 8b.1's claim fixes (V28; D058: the live team's code check) applied (test/e2e/support/deviations.ts). */
+ * by reference (faqs.ts, policies.ts, trust.ts), never retyped. The mockup is read with task 7.1b's copy fixes (V19),
+ * task 8b.1's claim fixes (V28; D058: the live team's code check) and task Q2.11's selling update (the D2C plan v2 §4:
+ * a button after the four facts, G26's deletion line, the daily limit, every conversation word for word moved here from
+ * the product page) applied (test/e2e/support/deviations.ts). */
 
 const token = buildOffer("token");
 const full = buildOffer("full");
@@ -27,7 +38,10 @@ const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").tr
 const plain = (copy: Copy) => toPlainText(copy, token);
 
 const mockup = new DOMParser().parseFromString(readRepoFile("mockup/safety.html"), "text/html");
-const main = withFacts(withFacts(mockup.querySelector("main")!, COPY_FIXES.safety.edits), CLAIM_FIXES.safety.edits);
+const main = withFacts(
+  withFacts(withFacts(mockup.querySelector("main")!, COPY_FIXES.safety.edits), CLAIM_FIXES.safety.edits),
+  SAFETY_SELLING.edits,
+);
 const fold = (labelledBy: string) => {
   const el = main.querySelector(`[aria-labelledby="${labelledBy}"]`);
   if (!el) throw new Error(`mockup/safety.html has no fold labelled by #${labelledBy}`);
@@ -79,11 +93,12 @@ function strings(value: unknown, out: string[] = [], seen = new Set<unknown>()):
 }
 
 describe("the safety page: its folds", () => {
-  it("lists the approved folds in order (structure §5: hero answer, facts, never, app screens, pair, FAQ, close)", () => {
+  it("lists the folds in order (structure §5 and the D2C plan v2 §4: hero answer, facts, never, every conversation, controls, pair, FAQ, close)", () => {
     expect(sections.map((e) => [e.kind, variantOf(e)])).toEqual([
       ["hero-section", "answer"],
       ["trust-section", "facts"],
       ["trust-section", "never"],
+      ["feature-split", "app-screens"],
       ["feature-split", "app-screens"],
       ["feature-split", "pair"],
       ["faq-section", "photo"],
@@ -99,8 +114,8 @@ describe("the safety page: its folds", () => {
     const labelled = Array.from(main.querySelectorAll("[aria-labelledby]"))
       .filter((el) => /^(SECTION|DIV)$/.test(el.tagName) || el.matches("section.kh-card"))
       .map((el) => el.getAttribute("aria-labelledby"));
-    expect(ids).toEqual(["hero-title", "facts-title", "never-title", "controls-title", "kept-title cert-title", "faq-title", "close-title"]);
-    expect(labelled).toEqual(["hero-title", "facts-title", "never-title", "controls-title", "kept-title", "cert-title", "faq-title", "close-title"]);
+    expect(ids).toEqual(["hero-title", "facts-title", "never-title", "app-title", "controls-title", "kept-title cert-title", "faq-title", "close-title"]);
+    expect(labelled).toEqual(["hero-title", "facts-title", "never-title", "app-title", "controls-title", "kept-title", "cert-title", "faq-title", "close-title"]);
   });
 });
 
@@ -162,27 +177,112 @@ describe("fold 2: the four facts (D020 order, in full)", () => {
     if (facts.config.variant !== "facts") throw new Error("not the facts fold");
     expect(facts.config.photo.alt).toBe(fold("facts-title").querySelector("figure img")!.getAttribute("alt"));
   });
+
+  /* G26 (D065 item 7): "Delete all chats" now deletes the chats from the servers, so the third fact says so in the plan's
+     words (v2 §4 fold 2); never "one tap" (the guard's one-tap-delete). */
+  it("answers the third fact with G26's line: “Delete all chats” in the app deletes them from our servers", () => {
+    if (facts.config.variant !== "facts") throw new Error("not the facts fold");
+    const third = plain(facts.config.items[2].body);
+    expect(third).toBe(SAFETY_SELLING_LINES.readEvery.now);
+    expect(third).toBe(
+      "Yes, in the parent app, word for word, a few minutes after each one ends. “Delete all chats” in the app deletes them from our servers.",
+    );
+    expect(third).not.toMatch(/one tap|deleting your account/i);
+  });
+
+  /* The plan v2 §4 fold 2: a worried parent is most convinced here, so the button follows the facts, with the short price
+     line and the trust line (task Q2.8's CtaBlock, as on Home), and no help line (closes and the store only, plan §1.1). */
+  it("ends with the CTA block: the chilli button tracked `safety-facts`, full width on phones, then the price line and the trust line", () => {
+    expect(facts.cta).toEqual({ cta: "safety-facts", block: true, trust: TRUST_COMPACT.map((id) => trustItems[id]) });
+    const buttons = Array.from(fold("facts-title").querySelectorAll("[data-ph-capture-attribute-cta]"));
+    expect(buttons.map((b) => b.getAttribute("data-ph-capture-attribute-cta"))).toEqual(["safety-facts"]);
+  });
 });
 
 describe("fold 3: what you won't find", () => {
   const never = entry("trust-section", 1);
-  it("lists the five nevers with their icons, the Mark on “won’t”, and the guide link (no tracking value)", () => {
+  it("lists the six nevers with their icons, the Mark on “won’t”, and the guide link (no tracking value)", () => {
     if (never.config.variant !== "never") throw new Error("not the never fold");
     const el = fold("never-title");
     expect(never.config.heading.title).toBe("What you {mark:won’t} find in Kheelu.");
     expect(headingOf(el)).toMatchObject({ eyebrow: never.config.heading.eyebrow, title: plain(never.config.heading.title), id: never.config.heading.id });
     expect(never.config.items.map((i) => ({ icon: i.icon, title: plain(i.title!), body: plain(i.body) }))).toEqual(trustOf(el.querySelector("ul.kh-trust")!));
+    expect(never.config.items).toHaveLength(6);
     expect(never.config.band).toBeFalsy();
     expect(never.faq).toBeUndefined();
     const link = el.querySelector(".kh-section__actions a")!;
     expect(never.config.link).toEqual({ label: norm(link.textContent), href: "/ai-toys-for-kids-in-india" });
     expect(link.getAttribute("href")).toBe("ai-toys-for-kids-in-india.html");
   });
+
+  /* G28 (D065 item 5): the daily talk-time limit is true and live; the CMO's m6 words, since "No endless talking." could
+     read as the unconfirmed per-conversation limit. Nobody is said to set it (plan v2 §1.4). */
+  it("ends with the daily limit (the clock icon), in the CMO's m6 words, never saying who sets it", () => {
+    if (never.config.variant !== "never") throw new Error("not the never fold");
+    const last = never.config.items[5];
+    expect({ icon: last.icon, title: plain(last.title!), body: plain(last.body) }).toEqual({
+      icon: "clock",
+      title: "No talking all day.",
+      body: "Each Kheelu has a daily limit on how long it talks.",
+    });
+    expect({ title: plain(last.title!), body: plain(last.body) }).toEqual(SAFETY_SELLING_LINES.dailyLimit);
+    expect(plain(last.body)).not.toMatch(/\byou\b|\bset|parent|conversation/i);
+  });
 });
 
-describe("fold 4: the grown-up holds the keys", () => {
-  const controls = entry("feature-split", 0);
-  it("lists the three controls with their icons (D058: no topics or quiet hours; the Save voice recordings switch) beside the one privacy screen, then the secondary link to the app fold", () => {
+describe("fold 4: every conversation, word for word (from the product page)", () => {
+  const app = entry("feature-split", 0);
+  const config = () => {
+    if (app.config.variant !== "app-screens") throw new Error("not the app-screens fold");
+    return app.config;
+  };
+
+  it("carries the product page's eyebrow, heading (its Hand accent) and lead, word for word, on the band", () => {
+    const { heading, band } = config();
+    expect({ eyebrow: heading.eyebrow, title: plain(heading.title), lead: heading.lead && plain(heading.lead), id: heading.id }).toEqual(
+      headingOf(fold("app-title")),
+    );
+    expect(heading).toEqual({
+      id: "app-title",
+      eyebrow: SAFETY_SELLING_LINES.app.eyebrow,
+      title: "Every conversation, {hand:word for word.}",
+      lead: SAFETY_SELLING_LINES.app.lead,
+    });
+    expect(band).toBe(true);
+  });
+
+  it("shows the transcript and activity screens side by side (AppScreens `product`), with their alts and the app's caption", () => {
+    const { placement, screens } = config();
+    expect(placement).toBe("product");
+    expect(screens.images.map((i) => i.alt)).toEqual(
+      Array.from(fold("app-title").querySelectorAll(".kh-device img")).map((img) => img.getAttribute("alt")),
+    );
+    expect(screens.images.map((i) => i.alt)).toEqual([SAFETY_SELLING_LINES.app.transcriptAlt, SAFETY_SELLING_LINES.app.activityAlt]);
+    expect(screens.images.map((i) => (typeof i.src === "string" ? i.src : i.src.src))).toEqual([
+      expect.stringContaining("app-transcript"),
+      expect.stringContaining("app-activity"),
+    ]);
+    expect(plain(screens.caption!)).toBe(norm(fold("app-title").querySelector("figcaption")?.textContent));
+    expect(plain(screens.caption!)).toBe(SAFETY_SELLING_LINES.app.caption);
+  });
+
+  /* The plan v2 §4 fold 4's duplicates of this page: the product page's four safety items (fold 2 says them), its facts
+     line (fold 3 says each), its "See what we keep" link (fold 6 is on this page) and the Kheelona+ note (selling copy,
+     on the offer cards). */
+  it("drops what the page already says: no Kheelona+ note, no skills, no list, no link, no fragment of its own", () => {
+    const c = config();
+    expect(c.note).toBeUndefined();
+    expect(c.skills).toBeUndefined();
+    expect(c.items).toBeUndefined();
+    expect(c.link).toBeUndefined();
+    expect(c.id).toBeUndefined();
+    expect(fold("app-title").querySelector(".kh-section__actions")).toBeNull();
+  });
+});
+
+describe("fold 5: the grown-up holds the keys", () => {
+  const controls = entry("feature-split", 1);
+  it("lists the three controls with their icons (D058: no topics or quiet hours; the Save voice recordings switch) beside the one privacy screen, without the caption (moved to fold 4) or the link to the product page's app fold (gone)", () => {
     if (controls.config.variant !== "app-screens") throw new Error("not the app-screens fold");
     const el = fold("controls-title");
     const { config } = controls;
@@ -201,17 +301,20 @@ describe("fold 4: the grown-up holds the keys", () => {
     expect(config.screens.images).toHaveLength(1);
     expect(config.screens.images[0].alt).toBe(el.querySelector(".kh-device img")!.getAttribute("alt"));
     expect(config.screens.images[0].alt).toContain(`${RETENTION_MONTHS} months`);
-    /* The "delete all chats" button hides chats on that phone, so the alt no longer names it (D058 item 1; task 8b.1b). */
-    expect(config.screens.images[0].alt).not.toMatch(/delete all chats/);
-    expect(plain(config.screens.caption!)).toBe(norm(el.querySelector("figcaption")?.textContent));
-    const link = el.querySelector(".kh-section__actions a")!;
-    expect(link.getAttribute("href")).toBe("meet-kheelu.html#app");
-    expect(config.link).toEqual({ label: norm(link.textContent), href: "/products/kheelu#app", icon: iconOf(link.querySelector("svg")) });
+    /* G26 (D065 item 7): "Delete all chats" deletes from the servers now, so the alt names the button again (plan v2 §4
+       fold 5). */
+    expect(config.screens.images[0].alt).toBe(
+      `A real screen from the Kheelu parent app: the privacy centre. Chats are kept for ${RETENTION_MONTHS} months, with a switch to save voice recordings and buttons to download your child’s data and to delete all chats.`,
+    );
+    expect(config.screens.caption).toBeUndefined();
+    expect(el.querySelector("figcaption")).toBeNull();
+    expect(config.link).toBeUndefined();
+    expect(el.querySelector(".kh-section__actions")).toBeNull();
   });
 });
 
-describe("folds 5 and 6: retention and certification", () => {
-  const pair = entry("feature-split", 1);
+describe("fold 6: retention and certification", () => {
+  const pair = entry("feature-split", 2);
   const cards = () => {
     if (pair.config.variant !== "pair") throw new Error("not the pair fold");
     return pair.config.cards;
@@ -229,12 +332,13 @@ describe("folds 5 and 6: retention and certification", () => {
     }
   });
 
-  it("reads the retention line from policies.ts (D020's first sentence), then what removing and deleting do (D058), beside the memory line, then links the privacy policy", () => {
+  /* The single-chat sentence comes off: "Delete all chats" now deletes from the servers (fold 2), and what removing one
+     chat does since the app changed is not on file (plan v2 §4 fold 6, §14). */
+  it("reads the retention line from policies.ts (D020's first sentence), then what deleting the account does (D058), beside the memory line, then links the privacy policy", () => {
     const [kept] = cards();
     expect(kept.copy[0]).toBe(RETENTION_LINE);
-    expect(plain(kept.copy[1])).toBe(
-      "Removing a chat in the app hides it on that phone. Deleting your account deletes your child’s profile, conversations and recordings from our servers.",
-    );
+    expect(plain(kept.copy[1])).toBe("Deleting your account deletes your child’s profile, conversations and recordings from our servers.");
+    expect(kept.copy.map(plain).join(" ")).not.toMatch(/Removing a chat|hides it on that phone/);
     expect(plain(kept.copy[2])).toBe("Kheelu remembers earlier conversations with your child, and you can read every one of them.");
     expect(kept.link).toEqual({ label: "Read our privacy policy", href: "/privacy" });
   });
@@ -365,6 +469,20 @@ describe("the safety page: page-wide rules", () => {
     expect(source).toMatch(/\bfaqs\["age-three"\], faqs\["child-safety-groups"\]/);
   });
 
+  /* The plan v2 §1.4 and §13: G28's other half (Wi-Fi off at rest; a conversation that cannot run on without end) is not
+     confirmed, the pre-launch test gets no new use, "one tap" never comes back (D058 item 1), nobody is said to set the
+     daily limit (D065 item 5), and no "incl. GST" on a selling page (D065 item 3). The page's own words: fold 7's shared
+     answers (faqs.ts) keep the pre-launch-test sentence where it was already built (§13 item 3). */
+  it("says nothing the selling update keeps out: Wi‑Fi at rest, a per-conversation limit, a new pre-launch-test line, one tap, who sets the limit, GST", () => {
+    const own = [safetyPage.meta, ...sections.filter((e) => e.kind !== "faq-section")];
+    const all = strings(own)
+      .flatMap((s) => [toPlainText(s, token), toPlainText(s, full)])
+      .join("\n");
+    expect(all).toContain("No talking all day.");
+    expect(all).not.toMatch(/Wi[‑-]Fi|run on without end|endless|Before launch|tested before|one tap|\bGST\b/i);
+    expect(all).not.toMatch(/(?:you|parents?) (?:can )?set (?:a |the )?(?:daily )?limit/i);
+  });
+
   it("names no amount, no placeholder and none of the retired safety lines (copy page, live page changes)", () => {
     const all = strings(safetyPage).join("\n");
     expect(all).not.toMatch(/₹|\{price:|\{ph:|\[PLACEHOLDER/);
@@ -380,9 +498,58 @@ describe("the safety page: page-wide rules", () => {
           return [c.link?.href, c.more?.href, ...(c.cards ?? []).map((card) => card.link?.href)].filter((h): h is string => h !== undefined);
         }),
       );
-    expect(hrefs.length).toBeGreaterThanOrEqual(4);
+    /* The guide (twice) and the privacy policy; the controls' link to the product page's app fold went with task Q2.11. */
+    expect(hrefs.length).toBeGreaterThanOrEqual(3);
     for (const href of hrefs.filter((h) => h.startsWith("/"))) {
       expect(routeFor(href.replace(/#.*$/, "")), href).toBeDefined();
     }
+  });
+});
+
+/* Task Q2.11's selling update as a parity deviation (test/e2e/support/deviations.ts SAFETY_SELLING): applied after the
+ * page's earlier rules (task 7.1b's copy fixes, task 8b.1's claim fixes), its edits change exactly the sentences it
+ * lists, its text rule excuses and accepts exactly those, its pixel hides each find one block holding a changed sentence
+ * (or, for the blocks it moves without rewording, one block on its side), and none of its lines says a claim D058
+ * withdrew. The route's test holds the build to the edited mockup, markup and words alike. */
+describe("the selling update (task Q2.11) as a parity deviation", () => {
+  const base = withFacts(withFacts(mockupFold("safety", "main"), COPY_FIXES.safety.edits), CLAIM_FIXES.safety.edits);
+  const once = (lines: readonly string[]) => [...new Set(lines)];
+  const rules = () => TEXT_DEVIATIONS.safety.filter((r) => r.approvedBy === SAFETY_SELLING.approvedBy);
+
+  it("lists exactly the sentences its edits change, against the mockup with the claim fixes applied", () => {
+    expect(factSentences(base, SAFETY_SELLING.edits)).toEqual({ missing: [...SAFETY_SELLING.mockup], extra: [...SAFETY_SELLING.build] });
+  });
+
+  it("is one text rule of the page, before the claim fixes, which excuses and accepts exactly those sentences", () => {
+    expect(rules()).toHaveLength(1);
+    const order = TEXT_DEVIATIONS.safety.map((r) => r.approvedBy);
+    expect(order.indexOf(SAFETY_SELLING.approvedBy)).toBeLessThan(order.indexOf(CLAIM_FIXES.safety.approvedBy));
+    expect(ruleReach(base, SAFETY_SELLING.edits, rules()[0])).toEqual({ excused: once(SAFETY_SELLING.mockup), accepted: once(SAFETY_SELLING.build) });
+    expect(rules()[0].jsOff).toBeUndefined();
+  });
+
+  it("hides for the pixels the blocks it lists, each found once on its side and holding a sentence it changes, in VISUAL_HIDDEN in its order", () => {
+    expect(hiddenProblems(base, SAFETY_SELLING)).toEqual([]);
+    const mine = VISUAL_HIDDEN.safety.filter((r) => r.approvedBy === SAFETY_SELLING.approvedBy);
+    const sel = (side: string) => mine.filter((r) => r.side === side).map((r) => r.selector);
+    const layout = (side: string) => SAFETY_SELLING_LAYOUT_HIDDEN.filter((r) => r.side === side).map((r) => r.selector);
+    expect(sel("mockup")).toEqual([...SAFETY_SELLING.hidden.both, ...SAFETY_SELLING.hidden.mockup, ...layout("mockup")]);
+    expect(sel("build")).toEqual([...SAFETY_SELLING.hidden.both, ...SAFETY_SELLING.hidden.build, ...layout("build")]);
+  });
+
+  it("finds each moved block it hides once in the approved mockup: the five-item “never” list and the controls' caption", () => {
+    const frozen = mockup.querySelector("main")!;
+    for (const rule of SAFETY_SELLING_LAYOUT_HIDDEN.filter((r) => r.side === "mockup")) {
+      expect(frozen.querySelectorAll(rule.selector).length, rule.selector).toBe(1);
+    }
+    expect(frozen.querySelectorAll('section[aria-labelledby="never-title"] .kh-trust__item')).toHaveLength(5);
+    expect(norm(frozen.querySelector('section[aria-labelledby="controls-title"] figcaption')?.textContent)).toBe(SAFETY_SELLING_LINES.app.caption);
+  });
+
+  it("says none of the claims D058 withdrew, and names the founder's decisions and the plan as its approval", () => {
+    for (const line of SAFETY_SELLING.build) {
+      expect(line).not.toMatch(/one tap|servers in India|keep none|closed (?:content )?library|curated|age-graded|safety layer|quiet hours|about a minute|open internet/);
+    }
+    expect(SAFETY_SELLING.approvedBy).toMatch(/^D064 item 2, D065 items 5 and 7 and the D2C plan v2 §4 \(founder, 2026-10-15; .*task Q2\.11/);
   });
 });

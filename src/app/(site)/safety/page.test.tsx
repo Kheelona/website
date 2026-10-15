@@ -7,11 +7,19 @@ import type { Offer } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
-import { CLAIM_FIXES, COPY_FIXES, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import {
+  CLAIM_FIXES,
+  COPY_FIXES,
+  PRICE_LINE,
+  SAFETY_SELLING,
+  SAFETY_SELLING_LAYOUT_HIDDEN,
+  VISUAL_HIDDEN,
+} from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
+import { sentences } from "../../../../test/e2e/support/parity";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { parseMockup, words } from "../../../../test/support/mockup-compare";
-import { withFacts } from "../../../../test/support/mockup-facts";
+import { blockSentences, withFacts } from "../../../../test/support/mockup-facts";
 
 /* The /safety route (task 5.3; structure §3.1, §5): the page module through PageTemplate with the live offer, thin, and
  * as a whole page equal to the approved mockup's <main> (mockup/safety.html, D046): the same words fold by fold, the
@@ -36,9 +44,12 @@ const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
  * item 3; the harness's withPriceLine). */
 const mockupDoc = parseMockup("safety");
 const frozenMain = mockupDoc.querySelector("main")!;
-/* Task 7.1b's copy fixes (V19), then task 8b.1's claim fixes (V28; D058) in a pass of their own, then D063 item 2: the
-   close's help line without the call (task Q2.3; seller-facts.ts). */
-const mockupMain = withSellerFacts(withFacts(withFacts(frozenMain, COPY_FIXES.safety.edits), CLAIM_FIXES.safety.edits));
+/* Task 7.1b's copy fixes (V19), then task 8b.1's claim fixes (V28; D058) in a pass of their own, then task Q2.11's
+   selling update (the D2C plan v2 §4; deviations.ts SAFETY_SELLING), then D063 item 2: the close's help line without the
+   call (task Q2.3; seller-facts.ts). */
+const mockupMain = withSellerFacts(
+  withFacts(withFacts(withFacts(frozenMain, COPY_FIXES.safety.edits), CLAIM_FIXES.safety.edits), SAFETY_SELLING.edits),
+);
 
 /** The page as the site shell holds it: the route's output inside <main>. */
 async function renderPage(offer: Offer) {
@@ -133,22 +144,77 @@ describe("/safety: the rendered page against the approved mockup", () => {
     expect(words(visible(main))).toBe(words(mockupMain));
   });
 
-  it("differs from the frozen mockup only in the lines task 7.1b (V19), task 8b.1 (V28) and D063 (Q2.3) changed", async () => {
+  it("differs from the frozen mockup only in the lines task 7.1b (V19), task 8b.1 (V28), task Q2.11 and D063 (Q2.3) changed, and the fold Q2.11 adds", async () => {
     const { main } = await renderPage(buildOffer("token"));
     const fold = (root: Element, name: string) => root.querySelector(`section[aria-labelledby="${name}"]`)!;
     const changed = foldNames(frozenMain).filter((name) => words(fold(frozenMain, name!)) !== words(fold(mockupMain, name!)));
     /* The close: its help line without the call (D063 item 2). */
     expect(changed).toEqual(["facts-title", "never-title", "controls-title", "kept-title", "faq-title", "close-title"]);
+    expect(foldNames(main).filter((name) => !foldNames(frozenMain).includes(name))).toEqual(["app-title"]);
     const faq = words(fold(main, "faq-title"));
     for (const line of COPY_FIXES.safety.build) expect(faq).toContain(line);
     for (const line of COPY_FIXES.safety.mockup) expect(faq).not.toContain(line);
-    for (const line of CLAIM_FIXES.safety.build) expect(words(visible(main))).toContain(line);
+    /* Task 8b.1's lines, but the two Q2.11 replaces (G26's deletion line; the single-chat sentence off). */
+    const page = words(visible(main));
+    for (const line of CLAIM_FIXES.safety.build.filter((l) => !SAFETY_SELLING.mockup.some((gone) => l.includes(gone)))) {
+      expect(page).toContain(line);
+    }
+    for (const line of SAFETY_SELLING.build) expect(page).toContain(line);
+    for (const line of SAFETY_SELLING.mockup) expect(page).not.toContain(line);
   });
 
-  it("finds each block the visual pass hides on the build side, once, on the page as it renders: the open answer (V19), the claim fixes' blocks (V28)", async () => {
+  /* Build condition C1 (the D2C plan v2 §1.1; CMO review C1): after every button the price line is its own block, a <p>
+     after the button's row, never a span in the button or joined to its label (joined with a space, the label and the
+     price line read as "Pre-order Kheelu ₹499 today, refundable." and fire the guard's part-price-button). */
+  it("puts the price line after each button as its own paragraph, never inside or beside the label (C1)", async () => {
+    const { main } = await renderPage(buildOffer("token"));
+    const buttons = Array.from(main.querySelectorAll<HTMLElement>(".kh-btn--cta"));
+    expect(buttons).toHaveLength(2);
+    for (const button of buttons) {
+      expect(button.textContent).toBe("Pre-order Kheelu");
+      expect(button.querySelector(".ks-price")).toBeNull();
+      const row = button.parentElement!;
+      expect(row.matches(".kh-section__actions")).toBe(true);
+      const after = row.nextElementSibling!;
+      const price = after.matches("p.ks-price") ? after : after.querySelector(":scope > p.ks-price");
+      expect(price?.tagName).toBe("P");
+      expect(price?.textContent).toBe(PRICE_LINE.sentence.build);
+    }
+  });
+
+  /* "No duplicate line on the page" (task Q2.11): what moved here from the product page repeats nothing the page says. A
+     sentence shows twice only where every button carries it (its label, the price line, the trust line: one each beside
+     the two buttons); and two the page had as built, which the plan keeps: "It can’t browse or search the web.", fold 3's
+     body that task 8b.1 also wrote into fold 7's closed "Replies" answer (faqs.ts, child-safety-groups), and "No.", how
+     the first and fourth facts each open their answer. */
+  it("says no sentence twice, but the lines beside each button and two the built page already repeated", async () => {
+    const { main } = await renderPage(buildOffer("token"));
+    const lines = blockSentences(visible(main));
+    const twice = [...new Set(lines.filter((line, i) => lines.indexOf(line) !== i))];
+    const beside = ["Pre-order Kheelu", ...sentences(PRICE_LINE.sentence.build), PRICE_LINE.returns.build, PRICE_LINE.delivery];
+    expect(twice.sort()).toEqual([...beside, "It can’t browse or search the web.", "No."].sort());
+    for (const line of twice) expect(lines.filter((l) => l === line), line).toHaveLength(2);
+  });
+
+  it("never says “incl. GST” or the balance, in either mode (D065 item 3: GST and the breakdown only at checkout)", async () => {
+    for (const mode of ["token", "full"] as const) {
+      const { html, main } = await renderPage(buildOffer(mode));
+      expect(html, mode).not.toMatch(/incl\. GST|GST/);
+      expect(main.textContent, mode).not.toMatch(/₹4,500|before delivery/);
+    }
+  });
+
+  it("finds each block the visual pass hides on the build side, once, on the page as it renders: the open answer (V19), the claim fixes' blocks (V28), the selling update's (Q2.11)", async () => {
     const { main } = await renderPage(buildOffer("token"));
     const selectors = (VISUAL_HIDDEN.safety ?? []).filter((rule) => rule.side === "build").map((rule) => rule.selector);
-    expect(selectors).toEqual([...COPY_FIXES.safety.hidden.both, ...CLAIM_FIXES.safety.hidden.both, ...CLAIM_FIXES.safety.hidden.build]);
+    expect(selectors).toEqual([
+      ...COPY_FIXES.safety.hidden.both,
+      ...CLAIM_FIXES.safety.hidden.both,
+      ...CLAIM_FIXES.safety.hidden.build,
+      ...SAFETY_SELLING.hidden.both,
+      ...SAFETY_SELLING.hidden.build,
+      ...SAFETY_SELLING_LAYOUT_HIDDEN.filter((rule) => rule.side === "build").map((rule) => rule.selector),
+    ]);
     for (const selector of selectors) expect(main.querySelectorAll(selector), selector).toHaveLength(1);
     expect(words(main.querySelector(selectors[0])!)).toContain(COPY_FIXES.safety.build[0]);
   });
@@ -181,6 +247,21 @@ describe("/safety: the rendered page against the approved mockup", () => {
     expect(screens[0].getAttribute("sizes")).toBe("(min-width: 900px) 300px, 272px");
   });
 
+  /* Task Q2.11 (the D2C plan v2 §4 fold 4): the product page's two screens move here as that page showed them, side by
+   * side in AppScreens `product` (two phones in a row), with the caption under them; the controls keep their one phone. */
+  it("shows every conversation's two screens side by side (AppScreens `product`) with the app's caption, before the controls", async () => {
+    const { main } = await renderPage(buildOffer("token"));
+    const fold = main.querySelector('section[aria-labelledby="app-title"]')!;
+    expect(fold.classList.contains("kh-section--band")).toBe(true);
+    const shots = fold.querySelectorAll("figure.ks-shots");
+    expect(shots).toHaveLength(1);
+    expect([...shots[0].classList]).toEqual(expect.arrayContaining(["ks-shots", "ks-shots--product"]));
+    expect(shots[0].querySelectorAll(".ks-shots__row .kh-device img")).toHaveLength(2);
+    expect(shots[0].querySelector("figcaption")?.textContent).toBe("The Kheelona app is live on Apple’s App Store and the Google Play Store.");
+    expect(foldNames(main).indexOf("app-title")).toBe(foldNames(main).indexOf("controls-title") - 1);
+    expect(main.querySelectorAll("figcaption.kh-caption")).toHaveLength(1);
+  });
+
   /* The phone buy bar hides only while a #hero-cta is on screen (StickyBuyBar.client.tsx), and this page has none, so the
    * bar shows from first paint, as the mockup's meta (`buybar: true`) and the copy page ask (SPA 6). */
   it("gives the phone bar no hero button to wait for, so it shows from first paint (mockup meta buybar: true)", async () => {
@@ -190,11 +271,18 @@ describe("/safety: the rendered page against the approved mockup", () => {
     expect(main.querySelector('section[aria-labelledby="hero-title"] .kh-btn--cta')).toBeNull();
   });
 
-  it("has one chilli button, the close's, tracked `finale`, and no other tracked link", async () => {
+  /* The plan v2 §4 and §11: `safety-facts` after the four facts (registered by the selling update's tracking task), then
+     the close's `finale`; no other tracked link (the controls' link to the product page's app fold is gone). */
+  it("has two chilli buttons, after the four facts (`safety-facts`) and in the close (`finale`), and no other tracked link", async () => {
     const { main } = await renderPage(buildOffer("token"));
-    expect([...main.querySelectorAll("[data-ph-capture-attribute-cta]")].map((el) => el.getAttribute("data-ph-capture-attribute-cta"))).toEqual(["finale"]);
-    expect(main.querySelectorAll(".kh-btn--cta")).toHaveLength(1);
+    expect([...main.querySelectorAll("[data-ph-capture-attribute-cta]")].map((el) => el.getAttribute("data-ph-capture-attribute-cta"))).toEqual([
+      "safety-facts",
+      "finale",
+    ]);
+    expect(main.querySelectorAll(".kh-btn--cta")).toHaveLength(2);
+    expect(main.querySelector('#facts .kh-btn--cta[data-ph-capture-attribute-cta="safety-facts"]')?.textContent).toBe("Pre-order Kheelu");
     expect(main.querySelector("#close .kh-btn--cta")?.textContent).toBe("Pre-order Kheelu");
+    expect(main.querySelector('a[href="/products/kheelu#app"]')).toBeNull();
   });
 
   it("reveals exactly what the mockup reveals, and never the first fold, a price or the chilli button (SPA 9)", async () => {

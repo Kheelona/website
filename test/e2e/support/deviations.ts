@@ -1491,6 +1491,155 @@ export const ARTICLE_CLAIM_FIXES = {
 } as const satisfies Readonly<Record<string, PageFacts>>;
 const ARTICLE_CLAIM_FIXES_WHOSE = "task 8b.2a's claim fixes (D058)";
 
+/* Task Q2.11, /safety in the selling update (the D2C plan v2 §4, checked by the guard and the CMO; D064 item 2, D065
+   items 5 and 7; the CMO's m6): what the page says and shows beyond the approved mockup with the page's earlier rules
+   applied (task 7.1b's copy fixes, then task 8b.1's claim fixes):
+   - fold 2: the third fact takes G26's deletion line ("Delete all chats" now deletes from the servers, D065 item 7), and
+     a CTA block follows the four facts (`safety-facts`, with the short price line and the trust line, task Q2.8's);
+   - fold 3: a sixth item, "No talking all day." (G28's daily limit, D065 item 5, in the CMO's m6 words; nobody is said
+     to set it);
+   - a new fold 4, "Every conversation, word for word.", moved from the product page (its words, screens, alts and
+     caption, meet-kheelu.md fold 5 as task 8b.1 left it); its caption moves there from the parent controls, which keep
+     no second copy of it (no line twice on the page), and the controls lose "See what the app shows you" (its target
+     left the product page) and take G26's alt (the privacy centre's button to delete all chats named again);
+   - the retention card's sentence about removing a single chat comes off (plan §14: not on file since the app changed).
+   In page-facts.ts's form, applied after the claim fixes: `edits` turn that mockup into the build (the facts' list and
+   the "never" fold rebuilt whole, because a fact edit replaces an element and these folds gain blocks), and `mockup` and
+   `build` are the sentences they change, for the text pass (src/content/en-IN/pages/safety.test.ts proves them exactly
+   those, and the route's test holds the build to the edited mockup). Before the claim fixes in the page's text rules, as
+   Home's Q2.1 rule is, because only the FAQ fixes may follow those (pages/parity-deviations.test.ts). Literal, because
+   Playwright cannot load the page module (it imports images); safety.test.ts holds each literal to pages/safety.ts. The
+   deviations.md rows are the main session's, drafted in the task's report; the founder signs the words at Gate B
+   (D015). */
+const SAFETY_SELLING_APPROVED =
+  "D064 item 2, D065 items 5 and 7 and the D2C plan v2 §4 (founder, 2026-10-15; CMO review of the plan v2, m6; task Q2.11; deviations.md rows to come)";
+/** One DS trust item as the mockups print it (safety.html), its icon inlined. */
+const trustLi = (name: IconName, title: string, body: string) =>
+  `<li class="kh-trust__item"><span class="kh-trust__icon">${icon(name)}</span><div><h3 class="kh-trust__title">${title}</h3><p class="kh-trust__body">${body}</p></div></li>`;
+/** The parent app's caption, on every page that shows its real screens (D044, D046). */
+const APP_CAPTION = "The Kheelona app is live on Apple’s App Store and the Google Play Store.";
+export const SAFETY_SELLING_LINES = {
+  /** Fold 2, the third fact: G26's line in place of task 8b.1's "Delete them all by deleting your account." */
+  readEvery: {
+    was: "Yes, in the parent app, word for word, a few minutes after each one ends. Delete them all by deleting your account.",
+    now: "Yes, in the parent app, word for word, a few minutes after each one ends. “Delete all chats” in the app deletes them from our servers.",
+  },
+  /** Fold 3's sixth item (G28; the CMO's m6). */
+  dailyLimit: { title: "No talking all day.", body: "Each Kheelu has a daily limit on how long it talks." },
+  /** Fold 4, from the product page (meet-kheelu.md fold 5 as task 8b.1 left it). */
+  app: {
+    eyebrow: "The parent app",
+    title: "Every conversation, word for word.",
+    accent: "word for word.",
+    lead: "Each one appears in the parent app a few minutes after it ends. Search them, read a daily summary, or look back over the week or the month.",
+    transcriptAlt: "A real parent-app screen showing a child’s conversation with Kheelu word for word, in Hindi and English.",
+    activityAlt:
+      "A real parent-app activity screen: a child’s talking time, chats and questions asked today, and each conversation listed by its first words.",
+    caption: APP_CAPTION,
+  },
+  /** Fold 5's privacy screen, its alt as G26 has it (the plan v2 §4 fold 5). */
+  privacyAlt:
+    "A real screen from the Kheelu parent app: the privacy centre. Chats are kept for 36 months, with a switch to save voice recordings and buttons to download your child’s data and to delete all chats.",
+  /** The controls' link that goes (its target, the product page's app fold, has left). */
+  appLink: "See what the app shows you",
+  /** Fold 6's second paragraph: task 8b.1's two sentences, then the second alone. */
+  deleteAccount: {
+    was: DELETE_ACCOUNT,
+    now: "Deleting your account deletes your child’s profile, conversations and recordings from our servers.",
+  },
+} as const;
+const L = SAFETY_SELLING_LINES;
+/** Fold 2's four facts as the claim fixes left them, the third with G26's line, then its CTA block. */
+const SAFETY_FACTS_LIST = [
+  trustLi(
+    "microphone",
+    "Is Kheelu always listening?",
+    "No. Kheelu has no wake word to listen for. Its microphone turns on only when someone presses the wake-up button. It stays on while your child is talking and switches itself off after a couple of minutes of quiet. Until the next press, nothing is heard, recorded or sent. A light on Kheelu shows whenever it’s listening.",
+  ),
+  trustLi("lock-simple", "How does Kheelu understand and answer my child?", PROVIDERS.replace(IN_INDIA, "")),
+  trustLi("eye", "Can I read every conversation?", L.readEvery.now),
+  trustLi("hand-heart", "Do you sell my child’s data?", "No. We don’t sell your data, and your child’s data is never used to advertise to them."),
+].join("");
+const SAFETY_FACTS_CTA =
+  `<div class="kh-section__actions"><a href="store.html" class="kh-btn kh-btn--cta kh-btn--l kh-btn--block" data-ph-capture-attribute-cta="safety-facts"><span>Pre-order Kheelu</span></a></div>` +
+  `<div class="mk-beside"><p class="kh-body-s mk-price">${PRICE_LINE.sentence.build}</p><ul class="kh-trustline mk-trust">` +
+  `<li><a href="refund.html#before-dispatch">${icon("arrow-counter-clockwise")}${PRICE_LINE.returns.build}</a></li>` +
+  `<li><a href="shipping.html#when">${icon("truck")}<span>${PRICE_LINE.delivery}</span></a></li></ul></div>`;
+/** Fold 3 with its sixth item, then the new fold 4. */
+const SAFETY_NEVER_AND_APP =
+  `<section class="kh-section" aria-labelledby="never-title"><div class="kh-container"><div class="kh-section__head"><header class="kh-heading"><p class="kh-eyebrow">Never</p><h2 class="kh-heading__title" id="never-title">What you <span class="kh-mark">won’t</span> find in Kheelu.</h2></header></div>` +
+  `<ul class="kh-trust mk-sf-never" data-reveal>${[
+    trustLi("eye-slash", "No camera.", "It can’t see your child or your home."),
+    trustLi("speaker-high", "No screen.", "Your child talks and listens instead of watching."),
+    trustLi("wifi-slash", "No web browsing.", "It can’t browse or search the web."),
+    trustLi("x", "No ads.", "Not in the toy, and not in the parent app."),
+    trustLi("smiley", "No secrets.", "It never asks your child to keep one from you."),
+    trustLi("clock", L.dailyLimit.title, L.dailyLimit.body),
+  ].join("")}</ul>` +
+  `<div class="kh-section__actions"><a href="ai-toys-for-kids-in-india.html" class="kh-btn kh-btn--ghost"><span>How to choose an AI toy: five checks</span>${icon("arrow-right")}</a></div></div></section>` +
+  `<section class="kh-section kh-section--band" aria-labelledby="app-title"><div class="kh-container"><div class="kh-split mk-app-split"><div><header class="kh-heading">` +
+  `<p class="kh-eyebrow">${L.app.eyebrow}</p><h2 class="kh-heading__title" id="app-title">${L.app.title.replace(L.app.accent, `<span class="kh-hand">${L.app.accent}</span>`)}</h2>` +
+  `<p class="kh-heading__lead">${L.app.lead}</p></header></div>` +
+  `<figure class="mk-shots" data-reveal><div class="mk-shots__row">` +
+  `<div class="kh-device mk-shot"><div class="kh-device__screen"><img loading="lazy" src="assets/app/app-transcript.webp" width="576" height="1209" alt="${L.app.transcriptAlt}"></div></div>` +
+  `<div class="kh-device mk-shot"><div class="kh-device__screen"><img loading="lazy" src="assets/app/app-activity.webp" width="576" height="1209" alt="${L.app.activityAlt}"></div></div>` +
+  `</div><figcaption class="kh-caption">${L.app.caption}</figcaption></figure></div></div></section>`;
+export const SAFETY_SELLING: PageFacts = {
+  edits: [
+    { at: ".kh-trust__title", was: "Do you sell my child’s data?", scope: "ol", now: `<ol class="kh-trust mk-sf-list">${SAFETY_FACTS_LIST}</ol>${SAFETY_FACTS_CTA}` },
+    { at: ".kh-heading__title", was: "What you won’t find in Kheelu.", scope: "section", now: SAFETY_NEVER_AND_APP },
+    cutAround(".kh-btn", L.appLink, ".kh-section__actions"),
+    cut('section[aria-labelledby="controls-title"] figcaption', APP_CAPTION),
+    {
+      at: 'img[src="assets/app/app-privacy.webp"]',
+      was: "",
+      now: `<img loading="lazy" src="assets/app/app-privacy.webp" width="576" height="1209" alt="${L.privacyAlt}">`,
+    },
+    rewrite("p.kh-body-l", L.deleteAccount.was, L.deleteAccount.now),
+  ],
+  mockup: ["Delete them all by deleting your account.", L.appLink, "Removing a chat in the app hides it on that phone."],
+  build: [
+    "“Delete all chats” in the app deletes them from our servers.",
+    "Pre-order Kheelu",
+    ...sentences(PRICE_LINE.sentence.build),
+    PRICE_LINE.returns.build,
+    PRICE_LINE.delivery,
+    L.dailyLimit.title,
+    L.dailyLimit.body,
+    L.app.eyebrow,
+    L.app.title,
+    ...sentences(L.app.lead),
+  ],
+  /* Fold 2's CTA block and the new fold 4 on the build's side alone; the controls' link row on the mockup's alone. */
+  hidden: {
+    both: [],
+    mockup: ['section[aria-labelledby="controls-title"] .kh-section__actions'],
+    build: ["#facts .kh-section__actions", "#facts .ks-beside", 'section[aria-labelledby="app-title"]'],
+  },
+  reason:
+    "/safety sells (the D2C plan v2 §4): a button after the four facts, G26's deletion line, the daily limit among the nevers, every conversation word for word moved here from the product page with the app's caption, the controls without their link to it and with G26's alt, and the retention card without the single-chat sentence",
+  approvedBy: SAFETY_SELLING_APPROVED,
+};
+const SAFETY_SELLING_WHOSE = "task Q2.11's selling update";
+/** The blocks the selling update moves without rewording, which no sentence rule can name (hiddenProblems needs a changed
+ *  sentence inside): the "never" list, whose six items lay out three and three where the approved five lay out three and
+ *  two (and the fifth runs full width from 720 px), on both sides; and the controls' caption, which moved to fold 4, on
+ *  the mockup's side. Each finds one element on its side (safety.test.ts, the route's test). */
+export const SAFETY_SELLING_LAYOUT_HIDDEN: readonly VisualHide[] = [
+  ...(["mockup", "build"] as const).map((side) => ({
+    side,
+    selector: 'section[aria-labelledby="never-title"] .kh-trust',
+    reason: "the \"never\" list: six items (the daily limit added, D065 item 5) lay out three and three; compared by the text pass",
+    approvedBy: SAFETY_SELLING_APPROVED,
+  })),
+  {
+    side: "mockup",
+    selector: 'section[aria-labelledby="controls-title"] figcaption',
+    reason: "the parent app's caption, moved to fold 4 with the screens it names (no line twice on the page)",
+    approvedBy: SAFETY_SELLING_APPROVED,
+  },
+];
+
 export const VISUAL_DEVIATIONS: Readonly<Record<string, readonly VisualDeviation[]>> = {};
 
 /* D042's payments line (wiki/qa/deviations.md V1): both store mockups print it in the store footer; the build prints it
@@ -1769,8 +1918,14 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...HOME_OFFER_ART_HIDDEN,
   ],
   /* The open FAQ answer (V19, task 7.1b), then the facts, controls and retention card (V28, task 8b.1), compared by the
-     text pass. */
-  safety: [...factsHidden(COPY_FIXES.safety, COPY_FIXES_WHOSE), ...factsHidden(CLAIM_FIXES.safety, CLAIM_FIXES_WHOSE)],
+     text pass; then the selling update's blocks (task Q2.11): fold 2's CTA block and the new fold 4 (the build's), the
+     controls' link (the mockup's), the six-item "never" list (both) and the controls' moved caption (the mockup's). */
+  safety: [
+    ...factsHidden(COPY_FIXES.safety, COPY_FIXES_WHOSE),
+    ...factsHidden(CLAIM_FIXES.safety, CLAIM_FIXES_WHOSE),
+    ...factsHidden(SAFETY_SELLING, SAFETY_SELLING_WHOSE),
+    ...SAFETY_SELLING_LAYOUT_HIDDEN,
+  ],
   /* Check 4 and Kheelu's three answers (V31, task 8b.1), compared by the text pass. */
   "ai-toys-for-kids-in-india": factsHidden(CLAIM_FIXES["ai-toys-for-kids-in-india"], CLAIM_FIXES_WHOSE),
   team: [
@@ -2056,8 +2211,10 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
        does not read; faqs.test.ts and the route's unit test hold it. */
     factsRule(FAQ_FIXES["meet-kheelu"]),
   ],
-  /* The open FAQ answer and the closed one's "At 3:" line (V19, task 7.1b): COPY_FIXES above. */
-  safety: [factsRule(COPY_FIXES.safety), factsRule(CLAIM_FIXES.safety)],
+  /* The open FAQ answer and the closed one's "At 3:" line (V19, task 7.1b): COPY_FIXES above. The selling update (task
+     Q2.11): SAFETY_SELLING above, before D058's claim fixes, which only the FAQ fixes may follow
+     (pages/parity-deviations.test.ts); the text pass applies the rules in any order. */
+  safety: [factsRule(COPY_FIXES.safety), factsRule(SAFETY_SELLING), factsRule(CLAIM_FIXES.safety)],
   /* The age answer's "At 3" sentence (V22, wave 8 merge): COPY_FIXES above. It sits in a closed item, which the text
      pass does not read; the route's unit test holds it. */
   "ai-toys-for-kids-in-india": [factsRule(COPY_FIXES["ai-toys-for-kids-in-india"]), factsRule(CLAIM_FIXES["ai-toys-for-kids-in-india"])],

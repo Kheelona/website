@@ -44,7 +44,8 @@
   }
 }
 
-/* The five "never" items: three then two from 1024 px (safety.css:16-18, .mk-sf-never). */
+/* The "never" items three to a row from 1024 px, a last row of two at half the width each: the approved five as three
+   then two (safety.css:16-18, .mk-sf-never); six (the daily limit, task Q2.11) as three and three. */
 @media (min-width: 1024px) {
   .ks-sf-never {
     grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -52,7 +53,8 @@
   .ks-sf-never .kh-trust__item {
     grid-column: span 2;
   }
-  .ks-sf-never .kh-trust__item:nth-child(n + 4) {
+  .ks-sf-never .kh-trust__item:nth-child(3n + 1):nth-last-child(2),
+  .ks-sf-never .kh-trust__item:nth-child(3n + 2):last-child {
     grid-column: span 3;
   }
 }
