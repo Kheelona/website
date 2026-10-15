@@ -16,6 +16,7 @@ import { withoutHiddenRows } from "@/lib/content/placeholder";
 import { cta } from "../../cta";
 import { faqs, filmLink, pickFaqs } from "../../faqs";
 import { filmQuotes, films, filmsStrip } from "../../films";
+import { PLUS_NOTE } from "../../offer";
 import { RETURN_DAYS, RETURN_PICKUP_FREE, WARRANTY_MONTHS } from "../../policies";
 import { recognitionStrip } from "../../recognition";
 import { seller } from "../../seller";
@@ -159,8 +160,10 @@ export const kheeluPage = {
         heading: { eyebrow: "What you get", title: "Everything that {hand:comes with it.}" },
         cta: "product-offer",
         /* Under the card's button, the offer cards' row (task Q2.8's review; the D2C plan v2 §1.1, product fold 3): the one
-           risk-reversal line, the delivery line, then the card's third row. */
+           risk-reversal line, the delivery line, then the card's third row. No help line (task Q2.13; §3 fold 3, CMO m9). */
         trust: trust(TRUST_OFFER),
+        /* In the card, after the perks and before the button: the same note as Home's card (task Q2.13; §3 fold 3). */
+        note: PLUS_NOTE,
         /* The page's keyword in the alt, true of the picture (the D2C plan v2 §3 fold 3). */
         photo: { src: kheeluOnFur, alt: "Kheelu by Kheelona, the cream plush rabbit that talks back, with rainbow ears and a speaker in its tummy." },
       },

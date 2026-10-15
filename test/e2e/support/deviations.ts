@@ -2385,11 +2385,40 @@ export const AFTER_SIX_MONTHS = {
   answer:
     "No, not unless you sign up for it yourself. Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. Nothing renews without you.",
 } as const;
+/** That answer's first and last sentences: the page prints the middle one already (the claim-fixed Kheelona+ line). */
+const AFTER_SIX_MONTHS_LINES = {
+  no: sentences(AFTER_SIX_MONTHS.answer)[0],
+  renews: sentences(AFTER_SIX_MONTHS.answer).at(-1)!,
+} as const;
+/** The delivery question's answer's first sentence (the approved page's), which the offer card's delivery perk prints
+ *  too (the one perk list), so the page loses it once. */
+const PRODUCT_DELIVERY_ANSWER_FIRST = "Deliveries start mid-November.";
 /** The safety line and its link (§3 fold 9; the built label, `product-safety-learn`, which the safety fold carried). */
 export const PRODUCT_SAFETY_LINE = {
   line: "When the microphone is on, how Kheelu answers, and what you can read and delete, fact by fact:",
   link: "See how we built safety in",
 } as const;
+/** The note both offer cards print since task Q2.13 (offer.ts `PLUS_NOTE`; the D2C plan v2 §2 fold 7 and §3 fold 3: "the
+ *  same note under the perks"). */
+export const OFFER_NOTE = "Kheelona+ is our paid subscription, on top of the free parent app.";
+/** The product page's offer card as both cards print it since task Q2.13 (the D2C plan v2 §2 fold 7 and §3 fold 3; the
+ *  CMO's m9): the Kheelona+ note inside the card, after the perks and before the button (ui/OfferCard's `note`); the price
+ *  printed once, as Home's card prints it (the card's fine print off: the price block stands in for the price line); and
+ *  no help line under the card (§1.1: the closes and the store only; the WhatsApp bubble and the page's close carry it).
+ *  Under the button: the trust line, the card's third row and the share link. The edits read the card as the offer
+ *  additions leave it (OFFER_ADDITIONS: its help line rewritten, still in the mockup's words, D063's rule applying after
+ *  every edit, seller-facts.ts); OfferSection.test.tsx applies them to the fold. */
+export const PRODUCT_OFFER_CARD = [
+  {
+    at: "#offer .kh-offer > .kh-btn--cta",
+    was: "Pre-order Kheelu",
+    now:
+      `<p class="kh-body-s mk-offer__note">${OFFER_NOTE}</p>` +
+      `<a href="store.html" class="kh-btn kh-btn--cta kh-btn--l kh-btn--block" data-ph-capture-attribute-cta="product-offer"><span>Pre-order Kheelu</span></a>`,
+  },
+  cut("#offer .kh-offer__fine", PRICE_LINE.sentence.build),
+  cut("#offer .mk-help", PRODUCT_HERO.help),
+] as const satisfies readonly FactEdit[];
 export const SELLING_UPDATE = {
   "meet-kheelu": {
     edits: [
@@ -2403,6 +2432,9 @@ export const SELLING_UPDATE = {
         was: "",
         now: `<img loading="lazy" src="../design-system/project/assets/Kheelu/kheelu-on-fur.jpg" width="1600" height="1600" alt="${PRODUCT_OFFER_ALT.build}">`,
       },
+      /* Fold 3: the card as both cards print it since task Q2.13: the Kheelona+ note before the button, the price once,
+         no help line. */
+      ...PRODUCT_OFFER_CARD,
       /* Fold 4 (How it works): Good to know's second line, then the daily limit after the wake-up line. */
       rewrite("li > span", PRODUCT_KNOW.browse.mockup, PRODUCT_KNOW.browse.build),
       {
@@ -2422,17 +2454,21 @@ export const SELLING_UPDATE = {
         now: `${faqItem(FIRST_WEEK.question, FIRST_WEEK.answer)}${faqItem(AFTER_SIX_MONTHS.question, AFTER_SIX_MONTHS.answer)}`,
       },
     ] satisfies FactEdit[],
-    /* In order of first appearance on the page: the hero's words and its help line; Good to know's line; the parent-app
-       fold and the safety fold whole (its CTA block's button, price line and trust line, and its link, which the build
-       prints again under the sample chats and in the safety line); the price answer, then the delivery question. */
+    /* In order of first appearance on the page (a sentence that goes more than once is listed as often, where it first
+       shows): the hero's words; the button, the price line, the risk-reversal line and the delivery line of the safety
+       fold's CTA block, the price line twice (the offer card's fine print too, task Q2.13), all first printed by the hero;
+       the help line twice, the hero's and the offer card's (task Q2.13); the delivery question's first sentence, first
+       printed by the card's delivery perk; Good to know's line; the parent-app fold and the safety fold whole (its link,
+       which the build prints again in the safety line); the price answer, then the delivery question. */
     mockup: [
       PRODUCT_HERO.eyebrow.mockup,
       ...sentences(PRODUCT_HERO.lead.mockup),
       "Pre-order Kheelu",
-      ...sentences(PRICE_LINE.sentence.build),
+      ...sentences(PRICE_LINE.sentence.build).flatMap((line) => [line, line]),
       PRICE_LINE.returns.build,
       PRICE_LINE.delivery,
-      ...sentences(PRODUCT_HERO.help),
+      ...sentences(PRODUCT_HERO.help).flatMap((line) => [line, line]),
+      PRODUCT_DELIVERY_ANSWER_FIRST,
       sentences(PRODUCT_KNOW.browse.mockup)[1],
       "The parent app",
       "Every conversation, word for word.",
@@ -2464,23 +2500,29 @@ export const SELLING_UPDATE = {
       PRODUCT_SAFETY_LINE.link,
       ...sentences(PRODUCT_PRICE_ANSWER.mockup),
       PRODUCT_DELIVERY_QUESTION,
-      "Deliveries start mid-November.",
       "Orders are sent in the order they were placed, and you get a tracking link when yours leaves us.",
       "Delivery is included anywhere in India, with nothing to pay at the door; we don’t ship outside India.",
       "A reserved Kheelu is sent once the rest of the price is paid.",
     ],
+    /* In order of first appearance: the hero's words; the Kheelona+ question's last sentence, first printed by the card's
+       Kheelona+ perk (the one perk list), then the card's note (task Q2.13); Good to know's two lines; the price answer;
+       the Kheelona+ question and its first sentence (its second is the card's Kheelona+ line, on the page before). */
     build: [
       PRODUCT_HERO.eyebrow.build,
       PRODUCT_HERO.lead.build,
+      AFTER_SIX_MONTHS_LINES.renews,
+      OFFER_NOTE,
       sentences(PRODUCT_KNOW.browse.build)[1],
       PRODUCT_KNOW.limit,
       ...sentences(PRODUCT_PRICE_ANSWER.build),
       AFTER_SIX_MONTHS.question,
-      ...sentences(AFTER_SIX_MONTHS.answer).filter((line) => !line.startsWith("Every Kheelu comes with")),
+      AFTER_SIX_MONTHS_LINES.no,
     ],
     /* The eyebrow, the lead and Good to know (a line reworded, a line added) wrap to other heights: both sides. The
        questions' list loses one question and gains one (closed items, compared by the text pass): both sides, so the
-       help line and the close below line up. The two folds that leave: the mockup's side. */
+       help line and the close below line up. The two folds that leave: the mockup's side. The card's note (task Q2.13)
+       makes the card taller: the build's side (the fine print and the help line it loses are hidden on both sides by the
+       shared rules and D063's). */
     hidden: {
       both: [
         /* The hero's eyebrow and lead, named by the page's one h1 beside them, so the hero's own rules (HERO_PHONE_ART, the
@@ -2493,10 +2535,10 @@ export const SELLING_UPDATE = {
         'section[aria-labelledby="faq-title"] .kh-faq',
       ],
       mockup: ["#app", "#safety"],
-      build: [],
+      build: [".ks-offer__note"],
     },
     reason:
-      "the selling update on the product page: the hero's eyebrow and lead, no help line in the hero; the parent-app and safety folds moved to /safety; Good to know with \"instead of guessing\" and the daily limit; the price answer with the total and no GST; the delivery question off and the Kheelona+ question on (D064, D065; the D2C plan v2 §3)",
+      "the selling update on the product page: the hero's eyebrow and lead, no help line in the hero; the offer card with the Kheelona+ note, the price once and no help line under it (task Q2.13); the parent-app and safety folds moved to /safety; Good to know with \"instead of guessing\" and the daily limit; the price answer with the total and no GST; the delivery question off and the Kheelona+ question on (D064, D065; the D2C plan v2 §3)",
     approvedBy: SELLING_UPDATE_APPROVED,
   },
 } as const satisfies Readonly<Record<string, PageFacts>>;

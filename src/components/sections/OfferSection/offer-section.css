@@ -1,8 +1,10 @@
 /* OfferSection (task 3.2). The product page's offer fold (variant photo), ported from mockup/css/meet-kheelu.css:19-28
-   (.mk-offer-split, .mk-offer-col, .mk-offer-photo). Home's close (variant close) is the DS split as delivered. The share
-   link's row (ks-offer-share) is task 8c.2's (D061), after Gate A: no mockup rule stands for it. */
+   (.mk-offer-split, .mk-offer-col, .mk-offer-photo). Home's offer (variant home, task Q2.9) is the DS split as delivered.
+   The share link's row (ks-offer-share) is task 8c.2's (D061), after Gate A: no mockup rule stands for it. Since task
+   Q2.13 neither card has a help line under it (the D2C plan v2 §1.1, §3 fold 3), so the column is the card, the trust
+   row and the share link. */
 
-/* The card, the trust row and the help line in one column; the card fills it. */
+/* The card, the trust row and the share link in one column; the card fills it. */
 .ks-offer-col {
   display: grid;
   gap: var(--space-4);
@@ -14,19 +16,14 @@
 .ks-offer-col .kh-trustline {
   margin-top: var(--space-2);
 }
-/* The help line under the trust line sits --space-5 below it, two tap extensions (task 7.1a, B1; help-line.css): the
-   column's gap gives --space-4 of it. */
-.ks-offer-col > .ks-trust + .ks-help {
-  margin-top: calc(var(--space-5) - var(--space-4));
-}
 .ks-offer-photo {
   max-width: calc(var(--space-10) * 2); /* 2 × 128 = 256 */
   justify-self: center;
   width: 100%;
 }
-/* The share link under the card (task 8c.2, D061): an actions row, as every ghost link under a CTA block, --space-6 under
-   the help line (the DS row's own margin). In the column's grid the gap gives --space-4 of it, so both placements read
-   the same. */
+/* The share link under the trust row (task 8c.2, D061): an actions row, as every ghost link under a CTA block, --space-6
+   above it (the DS row's own margin). In the column's grid the gap gives --space-4 of it, so both placements read the
+   same. */
 .ks-offer-col > .ks-offer-share {
   margin-top: calc(var(--space-6) - var(--space-4));
 }
@@ -39,7 +36,6 @@
   }
   .ks-offer-col > .kh-offer,
   .ks-offer-col > .kh-trustline,
-  .ks-offer-col > .ks-help,
   .ks-offer-col > .ks-offer-share {
     width: 100%;
     max-width: calc(var(--space-10) * 3 + var(--space-7)); /* 3 × 128 + 48 = 432 */
@@ -48,9 +44,9 @@
     justify-self: start;
     max-width: calc(var(--space-10) * 4); /* 4 × 128 = 512 */
   }
-  /* Home's close (variant close; task Q2.1, D064 item 5): the board starts level with the offer card's top. The DS split
-     centres its columns (bundle.css:1136), which beside the taller column (card, Kheelona+ line, trust row, help line,
-     share link) put the board's top around the card's "Today, refundable" row. Without :has() it stays centred. */
+  /* Home's offer (variant home; task Q2.1, D064 item 5): the board starts level with the offer card's top. The DS split
+     centres its columns (bundle.css:1136), which beside the taller column (card, trust row, share link) put the board's
+     top around the card's "Today, refundable" row. Without :has() it stays centred. */
   .kh-split:has(> :first-child > .kh-offer) > .kh-art {
     align-self: start;
   }
