@@ -5,5 +5,10 @@
 .ks-store-head { padding-inline: var(--space-4); }
 .ks-store-head__in { display: flex; align-items: center; gap: var(--space-4); }
 .ks-store-head__help { margin: 0 0 0 auto; text-align: right; }
+/* The logo keeps the DS's 96 x 30 at every width, as in the marketing nav: the DS stops only the image from shrinking,
+   and its link, the row's flex item, gave way to the help line on phones (task Q2.16, consistency review QAP-5). The help
+   line's link stays whole, so on phones the line breaks "Questions?" / "Message us on WhatsApp." with no lone word. */
+.ks-store-head__in > .kh-logo-link { flex: none; }
+.ks-store-head__help a { white-space: nowrap; }
 
 @media (min-width: 1024px) { .ks-store-head { padding-inline: var(--space-7); } }

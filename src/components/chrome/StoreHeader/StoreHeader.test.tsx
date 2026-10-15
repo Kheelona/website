@@ -49,4 +49,13 @@ describe("StoreHeader", () => {
     expect(CSS).toContain(".ks-store-head__help { margin: 0 0 0 auto; text-align: right; }");
     expect(CSS).toContain("@media (min-width: 1024px) { .ks-store-head { padding-inline: var(--space-7); } }");
   });
+
+  /* Task Q2.16 (consistency review QAP-5): on phones the help line took the row's room and the logo's link, a flex item
+     that could shrink, drew the logo at 86.6 x 30 at 360 px and 75.5 x 30 at 320 (the marketing nav's is 96.2 x 30 at
+     every width); and the line broke "Questions? Message us on / WhatsApp.", the link split over two lines. The logo
+     keeps its size, and the link stays whole, so the line breaks "Questions? / Message us on WhatsApp.". */
+  it("keeps the logo at its size and the help line's link on one line", () => {
+    expect(CSS).toContain(".ks-store-head__in > .kh-logo-link { flex: none; }");
+    expect(CSS).toContain(".ks-store-head__help a { white-space: nowrap; }");
+  });
 });

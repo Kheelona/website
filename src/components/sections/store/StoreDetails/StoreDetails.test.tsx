@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import postcss from "postcss";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it, vi } from "vitest";
 import { FaqSection } from "@/components/sections/FaqSection/FaqSection";
@@ -12,6 +13,7 @@ import { storePage } from "@/content/en-IN/store/store-page";
 import { isSitePath } from "@/lib/links";
 import { buildOffer } from "@/lib/offer/offer";
 import { CLAIM_FIXES, SELLING_CLOSES } from "../../../../../test/e2e/support/deviations";
+import { readRepoFile } from "../../../../../test/e2e/support/repo";
 import { withSellerFacts } from "../../../../../test/e2e/support/seller-facts";
 import { mockupDiff, mockupFold, mockupRoute } from "../../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../../test/support/mockup-facts";
@@ -120,5 +122,26 @@ describe("PayBeside", () => {
     const ref = withSellerFacts(mockupFold("store", ".mk-pay-beside"));
     ref.querySelector(".mk-price")!.remove();
     expect(differences(container.firstElementChild!, ref)).toEqual([]);
+  });
+});
+
+/* Task Q2.16 (consistency review QAP-8): the trust links under the pay button had tap rows 36 px tall, their 12 px
+   extensions overlapping, because store.css:63 closed their rows to --space-4 while every other trust line keeps
+   TrustLine's --space-5 (trust-line.css: two extensions apart). The override is gone: the rows are TrustLine's. CSS only;
+   the checkout's markup and logic are unchanged. */
+describe("store-details.css", () => {
+  const rules = (path: string) => {
+    const out: Record<string, string[]> = {};
+    postcss.parse(readRepoFile(path)).walkRules((rule) => {
+      const key = rule.selectors.join(", ");
+      out[key] = [...(out[key] ?? []), ...rule.nodes.flatMap((d) => (d.type === "decl" ? [`${d.prop}: ${d.value}`] : []))];
+    });
+    return out;
+  };
+
+  it("lets the trust line under the pay button keep TrustLine's rows, two tap extensions apart", () => {
+    const store = rules("src/components/sections/store/StoreDetails/store-details.css");
+    expect(Object.keys(store).filter((selector) => /ks-pay-beside\s+\.ks-trust\b/.test(selector))).toEqual([]);
+    expect(rules("src/components/ui/TrustLine/trust-line.css")[".ks-trust"]).toContain("row-gap: var(--space-5)");
   });
 });
