@@ -1150,3 +1150,8 @@ found one red: `test/utm.test.ts` refused `src/content/en-IN/share.ts` (the shar
 address); ruled not an internal link and given a named, self-checking exception. Production build: 20 journal pages,
 no open placeholders. Deviation rows V38-V46 filed; the Gate B pack lists them and the WhatsApp ₹ check. Follow-ups
 folded into 8c.5 ([tasks](engineering/tasks.md) "8c.1-8c.4 merge rulings").
+
+## [2026-10-15 08:03] qa | Wave 8c merge: Home and the product page in the browser, green
+`KH_SLUGS=home,meet-kheelu` on the merged build (`aed858d`): visual and text parity (with the V38-V46 rules),
+first-screen, cta, axe, no-sideways, perf-budget, content-integrity, chrome, no-js: 190 passed, 8 skipped, 0 failed.
+The 8c worktrees removed (merged, clean). 8c.5 and 8c.6 building (workflow `wf_011a9512-2c5`, base `aed858d`).
