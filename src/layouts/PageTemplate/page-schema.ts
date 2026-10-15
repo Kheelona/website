@@ -53,7 +53,8 @@ function answersOf(entry: SectionEntry): readonly FaqItem[] {
     case "faq-section":
       return entry.config.variant === "store" ? [] : entry.config.items;
     case "trust-section": {
-      if (!entry.faq) return [];
+      // The pointer fold (task Q2.10) has no facts to ask about.
+      if (!entry.faq || entry.config.variant === "pointer") return [];
       const { heading, items } = entry.config;
       return items.map((item, i) => {
         if (item.title === undefined) {

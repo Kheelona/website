@@ -56,11 +56,24 @@ describe("the page's FAQPage", () => {
     const nodes = pageSchemaNodes(page([hero, modes, trust, faqSection]), TOKEN, PATH);
     const expected: FaqItem[] = [
       { id: "what-title", question: modes.config.heading.title, answer: modes.config.heading.lead! },
-      { id: "never-title-1", question: trust.config.items[0].title!, answer: trust.config.items[0].body },
+      // The fixture is a `never` fold; since task Q2.10 a `pointer` fold has no items, so the union's are optional.
+      { id: "never-title-1", question: trust.config.items![0].title!, answer: trust.config.items![0].body },
       ...items,
     ];
     expect(nodes).toEqual([faqPageNode(faqPlainItems(expected, TOKEN))]);
     expect(nodes[0].mainEntity).toHaveLength(4);
+  });
+
+  /* Task Q2.10: the product page's safety line (TrustSection `pointer`) has no facts, so it adds no question even if a page
+     opts it in. */
+  it("adds nothing for a trust fold that only points elsewhere (the pointer line)", () => {
+    const pointer = {
+      kind: "trust-section",
+      faq: true,
+      config: { variant: "pointer", id: "safety", pointer: "Where the safety facts live:", link: { label: "See how we built safety in", href: "/safety" } },
+    } as const satisfies SectionEntry;
+    expect(pageSchemaNodes(page([hero, pointer]), TOKEN, PATH)).toEqual([]);
+    expect(pageSchemaNodes(page([hero, pointer, faqSection]), TOKEN, PATH)).toEqual([faqPageNode(faqPlainItems(items, TOKEN))]);
   });
 
   it("leaves out the blocks the content does not opt in, and the store's FAQ (store.md: noindex, no FAQPage)", () => {

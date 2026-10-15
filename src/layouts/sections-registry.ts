@@ -64,9 +64,9 @@ import type { Copy } from "@/content/types";
  * registry adds what a section cannot know from content alone:
  * - the page's selling context ({...config, ...context}: the live offer, the one CTA label, the help line) for the
  *   selling sections, and the offer for every section that prints words through RichText;
- * - the slots, composed from content: a CTA block (CtaBlock, task 3.2) under a hero, after a films strip or last in
- *   a trust fold (since task Q2.9 also after a feature fold's words and a sticky scroll's line); setup's Wi-Fi tip
- *   after a ticks fold; the guide's inline sources inside the FAQ column; an
+ * - the slots, composed from content: a CTA block (CtaBlock, task 3.2) under a hero, after a films strip, last in
+ *   a trust fold or last in an example conversation's column (task Q2.10) (since task Q2.9 also after a feature fold's
+ *   words and a sticky scroll's line); setup's Wi-Fi tip after a ticks fold; the guide's inline sources inside the FAQ column; an
  *   article's answer before and sources after its body. Sections never import each other's selling parts (3.3).
  * Each slot is typed only where its section draws it, so content can never pass one that would be silently dropped.
  * `.ts`, not `.tsx`: the file the plan names; `createElement` stands in for JSX.
@@ -142,8 +142,9 @@ export interface SectionEntries {
     readonly sourceLabel?: string;
   };
   "related-guides": { readonly config: RelatedGuidesConfig };
-  /** The labelled example of what asking back sounds like (task 8c.3; the product page, after its steps). */
-  "example-conversation": { readonly config: ExampleConversationConfig };
+  /** The labelled example of what asking back sounds like (task 8c.3; the product page, after its steps); since task
+   *  Q2.10 the CTA block goes last in its column (`product-ask`, the D2C plan v2 §3 fold 6). */
+  "example-conversation": { readonly config: ExampleConversationConfig; readonly cta?: CtaBlockConfig };
 }
 
 export type SectionKind = keyof SectionEntries;
@@ -205,7 +206,7 @@ const REGISTRY: { readonly [K in SectionKind]: Renderer<K> } = {
       after: e.sources === undefined ? undefined : createElement(SourcesSection, e.sources),
     }),
   "related-guides": (e) => createElement(RelatedGuides, e.config),
-  "example-conversation": (e, ctx) => createElement(ExampleConversation, { ...e.config, offer: ctx.offer }),
+  "example-conversation": (e, ctx) => createElement(ExampleConversation, { ...e.config, offer: ctx.offer, cta: ctaBlock(e.cta, ctx) }),
 };
 
 /** Every kind, in the registry's order. */

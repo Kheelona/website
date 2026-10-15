@@ -58,8 +58,9 @@ function film(id: string): Film {
 }
 
 /** A film's name as an in-page link to its tile in the strip (FilmsStrip gives each tile its film's id): the strip's island
- *  plays the film when the link is pressed, and without JavaScript the link still takes the reader to it (task 8c.8). */
-function filmLink(id: string): string {
+ *  plays the film when the link is pressed, and without JavaScript the link still takes the reader to it (task 8c.8).
+ *  Exported for the product page's line under its sample chats, which names film 6 the same way (task Q2.10). */
+export function filmLink(id: string): string {
   return `[“${film(id).chip}”](#${film(id).id})`;
 }
 
@@ -150,19 +151,27 @@ export const faqs = {
     answer:
       `Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. If your child is 3, keep a grown-up nearby. ${AGE_SETUP}`,
   },
+  /* Rewritten by task Q2.10 (the D2C plan v2 §3 fold 11; D065 items 3-4): the total first (D028; the Product JSON-LD's
+     offerDescription reads it), no GST, no balance amount, no first 500 and no invoice line (GST and the breakdown only
+     at checkout). */
   "cost-and-advance": {
     id: "cost-and-advance",
     question: { token: "What does Kheelu cost, and what is the advance for?", full: "What does Kheelu cost?" },
     answer: {
-      token: `Kheelu is {price:headline} (incl. GST) for the ${CAP_UNITS_TEXT}, with delivery anywhere in India included. The {price:token} is a refundable advance to reserve yours; the remaining {price:balance} is due before delivery. After the first ${PREORDER_CAP_UNITS}, it is {price:full} (incl. GST), paid in full. Pay by UPI, card or net banking, with no payment fees, and get a GST invoice.`,
-      full: `Kheelu is {price:full} (incl. GST), paid in full when you order, with delivery anywhere in India included. Pay by UPI, card or net banking, with no payment fees, and get a GST invoice. {delivery}. If it isn’t right for your family, return it within ${RETURN_DAYS} days of delivery, no questions asked.`,
+      token:
+        "Kheelu is {price:headline} in total, with delivery anywhere in India included. The {price:token} is a refundable advance that reserves yours; the rest is due before delivery. Pay by UPI, card or net banking, with no payment fees.",
+      full: "Kheelu is {price:full} in total, paid in full when you order, with delivery anywhere in India included. Pay by UPI, card or net banking, with no payment fees. {delivery}.",
     },
   },
-  "delivery-start": {
-    id: "delivery-start",
-    question: "When does delivery start?",
+  /* Task Q2.10 (the D2C plan v2 §3 fold 11, the CMO's M5; D058 item 3, D065 item 6: Kheelona+ never starts charging
+     without the parent's own sign-up). The question the confirmed facts answer; what keeps working without Kheelona+ is
+     F7's, still open (plan §13 item 1). "When does delivery start?" left the page and this file: the offer card and the
+     trust line carry the date. */
+  "after-six-months": {
+    id: "after-six-months",
+    question: "Will Kheelona+ charge me after the 6 months?",
     answer:
-      "{delivery}. Orders are sent in the order they were placed, and you get a tracking link when yours leaves us. Delivery is included anywhere in India, with nothing to pay at the door; we don’t ship outside India. A reserved Kheelu is sent once the rest of the price is paid.",
+      "No, not unless you sign up for it yourself. Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. Nothing renews without you.",
   },
   "returns-and-warranty": {
     id: "returns-and-warranty",

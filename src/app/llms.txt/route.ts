@@ -89,7 +89,9 @@ export function llmsText(offer: Offer): string {
   for (const row of [...product.specs, ...product.declarations]) {
     const values = (Array.isArray(row.value) ? row.value : [row.value]) as readonly string[];
     if (values.some((v) => v.includes("{price:"))) continue; // amounts belong to the price answers below
-    const value = values.map(say).filter(Boolean).join(" · ");
+    /* The number only on /contact and the legal pages (D063 item 2): the consumer care declaration's call line, which the
+       product page prints for the Legal Metrology rules (task Q2.10), is left out here. */
+    const value = values.filter((v) => !v.includes("tel:")).map(say).filter(Boolean).join(" · ");
     if (value) lines.push(`- ${row.term}: ${value}`);
   }
 
@@ -107,8 +109,9 @@ export function llmsText(offer: Offer): string {
 
   lines.push("", "## Contact", "");
   /* The WhatsApp address in plain text (task Q2.9): the number is on /contact and the legal pages only (D063 item 2), so
-     a reader of this file sees how to reach the team here. */
-  lines.push(`- ${say(seller.help.contact)}: ${seller.support.whatsapp} · ${seller.support.email}`);
+     a reader of this file sees how to reach the team here; the email on its own line (each line restates one content
+     record, the machine-files test). */
+  lines.push(`- ${say(seller.help.contact)}: ${seller.support.whatsapp}`, `- ${seller.support.email}`);
   /* The number only on /contact and the legal pages (D063 item 2, D064 item 11; task Q2.3): the officer's line without it. */
   lines.push(`- ${say(`${seller.grievance.footerLine.lead} ${seller.grievance.footerLine.text}`)}`);
 

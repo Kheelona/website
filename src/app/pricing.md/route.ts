@@ -77,7 +77,10 @@ export function pricingText(offer: Offer): string {
     ...ABOUT.flatMap((id) => [`### ${plain(faqs[id].question)}`, "", plain(faqs[id].answer), ""]),
     `- ${seller.origin.line}`,
     `- ${maker.term}: ${plain(maker.value as string)}`,
-    `- ${plain(seller.help.contact)} · ${seller.support.email}`,
+    /* The WhatsApp address in plain text, as /llms.txt prints it (task Q2.9): the number is on /contact and the legal
+       pages only (D063 item 2), so a reader of this file sees how to reach the team here. */
+    `- ${plain(seller.help.contact)}: ${seller.support.whatsapp}`,
+    `- ${seller.support.email}`,
     "",
     `Last updated: ${PRICING_UPDATED}`,
     "",

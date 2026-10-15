@@ -31,6 +31,8 @@ const TEL = `tel:${SUPPORT_WHATSAPP_DISPLAY.replace(/\s/g, "")}`;
 const SHOWN = SUPPORT_WHATSAPP_DISPLAY;
 const MAILTO = `<a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>`;
 const WHATSAPP = `<a href="${WA}">WhatsApp</a>`;
+/** Markup as a literal pattern. */
+const escaped = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 /** The help lines' call link, as every mockup marks it. */
 const CALL = `<a href="${TEL}" class="mk-nowrap">call ${SHOWN}</a>`;
 /** The number as a link of its own (the footers, the grievance and team lines). */
@@ -73,9 +75,10 @@ export const SELLER_FACTS_RULES: readonly SellerFactsRule[] = [
     from: `you can ask us anything: ${WHATSAPP} or ${CALL}.`,
     to: `you can ask us anything: ${WHATSAPP} or email ${MAILTO}.`,
   },
-  /* Every "Questions?" line, the product FAQ's, the store's "Rather talk to a person?", the product's consumer care and
-     /thanks's help fold: seller.ts `help.contact`. */
-  { name: "help line", from: `${WHATSAPP} or ${CALL}`, to: `<a href="${WA}">WhatsApp us</a>` },
+  /* Every "Questions?" line, the product FAQ's, the store's "Rather talk to a person?" and /thanks's help fold:
+     seller.ts `help.contact`. Not the product page's consumer care declaration (`<span class="mk-care">`), which keeps
+     the number since task Q2.10: the Legal Metrology (Packaged Commodities) Rules ask for a consumer-care number. */
+  { name: "help line", from: new RegExp(`(?<!<span class="mk-care">)${escaped(`${WHATSAPP} or ${CALL}`)}`, "g"), to: `<a href="${WA}">WhatsApp us</a>` },
   { name: "store header's help line", from: `${WHATSAPP} or <a href="${TEL}">call</a>`, to: `<a href="${WA}">WhatsApp us</a>` },
   {
     name: "setup's contact line",
@@ -112,7 +115,7 @@ export const SELLER_FACTS_RULES: readonly SellerFactsRule[] = [
 /** How often each rule applies on each approved page (the built file, whole); a rule a page does not need is absent. */
 export const SELLER_FACTS_COUNTS: Readonly<Record<MockupSlug, Partial<Record<SellerFactsRuleName, number>>>> = {
   home: { "help line": 2, "GSTIN line": 1, "footer's contact line": 1 },
-  "meet-kheelu": { "help line": 5, "GSTIN line": 1, "footer's contact line": 1 },
+  "meet-kheelu": { "help line": 4, "GSTIN line": 1, "footer's contact line": 1 },
   safety: { "help line": 1, "GSTIN line": 1, "footer's contact line": 1 },
   "ai-toys-for-kids-in-india": { "help line": 1, "GSTIN line": 1, "footer's contact line": 1 },
   stories: { "help line": 1, "GSTIN line": 1, "footer's contact line": 1 },

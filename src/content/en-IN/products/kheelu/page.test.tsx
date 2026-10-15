@@ -11,18 +11,26 @@ import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../../test/e2e/support/page-checks";
 import {
+  AFTER_SIX_MONTHS,
   CLAIM_FIXES,
   COPY_FIXES,
-  EXPERT_CLIP,
-  EXPERT_CLIP_APPROVED,
   FAQ_FIXES,
   LANGUAGES_FAQ,
   OFFER_ADDITIONS,
+  PRODUCT_CHATS,
+  PRODUCT_COMPARE,
+  PRODUCT_HERO,
+  PRODUCT_KNOW,
+  PRODUCT_OFFER_ALT,
+  PRODUCT_SAFETY_LINE,
   PROOF_ADDITIONS,
   PROOF_ADDITIONS_APPROVED,
   PROOF_EXAMPLE_BUILD,
   PROOF_STEPS_BUILD,
   RETURNS_QUESTION,
+  SELLING_ADDITIONS,
+  SELLING_UPDATE,
+  SELLING_UPDATE_APPROVED,
   TEXT_DEVIATIONS,
   VISUAL_HIDDEN,
 } from "../../../../../test/e2e/support/deviations";
@@ -34,12 +42,12 @@ import { ROOT } from "../../../../../test/e2e/support/repo";
 import { mockupRoute as mockupPageRoute } from "../../../../../test/e2e/support/routes";
 import { withSellerFacts } from "../../../../../test/e2e/support/seller-facts";
 import { mockupLinks, mockupPage, STORE, words } from "../../../../../test/support/mockup-compare";
-import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../../test/support/mockup-facts";
-import { expertClip, expertFold } from "../../expert-video";
-import { faqs } from "../../faqs";
+import { blockSentences, factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../../test/support/mockup-facts";
+import { cta } from "../../cta";
+import { faqs, filmLink } from "../../faqs";
 import { filmQuotes, films } from "../../films";
 import { recognitionStrip } from "../../recognition";
-import { SAFETY_FACTS } from "../../trust";
+import { seller } from "../../seller";
 import { kheeluPage } from "./page";
 import { product } from "./product";
 
@@ -57,7 +65,10 @@ import { product } from "./product";
  * tab and two answers in the code-checked words; then with task 8c.2's offer additions (OFFER_ADDITIONS["meet-kheelu"];
  * D061): the card's later price in token mode and the share link under the card, tracked share-whatsapp; then with task
  * 8c.4's FAQ fix (FAQ_FIXES["meet-kheelu"]; D061): the questions fold answers "Which languages does Kheelu speak?" after
- * the first-week question.
+ * the first-week question; then with task Q2.10's selling update (SELLING_UPDATE["meet-kheelu"]; D064 items 2 and 8,
+ * D065; the D2C plan v2 §3): the hero's eyebrow and lead without the help line, the offer photo's alt, Good to know with
+ * "instead of guessing" and the daily limit, the parent-app and safety folds off the page (their words are /safety's,
+ * task Q2.11), the price answer with the total and no GST, the delivery question off and the Kheelona+ question on.
  */
 
 const PATH = "/products/kheelu";
@@ -66,13 +77,15 @@ const FULL = buildOffer("full");
 
 /** The page as the site shell holds it: the template's output in `main#main`. `main` is the page without the blocks
  *  task 8c.3 adds (PROOF_ADDITIONS; D061 item 4 and the main session's rulings: the parents' quotes, the recognition
- *  strip, the four steps and the example conversation) and without task 8c.6's expert clip (EXPERT_CLIP; D061 items
- *  12-13), what must equal the approved page; `whole` is the page as it renders, on which those blocks are tested below. */
+ *  strip, the four steps and the example conversation, on tabs since task Q2.10) and without the folds task Q2.10 adds
+ *  (SELLING_ADDITIONS: the comparison moved from Home and the safety line), what must equal the approved page with its
+ *  accepted changes; `whole` is the page as it renders, on which those blocks are tested below. (Task 8c.6's expert clip
+ *  left the page with task Q2.10: task Q2.9 takes it to Home, D064 item 8.) */
 function rendered(offer: Offer) {
   const html = `<!doctype html><html><body><main id="main">${renderToStaticMarkup(<PageTemplate page={kheeluPage} offer={offer} path={PATH} />)}</main></body></html>`;
   const whole = new DOMParser().parseFromString(html, "text/html");
   const doc = whole.cloneNode(true) as Document;
-  for (const selector of [...PROOF_ADDITIONS["meet-kheelu"].selectors, EXPERT_CLIP.selector]) for (const el of doc.querySelectorAll(selector)) el.remove();
+  for (const selector of [...PROOF_ADDITIONS["meet-kheelu"].selectors, ...SELLING_ADDITIONS["meet-kheelu"].selectors]) for (const el of doc.querySelectorAll(selector)) el.remove();
   return { html, doc, main: doc.querySelector("main")!, whole: whole.querySelector("main")! };
 }
 
@@ -88,17 +101,19 @@ const withoutPhoneArt = (main: Element) => {
 const BUILT = { ...RENDERED, main: withoutPhoneArt(RENDERED.main) };
 const APPROVED = mockupPage("meet-kheelu").querySelector("main")!;
 /** The approved page with the founder's page facts (task 6.7) and task 7.1b's copy fixes applied, then task 8b.1's claim
- *  fixes, task 8c.2's offer additions and task 8c.4's FAQ fix, each in a pass of its own; then D063 item 2: the help lines
- *  and the consumer care row without the call (task Q2.3; seller-facts.ts): what the build must say. */
-const MOCKUP = withSellerFacts(
+ *  fixes, task 8c.2's offer additions and task 8c.4's FAQ fix, each in a pass of its own: the mockup task Q2.10's selling
+ *  update starts from. */
+const BEFORE_SELLING = withFacts(
   withFacts(
-    withFacts(
-      withFacts(withFacts(APPROVED, [...PAGE_FACTS["meet-kheelu"].edits, ...COPY_FIXES["meet-kheelu"].edits]), CLAIM_FIXES["meet-kheelu"].edits),
-      OFFER_ADDITIONS["meet-kheelu"].edits,
-    ),
-    FAQ_FIXES["meet-kheelu"].edits,
+    withFacts(withFacts(APPROVED, [...PAGE_FACTS["meet-kheelu"].edits, ...COPY_FIXES["meet-kheelu"].edits]), CLAIM_FIXES["meet-kheelu"].edits),
+    OFFER_ADDITIONS["meet-kheelu"].edits,
   ),
+  FAQ_FIXES["meet-kheelu"].edits,
 );
+const SELLING = SELLING_UPDATE["meet-kheelu"];
+/** Then task Q2.10's selling update (SELLING_UPDATE) in a pass of its own, and D063 item 2: the help lines without the
+ *  call (task Q2.3; seller-facts.ts; the consumer care declaration keeps it, task Q2.10): what the build must say. */
+const MOCKUP = withSellerFacts(withFacts(BEFORE_SELLING, SELLING.edits));
 /** The folds: `main`'s sections, in order (React's image preload links and the JSON-LD script left out). */
 const folds = (main: Element) => [...main.children].filter((el) => el.tagName === "SECTION");
 const name = (el: Element) => el.getAttribute("aria-labelledby");
@@ -123,15 +138,23 @@ describe("the product page's meta (meet-kheelu.md \"At a glance\")", () => {
     description: toPlainText(kheeluPage.meta.description, buildOffer(mode)),
   });
 
-  it("is the mockup's title and token-mode description, word for word", () => {
-    const meta = mockupPageRoute("meet-kheelu");
-    expect(plain("token")).toEqual({ title: meta.title, description: meta.description });
+  it("keeps the mockup's title, word for word (the D2C plan v2 §3: unchanged)", () => {
+    expect(plain("token").title).toBe(mockupPageRoute("meet-kheelu").title);
+    expect(plain("full").title).toBe(mockupPageRoute("meet-kheelu").title);
   });
 
-  it("turns to the copy page's full-mode description once the first 500 are gone", () => {
-    expect(plain("full").description).toBe(
-      "Kheelu, the screen-free toy that talks back: it answers your child, then asks a question back. Ages 3 to 7. ₹7,999 (incl. GST), delivery included.",
+  /* Task Q2.10 (the D2C plan v2 §3 "Product page: title, meta, keywords"; D065 item 3): the total, never "incl. GST". */
+  it("describes the page with the total and no GST in both modes, as the plan words it", () => {
+    expect(plain("token").description).toBe(
+      "Kheelu, the screen-free toy that talks back: it answers your child, then asks a question back. Ages 3 to 7. ₹4,999 in total; ₹499 refundable advance.",
     );
+    expect(plain("full").description).toBe(
+      "Kheelu, the screen-free toy that talks back: it answers your child, then asks a question back. Ages 3 to 7. ₹7,999 in total, delivery included.",
+    );
+    for (const mode of ["token", "full"] as const) {
+      expect(plain(mode).description.length, mode).toBeLessThanOrEqual(155);
+      expect(plain(mode).description, mode).not.toMatch(/GST/);
+    }
   });
 
   it("shares the Kheelu card with the copy page's words, and passes pageMeta in both modes", () => {
@@ -142,18 +165,21 @@ describe("the product page's meta (meet-kheelu.md \"At a glance\")", () => {
 });
 
 describe("the product page as rendered (token mode)", () => {
-  it("holds the mockup's nine folds, in order, each named by the mockup's heading", () => {
+  it("holds the mockup's folds left after the selling update (task Q2.10), in order, each named by the mockup's heading", () => {
+    expect(folds(MOCKUP).map(name)).toEqual(["hero-title", "films-title", "offer-title", "modes-title", "specs-title", "faq-title", "close-title"]);
     expect(folds(BUILT.main).map(name)).toEqual(folds(MOCKUP).map(name));
     expect(folds(BUILT.main).map((f) => f.id)).toEqual(folds(MOCKUP).map((f) => f.id));
   });
 
-  it("changes the approved page only where the founder's facts, task 7.1b's copy fixes, task 8b.1's claim fixes and D063 do", () => {
-    const changed = folds(APPROVED).filter((fold, i) => words(fold) !== words(folds(MOCKUP)[i])).map(name);
+  it("changes the approved page only where the founder's facts, task 7.1b's copy fixes, task 8b.1's claim fixes and D063 do, before the selling update", () => {
+    const before = withSellerFacts(BEFORE_SELLING);
+    const changed = folds(APPROVED).filter((fold, i) => words(fold) !== words(folds(before)[i])).map(name);
     // Fold 2's heading and fold 8's sources line (V17, task 7.1b); fold 4's charging line and fold 7's details (V16); the
     // offer card, Good to know, fold 5, fold 6, fold 7 and two answers (V27, task 8b.1); the hero's and the close's help
     // lines (D063 item 2; task Q2.3).
     expect(changed).toEqual(["hero-title", "films-title", "offer-title", "modes-title", "app-title", "safety-title", "specs-title", "faq-title", "close-title"]);
-    for (const hide of CLAIM_FIXES["meet-kheelu"].hidden.both) expect(BUILT.main.querySelectorAll(hide), hide).toHaveLength(1);
+    // Each claim-fix block once, but those in the parent-app and safety folds, which left with task Q2.10.
+    for (const hide of CLAIM_FIXES["meet-kheelu"].hidden.both) expect(BUILT.main.querySelectorAll(hide), hide).toHaveLength(/^#app\b|safety-title/.test(hide) ? 0 : 1);
     const facts = withFacts(APPROVED, PAGE_FACTS["meet-kheelu"].edits);
     expect(folds(APPROVED).filter((fold, i) => words(fold) !== words(folds(facts)[i])).map(name)).toEqual(["modes-title", "specs-title"]);
   });
@@ -178,14 +204,15 @@ describe("the product page as rendered (token mode)", () => {
     const hrefs = (root: Element) => [...root.querySelectorAll("a[href]")].map((a) => a.getAttribute("href")!);
     // mockupLinks: the mockup's addresses as routes, each trust link with its part of the terms page (task 7.1a, m8).
     expect(hrefs(BUILT.main)).toEqual(mockupLinks(MOCKUP));
-    expect(hrefs(BUILT.main).filter((h) => h === STORE)).toHaveLength(4);
+    expect(hrefs(BUILT.main).filter((h) => h === STORE)).toHaveLength(3);
   });
 
   it("carries the mockup's CTA values, in order (architecture §8.3; meet-kheelu.md \"CTA tracking values\")", () => {
     const values = (root: Element) => [...root.querySelectorAll("[data-ph-capture-attribute-cta]")].map((el) => el.getAttribute("data-ph-capture-attribute-cta"));
     expect(values(BUILT.main)).toEqual(values(MOCKUP));
-    // share-whatsapp: the share link under the offer card (D061, task 8c.2), in the mockup through OFFER_ADDITIONS.
-    expect(values(BUILT.main)).toEqual(["product-top", "product-offer", "share-whatsapp", "product-safety", "product-safety-learn", "product-foot"]);
+    // share-whatsapp: the share link under the offer card (D061, task 8c.2), in the mockup through OFFER_ADDITIONS. The
+    // safety fold's product-safety and product-safety-learn left with it (task Q2.10); the whole page's are below.
+    expect(values(BUILT.main)).toEqual(["product-top", "product-offer", "share-whatsapp", "product-foot"]);
   });
 
   it("names what the mockup names: regions, lists, boards, buttons and markers (aria-label), in order", () => {
@@ -219,9 +246,11 @@ describe("the product page as rendered (token mode)", () => {
     const ids = (root: Element) => [...root.querySelectorAll("[id]")].map((el) => el.id);
     const built = ids(BUILT.main);
     for (const id of ids(MOCKUP)) expect(built, id).toContain(id);
-    for (const id of ["faq", "story-mode", "reserve", "offer", "specs", "films", "modes", "app", "safety", "close"]) {
-      expect(BUILT.main.querySelectorAll(`[id="${id}"]`), id).toHaveLength(1);
+    // #safety stays, on the safety line that points to /safety (task Q2.10); #app left with the parent-app fold.
+    for (const id of ["faq", "story-mode", "reserve", "offer", "specs", "films", "modes", "safety", "close"]) {
+      expect(RENDERED.whole.querySelectorAll(`[id="${id}"]`), id).toHaveLength(1);
     }
+    expect(RENDERED.whole.querySelector("#app")).toBeNull();
     expect(text(BUILT.main.querySelector("#story-mode"))).toBe("Story mode");
     expect(BUILT.main.querySelector("#reserve")?.getAttribute("data-ph-capture-attribute-cta")).toBe("product-foot");
   });
@@ -301,8 +330,9 @@ describe("the product page in full mode", () => {
   const { main } = rendered(FULL);
 
   it("prints the full-mode price line beside every chilli button and drops the split", () => {
-    // The short price line (D065 item 3; task Q2.8).
-    expect([...main.querySelectorAll(".ks-price")].map((p) => p.textContent)).toEqual(Array(3).fill("₹7,999 in total, paid in full when you order."));
+    // The short price line (D065 item 3; task Q2.8): the hero, the sample chats (task Q2.10) and the close.
+    const whole = rendered(FULL).whole;
+    expect([...whole.querySelectorAll(".ks-price")].map((p) => p.textContent)).toEqual(Array(3).fill("₹7,999 in total, paid in full when you order."));
     expect(main.querySelector(".kh-offer__split")).toBeNull();
   });
 
@@ -323,14 +353,15 @@ describe("the product page's structured data (architecture §9.2)", () => {
   it.each([
     ["token", TOKEN],
     ["full", FULL],
-  ] as const)("is the Product with its Offer, then the FAQPage of the nine questions and answers exactly as shown (%s mode)", (_mode, offer) => {
+  ] as const)("is the Product with its Offer, then the FAQPage of the questions and answers exactly as shown (%s mode)", (_mode, offer) => {
     const { nodes } = graph(offer);
     expect(nodes.map((n) => n["@type"])).toEqual(["Product", "FAQPage"]);
     const entities = nodes[1].mainEntity as { name: string; acceptedAnswer: { text: string } }[];
     const shown = [...rendered(offer).main.querySelectorAll("#faq .kh-faq__item")];
-    // The eighth is the languages question (task 8c.4, D061).
-    expect(entities).toHaveLength(9);
-    expect(entities[7].name).toBe(toPlainText(faqs.languages.question, offer));
+    // The questions the page lists (task Q2.10: the Kheelona+ question in, the delivery question out).
+    expect(entities.map((q) => q.name)).toContain(toPlainText(faqs.languages.question, offer));
+    expect(entities.map((q) => q.name)).toContain(AFTER_SIX_MONTHS.question);
+    expect(entities.map((q) => q.name)).not.toContain("When does delivery start?");
     expect(entities.map((q) => q.name)).toEqual(shown.map((item) => text(item.querySelector(".kh-faq__q"))));
     expect(entities.map((q) => q.acceptedAnswer.text)).toEqual(shown.map((item) => text(item.querySelector(".kh-faq__a"))));
   });
@@ -391,14 +422,6 @@ describe("the module's imports (structure §6, wave-4 close: page modules import
   });
 });
 
-describe("the shared facts it passes on (trust.ts)", () => {
-  it("hands the safety fold exactly trust.ts's three facts, each a DS icon (trust.test.ts guards the list itself)", () => {
-    const safety = kheeluPage.sections.find((s) => s.kind === "trust-section")!;
-    expect(safety.config.variant === "safety" && safety.config.facts).toEqual(SAFETY_FACTS);
-    for (const { icon } of SAFETY_FACTS) expect(Object.keys(ICON_PATHS)).toContain(icon);
-  });
-});
-
 describe("the founder's page facts as a text deviation (deviations.md V16; task 6.7)", () => {
   const FACTS = PAGE_FACTS["meet-kheelu"];
   const rule = TEXT_DEVIATIONS["meet-kheelu"].find((r) => r.approvedBy === FACTS.approvedBy)!;
@@ -424,8 +447,9 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
     for (const selector of sel("build")) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
   });
 
-  it("leaves beside them only the films heading and the sources line of the copy fixes (V17), then the claim fixes' blocks (V27), then the FAQ fix's question (task 8c.4), then the offer additions (task 8c.2), each found once on the page as it renders, then task 8c.3's added blocks", () => {
+  it("leaves beside them only the films heading and the sources line of the copy fixes (V17), then the claim fixes' blocks (V27), then the FAQ fix's question (task 8c.4), then the offer additions (task 8c.2), each found once on the page as it renders, then task 8c.3's added blocks, then the selling update's (task Q2.10)", () => {
     const claims = CLAIM_FIXES["meet-kheelu"];
+    const selling = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.approvedBy === SELLING_UPDATE_APPROVED);
     const faq = FAQ_FIXES["meet-kheelu"];
     const additions = OFFER_ADDITIONS["meet-kheelu"];
     // The hero's phone art (D061 item 1, task 8c.1) is hidden under 720 px only, on both sides: HeroSection's test holds it.
@@ -434,7 +458,8 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
       ["mockup", ".mk-hero .kh-art", "(max-width: 719px)"],
       ["build", ".ks-hero .kh-art", "(max-width: 719px)"],
     ]);
-    const others = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.approvedBy !== FACTS.approvedBy && !r.media);
+    const others = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.approvedBy !== FACTS.approvedBy && r.approvedBy !== SELLING_UPDATE_APPROVED && !r.media);
+    expect(selling.length).toBeGreaterThan(0);
     expect(others.map((r) => [r.side, r.selector, r.approvedBy])).toEqual([
       ...(["mockup", "build"] as const).flatMap((side) => ["#films-title", "#src-1"].map((selector) => [side, selector, COPY_FIXES["meet-kheelu"].approvedBy])),
       ...(["mockup", "build"] as const).flatMap((side) => claims.hidden.both.map((selector) => [side, selector, claims.approvedBy])),
@@ -442,10 +467,13 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
       ...faq.hidden.build.map((selector) => ["build", selector, faq.approvedBy]),
       ...additions.hidden.build.map((selector) => ["build", selector, additions.approvedBy]),
       ...PROOF_ADDITIONS["meet-kheelu"].selectors.map((selector) => ["build", selector, PROOF_ADDITIONS_APPROVED]),
-      ["build", EXPERT_CLIP.selector, EXPERT_CLIP_APPROVED],
     ]);
     for (const selector of additions.hidden.build) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
-    for (const selector of claims.hidden.both) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
+    // The claim fixes' hides in the parent-app and safety folds find nothing on the build: those folds left with the
+    // selling update (task Q2.10), which hides them whole on the mockup's side.
+    const gone = (selector: string) => /^#app\b|safety-title/.test(selector);
+    expect(claims.hidden.both.filter(gone)).toHaveLength(4);
+    for (const selector of claims.hidden.both) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(gone(selector) ? 0 : 1);
     // The build's alone holds the languages question: its hide finds it, and nothing else, on the page as it renders.
     for (const selector of faq.hidden.build) {
       expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
@@ -471,10 +499,10 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
       expect.objectContaining({ mockup: /^Specs$/, jsOff: true }),
     ]);
     // The route's other rules are P15's (V6, task 4.7), the founder's page facts (V16, task 6.7), task 7.1b's copy fixes
-    // (V17), task 8c.2's offer additions (D061, rows numbered at the merge), task 8c.3's added blocks, task 8c.6's expert
-    // clip, task 8b.1's claim fixes (V27) and task 8c.4's FAQ fix, for both runs: the FAQ answer, the details, the
-    // heading, the sources, the offer's two lines, the added blocks, the clip's lines, D058's lines and the languages
-    // question read the same with JavaScript off.
+    // (V17), task 8c.2's offer additions (D061, rows numbered at the merge), task 8c.3's added blocks, task Q2.10's
+    // selling update and its added folds, task 8b.1's claim fixes (V27) and task 8c.4's FAQ fix, for both runs: the FAQ
+    // answer, the details, the heading, the sources, the offer's two lines, the added blocks, the selling update's lines,
+    // D058's lines and the languages question read the same with JavaScript off. (Task 8c.6's expert clip left the page.)
     expect(TEXT_DEVIATIONS["meet-kheelu"].map((rule) => [rule.approvedBy.slice(0, "deviations.md V3".length), rule.jsOff ?? false])).toEqual([
       ["deviations.md V3", true],
       ["deviations.md V6", false],
@@ -482,7 +510,9 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
       ["deviations.md V1", false],
       ["deviations.md ro", false],
       [PROOF_ADDITIONS_APPROVED.slice(0, "deviations.md V3".length), false],
-      [EXPERT_CLIP_APPROVED.slice(0, "deviations.md V3".length), false],
+      [SELLING_UPDATE_APPROVED.slice(0, "deviations.md V3".length), false],
+      [SELLING_UPDATE_APPROVED.slice(0, "deviations.md V3".length), false],
+      [SELLING_UPDATE_APPROVED.slice(0, "deviations.md V3".length), true],
       ["deviations.md V2", false],
       ["deviations.md V4", false],
     ]);
@@ -490,9 +520,11 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
     expect(TEXT_DEVIATIONS["meet-kheelu"][3].approvedBy).toBe(COPY_FIXES["meet-kheelu"].approvedBy);
     expect(TEXT_DEVIATIONS["meet-kheelu"][4].approvedBy).toBe(OFFER_ADDITIONS["meet-kheelu"].approvedBy);
     expect(TEXT_DEVIATIONS["meet-kheelu"][5].approvedBy).toBe(PROOF_ADDITIONS_APPROVED);
-    expect(TEXT_DEVIATIONS["meet-kheelu"][6].approvedBy).toBe(EXPERT_CLIP_APPROVED);
-    expect(TEXT_DEVIATIONS["meet-kheelu"][7].approvedBy).toBe(CLAIM_FIXES["meet-kheelu"].approvedBy);
-    expect(TEXT_DEVIATIONS["meet-kheelu"][8].approvedBy).toBe(FAQ_FIXES["meet-kheelu"].approvedBy);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][6].approvedBy).toBe(SELLING_UPDATE_APPROVED);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][7].approvedBy).toBe(SELLING_UPDATE_APPROVED);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][8].approvedBy).toBe(SELLING_UPDATE_APPROVED);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][9].approvedBy).toBe(CLAIM_FIXES["meet-kheelu"].approvedBy);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][10].approvedBy).toBe(FAQ_FIXES["meet-kheelu"].approvedBy);
   });
 
   it("accepts on the build side exactly the stacked panels' lines, as the page prints them, and no other line of the page", () => {
@@ -515,51 +547,17 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
   });
 });
 
+
 /* Task 8c.3 (D061 item 4 and the main session's rulings, 2026-10-15): parents' own words under the films, the "Recognised
- * by." strip after them, and, just before "How it works", four plain steps and the labelled example conversation. The
- * approved page has none of them, so the tests above compare the page without them (PROOF_ADDITIONS), and these hold the
- * blocks themselves on the page as it renders. */
+ * by." strip after the offer column, and, just before "How it works", four plain steps and the labelled example
+ * conversation (three of them on tabs since task Q2.10). The approved page has none of them, so the tests above compare
+ * the page without them (PROOF_ADDITIONS), and these hold the blocks themselves on the page as it renders. */
 describe("the product page's added blocks (task 8c.3)", () => {
   const WHOLE = BUILT.whole;
   const fold = (label: string) => folds(WHOLE).find((f) => name(f) === label)!;
-  /** Straight quotes and apostrophes, for comparing the site's typography with the copy page's plain text. */
-  const plainQuotes = (s: string) => s.replace(/[“”]/g, '"').replace(/’/g, "'");
-  /** home.md fold 2 variant b's copy block, line by line: the heading, the label, each speaker and their words, the line after. */
-  const variantB = () => {
-    const md = readFileSync(join(ROOT, "wiki/site/pages/home.md"), "utf8");
-    const start = md.indexOf("### Variant (b): without the films");
-    const block = md.slice(md.indexOf("**Copy:**", start), md.indexOf("- **H2 accent:**", start));
-    return block
-      .split("\n")
-      .filter((l) => l.startsWith("> ") && l.trim() !== ">")
-      .map((l) => l.slice(2).trim())
-      .flatMap((l) => {
-        const said = /^\*\*(.+?):\*\* (.+)$/.exec(l);
-        if (said) return said[1] === "H2" ? [said[2]] : [said[1], said[2]];
-        return [l.replace(/^\*(.+)\*$/, "$1")];
-      });
-  };
-
-  it("orders the page at every width: hero, films with the quotes, the offer, the strip (8c.8), the expert clip (8c.6), the steps and the example, then the rest", () => {
-    expect(folds(WHOLE).map(name)).toEqual([
-      "hero-title",
-      "films-title",
-      "offer-title",
-      "recognised-title",
-      "expert-title",
-      "steps-title",
-      "example-title",
-      "modes-title",
-      "app-title",
-      "safety-title",
-      "specs-title",
-      "faq-title",
-      "close-title",
-    ]);
-    expect(fold("films-title").querySelector(".ks-films-ctrl + .ks-film-quotes")).not.toBeNull();
-  });
 
   it("prints the parents' quotes under the films, each button playing its film; every poster still lazy, no film before a tap", () => {
+    expect(fold("films-title").querySelector(".ks-films-ctrl + .ks-film-quotes")).not.toBeNull();
     const quotes = fold("films-title").querySelector(".ks-film-quotes")!;
     expect([...quotes.querySelectorAll("blockquote")].map((q) => q.textContent)).toEqual(filmQuotes.items.map((q) => q.quote));
     expect([...quotes.querySelectorAll("button")].map((b) => b.getAttribute("aria-label"))).toEqual(
@@ -569,20 +567,19 @@ describe("the product page's added blocks (task 8c.3)", () => {
     expect(WHOLE.querySelector("video")).toBeNull();
   });
 
-  /* Task 8c.8 (the CMO's wave 8c review, m2): the strip stood between the films and the offer, pushing the offer card
-     about 680 px down a phone page; it now follows the offer column (the share link the column ends on), before the
-     expert clip, so the films lead straight to the offer. */
-  it("shows the team's strip as built, right after the offer column and before the expert clip (task 8c.8), its marks lazy", () => {
+  /* Task 8c.8 (the CMO's wave 8c review, m2): the strip follows the offer column, so the films lead straight to the offer. */
+  it("shows the team's strip as built, right after the offer column (task 8c.8), its marks lazy", () => {
     const order = folds(WHOLE).map(name);
     expect(order.indexOf("recognised-title")).toBe(order.indexOf("offer-title") + 1);
     expect(order.indexOf("offer-title")).toBe(order.indexOf("films-title") + 1);
     expect(fold("offer-title").querySelector(".ks-offer-share")).not.toBeNull();
     const strip = fold("recognised-title");
-    expect(text(strip.querySelector("h2"))).toBe(recognitionStrip.title);
+    expect(text(strip.querySelector("#recognised-title"))).toBe(recognitionStrip.title);
     expect(strip.querySelectorAll(".ks-recognition__item")).toHaveLength(recognitionStrip.items.length);
     expect([...strip.querySelectorAll("img")].map((img) => img.getAttribute("loading"))).toEqual(["lazy", "lazy", "lazy"]);
   });
 
+  /* The built step heading stays (the D2C plan v2 §3 fold 5; the CMO's m7; the main session's ruling on §13 item 8 (a)). */
   it("states the four steps in the plan's words (D018, D017, D036: \"remembers\" beside reading every conversation)", () => {
     const steps = fold("steps-title");
     expect(steps.className).toBe("kh-section kh-section--band");
@@ -593,63 +590,11 @@ describe("the product page's added blocks (task 8c.3)", () => {
     expect(steps.querySelector("[data-reveal]")).toBeNull();
   });
 
-  /* Task 8c.8 (the CMO's wave 8c review, m11): step 3 already says it, so the exchange ends on the child's answer, without
-     variant b's closing sentence ("It answers first, then asks a question back. That's how your child ends up doing the
-     thinking."). */
-  it("shows the example conversation word for word as home.md fold 2 variant b, the label above the exchange, without its closing sentence (task 8c.8)", () => {
-    const example = fold("example-title");
-    expect(example.className).toBe("kh-section");
-    expect([...example.querySelectorAll("#example-title .kh-hand")].map((s) => s.textContent)).toEqual(["asking back"]);
-    const shown = [
-      text(example.querySelector("#example-title")),
-      text(example.querySelector(".ks-exchange__note")),
-      ...[...example.querySelectorAll(".ks-exchange__line")].flatMap((li) => [text(li.querySelector(".ks-exchange__who")), text(li).slice(text(li.querySelector(".ks-exchange__who")).length)]),
-    ];
-    expect(shown).toEqual([...PROOF_EXAMPLE_BUILD]);
-    expect(example.querySelector(".ks-exchange__after")).toBeNull();
-    expect(PROOF_EXAMPLE_BUILD.map(plainQuotes)).toEqual(variantB().slice(0, -1));
-    expect(variantB().at(-1)).toBe("It answers first, then asks a question back. That's how your child ends up doing the thinking.");
-    expect(text(WHOLE)).not.toContain("ends up doing the thinking");
-    // The label names the exchange; no doodle and no picture in the fold (the page's HTML budget, task 8c.3).
-    expect(example.querySelector(`ol[aria-labelledby="${example.querySelector(".ks-exchange__note")?.id}"]`)).not.toBeNull();
-    expect(example.querySelector("img, svg.ks-doodle, [data-reveal]")).toBeNull();
-  });
-
-  it("keeps the page's tracking values, the offer card's fragment and its one h1", () => {
-    const values = (root: Element) => [...root.querySelectorAll("[data-ph-capture-attribute-cta]")].map((el) => el.getAttribute("data-ph-capture-attribute-cta"));
-    expect(values(WHOLE)).toEqual(values(BUILT.main));
-    expect(WHOLE.querySelectorAll("#offer")).toHaveLength(1);
-    expect(WHOLE.querySelectorAll("h1")).toHaveLength(1);
-    expect(revealOnMoneyInDocument(BUILT.whole.ownerDocument)).toEqual([]);
-  });
-
   it("hides for the pixels exactly the added blocks, each found once on the page and gone from the page compared", () => {
     for (const selector of PROOF_ADDITIONS["meet-kheelu"].selectors) {
       expect(WHOLE.querySelectorAll(selector), selector).toHaveLength(1);
       expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(0);
     }
-  });
-
-  it("accepts in the text pass every added line as the page prints it, and excuses no approved line", () => {
-    const rule = TEXT_DEVIATIONS["meet-kheelu"].find((r) => r.approvedBy === PROOF_ADDITIONS_APPROVED)!;
-    const added = PROOF_ADDITIONS["meet-kheelu"].selectors.flatMap((selector) => [...WHOLE.querySelectorAll(selector)]);
-    // Every line the rule accepts, split as the text pass splits a page's lines into sentences.
-    for (const line of PROOF_ADDITIONS["meet-kheelu"].build) for (const s of sentences(line)) expect(rule.build!.test(s), s).toBe(true);
-    // And those lines are every word the added blocks print, in order (the browser's text pass gives the who labels and
-    // the steps' numerals lines of their own; the NVIDIA and nasscom marks carry their names as alt text).
-    const squash = (s: string) => s.replace(/\s/g, "");
-    const lines = [
-      ...filmQuotes.items.flatMap((q) => [q.quote, q.name, q.role, filmQuotes.watch]),
-      "Recognised by.",
-      "Karnataka Elevate",
-      "Founders Inc",
-      PROOF_STEPS_BUILD[0],
-      ...PROOF_STEPS_BUILD.slice(1).flatMap((line, i) => (i % 2 === 0 ? [String(i / 2 + 1), line] : [line])),
-      ...PROOF_EXAMPLE_BUILD,
-    ];
-    expect(squash(added.map((block) => block.textContent ?? "").join(""))).toBe(squash(lines.join("")));
-    expect(lines.every((line) => PROOF_ADDITIONS["meet-kheelu"].build.includes(line as never))).toBe(true);
-    for (const line of sentences(words(MOCKUP))) expect(rule.mockup.test(line), line).toBe(false);
   });
 
   it("passes the claims guard on every added line, and says nothing of an age under 3", () => {
@@ -660,81 +605,345 @@ describe("the product page's added blocks (task 8c.3)", () => {
   });
 });
 
-/* Task 8c.6 (D061 items 12-13): the expert clip, a fold the approved page does not have, right after the offer card and
-   before the four steps. Its markup and playback are FilmsStrip's test's (the section's single layout); its words and
-   files are expert-video.test.ts's; here, its place, the page's content feeding it, and the deviation rules for it. */
-describe("the product page's expert clip (task 8c.6)", () => {
+/* Task Q2.10: the selling update on the product page (D064 items 2 and 8, D065 items 1, 3-6 and 8; the main session's
+ * rulings of 2026-10-15; the copy: the D2C plan v2 §3 with the CMO's conditions, C1 and m7-m12). Twelve folds in the plan's
+ * order, the expert, parent-app and safety folds off the page (Home and /safety carry them, tasks Q2.9 and Q2.11), the
+ * three sample chats on the DS Tabs with their own button, the comparison moved here from Home, and safety in one line
+ * that points to /safety. The literals deviations.ts spells for the parity passes are held to the content here. */
+describe("the product page's selling update (task Q2.10; the D2C plan v2 §3)", () => {
   const WHOLE = BUILT.whole;
-  const fold = () => folds(WHOLE).find((f) => name(f) === "expert-title")!;
+  const fold = (label: string) => folds(WHOLE).find((f) => name(f) === label)!;
+  const section = <K extends (typeof kheeluPage.sections)[number]["kind"]>(kind: K) =>
+    kheeluPage.sections.filter((s): s is Extract<(typeof kheeluPage.sections)[number], { kind: K }> => s.kind === kind);
+  const values = (root: Element) => [...root.querySelectorAll("[data-ph-capture-attribute-cta]")].map((el) => el.getAttribute("data-ph-capture-attribute-cta"));
 
-  it("sits right after the strip that follows the offer column (task 8c.8) and before the four steps, as its own fold #expert", () => {
-    const order = folds(WHOLE).map(name);
-    expect(order.indexOf("expert-title")).toBe(order.indexOf("recognised-title") + 1);
-    expect(order.indexOf("recognised-title")).toBe(order.indexOf("offer-title") + 1);
-    expect(order.indexOf("steps-title")).toBe(order.indexOf("expert-title") + 1);
-    expect(fold().id).toBe("expert");
-    expect(WHOLE.querySelectorAll("#expert")).toHaveLength(1);
+  it("orders the page as the plan's twelve folds: hero, films, offer, recognised by, steps, sample chats, how it works, compare, safety, details, questions, close", () => {
+    expect(folds(WHOLE).map(name)).toEqual([
+      "hero-title",
+      "films-title",
+      "offer-title",
+      "recognised-title",
+      "steps-title",
+      "example-title",
+      "modes-title",
+      "compare-title",
+      "safety-line",
+      "specs-title",
+      "faq-title",
+      "close-title",
+    ]);
+    expect(WHOLE.querySelectorAll("h1")).toHaveLength(1);
   });
 
-  it("is the content's fold, the very config: the heading, the poster, the play control, then the credit and the disclosure", () => {
-    const entry = kheeluPage.sections.find((s) => s.kind === "films-strip" && "layout" in s.config && s.config.layout === "single");
-    expect(entry?.config).toBe(expertFold);
-    expect(entry).not.toHaveProperty("cta");
-    const f = fold();
-    expect(text(f.querySelector("h2"))).toBe("Watching isn’t talking.");
-    expect(text(f.querySelector(".kh-eyebrow"))).toBe(expertFold.heading.eyebrow);
-    expect(f.querySelector("button.ks-film__play")?.getAttribute("aria-label")).toBe(expertClip.play);
-    expect([...f.querySelectorAll("figcaption > p")].map((p) => text(p))).toEqual([expertClip.credit, expertClip.disclosure]);
+  it("takes the expert clip, the parent-app fold and the safety fold off the page (D064 items 2 and 8)", () => {
+    expect(WHOLE.querySelector("#expert, #app, [aria-labelledby='expert-title'], [aria-labelledby='app-title'], [aria-labelledby='safety-title']")).toBeNull();
+    expect(WHOLE.querySelector("img[src*='app-transcript'], img[src*='app-activity'], img[src*='app-privacy'], img[src*='expert-clip']")).toBeNull();
+    expect(text(WHOLE)).not.toContain("Every conversation, word for word.");
+    expect(text(WHOLE)).not.toContain("Safety you can check.");
+    expect(kheeluPage.sections.some((s) => s.kind === "films-strip" && "layout" in s.config)).toBe(false);
   });
 
-  it("loads only its poster, lazily, and no film before a tap", () => {
-    const pictures = [...fold().querySelectorAll("img")];
-    expect(pictures).toHaveLength(1);
-    expect(pictures[0].getAttribute("loading")).toBe("lazy");
-    expect(pictures[0].hasAttribute("fetchpriority")).toBe(false);
-    expect(WHOLE.querySelector("video, source, link[rel=preload][as=video]")).toBeNull();
+  it("carries the plan's CTA values in order: product-ask after the sample chats, the safety line's product-safety-learn, no product-safety", () => {
+    expect(values(WHOLE)).toEqual(["product-top", "product-offer", "share-whatsapp", "product-ask", "product-safety-learn", "product-foot"]);
+    expect(WHOLE.querySelectorAll(`a[href="${STORE}"]`)).toHaveLength(4);
   });
 
-  it("never names Kheelu, a doctor or Dr. in the fold: nothing says Kheelu fills the gap she describes (D061 item 13)", () => {
-    // Each element's words apart (textContent alone glues "captions" and "Dr." into one word), plus the image's alt.
-    const f = fold();
-    const printed = [...f.querySelectorAll("*")]
-      .flatMap((el) => [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent ?? ""))
-      .concat([...f.querySelectorAll("img")].map((img) => img.getAttribute("alt") ?? ""))
-      .join(" \n ");
-    expect(printed).not.toMatch(/kheelu/i);
-    expect(printed).not.toMatch(/\bdr\b\.?|doctor|counsel+or|recommended by|approved by|white coat/i);
+  describe("fold 1, the hero", () => {
+    const hero = () => fold("hero-title");
+
+    it("says the plan's eyebrow and lead under the built H1 (D065 item 1)", () => {
+      expect(text(hero().querySelector(".kh-eyebrow"))).toBe(PRODUCT_HERO.eyebrow.build);
+      expect(text(hero().querySelector("h1"))).toBe("Kheelu talks back. The good kind.");
+      expect(text(hero().querySelector(".kh-heading__lead"))).toBe(PRODUCT_HERO.lead.build);
+      const [config] = section("hero-section");
+      expect(config.config.heading).toMatchObject({ eyebrow: PRODUCT_HERO.eyebrow.build, lead: PRODUCT_HERO.lead.build });
+    });
+
+    it("ends on the button, its price line as a block of its own after it (C1), then the trust line: no help line", () => {
+      const button = hero().querySelector(".kh-btn--cta")!;
+      expect(button.getAttribute("data-ph-capture-attribute-cta")).toBe("product-top");
+      const price = hero().querySelector(".ks-price")!;
+      expect(price.tagName).toBe("P");
+      expect(button.contains(price) || button.closest(".kh-section__actions")!.contains(price)).toBe(false);
+      expect(button.compareDocumentPosition(price) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(text(price)).toBe("₹499 today, refundable. ₹4,999 in total.");
+      expect([...hero().querySelectorAll(".ks-trust li")].map(text)).toEqual(["Full refund until dispatch · 7-day returns", "Deliveries start mid-November"]);
+      expect(hero().querySelector(".ks-help")).toBeNull();
+    });
   });
 
-  it("hides for the pixels exactly the fold, found once on the page and gone from the page compared", () => {
-    const hides = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.approvedBy === EXPERT_CLIP_APPROVED);
-    expect(hides.map((r) => [r.side, r.selector, r.media])).toEqual([["build", EXPERT_CLIP.selector, undefined]]);
-    expect(WHOLE.querySelectorAll(EXPERT_CLIP.selector)).toHaveLength(1);
-    expect(WHOLE.querySelector(EXPERT_CLIP.selector)).toBe(fold());
-    expect(BUILT.main.querySelectorAll(EXPERT_CLIP.selector)).toHaveLength(0);
+  it("fold 3: describes the offer photo with the page's keyword, true of the picture", () => {
+    expect(fold("offer-title").querySelector(".ks-offer-photo img, .kh-photo img")?.getAttribute("alt")).toBe(PRODUCT_OFFER_ALT.build);
   });
 
-  it("accepts in the text pass every line the fold prints, eyebrow in capitals too, and excuses no approved line", () => {
-    const rule = TEXT_DEVIATIONS["meet-kheelu"].find((r) => r.approvedBy === EXPERT_CLIP_APPROVED)!;
-    const squash = (s: string) => s.replace(/\s/g, "");
-    expect(squash(fold().textContent ?? "")).toBe(squash(EXPERT_CLIP.build.join("")));
-    for (const line of EXPERT_CLIP.build) for (const s of sentences(line)) expect(rule.build!.test(s), s).toBe(true);
-    expect(rule.build!.test(expertFold.heading.eyebrow.toUpperCase())).toBe(true);
-    for (const line of sentences(words(MOCKUP))) expect(rule.mockup.test(line), line).toBe(false);
+  describe("fold 6, the sample chats (ruling 6)", () => {
+    const chats = () => fold("example-title");
+    const [entry] = section("example-conversation");
+
+    it("shows three labelled chats on the DS Tabs, each under the label, the plan's words exactly (the deviations' literals)", () => {
+      const tabs = entry.config.tabs!;
+      expect(tabs.items.map((t) => t.label)).toEqual([...PRODUCT_CHATS.tabs]);
+      const box = chats().querySelector(".ks-exchange > .kh-tabs[data-tabs]")!;
+      expect([...box.querySelectorAll('[role="tab"]')].map(text)).toEqual([...PRODUCT_CHATS.tabs]);
+      expect(box.querySelector('[role="tablist"]')?.getAttribute("aria-label")).toBe("What asking back sounds like.");
+      const panels = [...box.querySelectorAll(":scope > .kh-tabs__panel")];
+      expect(panels.map((p) => text(p.querySelector("[data-tab-heading]")))).toEqual([...PRODUCT_CHATS.tabs]);
+      for (const p of panels) expect(text(p.querySelector(".ks-exchange__note"))).toBe("Illustrative example, not a recording.");
+      const said = (p: Element) => [...p.querySelectorAll(".ks-exchange__line")].map((li) => text(li).slice(text(li.querySelector(".ks-exchange__who")).length));
+      expect(said(panels[0])).toEqual(PROOF_EXAMPLE_BUILD.filter((_, i) => i >= 2 && i % 2 === 1));
+      expect(said(panels[1])).toEqual([...PRODUCT_CHATS.dosa]);
+      expect(said(panels[2])).toEqual([...PRODUCT_CHATS.spider]);
+      // Each led by the child, then Kheelu answers and asks back, then the child: AI mode only (D017), no exclamation mark.
+      for (const p of panels) {
+        expect([...p.querySelectorAll(".ks-exchange__line")].map((li) => li.className.split("--").pop())).toEqual(["child", "kheelu", "child"]);
+        expect(text(p)).not.toContain("!");
+      }
+    });
+
+    it("ends on the line that plays film 6, then the button (product-ask), its price line a block of its own (C1) and the trust line, no help line", () => {
+      const column = chats().querySelector(".ks-exchange")!;
+      const after = column.querySelector(":scope > .ks-exchange__after")!;
+      expect(text(after)).toBe(PRODUCT_CHATS.after);
+      const link = after.querySelector("a")!;
+      expect(link.getAttribute("href")).toBe(LANGUAGES_FAQ.film.href);
+      expect(WHOLE.querySelector(LANGUAGES_FAQ.film.href)?.closest("section")?.id).toBe("films");
+      const button = column.querySelector(".kh-btn--cta")!;
+      expect(button.getAttribute("data-ph-capture-attribute-cta")).toBe("product-ask");
+      expect(after.compareDocumentPosition(button) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      const price = column.querySelector(".ks-price")!;
+      expect(price.tagName).toBe("P");
+      expect(button.closest(".kh-section__actions")!.contains(price)).toBe(false);
+      expect([...column.querySelectorAll(".ks-trust li")].map(text)).toEqual(["Full refund until dispatch · 7-day returns", "Deliveries start mid-November"]);
+      expect(column.querySelector(".ks-help")).toBeNull();
+      expect(entry.cta).toMatchObject({ cta: "product-ask" });
+    });
+
+    /* The review of task Q2.10: the line names film 6 the way the languages answer does, through faqs.ts's filmLink and
+       films.ts, so a renamed chip or id changes both together; PRODUCT_CHATS.after stays the literal check above. */
+    it("builds that line's film link from films.ts, as the languages answer does, never typing the film's chip or id", () => {
+      const six = films.find((f) => f.id === "a-story-in-two-languages")!;
+      expect(entry.config.after).toBe(`Hear it in two languages: watch ${filmLink(six.id)}.`);
+      expect(faqs.languages.answer).toContain(filmLink(six.id));
+      const source = readFileSync(join(ROOT, "src/content/en-IN/products/kheelu/page.ts"), "utf8");
+      expect(source).not.toContain(`“${six.chip}”`);
+      expect(source).not.toContain(`#${six.id}`);
+    });
+
+    it("reveals nothing and carries no picture (the HTML budget; nothing that sells reveals)", () => {
+      expect(chats().querySelector("img, svg.ks-doodle, [data-reveal], [data-draw]")).toBeNull();
+    });
   });
 
-  it("passes the claims guard on every line it prints", () => {
-    for (const line of EXPERT_CLIP.build) expect(findBanned(line), line).toEqual([]);
+  it("fold 7: Good to know says \"instead of guessing\" (D065 item 8) and the daily limit (D065 item 5), in the plan's order", () => {
+    const know = [...fold("modes-title").querySelectorAll("#know-title ~ ul > li")];
+    const lines = know.map(text);
+    expect(lines.slice(0, 5)).toEqual([
+      "AI mode needs your home Wi‑Fi. Story mode and Bluetooth mode work without it.",
+      PRODUCT_KNOW.browse.build,
+      PRODUCT_KNOW.wake,
+      PRODUCT_KNOW.limit,
+      "At setup, you enter your child’s age in the parent app.",
+    ]);
+    expect(lines[5]).toBe("It charges with the charger in the box.");
+    expect([...know[3].querySelectorAll("path")].map((path) => path.getAttribute("d"))).toEqual([ICON_PATHS.clock]);
+    // Never that a parent sets the limit (D065 item 5), and no Wi-Fi-at-rest line (G28, still open).
+    expect(text(fold("modes-title"))).not.toMatch(/you set (?:the|its) (?:daily )?limit|Wi‑?Fi off|switched off at rest/i);
+  });
+
+  it("fold 8: compares by kind of product, moved from Home in its built words, with no link (compare-learn stays Home's)", () => {
+    const compare = fold("compare-title");
+    expect(text(compare.querySelector(".kh-eyebrow"))).toBe(PRODUCT_COMPARE.eyebrow);
+    expect(text(compare.querySelector("#compare-title"))).toBe(PRODUCT_COMPARE.title);
+    expect(text(compare.querySelector(".kh-heading__lead"))).toBe(PRODUCT_COMPARE.lead);
+    const cards = [...compare.querySelectorAll(".ks-compare-stack .kh-card")];
+    expect(cards.map((c) => [text(c.querySelector(".kh-card__title")), text(c.querySelector(".kh-card__body")), [...c.querySelectorAll(".ks-compare-others li")].map(text)])).toEqual(
+      PRODUCT_COMPARE.rows.map((r) => [r.label, r.us, [...r.others]]),
+    );
+    expect(compare.querySelector(".ks-compare-stack .kh-caption")?.textContent).toBe(PRODUCT_COMPARE.caption);
+    expect(compare.querySelector(".kh-compare-wrap")?.getAttribute("aria-label")).toBe("Comparison by kind of product");
+    expect(compare.querySelector("a")).toBeNull();
+    expect(text(compare)).not.toMatch(/Alexa|Echo|ChatGPT|Miko|Tonies|YouTube/);
+  });
+
+  it("fold 9: says where the safety facts live in one line, then the built ghost link to /safety (product-safety-learn)", () => {
+    const line = fold("safety-line");
+    expect(line.id).toBe("safety");
+    expect(text(line.querySelector("#safety-line"))).toBe(PRODUCT_SAFETY_LINE.line);
+    const links = [...line.querySelectorAll("a")];
+    expect(links).toHaveLength(1);
+    expect(links[0].getAttribute("href")).toBe("/safety");
+    expect(links[0].className).toBe("kh-btn kh-btn--ghost");
+    expect(links[0].getAttribute("data-ph-capture-attribute-cta")).toBe("product-safety-learn");
+    expect(text(links[0])).toBe(PRODUCT_SAFETY_LINE.link);
+    expect(PRODUCT_SAFETY_LINE.link).toBe(cta.secondary["product-safety-learn"].label);
+  });
+
+  describe("fold 11, the questions", () => {
+    const shown = (offer: Offer) => [...rendered(offer).whole.querySelectorAll("#faq .kh-faq__item")].map((item) => text(item.querySelector(".kh-faq__q")));
+
+    it("asks the plan's questions in its order: the price question, then the Kheelona+ question after the first-week one, no delivery question", () => {
+      const ids = ["do-the-thinking", "talks-back", "right-for-a-three-year-old", "cost-and-advance", "returns-and-warranty", "after-the-first-week", "after-six-months", "languages", "speech"] as const;
+      for (const offer of [TOKEN, FULL]) expect(shown(offer)).toEqual(ids.map((id) => toPlainText(faqs[id].question, offer)));
+      expect(shown(TOKEN)).not.toContain("When does delivery start?");
+    });
+
+    it("answers the price question with the total and no GST, balance or first 500 (D065 items 3-4), in both modes", () => {
+      for (const offer of [TOKEN, FULL]) {
+        const faq = rendered(offer).whole.querySelector("#faq")!;
+        expect(text(faq)).toContain(toPlainText(faqs["cost-and-advance"].answer, offer));
+        expect(text(faq)).not.toMatch(/GST|₹4,500|first 500/);
+      }
+    });
+  });
+
+  it("prints no \"incl. GST\" and no balance amount outside the offer card's split rows; the MRP keeps its statutory \"(incl. of all taxes)\" (D065 item 3)", () => {
+    for (const offer of [TOKEN, FULL]) {
+      const page = rendered(offer).whole.cloneNode(true) as Element;
+      expect(text(page)).not.toContain("incl. GST");
+      expect(text(page.querySelector(".ks-declare"))).toContain("(incl. of all taxes)");
+      page.querySelectorAll(".kh-offer__split").forEach((el) => el.remove());
+      expect(text(page)).not.toContain(offer.prices.balance ?? "no balance");
+    }
+    expect(text(WHOLE.querySelector(".kh-offer__split"))).toContain("₹4,500");
+  });
+
+  it("declares consumer care with the support number, its one call link on the page, and the email (the Legal Metrology rules)", () => {
+    const rows = [...WHOLE.querySelectorAll(".ks-declare dl > div")];
+    const care = rows.find((row) => text(row.querySelector("dt")) === "Consumer care")!;
+    expect([...care.querySelectorAll(".ks-care")].map(text)).toEqual([`WhatsApp or call ${seller.support.phone}`, seller.support.email]);
+    expect([...WHOLE.querySelectorAll('a[href^="tel:"]')]).toEqual([care.querySelector(`a[href="${seller.support.tel}"]`)]);
+    const outside = WHOLE.cloneNode(true) as Element;
+    [...outside.querySelectorAll(".ks-declare dl > div")].find((row) => text(row.querySelector("dt")) === "Consumer care")!.remove();
+    expect(text(outside)).not.toContain(seller.support.phone);
+  });
+
+  it("shows each AI cast child at most once, and none beside the films' real quotes and captions (ruling 7; DS 03-cast)", () => {
+    const castIn = (el: Element) => [...el.querySelectorAll("img")].map((img) => /(?:Cast|Photo library)\/([a-z]+)-/.exec(decodeURIComponent(img.getAttribute("src") ?? ""))?.[1] ?? /\/([a-z]+)-(?:sticker|0\d)/.exec(decodeURIComponent(img.getAttribute("src") ?? ""))?.[1]).filter(Boolean);
+    const where = new Map<string, Set<string>>();
+    for (const f of folds(WHOLE)) for (const child of castIn(f)) where.set(child!, (where.get(child!) ?? new Set()).add(name(f)!));
+    expect(Object.fromEntries([...where].map(([child, at]) => [child, [...at]]))).toEqual({ myra: ["hero-title"], advik: ["modes-title"], ira: ["close-title"] });
+    expect(castIn(fold("films-title"))).toEqual([]);
+  });
+
+  it("keeps the Product node's description free of GST, its offer read from the price answer (D028: the total first)", () => {
+    const [block] = jsonLdBlocks(BUILT.html) as { "@graph": (Record<string, unknown> & { "@type": string })[] }[];
+    const node = block["@graph"].find((n) => n["@type"] === "Product")!;
+    expect(JSON.stringify(node)).not.toContain("incl. GST");
+    expect((node.offers as { description: string }).description).toBe(toPlainText(faqs["cost-and-advance"].answer, TOKEN));
+  });
+
+  it("passes the claims guard on every line the page prints, in both modes", () => {
+    for (const offer of [TOKEN, FULL]) {
+      const page = rendered(offer).whole;
+      const lines = [...page.querySelectorAll("h1, h2, h3, p, li, dt, dd, summary, a, button, td, th")].map(text).filter(Boolean);
+      const hits = lines.flatMap((line) => findBanned(line).map((h) => `${h.id}: ${line}`));
+      expect(hits).toEqual([]);
+    }
+  });
+
+  /* The rule for the parity passes (deviations.ts SELLING_UPDATE and SELLING_ADDITIONS): it changes and adds exactly what
+     the page does, and excuses no other approved line. */
+  describe("as a parity deviation", () => {
+    const once = (lines: readonly string[]) => [...new Set(lines)];
+    const rules = TEXT_DEVIATIONS["meet-kheelu"].filter((r) => r.approvedBy === SELLING_UPDATE_APPROVED && !r.jsOff);
+
+    it("lists exactly the sentences its edits change, against the mockup with the page's earlier rules applied", () => {
+      expect(factSentences(BEFORE_SELLING, SELLING.edits)).toEqual({ missing: [...SELLING.mockup], extra: [...SELLING.build] });
+    });
+
+    it("is two rules of the page, before the claim fixes: the first excuses and accepts exactly those sentences, the second accepts the added folds' lines and excuses nothing", () => {
+      expect(rules).toHaveLength(2);
+      const all = TEXT_DEVIATIONS["meet-kheelu"];
+      expect(all.indexOf(rules[0])).toBeLessThan(all.findIndex((r) => r.approvedBy === CLAIM_FIXES["meet-kheelu"].approvedBy));
+      expect(ruleReach(BEFORE_SELLING, SELLING.edits, rules[0])).toEqual({ excused: once(SELLING.mockup), accepted: once(SELLING.build) });
+      for (const line of sentences(words(BEFORE_SELLING))) expect(rules[1].mockup.test(line), line).toBe(false);
+      for (const rule of rules) expect(rule.jsOff).toBeUndefined();
+    });
+
+    it("hides for the pixels the blocks it lists, in its order, each found once on its side and holding a sentence its edits change", () => {
+      expect(hiddenProblems(BEFORE_SELLING, SELLING)).toEqual([]);
+      const hides = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.approvedBy === SELLING_UPDATE_APPROVED);
+      const sel = (side: string) => hides.filter((r) => r.side === side).map((r) => r.selector);
+      expect(sel("mockup")).toEqual([...SELLING.hidden.both, ...SELLING.hidden.mockup]);
+      expect(sel("build")).toEqual([...SELLING.hidden.both, ...SELLING.hidden.build, ...SELLING_ADDITIONS["meet-kheelu"].selectors]);
+      for (const selector of [...SELLING.hidden.both, ...SELLING.hidden.build]) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
+    });
+
+    /* Without JavaScript the three chats stand stacked under their tabs' words, as the details panels do (V3): the
+       JavaScript-off run (no-js.spec.ts) reads the second and third chats, and the first chat's words once (its tab and
+       its screen-reader heading read twice with JavaScript on). */
+    it("is one JavaScript-off rule for the stacked chats: it accepts every line of the second and third chat and excuses only the first tab's words", () => {
+      const jsOff = TEXT_DEVIATIONS["meet-kheelu"].filter((r) => r.approvedBy === SELLING_UPDATE_APPROVED && r.jsOff);
+      expect(jsOff).toHaveLength(1);
+      const panels = [...fold("example-title").querySelectorAll(".kh-tabs__panel")].map((el) => el.cloneNode(true) as Element);
+      for (const p of panels) p.querySelectorAll(".ks-exchange__who").forEach((who) => who.after("\n"));
+      const later = panels.slice(1).flatMap((p) => blockSentences(p).filter((line) => !PRODUCT_CHATS.tabs.includes(line as never)));
+      expect(later.length).toBeGreaterThan(10);
+      expect(later.filter((line) => !jsOff[0].build!.test(line))).toEqual([]);
+      const page = sentences(words(BEFORE_SELLING));
+      expect([...PRODUCT_CHATS.tabs, ...page].filter((line) => jsOff[0].mockup.test(line))).toEqual([PRODUCT_CHATS.tabs[0]]);
+    });
+
+    it("hides the added folds for the pixels, each found once on the page and gone from the page compared", () => {
+      for (const selector of SELLING_ADDITIONS["meet-kheelu"].selectors) {
+        expect(WHOLE.querySelectorAll(selector), selector).toHaveLength(1);
+        expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(0);
+      }
+    });
+
+    it("accepts in the text pass every line the added folds and tabs print (the comparison's phone cards, as the 390 px pass reads it), and nothing the mockup says", () => {
+      const accepted = (line: string) => TEXT_DEVIATIONS["meet-kheelu"].some((r) => r.build?.test(line));
+      const added = [
+        ...SELLING_ADDITIONS["meet-kheelu"].selectors.map((selector) => {
+          const el = WHOLE.querySelector(selector)!.cloneNode(true) as Element;
+          el.querySelectorAll(".kh-compare-wrap").forEach((table) => table.remove());
+          return el;
+        }),
+        ...[...fold("example-title").querySelectorAll('[role="tab"], .kh-tabs__panel, .ks-exchange__after')].map((el) => el.cloneNode(true) as Element),
+      ];
+      // Who says each line is a line of its own on the page (example-conversation.css: display block).
+      for (const el of added) el.querySelectorAll(".ks-exchange__who").forEach((who) => who.after("\n"));
+      // The sample chats' button and its lines take the place of the safety fold's on the page (both texts count them).
+      const lines = added.flatMap((el) => blockSentences(el));
+      expect(lines.length).toBeGreaterThan(30);
+      expect(lines.filter((line) => !accepted(line))).toEqual([]);
+      // The eyebrow renders in capitals (kh-eyebrow), as the browser's text reports it.
+      expect(accepted(PRODUCT_COMPARE.eyebrow.toUpperCase())).toBe(true);
+      expect(accepted(PRODUCT_HERO.eyebrow.build.toUpperCase())).toBe(true);
+    });
+
+    it("spells the content's words: the hero, the photo's alt, Good to know, the comparison, the chats and the safety line", () => {
+      const [modes] = section("modes-section");
+      expect(modes.config.know?.items.map((i) => i.text)).toEqual(expect.arrayContaining([PRODUCT_KNOW.browse.build, PRODUCT_KNOW.wake, PRODUCT_KNOW.limit]));
+      const [offerFold] = section("offer-section");
+      expect(offerFold.config.variant === "photo" && offerFold.config.photo.alt).toBe(PRODUCT_OFFER_ALT.build);
+      const [compare] = section("compare-by-category");
+      expect(compare.config.rows.map((r) => [r.label, r.phone.us, [...r.phone.others]])).toEqual(PRODUCT_COMPARE.rows.map((r) => [r.label, r.us, [...r.others]]));
+      expect([compare.config.heading.eyebrow, toPlainText(compare.config.heading.title), compare.config.heading.lead, compare.config.caption]).toEqual([
+        PRODUCT_COMPARE.eyebrow,
+        PRODUCT_COMPARE.title,
+        PRODUCT_COMPARE.lead,
+        PRODUCT_COMPARE.caption,
+      ]);
+      const [chats] = section("example-conversation");
+      const tabs = chats.config.tabs!;
+      expect(tabs.items[1].lines.map((l) => l.text)).toEqual([...PRODUCT_CHATS.dosa]);
+      expect(tabs.items[2].lines.map((l) => l.text)).toEqual([...PRODUCT_CHATS.spider]);
+      expect(toPlainText(chats.config.after!)).toBe(PRODUCT_CHATS.after);
+      const pointer = section("trust-section").find((s) => s.config.variant === "pointer")!;
+      expect(pointer.config.variant === "pointer" && [pointer.config.pointer, pointer.config.link.label]).toEqual([PRODUCT_SAFETY_LINE.line, PRODUCT_SAFETY_LINE.link]);
+    });
   });
 });
 
 /* Task 8c.8 (the CMO's review of wave 8c on the beta, m7 and m8; the main session's rulings, 2026-10-15): the questions
-   fold's two changes, on the page as it renders and in its FAQPage JSON-LD. The sixth question takes Home's words with its
-   own second half (the answer unchanged), and the languages answer's film name links to that film's tile in the strip, so
-   a parent can play it from the answer (the strip's island; FilmsStrip's test). */
+   fold's two changes, on the page as it renders and in its FAQPage JSON-LD. The returns question takes Home's words with
+   its own second half (the answer unchanged), and the languages answer's film name links to that film's tile in the
+   strip, so a parent can play it from the answer (the strip's island; FilmsStrip's test). Each question is found by its
+   words, so another question added before it moves nothing here. */
 describe("the product page's questions after the CMO's wave 8c review (task 8c.8)", () => {
   const WHOLE = BUILT.whole;
-  const item = (n: number) => WHOLE.querySelectorAll("#faq .kh-faq__item")[n - 1];
+  const item = (question: string) => [...WHOLE.querySelectorAll("#faq .kh-faq__item")].find((el) => text(el.querySelector(".kh-faq__q")) === question)!;
   type Question = { name: string; acceptedAnswer: { text: string } };
   const faqPage = (offer: Offer): Question[] => {
     const [block] = jsonLdBlocks(rendered(offer).html) as { "@graph": { "@type": string; mainEntity?: Question[] }[] }[];
@@ -742,24 +951,22 @@ describe("the product page's questions after the CMO's wave 8c review (task 8c.8
   };
 
   it("m7: asks \"What if my child doesn’t like it, or it stops working?\", the answer unchanged, on the page and in the JSON-LD", () => {
-    expect(text(item(6).querySelector(".kh-faq__q"))).toBe(RETURNS_QUESTION.build);
-    expect(text(item(6).querySelector(".kh-faq__a"))).toBe(toPlainText(faqs["returns-and-warranty"].answer, TOKEN));
+    expect(text(item(RETURNS_QUESTION.build).querySelector(".kh-faq__a"))).toBe(toPlainText(faqs["returns-and-warranty"].answer, TOKEN));
     expect(text(WHOLE)).not.toContain(RETURNS_QUESTION.mockup);
     for (const offer of [TOKEN, FULL]) {
-      const sixth = faqPage(offer)[5];
-      expect(sixth.name).toBe(RETURNS_QUESTION.build);
-      expect(sixth.acceptedAnswer.text).toBe(toPlainText(faqs["returns-and-warranty"].answer, offer));
+      const asked = faqPage(offer).find((q) => q.name === RETURNS_QUESTION.build);
+      expect(asked?.acceptedAnswer.text).toBe(toPlainText(faqs["returns-and-warranty"].answer, offer));
     }
   });
 
   it("m8: links the languages answer's film name to film 6's tile in the strip, the words unchanged on the page and in the JSON-LD", () => {
-    const answer = item(8).querySelector(".kh-faq__a")!;
+    const answer = item(LANGUAGES_FAQ.question).querySelector(".kh-faq__a")!;
     expect(text(answer)).toBe(LANGUAGES_FAQ.answer);
     const links = [...answer.querySelectorAll("a")];
     expect(links.map((a) => [a.getAttribute("href"), a.textContent])).toEqual([[LANGUAGES_FAQ.film.href, LANGUAGES_FAQ.film.name]]);
     const tile = WHOLE.querySelector(LANGUAGES_FAQ.film.href)!;
     expect(tile.closest("section")?.id).toBe("films");
     expect(tile.getAttribute("data-video-id")).toBe(LANGUAGES_FAQ.film.href.slice(1));
-    expect(faqPage(TOKEN)[7].acceptedAnswer.text).toBe(LANGUAGES_FAQ.answer);
+    expect(faqPage(TOKEN).find((q) => q.name === LANGUAGES_FAQ.question)?.acceptedAnswer.text).toBe(LANGUAGES_FAQ.answer);
   });
 });

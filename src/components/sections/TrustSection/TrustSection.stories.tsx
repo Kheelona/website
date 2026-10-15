@@ -108,31 +108,28 @@ export const Facts: Story = {
   },
 };
 
+/** The "never" fold's arguments, shared by its two stories (one object, so the six-item story reads the five's). */
+const NEVER = {
+  variant: "never",
+  heading: { eyebrow: "Never", title: "What you {mark:won’t} find in Kheelu.", id: "never-title" },
+  items: [
+    { icon: "eye-slash", title: "No camera.", body: "It can’t see your child or your home." },
+    { icon: "speaker-high", title: "No screen.", body: "Your child talks and listens instead of watching." },
+    { icon: "wifi-slash", title: "No web browsing.", body: "It can’t browse or search the web." },
+    { icon: "x", title: "No ads.", body: "Not in the toy, and not in the parent app." },
+    { icon: "smiley", title: "No secrets.", body: "It never asks your child to keep one from you." },
+  ],
+  link: { label: "How to choose an AI toy: five checks", href: "/ai-toys-for-kids-in-india" },
+} as const;
+
 /** Safety fold 3: five "never" items, three then two on laptops. */
-export const Never: Story = {
-  args: {
-    variant: "never",
-    heading: { eyebrow: "Never", title: "What you {mark:won’t} find in Kheelu.", id: "never-title" },
-    items: [
-      { icon: "eye-slash", title: "No camera.", body: "It can’t see your child or your home." },
-      { icon: "speaker-high", title: "No screen.", body: "Your child talks and listens instead of watching." },
-      { icon: "wifi-slash", title: "No web browsing.", body: "It can’t browse or search the web." },
-      { icon: "x", title: "No ads.", body: "Not in the toy, and not in the parent app." },
-      { icon: "smiley", title: "No secrets.", body: "It never asks your child to keep one from you." },
-    ],
-    link: { label: "How to choose an AI toy: five checks", href: "/ai-toys-for-kids-in-india" },
-  },
-};
+export const Never: Story = { args: NEVER };
 
 /** Safety fold 3 since task Q2.11: six items with the daily limit (D065 item 5), three and three on laptops. */
 export const NeverSix: Story = {
   args: {
-    ...Never.args,
-    variant: "never",
-    items: [
-      ...(Never.args?.items ?? []),
-      { icon: "clock", title: "No talking all day.", body: "Each Kheelu has a daily limit on how long it talks." },
-    ],
+    ...NEVER,
+    items: [...NEVER.items, { icon: "clock", title: "No talking all day.", body: "Each Kheelu has a daily limit on how long it talks." }],
   },
 };
 
@@ -167,5 +164,17 @@ export const Meets: Story = {
     ],
     pointer: "How Kheelu understands and answers your child, and how long conversations are kept, are on our safety page.",
     link: { label: "See the full safety facts", href: "/safety", icon: "shield-check" },
+  },
+};
+
+/** Product fold 9 (task Q2.10; the D2C plan v2 §3): the safety facts live on /safety, so the product page says where in
+ *  one line, then the built ghost link there (`product-safety-learn`). */
+export const Pointer: Story = {
+  args: {
+    variant: "pointer",
+    id: "safety",
+    band: true,
+    pointer: "When the microphone is on, how Kheelu answers, and what you can read and delete, fact by fact:",
+    link: { label: "See how we built safety in", href: "/safety", cta: "product-safety-learn" },
   },
 };

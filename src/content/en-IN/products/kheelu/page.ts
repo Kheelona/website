@@ -7,24 +7,19 @@ import kheeluOnFur from "@ds/assets/Kheelu/kheelu-on-fur.jpg";
 import advikWhisper from "@ds/assets/Photo library/advik-02-whispering-to-kheelu-web.webp";
 import heartChilli from "@ds/assets/Shapes/heart-chilli.svg";
 import starSun from "@ds/assets/Shapes/star-sun.svg";
-import appActivity from "@/assets/app/app-activity.webp";
-import appPrivacy from "@/assets/app/app-privacy.webp";
-import appTranscript from "@/assets/app/app-transcript.webp";
+import type { ExampleConversationLines } from "@/components/sections/ExampleConversation/example-conversation.types";
 import type { ModeCardCopy } from "@/components/sections/ModesSection/modes-section.types";
-import type { IconName } from "@/components/ui/Icon/Icon";
 import type { LanguageChip } from "@/components/ui/LanguageChips/LanguageChips";
 import type { TrustItem } from "@/content/types";
 import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
 import { withoutHiddenRows } from "@/lib/content/placeholder";
 import { cta } from "../../cta";
-import { expertFold } from "../../expert-video";
-import { faqs, pickFaqs } from "../../faqs";
+import { faqs, filmLink, pickFaqs } from "../../faqs";
 import { filmQuotes, films, filmsStrip } from "../../films";
-import { offerCopy } from "../../offer";
-import { RETENTION_LINE, RETURN_DAYS, RETURN_PICKUP_FREE, WARRANTY_MONTHS } from "../../policies";
+import { RETURN_DAYS, RETURN_PICKUP_FREE, WARRANTY_MONTHS } from "../../policies";
 import { recognitionStrip } from "../../recognition";
 import { seller } from "../../seller";
-import { SAFETY_FACTS, TRUST_COMPACT, TRUST_OFFER, trustItems, type TrustId } from "../../trust";
+import { TRUST_COMPACT, TRUST_OFFER, trustItems, type TrustId } from "../../trust";
 import { product, type Mode } from "./product";
 
 /**
@@ -42,13 +37,17 @@ import { product, type Mode } from "./product";
  * (the CMO's review of wave 8c, m2 and m11; the main session's rulings): the strip moves from before the offer to right
  * after the offer column, before the expert clip, and the example conversation ends on the child's answer, without its
  * closing sentence, which step 3 already says.
+ * Then task Q2.10, the selling update (D064 items 2 and 8, D065 items 1, 3-6 and 8, the main session's rulings of
+ * 2026-10-15; the copy: wiki/site/d2c-conversion-plan-2026-10-15.md v2 §3 with the CMO's conditions): twelve folds in the
+ * plan's order. The hero takes Home's eyebrow and the founder's lead, without the help line; the expert clip goes to Home
+ * (task Q2.9) and the parent-app and safety folds to /safety (task Q2.11); the sample chats are three, on the DS Tabs, with
+ * their own button (`product-ask`); "How it works" says "instead of guessing" and the daily limit; the comparison moves
+ * here from Home; safety is one line with the built link to /safety; the price question leads with the total, without GST,
+ * and the Kheelona+ question follows the first-week one. Deviation rows: the main session's (deviations.ts SELLING_UPDATE).
  */
 
 const trust = (ids: readonly TrustId[]): TrustItem[] => ids.map((id) => trustItems[id]);
 const COMPACT = trust(TRUST_COMPACT);
-
-/** The parent app's real screens (D044, D046) carry the founder-confirmed caption on every page that shows them. */
-const APP_CAPTION = "The Kheelona app is live on Apple’s App Store and the Google Play Store.";
 
 /** Fold 4's lead: the page's answer-first statement of what Kheelu is, also the Product node's description. */
 const WHAT_IT_IS =
@@ -61,6 +60,20 @@ const MODE_CARDS: Readonly<Record<Mode["id"], Omit<ModeCardCopy, "title" | "icon
   bluetooth: { tone: "chilli", body: "Pair your phone and use it as a speaker." },
 };
 
+/** The sample chats' heading, which also names their tab row (the plan gives the row no words of its own). */
+const CHATS_TITLE = "What {hand:asking back} sounds like.";
+const CHATS_LABEL = "What asking back sounds like.";
+/** One sample chat: the child asks, Kheelu answers and asks one back, the child answers (D017; AI mode only, ruling 6). */
+const chat = (ask: string, answer: string, reply: string): ExampleConversationLines => [
+  { speaker: "child", who: "Your child", text: ask },
+  { speaker: "kheelu", who: "Kheelu", text: answer },
+  { speaker: "child", who: "Your child", text: reply },
+];
+
+/** The product-safety-learn link as the safety line's ghost link (the D2C plan v2 §3 fold 9): its built label and
+ *  address, without the shield, which would make it a secondary button. */
+const SAFETY_LINK = cta.secondary["product-safety-learn"];
+
 /** A language chip: its own name in its own `lang`, the English name under it (English itself needs neither). */
 const chip = ({ name, native, lang }: (typeof product.languages)[number]): LanguageChip =>
   native === name ? { native } : { native, english: name, lang };
@@ -68,10 +81,11 @@ const chip = ({ name, native, lang }: (typeof product.languages)[number]): Langu
 export const kheeluPage = {
   meta: {
     title: "Kheelu by Kheelona: the toy that talks back, ages 3 to 7",
+    /* The D2C plan v2 §3 (task Q2.10; D065 item 3): the total, without "incl. GST". */
     description: {
       token:
-        "Kheelu, the screen-free toy that talks back: it answers your child, then asks a question back. Ages 3 to 7. {price:headline} (incl. GST); {price:token} refundable advance.",
-      full: "Kheelu, the screen-free toy that talks back: it answers your child, then asks a question back. Ages 3 to 7. {price:full} (incl. GST), delivery included.",
+        "Kheelu, the screen-free toy that talks back: it answers your child, then asks a question back. Ages 3 to 7. {price:headline} in total; {price:token} refundable advance.",
+      full: "Kheelu, the screen-free toy that talks back: it answers your child, then asks a question back. Ages 3 to 7. {price:full} in total, delivery included.",
     },
     og: { image: "/og/kheelu.jpg", alt: "Kheelu, the cream plush rabbit that talks back" },
   },
@@ -81,11 +95,12 @@ export const kheeluPage = {
       kind: "hero-section",
       config: {
         variant: "product",
+        /* The D2C plan v2 §3 fold 1 (task Q2.10; D065 item 1): Home's eyebrow, the built H1, the founder's lead. */
         heading: {
           id: "hero-title",
-          eyebrow: "Ages 3 to 7",
+          eyebrow: "Screen-free AI toy · Ages 3 to 7",
           title: "Kheelu talks back. {hand:The good kind.}",
-          lead: "A screen-free plush toy from Kheelona. It answers your child, then asks a question back, so they do the thinking.",
+          lead: "A soft plush rabbit that answers every why, then asks one back.",
         },
         art: {
           tone: "blue",
@@ -111,7 +126,8 @@ export const kheeluPage = {
           { doodle: { name: "chalk-speech-bubble" }, left: 43, width: 11, top: 20, rotate: -8 },
         ],
       },
-      cta: { cta: "product-top", arrow: true, block: true, layout: "stack", trust: COMPACT, helpLine: true },
+      /* No help line beside the hero's button (the D2C plan v2 §1.1: the closes and the store carry it). */
+      cta: { cta: "product-top", arrow: true, block: true, layout: "stack", trust: COMPACT },
     },
     /* Fold 2 · The seven parent films (D040), every poster lazy (N19). */
     {
@@ -145,16 +161,16 @@ export const kheeluPage = {
         /* Under the card's button, the offer cards' row (task Q2.8's review; the D2C plan v2 §1.1, product fold 3): the one
            risk-reversal line, the delivery line, then the card's third row. */
         trust: trust(TRUST_OFFER),
-        photo: { src: kheeluOnFur, alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." },
+        /* The page's keyword in the alt, true of the picture (the D2C plan v2 §3 fold 3). */
+        photo: { src: kheeluOnFur, alt: "Kheelu by Kheelona, the cream plush rabbit that talks back, with rainbow ears and a speaker in its tummy." },
       },
     },
     /* "Recognised by." (task 8c.3; D061's rulings): the /team strip as built (D054 item 20), read from the team page, names
-       only. Since task 8c.8 (the CMO's wave 8c review, m2) right after the offer column, which ends on the share link, and
-       before the expert clip: before the offer it pushed the offer card about 680 px down a phone page. */
+       only. Since task 8c.8 (the CMO's wave 8c review, m2) right after the offer column, which ends on the share link:
+       before the offer it pushed the offer card about 680 px down a phone page. (Its small-label form, as on Home, is
+       RecognitionStrip's `label` variant, task Q2.9's; the main session switches it at the merge: the D2C plan v2 §3
+       fold 4, the CMO's m10.) The expert clip that followed it went to Home with task Q2.10 (task Q2.9; D064 item 8). */
     { kind: "recognition-strip", config: recognitionStrip },
-    /* The expert clip, its own fold after the offer card and the strip (task 8c.6; D061 items 12-13; task 8c.8): 34 seconds
-       on screens and talk, poster first and played on a tap, the credit and the disclosure under it (expert-video.ts). */
-    { kind: "films-strip", config: expertFold },
     /* The loop in four plain steps, just before "How it works" (task 8c.3; D061's rulings, the CMO's AP-14): the button
        first (D018), answer then ask back (D017), and "remembers" beside the parent reading every conversation (D036 #2).
        On the band, so it stands apart from the offer above and the example below. */
@@ -180,25 +196,54 @@ export const kheeluPage = {
         ],
       },
     },
-    /* Right after the steps: what asking back sounds like, home.md fold 2 variant b word for word (task 8c.3; the CMO's
-       AP-15). The label sits above the exchange and is never removed: we wrote it, no child said it. Without the
-       ImaginationFrame and its doodles, inside the page's HTML budget. Since task 8c.8 (the CMO's wave 8c review, m11)
-       without variant b's closing sentence: step 3 above already says it answers first and asks back. */
+    /* Right after the steps: what asking back sounds like (task 8c.3; the CMO's AP-15), since task Q2.10 three sample
+       chats on the DS Tabs (the D2C plan v2 §3 fold 6, ruling 6): the moon (home.md fold 2 variant b, built), the dosa pan
+       and spider legs, each child-led, answered then asked back, AI mode only (D017), no Story-mode pairing (D027), no
+       skill named. The label sits above every chat and is never removed: we wrote them, no child said them. Then the line
+       that plays film 6 in the strip, and the fold's own button (`product-ask`) with the price line and the trust line.
+       Without the ImaginationFrame and its doodles, inside the page's HTML budget. */
     {
       kind: "example-conversation",
       config: {
-        heading: { id: "example-title", title: "What {hand:asking back} sounds like." },
+        heading: { id: "example-title", title: CHATS_TITLE },
         note: "Illustrative example, not a recording.",
-        lines: [
-          { speaker: "child", who: "Your child", text: "“Why does the moon follow our car?”" },
-          {
-            speaker: "kheelu",
-            who: "Kheelu",
-            text: "“The moon is very, very far away. So when the trees zoom past, the moon seems to stay with you. What else looks like it follows you?”",
-          },
-          { speaker: "child", who: "Your child", text: "“My shadow?”" },
-        ],
+        tabs: {
+          label: CHATS_LABEL,
+          items: [
+            {
+              id: "chat-moon",
+              label: "The moon",
+              lines: chat(
+                "“Why does the moon follow our car?”",
+                "“The moon is very, very far away. So when the trees zoom past, the moon seems to stay with you. What else looks like it follows you?”",
+                "“My shadow?”",
+              ),
+            },
+            {
+              id: "chat-dosa",
+              label: "The dosa pan",
+              lines: chat(
+                "“Why does the dosa pan sizzle?”",
+                "“The pan is very hot, and the batter has water in it. When the water touches the hot pan, it turns into steam, and that’s the sizzle. Why do you think the pan has to be hot first?”",
+                "“So the dosa gets crispy?”",
+              ),
+            },
+            {
+              id: "chat-spider",
+              label: "Spider legs",
+              lines: chat(
+                "“How many legs does a spider have?”",
+                "“Eight. That’s two more than an ant, which has six. What else do you know that has more than four legs?”",
+                "“A centipede?”",
+              ),
+            },
+          ],
+        },
+        /* An in-page link that plays film 6 in the strip, as the languages answer's does (task 8c.8, m8), built the same
+           way from films.ts (faqs.ts filmLink), so the film's chip and id are never typed here. */
+        after: `Hear it in two languages: watch ${filmLink("a-story-in-two-languages")}.`,
       },
+      cta: { cta: "product-ask", trust: COMPACT },
     },
     /* Fold 4 · How it works: the three modes, the languages, Good to know. */
     {
@@ -228,8 +273,11 @@ export const kheeluPage = {
              line keeps its confirmed half (D054 item 19; task 6.7). */
           items: withoutHiddenRows([
             { icon: "wifi-high", text: "AI mode needs your home Wi‑Fi. Story mode and Bluetooth mode work without it." },
-            { icon: "wifi-slash", text: "It can’t browse the internet. When it doesn’t know something, it says so." },
+            /* "instead of guessing" (D065 item 8, G29's confirmed half; the D2C plan v2 §3 fold 7). */
+            { icon: "wifi-slash", text: "It can’t browse the internet. When it doesn’t know something, it says so instead of guessing." },
             { icon: "microphone", text: "Each conversation starts with a press of the wake-up button. It switches itself off after a couple of minutes of quiet." },
+            /* The daily limit in the founder's words (D065 item 5, G28): never that a parent sets it. */
+            { icon: "clock", text: "Each Kheelu has a daily limit on how long it talks." },
             { icon: "sliders-horizontal", text: "At setup, you enter your child’s age in the parent app." },
             { icon: "battery-charging", text: "It charges with the charger in the box. {ph:F4 battery life per charge and charging time}" },
           ], "text"),
@@ -238,87 +286,70 @@ export const kheeluPage = {
         link: { label: "How setup works", href: "/setup" },
       },
     },
-    /* Fold 5 · The parent app, two real screens: every conversation word for word, as the live team's code check found the
-       app (D058 items 1, 3 and 8; meet-kheelu.md fold 5). The weekly four-skills report and its chips come back when the
-       report ships. */
+    /* Compared by kind of product, never brands (B14), moved here from Home's fold 7 in its built words (task Q2.10; the
+       D2C plan v2 §3 fold 8; messaging, "against the alternatives"; D044 the app column). No link: `compare-learn` stays
+       Home's, and stops firing. */
     {
-      kind: "feature-split",
+      kind: "compare-by-category",
       config: {
-        variant: "app-screens",
-        placement: "product",
-        id: "app",
         heading: {
-          id: "app-title",
-          eyebrow: "The parent app",
-          title: "Every conversation, {hand:word for word.}",
-          lead: "Each one appears in the parent app a few minutes after it ends. Search them, read a daily summary, or look back over the week or the month.",
+          eyebrow: "Compare",
+          title: "Other AI gives answers. Kheelu {hand:asks questions.}",
+          lead: "Thinking out loud, not tapping on a screen.",
+          id: "compare-title",
         },
-        note: offerCopy.plus,
-        screens: {
-          images: [
-            {
-              src: appTranscript,
-              alt: "A real parent-app screen showing a child’s conversation with Kheelu word for word, in Hindi and English.",
+        label: "Comparison by kind of product",
+        firstColumn: "What matters",
+        columns: { us: "Kheelu", others: ["Puzzles and activity books", "Learning apps and videos", "Smart speakers and chatbots"] },
+        rows: [
+          {
+            label: "Screen-free",
+            us: { mark: "yes", text: "Yes" },
+            others: [{ mark: "yes", text: "Yes" }, { mark: "no", text: "No" }, { mark: "some", text: "Varies" }],
+            phone: { us: "Kheelu: Yes", others: ["Puzzles and activity books: yes", "Learning apps and videos: no", "Smart speakers and chatbots: varies"] },
+          },
+          {
+            label: "Holds a back-and-forth conversation",
+            us: { mark: "yes", text: "Yes" },
+            others: [{ mark: "no", text: "No" }, { mark: "some", text: "Rarely: mostly tapping and watching" }, { mark: "yes", text: "Yes" }],
+            phone: {
+              us: "Kheelu: Yes",
+              others: ["Puzzles and activity books: no", "Learning apps and videos: rarely, mostly tapping and watching", "Smart speakers and chatbots: yes"],
             },
-            {
-              src: appActivity,
-              alt: "A real parent-app activity screen: a child’s talking time, chats and questions asked today, and each conversation listed by its first words.",
+          },
+          {
+            label: "Asks your child a question back",
+            us: { mark: "yes", text: "Yes, after it answers" },
+            others: [{ mark: "no", text: "No" }, { mark: "some", text: "Some ask quiz questions" }, { mark: "some", text: "Usually just answers" }],
+            phone: {
+              us: "Kheelu: Yes, after it answers",
+              others: ["Puzzles and activity books: no", "Learning apps and videos: some ask quiz questions", "Smart speakers and chatbots: usually just answer"],
             },
-          ],
-          caption: APP_CAPTION,
-        },
-        link: { label: "See what we keep, and for how long", href: "#safety" },
+          },
+          {
+            label: "You can read every conversation",
+            us: { mark: "yes", text: "Yes, in the parent app" },
+            others: [{ mark: "some", text: "Nothing to read" }, { mark: "some", text: "Nothing to read" }, { mark: "some", text: "Varies" }],
+            phone: {
+              us: "Kheelu: Yes, in the parent app",
+              others: ["Puzzles and activity books: nothing to read", "Learning apps and videos: nothing to read", "Smart speakers and chatbots: varies"],
+            },
+          },
+        ],
+        caption: "Kinds of products, not brands: what each one usually does.",
       },
     },
-    /* Fold 6 · Safety you can check, in D020's order, then the CTA block; in the live team's code-checked words (D058
-       items 1 and 6; meet-kheelu.md fold 6), as Home's. */
+    /* Safety in one line (task Q2.10; D064 item 2; the D2C plan v2 §3 fold 9, ruling 8): the facts live on /safety, which
+       now carries the parent app's every-conversation fold too (task Q2.11). The built link "See how we built safety in"
+       (`product-safety-learn`, approved at Gate A; CMO M3) as a DS ghost link. On the band, the page's `#safety` kept. */
     {
       kind: "trust-section",
       config: {
-        variant: "safety",
-        placement: "product",
+        variant: "pointer",
         id: "safety",
         band: true,
-        heading: { id: "safety-title", eyebrow: "Safety", title: "Safety you can {hand:check.}" },
-        items: [
-          {
-            icon: "microphone",
-            title: "You’ll always see when it’s listening.",
-            body: "Its microphone turns on only when someone presses the wake-up button. It stays on while your child talks and switches itself off after a couple of minutes of quiet. A light on Kheelu shows whenever it’s listening. Left alone, it hears nothing and sends nothing.",
-          },
-          {
-            icon: "lock-simple",
-            title: "How it understands and answers.",
-            body: "To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.",
-          },
-          {
-            icon: "eye",
-            title: "You can read every conversation.",
-            body: `${RETENTION_LINE} Removing a chat in the app hides it on that phone. Deleting your account deletes your child’s profile, conversations and recordings from our servers.`,
-          },
-          { icon: "hand-heart", title: "We don’t sell your data.", body: "Your child’s data is never used to advertise to them." },
-        ],
-        screens: {
-          images: [
-            {
-              src: appPrivacy,
-              /* Without "delete all chats": the button hides chats on that phone (D058 item 1; meet-kheelu.md question 11). */
-              alt: "A real parent-app privacy screen: keep chats for 36 months, save voice recordings and download the child’s data.",
-            },
-          ],
-          caption: APP_CAPTION,
-        },
-        /* trust.ts types its icons as content (IconRef) and the section's facts still take the DS IconName, so they are
-           asserted here as Home asserts them; a page module imports no value from components (structure §6). The
-           narrowing moves into TrustSection at the wave close (5.2 review). trust.test.ts holds each to a DS icon and
-           this page's test to the mockup's glyph. */
-        facts: SAFETY_FACTS.map(({ icon, text }) => ({ icon: icon as IconName, text })),
-      },
-      cta: {
-        cta: "product-safety",
-        align: "center",
-        trust: COMPACT,
-        secondary: { ...cta.secondary["product-safety-learn"], variant: "secondary" },
+        pointer: "When the microphone is on, how Kheelu answers, and what you can read and delete, fact by fact:",
+        link: { label: SAFETY_LINK.label, href: SAFETY_LINK.href, cta: SAFETY_LINK.cta },
       },
     },
     /* Fold 7 · The details on tabs (3.5; P1), the declarations beside them. */
@@ -334,7 +365,10 @@ export const kheeluPage = {
         link: { label: "Read the returns and warranty terms", href: "/refund" },
       },
     },
-    /* Fold 8 · The eight questions, then the D025 line, its source and the help line. */
+    /* The questions (the D2C plan v2 §3 fold 11; task Q2.10): the price question with the total and no GST, the Kheelona+
+       question after the first-week one; "When does delivery start?" left the page (the offer card and the trust line
+       carry the date). Then the D025 line, its source and the help line. (The plan's fifth, "Isn’t this just screen time
+       in disguise?", is task Q2.9's new faqs.ts entry: the main session lists it after the price question at the merge.) */
     {
       kind: "faq-section",
       config: {
@@ -345,9 +379,9 @@ export const kheeluPage = {
           "talks-back",
           "right-for-a-three-year-old",
           "cost-and-advance",
-          "delivery-start",
           "returns-and-warranty",
           "after-the-first-week",
+          "after-six-months",
           "languages",
           "speech",
         ]),

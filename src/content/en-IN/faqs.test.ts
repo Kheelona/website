@@ -12,11 +12,14 @@ import {
   editsBeforeClaimFixes,
   FAQ_FIXES,
   type FaqFixesSlug,
+  AFTER_SIX_MONTHS,
   LANGUAGES_FAQ,
   NOT_RIGHT_QUESTION,
+  PRODUCT_PRICE_ANSWER,
   RETURNS_QUESTION,
   SELLING_CLOSES,
   type SellingClosesSlug,
+  SELLING_UPDATE,
   TEXT_DEVIATIONS,
   VISUAL_HIDDEN,
 } from "../../../test/e2e/support/deviations";
@@ -54,9 +57,9 @@ const PAGES: Readonly<Record<string, readonly FaqId[]>> = {
     "talks-back",
     "right-for-a-three-year-old",
     "cost-and-advance",
-    "delivery-start",
     "returns-and-warranty",
     "after-the-first-week",
+    "after-six-months",
     "languages",
     "speech",
   ],
@@ -117,7 +120,8 @@ describe("ids", () => {
 });
 
 /** A page's approved FAQ items: its mockup's <main> with that page's copy fixes of task 7.1b, then its claim fixes of
- *  task 8b.1, then its FAQ fixes of task 8c.4, if any, applied. */
+ *  task 8b.1, then its FAQ fixes of task 8c.4, then the selling update's questions (task Q2.10, the product page), if any,
+ *  applied. */
 function approvedItems(slug: string): Element[] {
   const main = new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html").querySelector("main")!;
   const fixes = Object.hasOwn(COPY_FIXES, slug) ? COPY_FIXES[slug as CopyFixesSlug].edits : [];
@@ -126,9 +130,13 @@ function approvedItems(slug: string): Element[] {
   // claim fixes leave it (the first-week answer without "or delete"), so they take a pass of their own too.
   const claims = Object.hasOwn(CLAIM_FIXES, slug) ? CLAIM_FIXES[slug as ClaimFixesSlug].edits.filter((e) => /faq|^li$/.test(e.at)) : [];
   const later = Object.hasOwn(FAQ_FIXES, slug) ? FAQ_FIXES[slug as FaqFixesSlug].edits : [];
-  // Task Q2.12's selling closes start from the page as every earlier rule leaves it: only those inside the questions (the
-  // guide's price question).
-  const selling = Object.hasOwn(SELLING_CLOSES, slug) ? SELLING_CLOSES[slug as SellingClosesSlug].edits.filter((e) => /faq/.test(e.at)) : [];
+  // The selling update's questions start from the page as every earlier rule leaves it; only their edits inside the
+  // questions: task Q2.12's closes (the guide's price question) and task Q2.10's (the product page; the languages question
+  // after the first-week one). The two cover different pages.
+  const selling = [
+    ...(Object.hasOwn(SELLING_CLOSES, slug) ? SELLING_CLOSES[slug as SellingClosesSlug].edits : []),
+    ...(Object.hasOwn(SELLING_UPDATE, slug) ? SELLING_UPDATE[slug as keyof typeof SELLING_UPDATE].edits : []),
+  ].filter((e) => /faq/.test(e.at));
   return Array.from(withFacts(withFacts(withFacts(withFacts(main, fixes), claims), later), selling).querySelectorAll(".kh-faq__item"));
 }
 
@@ -444,6 +452,51 @@ describe("Home's questions (task Q2.9; the D2C plan v2 §2 fold 10)", () => {
   });
 });
 
+/* Task Q2.10 (the selling update on the product page; the D2C plan v2 §3 fold 11, the CMO's M5; D065 items 3, 4 and 6):
+   the price question's answer leads with the total and says no "incl. GST", no balance amount, no first 500 and no
+   invoice (GST and the breakdown only at checkout); "When does delivery start?" leaves the page (the offer card and the
+   trust line carry the date) and faqs.ts; and the page asks "Will Kheelona+ charge me after the 6 months?", in the
+   founder's words for G30, after the first-week question. The words are the plan's, exactly (SELLING_UPDATE holds the
+   same literals for the text pass). */
+describe("task Q2.10: the product page's price answer and the Kheelona+ question (the D2C plan v2 §3 fold 11)", () => {
+  it("answers the price question with the total, the advance and when the rest is due, in the plan's words", () => {
+    expect(plain(faqs["cost-and-advance"].question, token)).toBe("What does Kheelu cost, and what is the advance for?");
+    expect(plain(faqs["cost-and-advance"].answer, token)).toBe(PRODUCT_PRICE_ANSWER.build);
+    expect(PRODUCT_PRICE_ANSWER.build).toBe(
+      "Kheelu is ₹4,999 in total, with delivery anywhere in India included. The ₹499 is a refundable advance that reserves yours; the rest is due before delivery. Pay by UPI, card or net banking, with no payment fees.",
+    );
+  });
+
+  it("says no GST, no balance amount, no first 500 and no invoice in either mode, and leads with the total (D028)", () => {
+    for (const offer of [token, full]) {
+      const answer = plain(faqs["cost-and-advance"].answer, offer);
+      expect(answer).not.toMatch(/GST|invoice|first 500|₹4,500|remaining/);
+      expect(answer.match(/₹[\d,]+/)?.[0]).toBe(offer.prices.headline);
+    }
+    expect(faqs["cost-and-advance"].answer.token).not.toContain("{price:balance}");
+  });
+
+  it("asks whether Kheelona+ charges after the 6 months, answered in the founder's words, the same in both modes", () => {
+    expect(faqs["after-six-months"].id).toBe("after-six-months");
+    expect(plain(faqs["after-six-months"].question, token)).toBe(AFTER_SIX_MONTHS.question);
+    expect(plain(faqs["after-six-months"].answer, token)).toBe(AFTER_SIX_MONTHS.answer);
+    expect(plain(faqs["after-six-months"].answer, full)).toBe(AFTER_SIX_MONTHS.answer);
+    expect(AFTER_SIX_MONTHS.answer.endsWith("Nothing renews without you.")).toBe(true);
+  });
+
+  it("drops \"When does delivery start?\": no page lists it, so faqs.ts holds it no more", () => {
+    expect(Object.keys(faqs)).not.toContain("delivery-start");
+  });
+
+  it("passes the claims guard on the new words", () => {
+    for (const offer of [token, full]) {
+      for (const id of ["cost-and-advance", "after-six-months"] as const) {
+        expect(findBanned(`${plain(faqs[id].question, offer)}\n${plain(faqs[id].answer, offer)}`), id).toEqual([]);
+      }
+    }
+  });
+});
+
 describe("full mode (copy pages)", () => {
   /* Home's full-mode price answer since task Q2.9 (the D2C plan v2 §2 fold 10; D065 item 3: no GST on a selling page). */
   const homeFull =
@@ -456,8 +509,9 @@ describe("full mode (copy pages)", () => {
 
   it("the product page's price question becomes meet-kheelu.md's full-mode answer", () => {
     expect(plain(faqs["cost-and-advance"].question, full)).toBe("What does Kheelu cost?");
+    // The D2C plan v2 §3 fold 11 (task Q2.10; D065 items 3-4): the total, no GST and no invoice line on a selling page.
     expect(plain(faqs["cost-and-advance"].answer, full)).toBe(
-      "Kheelu is ₹7,999 (incl. GST), paid in full when you order, with delivery anywhere in India included. Pay by UPI, card or net banking, with no payment fees, and get a GST invoice. Deliveries start mid-November. If it isn’t right for your family, return it within 7 days of delivery, no questions asked.",
+      "Kheelu is ₹7,999 in total, paid in full when you order, with delivery anywhere in India included. Pay by UPI, card or net banking, with no payment fees. Deliveries start mid-November.",
     );
   });
 
@@ -509,20 +563,31 @@ describe("full mode (copy pages)", () => {
 });
 
 describe("answer lengths (architecture §9.5; the answer-length guard skips mode variants)", () => {
-  it("keeps every token-mode answer at 40-60 words", () => {
+  /* The product page's two decision answers (task Q2.10) are approved short, in the D2C plan v2 §3 fold 11's words
+     (checked by the claims guard and the CMO): the price answer leaves the refund to the trust line beside it (CMO m2),
+     and what keeps working after the 6 months of Kheelona+ is not confirmed yet (F7). Main-session ruling at the wave
+     q2b merge, 2026-10-15; the founder signs the copy at Gate B (D015). */
+  it("keeps every token-mode answer at 40-60 words, apart from the product page's two approved short answers", () => {
     const out = Object.values(faqs)
       .map((f) => [f.id, words(plain(f.answer, token))] as const)
       .filter(([, n]) => n < 40 || n > 60);
-    expect(out).toEqual([]);
+    expect(out).toEqual([
+      ["cost-and-advance", 37],
+      ["after-six-months", 31],
+    ]);
   });
 
-  it("keeps every full-mode answer at 40-60 words, apart from the store's approved 37-word answer", () => {
+  it("keeps every full-mode answer at 40-60 words, apart from the store's approved 37-word answer and the product page's two", () => {
     const out = Object.values(faqs)
       .map((f) => [f.id, words(plain(f.answer, full))] as const)
       .filter(([, n]) => n < 40 || n > 60);
     /* store.md fold 5, "Full mode": "What am I paying today?" is approved at 37 words (the store's
        answers are "each under 60 words"; the store is noindex, so no FAQPage reads it). */
-    expect(out).toEqual([["paying-today", 37]]);
+    expect(out).toEqual([
+      ["cost-and-advance", 31],
+      ["after-six-months", 31],
+      ["paying-today", 37],
+    ]);
   });
 });
 

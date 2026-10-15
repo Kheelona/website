@@ -132,7 +132,9 @@ const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } 
   "llms.txt": {
     // 2026-10-15 (task Q2.9, the selling update): the price question is /pricing.md's ("How much is Kheelu?", `how-much`,
     // with its GST: Home's answer lost it, D065 item 3; the machine files keep it, task Q2.8), and the contact line shows
-    // the WhatsApp address as plain text, "WhatsApp us: https://wa.me/… · hello@kheelona.com". Earlier the same day: the contact lines without the number (D063 item 2; task Q2.3): "WhatsApp us · hello@kheelona.com", the
+    // the WhatsApp address as plain text, "WhatsApp us: https://wa.me/…", the email on its own line; the product page's consumer
+    // care declaration carries the number again (task Q2.10, the Legal Metrology rules), and the file leaves the call line
+    // out, "Consumer care: hello@kheelona.com". Earlier the same day: the contact lines without the number (D063 item 2; task Q2.3): "WhatsApp us · hello@kheelona.com", the
     // consumer care row the same, and the grievance officer's line without "+91 91875 46483". Earlier the same day:
     // the product page's question "What if my child doesn’t like it, or it stops working?", its answer
     // unchanged (the CMO's wave 8c review m7; task 8c.8). Earlier the same day: the product page's question "Which
@@ -143,20 +145,21 @@ const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } 
     // screen-time topic's lead (CMO reviews A M5, B m1), Home's refund and age-3 answers (task 7.1b) and the product's
     // Parent app row "On iPhone and Android." (D055 item 26; task 6.7).
     date: "2026-10-15",
-    token: "e1f6a8a799209c1fa615f50447cb9dcd5043ead3c3bb5bc1e4904105009299ad",
-    full: "e9065912fca60fad608834dcfe4c121321e4124dcccd5c55e49bcbdd46ea0938",
+    token: "45e3a668fc3cd929fd2bca2eb398e545864387ad2212b65b072dbb942340d111",
+    full: "c4306286d78d620b4b0c419e9b8fce2022c37760c3de84e1f3cac9614659dcf3",
   },
   "pricing.md": {
     // 2026-10-15 (task Q2.9, the selling update): "Included with every Kheelu" is the offer cards' one perk list (CMO m8):
     // the delivery line with the dispatch order, Kheelona+ with "Nothing renews without you." (D065 item 6), no GST
-    // invoice line (it stays in the price answer). Earlier the same day: the help line without the number, "WhatsApp us · hello@kheelona.com" (D063 item 2; task Q2.3). Earlier
+    // invoice line (it stays in the price answer); the contact lines as /llms.txt's, "WhatsApp us: https://wa.me/…" and
+    // the email on its own line (task Q2.9; the main session at the q2b merge). Earlier the same day: the help line without the number, "WhatsApp us · hello@kheelona.com" (D063 item 2; task Q2.3). Earlier
     // the same day: the product card's perk "Made in India" last among "Included with every Kheelu" (D061 item 10; task
     // 8c.5). 2026-10-14: the Kheelona+ perk in D058 item 3's words and Home's age answer after the code check (task 8b.1,
     // wave 8b merge). Earlier the same day: the age-3 advice in one wording (CMO review A M8; task 7.1b). 2026-10-13: it
     // added the product page's Manufacturer declaration (task 4.5 item 6).
     date: "2026-10-15",
-    token: "f28d2eae29e07e7d8c32051451c03d6d7ef55875f8b2db3aa1f2582f9f798a87",
-    full: "49c3223f964006ee8867317dda4bbe76da9bb4c950878b28297ba97c65ea557e",
+    token: "d4184b3b956229251e3b208d75093577f09aeebfc692596f4dea564746301b54",
+    full: "5e53b39c08df708742ba34a83a5681913f135bec54a192b69c59653ec9a77421",
   },
 };
 
@@ -376,9 +379,12 @@ describe.each(MACHINE)("$name", ({ name, route, text, updated, constant, type })
       expect(body()).toMatch(/\bKheelu is the toy that was called Lumi until 5 September 2026\b/);
     });
 
-    /* The help line as every page prints it since D063 item 2 (task Q2.3): WhatsApp, no number, no GSTIN. */
+    /* The contact line: WhatsApp's address in plain text and the email, no number, no GSTIN (D063 item 2; tasks Q2.3,
+       Q2.9). Since task Q2.10 the product page's consumer care declaration carries the number (the Legal Metrology
+       rules), which the files leave out of their restatement (D063 item 2: the number only on /contact and the legal
+       pages). */
     it("states the entity facts as the pages do (test plan §4.3; architecture §9.3: made in India by Kheelona Robotics)", () => {
-      for (const fact of ["Kheelu by Kheelona", "3 to 7", "Made in India", "Manufacturer: Kheelona Robotics Pvt Ltd", "WhatsApp us"]) {
+      for (const fact of ["Kheelu by Kheelona", "3 to 7", "Made in India", "Manufacturer: Kheelona Robotics Pvt Ltd", `- WhatsApp us: ${seller.support.whatsapp}\n- hello@kheelona.com\n`]) {
         expect(body(), fact).toContain(fact);
       }
       expect(body()).not.toMatch(/91875 46483|tel:|GSTIN|29AAMCK1530E1ZN/);
@@ -474,7 +480,9 @@ describe("the visible-copy check", () => {
       "- Ages: 3 to 7",
       "- Toy-safety certification (BIS): applied for, not yet granted. We show no mark until it is granted.",
       "- Modes: AI mode (home Wi‑Fi) · Story mode (no Wi‑Fi needed) · Bluetooth mode (a paired phone)",
-      "- Consumer care: WhatsApp us · hello@kheelona.com",
+      "- Consumer care: hello@kheelona.com",
+      `- WhatsApp us: ${seller.support.whatsapp}`,
+      "- hello@kheelona.com",
       `- [Screen time](${ORIGIN}/stories#screen-time): How much, what the guidelines say, and what to do when the screen goes off.`,
     ];
     expect(unsaid(clean.join("\n"), copy)).toEqual([]);

@@ -32,9 +32,12 @@ const BELLY_SIZES = "(min-width: 900px) 300px, 200px";
  *   from 1024 px (`ks-sf-never`); a closing link.
  * - `meets` (ai-toys-for-kids-in-india.html fold 3): the five answers as an ordered list, revealing, the last
  *   spanning both columns from 720 px (`ks-gd-answers`), the pointer line (`ks-gd-pointer`) and a closing link.
+ * - `pointer` (task Q2.10; the D2C plan v2 §3 fold 9): the product page's safety in one line, centred, then the ghost
+ *   link to /safety (`PointerFold`): a tight section named by the line, no heading.
  * Nothing that sells reveals: the facts line and the CTA block sit outside every revealing block.
  */
 export function TrustSection(props: TrustSectionProps) {
+  if (props.variant === "pointer") return <PointerFold {...props} />;
   const { heading, items, id, band, offer, cta } = props;
   const text = (copy: Copy) => <RichText text={copy} offer={offer} />;
   const title = <SectionTitle heading={heading} offer={offer} align={props.variant === "safety" ? "center" : undefined} />;
@@ -88,4 +91,18 @@ function trustItems(items: readonly TrustItemCopy[], offer: Offer | undefined) {
     title: item.title === undefined ? undefined : <RichText text={item.title} offer={offer} />,
     body: <RichText text={item.body} offer={offer} />,
   }));
+}
+
+/** One line pointing to where the safety facts live, then the link there (`pointer`; task Q2.10). The line names the
+ *  section, so the fold needs no heading of its own. */
+function PointerFold({ id, band, pointer, link, offer }: Extract<TrustSectionProps, { variant: "pointer" }>) {
+  const lineId = `${id ?? "pointer"}-line`;
+  return (
+    <Section id={id} band={band} tight labelledBy={lineId} className="ks-pointer-fold">
+      <Container>
+        <RichText as="p" className="kh-body-l ks-pointer" id={lineId} text={pointer} offer={offer} />
+        <SectionLinkRow link={link} center />
+      </Container>
+    </Section>
+  );
 }

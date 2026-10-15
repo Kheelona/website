@@ -59,8 +59,22 @@ function answersIn(value: unknown, where: string, out: Found[], seen = new Set<u
   return out;
 }
 
-const outOfRange = (found: Found[]) =>
-  found.filter((f) => f.words < MIN || f.words > MAX).map((f) => `${f.where} "${f.question}": ${f.words} words`);
+/**
+ * Approved short answers: a question the copy answers in fewer words on purpose, pinned to its exact count, so a change
+ * to its words makes the guard red again. Each entry names who approved it.
+ * - "Will Kheelona+ charge me after the 6 months?" (31 words): the D2C plan v2 §3 fold 11, checked by the claims guard
+ *   and the CMO; the founder's G30 answer (D065 item 6). What keeps working after the 6 months is not confirmed (F7), so
+ *   nothing more can be said yet. Main-session ruling at the wave q2b merge, 2026-10-15; the founder signs it at Gate B.
+ */
+const APPROVED_SHORT: Readonly<Record<string, number>> = {
+  "Will Kheelona+ charge me after the 6 months?": 31,
+};
+
+const outOfRange = (found: Found[], approved: Readonly<Record<string, number>> = {}) =>
+  found
+    .filter((f) => f.words < MIN || f.words > MAX)
+    .filter((f) => approved[f.question] !== f.words)
+    .map((f) => `${f.where} "${f.question}": ${f.words} words`);
 
 /** The runtime content modules: .ts files under src/content, never a test, a type test
  *  (`*.test-d.ts`, compile-time fixtures such as `{ question: "q", answer: "a" }`), a story, or
@@ -85,6 +99,11 @@ describe("content module discovery", () => {
 
 describe("answer-length rule", () => {
   const words = (n: number) => Array.from({ length: n }, (_, i) => `word${i}`).join(" ");
+  it("excuses an approved short answer only at its pinned count", () => {
+    const found = answersIn({ faq: { question: "Q?", answer: words(31) } }, "x", []);
+    expect(outOfRange(found, { "Q?": 31 })).toEqual([]);
+    expect(outOfRange(found, { "Q?": 30 })).toHaveLength(1);
+  });
   it("is red below 40 and above 60 words, green inside", () => {
     expect(outOfRange(answersIn({ faq: { question: "Q?", answer: words(39) } }, "x", []))).toHaveLength(1);
     expect(outOfRange(answersIn({ faq: { question: "Q?", answer: words(61) } }, "x", []))).toHaveLength(1);
@@ -147,6 +166,10 @@ describe("answer-length: src/content", () => {
       ).toBe(true);
     }
     console.log(`[answer-length] ${modules.length} content module(s), ${found.length} answer-first block(s).`);
-    expect(outOfRange(found)).toEqual([]);
+    expect(outOfRange(found, APPROVED_SHORT)).toEqual([]);
+    // No stale exception: each approved short answer is still in the content at exactly its pinned count.
+    for (const [question, n] of Object.entries(APPROVED_SHORT)) {
+      expect(found.some((f) => f.question === question && f.words === n), question).toBe(true);
+    }
   });
 });

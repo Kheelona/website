@@ -28,6 +28,15 @@ const offer = buildOffer("token");
  *  build's (`mockupRoute`). */
 const differences = mockupDiff({ ignore: ["data-open-menu", "src", "width", "inert"], dropClasses: ["is-hidden"] });
 
+/** The bar's small line renders its parts as inline blocks, so a narrow phone breaks it after the dot (StickyBuyBar.tsx
+ *  `parts`, after Q2.8's notes); the words are the mockup's, so the comparison reads them as one text. */
+function withBarPartsAsText(el: Element): Element {
+  const copy = el.cloneNode(true) as Element;
+  for (const part of Array.from(copy.querySelectorAll(".ks-buybar__part"))) part.replaceWith(part.textContent ?? "");
+  copy.normalize();
+  return copy;
+}
+
 function shell(stickyBar: readonly string[] = ["/"]) {
   return render(
     <SiteShell offer={offer} stickyBar={stickyBar}>
@@ -50,7 +59,8 @@ describe("SiteShell: the chrome equals the approved mockup's (mockup/home.html)"
        FOOTER_FIX), and its legal row has no GSTIN and no number since D063 items 2-3 (task Q2.3; seller-facts.ts); every
        other element of the chrome is the mockup's as it stands. */
     const ref = approved && mockupSelector === "footer.kh-footer" ? withSellerFacts(withFacts(approved, [FOOTER_FIX])) : approved;
-    const built = container.querySelector(builtSelector);
+    const found = container.querySelector(builtSelector);
+    const built = found && builtSelector === ".kh-buybar" ? withBarPartsAsText(found) : found;
     expect(ref, mockupSelector).not.toBeNull();
     expect(built, builtSelector).not.toBeNull();
     expect(differences(built!, ref!)).toEqual([]);
