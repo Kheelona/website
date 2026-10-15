@@ -169,7 +169,21 @@ describe("StickyScroll: the layout and its motion (sticky-scroll.css)", () => {
   it("shows the stage and the progress line from 900 px only, the aside sticky a DS gap under the laptop's sticky nav", () => {
     expect(CSS).toMatch(/\.ks-sticky__stage,\s*\.ks-sticky__progress \{\s*display: none;\s*\}/);
     expect(CSS).toMatch(/@media \(min-width: 900px\) \{\s*\.ks-sticky__aside \{\s*position: sticky;\s*top: calc\(var\(--ks-nav-clearance, 0px\) \+ var\(--space-6\)\);/);
-    expect(CSS).toMatch(/\.ks-sticky__thumb \{\s*display: none;\s*\}/);
+  });
+
+  /* Task Q2.9's review: from 900 px the stage's pictures are aria-hidden with no alt, so the points' own pictures, the
+     ones that carry the alt (the app's real transcript screen among them, D044), must stay in the accessibility tree:
+     clipped out of sight as the DS's kh-sr does, never display: none, on a DS length rather than kh-sr's 1 px. */
+  it("keeps each point's picture for screen readers from 900 px: clipped out of sight, never removed", () => {
+    expect(CSS).not.toMatch(/\.ks-sticky__thumb \{[^}]*display: none/);
+    const laptop = [...CSS.matchAll(/@media \(min-width: 900px\) \{([\s\S]*?)\n\}/g)].map((m) => m[1]).join("\n");
+    const thumb = /\.ks-sticky__thumb \{([^}]*)\}/.exec(laptop)?.[1] ?? "";
+    expect(thumb).toMatch(/position: absolute;/);
+    expect(thumb).toMatch(/width: var\(--space-1\);/);
+    expect(thumb).toMatch(/height: var\(--space-1\);/);
+    expect(thumb).toMatch(/overflow: hidden;/);
+    expect(thumb).toMatch(/clip-path: inset\(50%\);/);
+    expect(thumb).not.toMatch(/visibility|opacity|display/);
   });
 
   it("crossfades and fills only where motion is welcome, on DS tokens, and draws no fill under reduced motion", () => {

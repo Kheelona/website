@@ -12,7 +12,8 @@ export type { StickyScrollConfig, StickyScrollPoint, StickyScrollProps } from ".
 /** The stage's picture: the narrow column of the 5:7 split from 900 px (480 px at the 1200 px content max); 1 px below,
  *  where the stage is not shown. */
 const STAGE_SIZES = "(min-width: 1296px) 480px, (min-width: 900px) 40vw, 1px";
-/** A point's own small picture on phones and tablets (96 px, --space-9); 1 px from 900 px, where the stage shows it. */
+/** A point's own small picture on phones and tablets (96 px, --space-9); 1 px from 900 px, where the stage shows it and
+ *  the thumbnail stays only for screen readers (clipped out of sight, sticky-scroll.css). */
 const THUMB_SIZES = "(min-width: 900px) 1px, 96px";
 
 /**
@@ -22,7 +23,8 @@ const THUMB_SIZES = "(min-width: 900px) 1px, 96px";
  * stay in view on the left (`position: sticky`, under the laptop's sticky nav: --ks-nav-clearance) while the points
  * scroll on the right; the stage shows the picture of the point being read, crossfading, and the progress line fills one
  * step per point (StickyScroll.client.tsx marks them; sticky-scroll.css draws them). The stage repeats the points'
- * pictures for sighted readers only: it is hidden from screen readers and its images carry no alt. A point may hold a
+ * pictures for sighted readers only: it is hidden from screen readers and its images carry no alt, while each point's
+ * own picture stays in the accessibility tree at every width (from 900 px clipped out of sight). A point may hold a
  * small written example, labelled above it. Then one line, not a heading, and the page's CTA block (`cta`). Nothing in
  * it sells inside a reveal: the CTA block is outside the points. Reduced motion: no fill and no crossfade.
  */
@@ -73,7 +75,8 @@ function StagePicture({ picture, on }: { picture: StickyScrollPicture; on: boole
   );
 }
 
-/** A point's own small picture, beside its words on phones and tablets: the one that carries the alt. */
+/** A point's own small picture, beside its words on phones and tablets: the one that carries the alt (kept for screen
+ *  readers from 900 px). */
 function Thumb({ picture }: { picture: StickyScrollPicture }) {
   return <Photo image={picture.image} sizes={THUMB_SIZES} ratio="1 / 1" className={clsx("ks-sticky__thumb", picture.fit === "contain" && "ks-sticky__thumb--contain")} />;
 }

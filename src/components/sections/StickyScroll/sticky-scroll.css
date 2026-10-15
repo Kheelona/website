@@ -128,8 +128,14 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
   }
+  /* The point's own picture leaves the eye, not the screen reader: it carries the alt (the stage's copies carry none and
+     are aria-hidden), so it is clipped out of sight as the DS's kh-sr does, on a DS length, never display: none. */
   .ks-sticky__thumb {
-    display: none;
+    position: absolute;
+    width: var(--space-1);
+    height: var(--space-1);
+    overflow: hidden;
+    clip-path: inset(50%);
   }
 }
 
