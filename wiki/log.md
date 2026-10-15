@@ -1252,3 +1252,11 @@ phone, Q1.6 the WhatsApp logo from Wikimedia Commons.
 Workflow `wf_3b6c14b5-b84` stopped before any builder committed; the six empty worktrees removed. Nothing running.
 The batch stays specified in [tasks](engineering/tasks.md) (Q1.1-Q1.6) and [D063](decisions/D063-quick-batch-1-choices-2026-10-15.md),
 ready to start again when the founder says go. Beta unchanged at `398c5ee`.
+
+## [2026-10-15 13:22] decision | D065: the site sells; the founder answers G26, G28, G29, G30 before the end-to-end update
+The founder asked for the whole site updated end to end, phone first and consistent across pages, as a D2C site that
+sells, and went to sleep after answering: the direct promise within D016, ages 3 to 7, "Pre-order Kheelu" with a short
+price line (GST and the breakdown only at checkout), first 500 on offer cards only, the daily talk-time limit (G28),
+"Nothing renews without you." (G30), "Delete all chats" deletes from the servers since the app changed (G26), the
+doesn't-know line (G29) ([D065](decisions/D065-selling-site-founder-answers-2026-10-15.md)). The copywriter's plan is
+being written (workflow `wf_2e1884fe-cd4`); then the build.
