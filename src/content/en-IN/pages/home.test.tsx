@@ -1,28 +1,42 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import { doodleSrc } from "@/components/ui/Doodle/doodle-files";
 import type { ArtLayer, OfferMode } from "@/content/types";
 import { PageTemplate } from "@/layouts/PageTemplate/PageTemplate";
 import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
-import { CLAIM_FIXES, COPY_FIXES, FAQ_FIXES, NOT_RIGHT_QUESTION, OFFER_ADDITIONS, PROOF_ADDITIONS, PROOF_ADDITIONS_APPROVED, TEAM_STRIP_BUILD, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import {
+  CLAIM_FIXES,
+  COPY_FIXES,
+  FAQ_FIXES,
+  HOME_FILMS_ORDER,
+  HOME_HERO_PHOTO,
+  HOME_OFFER_ART,
+  NOT_RIGHT_QUESTION,
+  OFFER_ADDITIONS,
+  PROOF_ADDITIONS,
+  PROOF_ADDITIONS_APPROVED,
+  TEAM_STRIP_BUILD,
+  TEXT_DEVIATIONS,
+  VISUAL_HIDDEN,
+} from "../../../../test/e2e/support/deviations";
 import { sentences } from "../../../../test/e2e/support/parity";
 import { findBanned } from "../../../../test/guards/banned-phrases.data";
 import { filmQuotes, films } from "../films";
 import { recognitionStrip } from "../recognition";
+import { photos } from "../stories/photos";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { mockupFold, mockupLinks, skeleton, words } from "../../../../test/support/mockup-compare";
-import { withFacts } from "../../../../test/support/mockup-facts";
+import { blockSentences, withFacts } from "../../../../test/support/mockup-facts";
 import { homePage } from "./home";
 
 /*
  * Home `/` (task 5.1; structure §5; architecture §9.2; tasks.md SPA): the page is its content module, rendered by
  * PageTemplate, and it prints what the approved mockup prints (mockup/home.html, the built Gate A page, D045, D046):
  * the ten folds in order, word for word, with the mockup's tracking values, links, pictures, icons and tones; the
- * hero exactly D045 with its Hand accent; the hero doodle still and the frame and close doodles drawing (D049 picks 2
- * and 3); one LCP image; FAQPage = the six visible answers plus fold 4's "What is Kheelu?" (wave-4 close).
+ * hero exactly D045 with its Hand accent; the hero still and the frame and close doodles drawing (D049 picks 2
+ * and 3); one LCP image per width range; FAQPage = the six visible answers plus fold 4's "What is Kheelu?" (wave-4 close).
  *
  * The section tests prove each section prints its mockup fold from a given config; this file proves the configs this
  * module gives are the approved page's. Three links follow the copy page (wiki/site/pages/home.md) rather than the
@@ -37,22 +51,51 @@ import { homePage } from "./home";
  * mode and "Know a parent who needs this? Share Kheelu on WhatsApp" under it, tracked share-whatsapp. Then the founder's
  * D061 (task 8c.4; FAQ_FIXES.home): the fourth question in the parent's words, "What if my child doesn’t like it?", its
  * answer unchanged (AP-30). MOCKUP below is the approved page with exactly those applied, the claim fixes, the offer
- * additions and the FAQ fix each in a pass of its own, in that order.
+ * additions and the FAQ fix each in a pass of its own, in that order. Then the founder's D064 (task Q2.1): the films in
+ * his order (item 1), and the hero's picture, the DS photo library's "Kabir · block rocket" in place of the board
+ * (item 4): the page is compared with the mockup without the hero's picture on both sides (HOME_HERO_PHOTO, as the
+ * visual pass compares it), and the photo is held below on its own.
  */
 
-/* The hero board's two stickers as Next imports them (`{ src, width, height }`, the size read from the DS file), where
- * Vite would give a bare URL: the board picks its LCP image by drawn area, which needs the size. */
+/* The hero photo's two crops as Next imports them (`{ src, width, height }`, the size read from the file), where Vite
+ * would give a bare URL: the hero frames each crop at its own ratio (task Q2.1), which needs the size. */
 const staticImport = vi.hoisted(() => async (file: string) => {
   const { default: sharp } = await import("sharp");
   const { width, height } = await sharp(file).metadata();
   return { default: { src: `/_next/static/media/${file.split("/").pop()}`, width, height } };
 });
-vi.mock("@ds/assets/Cast/advik-sticker.png", () => staticImport("design-system/project/assets/Cast/advik-sticker.png"));
-vi.mock("@ds/assets/Kheelu/kheelu-front-sticker.png", () => staticImport("design-system/project/assets/Kheelu/kheelu-front-sticker.png"));
+vi.mock("@/assets/hero/kabir-02-block-rocket-4x5.jpg", () => staticImport("src/assets/hero/kabir-02-block-rocket-4x5.jpg"));
+vi.mock("@/assets/hero/kabir-02-block-rocket-16x10.jpg", () => staticImport("src/assets/hero/kabir-02-block-rocket-16x10.jpg"));
 
-const MOCKUP = withFacts(
-  withFacts(withFacts(withFacts(mockupFold("home", "main"), COPY_FIXES.home.edits), CLAIM_FIXES.home.edits), OFFER_ADDITIONS.home.edits),
-  FAQ_FIXES.home.edits,
+/** D064 item 1 (task Q2.1): Home's strip plays the films list's 2nd film 4th and its 3rd 7th, each swapped with the film
+ *  that replaces it, so the list's 1, 4, 7, 2, 5, 6, 3. The list itself (films.ts) keeps the approved order, which the
+ *  product page and the store show. */
+const HOME_FILM_ORDER = [1, 4, 7, 2, 5, 6, 3].map((n) => films[n - 1].id);
+/** The approved page with Home's strip in that order: each film's chip, length, poster, play button and caption move
+ *  with it, as one list item. */
+function inHomeFilmOrder(main: Element): Element {
+  const strip = main.querySelector("[data-films]")!;
+  const byId = new Map([...strip.children].map((li) => [li.getAttribute("data-video-id"), li]));
+  strip.replaceChildren(...HOME_FILM_ORDER.map((id) => byId.get(id)!));
+  return main;
+}
+
+/** A page's main without its hero picture (task Q2.1, D064 item 4): the approved board on the mockup's side, the
+ *  photo's two crops on the build's, as the visual pass compares them (HOME_HERO_PHOTO). */
+function withoutHeroPicture(main: Element, selector: string): Element {
+  const copy = main.cloneNode(true) as Element;
+  for (const el of copy.querySelectorAll(selector)) el.remove();
+  return copy;
+}
+
+const MOCKUP = withoutHeroPicture(
+  inHomeFilmOrder(
+    withFacts(
+      withFacts(withFacts(withFacts(mockupFold("home", "main"), COPY_FIXES.home.edits), CLAIM_FIXES.home.edits), OFFER_ADDITIONS.home.edits),
+      FAQ_FIXES.home.edits,
+    ),
+  ),
+  HOME_HERO_PHOTO.mockup,
 );
 const LABELS = ["hero-title", "ask-title", "why-title", "what-title", "see-title", "safety-title", "compare-title", "guides-title", "faq-title", "close-title"];
 
@@ -80,15 +123,9 @@ function rendered(mode: OfferMode) {
 
 const TOKEN = rendered("token");
 const FULL = rendered("full");
-/** D061 item 1 (task 8c.1): the hero's phone board is the one block the approved page does not have (its markup is
- *  HeroSection's test's, its place test/e2e/first-screen.spec.ts's): the page is compared with the mockup without it. */
-const PHONE_ART = ".ks-hero__phone-art";
-const withoutPhoneArt = (main: Element) => {
-  const copy = main.cloneNode(true) as Element;
-  copy.querySelectorAll(PHONE_ART).forEach((el) => el.remove());
-  return copy;
-};
-const BUILT = withoutPhoneArt(TOKEN.doc.querySelector("main")!);
+/** The page as compared with the approved one: without the hero's photo (task Q2.1; its markup is HeroSection's test's,
+ *  its place on the first phone screen test/e2e/first-screen.spec.ts's, the photo itself is held below). */
+const BUILT = withoutHeroPicture(TOKEN.doc.querySelector("main")!, HOME_HERO_PHOTO.build);
 
 const folds = (main: Element) => [...main.children].filter((el) => el.tagName === "SECTION");
 const fold = (main: Element, label: string) => folds(main).find((el) => el.getAttribute("aria-labelledby") === label)!;
@@ -131,10 +168,15 @@ describe("Home: the folds of the approved page", () => {
     expect(BUILT.querySelector(`${hide} .kh-faq__q`)?.textContent).toBe(NOT_RIGHT_QUESTION.build);
   });
 
-  it("differs from the frozen mockup only in the lines task 7.1b (V18), task 8b.1 (V26) and task 8c.4 changed", () => {
+  it("differs from the frozen mockup only in the lines task 7.1b (V18), task 8b.1 (V26) and task 8c.4 changed, the hero's picture and the films' order (Q2.1)", () => {
     const frozen = mockupFold("home", "main");
     const changed = LABELS.filter((label) => words(fold(frozen, label)) !== words(fold(MOCKUP, label)));
-    expect(changed).toEqual(["see-title", "safety-title", "guides-title", "faq-title", "close-title"]);
+    expect(changed).toEqual(["hero-title", "ask-title", "see-title", "safety-title", "guides-title", "faq-title", "close-title"]);
+    // The hero changes in its picture alone: the approved board (and its word sticker) is what the comparison leaves out.
+    expect(words(fold(MOCKUP, "hero-title"))).toBe(words(withoutHeroPicture(fold(frozen, "hero-title"), HOME_HERO_PHOTO.mockup)));
+    // The films fold changes in its order alone: the same films, words and pictures.
+    const tiles = (main: Element) => all(fold(main, "ask-title"), "[data-video-id]").map((li) => words(li));
+    expect(tiles(MOCKUP).sort()).toEqual(tiles(frozen).sort());
     for (const line of CLAIM_FIXES.home.build) expect(words(BUILT)).toContain(line);
     // Each block the visual pass hides for the claim fixes is found once on the page as it renders.
     for (const hide of CLAIM_FIXES.home.hidden.both) expect(BUILT.querySelectorAll(hide), hide).toHaveLength(1);
@@ -196,6 +238,55 @@ describe("Home: the folds of the approved page", () => {
   });
 });
 
+describe("Home: the films in the founder's order (D064 item 1, task Q2.1)", () => {
+  const ids = (main: Element) => all(fold(main, "ask-title"), "[data-video-id]").map((li) => li.getAttribute("data-video-id"));
+
+  it("shows the list's 1, 4, 7, 2, 5, 6, 3: the 2nd film replaced by the 4th and the 3rd by the 7th", () => {
+    expect(HOME_FILM_ORDER).toEqual([
+      "learning-by-asking",
+      "a-mother-joins-in",
+      "a-father-speaks",
+      "first-conversations",
+      "counting-out-loud",
+      "a-story-in-two-languages",
+      "a-parent-speaks",
+    ]);
+    expect(ids(TOKEN.whole.querySelector("main")!)).toEqual(HOME_FILM_ORDER);
+    expect(ids(FULL.whole.querySelector("main")!)).toEqual(HOME_FILM_ORDER);
+  });
+
+  it("keeps the films list itself in the approved order, which the product page and the store show", () => {
+    expect(films.map((f) => f.id)).toEqual(ids(mockupFold("home", "main")));
+  });
+
+  it("hides for the pixels the strip's films on both sides, each found once on its side; the text pass needs no rule", () => {
+    const rules = VISUAL_HIDDEN.home.filter((r) => r.approvedBy === HOME_FILMS_ORDER.approvedBy);
+    expect(rules.map((r) => [r.side, r.selector, r.media])).toEqual([
+      ["mockup", HOME_FILMS_ORDER.mockup, undefined],
+      ["build", HOME_FILMS_ORDER.build, undefined],
+    ]);
+    expect(mockupFold("home", "main").querySelectorAll(HOME_FILMS_ORDER.mockup)).toHaveLength(1);
+    expect(TOKEN.whole.querySelectorAll(HOME_FILMS_ORDER.build)).toHaveLength(1);
+    // The text pass compares sentences in any order (sentenceDiff), so the same films in other places differ in nothing.
+    expect(TEXT_DEVIATIONS.home.filter((r) => r.approvedBy === HOME_FILMS_ORDER.approvedBy)).toEqual([]);
+  });
+});
+
+describe("Home: the close's board top-aligned with the offer card on laptops (D064 item 5, task Q2.1)", () => {
+  it("hides for the pixels the board on both sides from 900 px only, each found once in the close on its side", () => {
+    const rules = VISUAL_HIDDEN.home.filter((r) => r.approvedBy === HOME_OFFER_ART.approvedBy);
+    expect(rules.map((r) => [r.side, r.selector, r.media])).toEqual([
+      ["mockup", HOME_OFFER_ART.mockup, "(min-width: 900px)"],
+      ["build", HOME_OFFER_ART.build, "(min-width: 900px)"],
+    ]);
+    const board = (main: Element, selector: string) => [...main.querySelectorAll(selector)];
+    expect(board(mockupFold("home", "main"), HOME_OFFER_ART.mockup).map((el) => el.closest("section")?.id)).toEqual(["close"]);
+    expect(board(TOKEN.whole.querySelector("main")!, HOME_OFFER_ART.build).map((el) => el.closest("section")?.id)).toEqual(["close"]);
+    // Its place moves, not its words: nothing for the text pass.
+    expect(TEXT_DEVIATIONS.home.filter((r) => r.approvedBy === HOME_OFFER_ART.approvedBy)).toEqual([]);
+  });
+});
+
 describe("Home: the hero (D045) and the first screen", () => {
   const hero = fold(BUILT, "hero-title");
 
@@ -225,30 +316,54 @@ describe("Home: the hero (D045) and the first screen", () => {
     expect(stickyBarPaths()).toContain("/");
   });
 
-  it("keeps the hero board's doodle still and loads one LCP image, the hero's, at high priority", () => {
-    expect(all(hero, "[data-draw]")).toEqual([]);
-    expect(all(hero, "img.kh-art__layer").map((img) => img.getAttribute("src"))).toContain(doodleSrc("chalk-question-mark"));
-    const high = all(BUILT, '[fetchpriority="high"]');
-    expect(high).toHaveLength(1);
-    expect(hero.contains(high[0])).toBe(true);
-    expect(high[0].getAttribute("loading")).toBe("eager");
-    // The boy's sticker, the board's largest drawn raster (layers in the mockup's order: sun, boy, Kheelu, question mark).
-    expect(all(hero, ".kh-art > .kh-art__layer").indexOf(high[0])).toBe(1);
+  /* Task Q2.1 (D064 item 4): the hero's picture is the DS photo library's "Kabir · block rocket", in place of the board,
+     in its two crops (scripts/assets/build-hero-crops.mjs): the 16:10 band in the phone board's place under 720 px
+     (D061 item 1), the 4:5 DS photo frame from 720 px. Their markup is HeroSection's test's; here, the page's files and
+     words. */
+  const picture = fold(TOKEN.whole.querySelector("main")!, "hero-title");
+
+  it("shows the Kabir photo in place of the board: its 16:10 crop first, then its 4:5 crop, with the photo's one alt", () => {
+    const figures = all(picture, "figure");
+    expect(figures.map((f) => f.className)).toEqual(["kh-photo kh-photo--xl ks-hero__phone-art", "kh-photo kh-photo--xl ks-hero-photo ks-art--clamp"]);
+    expect(figures.every((f) => f.matches(HOME_HERO_PHOTO.build))).toBe(true);
+    // The generated crops (the test's next/image stand-in drops an imported source, so the config holds the files and the
+    // frames their sizes).
+    const entry = homePage.sections[0];
+    const photo = entry.kind === "hero-section" && "photo" in entry.config ? entry.config.photo : undefined;
+    expect(photo && [photo.phone.src, photo.image.src]).toEqual([
+      { src: "/_next/static/media/kabir-02-block-rocket-16x10.jpg", width: 1600, height: 1000 },
+      { src: "/_next/static/media/kabir-02-block-rocket-4x5.jpg", width: 1200, height: 1500 },
+    ]);
+    const imgs = figures.map((f) => f.querySelector("img")!);
+    expect(imgs.map((img) => img.getAttribute("style"))).toEqual([expect.stringContaining("--kh-ratio:1600 / 1000"), expect.stringContaining("--kh-ratio:1200 / 1500")]);
+    // The photo's one alt, the journal photo table's for the same DS photo (one alt per image, journal pipeline §8.2).
+    for (const img of imgs) expect(img.getAttribute("alt")).toBe(photos["kabir-02-block-rocket"].image.alt);
+    // No board and no word sticker anywhere in the hero; the words column is the approved one (compared above).
+    expect(picture.querySelector(".kh-art, .kh-sticker")).toBeNull();
   });
 
-  it("adds one block to the approved page, the hero's phone board (D061 item 1): the board's name, tone, files and words", () => {
-    const phone = all(TOKEN.doc.querySelector("main")!, PHONE_ART);
-    expect(phone).toHaveLength(1);
-    const approved = hero.querySelector(".kh-art")!;
-    expect(phone[0].closest("section")?.getAttribute("aria-labelledby")).toBe("hero-title");
-    expect(phone[0].getAttribute("aria-label")).toBe(approved.getAttribute("aria-label"));
-    expect(phone[0].className).toBe(`${approved.className} ${PHONE_ART.slice(1)}`);
-    const files = (board: Element) => all(board, ".kh-art__layer").map((layer) => layer.getAttribute("src")).sort();
-    expect(files(phone[0])).toEqual(files(approved));
-    // The same words; on the phone board top left (ks-hero-sticker), out of the WhatsApp bubble's column.
-    expect(phone[0].querySelector(".kh-sticker")?.textContent).toBe(approved.querySelector(".kh-sticker")?.textContent);
-    expect(phone[0].querySelector(".kh-sticker")?.classList.contains("ks-hero-sticker")).toBe(true);
-    expect(all(phone[0], "[data-draw], [data-reveal]")).toEqual([]);
+  it("keeps the hero still and loads its LCP image, one crop per width range, at high priority", () => {
+    expect(all(picture, "[data-draw], [data-reveal]")).toEqual([]);
+    const high = all(TOKEN.whole.querySelector("main")!, '[fetchpriority="high"]');
+    expect(high).toHaveLength(2);
+    for (const img of high) {
+      expect(picture.contains(img)).toBe(true);
+      expect(img.getAttribute("loading")).toBe("eager");
+      expect(img.closest("figure")?.matches(HOME_HERO_PHOTO.build)).toBe(true);
+    }
+  });
+
+  it("accepts in the text pass only the board's word sticker as gone (its two lines), and excuses no other approved line", () => {
+    const rule = TEXT_DEVIATIONS.home.find((r) => r.approvedBy === HOME_HERO_PHOTO.approvedBy)!;
+    expect(rule.build).toBeUndefined();
+    // The browser reads the round sticker as two lines (its <strong> is a block: bundle.css, .kh-sticker--round strong).
+    expect(mockupFold("home", "main .mk-hero .kh-sticker").textContent).toBe(HOME_HERO_PHOTO.sticker.join(""));
+    for (const line of HOME_HERO_PHOTO.sticker) expect(rule.mockup.test(line), line).toBe(true);
+    // No other approved line: every sentence of the approved page but the sticker's passes the rule by.
+    const others = blockSentences(withoutHeroPicture(mockupFold("home", "main"), ".mk-hero .kh-sticker"));
+    expect(others.filter((line) => rule.mockup.test(line))).toEqual([]);
+    // The build prints neither line.
+    expect(TOKEN.whole.querySelector("main")!.textContent).not.toMatch(/It asks\.|They think\./);
   });
 
   it("never moves money on arrival: no price, chilli button, offer card or h1 inside a reveal", () => {
@@ -285,18 +400,17 @@ describe("Home: the doodles below the first screen draw themselves (D049 pick 3)
     expect(drawn.map((d) => d.getAttribute("data-draw-order"))).toEqual(["1", "2", "3", "4"]);
   });
 
-  it("the boards: the hero's and the close's layers are the mockup's files and places; the close's heart draws", async () => {
-    for (const [label, kind] of [["hero-title", "hero-section"], ["close-title", "offer-section"]] as const) {
-      const entry = homePage.sections.find((s) => s.kind === kind);
-      const art = entry?.kind === "hero-section" && "art" in entry.config ? entry.config.art : entry?.kind === "offer-section" && entry.config.variant === "close" ? entry.config.art : undefined;
-      if (!art) throw new Error(`no board in ${label}`);
-      const expected = all(fold(MOCKUP, label), ".kh-art__layer");
-      expect(art.layers.map(ofContent)).toEqual(await Promise.all(expected.map((img) => asImported(img.getAttribute("src")!))));
-      expect(art.layers.map(ofLayer)).toEqual(expected.map((img) => placement(img.getAttribute("style")!)));
-    }
+  it("the close's board: the mockup's files and places, and its heart draws (the hero's picture is the photo since Q2.1)", async () => {
+    const entry = homePage.sections.find((s) => s.kind === "offer-section");
+    const art = entry?.kind === "offer-section" && entry.config.variant === "close" ? entry.config.art : undefined;
+    if (!art) throw new Error("no board in close-title");
+    const expected = all(fold(MOCKUP, "close-title"), ".kh-art__layer");
+    expect(art.layers.map(ofContent)).toEqual(await Promise.all(expected.map((img) => asImported(img.getAttribute("src")!))));
+    expect(art.layers.map(ofLayer)).toEqual(expected.map((img) => placement(img.getAttribute("style")!)));
     const close = fold(BUILT, "close-title");
     expect(all(close, "svg.kh-art__layer[data-draw]")).toHaveLength(1);
-    expect(all(fold(BUILT, "hero-title"), ".kh-sticker").map((s) => s.textContent)).toEqual(["It asks.They think."]);
+    const hero = homePage.sections.find((s) => s.kind === "hero-section");
+    expect(hero?.kind === "hero-section" && "photo" in hero.config && hero.config.photo !== undefined).toBe(true);
   });
 });
 
@@ -418,8 +532,9 @@ describe("Home: parents' own words and the recognition strip (task 8c.3)", () =>
   it("keeps the page's tracking values, its one h1 and its one LCP image", () => {
     expect(ctaValues(WHOLE)).toEqual(ctaValues(BUILT));
     expect(WHOLE.querySelectorAll("h1")).toHaveLength(1);
-    // One LCP image per hero board since task 8c.1 (D061 item 1): the phone composition's under 720 px and the approved
-    // board's from 720 px, each asking for a 1px image at the other's widths (HeroSection's test holds the sizes).
+    // One LCP image per width range since task 8c.1 (D061 item 1), the hero photo's two crops since task Q2.1: the 16:10
+    // crop's under 720 px and the 4:5 crop's from 720 px, each asking for a 1px image at the other's widths (HeroSection's
+    // test holds the sizes).
     const high = all(WHOLE, '[fetchpriority="high"]');
     expect(high).toHaveLength(2);
     for (const img of high) expect(img.closest(".ks-hero"), "inside the hero").not.toBeNull();

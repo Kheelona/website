@@ -7,6 +7,8 @@ import cloudBlue from "@ds/assets/Shapes/cloud-blue.svg";
 import heartChilli from "@ds/assets/Shapes/heart-chilli.svg";
 import starSun from "@ds/assets/Shapes/star-sun.svg";
 import sunSun from "@ds/assets/Shapes/sun-sun.svg";
+import kabirRocketPhone from "@/assets/hero/kabir-02-block-rocket-16x10.jpg";
+import kabirRocketHero from "@/assets/hero/kabir-02-block-rocket-4x5.jpg";
 import { Button } from "@/components/ui/Button/Button";
 import { Actions } from "@/components/ui/Layout/Layout";
 import { HeroSection } from "./HeroSection";
@@ -33,18 +35,34 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Home (D045): the CTA block beside the board; the board's doodle stays still and its largest sticker is the LCP image.
- *  Under 720 px the board's phone composition (D061 item 1: 4:3, the same files) shows in its place, right under the
- *  words and the button, so Kheelu is on the first phone screen; view it at a phone width. */
+const HOME_HEADING = {
+  eyebrow: "Ages 3 to 7",
+  title: "Kheelu answers every why. Then it {hand:asks one back.}",
+  lead: "A screen-free plush toy by Kheelona. It answers your child first, then asks a question back, so they do the thinking.",
+  id: "hero-title",
+} as const;
+const KABIR = "A boy in round glasses and an olive T-shirt kneels on a patterned rug, grinning as he stacks wooden blocks into a tall tower, with Kheelu sitting beside it.";
+
+/** Home since task Q2.1 (D064 item 4): the CTA block beside the Kabir photo, in place of the board. Its 4:5 crop from
+ *  720 px (480 px wide at most until 900 px); under 720 px its 16:10 crop right under the trust line, so Kabir and
+ *  Kheelu are whole on the first phone screen; view it at a phone width. Each crop is the LCP image at its widths;
+ *  nothing moves (D049 pick 2). */
+export const HomePhoto: Story = {
+  args: {
+    variant: "art",
+    heading: HOME_HEADING,
+    photo: { image: { src: kabirRocketHero, alt: KABIR }, phone: { src: kabirRocketPhone, alt: KABIR } },
+    cta: cta("hero"),
+  },
+};
+
+/** The board layout, Home's until task Q2.1 (D045): the CTA block beside the board; the board's doodle stays still and
+ *  its largest sticker is the LCP image. Under 720 px the board's phone composition (D061 item 1: 4:3, the same files)
+ *  shows in its place, right under the words and the button; view it at a phone width. */
 export const HomeArt: Story = {
   args: {
     variant: "art",
-    heading: {
-      eyebrow: "Ages 3 to 7",
-      title: "Kheelu answers every why. Then it {hand:asks one back.}",
-      lead: "A screen-free plush toy by Kheelona. It answers your child first, then asks a question back, so they do the thinking.",
-      id: "hero-title",
-    },
+    heading: HOME_HEADING,
     art: {
       tone: "blue",
       label: "Kheelu by Kheelona, the cream plush rabbit with rainbow ears, beside a smiling boy",

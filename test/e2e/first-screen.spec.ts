@@ -1,4 +1,5 @@
 import type { Page } from "@playwright/test";
+import { HERO_CROPS, MASTER_SIZE, subjectsIn } from "../../scripts/assets/hero-crops.mjs";
 import { expect, forceMotionEnd, gateRouteGroup, hideForParity, test } from "./support/fixtures";
 import { PARITY_TARGET } from "./support/env";
 import { MOCKUP_SLUGS } from "./support/mockup-text";
@@ -27,6 +28,8 @@ const tapViewport = VIEWPORTS[0];
  * Kheelu (the hero board's own Kheelu sticker, in the board that shows) lies wholly inside it and inside its board. At
  * the three phone sizes the D050 WhatsApp bubble covers neither Kheelu nor the word sticker ("It asks. They think."),
  * and at every phone of the matrix no hero link (task 8c.5: the help line's "call +91 …" at 412 x 915).
+ * Home's hero picture is the Kabir photo since task Q2.1 (D064 item 4), its 16:10 crop under the trust line on phones:
+ * there Kheelu and the boy's head are their boxes in the crop that shows (PHOTO_CROPS), and a photo has no word sticker.
  * At 360 x 590 the DS phone hero (the words, the full-width button, the trust line, then the board: design-system
  * 10-pages.md "Phones") leaves 82 px under the price sentence, so the board starts below the fold there: Kheelu's box
  * is printed, not asserted (the task 8c.1 report lists the options for the founder). Build only: the approved mockup
@@ -43,27 +46,52 @@ const BUBBLE_VIEWPORTS: readonly Viewport[] = [kheeluPhone(360, 590), ...KHEELU_
 
 type Box = { top: number; bottom: number; left: number; right: number };
 
-/** The hero art that shows (the phone board under 720 px), its Kheelu, cast sticker's head and word sticker, the hero's
- *  links and the WhatsApp bubble. */
+/* Task Q2.1 (D064 item 4): Home's hero photo, in its two crops (scripts/assets/hero-crops.mjs). Where Kheelu and the
+   boy's head sit in each, as shares of the crop, [left, top, right, bottom]: the script's subject boxes, which it holds
+   whole and off the edge of every crop (test/guards/generated-hero-crops.test.ts). Each crop shows whole in its frame
+   (its own ratio), so a box in the crop is that share of the image's box on screen. */
+const PHOTO_CROPS = HERO_CROPS.map((crop) => {
+  const { kheelu, head } = subjectsIn(crop, MASTER_SIZE);
+  return { file: crop.path.split("/").pop()!.replace(/\.jpg$/, ""), kheelu, head };
+});
+
+/** The hero picture that shows (the phone board or the phone crop under 720 px), its Kheelu, the child's head and the
+ *  word sticker (a board's; a photo has none), the hero's links and the WhatsApp bubble. */
 async function heroArt(page: Page) {
   // The bubble rises above the buy bar while the bar shows (D050): measure once the bar has settled on its state.
   await page.waitForFunction(() => document.documentElement.hasAttribute("data-buybar"), undefined, { timeout: 5_000 }).catch(() => undefined);
-  return page.evaluate(() => {
+  return page.evaluate((crops) => {
     const box = (el: Element | null | undefined) => {
       if (!el) return null;
       const r = el.getBoundingClientRect();
       return { top: Math.round(r.top), bottom: Math.round(r.bottom), left: Math.round(r.left), right: Math.round(r.right) };
     };
-    const board = [...document.querySelectorAll("main .ks-hero .kh-art")].find((el) => el.checkVisibility());
-    const layers = [...(board?.querySelectorAll("img") ?? [])];
-    const kheelu = layers.find((img) => /kheelu-front-sticker/.test(img.currentSrc || img.src));
-    const cast = layers.find((img) => /(advik|myra)-sticker/.test(img.currentSrc || img.src));
-    const castBox = box(cast);
+    const board = [...document.querySelectorAll("main .ks-hero .kh-art, main .ks-hero .kh-photo")].find((el) => el.checkVisibility());
+    let kheelu: Box | null = null;
+    let head: Box | null = null;
+    if (board?.classList.contains("kh-photo")) {
+      // A photo: the crop that shows, by its file name in the rendition's address, and its subjects' shares of it.
+      const img = board.querySelector("img");
+      const crop = img && crops.find((c) => decodeURIComponent(img.currentSrc || img.src).includes(c.file));
+      const at = (share: readonly number[]) => {
+        const r = img!.getBoundingClientRect();
+        const [l, t, rt, b] = share;
+        return { top: Math.round(r.top + t * r.height), bottom: Math.round(r.top + b * r.height), left: Math.round(r.left + l * r.width), right: Math.round(r.left + rt * r.width) };
+      };
+      kheelu = crop ? at(crop.kheelu) : null;
+      head = crop ? at(crop.head) : null;
+    } else {
+      const layers = [...(board?.querySelectorAll("img") ?? [])];
+      kheelu = box(layers.find((img) => /kheelu-front-sticker/.test(img.currentSrc || img.src)));
+      const castBox = box(layers.find((img) => /(advik|myra)-sticker/.test(img.currentSrc || img.src)));
+      head = castBox && { ...castBox, bottom: Math.round((castBox.top + castBox.bottom) / 2) };
+    }
     const bubble = document.querySelector(".ks-wa");
     return {
       board: box(board),
-      kheelu: box(kheelu),
-      head: castBox && { ...castBox, bottom: Math.round((castBox.top + castBox.bottom) / 2) },
+      photo: !!board?.classList.contains("kh-photo"),
+      kheelu,
+      head,
       sticker: box(board?.querySelector(".kh-sticker")),
       links: [...document.querySelectorAll("main .ks-hero a")]
         .filter((a) => a.checkVisibility())
@@ -72,7 +100,7 @@ async function heroArt(page: Page) {
       width: window.innerWidth,
       height: window.innerHeight,
     };
-  });
+  }, PHOTO_CROPS);
 }
 
 const inside = (inner: Box, outer: Box) => inner.top >= outer.top && inner.bottom <= outer.bottom && inner.left >= outer.left && inner.right <= outer.right;
@@ -203,8 +231,8 @@ for (const slug of FIRST_SCREEN_PAGES) {
         const words = await firstScreenBottoms(page);
         console.log(`[first-screen] ${route.id} ${vp.name}: board ${fmt(art.board)}, Kheelu ${fmt(art.kheelu)}, sticker ${fmt(art.sticker)}, h1 ${words.h1}, cta ${words.cta}, price ${words.price}, delivery ${words.delivery}`);
         assertFirstScreen(words, `${route.id} ${vp.name}`);
-        expect(art.board, `${route.id} ${vp.name}: no hero board shows`).not.toBeNull();
-        expect(art.kheelu, `${route.id} ${vp.name}: no Kheelu in the board that shows`).not.toBeNull();
+        expect(art.board, `${route.id} ${vp.name}: no hero board or photo shows`).not.toBeNull();
+        expect(art.kheelu, `${route.id} ${vp.name}: no Kheelu in the hero picture that shows`).not.toBeNull();
         const screen = { top: 0, bottom: art.height, left: 0, right: art.width };
         expect(inside(art.kheelu!, screen), `${route.id} ${vp.name}: Kheelu ${fmt(art.kheelu)} is not wholly inside the first screen (${art.width} x ${art.height})`).toBe(true);
         expect(inside(art.kheelu!, art.board!), `${route.id} ${vp.name}: Kheelu ${fmt(art.kheelu)} runs off its board ${fmt(art.board)}`).toBe(true);
@@ -221,9 +249,10 @@ for (const slug of FIRST_SCREEN_PAGES) {
         const art = await heroArt(page);
         console.log(`[first-screen] ${route.id} ${vp.name}: bubble ${fmt(art.bubble)}, Kheelu ${fmt(art.kheelu)}, sticker ${fmt(art.sticker)}, child's head ${fmt(art.head)}`);
         expect(art.bubble, `${route.id} ${vp.name}: the WhatsApp bubble does not show`).not.toBeNull();
-        expect(art.kheelu && art.sticker && art.head, `${route.id} ${vp.name}: no Kheelu, word sticker or cast sticker in the board that shows`).toBeTruthy();
+        // A board carries Kheelu, the cast sticker and the word sticker; Home's photo (task Q2.1) Kheelu and the boy, no sticker.
+        expect(art.kheelu && art.head && (art.photo || art.sticker), `${route.id} ${vp.name}: no Kheelu, word sticker or child in the hero picture that shows`).toBeTruthy();
         expect(overlap(art.bubble!, art.kheelu!), `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers Kheelu ${fmt(art.kheelu)}`).toBe(false);
-        expect(overlap(art.bubble!, art.sticker!), `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers the word sticker ${fmt(art.sticker)}`).toBe(false);
+        if (art.sticker) expect(overlap(art.bubble!, art.sticker), `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers the word sticker ${fmt(art.sticker)}`).toBe(false);
         expect(overlap(art.bubble!, art.head!), `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers the child's head ${fmt(art.head)}`).toBe(false);
         // No hero link under the bubble at rest (task 8c.5, the 8c merge's follow-up: at 412 x 915 it sat over "call +91
         // …"). The hero's help line keeps out of the bubble's column on phones (hero-section.css), so its phone link wraps
