@@ -4,7 +4,7 @@ import type { ArtBoardRef, Copy } from "@/content/types";
 import type { SectionEntry, SectionEntryOf, SectionKind } from "@/layouts/sections-registry";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { CLAIM_FIXES, COPY_FIXES } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, COPY_FIXES, GUIDE_ANSWERS, GUIDE_PRICE_FAQ, SELLING_CLOSES } from "../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { mockupRoute } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
@@ -30,8 +30,10 @@ const plain = (copy: Copy) => toPlainText(copy, token);
 const SLUG = "ai-toys-for-kids-in-india";
 const mockup = new DOMParser().parseFromString(readRepoFile(`mockup/${SLUG}.html`), "text/html");
 /* With task 7.1b's copy fix (V22) and task 8b.1's claim fixes (D058; deviations.md V31) applied: check 4, Kheelu's
-   answers and the age answer in the live team's code-checked words. */
-const main = withFacts(withFacts(mockup.querySelector("main")!, COPY_FIXES[SLUG].edits), CLAIM_FIXES[SLUG].edits);
+   answers and the age answer in the live team's code-checked words; then the selling update's (task Q2.12; D065; the D2C
+   plan v2 §6; SELLING_CLOSES): two of Kheelu's answers in the founder's words, the button after them with the price line
+   and the trust line, and the price question without GST, the first 500 or the balance. */
+const main = withFacts(withFacts(withFacts(mockup.querySelector("main")!, COPY_FIXES[SLUG].edits), CLAIM_FIXES[SLUG].edits), SELLING_CLOSES[SLUG].edits);
 const fold = (labelledBy: string) => {
   const el = main.querySelector(`[aria-labelledby="${labelledBy}"]`);
   if (!el) throw new Error(`mockup/${SLUG}.html has no fold labelled by #${labelledBy}`);
@@ -254,6 +256,27 @@ describe("fold 3: how Kheelu meets each check", () => {
     expect(config.link).toEqual({ label: norm(link.textContent), href: mockupRoute(link.getAttribute("href")!), icon: iconOf(link.querySelector("svg")) });
     expect(config.link).toEqual({ label: "See the full safety facts", href: "/safety", icon: "shield-check" });
   });
+
+  /* The selling update (task Q2.12; D065 items 7-8; the D2C plan v2 §6 fold 3): "Every conversation" in G26's words and
+     "Open internet" ending on the line D065 confirms, never a one-tap delete or a place for the servers (D058). */
+  it("says G26's delete-all-chats line and D065's not-knowing line in Kheelu's answers, word for word", () => {
+    const items = answersOf().items.map((i) => ({ title: plain(i.title!), body: plain(i.body) }));
+    expect(items.find((i) => i.title === "Every conversation")?.body).toBe(GUIDE_ANSWERS.conversation.build);
+    expect(items.find((i) => i.title === "Open internet")?.body).toBe(GUIDE_ANSWERS.internet.claimFixed.replace(GUIDE_ANSWERS.internet.from, GUIDE_ANSWERS.internet.to));
+    expect(items.find((i) => i.title === "Open internet")?.body).toMatch(/When it doesn’t know something, it says so instead of guessing\.$/);
+    expect(items.map((i) => i.body).join(" ")).not.toMatch(/one tap|hides it on that phone|Deleting your account|in India/);
+  });
+
+  /* The page's first button, after Kheelu's answers (`guide-answers`, registered under D065): the same block as every
+     close, the chilli button with its arrow (full width on phones), then the price line and the trust line, no help line
+     (the plan's §6 fold 3; the close carries it). */
+  it("ends on the pre-order button (`guide-answers`), the price line and the trust line, as the mockup with the plan's block", () => {
+    expect(meets.cta).toEqual({ cta: "guide-answers", arrow: true, block: true, trust: TRUST_COMPACT.map((id) => trustItems[id]) });
+    const buttons = fold("answers-title").querySelectorAll(".kh-btn--cta");
+    expect(buttons).toHaveLength(1);
+    expect(buttons[0].getAttribute("data-ph-capture-attribute-cta")).toBe("guide-answers");
+    expect(buttons[0].classList.contains("kh-btn--block")).toBe(true);
+  });
 });
 
 describe("fold 4: AI robot or AI plush?", () => {
@@ -313,8 +336,9 @@ describe("fold 5: questions parents ask", () => {
   it("shows the guide's five answers from faqs.ts (never retyped), in the mockup's order, all closed, on the page cream", () => {
     const config = faqOf();
     const el = fold("faq-title");
-    expect(config.items).toEqual([faqs["what-is-an-ai-toy"], faqs["ai-toy-or-tablet"], faqs["ai-toy-age"], faqs.wifi, faqs["how-much"]]);
-    config.items.forEach((item, i) => expect(item).toBe([faqs["what-is-an-ai-toy"], faqs["ai-toy-or-tablet"], faqs["ai-toy-age"], faqs.wifi, faqs["how-much"]][i]));
+    const listed = [faqs["what-is-an-ai-toy"], faqs["ai-toy-or-tablet"], faqs["ai-toy-age"], faqs.wifi, faqs["price-in-total"]];
+    expect(config.items).toEqual(listed);
+    config.items.forEach((item, i) => expect(item).toBe(listed[i]));
     expect(config.items.map((i) => plain(i.question))).toEqual(Array.from(el.querySelectorAll(".kh-faq__q")).map((q) => norm(q.textContent)));
     expect(config.firstOpen).toBeFalsy();
     expect(el.querySelector("details[open]")).toBeNull();
@@ -326,6 +350,18 @@ describe("fold 5: questions parents ask", () => {
       title: headingOf(el).title,
       id: headingOf(el).id,
     });
+  });
+
+  /* The selling update (task Q2.12; D065 items 3-4; the D2C plan v2 §6 fold 5): Home's rewritten price answer takes the
+     place of `how-much`, which carried "incl. GST", the first 500 and the balance; `how-much` stays in faqs.ts for
+     /pricing.md, a machine file (task Q2.8). */
+  it("asks the price question in the plan's words: the total, the refundable advance, no GST, no first 500, no balance", () => {
+    const price = faqOf().items.at(-1)!;
+    expect(price.id).toBe("price-in-total");
+    expect(plain(price.question)).toBe(GUIDE_PRICE_FAQ.build.question);
+    expect(plain(price.answer)).toBe(GUIDE_PRICE_FAQ.build.answer);
+    for (const offer of [token, full]) expect(toPlainText(price.answer, offer)).not.toMatch(/incl\. GST|first 500|₹4,500|MRP/);
+    expect(faqOf().items.map((i) => i.id)).not.toContain("how-much");
   });
 
   it("shows Ira's story photo at the DS 4:5, clamped (420 px on tablets, 360 px from 900 px), with the mockup's alt", () => {
@@ -387,14 +423,17 @@ describe("fold 6: the close", () => {
 });
 
 describe("the buyer's guide: page-wide rules", () => {
-  it("has the copy page's title and both descriptions, ₹4,999 leading the advance in token mode (D028), and the default share card", () => {
+  /* The selling update (task Q2.12; D065 item 3; the D2C plan v2 §6, "The guide: title, meta, keywords"): the total
+     still leads in token mode (D028, the machine-read rule), now "in total", without "incl. GST". */
+  it("has the copy page's title and the plan's two descriptions, ₹4,999 in total leading the advance in token mode (D028), and the default share card", () => {
     expect(plain(aiToysPage.meta.title)).toBe("AI toys for kids in India: how to choose one · Kheelona");
     expect(toPlainText(aiToysPage.meta.description, token)).toBe(
-      "AI toys for kids in India: five checks to make before you buy, and how Kheelu meets each. Ages 3 to 7. ₹4,999 (incl. GST); reserve with a refundable ₹499.",
+      "AI toys for kids in India: five checks to make before you buy, and how Kheelu meets each. Ages 3 to 7. ₹4,999 in total; reserve with a refundable ₹499.",
     );
     expect(toPlainText(aiToysPage.meta.description, full)).toBe(
-      "AI toys for kids in India: five checks to make before you buy, and how Kheelu meets each. Ages 3 to 7. ₹7,999 (incl. GST), delivered anywhere in India.",
+      "AI toys for kids in India: five checks to make before you buy, and how Kheelu meets each. Ages 3 to 7. ₹7,999 in total, delivered anywhere in India.",
     );
+    for (const offer of [token, full]) expect(toPlainText(aiToysPage.meta.description, offer).length).toBeLessThanOrEqual(155);
     expect(aiToysPage.meta.og).toBe(DEFAULT_OG);
   });
 
@@ -420,12 +459,14 @@ describe("the buyer's guide: page-wide rules", () => {
    * source can. The trust pair's delivery label is the {delivery} token, so only its typed labels are listed. */
   it("reads the shared words by reference: no FAQ question or answer, or trust label typed in its source", () => {
     const source = readRepoFile(`src/content/en-IN/pages/${SLUG}.ts`);
-    const ids = ["what-is-an-ai-toy", "ai-toy-or-tablet", "ai-toy-age", "wifi"] as const;
+    const ids = ["what-is-an-ai-toy", "ai-toy-or-tablet", "ai-toy-age", "wifi", "price-in-total"] as const;
+    /* The price question reads differently in each mode: both of its forms. */
+    const forms = (copy: Copy): string[] => (typeof copy === "string" ? [copy] : [copy.token, copy.full]);
     const shared = [
-      ...ids.flatMap((id) => [faqs[id].question, faqs[id].answer]),
+      ...ids.flatMap((id) => [faqs[id].question, faqs[id].answer]).flatMap(forms),
       ...TRUST_COMPACT.map((id) => trustItems[id].label).filter((label) => !label.startsWith("{")),
     ];
-    expect(shared.length).toBeGreaterThanOrEqual(9);
+    expect(shared.length).toBeGreaterThanOrEqual(13);
     for (const text of shared) expect(source, text).not.toContain(text);
   });
 
