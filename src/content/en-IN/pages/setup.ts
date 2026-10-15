@@ -5,6 +5,7 @@ import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
 import { withoutHiddenRows } from "@/lib/content/placeholder";
 import { DEFAULT_OG } from "../organization";
 import { seller } from "../seller";
+import { TRUST_COMPACT, trustItems } from "../trust";
 
 /**
  * The setup page, `/setup` (task 5.8): the approved mockup `mockup/pages/setup.html` (D046), word for word, in the fold
@@ -131,8 +132,9 @@ export const setupPage = {
         heading: { id: "talk-title", title: "Then {hand:let them talk.}" },
         copy: [
           "The first conversation is your child’s. Kheelu answers, then asks a question back.",
-          /* No one-tap delete (D058 item 1; setup.md fold 6). */
-          "Later, open the parent app to read every word of it. Removing a chat in the app hides it on that phone. Deleting your account deletes every conversation and recording.",
+          /* The deletion sentences came off, so the fold keeps one idea (G27; the D2C plan v2 §5 fold 6, §13 item 4 (a);
+             task Q2.12). */
+          "Later, open the parent app to read every word of it.",
           "No Wi‑Fi for a while? Story mode’s stories, poems and jingles still play. AI mode needs your home Wi‑Fi, and Bluetooth mode needs only your paired phone.",
         ],
         media: {
@@ -144,7 +146,7 @@ export const setupPage = {
         },
       },
     },
-    /* Fold 7: a person to ask, and the product page for anyone still deciding; no chilli button. */
+    /* Fold 7: a person to ask; its "Meet Kheelu" line went, because fold 8 does that job (the D2C plan v2 §5 fold 7). */
     {
       kind: "close-section",
       config: {
@@ -153,7 +155,21 @@ export const setupPage = {
         /* WhatsApp or email: the call came off (D063 item 2, D064 item 11; task Q2.3). */
         contact: `${seller.support.reach}. Tell us your order number, and what you see on Kheelu and in the app.`,
         action: { label: "All the ways to reach us", href: "/contact", variant: "secondary", icon: "chat-circle-dots" },
-        meet: { lead: "Don’t have Kheelu yet?", link: "[Meet Kheelu](/products/kheelu)" },
+      },
+    },
+    /* Fold 8: the close for anyone who arrives before buying (the D2C plan v2 §5 fold 8, ruling 8; task Q2.12): the button
+       (`finale`, its /setup placement registered under D065), the price line and the trust line, as every close; no help
+       line (fold 7 is the help) and no picture. The lead restates folds 2-3. */
+    {
+      kind: "close-section",
+      config: {
+        variant: "center",
+        heading: {
+          eyebrow: "Pre-order",
+          title: "Don’t have Kheelu {hand:yet?}",
+          lead: "Day one takes your phone, the parent app and your home Wi‑Fi password.",
+        },
+        cta: { cta: "finale", trust: TRUST_COMPACT.map((id) => trustItems[id]) },
       },
     },
   ],

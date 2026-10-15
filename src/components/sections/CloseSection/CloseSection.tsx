@@ -61,12 +61,14 @@ export function CloseSection(props: CloseSectionProps) {
           <Actions center>
             <SecondaryLink link={props.action} />
           </Actions>
-          <HelpLine
-            size="body"
-            lead={<RichText text={props.meet.lead} offer={offer} />}
-            contact={<RichText text={props.meet.link} offer={offer} />}
-            className="ks-setup-meet"
-          />
+          {props.meet && (
+            <HelpLine
+              size="body"
+              lead={<RichText text={props.meet.lead} offer={offer} />}
+              contact={<RichText text={props.meet.link} offer={offer} />}
+              className="ks-setup-meet"
+            />
+          )}
         </CloseFold>
       );
   }

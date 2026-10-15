@@ -176,6 +176,20 @@ describe("CloseSection: every close of the approved mockup, exactly (art aside)"
     expect(full.querySelector(".ks-setup-help")?.textContent).toContain("Full-mode help.");
     expect(full.querySelector(".ks-setup-meet a")?.textContent).toBe("Full link");
   });
+
+  /* The selling update (task Q2.12; the D2C plan v2 §5 fold 7): /setup's "Stuck?" fold drops "Don’t have Kheelu yet? Meet
+     Kheelu", because the page's own close (fold 8) now does that job. Without `meet`, the fold ends on its secondary
+     button: no empty line after it. */
+  it("links: without `meet`, the fold ends on its secondary button, with no empty line after it", () => {
+    const links = CASES[8][3];
+    if (links.variant !== "links") throw new Error("CASES[8] is the links close");
+    const { meet: _meet, ...help } = links;
+    const el = renderedElement(<CloseSection {...help} {...context()} />);
+    expect(el.querySelector(".ks-setup-meet")).toBeNull();
+    const container = el.querySelector(".kh-container")!;
+    expect(Array.from(container.children).map((child) => child.className)).toEqual(["kh-heading kh-heading--center", "kh-section__actions kh-section__actions--center"]);
+    expect(el.textContent).not.toContain("Don’t have Kheelu yet?");
+  });
 });
 
 describe("CloseSection: the art board", () => {

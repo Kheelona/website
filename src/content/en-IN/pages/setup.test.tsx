@@ -7,16 +7,18 @@ import type { SectionEntry } from "@/layouts/sections-registry";
 import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { CLAIM_FIXES, COPY_FIXES, SETUP_STEP_BUILD, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import { CTAS } from "@/lib/tracking/cta";
+import { CLAIM_FIXES, COPY_FIXES, SELLING_CLOSES, SETUP_CLOSE, SETUP_STEP_BUILD, SETUP_TALK_LINE, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { APP_STORE, GOOGLE_PLAY, PAGE_FACTS, type FactEdit } from "../../../../test/e2e/support/page-facts";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
-import { mockupFold, mockupRoute, skeleton, words } from "../../../../test/support/mockup-compare";
+import { mockupFold, mockupLinks, mockupRoute, skeleton, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 import { DEFAULT_OG } from "../organization";
 import { routeFor } from "../routes";
 import { seller } from "../seller";
+import { TRUST_COMPACT, trustItems } from "../trust";
 import { setupPage } from "./setup";
 
 /*
@@ -33,7 +35,9 @@ import { setupPage } from "./setup";
  * Kheelu's back that step 2 holds (item 25). Fold 4's age-3 line in the site's one wording (task 7.1b, CMO review A M8;
  * deviation V20; test/e2e/support/deviations.ts COPY_FIXES.setup). D058's claim fixes (task 8b.1; deviation V29;
  * CLAIM_FIXES.setup): fold 4's age and languages lines, fold 5's quiet time and fold 6's deleting line in the live team's
- * code-checked words. APPROVED below is the mockup with exactly those
+ * code-checked words. The selling update (task Q2.12; D065; the D2C plan v2 §5; SELLING_CLOSES.setup): fold 6 without
+ * the deletion sentences (G27), fold 7 without "Don’t have Kheelu yet? Meet Kheelu", and a new close, fold 8, with the
+ * button, the price line and the trust line. APPROVED below is the mockup with exactly those
  * applied; every comparison runs against it, and one test pins that it differs from the mockup there alone. The activity screenshot is the D044
  * round-2 file (task 1.5b: no "Games"); the alt and the caption are the mockup's.
  */
@@ -45,11 +49,13 @@ const STEP_2 = { title: "Press and hold the button on Kheelu’s back.", body: S
 const V8: FactEdit = { at: ".kh-step__body", was: "Hold it for 3 seconds, until the light starts pulsing blue.", now: STEP_2.body, inner: true };
 
 /** The approved page: the mockup's <main> with V8, the founder's page facts and task 7.1b's age line applied, then task
- *  8b.1's claim fixes in a pass of their own, then D063 item 2: the close's contact line without the call (WhatsApp or
- *  email; task Q2.3; seller-facts.ts). */
-const APPROVED = withSellerFacts(withFacts(withFacts(MOCKUP, [...PAGE_FACTS.setup.edits, V8, ...COPY_FIXES.setup.edits]), CLAIM_FIXES.setup.edits));
+ *  8b.1's claim fixes in a pass of their own, then task Q2.12's selling close in another, then D063 item 2: the help
+ *  fold's contact line without the call (WhatsApp or email; task Q2.3; seller-facts.ts). */
+const APPROVED = withSellerFacts(
+  withFacts(withFacts(withFacts(MOCKUP, [...PAGE_FACTS.setup.edits, V8, ...COPY_FIXES.setup.edits]), CLAIM_FIXES.setup.edits), SELLING_CLOSES.setup.edits),
+);
 
-const LABELS = ["hero-title", "before-title", "connect-title", "age-title", "button-title", "talk-title", "help-title"];
+const LABELS = ["hero-title", "before-title", "connect-title", "age-title", "button-title", "talk-title", "help-title", "close-title"];
 
 function rendered(mode: OfferMode) {
   const main = renderToStaticMarkup(<PageTemplate page={setupPage} offer={buildOffer(mode)} path="/setup" />);
@@ -78,7 +84,8 @@ const tones = (el: Element) =>
  * block (FeatureSplit, components §2), and the list reset TrustList adds. */
 const SKELETON = {
   rename: { "setup-hero": "ks-hero-words", "steps-4": "ks-steps--four", "setup-copy": "ks-feature-copy" },
-  drop: /^ks-list-reset$/,
+  /* And the close's CTA classes, as on every centred close (CtaBlock.test.tsx). */
+  drop: /^ks-(?:list-reset|cta__button|trustline--center)$/,
 };
 
 const sections: readonly SectionEntry[] = setupPage.sections;
@@ -95,7 +102,7 @@ function strings(value: unknown, out: string[] = [], seen = new Set<unknown>()):
 }
 
 describe("Setup: the folds of the approved page", () => {
-  it("lists the folds in the corrected structure §5 order: hero answer, ticks with the Wi-Fi tip, four steps, three photo splits, the links close", () => {
+  it("lists the folds in the corrected structure §5 order: hero answer, ticks with the Wi-Fi tip, four steps, three photo splits, the links fold, then the centred close (task Q2.12)", () => {
     expect(sections.map((e) => [e.kind, variantOf(e)])).toEqual([
       ["hero-section", "answer"],
       ["feature-split", "ticks"],
@@ -104,16 +111,19 @@ describe("Setup: the folds of the approved page", () => {
       ["feature-split", "photo"],
       ["feature-split", "photo"],
       ["close-section", "links"],
+      ["close-section", "center"],
     ]);
   });
 
-  it("names each fold by its heading as the mockup does, with the mockup's anchors", () => {
-    expect(folds(MOCKUP).map((f) => f.getAttribute("aria-labelledby"))).toEqual(LABELS);
+  it("names each fold by its heading as the mockup does, with the mockup's anchors, then the close (#close) task Q2.12 adds", () => {
+    expect(folds(MOCKUP).map((f) => f.getAttribute("aria-labelledby"))).toEqual(LABELS.slice(0, -1));
+    expect(folds(APPROVED).map((f) => f.getAttribute("aria-labelledby"))).toEqual(LABELS);
     expect(folds(BUILT).map((f) => f.getAttribute("aria-labelledby"))).toEqual(LABELS);
-    expect(folds(BUILT).map((f) => f.id || null)).toEqual(folds(MOCKUP).map((f) => f.id || null));
+    expect(folds(BUILT).map((f) => f.id || null)).toEqual(folds(APPROVED).map((f) => f.id || null));
+    expect(folds(BUILT).at(-1)?.id).toBe("close");
   });
 
-  it("differs from the mockup only in fold 2's first and last items, step 2's light, fold 4's lines, fold 5's lines, fold 6's deleting line and the close's contact line", () => {
+  it("differs from the mockup only in fold 2's first and last items, step 2's light, fold 4's lines, fold 5's lines, fold 6's deleting line, the help fold's contact and Meet Kheelu lines, and the new close", () => {
     const step = (main: Element) => main.querySelector("#connect .kh-step:nth-child(2)")!;
     expect(words(step(MOCKUP))).toBe("2 Press and hold the button on Kheelu’s back. Hold it for 3 seconds, until the light starts pulsing blue.");
     expect(words(step(BUILT))).toBe(`2 ${STEP_2.title} ${STEP_2.body}`);
@@ -139,6 +149,9 @@ describe("Setup: the folds of the approved page", () => {
         ...CLAIM_FIXES.setup.hidden.both,
         // The close's contact line: WhatsApp or email, the call off (D063 item 2; task Q2.3).
         '[aria-labelledby="help-title"] .mk-setup-help',
+        // The selling update (task Q2.12): the Meet Kheelu line off the help fold, and the new close.
+        ".mk-setup-meet",
+        "#close",
       ].join(", ");
       for (const el of copy.querySelectorAll(gone)) el.remove();
       return words(copy);
@@ -159,9 +172,11 @@ describe("Setup: the folds of the approved page", () => {
     expect(pictureWords(built)).toEqual(pictureWords(approved));
   });
 
+  /* As the build links them: a trust item to the part of its terms page that keeps the promise (task 7.1a; the harness's
+     `mockupLinks`), the close's since task Q2.12. */
   it.each(LABELS)("%s links where the mockup links", (label) => {
     const { built, approved } = each(label);
-    expect(hrefs(built)).toEqual(hrefs(approved).map(mockupRoute));
+    expect(hrefs(built)).toEqual(mockupLinks(approved));
   });
 
   it.each(LABELS)("%s has the mockup's markup: tags, classes, ARIA, ids and addresses (SCA 1)", (label) => {
@@ -200,33 +215,74 @@ describe("Setup: the hero and the first screen", () => {
   });
 });
 
-describe("Setup: no chilli button and no buy bar (setup.md question 4; CMO view: as built)", () => {
-  it("has no pre-order button and no tracking value anywhere in its folds (the nav and drawer carry theirs)", () => {
-    expect(all(BUILT, ".kh-btn--cta")).toHaveLength(0);
-    expect(all(BUILT, "[data-ph-capture-attribute-cta]")).toHaveLength(0);
-    // No link to the Kheelona store (the parent app's Google Play listing lives under play.google.com/store/).
-    expect(all(BUILT, '[href*="store.kheelona.com"]')).toHaveLength(0);
+/* The selling update (task Q2.12; D065; the D2C plan v2 §5, ruling 8): day one after buying, and a decision for anyone
+ * who arrives before buying. Help first ("Stuck? We’ll help."), then one pre-order close, the same button, price line and
+ * risk-reversal line as Home's (CtaBlock); still no phone buy bar (a help page does not chase an owner down the page). */
+describe("Setup: help, then one pre-order close, and no buy bar (task Q2.12)", () => {
+  const close = () => fold(BUILT, "close-title");
+
+  it("has one pre-order button, the close's, to the store, tracked `finale` (its /setup placement registered under D065)", () => {
+    const buttons = all(BUILT, ".kh-btn--cta");
+    expect(buttons).toHaveLength(1);
+    expect(buttons[0].closest("#close")).not.toBeNull();
+    expect(buttons[0].getAttribute("href")).toBe("https://store.kheelona.com");
+    expect(all(BUILT, "[data-ph-capture-attribute-cta]").map((el) => el.getAttribute("data-ph-capture-attribute-cta"))).toEqual(["finale"]);
+    expect(CTAS.finale.added?.pages).toContain("/setup");
   });
 
-  it("is not a page of the phone buy bar (mockup meta buybar: false)", () => {
+  it("is not a page of the phone buy bar (mockup meta buybar: false; the plan's §5 fold 8)", () => {
     expect(stickyBarPaths()).not.toContain("/setup");
   });
 
-  it("names no amount, in either mode, and changes no word with the offer", () => {
-    for (const { doc } of [TOKEN, FULL]) expect(doc.querySelector("main")!.textContent).not.toMatch(/₹/);
+  it("names an amount only in the close's price line, from the live offer, and changes no other word with it", () => {
+    const withoutClose = (main: Element) => {
+      const copy = main.cloneNode(true) as Element;
+      copy.querySelector("#close")?.remove();
+      return copy;
+    };
+    for (const { doc } of [TOKEN, FULL]) expect(withoutClose(doc.querySelector("main")!).textContent).not.toMatch(/₹/);
     expect(strings(setupPage).join("\n")).not.toMatch(/₹|\{price:/);
-    expect(words(FULL.doc.querySelector("main")!)).toBe(words(BUILT));
+    expect(words(withoutClose(FULL.doc.querySelector("main")!))).toBe(words(withoutClose(BUILT)));
+    expect(close().querySelector(".ks-price")?.textContent).toBe("₹499 today, refundable. ₹4,999 in total.");
+    expect(fold(FULL.doc.querySelector("main")!, "close-title").querySelector(".ks-price")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
   });
 
-  it("closes on “Stuck? We’ll help.”: the contact line, the secondary button to /contact, the link to Meet Kheelu", () => {
+  it("helps first: “Stuck? We’ll help.”, the contact line and the secondary button to /contact, and no Meet Kheelu line any more", () => {
     const help = fold(BUILT, "help-title");
     expect(help.id).toBe("help");
     const button = help.querySelector(".kh-section__actions a")!;
     expect(button.className).toBe("kh-btn kh-btn--secondary");
     expect(button.getAttribute("href")).toBe("/contact");
     expect(button.querySelector("svg path")?.getAttribute("d")).toBe(ICON_PATHS["chat-circle-dots"]);
-    /* WhatsApp and the email; no call link (D063 item 2; task Q2.3). */
-    expect(hrefs(help)).toEqual([seller.support.whatsapp, `mailto:${seller.support.email}`, "/contact", "/products/kheelu"]);
+    /* WhatsApp and the email; no call link (D063 item 2; task Q2.3) and no number on /setup (D063, D064). */
+    expect(hrefs(help)).toEqual([seller.support.whatsapp, `mailto:${seller.support.email}`, "/contact"]);
+    expect(help.querySelector(".ks-setup-meet")).toBeNull();
+    expect(words(help)).not.toMatch(/Don’t have Kheelu yet|\+91|91875/);
+  });
+
+  it("closes with the plan's fold 8: the eyebrow, the title, the lead, the button, the price line in a block of its own, the trust line, no help line, no picture", () => {
+    const el = close();
+    expect(words(el.querySelector(".kh-eyebrow")!)).toBe(SETUP_CLOSE.eyebrow);
+    expect(words(el.querySelector("h2")!)).toBe(SETUP_CLOSE.title.text);
+    expect(el.querySelector("h2 .kh-hand")?.textContent).toBe("yet?");
+    expect(words(el.querySelector(".kh-heading__lead")!)).toBe(SETUP_CLOSE.lead);
+    /* Build condition C1: the price line is its own block after the button, never inside it. */
+    const button = el.querySelector(".kh-btn--cta")!;
+    expect(words(button)).toBe("Pre-order Kheelu");
+    const price = el.querySelector(".ks-price")!;
+    expect(price.tagName).toBe("P");
+    expect(button.contains(price)).toBe(false);
+    expect(button.compareDocumentPosition(price) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(all(el, ".ks-trust li").map((li) => words(li))).toEqual(TRUST_COMPACT.map((id) => toPlainText(trustItems[id].label, buildOffer("token"))));
+    expect(words(all(el, ".ks-trust li")[0])).toBe("Full refund until dispatch · 7-day returns");
+    expect(el.querySelector(".ks-help")).toBeNull();
+    expect(all(el, "img, .kh-art, .kh-photo")).toHaveLength(0);
+  });
+
+  it("drops G27's deletion sentences from fold 6, which keeps the first conversation as its one idea (§13 item 4 (a))", () => {
+    const talk = words(fold(BUILT, "talk-title"));
+    expect(talk).toContain(SETUP_TALK_LINE.build);
+    expect(talk).not.toMatch(/Removing a chat|Deleting your account|delete/i);
   });
 });
 
@@ -365,9 +421,10 @@ describe("Setup: search and share metadata (setup.md At a glance)", () => {
 });
 
 describe("Setup: the founder's page facts and task 7.1b's age line for the pixels (tasks 6.7, 7.1b)", () => {
-  it("finds each block the visual pass hides on the build side, once, on the page as it renders (V8, the facts, the age line and D058's lines)", () => {
+  it("finds each block the visual pass hides on the build side, once, on the page as it renders (V8, the facts, the age line, D058's lines and task Q2.12's)", () => {
     const selectors = VISUAL_HIDDEN.setup.filter((rule) => rule.side === "build").map((rule) => rule.selector);
-    expect(selectors).toHaveLength(9);
+    expect(selectors).toHaveLength(11);
+    expect(selectors.slice(-2)).toEqual([...SELLING_CLOSES.setup.hidden.both, ...SELLING_CLOSES.setup.hidden.build]);
     for (const selector of selectors) expect(BUILT.querySelectorAll(selector), selector).toHaveLength(1);
   });
 

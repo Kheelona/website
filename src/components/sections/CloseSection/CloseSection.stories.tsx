@@ -147,5 +147,24 @@ export const Links: Story = {
   },
 };
 
+/** `links` without `meet`: /setup's "Stuck?" fold since the selling update (task Q2.12), ending on its secondary button,
+ *  because the page's own pre-order close follows it. */
+export const LinksHelpOnly: Story = {
+  args: { ...Links.args, meet: undefined },
+};
+
+/** `center` with an eyebrow and a lead: /setup's pre-order close (task Q2.12; the D2C plan v2 §5 fold 8), no help line. */
+export const CenterWithLead: Story = {
+  args: {
+    variant: "center",
+    heading: {
+      eyebrow: "Pre-order",
+      title: "Don’t have Kheelu {hand:yet?}",
+      lead: "Day one takes your phone, the parent app and your home Wi‑Fi password.",
+    },
+    cta: { cta: "finale", trust: COMPACT },
+  },
+};
+
 /** Full mode: the safety close with the paid-in-full sentence (ADR-005). */
 export const FullMode: Story = { args: { offer: buildOffer("full") } };
