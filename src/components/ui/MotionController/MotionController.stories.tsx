@@ -3,6 +3,7 @@ import { ChalkHeart, ChalkStar, DoodleChalkFilter, InkSparkLines } from "@/asset
 import { Button } from "../Button/Button";
 import { Card } from "../Card/Card";
 import { Icon } from "../Icon/Icon";
+import { LIST_RESET } from "../Layout/Layout";
 import { MotionController } from "./MotionController.client";
 
 /* The demo the reveal spec runs on (test/e2e/motion-reveal.spec.ts; task 2.8, D049 picks 1A and 3B): a page of
@@ -138,7 +139,7 @@ function LineDrawingDemo() {
               </header>
             </div>
             <div className="kh-cols kh-cols--3">
-              <Card title="A card with a link" body="Lifts on hover; its arrow nudges." link={{ href: "#cards", label: "Read the guide", icon: <Icon name="arrow-right" /> }} />
+              <Card title="A card with a link" body="Lifts on hover; its arrow nudges." link={{ href: "#cards", label: "Read the guide", icon: <Icon name="arrow-right" />, tap: true }} />
               <Card title="Two links" body="The contact cards' row." links={[{ href: "#email", label: "Email", icon: <Icon name="arrow-right" /> }]} />
               <Card title="No link" body="Stays still." />
             </div>
@@ -147,7 +148,7 @@ function LineDrawingDemo() {
                 See all questions
               </Button>
             </p>
-            <ul className="kh-chips">
+            <ul className={`kh-chips ${LIST_RESET}`}>
               <li>
                 <a className="kh-tag" href="#topic-1">
                   Talking
