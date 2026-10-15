@@ -267,9 +267,21 @@ describe("the product page as rendered (token mode)", () => {
     }
   });
 
-  it("draws the close's \"Delivery included anywhere in India\" with the map pin, as the mockup does (wave-3 close)", () => {
-    const item = [...BUILT.main.querySelectorAll("#close .kh-trustline li")].find((li) => li.textContent === "Delivery included anywhere in India")!;
-    expect(item.querySelector("path")?.getAttribute("d")).toBe(ICON_PATHS["map-pin"]);
+  /* Task Q2.8 (D065 item 3; the D2C plan v2 §1.1, product folds 3 and 12): the one risk-reversal line under every button,
+     first, the delivery line second; the offer card's row adds the card's third row; the close carries the trust line. */
+  it("leads every trust line beside a button with the risk-reversal line, the delivery line second", () => {
+    const row = (el: Element) => [...el.querySelectorAll("li")].map((li) => text(li));
+    const LINE = ["Full refund until dispatch · 7-day returns", "Deliveries start mid-November"];
+    // The linked trust lines (`ks-trust`; the safety facts line is not linked).
+    const rows = [...RENDERED.main.querySelectorAll(".ks-trust")].map(row);
+    expect(rows.length).toBeGreaterThanOrEqual(3);
+    for (const r of rows) expect(r.slice(0, 2)).toEqual(LINE);
+    expect(row(BUILT.main.querySelector("#offer .ks-trust")!)).toEqual([...LINE, "6-month warranty", "UPI, card or net banking"]);
+    expect(row(BUILT.main.querySelector("#close .ks-trust")!)).toEqual(LINE);
+    expect(rows.flat()).not.toContain("7-day returns, no questions asked");
+    // Each item keeps its one icon from trust.ts: the returns arrow, then the truck.
+    const icons = [...BUILT.main.querySelectorAll("#close .ks-trust li path")].map((p) => p.getAttribute("d"));
+    expect(icons).toEqual([ICON_PATHS["arrow-counter-clockwise"], ICON_PATHS.truck]);
   });
 
   it("shows the D025 line under the questions, without opening an answer", () => {
@@ -288,10 +300,9 @@ describe("the product page as rendered (token mode)", () => {
 describe("the product page in full mode", () => {
   const { main } = rendered(FULL);
 
-  it("prints the full-mode price sentence beside every chilli button and drops the split", () => {
-    expect([...main.querySelectorAll(".ks-price")].map((p) => p.textContent)).toEqual(
-      Array(3).fill("₹7,999 (incl. GST), paid in full when you order."),
-    );
+  it("prints the full-mode price line beside every chilli button and drops the split", () => {
+    // The short price line (D065 item 3; task Q2.8).
+    expect([...main.querySelectorAll(".ks-price")].map((p) => p.textContent)).toEqual(Array(3).fill("₹7,999 in total, paid in full when you order."));
     expect(main.querySelector(".kh-offer__split")).toBeNull();
   });
 

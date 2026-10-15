@@ -17,7 +17,8 @@ import { APPROVED_WIDTHS } from "./support/viewports";
 const vp = APPROVED_WIDTHS[1];
 
 function unexplained(slug: string, missing: string[], extra: string[]) {
-  /* The page's own rules, then D063's (task Q2.3; support/seller-facts.ts). */
+  /* The rule every page shares (task Q2.8's price lines), then the page's own, then D063's (task Q2.3;
+     support/seller-facts.ts). */
   const rules = textDeviations(slug);
   const applied: string[] = [];
   const keepMissing = missing.filter((s) => {

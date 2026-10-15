@@ -6,6 +6,7 @@ import { navigation } from "@/content/en-IN/navigation";
 import { trustItems } from "@/content/en-IN/trust";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
+import { PRICE_LINE } from "../e2e/support/deviations";
 import { readRepoFile } from "../e2e/support/repo";
 
 /*
@@ -27,6 +28,9 @@ import { readRepoFile } from "../e2e/support/repo";
  * - addresses: a mockup page file is the route it became (`mockupRoute`, structure §5); store.html is this build's
  *   store (`STORE`); a trust item's link and the footer's grievance officer link carry the part of the page the build
  *   links them to (`ruledLinkHref`, task 7.1a; wiki/qa/deviations.md V24);
+ * - the selling pages' price lines: the short price line, the buy bar's line and the risk-reversal line where the
+ *   mockup prints D028's sentence and the returns promise beside a button, applied as a page is read (`withPriceLine`,
+ *   task Q2.8; D065 item 3);
  * - classes: each mockup block (`mk-…`) takes its ks- name (components §7), or the name a test's rename table gives
  *   it, or is dropped (`portClass`);
  * - the mockup's value markers (data-src) are review-tool markup that never ships (N22);
@@ -46,11 +50,86 @@ export const STORE = "https://store.kheelona.com";
  *  still reads the mockup files themselves, so the DS set stays checked against them. */
 const REDRAWN = Object.entries(SITE_DRAWINGS).map(([name, d]) => [ICON_PATHS[name as IconName], d] as const);
 
-/** A built mockup page, parsed fresh: for a test that changes what it reads (a stand-in in place of a slot). */
+/** A built mockup page, parsed fresh: for a test that changes what it reads (a stand-in in place of a slot). It carries
+ *  the site's icon drawings (`REDRAWN`, task Q2.4) and task Q2.8's price lines as the build prints them (`withPriceLine`). */
 export function parseMockup(slug: string): Document {
   let html = readRepoFile(`mockup/${slug}.html`);
   for (const [mockup, built] of REDRAWN) html = html.replaceAll(`<path d="${mockup}">`, `<path d="${built}">`);
-  return new DOMParser().parseFromString(html, "text/html");
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  withPriceLine(doc);
+  return doc;
+}
+
+/* ── The selling pages' price lines (task Q2.8) ─────────────────────────────────────────────────────────────────── */
+
+const wordsOf = (el: Element) => (el.textContent ?? "").replace(/\s+/g, " ").trim();
+
+/** A trust link's words, without the store's visually hidden new-tab note. */
+function trustWords(a: Element): string {
+  const copy = a.cloneNode(true) as Element;
+  copy.querySelectorAll(".kh-sr").forEach((n) => n.remove());
+  return wordsOf(copy);
+}
+
+/** The trust rows beside a button outside the checkout's form, by the mockup's words, and the build's (task Q2.8 and its
+ *  review; the D2C plan v2 §1.1): the compact line (every page), Home's close card and the product card (the trust line,
+ *  then the card's third row), and the product close's five-item row (the trust line). */
+const PRICE_LINE_ROWS: readonly { mockup: readonly string[]; build: readonly string[] }[] = (() => {
+  const { returns, delivery, rows } = PRICE_LINE;
+  const line = [returns.build, delivery];
+  const offerRow = [...line, rows.warranty, rows.payment];
+  return [
+    { mockup: [delivery, returns.mockup], build: line },
+    { mockup: [returns.mockup, rows.warranty, rows.payment, rows.deliveryIncluded], build: offerRow },
+    { mockup: [returns.mockup, rows.warranty, rows.payment], build: offerRow },
+    { mockup: [delivery, returns.mockup, rows.warranty, rows.payment, rows.deliveryIncluded], build: line },
+  ];
+})();
+
+/**
+ * The selling pages' price lines as the build prints them (task Q2.8; D065 item 3: GST and the payment breakdown only at
+ * checkout; test/e2e/support/deviations.ts PRICE_LINE), in place: D028's sentence beside every button outside the
+ * checkout's form (the heroes' and the blocks' `mk-price`, the drawer's first note, the offer cards' fine print) reads as
+ * the short price line; the "incl. GST" note beside the offer cards' amount comes off; the buy bar's small line says "in
+ * total"; the returns promise in a compact trust line (exactly the delivery line, then that promise) and in the drawer's
+ * second note reads as the risk-reversal line, whose link then takes its own part of /refund (`trustLinkHref`), and it
+ * moves to the front, the delivery line second (the D2C plan v2 §1.1: item 1, item 2), each item with its own icon.
+ * Since the task's review the rows under the other buttons outside the checkout's form follow (`PRICE_LINE_ROWS`): the
+ * offer cards' rows read as the trust line, then the card's third row, and the product close's as the trust line, the
+ * delivery line they gain the page's own (its icon and words). The store's price (`#store-price`), the form's sentence
+ * and the form's full row stay as approved. Anything that does not read as those lines is left alone.
+ */
+export function withPriceLine(root: ParentNode): void {
+  const { sentence, cardNote, bar, returns, delivery } = PRICE_LINE;
+  for (const el of root.querySelectorAll(".mk-price, .kh-drawer__note, .kh-offer__fine")) {
+    if (!el.closest("form") && wordsOf(el) === sentence.mockup) el.textContent = sentence.build;
+  }
+  for (const el of root.querySelectorAll(".kh-offer__prices > .kh-body-s")) if (wordsOf(el) === cardNote) el.remove();
+  for (const el of root.querySelectorAll(".kh-buybar__small")) if (wordsOf(el) === bar.mockup) el.textContent = bar.build;
+  for (const el of root.querySelectorAll(".kh-drawer__note")) {
+    if (wordsOf(el) === `${delivery} · ${returns.mockup}`) el.textContent = `${returns.build} · ${delivery}`;
+  }
+  /* The page's own delivery line, before any row is rewritten: an offer row takes a copy of it. */
+  const deliveryItem = Array.from(root.querySelectorAll("ul.mk-trust > li")).find((li) => {
+    const a = li.querySelector(":scope > a");
+    return a !== null && trustWords(a) === delivery;
+  });
+  for (const list of root.querySelectorAll("ul.mk-trust")) {
+    if (list.closest("form")) continue;
+    const items = Array.from(list.querySelectorAll(":scope > li")).map((li) => ({ li, words: trustWords(li.querySelector(":scope > a") ?? li) }));
+    const row = PRICE_LINE_ROWS.find((r) => r.mockup.join("\n") === items.map((item) => item.words).join("\n"));
+    if (!row) continue;
+    const returnsItem = items.find((item) => item.words === returns.mockup)!;
+    const words = Array.from(returnsItem.li.querySelector(":scope > a")!.childNodes).find(
+      (n) => n.nodeType === 3 && (n.textContent ?? "").trim() === returns.mockup,
+    );
+    const builtItem = (w: string) =>
+      w === returns.build ? returnsItem.li : (items.find((item) => item.words === w)?.li ?? (w === delivery ? deliveryItem?.cloneNode(true) : undefined));
+    const built = row.build.map(builtItem);
+    if (!words || built.some((li) => li === undefined)) continue;
+    words.textContent = returns.build;
+    list.replaceChildren(...(built as Node[]));
+  }
 }
 
 const pages = new Map<string, Document>();

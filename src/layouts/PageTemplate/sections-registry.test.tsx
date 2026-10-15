@@ -128,7 +128,7 @@ describe("the section registry: slots", () => {
       expect(button.textContent).toBe(cta.preorder);
       expect(button.getAttribute("data-ph-capture-attribute-cta")).toBe("hero");
       expect(button.id).toBe("hero-cta");
-      expect(host.querySelector("#hero-price")?.textContent).toBe(toPlainText(offer.sentence, offer));
+      expect(host.querySelector("#hero-price")?.textContent).toBe(toPlainText(offer.priceLine, offer));
       expect(host.querySelector("header.kh-heading")?.parentElement?.contains(button)).toBe(true);
     }
   });
@@ -199,7 +199,7 @@ describe("the section registry: slots", () => {
     const close = ENTRY_FIXTURES["close-section"];
     const host = dom(renderSection(close, context(FULL)));
     expect(host.querySelector(".kh-btn--cta")?.textContent).toBe(cta.preorder);
-    expect(host.querySelector(".ks-price")?.textContent).toBe(toPlainText(FULL.sentence, FULL));
+    expect(host.querySelector(".ks-price")?.textContent).toBe(toPlainText(FULL.priceLine, FULL));
     expect(host.querySelector(".ks-help")?.textContent).toContain("Questions?");
     const offer = dom(renderSection(ENTRY_FIXTURES["offer-section"], context()));
     expect(offer.querySelector(".kh-offer .kh-btn--cta")?.getAttribute("data-ph-capture-attribute-cta")).toBe("product-offer");

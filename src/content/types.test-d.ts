@@ -74,13 +74,16 @@ export const offerCopy = {
       "Reserve yours for {price:token} today, refundable until dispatch, then pay {price:balance} before delivery: {price:headline} in total (incl. GST).",
     full: "{price:full} (incl. GST), paid in full when you order.",
   },
+  priceLine: {
+    token: "{price:token} today, refundable. {price:headline} in total.",
+    full: "{price:full} in total, paid in full when you order.",
+  },
   sticky: {
-    token: { big: "{price:token} today", small: "refundable · {price:headline} total (incl. GST)" },
-    full: { big: "{price:full} (incl. GST)", small: "Paid in full · {delivery}" },
+    token: { big: "{price:token} today", small: "refundable · {price:headline} in total" },
+    full: { big: "{price:full}", small: "Paid in full · {delivery}" },
   },
   card: {
     product: "Kheelu",
-    priceNote: "incl. GST",
     split: [
       { label: "Today, refundable", price: "token" },
       { label: "Before delivery", price: "balance" },
@@ -93,6 +96,8 @@ export const offerCopy = {
 export const oneSentence: OfferCopy["sentence"] = "Reserve yours today.";
 // @ts-expect-error the sticky bar's lines change with the mode too
 export const oneSticky: OfferCopy["sticky"] = { big: "{price:token} today", small: "refundable" };
+// @ts-expect-error the short price line changes with the mode too (D065 item 3)
+export const onePriceLine: OfferCopy["priceLine"] = "{price:token} today, refundable.";
 
 /* ── Offer view model ── */
 
@@ -101,8 +106,9 @@ export const offer = {
   headlinePaise: 499_900,
   prices: { token: "a", balance: "b", headline: "c", full: "d", mrp: "e", launch: "f" },
   sentence: offerCopy.sentence.token,
+  priceLine: offerCopy.priceLine.token,
   sticky: offerCopy.sticky.token,
-  card: { product: "Kheelu", priceNote: "incl. GST", split: offerCopy.card.split, perks: offerCopy.card.perks },
+  card: { product: "Kheelu", split: offerCopy.card.split, perks: offerCopy.card.perks },
   plus: offerCopy.plus,
   delivery: "Deliveries start mid-November",
   availabilityStarts: "2026-11-15",
@@ -114,9 +120,12 @@ export const fullOffer = {
   mode: "full",
   headlinePaise: 799_900,
   sentence: offerCopy.sentence.full,
+  priceLine: offerCopy.priceLine.full,
   sticky: offerCopy.sticky.full,
-  card: { product: "Kheelu", priceNote: "incl. GST", perks: offerCopy.card.perks },
+  card: { product: "Kheelu", perks: offerCopy.card.perks },
 } satisfies Offer;
+// @ts-expect-error the card's amount takes no note since task Q2.8 (D065 item 3: no "incl. GST" on the selling pages)
+export const notedCard: OfferCard = { product: "Kheelu", priceNote: "incl. GST", perks: offerCopy.card.perks };
 
 // @ts-expect-error the offer has no such price
 export const unknownPrice: Offer["prices"] = { token: "a", balance: "b", headline: "c", full: "d", mrp: "e", launch: "f", tax: "g" };

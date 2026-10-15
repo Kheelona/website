@@ -11,7 +11,7 @@ import { seller } from "@/content/en-IN/seller";
 import type { Offer, OfferCopy, RichTextString } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
 import { formatInr } from "@/lib/format/inr";
-import { KHEELONA_PLUS, OFFER_ORIGIN_PERK } from "../../../test/e2e/support/deviations";
+import { KHEELONA_PLUS, OFFER_ORIGIN_PERK, PRICE_LINE } from "../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../test/e2e/support/repo";
 import { buildOffer, headlinePaise, offerPrices } from "./offer";
 
@@ -20,7 +20,12 @@ import { buildOffer, headlinePaise, offerPrices } from "./offer";
  * full-mode wording, which no mockup shows, against the copy pages (home.md "At a glance" and
  * "Phone sticky bar"; home.md fold 9 "Full mode"). Mockups are read as built
  * (mockup/<slug>.html, the files the parity specs open: icons inlined, partials included, so the
- * buy bar is Home's own). */
+ * buy bar is Home's own).
+ *
+ * Task Q2.8 (D065 item 3; the main session's ruling 3 of the selling update, 2026-10-15): beside every button on the
+ * selling pages the short price line, written out here by hand from the task, where the mockup prints D028's long
+ * sentence; the buy bar's small line says "in total" without GST; the offer card's "incl. GST" note comes off. D028's
+ * sentence stays the checkout's (the store's first screen, the pre-order form, /terms, /pricing.md). */
 
 const doc = (path: string) => new DOMParser().parseFromString(readRepoFile(path), "text/html");
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
@@ -68,24 +73,38 @@ describe("token mode", () => {
     expect(offer.headlinePaise).toBe(499_900);
   });
 
-  it("renders the D028 price sentence exactly as the mockup's hero, drawer and offer card", () => {
+  it("keeps D028's price sentence for the checkout, exactly as the store's first screen prints it", () => {
     const sentence = text(offer.sentence, offer);
-    expect(sentence).toBe(norm(home.querySelector("#hero-price")?.textContent));
-    expect(sentence).toBe(norm(home.querySelector(".kh-offer__fine")?.textContent));
+    expect(sentence).toBe(norm(doc("mockup/store.html").querySelector("#store-price")?.textContent));
     expect(sentence).toBe(
       "Reserve yours for ₹499 today, refundable until dispatch, then pay ₹4,500 before delivery: ₹4,999 in total (incl. GST).",
     );
   });
 
-  it("renders the sticky bar's two lines exactly as the buy bar partial", () => {
-    expect(text(offer.sticky.big, offer)).toBe(norm(buybar.querySelector(".kh-buybar__big")?.textContent));
-    expect(text(offer.sticky.small, offer)).toBe(norm(buybar.querySelector(".kh-buybar__small")?.textContent));
+  it("carries the short price line for every button on the selling pages (D065 item 3), where the mockup prints D028's", () => {
+    expect(text(offer.priceLine, offer)).toBe("₹499 today, refundable. ₹4,999 in total.");
+    expect(norm(home.querySelector("#hero-price")?.textContent)).toBe(text(offer.sentence, offer));
   });
 
-  it("keeps the split on the offer card, as Home's card shows it", () => {
+  /* The parity rule of task Q2.8 spells its lines out (Playwright loads it and cannot load every content module): the
+     mockup's as the approved Home prints them, the build's as this view model does. */
+  it("is the build side of the price-line deviation, whose mockup side is the approved Home's", () => {
+    expect(PRICE_LINE.sentence).toEqual({ mockup: text(offer.sentence, offer), build: text(offer.priceLine, offer) });
+    expect(PRICE_LINE.sentence.mockup).toBe(norm(home.querySelector("#hero-price")?.textContent));
+    expect(PRICE_LINE.bar).toEqual({ mockup: norm(buybar.querySelector(".kh-buybar__small")?.textContent), build: text(offer.sticky.small, offer) });
+    expect(PRICE_LINE.cardNote).toBe(norm(home.querySelector(".kh-offer__prices .kh-body-s")?.textContent));
+    expect(PRICE_LINE.delivery).toBe(offer.delivery);
+  });
+
+  it("renders the sticky bar's big line as the buy bar partial, and its small line without GST (D065 item 3)", () => {
+    expect(text(offer.sticky.big, offer)).toBe(norm(buybar.querySelector(".kh-buybar__big")?.textContent));
+    expect(text(offer.sticky.small, offer)).toBe("refundable · ₹4,999 in total");
+  });
+
+  it("keeps the split on the offer card, as Home's card shows it, and no note beside the amount (D065 item 3)", () => {
     const card = home.querySelector(".kh-offer")!;
     expect(offer.card.product).toBe(norm(card.querySelector(".kh-offer__product")?.textContent));
-    expect(text(offer.card.priceNote, offer)).toBe(norm(card.querySelector(".kh-offer__prices .kh-body-s")?.textContent));
+    expect("priceNote" in offer.card).toBe(false);
     const split = Array.from(card.querySelectorAll(".kh-offer__split > *")).map((el) => norm(el.textContent));
     expect(offer.card.split?.flatMap((row) => [text(row.label, offer), offer.prices[row.price]])).toEqual(split);
   });
@@ -137,23 +156,28 @@ describe("full mode", () => {
     expect(offer.prices.headline).toBe("₹7,999");
   });
 
-  it("renders the full-mode price sentence (home.md, At a glance)", () => {
+  it("keeps the full-mode D028 sentence for the checkout (home.md, At a glance)", () => {
     expect(text(offer.sentence, offer)).toBe("₹7,999 (incl. GST), paid in full when you order.");
   });
 
-  it("renders the full-mode sticky bar (home.md, Phone sticky bar)", () => {
-    expect(text(offer.sticky.big, offer)).toBe("₹7,999 (incl. GST)");
+  it("carries the full-mode short price line for the selling pages (D065 item 3)", () => {
+    expect(text(offer.priceLine, offer)).toBe("₹7,999 in total, paid in full when you order.");
+  });
+
+  /* The D2C plan v2 §1.2 (the copy page decides the full-mode bar, which no mockup shows; SPA 7): the amount "in total". */
+  it("renders the full-mode sticky bar without GST, the amount in total (D065 item 3; D2C plan v2 §1.2)", () => {
+    expect(text(offer.sticky.big, offer)).toBe("₹7,999 in total");
     expect(text(offer.sticky.small, offer)).toBe("Paid in full · Deliveries start mid-November");
   });
 
-  it("omits the split and keeps the perks (G-08; home.md fold 9)", () => {
+  it("omits the split and keeps the perks (G-08; home.md fold 9), with no note beside the amount", () => {
     expect("split" in offer.card).toBe(false);
-    expect(text(offer.card.priceNote, offer)).toBe("(incl. GST)");
+    expect("priceNote" in offer.card).toBe(false);
     expect(offer.card.perks).toEqual(buildOffer("token").card.perks);
   });
 
   it("never mentions the advance or the balance anywhere in its own lines", () => {
-    const lines = [offer.sentence, offer.sticky.big, offer.sticky.small, offer.card.priceNote].map((l) => text(l, offer));
+    const lines = [offer.sentence, offer.priceLine, offer.sticky.big, offer.sticky.small].map((l) => text(l, offer));
     for (const line of lines) {
       expect(line).not.toContain("₹499");
       expect(line).not.toContain("₹4,500");
@@ -162,13 +186,34 @@ describe("full mode", () => {
   });
 });
 
+/* D065 item 3: GST and the payment breakdown only at checkout. On the selling pages the offer's own lines (the short
+   price line, the buy bar, the card's later price) say neither "GST" nor the balance; the card's two split rows (today,
+   before delivery) keep their amounts. D028's sentence is the checkout's and keeps both. */
+describe.each(["token", "full"] as const)("%s mode: the selling lines say no GST and no balance (D065 item 3)", (mode) => {
+  const offer = buildOffer(mode);
+  const selling = [offer.priceLine, offer.sticky.big, offer.sticky.small, ...(offer.card.later === undefined ? [] : [offer.card.later])];
+
+  it("names neither GST nor the balance in the price line, the buy bar or the later price", () => {
+    for (const line of selling.map((l) => text(l, offer))) {
+      expect(line).not.toMatch(/GST/);
+      expect(line).not.toContain(offer.prices.balance);
+    }
+  });
+
+  it("says GST only in the checkout's D028 sentence", () => {
+    expect(text(offer.sentence, offer)).toMatch(/\(incl\. GST\)/);
+  });
+});
+
 describe("the view model reads its words from the copy it is given", () => {
   it("uses another locale's copy when passed one (the hi-IN folder would)", () => {
     const copy: OfferCopy = {
       ...offerCopy,
       sentence: { token: "T {price:token}", full: "F {price:full}" },
+      priceLine: { token: "L {price:token}", full: "M {price:full}" },
     };
     const offer = buildOffer("token", copy);
     expect(text(offer.sentence, offer)).toBe("T ₹499");
+    expect(text(offer.priceLine, offer)).toBe("L ₹499");
   });
 });

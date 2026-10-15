@@ -3,6 +3,7 @@ import { dirname } from "node:path";
 import type { BrowserContext, Page, TestInfo } from "@playwright/test";
 import { expect, hideForParity, motionStarted, requiresServer, test, type OpenOptions } from "./support/fixtures";
 import { ORIGINS, REAL_ORIGINS, STORYBOOK_PORT, TARGET } from "./support/env";
+import { PRICE_LINE } from "./support/deviations";
 import { CHUNK_MAX_DIFF_RATIO } from "./support/parity";
 import { builtUrl } from "./support/routes";
 import { ruleMockupPage } from "./support/seller-facts";
@@ -19,6 +20,8 @@ import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
  *     and the shown buy bar against the same elements of mockup/home.html at the approved widths (the drawer and the
  *     bar at the two phone widths, where they exist), and the store header and footer against mockup/store.html. The
  *     mockup's element screenshot is the golden (git-ignored, D039); at most 2 percent of pixels may differ, as SPA 1.
+ *     The mockup's drawer notes and bar line carry task Q2.8's words first (`withPriceLineWords`), so the pixels
+ *     compare the same words on both sides.
  *   - Sticky bar (G-09, pick 4): hidden while the hero CTA is on screen, shown past it, aside while an inline chilli
  *     button is on screen, inert while hidden, data-buybar and --ks-buybar-h on <html>, gone from 900 px, sliding up
  *     with motion on and only fading with reduced motion. The page's own hero CTA (#hero-cta) is on screen at first
@@ -78,7 +81,23 @@ async function openMockup(harness: Harness, slug: "home" | "store", vp: Viewport
   const { page } = await harness.openMockup(slug, vp);
   await page.evaluate(() => document.fonts.ready.then(() => undefined));
   await hideForParity(page);
+  await withPriceLineWords(page);
   return page;
+}
+
+/** Task Q2.8 (D065 item 3; deviations.ts PRICE_LINE): the mockup's drawer notes and the buy bar's small line in the
+ *  build's words, as the unit tests read the mockup (test/support/mockup-compare.ts `withPriceLine`): the short price
+ *  line for D028's sentence, the risk-reversal line first in the trust note, the bar's line "in total". The words are
+ *  held by the shell's unit tests; here the pixels compare the same words, laid out, on both sides. */
+async function withPriceLineWords(page: Page): Promise<void> {
+  await page.evaluate(({ sentence, bar, returns, delivery }) => {
+    const words = (el: Element) => (el.textContent ?? "").replace(/\s+/g, " ").trim();
+    for (const el of document.querySelectorAll(".kh-drawer__note")) {
+      if (words(el) === sentence.mockup) el.textContent = sentence.build;
+      else if (words(el) === `${delivery} · ${returns.mockup}`) el.textContent = `${returns.build} · ${delivery}`;
+    }
+    for (const el of document.querySelectorAll(".kh-buybar__small")) if (words(el) === bar.mockup) el.textContent = bar.build;
+  }, PRICE_LINE);
 }
 
 /** An element's screenshot, scrolled into view, motion off. */

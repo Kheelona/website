@@ -123,7 +123,8 @@ describe("not-found: what the mockup did not have", () => {
 
   it("follows the live offer: full mode prints the full price in the close and the drawer", async () => {
     const { container } = await page("full");
-    const sentence = "₹7,999 (incl. GST), paid in full when you order.";
+    // The short price line (D065 item 3; task Q2.8).
+    const sentence = "₹7,999 in total, paid in full when you order.";
     expect(container.querySelector("#close .kh-body-s")?.textContent).toBe(sentence);
     expect(container.querySelector(".kh-drawer__note")?.textContent).toBe(sentence);
   });

@@ -131,7 +131,7 @@ describe("/stories: the route", () => {
     const { default: StoriesPage } = await import("./page");
     const { container } = render(await StoriesPage());
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Guides for parents of 3 to 7 year olds");
-    expect(container.querySelector("#close .ks-price")?.textContent).toBe("₹7,999 (incl. GST), paid in full when you order.");
+    expect(container.querySelector("#close .ks-price")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
     expect(getOffer).toHaveBeenCalled();
   });
 

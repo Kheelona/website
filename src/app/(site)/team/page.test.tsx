@@ -9,10 +9,9 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
-import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { CLAIM_FIXES } from "../../../../test/e2e/support/deviations";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
-import { words } from "../../../../test/support/mockup-compare";
+import { parseMockup, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 
 /* The /team route (task 5.7; structure §3.1, §5): the page module through PageTemplate with the live offer, thin, and as
@@ -35,7 +34,9 @@ beforeAll(async () => {
 const SOURCE = readFileSync("src/app/(site)/team/page.tsx", "utf8");
 const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 
-const mockupDoc = new DOMParser().parseFromString(readRepoFile("mockup/team.html"), "text/html");
+/* Through the mockup comparison harness, so the close's price line and trust line read as task Q2.8 rules them (D065
+ * item 3; the harness's withPriceLine). */
+const mockupDoc = parseMockup("team");
 /** The approved main as D063 item 2 rules it (task Q2.3; seller-facts.ts): fold 2's answer and the close's help line
  *  without the number. */
 const mockupMain = withSellerFacts(mockupDoc.querySelector("main")!);
@@ -252,9 +253,9 @@ describe("/team: the rendered page against the approved mockup", () => {
   it("changes only the price sentence in full mode (D028; team copy, fold 6)", async () => {
     const token = await renderPage(buildOffer("token"));
     const full = await renderPage(buildOffer("full"));
-    const sentence = (offer: Offer) => toPlainText(offer.sentence, offer);
+    const sentence = (offer: Offer) => toPlainText(offer.priceLine, offer);
     expect(full.main.querySelector("#close .ks-price")?.textContent).toBe(sentence(buildOffer("full")));
-    expect(full.main.querySelector("#close .ks-price")?.textContent).toBe("₹7,999 (incl. GST), paid in full when you order.");
+    expect(full.main.querySelector("#close .ks-price")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
     const others = (main: Element) => {
       const copy = visible(main);
       copy.querySelectorAll(".ks-price").forEach((n) => n.remove());

@@ -1277,9 +1277,10 @@ const helpThenShare = (): string =>
 const offerAdditions = (fold: string) => ({
   edits: [
     {
+      /* The amount alone: its "incl. GST" note is task Q2.8's to take off (PRICE_LINE, below), before these edits. */
       at: ".kh-offer__prices",
-      was: "₹4,999incl. GST",
-      now: `<span class="kh-offer__price">₹4,999</span><span class="kh-body-s">incl. GST</span><p class="kh-body-s mk-offer__later">${OFFER_LATER.join(" ")}</p>`,
+      was: "₹4,999",
+      now: `<span class="kh-offer__price">₹4,999</span><p class="kh-body-s mk-offer__later">${OFFER_LATER.join(" ")}</p>`,
       inner: true,
     },
     {
@@ -1312,6 +1313,53 @@ const offerAdditionsHidden = (slug: OfferAdditionsSlug): VisualHide[] =>
     reason: `a line ${OFFER_ADDITIONS_WHOSE} add, which the mockup does not have; compared by the text pass`,
     approvedBy: OFFER_ADDITIONS_APPROVED,
   }));
+
+/* Task Q2.8 (D065 item 3, the founder, 2026-10-15: GST and the payment breakdown only at checkout, "no need to mention
+   about GST and other technical things at all places"; the main session's ruling 3 of the selling update): what the
+   frozen mockup (D046) prints beside every "Pre-order Kheelu" on the selling pages, and what the build prints instead.
+   - D028's long sentence (the heroes' and the CTA blocks' `mk-price`, the drawer's first note, the offer cards' fine
+     print) becomes the short price line;
+   - the "incl. GST" note beside the offer cards' amount comes off (the split's two rows keep their amounts);
+   - the buy bar's small line says "in total", without GST;
+   - the returns promise in the compact trust line (a trust line of exactly the delivery line and that promise: beside
+     every button, and on the store's first screen, which may take it) and in the drawer's second note becomes the one
+     risk-reversal line, in the same words everywhere it shows, and leads the line, the delivery line second (the D2C
+     plan v2 §1.1: the trust line's item 1 and item 2);
+   - since the task's review, the rows under the other buttons too (the plan's Home fold 7, product folds 3 and 12): the
+     offer cards' rows (Home's close card: returns, warranty, paying, delivery included; the product page's: returns,
+     warranty, paying) become the trust line, then the card's third row (warranty, paying), and the product close's
+     five-item row becomes the trust line.
+   The checkout keeps D028's sentence (the store's first screen, `#store-price`, and the form's `mk-price`) and its full
+   trust row beside the pay button, returns promise and all. Literal, as the rest of this file (Playwright loads it):
+   src/lib/offer/offer.test.ts and src/content/en-IN/trust.test.ts hold each line to the content. The mockup comparison
+   harness applies these to every mockup a unit test reads (test/support/mockup-compare.ts `withPriceLine`); the text
+   pass excuses them on every page, and the offer rows' words on the two pages that have them (PRICE_LINE_TEXT,
+   PRICE_LINE_ROWS_TEXT, priceLineText), and the pixels hide the reflowed lines on both sides (PRICE_LINE_HIDDEN,
+   visualHidden). The main session files the deviations.md row at the merge; the founder signs the
+   words at Gate B (D015). Full mode, which no mockup shows, is the content's (offer.ts). */
+export const PRICE_LINE_APPROVED =
+  "D065 item 3 and the main session's ruling 3 of the selling update (founder, 2026-10-15; task Q2.8; deviations.md row to come)";
+export const PRICE_LINE = {
+  /** Beside every button outside the checkout: D028's sentence, then the short price line. */
+  sentence: {
+    mockup: "Reserve yours for ₹499 today, refundable until dispatch, then pay ₹4,500 before delivery: ₹4,999 in total (incl. GST).",
+    build: "₹499 today, refundable. ₹4,999 in total.",
+  },
+  /** Beside the offer cards' amount; it comes off. */
+  cardNote: "incl. GST",
+  /** The buy bar's small line. */
+  bar: { mockup: "refundable · ₹4,999 total (incl. GST)", build: "refundable · ₹4,999 in total" },
+  /** The compact trust line's returns promise, the mockup's second item, then the risk-reversal line, the build's first. */
+  returns: { mockup: "7-day returns, no questions asked", build: "Full refund until dispatch · 7-day returns" },
+  /** The compact trust line's delivery line, which stays: the mockup's first item, the build's second (in the drawer's
+   *  second note too). */
+  delivery: "Deliveries start mid-November",
+  /** The full rows' other items: the offer cards' third row (warranty, paying) and the item that leaves them. */
+  rows: { warranty: "6-month warranty", payment: "UPI, card or net banking", deliveryIncluded: "Delivery included anywhere in India" },
+  reason:
+    "the short price line beside every button, no GST note on the offer cards, the buy bar's line in total, and the one risk-reversal line first in the compact trust line and the drawer (D065 item 3: GST and the breakdown only at checkout; D2C plan v2 §1.1)",
+  approvedBy: PRICE_LINE_APPROVED,
+} as const;
 
 /** A route whose own parity runs would compare a state its mockup does not show, with the spec that proves that
  *  state's parity instead. The visual and text parity specs skip the route on the build and print why (SPA 1 and 2). */
@@ -1844,10 +1892,34 @@ export const TAP_AREA_HIDDEN: readonly VisualHide[] = [
   },
 ];
 
-/** Every rule the visual pass applies to one page: the rules every page shares (TAP_AREA_HIDDEN), then the page's own,
+/* Task Q2.8's lines (PRICE_LINE, above), on every page that sells: the short price line is a line or two shorter than
+   D028's sentence, and the risk-reversal line wraps the compact trust line otherwise, so every chunk below each button
+   would shift. The pixels compare the pages without them, on both sides: the price line beside each button and the
+   trust line right after it, the offer cards' fine print and the trust row after each card (the trust line and the
+   card's third row since the task's review), the store's first-screen trust line (the store's price stays
+   D028's), and the phone buy bar's small line, which fits on one line at 390 px where the mockup's wraps to two, so the
+   bar (and the page's foot, which keeps clear of it) would sit lower in the mockup in every chunk that shows it. The
+   checkout's form keeps its sentence and its full row, so nothing inside a form is hidden. Their words are compared by
+   the text pass (PRICE_LINE_TEXT) and the unit tests through the mockup comparison harness (the bar's, which sits outside
+   main, by the shell's). One shared rule for every page, as the tap areas', never a row per page key. */
+const PRICE_LINE_HIDDEN_REASON = "a line task Q2.8 rewords (D065 item 3), compared by the text pass; hidden on both sides so the chunks below line up";
+export const PRICE_LINE_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as const).map((side) => {
+  const p = side === "mockup" ? "mk" : "ks";
+  return {
+    side,
+    selector: `.${p}-price:not(form *), .${p}-price:not(form *) + .${p}-trust, .kh-offer__fine, .kh-offer ~ .${p}-trust, #store-price + .${p}-trust, .kh-buybar__small`,
+    reason: PRICE_LINE_HIDDEN_REASON,
+    approvedBy: PRICE_LINE_APPROVED,
+  };
+});
+
+/** The rules every page shares, in order: the tap areas' (task 7.1a), then task Q2.8's price lines. */
+export const SHARED_HIDDEN: readonly VisualHide[] = [...TAP_AREA_HIDDEN, ...PRICE_LINE_HIDDEN];
+
+/** Every rule the visual pass applies to one page: the rules every page shares (SHARED_HIDDEN), then the page's own,
  *  then D063's for that page (task Q2.3; seller-facts.ts). */
 export function visualHidden(slug: string): readonly VisualHide[] {
-  return [...TAP_AREA_HIDDEN, ...(VISUAL_HIDDEN[slug] ?? []), ...sellerHidden(slug)];
+  return [...SHARED_HIDDEN, ...(VISUAL_HIDDEN[slug] ?? []), ...sellerHidden(slug)];
 }
 
 const hidingStyle = (rules: readonly VisualHide[], side: VisualHide["side"]): string => {
@@ -1860,9 +1932,9 @@ const hidingStyle = (rules: readonly VisualHide[], side: VisualHide["side"]): st
   return [block(mine.filter((rule) => !rule.media)), ...scoped].filter(Boolean).join("\n");
 };
 
-/** The style of the rules every page shares (TAP_AREA_HIDDEN) on one side. */
+/** The style of the rules every page shares (SHARED_HIDDEN) on one side. */
 export function sharedHiddenCss(side: VisualHide["side"]): string {
-  return hidingStyle(TAP_AREA_HIDDEN, side);
+  return hidingStyle(SHARED_HIDDEN, side);
 }
 
 /** The style the visual pass adds to one side of a page's comparison for the page's own rules: its hidden selectors, or
@@ -2051,6 +2123,38 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
   terms: [pageFacts("terms"), factsRule(COPY_FIXES.terms), factsRule(CLAIM_FIXES.terms)],
 };
 
+/** Task Q2.8's lines (PRICE_LINE, above) as the text pass reads a page's main: D028's sentence and the offer card's note
+ *  in their pieces (the pass splits after "incl."), and the compact line's returns promise, go; the short price line's
+ *  two sentences and the risk-reversal line come. The store's form and price keep D028's sentence, which the pass then
+ *  finds on both sides, so nothing is excused there. The drawer and the buy bar sit outside main (the shell's tests hold
+ *  them through the harness). */
+export const PRICE_LINE_TEXT: TextDeviation = {
+  mockup: oneOf([...sentences(PRICE_LINE.sentence.mockup), ...sentences(PRICE_LINE.cardNote), PRICE_LINE.returns.mockup]),
+  build: oneOf([...sentences(PRICE_LINE.sentence.build), PRICE_LINE.returns.build]),
+  reason: PRICE_LINE.reason,
+  approvedBy: PRICE_LINE.approvedBy,
+};
+
+/** The offer rows' words (PRICE_LINE, the task's review): under the offer cards' buttons the trust line, then the card's
+ *  third row, and on the product close the trust line. Home's card row loses "Delivery included anywhere in India" (the
+ *  card's perk "Delivery anywhere in India, included" keeps the promise) and gains the delivery line; the product page's
+ *  card row gains the delivery line, and its close loses the warranty, the ways to pay and that line, which its card row
+ *  keeps (but the last). Only on those two pages (PRICE_LINE_ROWS_SLUGS). */
+export const PRICE_LINE_ROWS_TEXT: TextDeviation = {
+  mockup: oneOf([PRICE_LINE.rows.warranty, PRICE_LINE.rows.payment, PRICE_LINE.rows.deliveryIncluded]),
+  build: oneOf([PRICE_LINE.delivery]),
+  reason:
+    "the one risk-reversal line under every button: the offer cards' rows are the trust line, then the card's third row (warranty, the ways to pay), and the product close's the trust line (D2C plan v2 §1.1)",
+  approvedBy: PRICE_LINE.approvedBy,
+};
+const PRICE_LINE_ROWS_SLUGS: readonly string[] = ["home", "meet-kheelu"];
+
+/** Task Q2.8's rules for one page: the rule every page shares (PRICE_LINE_TEXT), then, on the two pages with an offer
+ *  card, the offer rows' (PRICE_LINE_ROWS_TEXT). */
+export function priceLineText(slug: string): readonly TextDeviation[] {
+  return PRICE_LINE_ROWS_SLUGS.includes(slug) ? [PRICE_LINE_TEXT, PRICE_LINE_ROWS_TEXT] : [PRICE_LINE_TEXT];
+}
+
 /* D063 items 2-3 (task Q2.3; seller-facts.ts): the GSTIN off the website and the number only on /contact and the legal
    pages. One shared ruling, as TAP_AREA_HIDDEN is: never a row per page key. Its rules for one page are read from the
    frozen mockup as the ruling rewrites it, and applied after the page's own. */
@@ -2058,7 +2162,8 @@ const isMockupSlug = (slug: string): slug is MockupSlug => (MOCKUP_SLUGS as read
 const sellerText = (slug: string): readonly TextDeviation[] => (isMockupSlug(slug) ? sellerFactsText(slug) : []);
 const sellerHidden = (slug: string): readonly VisualHide[] => (isMockupSlug(slug) ? sellerFactsHidden(slug) : []);
 
-/** Every rule the text pass applies to one page: the page's own (TEXT_DEVIATIONS), then D063's. */
+/** Every rule the text pass applies to one page: task Q2.8's (priceLineText), then the page's own (TEXT_DEVIATIONS),
+ *  then D063's. */
 export function textDeviations(slug: string): readonly TextDeviation[] {
-  return [...(TEXT_DEVIATIONS[slug] ?? []), ...sellerText(slug)];
+  return [...priceLineText(slug), ...(TEXT_DEVIATIONS[slug] ?? []), ...sellerText(slug)];
 }

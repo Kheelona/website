@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { ICON_PATHS } from "@/assets/icons.generated";
 import { cta } from "@/content/en-IN/cta";
 import { seller } from "@/content/en-IN/seller";
-import { TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "@/content/en-IN/trust";
+import { TRUST_COMPACT, trustItems, type TrustId } from "@/content/en-IN/trust";
 import type { ArtBoardRef } from "@/content/types";
 import { buildOffer } from "@/lib/offer/offer";
 import type { CtaSecondary, SellingContext } from "../CtaBlock/cta-block.types";
@@ -76,13 +76,9 @@ const CASES: Case[] = [
         title: "Bring home a toy that {hand:asks back.}",
         lead: "For your own child, or as a gift for a 3 to 7 year old in the family.",
       },
-      // map-pin for "Delivery included anywhere in India", as meet-kheelu.html draws it (wave-3 close ruling; 5.2's config).
-      cta: {
-        cta: "product-foot",
-        layout: "full",
-        trust: trust(["deliveries-start", ...TRUST_FULL]).map((item) => (item.id === "delivery-included" ? { ...item, icon: "map-pin" } : item)),
-        helpLine: true,
-      },
+      // The trust line in place of meet-kheelu.html's five-item row since task Q2.8's review (the D2C plan v2 §1.1; the
+      // harness reads the mockup's row so, test/support/mockup-compare.ts withPriceLine).
+      cta: { cta: "product-foot", layout: "full", trust: COMPACT, helpLine: true },
       art: art("sun", "A smiling girl in a peach kurta beside Kheelu, the cream plush rabbit."),
     },
   ],
@@ -151,8 +147,13 @@ describe("CloseSection: every close of the approved mockup, exactly (art aside)"
     expect(actual).toBe(expected);
   });
 
-  it("the product close draws the map-pin its config passes (no rewrite of the mockup)", () => {
-    const html = renderToStaticMarkup(<CloseSection {...CASES[1][3]} {...context()} />);
+  /* A trust item draws the icon its config passes, not the content's (the product close passed map-pin for "Delivery
+     included anywhere in India" until task Q2.8's review gave that close the trust line). */
+  it("draws the icon its config passes for a trust item (no rewrite of the content)", () => {
+    const product = CASES[1][3];
+    if (product.variant !== "split") throw new Error("the product close is a split close");
+    const pinned = trust(["delivery-included"]).map((item) => ({ ...item, icon: "map-pin" }));
+    const html = renderToStaticMarkup(<CloseSection {...product} cta={{ ...product.cta, trust: pinned }} {...context()} />);
     expect(html).toContain(ICON_PATHS["map-pin"]);
     expect(html).not.toContain(ICON_PATHS.package);
   });
@@ -246,7 +247,7 @@ describe("CloseSection: full mode (ADR-005)", () => {
     const PRICE = /<p( id="[^"]*")? class="kh-body-s ks-price">[^<]*<\/p>/;
     const token = renderToStaticMarkup(<CloseSection {...config} {...context(TOKEN)} />);
     const full = renderToStaticMarkup(<CloseSection {...config} {...context(FULL)} />);
-    expect(full.match(PRICE)?.[0]).toContain("₹7,999 (incl. GST), paid in full when you order.");
+    expect(full.match(PRICE)?.[0]).toContain("₹7,999 in total, paid in full when you order.");
     expect(full.replace(PRICE, "")).toBe(token.replace(PRICE, ""));
   });
 });
@@ -272,7 +273,7 @@ describe("CenterClose (close-fold.tsx)", () => {
     const PRICE = /<p( id="[^"]*")? class="kh-body-s ks-price">[^<]*<\/p>/;
     const token = renderToStaticMarkup(<CenterClose {...config} {...context(TOKEN)} />);
     const full = renderToStaticMarkup(<CenterClose {...config} {...context(FULL)} />);
-    expect(full.match(PRICE)?.[0]).toContain("₹7,999 (incl. GST), paid in full when you order.");
+    expect(full.match(PRICE)?.[0]).toContain("₹7,999 in total, paid in full when you order.");
     expect(full.replace(PRICE, "")).toBe(token.replace(PRICE, ""));
   });
 });

@@ -117,9 +117,10 @@ describe("StickyBuyBar: markup (partials/buybar.html)", () => {
     expect(region).toHaveAttribute("inert");
     const [price, cta] = Array.from(region.children);
     expect(price.className).toBe("kh-buybar__price");
+    // The small line without GST (D065 item 3; task Q2.8), where the partial says "total (incl. GST)".
     expect(Array.from(price.children).map((s) => [s.className, s.textContent])).toEqual([
       ["kh-buybar__big", "₹499 today"],
-      ["kh-buybar__small", "refundable · ₹4,999 total (incl. GST)"],
+      ["kh-buybar__small", "refundable · ₹4,999 in total"],
     ]);
     expect(cta.className).toBe("kh-btn kh-btn--cta");
     expect(cta).toHaveAttribute("href", STORE_URL);
@@ -127,11 +128,11 @@ describe("StickyBuyBar: markup (partials/buybar.html)", () => {
     expect(within(cta as HTMLElement).getByText("Pre-order Kheelu", { selector: "span" })).toBeInTheDocument();
   });
 
-  it("prints the full-mode lines when the store has moved to full price", () => {
+  it("prints the full-mode lines when the store has moved to full price, without GST (D065 item 3)", () => {
     nav.pathname = "/";
     render(<StickyBuyBar offer={buildOffer("full")} label="Pre-order Kheelu" paths={PATHS} />);
     expect(Array.from(document.querySelectorAll(".kh-buybar__price > span")).map((s) => s.textContent)).toEqual([
-      "₹7,999 (incl. GST)",
+      "₹7,999 in total",
       "Paid in full · Deliveries start mid-November",
     ]);
   });

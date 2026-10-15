@@ -4,16 +4,18 @@ import type { Offer } from "@/content/types";
 import { PriceSentence, offerWords } from "./PriceSentence";
 
 /* Hand-written offers in both modes (ADR-005): the amounts are what formatInr gives for the checkout's own
-   paise constants, the sentences are the D028 wording as content/en-IN/offer.ts holds it (price tokens, never a
-   typed amount). Expected text is written out by hand from wiki/site/pages/home.md "At a glance". */
-const card = { product: "Kheelu", priceNote: "incl. GST", perks: { home: [], product: [] } };
+   paise constants, the lines are the words content/en-IN/offer.ts holds (price tokens, never a typed amount):
+   the D028 sentence (wiki/site/pages/home.md "At a glance"), the checkout's, and the short price line beside every
+   button on the selling pages (D065 item 3; task Q2.8). Expected text is written out by hand. */
+const card = { product: "Kheelu", perks: { home: [], product: [] } };
 const TOKEN: Offer = {
   mode: "token",
   headlinePaise: 499_900,
   prices: { token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999", launch: "₹4,999" },
   sentence:
     "Reserve yours for {price:token} today, refundable until dispatch, then pay {price:balance} before delivery: {price:headline} in total (incl. GST).",
-  sticky: { big: "{price:token} today", small: "refundable · {price:headline} total (incl. GST)" },
+  priceLine: "{price:token} today, refundable. {price:headline} in total.",
+  sticky: { big: "{price:token} today", small: "refundable · {price:headline} in total" },
   card,
   plus: "Every Kheelu comes with 6 months of Kheelona+.",
   delivery: "Deliveries start mid-November",
@@ -25,36 +27,50 @@ const FULL: Offer = {
   headlinePaise: 799_900,
   prices: { ...TOKEN.prices, headline: "₹7,999" },
   sentence: "{price:full} (incl. GST), paid in full when you order.",
+  priceLine: "{price:full} in total, paid in full when you order.",
 };
 
-const TOKEN_TEXT =
+const TOKEN_LINE = "₹499 today, refundable. ₹4,999 in total.";
+const FULL_LINE = "₹7,999 in total, paid in full when you order.";
+const TOKEN_SENTENCE =
   "Reserve yours for ₹499 today, refundable until dispatch, then pay ₹4,500 before delivery: ₹4,999 in total (incl. GST).";
-const FULL_TEXT = "₹7,999 (incl. GST), paid in full when you order.";
+const FULL_SENTENCE = "₹7,999 (incl. GST), paid in full when you order.";
 
 const paragraph = (ui: React.ReactElement) => render(ui).container.firstElementChild as HTMLElement;
 
 describe("PriceSentence", () => {
-  it("renders the D028 token-mode sentence with the offer's amounts", () => {
-    expect(paragraph(<PriceSentence offer={TOKEN} />).textContent).toBe(TOKEN_TEXT);
+  it("renders the short price line beside a button, with the offer's amounts (D065 item 3)", () => {
+    expect(paragraph(<PriceSentence offer={TOKEN} />).textContent).toBe(TOKEN_LINE);
   });
 
-  it("renders the full-mode sentence when the store has moved to full mode", () => {
-    expect(paragraph(<PriceSentence offer={FULL} />).textContent).toBe(FULL_TEXT);
+  it("renders the full-mode price line when the store has moved to full mode", () => {
+    expect(paragraph(<PriceSentence offer={FULL} />).textContent).toBe(FULL_LINE);
   });
 
   it.each([
     ["beside", "P", "kh-body-s ks-price"],
     ["drawer", "P", "kh-drawer__note"],
     ["offer-fine", "P", "kh-offer__fine"],
-    ["store", "P", "kh-body"],
-  ] as const)("the %s variant is a <p> with the mockup's classes", (variant, tag, classes) => {
+  ] as const)("the %s variant is a <p> with the mockup's classes, printing the short price line", (variant, tag, classes) => {
     const p = paragraph(<PriceSentence offer={TOKEN} variant={variant} />);
     expect(p.tagName).toBe(tag);
     expect(p.className).toBe(classes);
-    expect(p.textContent).toBe(TOKEN_TEXT);
+    expect(p.textContent).toBe(TOKEN_LINE);
+    expect(p.textContent).not.toMatch(/GST|₹4,500/);
   });
 
-  it("defaults to the beside variant (the sentence under every CTA)", () => {
+  /* The store is the checkout: GST and the payment breakdown stay there (D065 item 3), in D028's sentence. */
+  it.each([
+    ["token", TOKEN, TOKEN_SENTENCE],
+    ["full", FULL, FULL_SENTENCE],
+  ] as const)("the store variant keeps the checkout's D028 sentence (%s mode), a <p> with the mockup's class", (_mode, offer, text) => {
+    const p = paragraph(<PriceSentence offer={offer} variant="store" />);
+    expect(p.tagName).toBe("P");
+    expect(p.className).toBe("kh-body");
+    expect(p.textContent).toBe(text);
+  });
+
+  it("defaults to the beside variant (the line under every CTA)", () => {
     expect(paragraph(<PriceSentence offer={TOKEN} />).className).toBe("kh-body-s ks-price");
   });
 
@@ -70,11 +86,11 @@ describe("PriceSentence", () => {
     expect(p.hasAttribute("data-reveal")).toBe(false);
   });
 
-  it("refuses a sentence that is more than words and amounts, instead of flattening it", () => {
-    const linked = { ...TOKEN, sentence: "Reserve for {price:token}, [see terms](/terms)." };
+  it("refuses a line that is more than words and amounts, instead of flattening it, in either form", () => {
+    const linked = { ...TOKEN, priceLine: "Reserve for {price:token}, [see terms](/terms)." };
     expect(() => render(<PriceSentence offer={linked} />)).toThrow(/words and amounts/);
     const marked = { ...TOKEN, sentence: "{mark:Reserve} for {price:token}." };
-    expect(() => render(<PriceSentence offer={marked} />)).toThrow(/words and amounts/);
+    expect(() => render(<PriceSentence offer={marked} variant="store" />)).toThrow(/words and amounts/);
   });
 });
 

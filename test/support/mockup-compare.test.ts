@@ -1,7 +1,8 @@
+import { readdirSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { ICON_WHATSAPP_LOGO } from "@/assets/icons.generated";
 import { WHATSAPP_GLYPH } from "@/assets/whatsapp-logo.generated";
-import { readRepoFile } from "../e2e/support/repo";
 import {
   addClass,
   asBuilt,
@@ -10,6 +11,7 @@ import {
   mockupCtaRun,
   mockupDiff,
   mockupFold,
+  mockupLinks,
   mockupPage,
   mockupRoute,
   outline,
@@ -17,9 +19,14 @@ import {
   portClass,
   skeleton,
   STORE,
+  withPriceLine,
   without,
   words,
 } from "./mockup-compare";
+import { PRICE_LINE, PRICE_LINE_HIDDEN, PRICE_LINE_TEXT, priceLineText } from "../e2e/support/deviations";
+import { sentenceDiff, sentences } from "../e2e/support/parity";
+import { ROOT, readRepoFile } from "../e2e/support/repo";
+import { blockSentences } from "./mockup-facts";
 
 /* The one mockup comparison harness (task 3.6 items 5 and 14). Every section and shell parity test reads the approved
  * mockup and compares through it, so if it stopped reporting a difference those tests would pass on any markup: this
@@ -71,6 +78,140 @@ describe("reading the mockup", () => {
     expect(run[0].querySelector(".kh-btn--cta")).not.toBeNull();
     expect(run.map((el) => el.parentElement)).toEqual(run.map(() => run[0].parentElement));
     expect(() => mockupCtaRun(html("<section><p>no button</p></section>"))).toThrow(/no actions row/);
+  });
+});
+
+/* Task Q2.8 (D065 item 3; deviations.ts PRICE_LINE): every mockup a unit test reads carries the selling pages' price
+   lines as the build prints them, and the checkout's as approved. */
+describe("reading the mockup with task Q2.8's price lines (withPriceLine)", () => {
+  const { sentence, cardNote, bar, returns, delivery } = PRICE_LINE;
+  /** A mockup page as approved, without the harness's rewrites. */
+  const raw = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
+  const text = (el: Element | null | undefined) => (el?.textContent ?? "").replace(/\s+/g, " ").trim();
+  /** A trust line's link words, without the store's visually hidden new-tab note. */
+  const linkWords = (list: Element) =>
+    [...list.querySelectorAll(":scope > li > a")].map((a) => {
+      const copy = a.cloneNode(true) as Element;
+      copy.querySelectorAll(".kh-sr").forEach((n) => n.remove());
+      return text(copy);
+    });
+
+  it("prints the short price line beside every button, in the drawer and as the offer card's fine print", () => {
+    const home = parseMockup("home");
+    const lines = [...home.querySelectorAll(".mk-price, .kh-offer__fine"), home.querySelector(".kh-drawer__note")];
+    expect(lines.length).toBeGreaterThanOrEqual(5);
+    for (const el of lines) expect(text(el)).toBe(sentence.build);
+    expect(home.body.textContent).not.toContain("Reserve yours for");
+  });
+
+  it("takes the offer card's note off and says in total on the buy bar", () => {
+    const home = parseMockup("home");
+    expect(text(home.querySelector(".kh-offer__prices"))).toBe("₹4,999");
+    expect([...home.querySelectorAll(".kh-offer__prices > .kh-body-s")].map(text)).not.toContain(cardNote);
+    expect(text(home.querySelector(".kh-buybar__small"))).toBe(bar.build);
+  });
+
+  /* The D2C plan v2 §1.1: the trust line's item 1 is the risk-reversal line, item 2 the delivery line. */
+  it("puts the risk-reversal line first in each compact trust line and the drawer's note, the delivery line second", () => {
+    const home = parseMockup("home");
+    const rows = [...home.querySelectorAll("ul.mk-trust")].map(linkWords);
+    expect(rows.slice(0, 3)).toEqual([0, 1, 2].map(() => [returns.build, delivery]));
+    expect(text(home.querySelectorAll(".kh-drawer__note")[1])).toBe(`${returns.build} · ${delivery}`);
+    // The trust link opens the refund page's part that keeps the promise (trust.ts), as the build links it.
+    expect(mockupLinks(home.querySelector("ul.mk-trust")!)).toEqual(["/refund#before-dispatch", "/shipping#when"]);
+    // Each item keeps its own icon: the returns arrow on the risk-reversal line, the truck on the delivery line.
+    const icons = [...home.querySelectorAll("ul.mk-trust")[0].querySelectorAll(":scope > li svg")].map((svg) => svg.outerHTML);
+    const raw0 = [...raw("home").querySelectorAll("ul.mk-trust")[0].querySelectorAll(":scope > li svg")].map((svg) => svg.outerHTML);
+    expect(icons).toEqual([raw0[1], raw0[0]]);
+  });
+
+  it("keeps the checkout as approved: the store's price and its form keep D028's sentence and the full row; its first screen takes the risk-reversal line", () => {
+    const store = parseMockup("store");
+    expect(text(store.querySelector("#store-price"))).toBe(sentence.mockup);
+    expect(text(store.querySelector("form .mk-price"))).toBe(sentence.mockup);
+    const [top, form] = [...store.querySelectorAll("ul.mk-trust")];
+    expect(linkWords(top)).toEqual([returns.build, delivery]);
+    expect(top.querySelectorAll(".kh-sr")).toHaveLength(2);
+    expect(linkWords(form)[0]).toBe(returns.mockup);
+  });
+
+  /* The task's review (the D2C plan v2 §1.1; Home fold 7, product folds 3 and 12): the rows under the offer cards'
+     buttons are the trust line, then the card's third row (warranty, the ways to pay); the product close's is the trust
+     line. Outside the checkout's form only: the store's pay-button row stays as approved (above). */
+  it("rewrites the rows beside the offer cards' buttons and the product close as the build prints them", () => {
+    const { warranty, payment } = PRICE_LINE.rows;
+    const LINE = [returns.build, delivery];
+    const home = parseMockup("home");
+    expect(linkWords(home.querySelectorAll("ul.mk-trust")[3])).toEqual([...LINE, warranty, payment]);
+    const product = parseMockup("meet-kheelu");
+    expect([...product.querySelectorAll("ul.mk-trust")].map(linkWords)).toEqual([LINE, [...LINE, warranty, payment], LINE, LINE]);
+    // Each link as the build links it (trust.ts), the delivery line's included.
+    expect(mockupLinks(product.querySelector("#offer ul.mk-trust")!)).toEqual(["/refund#before-dispatch", "/shipping#when", "/refund#faulty", "/terms#payment"]);
+    expect(mockupLinks(product.querySelector("ul.mk-close-trust")!)).toEqual(["/refund#before-dispatch", "/shipping#when"]);
+    // The delivery line the offer row takes is the page's own, its truck icon and its words.
+    const heroDelivery = raw("meet-kheelu").querySelector("ul.mk-trust > li")!;
+    expect(text(heroDelivery)).toBe(delivery);
+    expect(product.querySelectorAll("#offer ul.mk-trust > li")[1].outerHTML).toBe(heroDelivery.outerHTML);
+  });
+
+  /* What the parity specs make of it, on every approved page: the text pass's shared rule accepts exactly the sentences
+     the lines change in main, and with the pixels' shared hides applied on both sides the page's words line up again,
+     but for the card's note, which sits on its amount's row and moves nothing. */
+  const SLUGS = readdirSync(join(ROOT, "mockup"))
+    .filter((f) => f.endsWith(".html") && f !== "index.html")
+    .map((f) => f.replace(/\.html$/, ""));
+  /** A page's main as the browser's text reads it (innerText): besides the blocks blockSentences knows, the offer card's
+   *  amount row is a flex row (each item on a line of its own) and the store's new-tab note is absolutely positioned (a
+   *  line of its own too). */
+  const mainOf = (doc: Document) => {
+    const main = doc.querySelector("main")!;
+    for (const el of main.querySelectorAll(".kh-offer__prices > *, .kh-sr")) {
+      el.before("\n");
+      el.after("\n");
+    }
+    return main;
+  };
+  const hidden = (side: "mockup" | "build") => PRICE_LINE_HIDDEN.filter((r) => r.side === side).map((r) => r.selector);
+
+  it.each(SLUGS)("%s: the text pass accepts exactly what changes in main, and the hides leave only the card's note", (slug) => {
+    const { missing, extra } = sentenceDiff(blockSentences(mainOf(raw(slug))), blockSentences(mainOf(parseMockup(slug))));
+    const rules = priceLineText(slug);
+    expect(missing.filter((s) => !rules.some((r) => r.mockup.test(s)))).toEqual([]);
+    expect(extra.filter((s) => !rules.some((r) => r.build?.test(s)))).toEqual([]);
+    const after = (doc: Document) => {
+      const main = mainOf(doc).cloneNode(true) as Element;
+      main.querySelectorAll(hidden("mockup").join(", ")).forEach((n) => n.remove());
+      return blockSentences(main);
+    };
+    const left = sentenceDiff(after(raw(slug)), after(parseMockup(slug)));
+    expect(left.extra).toEqual([]);
+    expect(left.missing.filter((s) => !sentences(PRICE_LINE.cardNote).includes(s))).toEqual([]);
+  });
+
+  /* The offer rows' words come and go on the two pages with an offer card or a full close row, and only there. */
+  it("excuses the offer rows' words on Home and the product page only, after the shared rule", () => {
+    expect(SLUGS.filter((slug) => priceLineText(slug).length > 1).sort()).toEqual(["home", "meet-kheelu"]);
+    for (const slug of SLUGS) expect(priceLineText(slug)[0], slug).toBe(PRICE_LINE_TEXT);
+  });
+
+  it("names the same blocks on both sides of the pixels' shared hides, and each one it finds is a line that changes", () => {
+    expect(hidden("build")).toEqual(hidden("mockup").map((s) => s.replace(/\bmk-/g, "ks-")));
+    for (const [slug, count] of [["home", 8], ["meet-kheelu", 8], ["store", 1]] as const) {
+      const found = (doc: Document) => [...mainOf(doc).querySelectorAll(hidden("mockup").join(", "))].map((el) => words(el));
+      const [before, after] = [found(raw(slug)), found(parseMockup(slug))];
+      expect(before, slug).toHaveLength(count);
+      expect(after, slug).toHaveLength(count);
+      after.forEach((line, i) => expect(line, `${slug} #${i}`).not.toBe(before[i]));
+    }
+  });
+
+  it("changes nothing that does not read as those lines (control)", () => {
+    const el = html(
+      `<div><p class="kh-body-s mk-price">₹499 today</p><ul class="kh-trustline mk-trust"><li><a href="refund.html">${returns.mockup}</a></li></ul></div>`,
+    );
+    const before = el.outerHTML;
+    withPriceLine(el);
+    expect(el.outerHTML).toBe(before);
   });
 });
 

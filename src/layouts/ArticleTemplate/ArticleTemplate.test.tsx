@@ -137,7 +137,7 @@ describe("ArticleTemplate: the three approved articles", () => {
 
   it("follows the offer's mode in the close's price sentence", () => {
     const container = page(approvedArticle("learning-toys-for-a-three-year-old"), buildOffer("full"));
-    expect(container.querySelector("#close .ks-price")?.textContent).toBe("₹7,999 (incl. GST), paid in full when you order.");
+    expect(container.querySelector("#close .ks-price")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
   });
 
   /* A journal post's video (task 8b.2d; journal-pipeline §7): ArticleBody refuses a video without the content's play word

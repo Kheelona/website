@@ -20,7 +20,7 @@ import { product } from "../products/kheelu/product";
 import { recognitionStrip } from "../recognition";
 import { photos } from "../stories/photos";
 import { topics, type TopicId } from "../stories/topics";
-import { SAFETY_FACTS, TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "../trust";
+import { SAFETY_FACTS, TRUST_COMPACT, TRUST_OFFER, trustItems, type TrustId } from "../trust";
 
 /**
  * Home, `/` (task 5.1; structure §5): the approved page's ten folds (mockup/pages/home.html, Gate A approved D046,
@@ -402,7 +402,8 @@ export const homePage = {
       },
     },
 
-    /* Fold 9 · Close: the offer card, the Kheelona+ line (D041 F7), the full trust row, Myra's board. */
+    /* Fold 9 · Close: the offer card, the Kheelona+ line (D041 F7), the offer cards' trust row (task Q2.8's review: the one
+       risk-reversal line, the delivery line, then the card's third row; the D2C plan v2 §1.1), Myra's board. */
     {
       kind: "offer-section",
       config: {
@@ -410,7 +411,7 @@ export const homePage = {
         heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}" },
         cta: "finale",
         cardLabel: "Kheelu offer",
-        trust: trust(TRUST_FULL),
+        trust: trust(TRUST_OFFER),
         art: {
           tone: "sun",
           label: "A curious girl in a mustard flowered frock beside Kheelu, the cream plush rabbit",

@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { ICON_PATHS } from "@/assets/icons.generated";
 import { cta } from "@/content/en-IN/cta";
 import { seller } from "@/content/en-IN/seller";
-import { TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "@/content/en-IN/trust";
+import { TRUST_COMPACT, trustItems, type TrustId } from "@/content/en-IN/trust";
 import { buildOffer } from "@/lib/offer/offer";
 import { CtaBlock } from "./CtaBlock";
 import type { CtaBlockConfig, CtaSecondary, SellingContext } from "./cta-block.types";
@@ -20,10 +20,6 @@ const FULL = buildOffer("full");
 const context = (offer = TOKEN): SellingContext => ({ offer, ctaLabel: cta.preorder, help: seller.help });
 const trust = (ids: readonly TrustId[]) => ids.map((id) => trustItems[id]);
 const COMPACT = trust(TRUST_COMPACT);
-/* The product close draws "Delivery included anywhere in India" with map-pin, as meet-kheelu.html does; the content keeps
-   one icon per item (Home's package), so the product page's config passes map-pin for that item (wave-3 close ruling;
-   task 5.2's config). */
-const PRODUCT_CLOSE_TRUST = trust(["deliveries-start", ...TRUST_FULL]).map((item) => (item.id === "delivery-included" ? { ...item, icon: "map-pin" } : item));
 const secondary = (id: keyof typeof cta.secondary, variant: CtaSecondary["variant"]): CtaSecondary => ({ ...cta.secondary[id], variant });
 /* The untracked ghost links of the closes (the copy names no CTA value for them). */
 const SEE_HOW: CtaSecondary = { label: "See how it works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" };
@@ -52,7 +48,9 @@ const PLACEMENTS: Placement[] = [
   ["Home safety (fold 6)", "home", 'section[aria-labelledby="safety-title"]', { cta: "safety", align: "center", trust: COMPACT, secondary: secondary("safety-learn", "secondary") }],
   ["product hero (fold 1)", "meet-kheelu", 'section[aria-labelledby="hero-title"]', { cta: "product-top", arrow: true, block: true, layout: "stack", trust: COMPACT, helpLine: true }],
   ["product safety (fold 6)", "meet-kheelu", "#safety", { cta: "product-safety", align: "center", trust: COMPACT, secondary: secondary("product-safety-learn", "secondary") }],
-  ["product close (fold 9)", "meet-kheelu", "#close", { cta: "product-foot", layout: "full", trust: PRODUCT_CLOSE_TRUST, helpLine: true }],
+  /* The trust line in place of meet-kheelu.html's five-item row since task Q2.8's review (the D2C plan v2 §1.1; the
+     harness reads the mockup's row so, test/support/mockup-compare.ts withPriceLine). */
+  ["product close (fold 9)", "meet-kheelu", "#close", { cta: "product-foot", layout: "full", trust: COMPACT, helpLine: true }],
   ["safety close", "safety", "#close", { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true }],
   ["guide close", "ai-toys-for-kids-in-india", "#close", { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true }],
   ["stories hub close", "stories", "#close", { cta: "finale", arrow: true, block: true, layout: "journal", trust: COMPACT, helpLine: true, secondary: SEE_HOW }],
@@ -70,8 +68,11 @@ describe("CtaBlock: every placement of the approved mockup, exactly", () => {
     expect(renderedMarkup(<CtaBlock {...config} {...context()} />)).toBe(expected);
   });
 
-  it("the product close draws the map-pin its config passes, as the mockup (no rewrite of the mockup)", () => {
-    const html = renderedMarkup(<CtaBlock {...PLACEMENTS[5][3]} {...context()} />);
+  /* A trust item draws the icon its config passes, not the content's (the product close passed map-pin for "Delivery
+     included anywhere in India" until task Q2.8's review gave that close the trust line). */
+  it("draws the icon its config passes for a trust item (no rewrite of the content)", () => {
+    const pinned = trust(["delivery-included"]).map((item) => ({ ...item, icon: "map-pin" }));
+    const html = renderedMarkup(<CtaBlock {...PLACEMENTS[5][3]} trust={pinned} {...context()} />);
     expect(html).toContain(ICON_PATHS["map-pin"]);
     expect(html).not.toContain(ICON_PATHS.package);
   });
@@ -115,7 +116,9 @@ describe("CtaBlock: the block", () => {
     const { container } = render(<CtaBlock {...hero} {...context()} />);
     // Each to the part of its terms page that keeps the promise (task 7.1a, CMO built-page review C, m8).
     expect(screen.getByRole("link", { name: "Deliveries start mid-November" })).toHaveAttribute("href", "/shipping#when");
-    expect(screen.getByRole("link", { name: "7-day returns, no questions asked" })).toHaveAttribute("href", "/refund#returns");
+    // The one risk-reversal line (task Q2.8; D065 item 3), to the refund page's part that keeps its first promise.
+    expect(screen.getByRole("link", { name: "Full refund until dispatch · 7-day returns" })).toHaveAttribute("href", "/refund#before-dispatch");
+    // The help line without the call (D063 item 2, task Q2.3).
     expect(screen.getByRole("link", { name: "WhatsApp us" })).toHaveAttribute("href", "https://wa.me/919187546483");
     expect(container.querySelector('a[href^="tel:"]')).toBeNull();
   });
@@ -156,12 +159,34 @@ describe("CtaBlock: the block", () => {
   });
 });
 
+/* D065 item 3 (task Q2.8): GST and the payment breakdown only at checkout, so no block beside a button names GST or the
+   balance, in either mode; its price line is the short one and its compact trust line ends with the risk-reversal line. */
+describe("CtaBlock: the short price line and the risk-reversal line (D065 item 3)", () => {
+  it.each(PLACEMENTS)("%s: no GST and no balance, in either mode", (_name, _slug, _fold, config) => {
+    for (const offer of [TOKEN, FULL]) {
+      const text = render(<CtaBlock {...config} {...context(offer)} />).container.textContent ?? "";
+      expect(text).not.toMatch(/GST/);
+      expect(text).not.toContain(offer.prices.balance);
+    }
+  });
+
+  // The D2C plan v2 §1.1: the trust line's item 1 is the risk-reversal line, item 2 the delivery line.
+  it("prints the short price line beside the button, and the risk-reversal line first in the compact trust line", () => {
+    const { container } = render(<CtaBlock {...PLACEMENTS[0][3]} {...context()} />);
+    expect(container.querySelector(".ks-price")?.textContent).toBe("₹499 today, refundable. ₹4,999 in total.");
+    expect([...container.querySelectorAll(".kh-trustline a")].map((a) => a.textContent)).toEqual([
+      "Full refund until dispatch · 7-day returns",
+      "Deliveries start mid-November",
+    ]);
+  });
+});
+
 describe("CtaBlock: full mode (the offer after the capped units, ADR-005)", () => {
   const PRICE = /<p( id="[^"]*")? class="kh-body-s ks-price">[^<]*<\/p>/;
 
-  it.each(PLACEMENTS)("%s: the full-mode price sentence, everything else unchanged", (_name, _slug, _fold, config) => {
+  it.each(PLACEMENTS)("%s: the full-mode price line, everything else unchanged", (_name, _slug, _fold, config) => {
     const full = render(<CtaBlock {...config} {...context(FULL)} />).container;
-    expect(within(full).getByText("₹7,999 (incl. GST), paid in full when you order.")).toHaveClass("kh-body-s", "ks-price");
+    expect(within(full).getByText("₹7,999 in total, paid in full when you order.")).toHaveClass("kh-body-s", "ks-price");
     expect(full.textContent).not.toMatch(/₹499|₹4,500|₹4,999/);
     const tokenHtml = renderToStaticMarkup(<CtaBlock {...config} {...context(TOKEN)} />);
     const fullHtml = renderToStaticMarkup(<CtaBlock {...config} {...context(FULL)} />);
