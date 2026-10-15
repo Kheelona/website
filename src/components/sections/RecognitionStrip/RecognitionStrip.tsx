@@ -2,6 +2,7 @@ import { Heading } from "@/components/ui/Heading/Heading";
 import { Container, Section } from "@/components/ui/Layout/Layout";
 import { Photo } from "@/components/ui/Photo/Photo";
 import { imageRatio } from "@/components/ui/Photo/image";
+import { RichText } from "@/components/ui/RichText/RichText";
 import type { ImageRef } from "@/content/types";
 import type { RecognitionItem, RecognitionStripConfig } from "./recognition-strip.types";
 
@@ -30,18 +31,33 @@ function Programme({ item }: { item: RecognitionItem }) {
   );
 }
 
-export function RecognitionStrip({ title, items, id = "recognised-title" }: RecognitionStripProps) {
+export function RecognitionStrip({ title, items, id = "recognised-title", variant = "heading", band }: RecognitionStripProps) {
   const shown = items.filter((item) => !item.gated);
   if (shown.length === 0) return null;
+  const row = (
+    <ul className="ks-recognition" role="list">
+      {shown.map((item) => (
+        <Programme key={item.name} item={item} />
+      ))}
+    </ul>
+  );
+  /* Task Q2.9 (the D2C plan v2 §2 fold 2; the CMO's m10): a small label over the row, not a heading, so the strip reads
+     as the end of the films' proof (Home, on the films' band). */
+  if (variant === "label") {
+    return (
+      <Section tight band={band} labelledBy={id} className="ks-recognised">
+        <Container>
+          <RichText as="p" className="kh-label-s ks-recognition__label" id={id} text={title} />
+          {row}
+        </Container>
+      </Section>
+    );
+  }
   return (
-    <Section tight labelledBy={id}>
+    <Section tight band={band} labelledBy={id}>
       <Container>
         <Heading align="center" title={title} id={id}>
-          <ul className="ks-recognition" role="list">
-            {shown.map((item) => (
-              <Programme key={item.name} item={item} />
-            ))}
-          </ul>
+          {row}
         </Heading>
       </Container>
     </Section>

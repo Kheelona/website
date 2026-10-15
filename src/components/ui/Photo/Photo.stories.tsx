@@ -54,6 +54,9 @@ export const Lcp: Story = {
   args: { variant: "wide", xl: true, lcp: true, image: { src: tara02, alt: "A girl and her mother on a sofa in the evening lamp light, with Kheelu between them." } },
 };
 
+/** A first-screen photo that is the LCP at no width (Home's phone crop, CMO m14): eager, with no fetchpriority. */
+export const EagerFirstScreen: Story = { args: { xl: true, lcp: "eager" } };
+
 /** A screenshot at its own ratio, with a caption (setup.html:99-102). */
 export const RatioWithCaption: Story = {
   args: {

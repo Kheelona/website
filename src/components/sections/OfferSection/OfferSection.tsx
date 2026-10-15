@@ -12,10 +12,15 @@ import { CloseArt } from "../CloseSection/close-art";
 import { SellingHelpLine, SellingTrustLine } from "../CtaBlock/selling-lines";
 import type { OfferSectionProps } from "./offer-section.types";
 
-/** The section ids and its heading ids, as the approved mockup has them (fragments other pages link to). */
-const IDS = { close: { section: "close", title: "close-title" }, photo: { section: "offer", title: "offer-title" } } as const;
-/** Whose perks the card lists (content/en-IN/offer.ts). */
-const PLACEMENT: Record<OfferSectionProps["variant"], OfferCardPlacement> = { close: "home", photo: "product" };
+/** The section ids and its heading ids, as the approved mockup has them (fragments other pages link to); Home's offer
+ *  since task Q2.9 takes the product page's, as it is no longer the page's close. */
+const IDS = {
+  close: { section: "close", title: "close-title" },
+  photo: { section: "offer", title: "offer-title" },
+  home: { section: "offer", title: "offer-title" },
+} as const;
+/** Whose perks the card lists (content/en-IN/offer.ts; one list for both since task Q2.9). */
+const PLACEMENT: Record<OfferSectionProps["variant"], OfferCardPlacement> = { close: "home", photo: "product", home: "home" };
 
 /** The product photo beside the card: 256 px on phones (meet-kheelu.css:22), at most 512 px from 900 px (:27). */
 const OFFER_PHOTO_SIZES = "(min-width: 1024px) 512px, (min-width: 900px) 480px, 256px";
@@ -41,8 +46,9 @@ export function OfferSection(props: OfferSectionProps) {
         text: <RichText text={perk.text} offer={offer} />,
       }))}
       action={<PreorderButton cta={cta} label={ctaLabel} size="l" block />}
-      label={props.variant === "close" ? props.cardLabel : undefined}
+      label={props.variant === "photo" ? undefined : props.cardLabel}
       id={variant === "close" ? "offer" : undefined}
+      fine={variant !== "home"}
     />
   );
   /* The share link, last in the column under both cards (D061; task 8c.2): a ghost link through Button, never chilli
@@ -63,7 +69,22 @@ export function OfferSection(props: OfferSectionProps) {
     </>
   );
   let body: ReactNode;
-  if (props.variant === "close") {
+  if (props.variant === "home") {
+    /* Task Q2.9: Home's offer, moved up (the D2C plan v2 §2 fold 7). The card's price block stands in for the short price
+       line, so the card prints no fine print (the plan: "not repeated"). The page's note under the card, the trust row, no
+       help line (Home has none: the WhatsApp bubble replaces them, plan §1.1), the share link; the board beside. */
+    body = (
+      <Split>
+        <div>
+          {card}
+          <RichText as="p" className="kh-body-s" text={props.note} offer={offer} />
+          <SellingTrustLine items={trust} offer={offer} />
+          {share}
+        </div>
+        <CloseArt art={props.art} />
+      </Split>
+    );
+  } else if (props.variant === "close") {
     body = (
       <Split>
         <div>

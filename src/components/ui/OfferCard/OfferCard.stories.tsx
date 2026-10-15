@@ -87,3 +87,6 @@ type Story = StoryObj<typeof meta>;
 export const TokenMode: Story = {};
 /** Full mode: no later price, no split, the full price (G-08). */
 export const FullMode: Story = { args: { offer: full } };
+/** Without the fine print: the price block stands in for the short price line, so it is not repeated (Home's offer,
+ *  the D2C plan v2 §2 fold 7; task Q2.9). */
+export const WithoutFinePrint: Story = { args: { fine: false } };

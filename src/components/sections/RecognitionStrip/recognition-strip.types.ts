@@ -18,4 +18,9 @@ export interface RecognitionStripConfig {
   readonly items: readonly Gated<RecognitionItem>[];
   /** The heading's id, which names the section ("recognised-title" by default). */
   readonly id?: string;
+  /** `label` (task Q2.9; the D2C plan v2 §2 fold 2, the CMO's m10): the title as a small label over the row, not a
+   *  heading (Home, directly under the films' quotes); `heading` (default): the team page's centred heading. */
+  readonly variant?: "heading" | "label";
+  /** The cream band, to continue the band fold before it (Home's films). */
+  readonly band?: boolean;
 }

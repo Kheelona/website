@@ -30,6 +30,10 @@ const tapViewport = VIEWPORTS[0];
  * and at every phone of the matrix no hero link (task 8c.5: the help line's "call +91 …" at 412 x 915).
  * Home's hero picture is the Kabir photo since task Q2.1 (D064 item 4), its 16:10 crop under the trust line on phones:
  * there Kheelu and the boy's head are their boxes in the crop that shows (PHOTO_CROPS), and a photo has no word sticker.
+ * Since task Q2.9 (the selling update: the founder's 5-line H1, D065 item 1; the main session's ruling (a): the bubble
+ * stays persistent, D050) the phone crop stops short of the bubble's column (hero-section.css), so Kheelu ends on the
+ * first screen at 390 x 844 and 412 x 915 with the column clear beside it; and on Home the hero's words (the eyebrow,
+ * the h1, the lead and the price line) stay clear of the bubble too, not only its links.
  * At 360 x 590 the DS phone hero (the words, the full-width button, the trust line, then the board: design-system
  * 10-pages.md "Phones") leaves 82 px under the price sentence, so the board starts below the fold there: Kheelu's box
  * is printed, not asserted (the task 8c.1 report lists the options for the founder). Build only: the approved mockup
@@ -96,6 +100,9 @@ async function heroArt(page: Page) {
       links: [...document.querySelectorAll("main .ks-hero a")]
         .filter((a) => a.checkVisibility())
         .map((a) => ({ name: (a.textContent ?? "").trim(), box: box(a)! })),
+      words: [...document.querySelectorAll("main .ks-hero :is(.kh-eyebrow, h1, .kh-heading__lead, .ks-price)")]
+        .filter((el) => el.checkVisibility())
+        .map((el) => ({ name: (el.textContent ?? "").trim().slice(0, 40), box: box(el)! })),
       bubble: bubble?.checkVisibility() ? box(bubble) : null,
       width: window.innerWidth,
       height: window.innerHeight,
@@ -264,6 +271,12 @@ for (const slug of FIRST_SCREEN_PAGES) {
           covered.map((link) => `"${link.name}" ${fmt(link.box)}`),
           `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers a hero link`,
         ).toEqual([]);
+        // Home's hero words too (task Q2.9; the main session's ruling (a) of the selling update).
+        if (slug === "home") {
+          expect(art.words.length, `${route.id} ${vp.name}: the instrument found no hero words`).toBeGreaterThan(3);
+          const under = art.words.filter((w) => overlap(art.bubble!, w.box)).map((w) => `"${w.name}" ${fmt(w.box)}`);
+          expect(under, `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers the hero's words`).toEqual([]);
+        }
       });
     }
   });

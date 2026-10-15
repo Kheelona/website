@@ -39,12 +39,15 @@ export const LLMS_UPDATED = "2026-10-15";
 
 /** The questions it answers, in order: the rename first (Kheelu was Lumi), then Home's and the product page's
  *  answers a model is asked about most. One price answer only, so "first 500 units" appears once (D041). The languages
- *  answer the product page gives since task 8c.4 (D061) follows the ages (task 8c.5). */
+ *  answer the product page gives since task 8c.4 (D061) follows the ages (task 8c.5). The price answer is the one
+ *  /pricing.md gives (`how-much`) since task Q2.9: Home's answer lost its GST and its cap with the selling update (D065
+ *  items 3-4), and this file, which is not a selling page, keeps both (task Q2.8), so the total "(incl. GST)" stays its
+ *  first amount (D028). */
 const QUESTIONS: readonly FaqId[] = [
   "same-as-lumi",
   "what-ages",
   "languages",
-  "price-and-advance",
+  "how-much",
   "think-less",
   "wifi",
   "after-the-first-week",
@@ -103,7 +106,9 @@ export function llmsText(offer: Offer): string {
   for (const id of ["deliveries-start", ...TRUST_FULL] as const) lines.push(`- ${say(trustItems[id].label)}`);
 
   lines.push("", "## Contact", "");
-  lines.push(`- ${say(seller.help.contact)} · ${seller.support.email}`);
+  /* The WhatsApp address in plain text (task Q2.9): the number is on /contact and the legal pages only (D063 item 2), so
+     a reader of this file sees how to reach the team here. */
+  lines.push(`- ${say(seller.help.contact)}: ${seller.support.whatsapp} · ${seller.support.email}`);
   /* The number only on /contact and the legal pages (D063 item 2, D064 item 11; task Q2.3): the officer's line without it. */
   lines.push(`- ${say(`${seller.grievance.footerLine.lead} ${seller.grievance.footerLine.text}`)}`);
 

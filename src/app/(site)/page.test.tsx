@@ -51,7 +51,9 @@ describe("the Home route", () => {
     expect(meta.title).toEqual({ absolute: title });
     expect(title.length).toBeLessThanOrEqual(60);
     expect(description.length).toBeLessThanOrEqual(155);
-    expect(description).toMatch(/^Kheelu by Kheelona: .*₹(4,999|7,999) \(incl\. GST\)/);
+    // The total first (D028), with no GST note since the selling update (D065 item 3; the D2C plan v2 §2, Home's meta).
+    expect(description).toMatch(/^Kheelu by Kheelona: .*₹(4,999|7,999) in total/);
+    expect(description).not.toMatch(/GST/);
     expect(meta.alternates).toEqual({ canonical: "/" });
     const image = { url: "/og/kheelu.jpg", alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." };
     expect(meta.openGraph).toEqual({

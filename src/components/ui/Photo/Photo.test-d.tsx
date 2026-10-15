@@ -14,6 +14,7 @@ export const accepted = () => (
   <>
     <Photo image={IRA} sizes={SIZES} />
     <Photo image={IRA} sizes={SIZES} lcp />
+    <Photo image={IRA} sizes={SIZES} lcp="eager" />
     <Photo image={IRA} sizes={SIZES} fetchPriority="low" ratio="576 / 1209" />
   </>
 );
@@ -28,6 +29,8 @@ export const misuses = () => (
     <Photo image={IRA} sizes={SIZES} preload />
     {/* @ts-expect-error the LCP hint comes only from lcp, never a high fetchPriority by hand */}
     <Photo image={IRA} sizes={SIZES} fetchPriority="high" />
+    {/* @ts-expect-error lcp is true or "eager": no other loading mode */}
+    <Photo image={IRA} sizes={SIZES} lcp="high" />
     {/* @ts-expect-error a ratio is "width / height" */}
     <Photo image={IRA} sizes={SIZES} ratio="4:5" />
   </>

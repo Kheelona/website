@@ -29,6 +29,8 @@ const SCREEN_SIZES = {
   home: "(min-width: 900px) 280px, calc((100vw - 48px) / 2)",
   product: "(min-width: 900px) 260px, calc((100vw - 48px) / 2)",
   safety: "(min-width: 900px) 300px, 272px",
+  /* Home's compact safety block (task Q2.9): the safety page's phone, 232 px under 900 px (feature-split.css). */
+  compact: "(min-width: 900px) 300px, 232px",
 } as const;
 /** The setup photos: the tummy-unit crop up to 384 px, the phone screenshot at 288 px (setup.css:30, 33). */
 const FIT_SIZES = { belly: "(min-width: 416px) 384px, calc(100vw - 32px)", shot: "288px" } as const;
@@ -93,33 +95,43 @@ function Body({
     case "imagination": {
       const { card, frame, sources } = config;
       const markers = sources ? { label: sources.marker } : undefined;
+      /* Without a frame (task Q2.9; Home's "Why it matters" in the D2C plan v2, §2 fold 3) the words and the card stand
+         in two columns under the heading, with no picture beside them. */
+      const words = (
+        <Cols reveal count={frame ? undefined : 2}>
+          <RichText as="p" className="kh-body-l" text={config.text} offer={offer} sources={markers} />
+          <div>
+            <Card tone={card.tone} variant={card.tint ? "tint" : "plain"} icon={<Icon name={card.icon} />} title={text(card.title)} body={text(card.body)} />
+            {config.aside !== undefined && <RichText as="p" className="kh-body-s" text={config.aside} offer={offer} />}
+          </div>
+        </Cols>
+      );
       return (
         <>
           <SectionHead>{title}</SectionHead>
-          <Split wide="start">
-            <Cols reveal>
-              <RichText as="p" className="kh-body-l" text={config.text} offer={offer} sources={markers} />
-              <div>
-                <Card tone={card.tone} variant={card.tint ? "tint" : "plain"} icon={<Icon name={card.icon} />} title={text(card.title)} body={text(card.body)} />
-                {config.aside !== undefined && <RichText as="p" className="kh-body-s" text={config.aside} offer={offer} />}
-              </div>
-            </Cols>
-            <ImaginationFrame
-              photo={frame.photo}
-              sizes={NARROW_COLUMN}
-              doodles={frame.doodles}
-              question={frame.question === undefined ? undefined : text(frame.question)}
-              zoom={frame.zoom}
-              reveal
-            />
-          </Split>
+          {frame ? (
+            <Split wide="start">
+              {words}
+              <ImaginationFrame
+                photo={frame.photo}
+                sizes={NARROW_COLUMN}
+                doodles={frame.doodles}
+                question={frame.question === undefined ? undefined : text(frame.question)}
+                zoom={frame.zoom}
+                reveal
+              />
+            </Split>
+          ) : (
+            words
+          )}
           {sources && <SourcesNote label={sources.label} sources={sources.items} />}
           <SectionLinkRow link={config.link} center />
+          {after}
         </>
       );
     }
     case "app-screens":
-      return <AppScreensBody config={config} title={title} text={text} />;
+      return <AppScreensBody config={config} title={title} text={text} after={after} />;
     case "photo": {
       const { media, split } = config;
       const words = (
@@ -177,9 +189,26 @@ function Body({
   }
 }
 
-function AppScreensBody({ config, title, text }: { config: Extract<FeatureSplitConfig, { variant: "app-screens" }>; title: ReactNode; text: Text }) {
+function AppScreensBody({ config, title, text, after }: { config: Extract<FeatureSplitConfig, { variant: "app-screens" }>; title: ReactNode; text: Text; after: ReactNode }) {
   const { placement, screens, items, skills, note, link } = config;
   const caption = screens.caption === undefined ? undefined : text(screens.caption);
+  if (placement === "compact") {
+    // Home's safety block (task Q2.9): the heading and the one-line promises beside the one screen, the fold's link
+    // under the lines; then the page's CTA block across the fold.
+    return (
+      <>
+        <Split wide="start" className="ks-safe-split">
+          <div>
+            {title}
+            <TrustList items={trustItems(config.items, text)} reveal className="ks-safe-lines" />
+            <SectionLinkRow link={link} />
+          </div>
+          <AppScreens variant="safety" screens={[screens.images[0]]} sizes={SCREEN_SIZES.compact} caption={caption} reveal />
+        </Split>
+        {after}
+      </>
+    );
+  }
   let media: ReactNode;
   if (placement === "safety") {
     if (screens.images.length !== 1) throw new Error("FeatureSplit: the safety page's parent controls show one screen (AppScreens `safety`)");

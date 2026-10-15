@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { render, screen, within } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
@@ -178,6 +180,45 @@ describe("CtaBlock: the short price line and the risk-reversal line (D065 item 3
       "Full refund until dispatch · 7-day returns",
       "Deliveries start mid-November",
     ]);
+  });
+});
+
+/* Task Q2.9 (the D2C plan v2 §2.0 and fold 1; the CMO's M1 and M2): Home's hero link "Watch Kheelu ask, in a 30-second
+   film" shows on laptops only, from 900 px: under it the founder's 5-line H1 leaves no room for a link and Kheelu on the
+   first phone screen. The link is in the HTML at every width (no layout shift, nothing client-side); its actions row
+   carries `ks-cta__laptop`, which cta-block.css hides below 900 px. */
+describe("CtaBlock: a secondary link for laptops only (task Q2.9)", () => {
+  const hero = PLACEMENTS[0][3];
+  const FILM: CtaSecondary = { label: "Watch Kheelu ask, in a 30-second film", href: "#learning-by-asking", cta: "hero-film", variant: "ghost", icon: "play", from: "laptop" };
+  const CSS = readFileSync(join(process.cwd(), "src/components/sections/CtaBlock/cta-block.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+
+  it("marks the link's actions row ks-cta__laptop, the link itself as any ghost link, tracked hero-film", () => {
+    const { container } = render(<CtaBlock {...hero} secondary={FILM} {...context()} />);
+    const link = container.querySelector('[data-ph-capture-attribute-cta="hero-film"]')!;
+    expect(link.getAttribute("class")).toBe("kh-btn kh-btn--ghost");
+    expect(link).toHaveAttribute("href", "#learning-by-asking");
+    expect(link.parentElement?.getAttribute("class")).toBe("kh-section__actions ks-cta__laptop");
+    expect(link.firstElementChild?.tagName.toLowerCase()).toBe("svg");
+  });
+
+  it("hides that row below 900 px with one rule, and leaves every other secondary link alone", () => {
+    expect(CSS).toMatch(/@media \(max-width: 899px\) \{\s*\.ks-cta__laptop \{\s*display: none;\s*\}\s*\}/);
+    const plain = render(<CtaBlock {...hero} {...context()} />).container.querySelector(".kh-btn--ghost")!;
+    expect(plain.parentElement?.getAttribute("class")).toBe("kh-section__actions");
+  });
+});
+
+/* The D2C plan v2's build condition C1 (the CMO's review; the guard's part-price-button): the price line after a button is
+   a block of its own, never a span inside the button or right after its label, so the two never read as one string. */
+describe("CtaBlock: the price line is its own block after the button (C1)", () => {
+  it.each(PLACEMENTS)("%s: a p after the button's row, outside the button", (_name, _slug, _fold, config) => {
+    const { container } = render(<CtaBlock {...config} {...context()} />);
+    const button = container.querySelector(".kh-btn--cta")!;
+    const price = container.querySelector(".ks-price")!;
+    expect(price.tagName).toBe("P");
+    expect(button.contains(price)).toBe(false);
+    expect(button.closest(".kh-section__actions")?.contains(price)).toBe(false);
+    expect(button.compareDocumentPosition(price) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 });
 

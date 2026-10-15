@@ -45,7 +45,7 @@ export function CtaBlock(props: CtaBlockProps) {
       )}
       {layout === "journal" && helpLineEl}
       {secondary && (
-        <Actions center={center}>
+        <Actions center={center} className={secondary.from === "laptop" ? "ks-cta__laptop" : undefined}>
           <SecondaryLink link={secondary} />
         </Actions>
       )}

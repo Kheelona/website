@@ -9,10 +9,13 @@ import { VIEWPORTS, type Viewport } from "./support/viewports";
  *     keyed on <html data-scroll-behavior="smooth">) starts only once the page has loaded, so the browser's own jump to
  *     the fragment never glides through ten thousand pixels of half-revealed blocks; an in-page link still glides
  *     afterwards (the mockup's anchor scrolling), and Next 16 still reads the attribute to jump on route changes.
- *   - M2: Home's "See all questions" (a client navigation to /products/kheelu#faq) lands at the questions' heading,
- *     with motion on and reduced, on a phone and a laptop. It stopped 464 px (phone) or 394 px (laptop) past it: the
- *     product details tabs collapsed after Next had scrolled. On a laptop the heading lands just below the nav, which
- *     sticks from 900 px (task Q2.5; the page's scroll padding is the bar's height); on a phone, at the top.
+ *   - M2: a client navigation from Home to a part of the product page lands on it, with motion on and reduced, on a
+ *     phone and a laptop. Home's "See all questions" (to /products/kheelu#faq) stopped 464 px (phone) or 394 px
+ *     (laptop) past the questions' heading: the product details tabs collapsed after Next had scrolled. Since task Q2.9
+ *     Home has no "See all questions" (`faq-more` stops firing on Home: the D2C plan v2 §2 fold 10, ruling 1), so the
+ *     check follows Home's one remaining link into a part of the product page: the sticky scroll's "See how it works"
+ *     (`home-asks-learn`, to /products/kheelu#modes). On a laptop the part lands just below the nav, which sticks from
+ *     900 px (task Q2.5; the page's scroll padding is the bar's height); on a phone, at the top.
  *   - m8: every trust item links to the part of its terms page it promises (returns, the warranty, paying, when and
  *     where deliveries go), and that part exists on the page.
  *   - QA-005: the footer's "Grievance officer" opens the grievance officer's block on /contact.
@@ -23,6 +26,8 @@ requiresServer();
 const phone = VIEWPORTS.find((v) => v.width === 390)!;
 const laptop = VIEWPORTS.find((v) => v.width === 1440 && v.height === 900)!;
 const PRODUCT_FAQ = "/products/kheelu#faq";
+/** Home's link into a part of the product page (M2): the sticky scroll's "See how it works" (task Q2.9). */
+const HOME_TO_MODES = { cta: "home-asks-learn", href: "/products/kheelu#modes", id: "modes" } as const;
 
 /** Records the page's scroll position on every frame from before its first script (an init script). */
 function recordScroll(): void {
@@ -127,20 +132,23 @@ test.describe("anchors: a page opened at a fragment (M1)", () => {
   });
 });
 
-test.describe("anchors: Home's “See all questions” lands at the questions (M2)", () => {
+test.describe("anchors: Home's “See how it works” lands at the product page's modes (M2)", () => {
   for (const vp of [phone, laptop]) {
     for (const reducedMotion of ["no-preference", "reduce"] as const) {
       test(`${vp.name}, motion ${reducedMotion}`, async ({ harness }) => {
         const page = await openAt(harness, vp, "/", reducedMotion);
-        const link = page.locator(`main a[href="${PRODUCT_FAQ}"]`);
+        const link = page.locator(`main a[data-ph-capture-attribute-cta="${HOME_TO_MODES.cta}"]`);
         await expect(link).toHaveCount(1);
+        await expect(link).toHaveAttribute("href", HOME_TO_MODES.href);
+        // Home no longer links to the product page's questions (task Q2.9; plan §2 fold 10).
+        await expect(page.locator(`main a[href="${PRODUCT_FAQ}"]`)).toHaveCount(0);
         await link.scrollIntoViewIfNeeded();
         await link.click();
-        await page.waitForURL(`**${PRODUCT_FAQ}`);
-        await page.locator("#faq").waitFor();
+        await page.waitForURL(`**${HOME_TO_MODES.href}`);
+        await page.locator(`#${HOME_TO_MODES.id}`).waitFor();
         await settled(page);
         const bar = vp.width >= 900 ? await page.locator("nav.kh-nav").evaluate((n) => Math.round(n.getBoundingClientRect().bottom)) : 0;
-        expect(Math.abs((await topOf(page, "#faq")) - bar), "the questions' heading sits at the top of the screen, below the sticky nav on a laptop").toBeLessThanOrEqual(2);
+        expect(Math.abs((await topOf(page, `#${HOME_TO_MODES.id}`)) - bar), "the modes sit at the top of the screen, below the sticky nav on a laptop").toBeLessThanOrEqual(2);
       });
     }
   }

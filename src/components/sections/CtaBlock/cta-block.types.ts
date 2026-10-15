@@ -36,7 +36,9 @@ export interface SellingHeading {
 /** The link under a CTA block: a ghost or secondary button (never chilli), tracked when the copy names a value. */
 export interface CtaSecondary {
   readonly label: string;
-  readonly href: SitePath | `https://${string}`;
+  /** A site path, an outside address, or a fragment on the page (task Q2.9: Home's hero link to film 1 in the strip,
+   *  `#learning-by-asking`, which the strip plays in place). */
+  readonly href: SitePath | `https://${string}` | `#${string}`;
   /** A secondary value of the CTA registry (`hero-learn`, …); the closes' "See how it works" links carry none. */
   readonly cta?: CtaId;
   /** The mockup's look: `ghost` (Home folds 1 and 2, the closes) or `secondary` (the safety folds). */
@@ -45,6 +47,9 @@ export interface CtaSecondary {
   readonly icon?: IconRef;
   /** An icon after the label (the ghost links' arrow). */
   readonly iconEnd?: IconRef;
+  /** `laptop`: shown from 900 px only (task Q2.9: Home's hero link, which phones do not show; the D2C plan v2 §2.0). The
+   *  link stays in the HTML at every width; cta-block.css hides its row below 900 px. */
+  readonly from?: "laptop";
 }
 
 /**

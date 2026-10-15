@@ -78,6 +78,14 @@
   .ks-hero .kh-split:has(> .ks-hero__phone-art) .ks-help {
     padding-right: calc(var(--space-8) + env(safe-area-inset-right));
   }
+  /* Home's phone photo keeps out of that column too (task Q2.9; the main session's ruling (a) on the selling update: the
+     bubble stays persistent, D050). Under the founder's 5-line H1 a full-width crop put Kheelu's feet 2 px below a
+     390 x 844 screen and 7 px from the bubble; stopping the photo at the bubble's column (left-aligned, under the words)
+     shortens it by a fifth, so Kheelu ends on the first screen at 390 x 844 and 412 x 915 with the column clear beside
+     it (test/e2e/first-screen.spec.ts). The board of the product page keeps its width. */
+  .ks-hero .kh-photo.ks-hero__phone-art {
+    width: calc(100% - var(--space-8) - env(safe-area-inset-right));
+  }
 }
 @media (min-width: 720px) {
   .ks-hero .ks-hero__phone-art {

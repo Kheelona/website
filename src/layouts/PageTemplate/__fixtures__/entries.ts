@@ -142,6 +142,43 @@ export const ENTRY_FIXTURES: { readonly [K in SectionKind]: SectionEntryOf<K> } 
     kind: "recognition-strip",
     config: { title: "Recognised by", items: [{ name: "A programme" }] },
   },
+  "languages-section": {
+    kind: "languages-section",
+    config: {
+      heading: { id: "languages-title", title: "It speaks {hand:yours}", lead: "English and Hindi." },
+      languages: [{ native: "English" }, { native: "हिन्दी", english: "Hindi", lang: "hi" }],
+      film: {
+        video: "/video/moments/a-story-in-two-languages.mp4",
+        poster: { src: "/video/moments/a-story-in-two-languages.jpg", width: 1080, height: 1920, alt: "A girl beside Kheelu." },
+        still: "/video/moments/a-story-in-two-languages.jpg",
+        chip: "Two languages",
+        play: "Play: Two languages.",
+        name: "Two languages.",
+        caption: "She switches language, and Kheelu switches with her.",
+      },
+    },
+  },
+  "sticky-scroll": {
+    kind: "sticky-scroll",
+    config: {
+      heading: { id: "asks-title", title: "It {hand:asks}" },
+      points: [
+        { title: "It answers.", body: "It answers first.", picture: { image: IMAGE } },
+        { title: "It asks back.", body: "Then it asks one back.", picture: { image: IMAGE, fit: "contain" } },
+      ],
+    },
+  },
+  "day-timeline": {
+    kind: "day-timeline",
+    config: {
+      heading: { id: "day-title", title: "A {hand:day}" },
+      moments: [
+        { icon: "sun", tone: "sun", when: "Breakfast", line: "A first why.", mode: "AI mode" },
+        { icon: "moon", tone: "blue", when: "Bedtime", line: "A story.", mode: "Story mode" },
+      ],
+      screen: { image: IMAGE },
+    },
+  },
   "grievance-block": {
     kind: "grievance-block",
     config: { context: "legal", line: { lead: "Grievance Officer:", text: "A name, an address." } },

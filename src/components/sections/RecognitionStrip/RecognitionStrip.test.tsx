@@ -120,3 +120,35 @@ describe("RecognitionStrip: the marks", () => {
     expect(SOURCE).toMatch(/const MARK_HEIGHT = 48;/);
   });
 });
+
+/* Task Q2.9 (the selling update; the D2C plan v2 §2 fold 2, ruling 1 and the CMO's m10): on Home the strip sits directly
+   under the films' quotes as a small label, "Recognised by", rather than a heading, on the films' band, so it reads as
+   the end of the proof fold. The row is the same; the section is still named, by the label. */
+describe("RecognitionStrip: label (task Q2.9)", () => {
+  const LABEL = { ...RECOGNITION_LIVE, title: "Recognised by", variant: "label", band: true } as const;
+
+  it("names a tight band section by a small label, not a heading, with the row right under it", () => {
+    const { container } = render(<RecognitionStrip {...LABEL} />);
+    const section = screen.getByRole("region", { name: "Recognised by" });
+    expect(container.firstElementChild).toBe(section);
+    expect(section.className).toBe("kh-section kh-section--band kh-section--tight ks-recognised");
+    expect(section.querySelector("h1, h2, h3, header")).toBeNull();
+    const label = section.querySelector("#recognised-title")!;
+    expect(label.tagName).toBe("P");
+    expect(label.className).toBe("kh-label-s ks-recognition__label");
+    expect(label.nextElementSibling).toHaveClass("ks-recognition");
+    expect(within(section).getAllByRole("listitem")).toHaveLength(4);
+  });
+
+  it("keeps the heading form by default, and nothing on the band unless asked", () => {
+    const { container } = render(<RecognitionStrip {...RECOGNITION_LIVE} />);
+    expect(container.querySelector("h2#recognised-title")).not.toBeNull();
+    expect(container.firstElementChild?.className).toBe("kh-section kh-section--tight");
+  });
+
+  it("centres the label over the row in its own small type and colour, on DS tokens", () => {
+    expect(CSS).toMatch(/\.ks-recognition__label \{[^}]*text-align: center;[^}]*color: var\(--text-muted\);/);
+    // The band section after the films' band: no second band's padding between the quotes and the strip.
+    expect(CSS).toMatch(/\.kh-section--band \+ \.ks-recognised \{[^}]*padding-top: 0;/);
+  });
+});

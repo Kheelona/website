@@ -6,7 +6,7 @@ import {
   MRP_AMOUNT_PAISE,
   TOKEN_AMOUNT_PAISE,
 } from "@/config/site";
-import { offerCopy } from "@/content/en-IN/offer";
+import { offerCopy, PLUS_NOTE } from "@/content/en-IN/offer";
 import { seller } from "@/content/en-IN/seller";
 import type { Offer, OfferCopy, RichTextString } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
@@ -30,7 +30,6 @@ import { buildOffer, headlinePaise, offerPrices } from "./offer";
 const doc = (path: string) => new DOMParser().parseFromString(readRepoFile(path), "text/html");
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const home = doc("mockup/home.html");
-const product = doc("mockup/meet-kheelu.html");
 const buybar = home.querySelector(".kh-buybar")!;
 const text = (value: RichTextString, offer: Offer) => toPlainText(value, offer);
 
@@ -109,18 +108,29 @@ describe("token mode", () => {
     expect(offer.card.split?.flatMap((row) => [text(row.label, offer), offer.prices[row.price]])).toEqual(split);
   });
 
-  /* The product card's Kheelona+ perk reads D058 item 3's sentence since task 8b.1 (deviations.md V27): the mockup keeps
-     the approved perk, and only that perk differs. Since task 8c.5 (D061 item 10, confirming D034; deviations.md V47)
-     both cards end with the seller's origin line, "Made in India", which the frozen mockup's cards do not have
-     (OFFER_ORIGIN_PERK, the offer rule's own words). */
-  it("lists each placement's perks exactly as its card (Home fold 9, product fold 3; the product's Kheelona+ perk as D058 words it; Made in India last)", () => {
-    const perks = (d: Document) => Array.from(d.querySelectorAll(".kh-offer__list li")).map((li) => norm(li.textContent));
-    expect(offer.card.perks.home.map((p) => text(p.text, offer))).toEqual([...perks(home), OFFER_ORIGIN_PERK]);
-    expect(perks(product)).toContain(KHEELONA_PLUS.perk);
-    expect(offer.card.perks.product.map((p) => text(p.text, offer))).toEqual([
-      ...perks(product).map((p) => (p === KHEELONA_PLUS.perk ? KHEELONA_PLUS.build : p)),
-      OFFER_ORIGIN_PERK,
-    ]);
+  /* Task Q2.9 (the selling update; the D2C plan v2 §2 fold 7, the CMO's m8): one perk list, in Home's order, on both
+     offer cards: the delivery line first ("when does it come?" is the first pre-order doubt) with the dispatch order, the
+     box, delivery anywhere, Kheelona+ with "Nothing renews without you." (D065 item 6), Made in India last (D061 item 10).
+     "A GST invoice with every order" left the cards for the store (D065 item 3: GST only at checkout). The frozen
+     mockups' two lists are the offer rule's (deviations.ts OFFER_ADDITIONS, ONE_PERK_LIST). */
+  it("lists one perk list, the plan's, on both cards, in the plan's order and icons (D2C plan v2 §2 fold 7; CMO m8)", () => {
+    const PLAN = [
+      ["truck", "Deliveries start mid-November. Pre-orders go out first, in the order they were placed."],
+      ["package", "In the box: Kheelu plush toy, charger and quick-start card"],
+      ["map-pin", "Delivery anywhere in India, included"],
+      ["star", "6 months of Kheelona+ included. Nothing renews without you."],
+      ["house", OFFER_ORIGIN_PERK],
+    ];
+    for (const list of [offer.card.perks.home, offer.card.perks.product]) {
+      expect(list.map((p) => [p.icon, text(p.text, offer)])).toEqual(PLAN);
+    }
+    expect(offer.card.perks.product).toBe(offer.card.perks.home);
+    expect(JSON.stringify(offerCopy.card.perks)).not.toMatch(/GST|invoice|₹/);
+  });
+
+  it("words the Kheelona+ note under the cards as the plan's small line, apart from the store's sentence (offer.plus)", () => {
+    expect(PLUS_NOTE).toBe("Kheelona+ is our paid subscription, on top of the free parent app.");
+    expect(offer.plus).not.toBe(PLUS_NOTE);
   });
 
   it("ends both cards with the seller's origin line and its DS icon, house (D061 item 10; map-pin is the delivery perk's)", () => {

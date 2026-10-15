@@ -18,10 +18,12 @@ interface PhotoImage {
   readonly image: ImageRef;
   /** The rendered width at each layout (360, 390 and 1440 px): required, so the phone never fetches a laptop image. */
   readonly sizes: string;
-  /** The page's one LCP image: eager, fetchpriority high. */
-  readonly lcp?: boolean;
+  /** `true`: the page's one LCP image, eager, fetchpriority high. `"eager"`: a first-screen image that is the LCP at no
+   *  width (Home's phone crop, CMO m14), eager with no priority hint, so the browser sets it (`loadingFor`). */
+  readonly lcp?: boolean | "eager";
   /** The fetchpriority attribute of an image that is not the LCP (`low` lets the LCP image's request go first). It
-   *  changes nothing else: the image still loads lazily. Ignored with `lcp`, which always asks for high. */
+   *  changes nothing else: the image still loads lazily, or eagerly with `lcp="eager"`. Ignored with `lcp` true, which
+   *  always asks for high. */
   readonly fetchPriority?: "low" | "auto";
   /** The section's own composition class (`ks-…`): on the figure, or on the image in the bare form. */
   readonly className?: string;
@@ -62,7 +64,7 @@ export function Photo(props: PhotoProps) {
   const source = { ...imageSource(image), sizes, loading: load.loading, fetchPriority: "fetchPriority" in load ? load.fetchPriority : fetchPriority };
   if (props.bare) return <Image {...source} alt={image.alt} className={className} style={{ "--kh-ratio": cssRatio(image) } as CSSProperties} />;
   const { variant, xl, ratio, caption, reveal } = props;
-  if (lcp && reveal) throw new Error("The LCP photo never fades in on scroll (D049 pick 2, architecture §11.2)");
+  if (lcp && reveal) throw new Error("The LCP photo, or an eager first-screen one, never fades in on scroll (D049 pick 2, architecture §11.2)");
   return (
     <figure className={clsx("kh-photo", variant && `kh-photo--${variant}`, xl && "kh-photo--xl", className)} data-reveal={reveal ? "" : undefined}>
       <Image {...source} alt={image.alt} style={{ "--kh-ratio": ratio } as CSSProperties} />

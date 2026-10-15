@@ -89,6 +89,26 @@ describe("OfferCard", () => {
     expect(el.querySelector(".kh-offer__fine")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
   });
 
+  /* The D2C plan v2 §2 fold 7 (task Q2.9's review): where the card's price block stands in for the price line, the line
+     is not repeated under the button. The default keeps it (Home's close, the product page until task Q2.10). */
+  it.each([
+    ["token", TOKEN],
+    ["full", FULL],
+  ] as const)("leaves the short price line out when the placement asks (fine={false}; %s mode): the button ends the card", (_mode, offer) => {
+    const el = card(<OfferCard offer={offer} perks={PERKS} action={action} fine={false} />);
+    expect(el.querySelector(".kh-offer__fine")).toBeNull();
+    expect(el.lastElementChild?.className).toBe("kh-btn kh-btn--cta kh-btn--l kh-btn--block");
+    expect(el.textContent).not.toContain(offer.mode === "token" ? "today, refundable." : "paid in full when you order.");
+  });
+
+  it("keeps the short price line by default, and when fine is passed true", () => {
+    for (const fine of [undefined, true]) {
+      const el = card(<OfferCard offer={TOKEN} perks={PERKS} action={action} fine={fine} />);
+      expect(el.querySelectorAll(".kh-offer__fine")).toHaveLength(1);
+      expect(el.lastElementChild?.className).toBe("kh-offer__fine");
+    }
+  });
+
   it("never shows a split in full mode, even if one is passed by mistake", () => {
     const stale = { ...FULL, card: { ...FULL.card, split: SPLIT } };
     expect(card(<OfferCard offer={stale} perks={PERKS} action={action} />).querySelector(".kh-offer__split")).toBeNull();

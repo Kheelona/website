@@ -1,0 +1,62 @@
+/* DayTimeline (task Q2.9; the D2C plan v2 §2 fold 9). No approved mockup fold. The moments are a DS-token timeline: a
+   circle per moment in its DS tone (the trust list's icon circle at the list item's 40 px), joined to the next by a
+   hairline of --border-strong, the moment's name, its line in the muted body colour and its mode as a DS chip. The
+   phone screen is AppScreens `safety` as it is. Nothing moves but the DS reveal. */
+.ks-day {
+  display: grid;
+  gap: var(--space-5);
+  margin-top: var(--space-6);
+}
+.ks-day__moment {
+  position: relative;
+  display: grid;
+  grid-template-columns: calc(var(--space-6) + var(--space-2)) minmax(0, 1fr); /* 32 + 8 = 40 */
+  column-gap: var(--space-4);
+  align-items: start;
+}
+/* The hairline from this circle to the next one, through the gap between them. */
+.ks-day__moment:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--space-6) + var(--space-2));
+  bottom: calc(var(--space-5) * -1);
+  left: calc((var(--space-6) + var(--space-2)) / 2);
+  width: var(--stroke-hair);
+  background: var(--border-strong);
+}
+.ks-day__icon {
+  display: grid;
+  place-items: center;
+  width: calc(var(--space-6) + var(--space-2));
+  height: calc(var(--space-6) + var(--space-2));
+  border-radius: var(--radius-pill);
+  background: var(--tone);
+  color: var(--on-tone);
+  font-size: var(--icon-m);
+}
+.ks-day__words {
+  display: grid;
+  gap: var(--space-1);
+  justify-items: start;
+}
+.ks-day__when,
+.ks-day__line {
+  margin: 0;
+}
+.ks-day__line {
+  color: var(--text-muted);
+}
+.ks-day__words .kh-chip {
+  margin-top: var(--space-1);
+}
+.ks-day__closing {
+  max-width: var(--measure);
+  margin: var(--space-6) 0 0;
+}
+/* On phones the screen is a size smaller than the safety page's (232 px, not 272), so the fold stays short on a long
+   page; from 900 px it is the DS device's 300 px beside the moments. */
+@media (max-width: 899px) {
+  .ks-day-split .ks-shots--safety .kh-device {
+    width: min(100%, calc(var(--space-10) * 2 - var(--space-5))); /* 2 × 128 − 24 = 232 */
+  }
+}

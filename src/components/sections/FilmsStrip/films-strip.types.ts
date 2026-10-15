@@ -93,6 +93,13 @@ export interface SingleFilm {
   readonly disclosure: string;
 }
 
+/** What one film's frame shows (FilmClipIsland): the file, the still, the chip, the play control's name and the film's
+ *  name once it plays. Since task Q2.9 the languages fold plays film 6 in the same frame (LanguagesSection). */
+export type ClipFilm = Pick<SingleFilm, "video" | "still" | "chip" | "play" | "name"> & {
+  /** The still shown at rest, lazy (a film's own poster, as films.ts gives it). */
+  readonly poster: ImageRef;
+};
+
 /** The single film's fold (task 8c.6): its own section, the centred heading, the poster with its chip and play control,
  *  then the credit and the disclosure. */
 export interface FilmsSingleConfig {
@@ -101,6 +108,8 @@ export interface FilmsSingleConfig {
   readonly id: string;
   readonly heading: FilmsHeading;
   readonly film: SingleFilm;
+  /** The cream band (task Q2.9: Home's expert clip, between two plain folds). */
+  readonly band?: boolean;
 }
 
 export interface FilmsStripSlots {

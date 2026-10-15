@@ -10,7 +10,7 @@ import { IconButton } from "@/components/ui/IconButton/IconButton";
 import { imageSource } from "@/components/ui/Photo/image";
 import { useFilmPlayback } from "./film-playback";
 import { focusedTile, INITIAL_VIEW, positionText, stripView, type StripView } from "./films-view";
-import type { FilmTile, FilmsStripConfig, FilmsStripLabels, SingleFilm } from "./films-strip.types";
+import type { ClipFilm, FilmTile, FilmsStripConfig, FilmsStripLabels } from "./films-strip.types";
 
 /** The strip's central band, the root of the focus observer: the middle third of the track (D049 pick 8). */
 const CENTRAL_BAND = "0px -33% 0px -33%";
@@ -252,9 +252,11 @@ export function FilmsStripIsland({ films, labels, posters, sizes, quotes, anchor
 }
 
 export interface FilmClipIslandProps {
-  readonly film: SingleFilm;
+  readonly film: ClipFilm;
   /** The frame's rendered width at each layout, for the poster. */
   readonly sizes: string;
+  /** A phone recording (9:16; task Q2.9: film 6 in Home's languages fold), framed upright: `ks-clip__frame--portrait`. */
+  readonly portrait?: boolean;
 }
 
 /** The single film's one id in the playback hook. */
@@ -268,12 +270,12 @@ const CLIP = "clip";
  * (film-playback.ts); it pauses once it has been half on screen and leaves; at the end the poster is back and focus
  * returns to the play control. No autoplay, muted preview, loop or moving poster (D049); no tracking event.
  */
-export function FilmClipIsland({ film, sizes }: FilmClipIslandProps) {
+export function FilmClipIsland({ film, sizes, portrait = false }: FilmClipIslandProps) {
   const frame = useRef<HTMLDivElement>(null);
   const controlOf = useCallback(() => frame.current?.querySelector("button"), []);
   const { video, playing, start, ended } = useFilmPlayback(controlOf);
   return (
-    <div className="ks-clip__frame" ref={frame}>
+    <div className={clsx("ks-clip__frame", portrait && "ks-clip__frame--portrait")} ref={frame}>
       <Image {...imageSource(film.poster)} alt={film.poster.alt} sizes={sizes} loading="lazy" />
       <p className="ks-clip__chip" aria-hidden="true">
         <Chip label={film.chip} />
