@@ -44,7 +44,7 @@ import { withSellerFacts } from "../../../../../test/e2e/support/seller-facts";
 import { mockupLinks, mockupPage, STORE, words } from "../../../../../test/support/mockup-compare";
 import { blockSentences, factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../../test/support/mockup-facts";
 import { cta } from "../../cta";
-import { faqs } from "../../faqs";
+import { faqs, filmLink } from "../../faqs";
 import { filmQuotes, films } from "../../films";
 import { recognitionStrip } from "../../recognition";
 import { seller } from "../../seller";
@@ -716,6 +716,17 @@ describe("the product page's selling update (task Q2.10; the D2C plan v2 §3)", 
       expect([...column.querySelectorAll(".ks-trust li")].map(text)).toEqual(["Full refund until dispatch · 7-day returns", "Deliveries start mid-November"]);
       expect(column.querySelector(".ks-help")).toBeNull();
       expect(entry.cta).toMatchObject({ cta: "product-ask" });
+    });
+
+    /* The review of task Q2.10: the line names film 6 the way the languages answer does, through faqs.ts's filmLink and
+       films.ts, so a renamed chip or id changes both together; PRODUCT_CHATS.after stays the literal check above. */
+    it("builds that line's film link from films.ts, as the languages answer does, never typing the film's chip or id", () => {
+      const six = films.find((f) => f.id === "a-story-in-two-languages")!;
+      expect(entry.config.after).toBe(`Hear it in two languages: watch ${filmLink(six.id)}.`);
+      expect(faqs.languages.answer).toContain(filmLink(six.id));
+      const source = readFileSync(join(ROOT, "src/content/en-IN/products/kheelu/page.ts"), "utf8");
+      expect(source).not.toContain(`“${six.chip}”`);
+      expect(source).not.toContain(`#${six.id}`);
     });
 
     it("reveals nothing and carries no picture (the HTML budget; nothing that sells reveals)", () => {

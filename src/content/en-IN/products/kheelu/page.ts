@@ -14,7 +14,7 @@ import type { TrustItem } from "@/content/types";
 import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
 import { withoutHiddenRows } from "@/lib/content/placeholder";
 import { cta } from "../../cta";
-import { faqs, pickFaqs } from "../../faqs";
+import { faqs, filmLink, pickFaqs } from "../../faqs";
 import { filmQuotes, films, filmsStrip } from "../../films";
 import { RETURN_DAYS, RETURN_PICKUP_FREE, WARRANTY_MONTHS } from "../../policies";
 import { recognitionStrip } from "../../recognition";
@@ -239,8 +239,9 @@ export const kheeluPage = {
             },
           ],
         },
-        /* An in-page link that plays film 6 in the strip, as the languages answer's does (task 8c.8, m8). */
-        after: "Hear it in two languages: watch [“Two languages”](#a-story-in-two-languages).",
+        /* An in-page link that plays film 6 in the strip, as the languages answer's does (task 8c.8, m8), built the same
+           way from films.ts (faqs.ts filmLink), so the film's chip and id are never typed here. */
+        after: `Hear it in two languages: watch ${filmLink("a-story-in-two-languages")}.`,
       },
       cta: { cta: "product-ask", trust: COMPACT },
     },

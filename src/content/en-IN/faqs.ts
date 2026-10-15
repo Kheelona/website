@@ -52,8 +52,9 @@ function film(id: string): Film {
 }
 
 /** A film's name as an in-page link to its tile in the strip (FilmsStrip gives each tile its film's id): the strip's island
- *  plays the film when the link is pressed, and without JavaScript the link still takes the reader to it (task 8c.8). */
-function filmLink(id: string): string {
+ *  plays the film when the link is pressed, and without JavaScript the link still takes the reader to it (task 8c.8).
+ *  Exported for the product page's line under its sample chats, which names film 6 the same way (task Q2.10). */
+export function filmLink(id: string): string {
   return `[“${film(id).chip}”](#${film(id).id})`;
 }
 
