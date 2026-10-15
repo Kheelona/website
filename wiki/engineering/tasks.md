@@ -2282,6 +2282,61 @@ Under D062: targeted checks plus `npm run verify` and the build; one review (ris
 - **Owns:** `pages/setup.ts`, `pages/ai-toys-for-kids-in-india.ts` (the guide), the journal's close config (not the
   posts), `pages/team.ts`, `pages/contact.ts`, the store's marketing words, their rules in `deviations.ts`, route tests.
 
+### Q2.13 The offer cards, the product page and the guide after the q2b merge (builder; risk normal)
+
+Base: the merged wave q2b (`d907e130`). The follow-ups the q2b reviews left for the merge (log 2026-10-15 19:10).
+- **Offer cards (plan v2 §2 fold 7 and §3 fold 3; main-session OK for the `ui/OfferCard` slot):** a `note` slot in
+  `ui/OfferCard` after the perks and before the action; both cards print "Kheelona+ is our paid subscription, on top
+  of the free parent app." there (one constant in `offer.ts`); under the button only the trust line, the third row and
+  the share link. The product card (`OfferSection` `photo`) loses its help line (§3 fold 3; CMO m9) and prints the price
+  once, as Home's does. Tests for both variants.
+- **Product page:** "Recognised by" as Home's label strip (`variant: "label"`, title "Recognised by", no h2; §3 fold 4);
+  `screen-time-in-disguise` as the fifth question, after `cost-and-advance` (§3 fold 11), in `pickFaqs`, the FAQPage,
+  the page test and `SELLING_UPDATE`'s FAQ edits; re-pin `SELLING_UPDATE["meet-kheelu"]` (the two red tests at the
+  merge: Home's perk list now on the product card, so the sentence order moved).
+- **The guide:** fold 5 picks `price-and-advance` (the plan v2 §6 names it; its words equal `price-in-total`'s); the
+  duplicate `price-in-total` leaves `faqs.ts` and its tests; `how-much` stays for `/pricing.md`; `SELLING_CLOSES`'s guide
+  edits follow; the `FULL_PRICE_ANSWER_WITH_GST` comment says who reads it now.
+- **`/team`:** the close's lead reads `navigation.footer.made` instead of typing it again.
+- **Clean-up:** OfferSection's `close` variant, now unused (Home's close is a CloseSection), leaves with its tests,
+  stories and catalogue wording.
+- **anchors.spec M2:** check that the sample-chat tabs sit above `#modes`, so M2 still crosses a collapsing tabs box;
+  if not, add an M2 case reaching a fragment below a tabs box by client navigation.
+- **Owns:** `ui/OfferCard`, `sections/OfferSection`, `offer.ts` (the note constant only), `products/kheelu/page.ts`
+  and its tests, `pages/ai-toys-for-kids-in-india.ts`, `pages/team.ts`, `faqs.ts` (`price-in-total` out, the comment),
+  `faqs.test.ts`, the `SELLING_UPDATE` and `SELLING_CLOSES` blocks of `test/e2e/support/deviations.ts`,
+  `test/e2e/anchors.spec.ts`, the matching catalogue rows. **Acceptance:** `npm run verify` green on the whole tree
+  (the two red tests included), the build green, screenshots of both offer cards and the product page at 360, 390, 412
+  and 1440 kept local.
+
+### Q2.14 Site-wide consistency after the q2b merge (builder; risk normal)
+
+Base: the merged wave q2b (`d907e130`).
+- **The help line (plan v2 §1.1; CMO m9):** "Questions? Message us on WhatsApp." in these words wherever a help line
+  shows (closes and the store; never Home's hero, a hero or an offer card), the store's header included; a WhatsApp
+  link only, no number, no `tel:`. One source (`seller.ts` `help`, `storeHelp`); every pin follows
+  (`seller.test.ts`, `test/e2e/support/seller-facts.ts`, the pages' tests).
+- **Its tap target:** `first-screen.spec.ts` "tap targets" fails at 360 × 640 on the help line's link on Home, the
+  product page, `/safety`, the guide, `/team`, the hub and the articles (since Q2.3's shorter link). Make every help-line
+  link pass the 44 × 44 check with DS tokens (padding, not a bigger font); prove it on those routes.
+- **The footer (V54, V64):** one shared visual-parity rule hiding `.kh-footer__cols` on both sides of every page (with
+  its reason and rows), and `chrome.spec.ts`'s nav-and-footer element parity re-ruled for the footer's rows, so the
+  footer's approved change stops failing every page's last chunk.
+- **`/privacy` against G26 (D065 item 7):** the parent-app list gains "delete all chats, which deletes them from our
+  servers;" and the sentence "To delete your child’s conversations, delete your account, or write to us." reads "To
+  delete your child’s conversations, use “Delete all chats” in the app, delete your account, or write to us." Nothing
+  else changes (what removing one chat does, and whether "Delete all chats" reaches Kheelu's memory or the training
+  data, is not on file: the main session asks Aman, G33). The legal page's tests follow; it stays a draft for sign-off.
+- **Docs and leftovers:** TrustSection's comments and type docs for six "never" items; `SAFETY_SELLING_LINES.privacyAlt`
+  reads `RETENTION_MONTHS`; the catalogue rows of CloseSection (`meet` optional) and ArticleTemplate (the close by
+  topic); stale comments about burned captions (`films-strip.types.ts`, `banned-phrases.test.ts`'s near-miss note).
+- **Owns:** `seller.ts` and its tests, `ui/HelpLine` (or wherever the help line's link is styled) and its tests, every
+  test that pins the help line's words, `test/e2e/support/seller-facts.ts`, the shared rules of
+  `test/e2e/support/deviations.ts` (not the `SELLING_UPDATE`/`SELLING_CLOSES` blocks, which are Q2.13's),
+  `test/e2e/chrome.spec.ts`, `legal/privacy.ts` and its tests, TrustSection's comments, the catalogue rows named.
+  **Acceptance:** `npm run verify` green on the whole tree except the two product-page tests Q2.13 owns, the build
+  green, the tap targets proven at 360 × 640 on the routes named.
+
 ## Wave 9: beta deploy and beta QA (after wave 8)
 
 ### 7.2 Beta deploy and beta QA (main session, founder, QA)
