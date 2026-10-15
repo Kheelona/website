@@ -48,6 +48,7 @@ export function OfferSection(props: OfferSectionProps) {
       action={<PreorderButton cta={cta} label={ctaLabel} size="l" block />}
       label={props.variant === "photo" ? undefined : props.cardLabel}
       id={variant === "close" ? "offer" : undefined}
+      fine={variant !== "home"}
     />
   );
   /* The share link, last in the column under both cards (D061; task 8c.2): a ghost link through Button, never chilli
@@ -69,7 +70,8 @@ export function OfferSection(props: OfferSectionProps) {
   );
   let body: ReactNode;
   if (props.variant === "home") {
-    /* Task Q2.9: Home's offer, moved up (the D2C plan v2 §2 fold 7). The page's note under the card, the trust row, no
+    /* Task Q2.9: Home's offer, moved up (the D2C plan v2 §2 fold 7). The card's price block stands in for the short price
+       line, so the card prints no fine print (the plan: "not repeated"). The page's note under the card, the trust row, no
        help line (Home has none: the WhatsApp bubble replaces them, plan §1.1), the share link; the board beside. */
     body = (
       <Split>

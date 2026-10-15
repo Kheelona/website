@@ -369,6 +369,13 @@ describe("Home fold 7 · what you get, and what you pay (plan fold 7; D065 items
     expect(text(card.nextElementSibling)).toBe(PLUS_NOTE);
   });
 
+  it.each(["token", "full"] as const)("prints the price once, in the card's price block: no short price line under its button (%s mode)", (mode) => {
+    const card = (mode === "token" ? TOKEN : FULL).main.querySelector('section[aria-labelledby="offer-title"] .kh-offer')!;
+    expect(card.querySelector(".kh-offer__fine")).toBeNull();
+    expect(card.lastElementChild?.getAttribute("data-ph-capture-attribute-cta")).toBe("home-offer");
+    expect(text(card)).not.toContain(PRICE_LINE[mode]);
+  });
+
   it("puts home-offer on the card, the trust line and the card's third row under it, the share link last, and no help line", () => {
     expect(chilli(offer)).toEqual(["home-offer"]);
     expect(trustRow(offer)).toEqual([...TRUST, "6-month warranty", "UPI, card or net banking"]);

@@ -226,8 +226,8 @@ describe("OfferSection: variants", () => {
 
 /* Task Q2.9 (the selling update, D064, D065; the D2C plan v2 §2 fold 7): Home's offer card moved up to fold 7, so it is no
    longer the page's close (the close is a CloseSection after the FAQ). Its own fragment, #offer, as the product page's;
-   the lead under the heading; the card a named region with no id of its own (the section holds #offer); the Kheelona+
-   note under the card in the plan's words; the trust line and the card's third row under the button, and no help line
+   the lead under the heading; the card a named region with no id of its own (the section holds #offer) and no fine print
+   (its price block stands in for the price line: "not repeated"); the Kheelona+ note under the card in the plan's words; the trust line and the card's third row under the button, and no help line
    (Home has none: the WhatsApp bubble replaces them, §1.1); the share link last; the board beside it, top-aligned. */
 describe("OfferSection: home (Home's offer, moved up; task Q2.9)", () => {
   const section = () => renderedElement(<OfferSection {...HOME_OFFER} {...context()} />);
@@ -250,6 +250,18 @@ describe("OfferSection: home (Home's offer, moved up; task Q2.9)", () => {
     expect(note.className).toBe("kh-body-s");
     expect(note.textContent).toBe("Kheelona+ is our paid subscription, on top of the free parent app.");
     expect(section().textContent).not.toContain(TOKEN.plus);
+  });
+
+  /* Plan fold 7: "The card's price block stands in for the price line here, so it is not repeated." */
+  it.each([
+    ["token", TOKEN],
+    ["full", FULL],
+  ] as const)("prints the price in the card's price block only: no short price line under the button (%s mode)", (_mode, offer) => {
+    const el = renderedElement(<OfferSection {...HOME_OFFER} {...context(offer)} />);
+    const card = el.querySelector(".kh-offer")!;
+    expect(card.querySelector(".kh-offer__fine")).toBeNull();
+    expect(card.lastElementChild).toHaveAttribute("data-ph-capture-attribute-cta", "home-offer");
+    expect(el.textContent).not.toContain(offer.mode === "token" ? "today, refundable." : "paid in full when you order.");
   });
 
   it("puts the trust line with the card's third row under it, no help line, then the share link last in the column", () => {
@@ -280,7 +292,7 @@ describe("OfferSection: home (Home's offer, moved up; task Q2.9)", () => {
   it("prints the full-mode card without the split or the later price, and moves nothing on arrival", () => {
     const full = renderedElement(<OfferSection {...HOME_OFFER} {...context(FULL)} />);
     expect(full.querySelector(".kh-offer__split, .ks-offer__later")).toBeNull();
-    expect(full.querySelector(".kh-offer__fine")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
+    expect(full.querySelector(".kh-offer__price")?.textContent).toBe("₹7,999");
     expect(renderToStaticMarkup(<OfferSection {...HOME_OFFER} {...context()} />)).not.toContain("data-reveal");
     expect(full.textContent).not.toMatch(/GST|first 500/);
   });
