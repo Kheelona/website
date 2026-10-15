@@ -13,7 +13,7 @@ Copy: [D2C plan v2](site/d2c-conversion-plan-2026-10-15.md) ([CMO review](qa/cmo
 **Wave q2a merged** (Q2.1 Kabir hero, films order, offer alignment; Q2.3 GSTIN and phone off; Q2.4 WhatsApp logo, footer
 gaps; Q2.5 motion and the sticky laptop nav; Q2.6 the clip without burned words; Q2.8 the short price line): verify 6728
 tests, build green; rows V49-V57. **The new cta values are registered** (`ffa029da`).
-**Wave 2 running** (`wf_20668add-448`, base `ffa029da`): Q2.9 Home end to end (high), Q2.10 the product page, Q2.11
+**Wave 2 running** (`wf_195cc865-68e`, resumed after a session-limit stop; base `ffa029da`): Q2.9 Home end to end (high), Q2.10 the product page, Q2.11
 `/safety`, Q2.12 every other page's close and the footer's laptop rows. **Next:** merge them, verify and build,
 screenshots at 360/390/412/1440 for consistency, push `beta`, check the deploy, report to the founder.
 **Branch:** `reset/website-v2` (`721b2e5c`). **Beta (public, D060):** `beta` at `398c5ee` (wave 8c); betawebsite and

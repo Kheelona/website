@@ -1303,3 +1303,12 @@ recommended; `faqs.ts` split by entry (Q2.9 price-and-advance and its two new id
 delivery-start and after-six-months, Q2.12 the guide's new price answer after how-much); the product page's
 statutory "Consumer care" row gets the phone back (Q2.10, the phone guard narrowed to that row); `/llms.txt` shows the
 wa.me address (Q2.9). Each builder screenshots its pages at 360, 390, 412 and 1440 and fixes what looks wrong.
+
+## [2026-10-15 16:30] agent | Wave q2b stopped by the account's session limit; work saved and resumed (`wf_195cc865-68e`)
+`wf_20668add-448` ended after 24 minutes with no report: all four builders hit the session limit (not a failure of the
+work). Saved as WIP commits by name in each worktree: Q2.9 `5ffb51ed` (21 files: CtaBlock, FeatureSplit, OfferSection,
+RecognitionStrip, faqs, offer), Q2.10 `d1db9269` (13 files: ExampleConversation, TrustSection's `pointer` variant, the
+sections registry; its scratch test moved out), Q2.12 `8f502c28` (10 files: /setup, CloseSection) after its footer commit
+`78bf33c4`; Q2.11 had committed `1ffd49f9` and `1207b85f`. The run was resumed with "finish" entries on the same
+worktrees, with a note that Q2.10 and Q2.11 both add to TrustSection (keep both at the merge). The account changed at the
+founder's `/login` (2026-10-15).
