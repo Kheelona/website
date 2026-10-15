@@ -41,9 +41,14 @@ import { product } from "./products/kheelu/product";
 const AGE_SETUP =
   "At setup, you enter your child’s age in the parent app. You can change it later. The AI model gets child-safety rules for that age, with Google’s safety filters on top.";
 
-/** Home's full-mode price answer, which the guide's price question also takes (ai-toys… copy). Since task Q2.9 the D2C
- *  plan v2's words (§2 fold 10; D065 item 3: no GST on a selling page, so no "incl. GST" and no invoice line). */
+/** Home's full-mode price answer since task Q2.9: the D2C plan v2's words (§2 fold 10; D065 item 3: no GST on a selling
+ *  page, so no "incl. GST" and no invoice line). */
 const FULL_PRICE_ANSWER = `Kheelu is {price:full} in total, paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking. {delivery}. If it isn’t right for your family, you can return it within ${RETURN_DAYS} days of delivery, no questions asked.`;
+
+/** The full-mode price answer with GST (ai-toys… copy), which Home's question took until task Q2.9: still the guide's
+ *  `how-much` (until the guide takes Home's answer, the D2C plan v2 §6, task Q2.12) and the machine files' price answer,
+ *  which may keep "incl. GST" (task Q2.8: /llms.txt and /pricing.md are not selling pages). */
+const FULL_PRICE_ANSWER_WITH_GST = `Kheelu is {price:full} (incl. GST), paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking, and you get a GST invoice. {delivery}. If it isn’t right for your family, you can return it within ${RETURN_DAYS} days of delivery, no questions asked.`;
 
 /** A film by its id (films.ts), so an answer can name it by its chip. */
 function film(id: string): Film {
@@ -252,7 +257,7 @@ export const faqs = {
     question: "How much is Kheelu?",
     answer: {
       token: `Kheelu is {price:headline} (incl. GST) for the ${CAP_UNITS_TEXT}, with delivery anywhere in India included. A refundable {price:token} advance reserves yours today, and the remaining {price:balance} is due before delivery. After the first ${PREORDER_CAP_UNITS}, it is {price:full} (incl. GST), paid in full. You can pay by UPI, card or net banking, and you get a GST invoice.`,
-      full: FULL_PRICE_ANSWER,
+      full: FULL_PRICE_ANSWER_WITH_GST,
     },
   },
 

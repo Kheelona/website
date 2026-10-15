@@ -12,7 +12,15 @@ export const accepted: readonly SectionEntry[] = [
   { kind: "feature-split", config: { variant: "ticks", heading, items: [] }, tip: "A tip." },
   { kind: "faq-section", config: { heading, items: [] }, notes: { variant: "inline", label: "Sources", sources: [] } },
   { kind: "trust-section", config: { variant: "never", heading, items: [] }, cta: CTA_BLOCK, faq: true },
+  { kind: "feature-split", config: { variant: "imagination", heading, text: "T", card: { tone: "sun", icon: "eye", title: "C", body: "B" } }, cta: CTA_BLOCK },
+  { kind: "feature-split", config: { variant: "app-screens", placement: "compact", heading, items: [], screens: { images: [ART.layers[0].image!] } }, cta: CTA_BLOCK },
 ];
+
+// @ts-expect-error Only the imagination fold and the compact app screens draw a CTA block after their words (task Q2.9).
+export const quoteWithCta: SectionEntry = { kind: "feature-split", config: { variant: "quote", heading, copy: [], quote: { text: "Q", name: "N" } }, cta: CTA_BLOCK };
+
+// @ts-expect-error The compact safety block shows one screen.
+export const compactTwoScreens: SectionEntry = { kind: "feature-split", config: { variant: "app-screens", placement: "compact", heading, items: [], screens: { images: [ART.layers[0].image!, ART.layers[0].image!] } } };
 
 // @ts-expect-error An answer hero has no CTA column: the block would never be drawn.
 export const answerHeroWithCta: SectionEntry = { kind: "hero-section", config: { variant: "answer", heading }, cta: CTA_BLOCK };

@@ -1,66 +1,66 @@
 import myraSticker from "@ds/assets/Cast/myra-sticker.png";
+import kheeluBelly from "@ds/assets/Kheelu/kheelu-belly-module.png";
 import kheeluSticker from "@ds/assets/Kheelu/kheelu-front-sticker.png";
-import iraStory from "@ds/assets/Photo library/ira-01-story-on-the-bed-web.webp";
-import kabirImagining from "@ds/assets/Photo library/kabir-01-imagining-space-web.webp";
+import kheeluFront from "@ds/assets/Kheelu/kheelu-front.webp";
+import advikWhispering from "@ds/assets/Photo library/advik-02-whispering-to-kheelu-web.webp";
+import iraDragon from "@ds/assets/Photo library/ira-02-drawing-the-dragon-web.webp";
+import taraEvening from "@ds/assets/Photo library/tara-02-evening-with-amma-web.webp";
 import flowerChilli from "@ds/assets/Shapes/flower-chilli.svg";
+import sunSun from "@ds/assets/Shapes/sun-sun.svg";
 import appActivity from "@/assets/app/app-activity.webp";
 import appPrivacy from "@/assets/app/app-privacy.webp";
 import appTranscript from "@/assets/app/app-transcript.webp";
 import kabirRocketPhone from "@/assets/hero/kabir-02-block-rocket-16x10.jpg";
 import kabirRocketHero from "@/assets/hero/kabir-02-block-rocket-4x5.jpg";
-import type { CtaBlockConfig } from "@/components/sections/CtaBlock/cta-block.types";
-import type { IconName } from "@/components/ui/Icon/Icon";
+import type { CtaBlockConfig, CtaSecondary } from "@/components/sections/CtaBlock/cta-block.types";
 import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
 import { cta } from "../cta";
+import { expertFold } from "../expert-video";
 import { pickFaqs } from "../faqs";
 import { filmQuotes, films, filmsStrip } from "../films";
+import { PLUS_NOTE } from "../offer";
 import { DEFAULT_OG } from "../organization";
-import { RETENTION_LINE } from "../policies";
+import { RETENTION_MONTHS } from "../policies";
 import { product } from "../products/kheelu/product";
 import { recognitionStrip } from "../recognition";
-import { photos } from "../stories/photos";
-import { topics, type TopicId } from "../stories/topics";
-import { SAFETY_FACTS, TRUST_COMPACT, TRUST_OFFER, trustItems, type TrustId } from "../trust";
+import { TRUST_COMPACT, TRUST_OFFER, trustItems, type TrustId } from "../trust";
 
 /**
- * Home, `/` (task 5.1; structure §5): the approved page's ten folds (mockup/pages/home.html, Gate A approved D046,
- * the hero D045), rendered by PageTemplate from `src/app/(site)/page.tsx`. Visible words are the mockup's; the meta,
- * the full-mode words and the three untracked links' targets are the copy page's (wiki/site/pages/home.md;
- * architecture §6.3). Added after Gate A (task 8c.3; D061 item 4 and the main session's rulings; deviation rows to come):
- * two parents' quotes under the films, and the "Recognised by." strip after them. Changed in quick batch 2 (task Q2.1,
- * D064 items 1 and 4): the hero's picture, the Kabir photo, and the films' order on Home. Shared facts come from their one
- * module: the films and the parents' quotes, the recognition strip, the FAQ answers, the trust items and the
- * safety facts line, the CTA links, the retention line, the modes and languages, the stories topics.
+ * Home, `/`, since the selling update (task Q2.9; D064, D065; the main session's rulings of 2026-10-15): the D2C plan
+ * v2's §2 (wiki/site/d2c-conversion-plan-2026-10-15.md, checked by the claims guard and the CMO), rendered by
+ * PageTemplate from `src/app/(site)/page.tsx`. Eleven folds, in the plan's order: the hero, the films with two parents'
+ * words and the recognition strip, why it matters, the languages, Kheelu asks (the sticky scroll), the expert clip, the
+ * offer card moved up, the compact safety block, a day with Kheelu, the questions and the close. The compare table, the
+ * guides and "What is Kheelu?" left the page ("What is Kheelu?" is the FAQ's first answer, the page's answer-first
+ * block). Every line is the plan's; every amount a `{price:…}` token of the live offer, the delivery line and the
+ * policy numbers their modules', the films' lengths and the languages read from films.ts and product.ts.
  *
- * Motion (D049): the hero's photo stays still (pick 2: a hero never moves); the imagination frame's doodles and
- * the close board's heart draw themselves below the first screen (pick 3). The hero photo's crop at each width is the
- * page's one LCP image (HeroSection). FAQPage = fold 4's answer-first block (`faq: true`) and the six answers of fold 8
- * (wave-4 close; home.md fold 8).
+ * Rules from the plan held here: no "incl. GST", balance or breakdown on the page but the offer card's two split rows,
+ * "first 500" on the card only (D065 items 3-4); the short price line after every button but the card's (C1); the one
+ * risk-reversal line first in every trust line; no help line and no phone number (the WhatsApp bubble replaces them,
+ * plan §1.1); each cast child once, none beside a real film or a parent's quote (ruling 7): Kabir in the hero, Advik,
+ * Ira and Tara in fold 5, Myra on the offer board, the close's board with none. The WhatsApp bubble stays persistent
+ * (D050; the main session's ruling (a)): the hero's phone crop keeps Kheelu out of its corner (first-screen.spec.ts).
+ *
+ * Motion (D049): the hero stays still; below it the DS reveal, the headings' accents and the boards' doodles draw once;
+ * the sticky scroll's crossfade and fill only where motion is welcome. Every picture below the first screen is lazy.
  */
 
 const trust = (ids: readonly TrustId[]) => ids.map((id) => trustItems[id]);
-
-/** The hero photo's alt (task Q2.1): the DS photo's one alt, the journal photo table's for the same photo (one alt per
- *  image, journal pipeline §8.2), on both crops. */
-const KABIR_ROCKET_ALT = photos["kabir-02-block-rocket"].image.alt;
 const COMPACT = trust(TRUST_COMPACT);
 
-/** The caption under the parent app's real screens (folds 5 and 6). */
+/** The caption under the parent app's real screens (folds 8 and 9; D044). */
 const APP_CAPTION = "The Kheelona app is live on Apple’s App Store and the Google Play Store.";
 
-/** A stories topic by its anchor id: the guides cards print its title and lead, and link to its place on the hub. */
-const topic = (id: TopicId) => topics.find((t) => t.id === id)!;
-
-/** The three modes as the product facts name them (the cards' words are the page's). */
-const [aiMode, storyMode, bluetoothMode] = product.modes;
-
-/** The language chips: each language in its own script with its English name; English, the page's own, alone. */
-const LANGUAGE_CHIPS = product.languages.map(({ name, native, lang }) => (native === name ? { native } : { native, english: name, lang }));
+/** The hero photo's alt (the plan's fold 1, the CMO's m4, read on the crop). */
+const KABIR_ROCKET_ALT =
+  "A boy in glasses and an olive T-shirt stacking wooden blocks into a tall tower on a patterned rug, with Kheelu, the cream plush rabbit from Kheelona, beside him.";
 
 type FilmId = (typeof films)[number]["id"];
-/** D064 item 1 (task Q2.1): Home's strip plays the films list's 2nd film 4th and its 3rd 7th, each swapped with the film
- *  that replaces it (the list's 1, 4, 7, 2, 5, 6, 3). The list keeps the approved order for the product page and the
- *  store; the quotes' "Watch the film" finds its film by id wherever it sits. */
+const filmBy = (id: FilmId) => films.find((film) => film.id === id)!;
+
+/** D064 item 1: Home's strip plays the films list's 1, 4, 7, 2, 5, 6, 3 (the 2nd film replaced by the 4th, the 3rd by
+ *  the 7th); the list keeps the approved order for the product page and the store. */
 const HOME_FILM_ORDER: readonly FilmId[] = [
   "learning-by-asking",
   "a-mother-joins-in",
@@ -70,50 +70,63 @@ const HOME_FILM_ORDER: readonly FilmId[] = [
   "a-story-in-two-languages",
   "a-parent-speaks",
 ];
-const homeFilms = HOME_FILM_ORDER.map((id) => films.find((film) => film.id === id)!);
 
-/** The checkable facts line under the safety fold, shared with the product page and llms.txt (trust.ts). Every icon is
- *  a DS icon (trust.test.ts), which the line's DS icon name requires. */
-const SAFETY_FACTS_LINE = SAFETY_FACTS.map(({ icon, text }) => ({ icon: icon as IconName, text }));
-
-const heroCta: CtaBlockConfig = {
-  cta: "hero",
-  id: "hero-cta",
-  priceId: "hero-price",
-  arrow: true,
-  block: true,
-  layout: "stack",
-  trust: COMPACT,
-  helpLine: true,
-  secondary: { ...cta.secondary["hero-learn"], variant: "ghost" },
+/** A film's length in seconds, from its duration ("0:30" → 30): the hero link's number is never typed. */
+const seconds = (duration: string) => {
+  const [m, s] = duration.split(":").map(Number);
+  return m * 60 + s;
 };
+const FILM_ONE = filmBy("learning-by-asking");
+
+/** The hero's link, laptops only (the plan's §2.0, the CMO's M1 and M2): it plays film 1 in fold 2's strip, which is
+ *  anchored so the link can name the tile. */
+const HERO_FILM: CtaSecondary = {
+  label: `Watch Kheelu ask, in a ${seconds(FILM_ONE.duration)}-second film`,
+  href: `#${FILM_ONE.id}`,
+  cta: "hero-film",
+  variant: "ghost",
+  icon: "play",
+  from: "laptop",
+};
+
+/** The languages' count as the lead says it ("Eight today"), from product.ts: refused past ten, where it would need
+ *  another word. */
+const COUNT_WORDS = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"] as const;
+const count = COUNT_WORDS[product.languages.length];
+if (!count) throw new Error(`home.ts: no word for ${product.languages.length} languages`);
+const names = product.languages.map((l) => l.name);
+const LANGUAGE_NAMES = `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+/** Each language in its own script with its English name; English, the page's own, alone. */
+const LANGUAGE_CHIPS = product.languages.map(({ name, native, lang }) => (native === name ? { native } : { native, english: name, lang }));
+
+/** Film 6, "Two languages", as the languages fold plays it: its chip with its length, the strip's play words. */
+const TWO_LANGUAGES = filmBy("a-story-in-two-languages");
+
+/** Every CTA block of the page but the hero's: the button, the price line, the trust line, centred, no help line. */
+const centred = (value: CtaBlockConfig["cta"], secondary?: CtaSecondary): CtaBlockConfig => ({ cta: value, align: "center", trust: COMPACT, secondary });
 
 export const homePage = {
   meta: {
     title: "Kheelu by Kheelona: a screen-free plush toy that talks",
     description: {
       token:
-        "Kheelu by Kheelona: a screen-free plush toy, ages 3 to 7, that answers your child, then asks back. {price:headline} (incl. GST); reserve with a refundable {price:token}.",
-      full: "Kheelu by Kheelona: a screen-free plush toy, ages 3 to 7, that answers your child, then asks back. {price:full} (incl. GST), delivered anywhere in India.",
+        "Kheelu by Kheelona: a screen-free AI toy for ages 3 to 7 that answers every why, then asks one back. {price:headline} in total; reserve with a refundable {price:token}.",
+      full: "Kheelu by Kheelona: a screen-free AI toy for ages 3 to 7 that answers every why, then asks one back. {price:full} in total, delivered anywhere in India.",
     },
-    // home.md "At a glance": the Kheelu card (kheelu-on-fur.jpg, public/og/kheelu.jpg), alt as the hero product alt.
     og: { image: "/og/kheelu.jpg", alt: DEFAULT_OG.alt },
   },
   sections: [
-    /* Fold 1 · Hero (D045). Its picture since task Q2.1 (D064 item 4): the DS photo library's "Kabir · block rocket", one
-       of the DS web-hero photos (design-system 10-pages.md), in place of the scrapbook board, in two crops cut from its
-       2K master by scripts/assets/build-hero-crops.mjs, each keeping Kabir and Kheelu whole: the 4:5 crop from 720 px,
-       and under 720 px a 16:10 band in the phone board's place right under the trust line (D061 item 1), short enough
-       for Kheelu to end on the first screen at 390 x 844 and 412 x 915, with Kheelu out of the column the WhatsApp
-       bubble rests in (first-screen.spec.ts). Still (D049 pick 2). The words are D045's, unchanged. */
+    /* Fold 1 · Hero (D065 item 1; the plan's §2.0 and fold 1). The Kabir photo's two crops (task Q2.1): the 4:5 from
+       720 px, the 16:10 band under the trust line on phones, Kheelu out of the WhatsApp bubble's corner. No help line;
+       the film link on laptops only. Still (D049 pick 2). */
     {
       kind: "hero-section",
       config: {
         variant: "art",
         heading: {
-          eyebrow: "Ages 3 to 7",
-          title: "Kheelu answers every why. Then it {hand:asks one back.}",
-          lead: "A screen-free plush toy by Kheelona. It answers your child first, then asks a question back, so they do the thinking.",
+          eyebrow: "Screen-free AI toy · Ages 3 to 7",
+          title: "The AI toy that answers every why, then asks your child {hand:one back.}",
+          lead: "Kheelu by Kheelona is a soft plush rabbit. You can read every chat.",
           id: "hero-title",
         },
         photo: {
@@ -121,61 +134,47 @@ export const homePage = {
           phone: { src: kabirRocketPhone, alt: KABIR_ROCKET_ALT },
         },
       },
-      cta: heroCta,
+      cta: { cta: "hero", id: "hero-cta", priceId: "hero-price", arrow: true, block: true, layout: "stack", trust: COMPACT, secondary: HERO_FILM },
     },
 
-    /* Fold 2 · See it ask: the seven parent films (D040) in Home's order (D064 item 1), then two parents' own words from
-       them, each playing its film (task 8c.3, D061 item 4; the proof line covers them). */
+    /* Fold 2 · The seven films in D064's order (D040), the product page's built heading, two parents' own words (D061
+       item 4); posters lazy (ruling 9); no button (fold 3's is one screen below). Anchored: the hero's link plays film 1. */
     {
       kind: "films-strip",
       config: {
+        id: "films",
         heading: {
-          eyebrow: "See it ask",
-          title: "Kheelu asks. Watch them {hand:think.}",
-          lead: "Real children, real families. Press play on any of them.",
-          id: "ask-title",
+          eyebrow: "Seven films",
+          title: "Real children, {hand:real families.}",
+          lead: "Watch the children do the thinking. Then hear from two of their parents.",
+          id: "films-title",
         },
-        films: homeFilms,
+        films: HOME_FILM_ORDER.map(filmBy),
         labels: filmsStrip,
         proof: { text: "Kids doing the talking. Parents, in their own words.", size: "body-s" },
-        posters: "eager-low",
+        posters: "lazy",
         quotes: filmQuotes,
+        anchored: true,
       },
-      cta: { cta: "see-it-ask", align: "center", trust: COMPACT, secondary: { ...cta.secondary["see-it-ask-learn"], variant: "ghost" } },
     },
 
-    /* "Recognised by." after the films (task 8c.3; D061's rulings): the /team strip as built (D054 item 20), read from
-       the team page, names only; never "Backed by". */
-    { kind: "recognition-strip", config: recognitionStrip },
+    /* Fold 2, its foot · "Recognised by" as a small label under the quotes, on the films' band (ruling 1; CMO m10): the
+       /team strip as built, names only. */
+    { kind: "recognition-strip", config: { ...recognitionStrip, title: "Recognised by", variant: "label", band: true } },
 
-    /* Fold 3 · Why conversation matters (D016, D026: the one marked line and its source). */
+    /* Fold 3 · Why it matters (D016, D026: the one marked line and its source). No picture: Kabir is the hero. */
     {
       kind: "feature-split",
       config: {
         variant: "imagination",
         heading: { eyebrow: "Why it matters", title: "{mark:Conversation} helps a young brain grow.", id: "why-title", align: "center" },
-        text: "Harvard’s Center on the Developing Child says back-and-forth “serve and return” exchanges between a young child and a caring adult help build and strengthen neural connections in the child’s brain. They also support the early language and social skills that later, more complex thinking builds on.[^1]",
+        text: "Harvard’s Center on the Developing Child says back-and-forth “serve and return” exchanges between a young child and a caring adult help build and strengthen neural connections in the child’s brain.[^1]",
         card: {
           tone: "sun",
           tint: true,
           icon: "chat-circle-dots",
           title: "Where Kheelu comes in",
-          body: "Kheelu is built around the same idea: it answers your child, then asks a question back.",
-        },
-        aside: "You can do it anywhere, too: answer your child, then ask one back.",
-        frame: {
-          photo: {
-            src: kabirImagining,
-            alt: "A boy in glasses and a rust T-shirt holding Kheelu against a dark wall, looking up at a chalk planet, stars and a thought cloud drawn around his question.",
-          },
-          zoom: true,
-          question: "why does the moon follow our car?",
-          doodles: [
-            { doodle: { name: "chalk-planet" }, left: 4, top: 30, width: 20, rotate: -10 },
-            { doodle: { name: "chalk-star" }, left: 16, top: 22, width: 8, rotate: -18 },
-            { doodle: { name: "chalk-star" }, left: 86, top: 48, width: 7, rotate: 12 },
-            { doodle: { name: "chalk-thought-cloud" }, left: 72, top: 22, width: 20 },
-          ],
+          body: "Kheelu is built around the same idea: it answers your child, then asks a question back. It doesn’t replace that time with you.",
         },
         sources: {
           label: "Sources",
@@ -187,230 +186,117 @@ export const homePage = {
             },
           ],
         },
-        link: { label: "Read more: how children learn by talking", href: "/stories/how-children-learn-by-talking" },
       },
+      cta: centred("home-why"),
     },
 
-    /* Fold 4 · What is Kheelu? Its heading and lead are an answer-first block of the page's FAQPage. */
+    /* Fold 4 · Languages (D064 item 9; facts, Languages; D058 item 7 "at launch"; D017 switching). Film 6 plays in place,
+       never a cast photo (ruling 1). No button. */
     {
-      kind: "modes-section",
-      faq: true,
+      kind: "languages-section",
       config: {
-        variant: "home",
-        heading: {
-          eyebrow: "Modes and languages",
-          title: "What is {hand:Kheelu?}",
-          lead: "Kheelu by Kheelona is a screen-free plush rabbit that talks with children aged 3 to 7. It answers your child, then asks a question back. It has three modes: AI mode for open conversation on home Wi‑Fi, Story mode for stories, poems and jingles with no Wi‑Fi needed, and Bluetooth mode, which makes it a speaker for your phone.",
-          id: "what-title",
-        },
-        photo: {
-          image: {
-            src: iraStory,
-            alt: "A laughing girl in a peach kurta sitting cross-legged on a block-print bedsheet, telling Kheelu a story with both hands.",
-          },
-        },
-        modes: [
-          { tone: "blue", icon: aiMode.icon, title: aiMode.name, body: "Open conversation, on your home Wi‑Fi. It can’t browse the internet." },
-          {
-            tone: "sun",
-            tint: true,
-            icon: storyMode.icon,
-            title: storyMode.name,
-            body: "Stories, poems and jingles your child enjoys and learns from. No Wi‑Fi needed.",
-          },
-          { tone: "chilli", icon: bluetoothMode.icon, title: bluetoothMode.name, body: "Pair your phone and use it as a speaker." },
-        ],
-        languages: {
-          title: `Up to ${product.languageCeiling} languages at launch`,
-          items: LANGUAGE_CHIPS,
-          note: "It can switch between them mid-sentence.",
-        },
-        link: { label: "See what each mode does", href: "/products/kheelu#modes" },
-      },
-    },
-
-    /* Fold 5 · What parents see: the parent app beside two real screens (D044, D046). The bullets follow the live team's
-       code check (D058 items 1 and 8; home.md fold 5): no weekly report or new-word count until they ship. */
-    {
-      kind: "feature-split",
-      config: {
-        variant: "app-screens",
-        placement: "home",
-        id: "app",
-        heading: { eyebrow: "The parent app", title: "You see {hand:every conversation.}", id: "see-title" },
-        items: [
-          { icon: "eye", body: "Read every conversation in the parent app, word for word." },
-          {
-            icon: "chart-line-up",
-            body: "Each conversation appears a few minutes after it ends. Search them, read a daily summary, or look back over the week or the month.",
-          },
-          {
-            icon: "sliders-horizontal",
-            body: "You set your child’s age in the app. The AI model that answers your child gets child-safety rules for that age, with Google’s safety filters on top.",
-          },
-          { icon: "trash", body: RETENTION_LINE },
-        ],
-        screens: {
-          images: [
-            {
-              src: appTranscript,
-              alt: "The parent app showing one conversation word for word: Kheelu greets Aarav, and when he asks for Hindi, Kheelu answers in Hindi.",
-            },
-            {
-              src: appActivity,
-              alt: "The parent app's activity screen for today: 22 minutes of talking, 3 chats and 9 questions asked, with today's chats listed.",
-            },
-          ],
-          caption: APP_CAPTION,
-        },
-        link: { label: "See what the app shows you", href: "/products/kheelu#app", icon: "eye" },
-      },
-    },
-
-    /* Fold 6 · Safety you can check (D020 order), in the live team's code-checked words (D058 items 1 and 6; home.md
-       fold 6): a couple of minutes of quiet, no place on the providers line, what removing a chat and deleting the
-       account do. */
-    {
-      kind: "trust-section",
-      config: {
-        variant: "safety",
-        placement: "home",
-        band: true,
-        heading: { eyebrow: "Safety", title: "Safety you can {hand:check.}", id: "safety-title" },
-        items: [
-          {
-            icon: "microphone",
-            title: "You’ll always see when it’s listening.",
-            body: "Its microphone turns on only when someone presses the wake-up button. It stays on while your child talks and switches itself off after a couple of minutes of quiet. A light on Kheelu shows whenever it’s listening. Left alone, it hears nothing and sends nothing.",
-          },
-          {
-            icon: "lock-simple",
-            title: "How it understands and answers.",
-            body: "To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.",
-          },
-          {
-            icon: "eye",
-            title: "You can read every conversation.",
-            body: "In the parent app. Removing a chat there hides it on that phone. Deleting your account deletes your child’s profile, conversations and recordings from our servers.",
-          },
-          { icon: "hand-heart", title: "We don’t sell your data.", body: "Your child’s data is never used to advertise to them." },
-        ],
-        screens: {
-          images: [
-            {
-              src: appPrivacy,
-              /* Without "delete all chats": the button hides chats on that phone (D058 item 1; home.md fold 6). */
-              alt: "The parent app's privacy centre: keep chats for 36 months, a switch to save voice recordings, download your child's data, and links to the privacy policy, terms and the grievance officer.",
-            },
-          ],
-          caption: APP_CAPTION,
-        },
-        facts: SAFETY_FACTS_LINE,
-      },
-      cta: { cta: "safety", align: "center", trust: COMPACT, secondary: { ...cta.secondary["safety-learn"], variant: "secondary" } },
-    },
-
-    /* Fold 7 · Compared by category: kinds of products, never brands (B14). */
-    {
-      kind: "compare-by-category",
-      config: {
-        heading: {
-          eyebrow: "Compare",
-          title: "Other AI gives answers. Kheelu {hand:asks questions.}",
-          lead: "Thinking out loud, not tapping on a screen.",
-          id: "compare-title",
-        },
-        label: "Comparison by kind of product",
-        firstColumn: "What matters",
-        columns: { us: "Kheelu", others: ["Puzzles and activity books", "Learning apps and videos", "Smart speakers and chatbots"] },
-        rows: [
-          {
-            label: "Screen-free",
-            us: { mark: "yes", text: "Yes" },
-            others: [{ mark: "yes", text: "Yes" }, { mark: "no", text: "No" }, { mark: "some", text: "Varies" }],
-            phone: { us: "Kheelu: Yes", others: ["Puzzles and activity books: yes", "Learning apps and videos: no", "Smart speakers and chatbots: varies"] },
-          },
-          {
-            label: "Holds a back-and-forth conversation",
-            us: { mark: "yes", text: "Yes" },
-            others: [{ mark: "no", text: "No" }, { mark: "some", text: "Rarely: mostly tapping and watching" }, { mark: "yes", text: "Yes" }],
-            phone: {
-              us: "Kheelu: Yes",
-              others: ["Puzzles and activity books: no", "Learning apps and videos: rarely, mostly tapping and watching", "Smart speakers and chatbots: yes"],
-            },
-          },
-          {
-            label: "Asks your child a question back",
-            us: { mark: "yes", text: "Yes, after it answers" },
-            others: [{ mark: "no", text: "No" }, { mark: "some", text: "Some ask quiz questions" }, { mark: "some", text: "Usually just answers" }],
-            phone: {
-              us: "Kheelu: Yes, after it answers",
-              others: ["Puzzles and activity books: no", "Learning apps and videos: some ask quiz questions", "Smart speakers and chatbots: usually just answer"],
-            },
-          },
-          {
-            label: "You can read every conversation",
-            us: { mark: "yes", text: "Yes, in the parent app" },
-            others: [{ mark: "some", text: "Nothing to read" }, { mark: "some", text: "Nothing to read" }, { mark: "some", text: "Varies" }],
-            phone: {
-              us: "Kheelu: Yes, in the parent app",
-              others: ["Puzzles and activity books: nothing to read", "Learning apps and videos: nothing to read", "Smart speakers and chatbots: varies"],
-            },
-          },
-        ],
-        caption: "Kinds of products, not brands: what each one usually does.",
-        link: cta.secondary["compare-learn"],
-      },
-    },
-
-    /* Fold 7b · Guides for parents (D046): three stories topics, each linked to its place on the hub. */
-    {
-      kind: "card-grid",
-      config: {
-        variant: "guides",
+        id: "languages",
         band: true,
         heading: {
-          eyebrow: "Guides for parents",
-          title: "How we can {nowrap:{hand:help},} from 3 to 7.",
-          lead: "Short, sourced guides from the Kheelona team, for the questions every parent of a young child asks.",
-          id: "guides-title",
-          align: "center",
+          eyebrow: "Languages",
+          title: `Kheelu speaks up to ${product.languageCeiling} {hand:languages} at launch.`,
+          lead: `${count} today: ${LANGUAGE_NAMES}. In AI mode, it can switch between them mid-sentence: when your child changes language, Kheelu changes with them.`,
+          id: "languages-title",
         },
-        items: (
-          [
-            ["screen-time", "blue", "clock", "Read the screen-time guides"],
-            ["talking", "sun", "translate", "Read the talking guides"],
-            ["learning", "chilli", "puzzle-piece", "Read the learning guides"],
-          ] as const
-        ).map(([id, tone, icon, label]) => ({
-          tone,
-          icon,
-          title: topic(id).title,
-          body: topic(id).lead,
-          links: [{ label, href: `/stories#${id}` }],
-        })),
+        languages: LANGUAGE_CHIPS,
+        film: {
+          video: TWO_LANGUAGES.video,
+          poster: TWO_LANGUAGES.poster,
+          /* The poster's own still: the moments' .webp files are animated previews, never a poster (D049). */
+          still: `/video/moments/${TWO_LANGUAGES.id}.jpg`,
+          chip: `${TWO_LANGUAGES.chip} · ${TWO_LANGUAGES.duration}`,
+          play: `${filmsStrip.play} ${TWO_LANGUAGES.chip}. ${TWO_LANGUAGES.caption}`,
+          name: `${TWO_LANGUAGES.chip}. ${TWO_LANGUAGES.caption}`,
+          caption: TWO_LANGUAGES.caption,
+        },
       },
     },
 
-    /* Fold 8 · Questions parents ask: six answers from faqs.ts, the page's FAQPage. */
+    /* Fold 5 · Kheelu asks. Your child thinks. (D064 items 7 and 10; the plan's §1.6): six points, the pictures of
+       points 3 and 4 swapped (CMO m3), point 6's age lines in what-ages' order (CMO m5); the labelled example under
+       point 3 (AP-15); the line under the points; home-asks and the link to how it works. */
     {
-      kind: "faq-section",
+      kind: "sticky-scroll",
       config: {
-        heading: { eyebrow: "Questions", title: "Questions parents {hand:ask.}", id: "faq-title" },
-        items: pickFaqs(["think-less", "what-ages", "price-and-advance", "not-right-for-us", "when-arrive", "same-as-lumi"]),
-        more: cta.secondary["faq-more"],
+        id: "asks",
+        heading: { eyebrow: "How it works", title: "Kheelu asks. {hand:Your child thinks.}", id: "asks-title" },
+        points: [
+          {
+            title: "A soft plush rabbit. No screen.",
+            body: "Kheelu is a cream plush rabbit with a speaker in its tummy. Your child talks and listens instead of watching.",
+            picture: {
+              image: { src: kheeluFront, alt: "Kheelu, the cream plush rabbit from Kheelona, with rainbow-lined ears and a speaker in its tummy." },
+              fit: "contain",
+            },
+          },
+          {
+            title: "Press and ask.",
+            body: "Your child presses the wake-up button and asks. A light shows Kheelu is listening.",
+            picture: { image: { src: kheeluBelly, alt: "Kheelu’s tummy unit up close, with its speaker, light ring and buttons." }, fit: "contain" },
+          },
+          {
+            title: "It answers, then asks one back.",
+            body: "It answers the question first. Then it asks your child a question back, so they do the thinking.",
+            picture: { image: { src: advikWhispering, alt: "A boy in a mustard shirt leaning close to whisper to Kheelu, on a cane chair by a tall window." } },
+            example: {
+              note: "Illustrative example, not a recording.",
+              lines: [
+                { who: "Your child", text: "“Why does the moon follow our car?”" },
+                {
+                  who: "Kheelu",
+                  text: "“The moon is very, very far away. So when the trees zoom past, the moon seems to stay with you. What else looks like it follows you?”",
+                },
+                { who: "Your child", text: "“My shadow?”" },
+              ],
+            },
+          },
+          {
+            title: "It can’t browse the internet.",
+            body: "And when it doesn’t know something, it says so instead of guessing.",
+            picture: { image: { src: iraDragon, alt: "A girl in a yellow printed frock drawing a dragon on a cotton dhurrie, with Kheelu beside her." } },
+          },
+          {
+            title: "You read every conversation.",
+            body: "Each one appears in the parent app, word for word, a few minutes after it ends. Kheelu remembers them too, so it can pick up where your child stopped.",
+            picture: {
+              image: {
+                src: appTranscript,
+                alt: "The parent app showing one conversation word for word: Kheelu greets Aarav, and when he asks for Hindi, Kheelu answers in Hindi.",
+              },
+              fit: "contain",
+            },
+          },
+          {
+            title: "From age 3. Still asking back at 7.",
+            body: "Made for children aged 3 to 7. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby. You set your child’s age in the parent app, and Kheelu’s AI is given child-safety rules for that age.",
+            picture: { image: { src: taraEvening, alt: "A girl and her mother on a sofa in the evening lamp light, with Kheelu between them." } },
+          },
+        ],
+        line: "Other AI gives answers. Kheelu asks questions.",
       },
+      cta: centred("home-asks", { label: "See how it works", href: "/products/kheelu#modes", cta: "home-asks-learn", variant: "ghost", iconEnd: "arrow-right" }),
     },
 
-    /* Fold 9 · Close: the offer card, the Kheelona+ line (D041 F7), the offer cards' trust row (task Q2.8's review: the one
-       risk-reversal line, the delivery line, then the card's third row; the D2C plan v2 §1.1), Myra's board. */
+    /* Fold 6 · The expert clip, moved here from the product page (D064 item 8; D061 items 12-13): its own fold, on the
+       band between two plain folds; nothing in it names Kheelu. No button. */
+    { kind: "films-strip", config: { ...expertFold, band: true } },
+
+    /* Fold 7 · What you get, and what you pay: the offer card moved up (the plan's fold 7). The one perk list (CMO m8),
+       the Kheelona+ note under it, the trust line and the card's third row under the button, the share link (D061 item 7,
+       its approved text: the main session's ruling (b)); Myra's board, top-aligned with the card (D064 item 5). */
     {
       kind: "offer-section",
       config: {
-        variant: "close",
-        heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}" },
-        cta: "finale",
+        variant: "home",
+        heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}", lead: "There every day at home, with no screen to switch off." },
+        cta: "home-offer",
         cardLabel: "Kheelu offer",
+        note: PLUS_NOTE,
         trust: trust(TRUST_OFFER),
         art: {
           tone: "sun",
@@ -420,6 +306,107 @@ export const homePage = {
             { image: { src: myraSticker, alt: "" }, left: 44, width: 48, bottom: 0 },
             { image: { src: kheeluSticker, alt: "" }, left: 3, width: 42, bottom: 3, rotate: -5 },
             { doodle: { name: "ink-heart" }, left: 82, width: 12, top: 9, rotate: 14 },
+          ],
+        },
+      },
+    },
+
+    /* Fold 8 · Safety you can check, compact (D064 item 2; Q2.2's four lines, claims-checked; D065 item 5's daily limit;
+       G26's alt, D065 item 7): five lines beside the real privacy screen; safety, then the built link to /safety (CMO M3). */
+    {
+      kind: "feature-split",
+      config: {
+        variant: "app-screens",
+        placement: "compact",
+        id: "safety",
+        band: true,
+        heading: { eyebrow: "Safety", title: "Safety you can {hand:check.}", id: "safety-title" },
+        items: [
+          { icon: "microphone", body: "It listens only after someone presses the wake-up button." },
+          { icon: "wifi-slash", body: "No web browsing." },
+          { icon: "eye", body: "You read every conversation in the parent app." },
+          { icon: "hand-heart", body: "We don’t sell your data." },
+          { icon: "clock", body: "Each Kheelu has a daily limit on how long it talks." },
+        ],
+        screens: {
+          images: [
+            {
+              src: appPrivacy,
+              alt: `The parent app’s privacy centre: chats kept for ${RETENTION_MONTHS} months, a switch to save voice recordings, buttons to download your child’s data and to delete all chats, and links to the privacy policy, terms and the grievance officer.`,
+            },
+          ],
+          caption: APP_CAPTION,
+        },
+      },
+      cta: centred("safety", { ...cta.secondary["safety-learn"], variant: "secondary" }),
+    },
+
+    /* Fold 9 · A day with Kheelu (D065 item 5: the limit, never set by a parent; D044: talking time per day; D027: Story
+       mode's words). No button. */
+    {
+      kind: "day-timeline",
+      config: {
+        id: "day",
+        heading: {
+          eyebrow: "Little moments",
+          title: "A day with Kheelu, {hand:sunrise to bedtime.}",
+          lead: "Not all day. A few moments, wherever the day goes.",
+          id: "day-title",
+        },
+        moments: [
+          { icon: "sun", tone: "sun", when: "Breakfast", line: "The first ‘why’ of the day. Kheelu answers, then asks one back.", mode: "AI mode · home Wi‑Fi" },
+          {
+            icon: "chat-circle-dots",
+            tone: "blue",
+            when: "After school",
+            line: "Yesterday’s question, picked up where your child stopped: Kheelu remembers earlier conversations.",
+            mode: "AI mode · home Wi‑Fi",
+          },
+          { icon: "question", tone: "chilli", when: "While you cook", line: "A question to think about, not a cartoon to watch.", mode: "AI mode · home Wi‑Fi" },
+          { icon: "house", tone: "sun", when: "At Nani’s", line: "Stories, poems and jingles in Story mode, with no Wi‑Fi needed.", mode: "Story mode · no Wi‑Fi needed" },
+          { icon: "moon", tone: "blue", when: "Bedtime", line: "One last story, lights low.", mode: "Story mode · no Wi‑Fi needed" },
+        ],
+        closing: "Each Kheelu has a daily limit on how long it talks. In the parent app, you can see how long your child talked each day.",
+        screen: {
+          image: {
+            src: appActivity,
+            alt: "The parent app’s activity screen for today: 22 minutes of talking, 3 chats and 9 questions asked, with today’s chats listed.",
+          },
+          caption: APP_CAPTION,
+        },
+      },
+    },
+
+    /* Fold 10 · Questions parents ask: the eight, decision questions first (the plan's fold 10; CMO m1, m2); the page's
+       FAQPage. No "See all questions" (ruling 1). */
+    {
+      kind: "faq-section",
+      config: {
+        band: true,
+        heading: { eyebrow: "Questions", title: "Questions parents {hand:ask.}", id: "faq-title" },
+        items: pickFaqs(["what-is-kheelu", "not-right-for-us", "price-and-advance", "screen-time-in-disguise", "think-less", "what-ages", "when-arrive", "same-as-lumi"]),
+      },
+    },
+
+    /* Fold 11 · Close: "It asks. They think." (messaging, EXTERNAL; D038), the product page's built lead, finale with the
+       price line and the trust line; a board with no cast child (all five appear above), its heart drawing itself. */
+    {
+      kind: "close-section",
+      config: {
+        variant: "split",
+        heading: {
+          eyebrow: "Pre-order",
+          title: "It asks. {hand:They think.}",
+          lead: "For your own child, or as a gift for a 3 to 7 year old in the family.",
+        },
+        cta: { cta: "finale", trust: COMPACT },
+        art: {
+          tone: "blue",
+          label: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy.",
+          layers: [
+            { image: { src: sunSun, alt: "" }, left: 8, width: 44, top: 8 },
+            { image: { src: kheeluSticker, alt: "" }, left: 30, width: 50, bottom: 4, rotate: -4 },
+            { doodle: { name: "ink-heart" }, left: 78, width: 13, top: 12, rotate: 12 },
           ],
         },
       },

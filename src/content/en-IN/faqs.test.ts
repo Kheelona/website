@@ -434,8 +434,7 @@ describe("Home's questions (task Q2.9; the D2C plan v2 §2 fold 10)", () => {
 });
 
 describe("full mode (copy pages)", () => {
-  /* Home's full-mode price answer since task Q2.9 (the D2C plan v2 §2 fold 10; D065 item 3: no GST on a selling page), which
-     the guide's price question takes too. */
+  /* Home's full-mode price answer since task Q2.9 (the D2C plan v2 §2 fold 10; D065 item 3: no GST on a selling page). */
   const homeFull =
     "Kheelu is ₹7,999 in total, paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking. Deliveries start mid-November. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.";
 
@@ -451,9 +450,17 @@ describe("full mode (copy pages)", () => {
     );
   });
 
-  it("the guide's price question becomes Home's full-mode answer", () => {
+  /* The guide's price question keeps the full-mode answer Home had until task Q2.9, GST and all: the guide takes Home's
+     answer with its own selling update (the D2C plan v2 §6, task Q2.12), and /llms.txt and /pricing.md read this one,
+     which may keep "incl. GST" (task Q2.8: machine files are not selling pages). */
+  it("the guide's price question keeps home.md's full-mode answer as approved, with GST (the machine files' too)", () => {
     expect(plain(faqs["how-much"].question, full)).toBe("How much is Kheelu?");
-    expect(plain(faqs["how-much"].answer, full)).toBe(homeFull);
+    expect(plain(faqs["how-much"].answer, full)).toBe(
+      "Kheelu is ₹7,999 (incl. GST), paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking, and you get a GST invoice. Deliveries start mid-November. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.",
+    );
+    expect(homeFull).toBe(
+      plain(faqs["how-much"].answer, full).replace(" (incl. GST)", " in total").replace(", and you get a GST invoice", ""),
+    );
   });
 
   it("the store's first answer pays the whole price; its delivery answer drops the balance sentence", () => {

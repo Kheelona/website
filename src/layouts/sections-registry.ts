@@ -13,6 +13,8 @@ import { CompareByCategory } from "@/components/sections/CompareByCategory/Compa
 import type { CompareByCategoryConfig } from "@/components/sections/CompareByCategory/compare-by-category.types";
 import { CtaBlock } from "@/components/sections/CtaBlock/CtaBlock";
 import type { CtaBlockConfig, SellingContext } from "@/components/sections/CtaBlock/cta-block.types";
+import { DayTimeline } from "@/components/sections/DayTimeline/DayTimeline";
+import type { DayTimelineConfig } from "@/components/sections/DayTimeline/day-timeline.types";
 import { EmptyStateSection } from "@/components/sections/EmptyStateSection/EmptyStateSection";
 import type { EmptyStateSectionConfig } from "@/components/sections/EmptyStateSection/empty-state-section.types";
 import { ExampleConversation } from "@/components/sections/ExampleConversation/ExampleConversation";
@@ -29,6 +31,8 @@ import { GrievanceBlock } from "@/components/sections/GrievanceBlock/GrievanceBl
 import type { GrievanceBlockConfig } from "@/components/sections/GrievanceBlock/grievance-block.types";
 import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
 import type { HeroSectionConfig } from "@/components/sections/HeroSection/hero-section.types";
+import { LanguagesSection } from "@/components/sections/LanguagesSection/LanguagesSection";
+import type { LanguagesSectionConfig } from "@/components/sections/LanguagesSection/languages-section.types";
 import { ModesSection } from "@/components/sections/ModesSection/ModesSection";
 import type { ModesSectionConfig } from "@/components/sections/ModesSection/modes-section.types";
 import { OfferSection } from "@/components/sections/OfferSection/OfferSection";
@@ -45,6 +49,8 @@ import { SourcesSection } from "@/components/sections/SourcesSection/SourcesSect
 import type { SourcesSectionConfig } from "@/components/sections/SourcesSection/sources-section.types";
 import { StepsSection, StepsTip } from "@/components/sections/StepsSection/StepsSection";
 import type { StepsSectionConfig } from "@/components/sections/StepsSection/steps-section.types";
+import { StickyScroll } from "@/components/sections/StickyScroll/StickyScroll";
+import type { StickyScrollConfig } from "@/components/sections/StickyScroll/sticky-scroll.types";
 import { TopicSection } from "@/components/sections/TopicSection/TopicSection";
 import type { TopicSectionConfig } from "@/components/sections/TopicSection/topic-section.types";
 import { TrustSection } from "@/components/sections/TrustSection/TrustSection";
@@ -59,7 +65,8 @@ import type { Copy } from "@/content/types";
  * - the page's selling context ({...config, ...context}: the live offer, the one CTA label, the help line) for the
  *   selling sections, and the offer for every section that prints words through RichText;
  * - the slots, composed from content: a CTA block (CtaBlock, task 3.2) under a hero, after a films strip or last in
- *   a trust fold; setup's Wi-Fi tip after a ticks fold; the guide's inline sources inside the FAQ column; an
+ *   a trust fold (since task Q2.9 also after a feature fold's words and a sticky scroll's line); setup's Wi-Fi tip
+ *   after a ticks fold; the guide's inline sources inside the FAQ column; an
  *   article's answer before and sources after its body. Sections never import each other's selling parts (3.3).
  * Each slot is typed only where its section draws it, so content can never pass one that would be silently dropped.
  * `.ts`, not `.tsx`: the file the plan names; `createElement` stands in for JSX.
@@ -76,6 +83,8 @@ export interface HowToCopy {
 
 type HeroWithCta = Extract<HeroSectionConfig, { readonly variant: "art" | "product" }>;
 type TicksSplit = Extract<FeatureSplitConfig, { readonly variant: "ticks" }>;
+/** The feature folds that draw a CTA block after their words (task Q2.9: Home's "Why it matters" and its safety block). */
+type CtaSplit = Extract<FeatureSplitConfig, { readonly variant: "imagination" } | { readonly variant: "app-screens"; readonly placement: "compact" }>;
 type StoreFaq = Extract<FaqSectionConfig, { readonly variant: "store" }>;
 type ArticleAnswer = Extract<AnswerSectionConfig, { readonly variant: "article" }>;
 
@@ -88,10 +97,12 @@ export interface SectionEntries {
   /** The CTA block goes after the strip (Home fold 2). Either layout: the strip, or one film on its own (`single`, the
    *  product page's expert clip, task 8c.6). */
   "films-strip": { readonly config: FilmsConfig; readonly cta?: CtaBlockConfig };
-  /** `ticks` takes setup's Wi-Fi tip after its checklist (setup.html fold 2). */
+  /** `ticks` takes setup's Wi-Fi tip after its checklist (setup.html fold 2); since task Q2.9 `imagination` and the
+   *  `compact` app screens take a CTA block after their words (Home folds 3 and 8). */
   "feature-split":
-    | { readonly config: TicksSplit; readonly tip?: Copy }
-    | { readonly config: Exclude<FeatureSplitConfig, TicksSplit>; readonly tip?: never };
+    | { readonly config: TicksSplit; readonly tip?: Copy; readonly cta?: never }
+    | { readonly config: CtaSplit; readonly cta?: CtaBlockConfig; readonly tip?: never }
+    | { readonly config: Exclude<FeatureSplitConfig, TicksSplit | CtaSplit>; readonly tip?: never; readonly cta?: never };
   /** `faq`: the heading and its lead are an answer-first block of the page's FAQPage (Home fold 4). */
   "modes-section": { readonly config: ModesSectionConfig; readonly faq?: true };
   /** The CTA block goes last in the fold; `faq`: each titled item is a question of the page's FAQPage (/safety). */
@@ -112,6 +123,12 @@ export interface SectionEntries {
   "topic-section": { readonly config: TopicSectionConfig };
   "founders-section": { readonly config: FoundersSectionConfig };
   "recognition-strip": { readonly config: RecognitionStripConfig };
+  /** Home's languages beside one film (task Q2.9). */
+  "languages-section": { readonly config: LanguagesSectionConfig };
+  /** Home's points with the sticky picture (task Q2.9); the CTA block goes after its line. */
+  "sticky-scroll": { readonly config: StickyScrollConfig; readonly cta?: CtaBlockConfig };
+  /** Home's day with Kheelu (task Q2.9). */
+  "day-timeline": { readonly config: DayTimelineConfig };
   "grievance-block": { readonly config: GrievanceBlockConfig };
   "seller-block": { readonly config: SellerBlockConfig };
   "empty-state-section": { readonly config: EmptyStateSectionConfig };
@@ -151,7 +168,7 @@ const REGISTRY: { readonly [K in SectionKind]: Renderer<K> } = {
     createElement(FeatureSplit, {
       ...e.config,
       offer: ctx.offer,
-      after: e.tip === undefined ? undefined : createElement(StepsTip, { text: e.tip, offer: ctx.offer }),
+      after: e.tip === undefined ? ctaBlock(e.cta, ctx) : createElement(StepsTip, { text: e.tip, offer: ctx.offer }),
     }),
   "modes-section": (e, ctx) => createElement(ModesSection, { ...e.config, offer: ctx.offer }),
   "trust-section": (e, ctx) => createElement(TrustSection, { ...e.config, offer: ctx.offer, cta: ctaBlock(e.cta, ctx) }),
@@ -171,6 +188,9 @@ const REGISTRY: { readonly [K in SectionKind]: Renderer<K> } = {
   "topic-section": (e) => createElement(TopicSection, e.config),
   "founders-section": (e) => createElement(FoundersSection, e.config),
   "recognition-strip": (e) => createElement(RecognitionStrip, e.config),
+  "languages-section": (e, ctx) => createElement(LanguagesSection, { ...e.config, offer: ctx.offer }),
+  "sticky-scroll": (e, ctx) => createElement(StickyScroll, { ...e.config, offer: ctx.offer, cta: ctaBlock(e.cta, ctx) }),
+  "day-timeline": (e, ctx) => createElement(DayTimeline, { ...e.config, offer: ctx.offer }),
   "grievance-block": (e) => createElement(GrievanceBlock, e.config),
   "seller-block": (e) => createElement(SellerBlock, e.config),
   "empty-state-section": (e) => createElement(EmptyStateSection, e.config),

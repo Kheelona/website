@@ -112,3 +112,19 @@
     padding: var(--space-7);
   }
 }
+
+/* Home's compact safety block (task Q2.9; the D2C plan v2 §2 fold 8): the one-line promises as a single quiet column
+   under the heading, beside the privacy screen (AppScreens `safety`); each line a DS trust item with a little less
+   padding, its icon centred on its line. */
+.kh-trust.ks-safe-lines {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+.ks-safe-lines .kh-trust__item {
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+}
+.ks-safe-split {
+  align-items: start;
+}

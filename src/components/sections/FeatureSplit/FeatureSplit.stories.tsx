@@ -7,7 +7,9 @@ import appActivity from "@/assets/app/app-activity.webp";
 import appPrivacy from "@/assets/app/app-privacy.webp";
 import appTranscript from "@/assets/app/app-transcript.webp";
 import { DoodleDefs } from "@/components/ui/Doodle/DoodleDefs";
+import { homePage } from "@/content/en-IN/pages/home";
 import { FeatureSplit } from "./FeatureSplit";
+import type { FeatureSplitConfig } from "./feature-split.types";
 
 /* FeatureSplit (task 3.3): every layout (home.html folds 3 and 5, meet-kheelu.html fold 5, safety.html folds 4 to 6,
    ai-toys-for-kids-in-india.html fold 4, setup.html folds 2 and 4 to 6, team.html fold 4), in the words the site prints
@@ -86,23 +88,20 @@ export const Imagination: Story = {
   },
 };
 
-/** Home's "Why it matters" since task Q2.9 (the D2C plan v2 §2 fold 3): no frame (Kabir is the hero now), the words and
- *  the card in two columns under the centred heading, then the source (the page adds its CTA block after it). */
-export const ImaginationWithoutFrame: Story = {
-  args: {
-    variant: "imagination",
-    heading: Imagination.args!.heading!,
-    text: "Harvard’s Center on the Developing Child says back-and-forth “serve and return” exchanges between a young child and a caring adult help build and strengthen neural connections in the child’s brain.[^1]",
-    card: {
-      tone: "sun",
-      tint: true,
-      icon: "chat-circle-dots",
-      title: "Where Kheelu comes in",
-      body: "Kheelu is built around the same idea: it answers your child, then asks a question back. It doesn’t replace that time with you.",
-    },
-    sources: Imagination.args!.sources!,
-  },
+/** Home's own feature folds since the selling update (task Q2.9; the D2C plan v2 §2 folds 3 and 8), read from
+ *  pages/home.ts so the stories show what the page publishes (the page adds each fold's CTA block after it). */
+const homeFold = (id: string): FeatureSplitConfig => {
+  const entry = homePage.sections.find((s) => s.kind === "feature-split" && s.config.heading.id === id);
+  if (entry?.kind !== "feature-split") throw new Error(`Home lists no feature fold ${id}`);
+  return entry.config;
 };
+
+/** Home's "Why it matters" (fold 3): no frame (Kabir is the hero now), the words and the card in two columns under the
+ *  centred heading, then the source. */
+export const ImaginationWithoutFrame: Story = { args: homeFold("why-title") };
+
+/** Home's compact safety block (fold 8): the five one-line promises beside the privacy screen. */
+export const AppScreensCompact: Story = { args: homeFold("safety-title") };
 
 /** Home fold 5: the parent app's four lines beside two real screens. */
 export const AppScreensHome: Story = {

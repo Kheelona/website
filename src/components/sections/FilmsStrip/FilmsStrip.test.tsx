@@ -9,6 +9,7 @@ import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { outline, parseMockup } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 import { FilmsStrip, type FilmsStripConfig, type FilmsStripProps } from "./FilmsStrip";
+import { FilmClipIsland } from "./FilmsStrip.client";
 import storiesMeta, * as stories from "./FilmsStrip.stories";
 
 /* FilmsStrip (task 3.3; components §2; D040, D049 pick 8; architecture §10, §11.2 row 8): the seven parent films on Home
@@ -549,6 +550,34 @@ describe("FilmsStrip: one film on its own (task 8c.6)", () => {
       expect(() => render(<FilmsStrip {...SINGLE} film={{ ...film, [missing]: " " }} />)).toThrow(new RegExp(missing));
     }
     vi.mocked(console.error).mockRestore();
+  });
+});
+
+/* Task Q2.9 (the D2C plan v2 §2 folds 4 and 6): Home's expert clip sits on the cream band between two plain folds, and
+   the languages fold plays film 6 on its own, a portrait phone recording, in the same frame at 9:16 (LanguagesSection).
+   The single layout takes `band`; the clip's island takes `portrait` and only the fields its frame shows. */
+describe("FilmsStrip: the single film on the band, and a portrait clip (task Q2.9)", () => {
+  it("puts the single film's fold on the cream band when asked, and nowhere else", () => {
+    const { container } = render(<FilmsStrip {...expertFold} band />);
+    expect(container.firstElementChild?.className).toBe("kh-section kh-section--band");
+    expect(render(<FilmsStrip {...expertFold} />).container.firstElementChild?.className).toBe("kh-section");
+  });
+
+  it("frames a portrait film at 9:16, the frame marked --portrait, with the same poster, chip and play control", () => {
+    const film = { ...expertClip, poster: { ...expertClip.poster, width: 1080, height: 1920 } };
+    const { container } = render(<FilmClipIsland film={film} sizes="272px" portrait />);
+    const frame = container.firstElementChild!;
+    expect(frame.className).toBe("ks-clip__frame ks-clip__frame--portrait");
+    expect(frame.querySelector("img")).toHaveAttribute("sizes", "272px");
+    expect(frame.querySelector(".ks-clip__chip .kh-chip")?.textContent).toBe(film.chip);
+    expect(frame.querySelector("button.ks-film__play")).toHaveAccessibleName(film.play);
+    expect(render(<FilmClipIsland film={expertClip} sizes="1px" />).container.firstElementChild?.className).toBe("ks-clip__frame");
+  });
+
+  it("gives the portrait frame its 9:16 and its play control a place above the faces", () => {
+    const css = readRepoFile("src/components/sections/FilmsStrip/films-strip.css");
+    expect(css).toMatch(/\.ks-clip__frame--portrait \{\s*aspect-ratio: 9 \/ 16;\s*\}/);
+    expect(css).toMatch(/\.ks-clip__frame--portrait \.ks-film__play \{\s*top: 28%;\s*\}/);
   });
 });
 

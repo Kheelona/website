@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it } from "vitest";
 import { buildOffer } from "@/lib/offer/offer";
+import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { outline, parseMockup, type Renames } from "../../../../test/support/mockup-compare";
 import { FeatureSplit, type FeatureSplitProps } from "./FeatureSplit";
 
@@ -133,7 +134,7 @@ describe("FeatureSplit: imagination (Home fold 3)", () => {
   /* Task Q2.9 (the selling update; the D2C plan v2 §2 fold 3): Home's "Why it matters" without a picture (the Kabir frame
      left with Kabir to the hero, one appearance per page), and with the page's CTA block after the sources. */
   it("without a frame: the words and the card in two columns under the heading, no split and no picture, then the sources and what follows", () => {
-    const { frame: _frame, aside: _aside, link: _link, ...rest } = props;
+    const rest = { ...props, frame: undefined, aside: undefined, link: undefined };
     const cta = <div className="cta-slot" />;
     const { container } = render(<FeatureSplit {...rest} after={cta} />);
     const inner = container.querySelector(".kh-container")!;
@@ -210,6 +211,48 @@ describe("FeatureSplit: app-screens", () => {
       screens: { images: [SHOT("a"), SHOT("b")] },
     } as unknown as FeatureSplitProps;
     expect(() => render(<FeatureSplit {...two} />)).toThrow(/FeatureSplit/);
+  });
+});
+
+/* Task Q2.9 (the selling update; the D2C plan v2 §2 fold 8, D064 item 2): Home's compact safety block. No mockup fold:
+   the approved page's folds 5 and 6 merged into one. The heading and one-line promises (DS trust items, no titles, a
+   single column) beside the one privacy screen in the DS device (AppScreens `safety`), then the page's CTA block across
+   the fold (`after`). */
+describe("FeatureSplit: app-screens compact (Home's safety block, task Q2.9)", () => {
+  const COMPACT: FeatureSplitProps = {
+    variant: "app-screens",
+    placement: "compact",
+    id: "safety",
+    band: true,
+    heading: { eyebrow: "Safety", title: "Safety you can {hand:check.}", id: "safety-title" },
+    items: [
+      { icon: "microphone", body: "It listens only after someone presses the wake-up button." },
+      { icon: "wifi-slash", body: "No web browsing." },
+    ],
+    screens: { images: [SHOT("privacy")], caption: CAPTION },
+  };
+
+  it("puts the heading and the promises beside the one screen, then whatever follows the fold", () => {
+    const { container } = render(<FeatureSplit {...COMPACT} offer={offer} after={<div className="cta-slot" />} />);
+    const section = screen.getByRole("region", { name: "Safety you can check." });
+    expect(section).toHaveAttribute("id", "safety");
+    expect(section).toHaveClass("kh-section--band");
+    const inner = container.querySelector(".kh-container")!;
+    expect([...inner.children].map((el) => el.className)).toEqual(["kh-split kh-split--wide-start ks-safe-split", "cta-slot"]);
+    const split = inner.firstElementChild!;
+    expect([...split.firstElementChild!.children].map((el) => el.className)).toEqual(["kh-heading", "kh-trust ks-list-reset ks-safe-lines"]);
+    expect([...split.querySelectorAll(".kh-trust__body")].map((b) => b.textContent)).toEqual(COMPACT.variant === "app-screens" ? COMPACT.items!.map((i) => i.body) : []);
+    expect(split.querySelector(".kh-trust__title")).toBeNull();
+    expect(split.querySelector(".ks-safe-lines")).toHaveAttribute("data-reveal", "");
+    const media = split.lastElementChild!;
+    expect(media).toHaveClass("ks-shots", "ks-shots--safety");
+    expect(media.querySelectorAll("img")).toHaveLength(1);
+    expect(media.querySelector("figcaption")?.textContent).toBe(CAPTION);
+  });
+
+  it("lays the promises out in one quiet column, on DS tokens", () => {
+    const css = readRepoFile("src/components/sections/FeatureSplit/feature-split.css");
+    expect(css).toMatch(/\.kh-trust\.ks-safe-lines \{\s*grid-template-columns: minmax\(0, 1fr\);\s*gap: var\(--space-3\);\s*margin-top: var\(--space-6\);\s*\}/);
   });
 });
 

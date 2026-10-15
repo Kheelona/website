@@ -165,6 +165,14 @@
 .ks-clip__frame .ks-film__play {
   top: 60%;
 }
+/* A phone recording on its own (task Q2.9: film 6, "Two languages", in Home's languages fold): the same frame upright, at
+   the films' own 9:16. Its poster has the child's face near the middle, so the play control sits above it, on the wall. */
+.ks-clip__frame--portrait {
+  aspect-ratio: 9 / 16;
+}
+.ks-clip__frame--portrait .ks-film__play {
+  top: 28%;
+}
 .ks-clip__credit {
   display: grid;
   gap: var(--space-1);

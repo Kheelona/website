@@ -7,9 +7,11 @@ import type { SourceNoteItem } from "@/components/ui/SourceMarker/SourcesNote";
 import type { SectionHeading, SectionLink } from "./section-parts";
 
 /* FeatureSplit's configuration (task 3.3; components §2): words beside media, in the layouts of the approved mockup:
- * - `imagination`: Home fold 3, the sourced words and the Kheelu card beside the imagination frame;
+ * - `imagination`: Home fold 3, the sourced words and the Kheelu card beside the imagination frame (since task Q2.9 also
+ *   without the frame: Home's "Why it matters", the words and the card in two columns, then the page's CTA block);
  * - `app-screens`: the parent app beside its real screens (D044, D046): Home fold 5, product fold 5 (skills and the
- *   Kheelona+ note), safety fold 4 (the parent controls and the one privacy screen);
+ *   Kheelona+ note), safety fold 4 (the parent controls and the one privacy screen); since task Q2.9 `compact`, Home's
+ *   safety block (one-line promises beside the privacy screen, then the page's CTA block);
  * - `photo`: words beside a photo or an art board, or beside nothing (setup folds 4-6, the guide's plush or robot);
  * - `ticks`: the setup page's checklist under its heading (fold 2);
  * - `pair`: two short folds as cards side by side (safety folds 5 and 6);
@@ -118,6 +120,17 @@ export type FeatureSplitConfig =
       readonly note?: Copy;
       readonly screens: FeatureScreens;
     })
+  | (Headed & {
+      readonly variant: "app-screens";
+      /** Home's compact safety block (task Q2.9; the D2C plan v2 §2 fold 8, D064 item 2): a few one-line promises beside
+       *  one real app screen, then the page's CTA block (`after`). */
+      readonly placement: "compact";
+      /** One line each, no title. */
+      readonly items: readonly FeatureItem[];
+      readonly screens: { readonly images: readonly [ImageRef]; readonly caption?: Copy };
+      readonly skills?: never;
+      readonly note?: never;
+    })
   | (Headed &
       PhotoWords & {
         readonly variant: "photo";
@@ -159,8 +172,9 @@ export type FeatureSplitConfig =
 
 export interface FeatureSplitSlots {
   readonly offer?: Offer;
-  /** `ticks`: anything after the checklist, inside the fold (the setup page's Wi-Fi tip); `imagination`: anything after
-   *  the sources (task Q2.9: Home's CTA block, composed by the section registry). */
+  /** `ticks`: anything after the checklist, inside the fold (the setup page's Wi-Fi tip); `imagination` and the
+   *  `compact` app screens: anything after the fold's words and media (task Q2.9: Home's CTA blocks, composed by the
+   *  section registry). */
   readonly after?: ReactNode;
 }
 

@@ -11,6 +11,7 @@ import { CloseSection } from "@/components/sections/CloseSection/CloseSection";
 import { CompareByCategory } from "@/components/sections/CompareByCategory/CompareByCategory";
 import { CtaBlock } from "@/components/sections/CtaBlock/CtaBlock";
 import type { CtaBlockConfig } from "@/components/sections/CtaBlock/cta-block.types";
+import { DayTimeline } from "@/components/sections/DayTimeline/DayTimeline";
 import { EmptyStateSection } from "@/components/sections/EmptyStateSection/EmptyStateSection";
 import { ExampleConversation } from "@/components/sections/ExampleConversation/ExampleConversation";
 import { FaqSection } from "@/components/sections/FaqSection/FaqSection";
@@ -19,6 +20,7 @@ import { FilmsStrip } from "@/components/sections/FilmsStrip/FilmsStrip";
 import { FoundersSection } from "@/components/sections/FoundersSection/FoundersSection";
 import { GrievanceBlock } from "@/components/sections/GrievanceBlock/GrievanceBlock";
 import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
+import { LanguagesSection } from "@/components/sections/LanguagesSection/LanguagesSection";
 import { ModesSection } from "@/components/sections/ModesSection/ModesSection";
 import { OfferSection } from "@/components/sections/OfferSection/OfferSection";
 import { ProductDetails } from "@/components/sections/ProductDetails/ProductDetails";
@@ -27,6 +29,7 @@ import { RelatedGuides } from "@/components/sections/RelatedGuides/RelatedGuides
 import { SellerBlock } from "@/components/sections/SellerBlock/SellerBlock";
 import { SourcesSection } from "@/components/sections/SourcesSection/SourcesSection";
 import { StepsSection, StepsTip } from "@/components/sections/StepsSection/StepsSection";
+import { StickyScroll } from "@/components/sections/StickyScroll/StickyScroll";
 import { TopicSection } from "@/components/sections/TopicSection/TopicSection";
 import { TrustSection } from "@/components/sections/TrustSection/TrustSection";
 import { cta } from "@/content/en-IN/cta";
@@ -73,6 +76,9 @@ const EXPECTED: { [K in SectionKind]: (entry: SectionEntryOf<K>, ctx: SectionCon
   "topic-section": (e) => <TopicSection {...e.config} />,
   "founders-section": (e) => <FoundersSection {...e.config} />,
   "recognition-strip": (e) => <RecognitionStrip {...e.config} />,
+  "languages-section": (e, { offer }) => <LanguagesSection {...e.config} offer={offer} />,
+  "sticky-scroll": (e, { offer }) => <StickyScroll {...e.config} offer={offer} />,
+  "day-timeline": (e, { offer }) => <DayTimeline {...e.config} offer={offer} />,
   "grievance-block": (e) => <GrievanceBlock {...e.config} />,
   "seller-block": (e) => <SellerBlock {...e.config} />,
   "empty-state-section": (e) => <EmptyStateSection {...e.config} />,
@@ -147,6 +153,39 @@ describe("the section registry: slots", () => {
     const ctx = context(FULL);
     expect(markup(renderSection(trust, ctx))).toBe(markup(<TrustSection {...trust.config} offer={FULL} cta={<CtaBlock {...trust.cta} {...ctx} />} />));
     expect(dom(renderSection(trust, ctx)).querySelector(".kh-btn--cta")?.textContent).toBe(cta.preorder);
+  });
+
+  /* Task Q2.9 (the D2C plan v2 §2 folds 3, 5 and 8): Home's "Why it matters", its points and its safety block each end
+     on a CTA block, after their words. */
+  it("composes a CTA block after an imagination fold's words, after the compact safety block and after a sticky scroll's line", () => {
+    const ctx = context(TOKEN);
+    const why = {
+      kind: "feature-split",
+      config: {
+        variant: "imagination",
+        heading: { id: "why-title", title: "Why it {hand:matters}" },
+        text: "Talk helps.",
+        card: { tone: "sun", icon: "chat-circle-dots", title: "Where Kheelu comes in", body: "It asks back." },
+      },
+      cta: { ...CTA_BLOCK, cta: "home-why" },
+    } as const satisfies SectionEntry;
+    expect(markup(renderSection(why, ctx))).toBe(markup(<FeatureSplit {...why.config} offer={TOKEN} after={<CtaBlock {...why.cta} {...ctx} />} />));
+    const safe = {
+      kind: "feature-split",
+      config: {
+        variant: "app-screens",
+        placement: "compact",
+        heading: { id: "safety-title", title: "Safety you can {hand:check.}" },
+        items: [{ icon: "eye", body: "You read every conversation." }],
+        screens: { images: [ART.layers[0].image!] },
+      },
+      cta: { ...CTA_BLOCK, cta: "safety" },
+    } as const satisfies SectionEntry;
+    const host = dom(renderSection(safe, ctx));
+    expect(host.querySelector(".ks-safe-split ~ .kh-section__actions .kh-btn--cta")?.getAttribute("data-ph-capture-attribute-cta")).toBe("safety");
+    const asks = { ...ENTRY_FIXTURES["sticky-scroll"], cta: { ...CTA_BLOCK, cta: "home-asks" } } as const satisfies SectionEntry;
+    expect(markup(renderSection(asks, ctx))).toBe(markup(<StickyScroll {...asks.config} offer={TOKEN} cta={<CtaBlock {...asks.cta} {...ctx} />} />));
+    expect(dom(renderSection(asks, ctx)).querySelector(".ks-sticky__grid ~ .kh-section__actions .kh-btn--cta")?.getAttribute("data-ph-capture-attribute-cta")).toBe("home-asks");
   });
 
   it("puts setup's Wi-Fi tip after the checklist of a ticks fold", () => {

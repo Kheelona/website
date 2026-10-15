@@ -36,7 +36,9 @@ export interface SellingHeading {
 /** The link under a CTA block: a ghost or secondary button (never chilli), tracked when the copy names a value. */
 export interface CtaSecondary {
   readonly label: string;
-  readonly href: SitePath | `https://${string}`;
+  /** A site path, an outside address, or a fragment on the page (task Q2.9: Home's hero link to film 1 in the strip,
+   *  `#learning-by-asking`, which the strip plays in place). */
+  readonly href: SitePath | `https://${string}` | `#${string}`;
   /** A secondary value of the CTA registry (`hero-learn`, …); the closes' "See how it works" links carry none. */
   readonly cta?: CtaId;
   /** The mockup's look: `ghost` (Home folds 1 and 2, the closes) or `secondary` (the safety folds). */

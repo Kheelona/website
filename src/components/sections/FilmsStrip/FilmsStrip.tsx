@@ -5,7 +5,7 @@ import { RichText } from "@/components/ui/RichText/RichText";
 import { FilmClipIsland, FilmsStripIsland, type QuotedFilms } from "./FilmsStrip.client";
 import type { FilmQuotes, FilmsSingleConfig, FilmsStripSlots, FilmTile, FilmsStripProps } from "./films-strip.types";
 
-export type { FilmQuote, FilmQuotes, FilmsConfig, FilmsSingleConfig, FilmsStripConfig, FilmsStripProps, SingleFilm } from "./films-strip.types";
+export type { ClipFilm, FilmQuote, FilmQuotes, FilmsConfig, FilmsSingleConfig, FilmsStripConfig, FilmsStripProps, SingleFilm } from "./films-strip.types";
 
 /** One film tile: 80% of the column on phones, a third of the strip from 720 px, which stops at 944 px from 1024 px
  *  (mockup.css:41, 83, 90). */
@@ -20,12 +20,12 @@ const CLIP_SIZES = "(min-width: 764px) 700px, (min-width: 720px) calc(100vw - 64
  * under it, visible before the tap and in body type, the credit and the disclosure. No reveal, no strip, no controls.
  * A clip without its credit or its disclosure fails the render.
  */
-function SingleFilmFold({ id, heading, film, after, offer }: FilmsSingleConfig & FilmsStripSlots) {
+function SingleFilmFold({ id, heading, film, band, after, offer }: FilmsSingleConfig & FilmsStripSlots) {
   for (const field of ["credit", "disclosure"] as const) {
     if (!film[field].trim()) throw new Error(`FilmsStrip: the single film of #${id} needs its ${field}, shown under it before the tap`);
   }
   return (
-    <Section id={id} labelledBy={heading.id}>
+    <Section id={id} band={band} labelledBy={heading.id}>
       <Container>
         <SectionHead>
           <SectionTitle heading={heading} align="center" offer={offer} />

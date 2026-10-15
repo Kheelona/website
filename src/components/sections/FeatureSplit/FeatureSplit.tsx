@@ -129,7 +129,7 @@ function Body({
       );
     }
     case "app-screens":
-      return <AppScreensBody config={config} title={title} text={text} />;
+      return <AppScreensBody config={config} title={title} text={text} after={after} />;
     case "photo": {
       const { media, split } = config;
       const words = (
@@ -187,9 +187,26 @@ function Body({
   }
 }
 
-function AppScreensBody({ config, title, text }: { config: Extract<FeatureSplitConfig, { variant: "app-screens" }>; title: ReactNode; text: Text }) {
+function AppScreensBody({ config, title, text, after }: { config: Extract<FeatureSplitConfig, { variant: "app-screens" }>; title: ReactNode; text: Text; after: ReactNode }) {
   const { placement, screens, items, skills, note, link } = config;
   const caption = screens.caption === undefined ? undefined : text(screens.caption);
+  if (placement === "compact") {
+    // Home's safety block (task Q2.9): the heading and the one-line promises beside the one screen, the fold's link
+    // under the lines; then the page's CTA block across the fold.
+    return (
+      <>
+        <Split wide="start" className="ks-safe-split">
+          <div>
+            {title}
+            <TrustList items={trustItems(config.items, text)} reveal className="ks-safe-lines" />
+            <SectionLinkRow link={link} />
+          </div>
+          <AppScreens variant="safety" screens={[screens.images[0]]} sizes={SCREEN_SIZES.safety} caption={caption} reveal />
+        </Split>
+        {after}
+      </>
+    );
+  }
   let media: ReactNode;
   if (placement === "safety") {
     if (screens.images.length !== 1) throw new Error("FeatureSplit: the safety page's parent controls show one screen (AppScreens `safety`)");

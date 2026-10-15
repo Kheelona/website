@@ -1,0 +1,144 @@
+/* StickyScroll (task Q2.9; the D2C plan v2 §1.6 and §2 fold 5; D064 items 7 and 10). No approved mockup fold: it takes
+   Home's "What is Kheelu?" place. Built on the DS split (5:7 from 900 px), the DS photo frame, the DS card and the DS
+   type classes; only the layout is here. Nothing moves but the stage's crossfade and the progress line's fill, opacity
+   and transform on DS motion tokens, under prefers-reduced-motion: no-preference only (the island marks the point being
+   read with data-on; it moves nothing itself). */
+
+/* Phones and tablets: the points stack, each with its own small picture beside its title and words. The stage and the
+   progress line are for laptops only. */
+.ks-sticky__grid {
+  align-items: start;
+}
+.ks-sticky__stage,
+.ks-sticky__progress {
+  display: none;
+}
+.ks-sticky__points {
+  display: grid;
+  gap: var(--space-6);
+}
+.ks-sticky__point {
+  display: grid;
+  grid-template-columns: var(--space-9) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  column-gap: var(--space-4);
+  row-gap: var(--space-2);
+  align-items: start;
+}
+.ks-sticky__thumb {
+  grid-row: 1 / span 2;
+}
+.ks-sticky__thumb img {
+  border-radius: var(--radius-m);
+}
+.ks-sticky__thumb--contain img,
+.ks-sticky__pic--contain img {
+  object-fit: contain;
+}
+.ks-sticky__title,
+.ks-sticky__body {
+  margin: 0;
+}
+.ks-sticky__body {
+  color: var(--text-muted);
+}
+/* The written example under a point: a quiet DS card across the point's width, its label above the exchange. */
+.ks-sticky__example {
+  grid-column: 1 / -1;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding: var(--space-4);
+}
+.ks-sticky__example > p {
+  margin: 0;
+}
+.ks-sticky__exchange {
+  display: grid;
+  gap: var(--space-2);
+}
+.ks-sticky__exchange .kh-label-s {
+  display: block;
+}
+/* The line under the points: centred, a reading measure wide. */
+.ks-sticky__line {
+  max-width: var(--measure);
+  margin: var(--space-7) auto 0;
+  text-align: center;
+}
+
+/* Laptops: the heading, the stage and the progress line stay in view on the left while the points scroll on the right,
+   a DS gap under the sticky nav (--ks-nav-clearance, nav-bar.css; 0 where no bar sticks). The points are spaced so each
+   is read on its own as it crosses the island's reading line. */
+@media (min-width: 900px) {
+  .ks-sticky__aside {
+    position: sticky;
+    top: calc(var(--ks-nav-clearance, 0px) + var(--space-6));
+    display: grid;
+    gap: var(--space-5);
+  }
+  .ks-sticky__aside .kh-heading {
+    margin: 0;
+  }
+  .ks-sticky__stage {
+    display: grid;
+  }
+  .ks-sticky__pic {
+    grid-area: 1 / 1;
+    opacity: 0;
+  }
+  .ks-sticky__pic[data-on] {
+    opacity: 1;
+  }
+  .ks-sticky__progress {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: var(--space-1);
+  }
+  .ks-sticky__progress > li {
+    position: relative;
+    height: var(--space-1);
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: var(--border);
+  }
+  .ks-sticky__progress > li::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--primary);
+    /* Waiting off the step's start, clipped by it; it slides in to fill the step. */
+    transform: translateX(-100%);
+  }
+  .ks-sticky__progress > li[data-on]::after {
+    transform: none;
+  }
+  .ks-sticky__points {
+    gap: var(--space-9);
+    padding-block: var(--space-7);
+  }
+  .ks-sticky__point {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+  }
+  .ks-sticky__thumb {
+    display: none;
+  }
+}
+
+/* The crossfade and the fill: only where motion is welcome. */
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .ks-sticky__pic {
+    transition: opacity var(--duration-enter) var(--ease-standard);
+  }
+  .ks-sticky__progress > li::after {
+    transition: transform var(--duration-enter) var(--ease-standard);
+  }
+}
+
+/* Reduced motion: no fill (the progress line is not drawn) and no crossfade (the picture changes at once, above). */
+@media (prefers-reduced-motion: reduce) {
+  .ks-sticky__progress {
+    display: none;
+  }
+}
