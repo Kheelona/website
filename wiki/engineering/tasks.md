@@ -1956,6 +1956,60 @@ parallel worktrees; each owns its files so the merges stay mechanical.
   Lighthouse mobile ≥ 90, axe clean, no sideways scroll at 360/390. (4) `findBanned` passes every new line and the new
   entries are proven red on planted examples. (5) A deviation row drafted for the founder.
 
+### 8c.7 Home's hydration error on Vercel: the page path the shell components read (builder; risk high)
+
+- **Found by the CMO's wave 8c review on beta** (wiki/qa/cmo-review-wave-8c-2026-10-15.md m1): Home throws React
+  hydration error #418 on every load on beta. Cause (main session, 2026-10-15): Vercel re-renders Home in its runtime
+  (ISR, `x-vercel-cache: STALE`) under the route segments `["", "index"]` (beta's Home flight data `"c":["","index"]`),
+  so `usePathname()` returns `/index` on the server and `/` in the browser. `StickyBuyBar.client.tsx` then leaves the bar
+  out of the server HTML (Home has no `kh-buybar` element on beta; the product page has it) and the browser adds it:
+  the trees differ and React rebuilds the page in the browser. A local build, even through a stub adapter, prerenders
+  with `/` and has the bar, so only a Vercel runtime render shows it (lessons §1's kind of trap).
+- **What:** one hook (for example `useSitePath()` in `src/lib/`) that normalises a trailing `/index` to its parent
+  (`/index` → `/`, `/x/index` → `/x`) and every shell component that renders from the path uses it:
+  `StickyBuyBar.client.tsx`, `NavBar.client.tsx` (aria-current), `WhatsAppFloat.client.tsx` (its context),
+  `MotionController.client.tsx` if its output depends on the path. Leave `MetaPixel.tsx` and `PostHogGate.tsx` as they are
+  (they read the path in the browser only; tracking parity): say so in a comment if they import the hook's module.
+- **Guards:** (1) unit tests with `usePathname` mocked to `/index` prove each component renders as on `/` (red before
+  the fix); (2) `test/e2e/support/fixtures.ts` fails a test on any `pageerror` (and on a console error carrying "Minified
+  React error #418" or "Hydration"), proven red with a planted mismatch on a local build; (3) a step in the beta deploy
+  check: after a beta deploy, Home's HTML carries the bar's element (`class="kh-buybar`), in the Gate B pack and
+  the build runbook.
+- **Owns:** the new hook and its test; the four shell components' client files and tests; `test/e2e/support/fixtures.ts`;
+  `wiki/engineering/lessons.md` §1 (one bullet); the build runbook's deploy check line.
+- **Acceptance:** the four components render the same for `/` and `/index`; the fixtures' page-error guard is live on
+  every spec and red on a planted error; full browser specs for home and meet-kheelu green; after the merge and the beta
+  push, Home on beta has the bar element and no #418 (main session checks).
+
+### 8c.8 The product page after the CMO's wave 8c review (builder; risk normal)
+
+- **From** wiki/qa/cmo-review-wave-8c-2026-10-15.md, main-session rulings 2026-10-15 (each a deviation-row amendment the
+  founder signs at Gate B):
+  - m2: on `/products/kheelu` the "Recognised by." strip moves from before the offer to right after the offer column
+    (after the share link), before the expert fold; Home unchanged. Report the offer card's top at 390 before and after.
+  - m3, m4, m5: re-encode the expert clip with the local build script
+    (`wiki/raw/feedback/advisor-homepage-2026-10-12/expert-video/build-expert-clip.mjs`, by absolute path; the source
+    video beside it, never committed): the caption band raised so the bottom of the pills sits at about 80% of the frame
+    height (clear of the phone player's controls); the 0-5 s disclosure at caption size (same white pills, Nunito
+    ExtraBold), top left; a poster frame with her face in the upper third, clear of the play button, and the play button
+    and the "0:34 · With captions" chip off her face and hair. Same cut, same 11 caption lines (the test pins them);
+    re-transcribe the final file locally (no word outside the captions); file ≤ 4 MB.
+  - m6: on laptops cap `.ks-clip` at the narrow measure (about 640-720 px), centred, so the toy stays the largest picture.
+  - m7: `faqs.ts`: the product page's "What if it isn't right for us, or stops working?" reads "What if my child doesn't
+    like it, or it stops working?" (answer unchanged; JSON-LD follows), matching Home's V41.
+  - m8: in the languages answer, the film's name "Two languages" becomes a button that plays film 6 in the strip (the
+    quotes' "Watch the film" mechanism); if a button inside the FAQ answer cannot be done cleanly, drop that sentence on
+    the page only and keep it in llms.txt, and report which.
+  - m10: on phones the expert credit and disclosure stay out of the WhatsApp bubble's column (as 8c.5 did for the hero
+    help line) or are left-aligned.
+  - m11: drop the example conversation's closing sentence ("It answers first, then asks a question back. That's how
+    your child ends up doing the thinking.") on the product page: step 3 already says it.
+- **Owns:** `products/kheelu/page.ts` (fold order, the example's closing line), `faqs.ts` (the two FAQ items), the
+  FilmsStrip/expert clip CSS and component, `public/video/expert/*`, `expert-video.ts` and tests, the fold rules in
+  `test/e2e/support/deviations.ts`, the route test, machine-file pins if llms.txt or JSON-LD change.
+- **Acceptance:** each item done with evidence (screenshots at 360, 390 and 1440 kept local); visual and text parity,
+  first-screen, axe, no-sideways and perf-budget green on home and meet-kheelu; draft amendments for V41, V44, V46, V48.
+
 ## Wave 9: beta deploy and beta QA (after wave 8)
 
 ### 7.2 Beta deploy and beta QA (main session, founder, QA)
