@@ -75,6 +75,26 @@ describe("the seller-facts ruling of the approved mockups (D063 items 2-3)", () 
     expect(card.querySelector('a[href^="tel:"]')?.textContent, "the number stays on /contact").toBe(NUMBER);
   });
 
+  /* Task Q2.14 (the D2C plan v2 §1.1, CMO m9): every help line in the plan's words, "Questions? Message us on WhatsApp.",
+     the full stop after the link (seller.ts `help`, `storeHelp`); /thanks' fold 5 keeps its sentence going after the same
+     link (seller.ts `support.message`). */
+  it("rules every help line into the plan's words, and /thanks' sentence around the same link", () => {
+    const line = (slug: string, selector: string) => {
+      const doc = new DOMParser().parseFromString(raw(slug), "text/html");
+      return withSellerFacts(doc.querySelector(selector)!).textContent!.replace(/\s+/g, " ").trim();
+    };
+    expect(line("safety", "main .mk-help")).toBe("Questions? Message us on WhatsApp.");
+    expect(line("store", "header .mk-store-head__help")).toBe("Need help? Message us on WhatsApp.");
+    expect(line("store", "main .mk-help")).toBe("Rather talk to a person? Message us on WhatsApp.");
+    expect(line("store-confirmation", "main .mk-help")).toBe(
+      "Message us on WhatsApp, quoting your order number, or email hello@kheelona.com.",
+    );
+    const doc = new DOMParser().parseFromString(raw("safety"), "text/html");
+    const link = withSellerFacts(doc.querySelector("main .mk-help")!).querySelector("a");
+    expect(link?.textContent).toBe("Message us on WhatsApp");
+    expect(link?.getAttribute("href")).toBe("https://wa.me/919187546483");
+  });
+
   it.each(MOCKUP_SLUGS.map((s) => [s] as const))("%s: the text pass's sentences are exactly those the ruling changes in <main>", (slug) => {
     const doc = new DOMParser().parseFromString(raw(slug), "text/html");
     const main = doc.querySelector("main")!;

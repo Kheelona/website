@@ -111,7 +111,7 @@ export function llmsText(offer: Offer): string {
   /* The WhatsApp address in plain text (task Q2.9): the number is on /contact and the legal pages only (D063 item 2), so
      a reader of this file sees how to reach the team here; the email on its own line (each line restates one content
      record, the machine-files test). */
-  lines.push(`- ${say(seller.help.contact)}: ${seller.support.whatsapp}`, `- ${seller.support.email}`);
+  lines.push(`- ${say(seller.support.message)}: ${seller.support.whatsapp}`, `- ${seller.support.email}`);
   /* The number only on /contact and the legal pages (D063 item 2, D064 item 11; task Q2.3): the officer's line without it. */
   lines.push(`- ${say(`${seller.grievance.footerLine.lead} ${seller.grievance.footerLine.text}`)}`);
 

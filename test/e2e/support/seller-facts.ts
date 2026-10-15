@@ -37,10 +37,14 @@ const escaped = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const CALL = `<a href="${TEL}" class="mk-nowrap">call ${SHOWN}</a>`;
 /** The number as a link of its own (the footers, the grievance and team lines). */
 const NUMBER = `<a href="${TEL}" class="mk-nowrap">${SHOWN}</a>`;
+/** The help lines' one link in the D2C plan v2 §1.1's words (task Q2.14; CMO m9): seller.ts `support.message`. A help
+ *  line ends on a full stop after it (seller.ts `help`, `storeHelp`); /thanks' sentence goes on after it. */
+const MESSAGE = `<a href="${WA}">Message us on WhatsApp</a>`;
 
 export type SellerFactsRuleName =
   | "guide's contact line"
   | "help line"
+  | "thanks' help line"
   | "store header's help line"
   | "setup's contact line"
   | "team's answer"
@@ -75,11 +79,19 @@ export const SELLER_FACTS_RULES: readonly SellerFactsRule[] = [
     from: `you can ask us anything: ${WHATSAPP} or ${CALL}.`,
     to: `you can ask us anything: ${WHATSAPP} or email ${MAILTO}.`,
   },
-  /* Every "Questions?" line, the product FAQ's, the store's "Rather talk to a person?" and /thanks's help fold:
-     seller.ts `help.contact`. Not the product page's consumer care declaration (`<span class="mk-care">`), which keeps
-     the number since task Q2.10: the Legal Metrology (Packaged Commodities) Rules ask for a consumer-care number. */
-  { name: "help line", from: new RegExp(`(?<!<span class="mk-care">)${escaped(`${WHATSAPP} or ${CALL}`)}`, "g"), to: `<a href="${WA}">WhatsApp us</a>` },
-  { name: "store header's help line", from: `${WHATSAPP} or <a href="${TEL}">call</a>`, to: `<a href="${WA}">WhatsApp us</a>` },
+  /* Every "Questions?" line, the product FAQ's and the store's "Rather talk to a person?", each ending the line:
+     seller.ts `help.contact`, the link and its full stop (the D2C plan v2 §1.1; task Q2.14). Not the product page's
+     consumer care declaration (`<span class="mk-care">`), which keeps the number since task Q2.10: the Legal Metrology
+     (Packaged Commodities) Rules ask for a consumer-care number. */
+  {
+    name: "help line",
+    from: new RegExp(`(?<!<span class="mk-care">)${escaped(`${WHATSAPP} or ${CALL}`)}(?=</p>)`, "g"),
+    to: `${MESSAGE}.`,
+  },
+  /* /thanks' help fold, whose sentence goes on after the link (", quoting your order number, …"): seller.ts
+     `support.message`, the same link without the full stop (confirmation.ts `help.contact`). */
+  { name: "thanks' help line", from: `${WHATSAPP} or ${CALL},`, to: `${MESSAGE},` },
+  { name: "store header's help line", from: `${WHATSAPP} or <a href="${TEL}">call</a>`, to: `${MESSAGE}.` },
   {
     name: "setup's contact line",
     from: `${WHATSAPP} or <a href="${TEL}">call us on <span class="mk-nowrap">${SHOWN}</span></a>, or email ${MAILTO}.`,
@@ -131,7 +143,7 @@ export const SELLER_FACTS_COUNTS: Readonly<Record<MockupSlug, Partial<Record<Sel
   refund: { "GSTIN line": 1, "footer's contact line": 1, "legal seller sentence": 1 },
   shipping: { "GSTIN line": 1, "footer's contact line": 1, "legal seller sentence": 1 },
   store: { "help line": 1, "store header's help line": 1, "store footer's seller lines": 1, "store footer's grievance line": 1 },
-  "store-confirmation": { "help line": 1, "store header's help line": 1, "store footer's seller lines": 1, "store footer's grievance line": 1 },
+  "store-confirmation": { "thanks' help line": 1, "store header's help line": 1, "store footer's seller lines": 1, "store footer's grievance line": 1 },
 };
 
 /** The marketing footer's legal row, where `footerOnly` rules apply. */
@@ -258,6 +270,7 @@ export function sellerFactsText(slug: MockupSlug): TextDeviation[] {
 /** Each side's blocks whose height the ruling may change, by the rule that changes them (mockup, build). */
 const HIDDEN_BY_RULE: Readonly<Partial<Record<SellerFactsRuleName, readonly [string, string]>>> = {
   "help line": [".mk-help", ".ks-help"],
+  "thanks' help line": [".mk-help", ".ks-help"],
   "store header's help line": [".mk-store-head__help", ".ks-store-head__help"],
   "setup's contact line": [".mk-setup-help", ".ks-setup-help"],
   "team's answer": [".mk-team-answer", ".ks-team-answer"],

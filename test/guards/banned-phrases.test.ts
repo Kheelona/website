@@ -512,8 +512,9 @@ describe("the expert-clip entries: never a doctor, an endorsement or the video's
     ["ultimate-brain-exercise", "Talking is the ultimate brain workout."],
   ];
 
-  /* The expert fold's own words and the burned captions (expert-video.ts), the D025 line, the journal's advice, and
-   * lines that share an entry's words without its claim. */
+  /* The expert fold's own words (expert-video.ts) and what the clip itself says (its burned-in captions and disclosure
+   * until task Q2.6 took every word off the file, D064 item 8; the earlier play line with "with captions" too, kept as
+   * near misses), the D025 line, the journal's advice, and lines that share an entry's words without its claim. */
   const NEAR_MISSES = [
     "A video from an expert",
     "Watching isn’t talking.",

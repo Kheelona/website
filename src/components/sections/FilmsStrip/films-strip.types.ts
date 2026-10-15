@@ -72,7 +72,9 @@ export interface FilmsStripConfig {
 }
 
 /** One landscape film shown on its own (task 8c.6; D061 items 12-13): the expert clip. Every word is content's
- *  (content/en-IN/expert-video.ts); the captions are burned into the file (DS 08-accessibility, WCAG 1.2.2). */
+ *  (content/en-IN/expert-video.ts). The file carries no burned-in words since task Q2.6 (D064 item 8: the founder took
+ *  the captions and the burned disclosure off, an accepted risk against DS 08-accessibility); the disclosure is on the
+ *  page, under the credit. */
 export interface SingleFilm {
   /** The file under public/ ("/video/expert/expert-clip.mp4"), fetched only once the play control is pressed. */
   readonly video: SitePath;
@@ -80,7 +82,8 @@ export interface SingleFilm {
   readonly poster: Extract<ImageRef, { readonly src: SitePath }>;
   /** The same still as WebP: the video's own poster while the page's optimised still has not loaded yet. */
   readonly still: SitePath;
-  /** On the poster: "0:34 · With captions". The play control says the same in words, so screen readers skip the chip. */
+  /** On the poster: the clip's length, "0:34" ("With captions" left with the captions, task Q2.6). The play control says
+   *  the same in words, so screen readers skip the chip. */
   readonly chip: string;
   /** The play control's accessible name. */
   readonly play: string;

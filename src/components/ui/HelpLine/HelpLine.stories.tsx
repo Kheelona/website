@@ -9,12 +9,11 @@ const icon = (name: IconName) => (
   </svg>
 );
 
+/* The help line's one link and its full stop (seller.ts `help`; the D2C plan v2 §1.1; task Q2.14): a WhatsApp link only,
+   no number, no call (D063 item 2). Its padding makes it a 44 x 44 target (help-line.css). */
 const contact = (
   <>
-    <a href="https://wa.me/919187546483">WhatsApp</a> or{" "}
-    <a href="tel:+919187546483">
-      <span className="ks-nowrap">call +91 91875 46483</span>
-    </a>
+    <a href="https://wa.me/919187546483">Message us on WhatsApp</a>.
   </>
 );
 
@@ -28,21 +27,19 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Beside a CTA (home.html fold 1): `size` body-s, the default. */
+/** Beside a CTA and in every close (home.html fold 1): `size` body-s, the default; one link, a 44 px target. */
 export const Default: Story = {};
 
-/** `size` body: /thanks fold 5 (store-confirmation.html). No lead; the words after the links go inside `contact`. */
+/** `size` body: /thanks fold 5 (store-confirmation.html). No lead; the words after the links go inside `contact`. Two
+ *  links keep the 28 px link box (task 7.1a). */
 export const Body: Story = {
   args: {
     size: "body",
     lead: undefined,
     contact: (
       <>
-        <a href="https://wa.me/919187546483">WhatsApp</a> or{" "}
-        <a href="tel:+919187546483">
-          <span className="ks-nowrap">call +91 91875 46483</span>
-        </a>
-        , quoting your order number, or email <a href="mailto:hello@kheelona.com">hello@kheelona.com</a>.
+        <a href="https://wa.me/919187546483">Message us on WhatsApp</a>, quoting your order number, or email{" "}
+        <a href="mailto:hello@kheelona.com">hello@kheelona.com</a>.
       </>
     ),
   },
@@ -56,25 +53,16 @@ export const BodyL: Story = {
     lead: undefined,
     contact: (
       <>
-        <a href="https://wa.me/919187546483">WhatsApp</a> or{" "}
-        <a href="tel:+919187546483">
-          call us on <span className="ks-nowrap">+91 91875 46483</span>
-        </a>
-        , or email <a href="mailto:hello@kheelona.com">hello@kheelona.com</a>. Tell us your order number, and what you see on Kheelu and in the app.
+        <a href="https://wa.me/919187546483">Message us on WhatsApp</a> or email <a href="mailto:hello@kheelona.com">hello@kheelona.com</a>. Tell
+        us your order number, and what you see on Kheelu and in the app.
       </>
     ),
   },
 };
 
-/** The store header's line, without an icon. */
+/** The store header's line, without an icon: the help line's words (seller.ts `storeHelp`). */
 export const NoIcon: Story = {
   args: {
     icon: undefined,
-    lead: "Need help?",
-    contact: (
-      <>
-        <a href="https://wa.me/919187546483">WhatsApp</a> or <a href="tel:+919187546483">call</a>
-      </>
-    ),
   },
 };

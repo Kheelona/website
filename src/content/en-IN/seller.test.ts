@@ -48,6 +48,7 @@ describe("the GSTIN and the number on the website (D063 items 2-3, D064 item 11;
     for (const [name, line] of [
       ["help line", seller.help.contact],
       ["store header's help line", seller.storeHelp.contact],
+      ["the help line's link, in a sentence", seller.support.message],
       ["footers' contact line", seller.support.footerLine],
       ["the WhatsApp-or-email phrase", seller.support.reach],
     ] as const) {
@@ -103,10 +104,22 @@ describe("the visible lines equal the approved mockup", () => {
     expect(toPlainText(seller.support.line)).toContain("(WhatsApp or call)");
   });
 
-  it("prints the help line every CTA block prints (Home hero), the call off (D063 item 2)", () => {
+  /* The selling update (task Q2.14; the D2C plan v2 §1.1, CMO m9): the help line in the plan's words, "Questions? Message
+     us on WhatsApp.", a WhatsApp link only (no number, no call link: D063 item 2), the full stop after the link. */
+  it("prints the help line every CTA block prints (Home hero) in the plan's words, the call off (D063 item 2)", () => {
     const help = norm(home.querySelector(".mk-help")?.textContent);
     expect(help).toBe("Questions? WhatsApp or call +91 91875 46483");
-    expect(`${seller.help.lead} ${toPlainText(seller.help.contact)}`).toBe("Questions? WhatsApp us");
+    expect(`${seller.help.lead} ${toPlainText(seller.help.contact)}`).toBe("Questions? Message us on WhatsApp.");
+    expect(seller.help.contact).toBe(`[Message us on WhatsApp](${SUPPORT_WHATSAPP_HREF}).`);
+  });
+
+  /* The help line's one link, for the sentences that go on after it (/thanks: "…, quoting your order number"; the machine
+     files' contact line): the same words, without the help line's full stop. */
+  it("names the help line's link once, without its full stop, for the sentences that go on after it", () => {
+    expect(seller.support.message).toBe(`[Message us on WhatsApp](${SUPPORT_WHATSAPP_HREF})`);
+    expect(seller.help.contact).toBe(`${seller.support.message}.`);
+    const links = parseRichText(seller.help.contact).filter((n) => n.kind === "link");
+    expect(links).toHaveLength(1);
   });
 
   /* Task 3.6 item 7. Every no-wrap phone link of the approved mockup puts the no-wrap on the link itself
@@ -136,7 +149,7 @@ describe("the visible lines equal the approved mockup", () => {
   it("prints the store header's help line as every close's: the call off (D063 item 2), “Questions?” as its lead (CMO m9)", () => {
     const help = norm(doc("store").querySelector(".mk-store-head__help")?.textContent);
     expect(help).toBe("Need help? WhatsApp or call");
-    expect(`${seller.storeHelp.lead} ${toPlainText(seller.storeHelp.contact)}`).toBe("Questions? WhatsApp us");
+    expect(`${seller.storeHelp.lead} ${toPlainText(seller.storeHelp.contact)}`).toBe("Questions? Message us on WhatsApp.");
     expect(seller.storeHelp).toEqual(seller.help);
   });
 

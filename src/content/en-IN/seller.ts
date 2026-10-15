@@ -54,8 +54,12 @@ export interface Seller {
     readonly footerLine: RichTextString;
     /** "WhatsApp or email hello@…", for a sentence that offers both (setup's close, two guides; D063 item 2). */
     readonly reach: RichTextString;
+    /** The help line's one link, "Message us on WhatsApp", without the help line's full stop: for the sentences that go
+     *  on after it (/thanks' "…, quoting your order number"; the machine files' contact line). */
+    readonly message: RichTextString;
   };
-  /** The help line beside every chilli button: WhatsApp, no number (D063 item 2). */
+  /** The help line of the closes and the store: "Questions? Message us on WhatsApp.", a WhatsApp link only, no number
+   *  (D063 item 2; the D2C plan v2 §1.1, CMO m9; task Q2.14). */
   readonly help: HelpLineCopy;
   /** The store header's help line: the help line's words since task Q2.12 (one wording everywhere, CMO m9). */
   readonly storeHelp: HelpLineCopy;
@@ -91,8 +95,10 @@ const emailLink = `[${email}](mailto:${email})`;
 const grievanceLead = "Grievance Officer:";
 const grievanceOfficer = "Aman Soni, Co-Founder and CTO, [aman@kheelona.com](mailto:aman@kheelona.com)";
 const grievanceTimes = `We acknowledge every complaint within ${GRIEVANCE_ACK_HOURS} hours and resolve it within ${GRIEVANCE_RESOLUTION} of receiving it.`;
-/** The help lines' one link (D063 item 2: the call came off; WhatsApp stays). */
-const whatsappUs = `[WhatsApp us](${SUPPORT_WHATSAPP_HREF})`;
+/** The help lines' one link (D063 item 2: the call came off; WhatsApp stays), in the D2C plan v2 §1.1's words (task
+ *  Q2.14; CMO m9). The help line ends on a full stop after it: "Questions? Message us on WhatsApp." */
+const messageUs = `[Message us on WhatsApp](${SUPPORT_WHATSAPP_HREF})`;
+const helpLink = `${messageUs}.`;
 
 export const seller = {
   brand: "Kheelona",
@@ -111,16 +117,17 @@ export const seller = {
     line: `${phoneLink} (WhatsApp or call) · ${emailLink}`,
     footerLine: `[WhatsApp](${SUPPORT_WHATSAPP_HREF}) · ${emailLink}`,
     reach: `[WhatsApp](${SUPPORT_WHATSAPP_HREF}) or email ${emailLink}`,
+    message: messageUs,
   },
   help: {
     lead: "Questions?",
-    contact: whatsappUs,
+    contact: helpLink,
   },
   /* The help line's words in the store's header too (the D2C plan v2 §1.1 and §10, CMO m9; task Q2.12): "Questions?" in
      place of the mockup's "Need help?", so a parent reads one help line on every page. */
   storeHelp: {
     lead: "Questions?",
-    contact: whatsappUs,
+    contact: helpLink,
   },
   grievance: {
     name: "Aman Soni",

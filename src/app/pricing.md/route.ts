@@ -79,7 +79,7 @@ export function pricingText(offer: Offer): string {
     `- ${maker.term}: ${plain(maker.value as string)}`,
     /* The WhatsApp address in plain text, as /llms.txt prints it (task Q2.9): the number is on /contact and the legal
        pages only (D063 item 2), so a reader of this file sees how to reach the team here. */
-    `- ${plain(seller.help.contact)}: ${seller.support.whatsapp}`,
+    `- ${plain(seller.support.message)}: ${seller.support.whatsapp}`,
     `- ${seller.support.email}`,
     "",
     `Last updated: ${PRICING_UPDATED}`,
