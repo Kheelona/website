@@ -2788,7 +2788,9 @@ const SELLING_CHATS_JS_OFF: TextDeviation = {
      and that Kheelu's Wi‑Fi is off when it rests, and the product page's "Good to know" gains "Between conversations
      nothing is sent anywhere, and when Kheelu rests, its Wi‑Fi is switched off." after the wake-up line (G28's row asked
      for it "beside the wake-up button"). Both blocks are hidden for the pixels already: the "never" list whole
-     (SAFETY_SELLING_LAYOUT_HIDDEN) and Good to know whole (SELLING_UPDATE's hide).
+     (SAFETY_SELLING_LAYOUT_HIDDEN) and Good to know whole (SELLING_UPDATE's hide);
+   - item 3, one more button on the product page, right after the comparison (`product-compare`): the comparison is task
+     Q2.10's added fold, so the block's lines take a text rule of their own (PRODUCT_COMPARE_CTA, below), not an edit.
    In page-facts.ts's form, applied after each page's earlier rules, the last of them in a pass of its own (FOUNDER_ANSWERS
    _PASSES): `edits` turn that mockup into the build, and `mockup` and `build` are the sentences they change, for the text
    pass (src/content/en-IN/pages/parity-deviations.test.ts proves them exactly those, and each route's test holds the
@@ -2867,6 +2869,17 @@ export const FOUNDER_ANSWERS = {
   },
 } as const satisfies Readonly<Record<string, PageFacts>>;
 export type FounderAnswersSlug = keyof typeof FOUNDER_ANSWERS;
+/** Item 3 (D066; the CMO's CMO-8): the product page's CTA block right after the comparison (`product-compare`): its
+ *  button, the short price line and the trust line, each printed once more. The comparison is task Q2.10's added fold
+ *  (SELLING_ADDITIONS), which the approved page lacks and the visual pass hides whole on the build's side, so the block
+ *  needs no hide of its own and no edit: a text rule accepts its lines and excuses nothing. */
+export const PRODUCT_COMPARE_CTA = ["Pre-order Kheelu", ...sentences(PRICE_LINE.sentence.build), PRICE_LINE.returns.build, PRICE_LINE.delivery] as const;
+const PRODUCT_COMPARE_CTA_TEXT: TextDeviation = {
+  mockup: /(?!)/,
+  build: oneOf(PRODUCT_COMPARE_CTA),
+  reason: "the CTA block after the comparison (D066 item 3): its button, the short price line and the trust line, once more each",
+  approvedBy: FOUNDER_ANSWERS_APPROVED,
+};
 /** The passes a page's earlier rules make before task Q2.17's, each a pass of its own, in the order each route's test
  *  applies them: the mockup the founder's answers start from. */
 export const FOUNDER_ANSWERS_PASSES: Readonly<Record<FounderAnswersSlug, readonly (readonly FactEdit[])[]>> = {
@@ -3360,7 +3373,9 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     /* The languages question (task 8c.4, D061): FAQ_FIXES above. Its answer sits in a closed item, which the text pass
        does not read; faqs.test.ts and the route's unit test hold it. */
     factsRule(FAQ_FIXES["meet-kheelu"]),
-    /* The founder's answers on the built selling update (task Q2.17, D066): FOUNDER_ANSWERS above, the page's last. */
+    /* The founder's answers on the built selling update (task Q2.17, D066): the CTA block after the comparison, then
+       FOUNDER_ANSWERS above, the page's last. */
+    PRODUCT_COMPARE_CTA_TEXT,
     factsRule(FOUNDER_ANSWERS["meet-kheelu"]),
   ],
   /* The open FAQ answer and the closed one's "At 3:" line (V19, task 7.1b): COPY_FIXES above. The selling update (task

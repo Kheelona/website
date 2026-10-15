@@ -66,7 +66,7 @@ import type { Copy } from "@/content/types";
  *   selling sections, and the offer for every section that prints words through RichText;
  * - the slots, composed from content: a CTA block (CtaBlock, task 3.2) under a hero, after a films strip, last in
  *   a trust fold or last in an example conversation's column (task Q2.10) (since task Q2.9 also after a feature fold's
- *   words and a sticky scroll's line); setup's Wi-Fi tip after a ticks fold; the guide's inline sources inside the FAQ column; an
+ *   words and a sticky scroll's line; since task Q2.17 right after a comparison); setup's Wi-Fi tip after a ticks fold; the guide's inline sources inside the FAQ column; an
  *   article's answer before and sources after its body. Sections never import each other's selling parts (3.3).
  * Each slot is typed only where its section draws it, so content can never pass one that would be silently dropped.
  * `.ts`, not `.tsx`: the file the plan names; `createElement` stands in for JSX.
@@ -107,7 +107,8 @@ export interface SectionEntries {
   "modes-section": { readonly config: ModesSectionConfig; readonly faq?: true };
   /** The CTA block goes last in the fold; `faq`: each titled item is a question of the page's FAQPage (/safety). */
   "trust-section": { readonly config: TrustSectionConfig; readonly cta?: CtaBlockConfig; readonly faq?: true };
-  "compare-by-category": { readonly config: CompareByCategoryConfig };
+  /** The CTA block goes right after the comparison (task Q2.17: the product page's `product-compare`, D066 item 3). */
+  "compare-by-category": { readonly config: CompareByCategoryConfig; readonly cta?: CtaBlockConfig };
   "card-grid": { readonly config: CardGridConfig };
   /** `howTo`: the page's HowTo, from these very steps (/setup). */
   "steps-section": { readonly config: StepsSectionConfig; readonly howTo?: HowToCopy };
@@ -173,7 +174,7 @@ const REGISTRY: { readonly [K in SectionKind]: Renderer<K> } = {
     }),
   "modes-section": (e, ctx) => createElement(ModesSection, { ...e.config, offer: ctx.offer }),
   "trust-section": (e, ctx) => createElement(TrustSection, { ...e.config, offer: ctx.offer, cta: ctaBlock(e.cta, ctx) }),
-  "compare-by-category": (e, ctx) => createElement(CompareByCategory, { ...e.config, offer: ctx.offer }),
+  "compare-by-category": (e, ctx) => createElement(CompareByCategory, { ...e.config, offer: ctx.offer, cta: ctaBlock(e.cta, ctx) }),
   "card-grid": (e, ctx) => createElement(CardGrid, { ...e.config, offer: ctx.offer }),
   "steps-section": (e, ctx) => createElement(StepsSection, { ...e.config, offer: ctx.offer }),
   "faq-section": (e, ctx) =>

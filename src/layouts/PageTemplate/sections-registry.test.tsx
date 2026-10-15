@@ -198,6 +198,16 @@ describe("the section registry: slots", () => {
     expect(host.querySelector(".ks-exchange__lines")?.compareDocumentPosition(host.querySelector(".kh-btn--cta")!)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
 
+  /* Task Q2.17 (D066 item 3): the product page's comparison ends on its button, `product-compare`, after the table. */
+  it("composes a comparison's CTA block right after the comparison", () => {
+    const compare = { ...ENTRY_FIXTURES["compare-by-category"], cta: { ...CTA_BLOCK, cta: "product-compare", align: "center" } } as const satisfies SectionEntry;
+    const ctx = context(TOKEN);
+    expect(markup(renderSection(compare, ctx))).toBe(markup(<CompareByCategory {...compare.config} offer={TOKEN} cta={<CtaBlock {...compare.cta} {...ctx} />} />));
+    const host = dom(renderSection(compare, ctx));
+    expect(host.querySelector(".kh-btn--cta")?.getAttribute("data-ph-capture-attribute-cta")).toBe("product-compare");
+    expect(host.querySelector(".kh-compare-wrap")?.nextElementSibling?.querySelector(".kh-btn--cta")).not.toBeNull();
+  });
+
   it("puts setup's Wi-Fi tip after the checklist of a ticks fold", () => {
     const ticks = {
       kind: "feature-split",

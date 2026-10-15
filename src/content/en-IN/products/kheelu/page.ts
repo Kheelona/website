@@ -346,6 +346,10 @@ export const kheeluPage = {
         ],
         caption: "Kinds of products, not brands: what each one usually does.",
       },
+      /* One more button, right after the comparison (D066 item 3, task Q2.17; the CMO's CMO-8): "Pre-order Kheelu", the
+         short price line and the trust line in the one CTA shape (R2), centred under the centred heading; no help line
+         (the D2C plan v2 §1.1). */
+      cta: { cta: "product-compare", align: "center", trust: COMPACT },
     },
     /* Safety in one line (task Q2.10; D064 item 2; the D2C plan v2 §3 fold 9, ruling 8): the facts live on /safety, which
        now carries the parent app's every-conversation fold too (task Q2.11). The built link "See how we built safety in"
