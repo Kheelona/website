@@ -15,7 +15,7 @@ import { expertClip, expertFold } from "@/content/en-IN/expert-video";
 import { filmQuotes } from "@/content/en-IN/films";
 import { faqs } from "@/content/en-IN/faqs";
 import { navigation } from "@/content/en-IN/navigation";
-import { RETENTION_LINE } from "@/content/en-IN/policies";
+import { RETENTION_LINE, RETENTION_MONTHS } from "@/content/en-IN/policies";
 import { product } from "@/content/en-IN/products/kheelu/product";
 import { inAppNote } from "@/content/en-IN/store/in-app-note";
 import { paymentsLine } from "@/content/en-IN/store/payments-line";
@@ -1578,9 +1578,9 @@ export const SAFETY_SELLING_LINES = {
       "A real parent-app activity screen: a child’s talking time, chats and questions asked today, and each conversation listed by its first words.",
     caption: APP_CAPTION,
   },
-  /** Fold 5's privacy screen, its alt as G26 has it (the plan v2 §4 fold 5). */
+  /** Fold 5's privacy screen, its alt as G26 has it (the plan v2 §4 fold 5); the months read from policies.ts, as the page's do. */
   privacyAlt:
-    "A real screen from the Kheelu parent app: the privacy centre. Chats are kept for 36 months, with a switch to save voice recordings and buttons to download your child’s data and to delete all chats.",
+    `A real screen from the Kheelu parent app: the privacy centre. Chats are kept for ${RETENTION_MONTHS} months, with a switch to save voice recordings and buttons to download your child’s data and to delete all chats.`,
   /** The controls' link that goes (its target, the product page's app fold, has left). */
   appLink: "See what the app shows you",
   /** Fold 6's second paragraph: task 8b.1's two sentences, then the second alone. */

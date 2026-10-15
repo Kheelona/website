@@ -9,7 +9,8 @@ import type { SectionHeading, SectionLink } from "@/components/sections/FeatureS
  *   then the page's CTA block;
  * - `facts`: the safety page's four facts in full (fold 2, `#facts`), as an ordered list, the tummy unit beside the
  *   heading;
- * - `never`: the safety page's "What you won't find" (fold 3), five items, three then two from 1024 px;
+ * - `never`: the safety page's "What you won't find" (fold 3): six items since task Q2.11 (the daily limit, D065 item 5),
+ *   three and three from 1024 px (the approved five laid out three then two);
  * - `meets`: the buyer's guide's answers to the five checks (fold 3), in the checks' order, then a pointer line;
  * - `pointer` (task Q2.10; the D2C plan v2 §3 fold 9): the product page's safety in one line that points to /safety,
  *   then the link there: no heading and no facts, a tight section named by its line. */

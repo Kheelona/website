@@ -28,8 +28,10 @@ const BELLY_SIZES = "(min-width: 900px) 300px, 200px";
  *   facts stay one column and whose screen stays in view (sticky) on laptops.
  * - `facts` (safety.html fold 2, `#facts`): the tummy unit beside the heading (`ks-sf-belly`), the four facts in full
  *   as an ordered list.
- * - `never` (safety.html fold 3): five items, revealing, the last spanning both columns from 720 px, three then two
- *   from 1024 px (`ks-sf-never`); a closing link.
+ * - `never` (safety.html fold 3): six items since task Q2.11 (the daily limit, D065 item 5), revealing, two to a row
+ *   from 720 px and three and three from 1024 px (`ks-sf-never`); a closing link. The approved five laid out the last
+ *   spanning both columns from 720 px, then three then two from 1024 px (`ks-trust--span-last` widens an odd last item
+ *   only), and the CSS still does for five.
  * - `meets` (ai-toys-for-kids-in-india.html fold 3): the five answers as an ordered list, revealing, the last
  *   spanning both columns from 720 px (`ks-gd-answers`), the pointer line (`ks-gd-pointer`) and a closing link.
  * - `pointer` (task Q2.10; the D2C plan v2 §3 fold 9): the product page's safety in one line, centred, then the ghost
