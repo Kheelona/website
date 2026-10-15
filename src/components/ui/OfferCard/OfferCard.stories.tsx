@@ -90,3 +90,8 @@ export const FullMode: Story = { args: { offer: full } };
 /** Without the fine print: the price block stands in for the short price line, so it is not repeated (Home's offer,
  *  the D2C plan v2 §2 fold 7; task Q2.9). */
 export const WithoutFinePrint: Story = { args: { fine: false } };
+/** As both offer cards print it since task Q2.13 (the D2C plan v2 §2 fold 7, §3 fold 3): the Kheelona+ note after the
+ *  perks, before the button, and the price printed once (no fine print). */
+export const WithNote: Story = {
+  args: { fine: false, note: "Kheelona+ is our paid subscription, on top of the free parent app." },
+};

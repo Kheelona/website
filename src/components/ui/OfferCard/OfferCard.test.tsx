@@ -109,6 +109,35 @@ describe("OfferCard", () => {
     }
   });
 
+  /* Task Q2.13 (the D2C plan v2 §2 fold 7 and §3 fold 3; the main session's OK for the slot): both cards print the small
+     Kheelona+ note under the perks, inside the card, before the button; under the button only the trust line, the third
+     row and the share link (OfferSection). */
+  const NOTE = "Kheelona+ is our paid subscription, on top of the free parent app.";
+
+  it.each([
+    ["token", TOKEN],
+    ["full", FULL],
+  ] as const)("prints the note after the perks and before the button, as small text of its own (%s mode)", (_mode, offer) => {
+    const el = card(<OfferCard offer={offer} perks={PERKS} action={action} note={NOTE} fine={false} />);
+    const order = [...el.children].map((c) => `${c.tagName}.${c.className}`);
+    expect(order.slice(-3)).toEqual(["UL.kh-offer__list", "P.kh-body-s ks-offer__note", "A.kh-btn kh-btn--cta kh-btn--l kh-btn--block"]);
+    expect(el.querySelector(".ks-offer__note")?.outerHTML).toBe(`<p class="kh-body-s ks-offer__note">${NOTE}</p>`);
+  });
+
+  it("takes rich content in the note slot, rendered inside the one paragraph", () => {
+    const el = card(<OfferCard offer={TOKEN} perks={PERKS} action={action} note={<span>{NOTE}</span>} />);
+    expect(el.querySelectorAll(".ks-offer__note")).toHaveLength(1);
+    expect(el.querySelector(".ks-offer__note")?.innerHTML).toBe(`<span>${NOTE}</span>`);
+    // The fine print, where a placement keeps it, still follows the button.
+    expect([...el.children].slice(-3).map((c) => c.className)).toEqual(["kh-body-s ks-offer__note", "kh-btn kh-btn--cta kh-btn--l kh-btn--block", "kh-offer__fine"]);
+  });
+
+  it("prints no note when none is passed: the perks lead straight to the button", () => {
+    const el = card(<OfferCard offer={TOKEN} perks={PERKS} action={action} />);
+    expect(el.querySelector(".ks-offer__note")).toBeNull();
+    expect(el.querySelector(".kh-offer__list")?.nextElementSibling?.tagName).toBe("A");
+  });
+
   it("never shows a split in full mode, even if one is passed by mistake", () => {
     const stale = { ...FULL, card: { ...FULL.card, split: SPLIT } };
     expect(card(<OfferCard offer={stale} perks={PERKS} action={action} />).querySelector(".kh-offer__split")).toBeNull();

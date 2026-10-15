@@ -6,3 +6,9 @@
   flex-basis: 100%;
   margin: 0;
 }
+
+/* The note after the perks (task Q2.13; the D2C plan v2 §2 fold 7 and §3 fold 3): the Kheelona+ line, small, inside the
+   card and before the button. The DS's kh-body-s, as the later price; the card's grid gap spaces it, so no margin. */
+.ks-offer__note {
+  margin: 0;
+}

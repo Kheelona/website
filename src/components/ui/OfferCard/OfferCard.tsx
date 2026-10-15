@@ -15,7 +15,13 @@ import { offerWords, PriceSentence } from "@/components/ui/PriceSentence/PriceSe
  * writes the CTA tracking value. The card never moves on arrival (architecture §11.2), so it takes no reveal hook.
  *
  * The fine print is left out where the placement asks (`fine={false}`): the D2C plan v2 §2 fold 7 has the card's price
- * block stand in for the price line on Home's offer, so the line is not repeated (task Q2.9's review).
+ * block stand in for the price line on Home's offer, so the line is not repeated (task Q2.9's review); the product page's
+ * card prints the price once too since task Q2.13 (§3 fold 3).
+ *
+ * The note (task Q2.13; the D2C plan v2 §2 fold 7 and §3 fold 3, the main session's OK for the slot): a small line of its
+ * own after the perks and before the button, inside the card (both cards print the Kheelona+ note there, offer.ts
+ * `PLUS_NOTE`), so under the button only the trust line, the card's third row and the share link follow (OfferSection).
+ * Its type is the DS's kh-body-s, as the later price's; the card's grid gap spaces it (`ks-offer__note`, offer-card.css).
  *
  * The later price (D061 item 3; task 8c.2): in token mode only, a plain line in the DS card's later-price place, the
  * prices row where the DS draws `was`, on a row of its own (`ks-offer__later`, offer-card.css). Never the DS's
@@ -37,11 +43,13 @@ export interface OfferCardProps {
   /** The parent's composition class, added after the DS class. */
   className?: string;
   /** The short price line as fine print under the button (default). `false` where the card's price block stands in for
-   *  it, so the price is not repeated: Home's offer since task Q2.9 (the D2C plan v2 §2 fold 7). */
+   *  it, so the price is not repeated: both offer cards since task Q2.13 (the D2C plan v2 §2 fold 7, §3 fold 3). */
   fine?: boolean;
+  /** A small line after the perks and before the button (task Q2.13): its words, rendered inside the card's paragraph. */
+  note?: ReactNode;
 }
 
-export function OfferCard({ offer, perks, action, label, id, className, fine = true }: OfferCardProps) {
+export function OfferCard({ offer, perks, action, label, id, className, fine = true, note }: OfferCardProps) {
   const Root = label !== undefined ? "section" : "div";
   const split = offer.mode === "token" ? (offer.card.split ?? []) : [];
   const later = offer.mode === "token" ? offer.card.later : undefined;
@@ -67,6 +75,7 @@ export function OfferCard({ offer, perks, action, label, id, className, fine = t
           </li>
         ))}
       </ul>
+      {note !== undefined && <p className="kh-body-s ks-offer__note">{note}</p>}
       {action}
       {fine && <PriceSentence offer={offer} variant="offer-fine" />}
     </Root>
