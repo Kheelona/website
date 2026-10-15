@@ -1,7 +1,7 @@
 ---
 title: "Meet Kheelu (/products/kheelu): page copy, Gate A mockup draft"
 type: page-copy
-updated: 2026-10-14
+updated: 2026-10-15
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - ../strategy.md (§3.1-3.5 CTA rules, §4 URL plan, §5 product-page row, §7 search rules)
@@ -26,6 +26,7 @@ sources:
   - "../../qa/live-main-reconciliation-2026-10-14.md (§1 P11-P12, T3; §2 the table of withdrawn claims, with the live team's wording from origin/main c630a49, PR #19, and dd04e6d, PR #18; task 8b.1)"
   - "src/content/en-IN/products/kheelu/page.ts:155, 174-187, 208-222, product.ts:105, 116, 131, offer.ts:17, faqs.ts:86, 111, read 2026-10-14 for the built lines task 8b.1 changes"
   - "../../qa/cmo-review-claims-8b.1-2026-10-14.md (round 2 of task 8b.1: m7, m11, m6 as questions 11, 12 and 14; no Copy block change)"
+  - "../d2c-conversion-plan-2026-10-15.md (v2 §3, the product page; D064, D065; task Q2.10: the metas and every fold the plan changes)"
 ---
 
 # Meet Kheelu (`/products/kheelu`): page copy
@@ -61,8 +62,8 @@ sources:
 | Page job | The selling page and default ad landing: tell, prove and sell on one page ([strategy §5](../strategy.md#5-each-page-purpose-primary-cluster-outline), line 205) |
 | Primary search cluster | **toys that talk back** (BUY-4, [keyword map §4.1](../../research/keyword-map.md#41-marketing-pages-13), lines 140, 218) |
 | Meta title (56 characters) | Kheelu by Kheelona: the toy that talks back, ages 3 to 7 |
-| Meta description, token mode (152 characters) | Kheelu, the screen-free toy that talks back: it answers your child, then asks a question back. Ages 3 to 7. ₹4,999`{price-source}` (incl. GST); ₹499`{price-source}` refundable advance. |
-| Meta description, full mode (146 characters) | Kheelu, the screen-free toy that talks back: it answers your child, then asks a question back. Ages 3 to 7. ₹7,999`{price-source}` (incl. GST), delivery included. |
+| Meta description, token mode (149 characters) | Kheelu, the screen-free toy that talks back: it answers your child, then asks a question back. Ages 3 to 7. ₹4,999`{price-source}` in total; ₹499`{price-source}` refundable advance. |
+| Meta description, full mode (143 characters) | Kheelu, the screen-free toy that talks back: it answers your child, then asks a question back. Ages 3 to 7. ₹7,999`{price-source}` in total, delivery included. |
 | H1 (recommended, option A) | Kheelu talks back. The good kind. |
 | CTA label, everywhere | Pre-order Kheelu → `store.html` (real: `https://store.kheelona.com`, same tab) ([D041](../../decisions/D041-gate-a-round-1.md) line 16) |
 | Price sentence, token mode (option (d), 18 words) | Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST). |
@@ -1123,3 +1124,18 @@ m7 (fold 6 item 3, once the builder crops the "Delete all chats" button: questio
 m11 (the test and doesn't-know lines: question 12 now covers all three) and m6 ("from our servers": question 14,
 new). m14 (the four thinking skills, now on no page) needs no copy change: fold 5's H2 "Their week, in four thinking
 skills." and its chips come back when the weekly report ships, and the main session logs it for the founder and SKM.
+
+## Changes after approval (task Q2.10)
+
+The selling update ([D064](../../decisions/D064-quick-batch-2-landing-page-and-motion-2026-10-15.md),
+[D065](../../decisions/D065-selling-site-founder-answers-2026-10-15.md); the copy is the
+[D2C conversion plan v2 §3](../d2c-conversion-plan-2026-10-15.md#3-the-product-page-productskheelu), checked by the
+claims guard and the [CMO](../../qa/cmo-review-d2c-plan-v2-2026-10-15.md)). Recorded here by the builder of task Q2.10
+only where this page's rows are read by a test (`test/metadata-lengths.test.ts` reads the two meta rows); the plan holds
+every other changed line. The founder signs them at Gate B ([D015](../../decisions/D015-founder-signs-off-copy.md)).
+
+| # | Where | What changed | Why |
+|---|---|---|---|
+| 1 | Both metas | "(incl. GST)" becomes "in total" (152 and 146 characters become 149 and 143); the total still leads in token mode ([D028](../../decisions/D028-price-wording.md)) | D065 item 3; plan v2 §3 "Product page: title, meta, keywords" |
+| 2 | The page's folds | Twelve folds in the plan's order: the hero's eyebrow and lead; the offer card after the films; the steps; three sample chats on tabs with their own button (`product-ask`); "instead of guessing" and the daily limit in Good to know; the comparison from Home; safety as one line to `/safety`. The parent-app and safety folds go to `/safety`, the expert clip to Home | Plan v2 §3 folds 1-12 |
+| 3 | Fold 8, the questions | The price question leads with the total, without GST or the balance (`faqs.ts` `cost-and-advance`); "When does delivery start?" leaves the page; "Will Kheelona+ charge me after the 6 months?" (`after-six-months`) follows the first-week question. In the plan's exact words the new answers are 37 words (token mode) and 31 (full mode) for the price, and 31 for Kheelona+, under [architecture §9.5](../../engineering/architecture.md)'s 40-60; the main session rules on them | D065 items 3, 4 and 6; plan v2 §3 fold 11 |
