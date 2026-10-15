@@ -215,3 +215,24 @@ describe("Card", () => {
     expect(card(<Card title="x" reveal />).getAttribute("data-reveal")).toBe("");
   });
 });
+
+/* Task Q2.5 (D064 item 10): a card with a link lifts a little on hover, and on keyboard focus of its link. The lift and
+ * the arrow's nudge are motion.css's (transform only, nothing under reduced motion); the lifted card's look is Card's
+ * own: the DS shadow for what floats (DS README: shadow-lift), on pointer devices for hover, and on keyboard focus. The
+ * hook is the DS markup (a `kh-card` holding a `kh-card__link`), so no card's markup changes. */
+describe("Card: the lifted state of a card with a link (task Q2.5)", () => {
+  const SOURCE = readFileSync(join(process.cwd(), "src/components/ui/Card/card.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ");
+
+  it("takes the DS lift shadow on hover with a fine pointer only, and on keyboard focus of its link", () => {
+    expect(SOURCE).toContain("@media (hover: hover) and (pointer: fine) { .kh-card:has(.kh-card__link):hover { box-shadow: var(--shadow-lift); } }");
+    expect(SOURCE).toContain(".kh-card:has(.kh-card__link:focus-visible) { box-shadow: var(--shadow-lift); }");
+  });
+
+  it("is a card that renders a kh-card__link: the single link and the contact cards' row both", () => {
+    const one = card(<Card title="x" link={{ href: "/stories", label: "Read" }} />);
+    const row = card(<Card title="x" links={[{ href: "/contact", label: "Email" }]} />);
+    expect(one.matches(".kh-card:has(.kh-card__link)")).toBe(true);
+    expect(row.matches(".kh-card:has(.kh-card__link)")).toBe(true);
+    expect(card(<Card title="x" body="no link" />).matches(".kh-card:has(.kh-card__link)")).toBe(false);
+  });
+});

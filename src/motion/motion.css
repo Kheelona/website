@@ -17,6 +17,10 @@
 :root {
   --ks-nudge: 5px; /* pick 6B: the arrow's hover nudge, the value D049 names (not a DS step; --space-1 is 4px) */
   --ks-film-focus: 1.05; /* pick 8B: the film in focus, one value inside D049's 1.04 to 1.1 */
+  /* D064 item 10: a stroke before it draws (a heading's Mark, the nav link's underline) has no width. A zero needs no
+     token (test/guards/token-exceptions.ts ZERO); it is named here because no-off-token's scale rule reads any digit
+     after "scale(" as a size. */
+  --ks-stroke-start: 0;
 }
 
 /* In-page anchor jumps (skip link, "#faq") glide, as in the approved mockup (mockup.css); reduced motion jumps.
@@ -103,6 +107,43 @@ html.js-motion .ks-doodle[data-draw][data-draw-order="5"].is-in .ks-doodle__fill
   to { stroke-dashoffset: 0; }
 }
 
+/* ---------- D064 item 10. Line drawing: a heading's one accent writes or draws itself, once ----------
+   A section heading carries at most one accent (DS 10-pages.md:39): a Hand phrase (kh-hand) or a crayon Mark
+   (kh-mark), the spans RichText renders. MotionController takes the accent of an h2 or h3 as a target, so its server
+   HTML is the DS's own; an h1's accent (the hero, pick 2A) is never one, and an accent on screen at load is shown
+   drawn. Below the first screen it waits, then, once it enters and the block around it has risen (--duration-enter):
+   - the Hand writes itself in: it fades in while moving in from the left (one --space-2, so it never touches the word
+     before it), and settles on the DS's own tilt (the keyframes give only the start; the end is the element's own
+     style, bundle.css .kh-hand). A wipe of the words themselves would need two more spans inside the Hand (a clipping
+     window and its counter-moving ink), which changes the server HTML the mockup-parity tests compare exactly;
+     transform and opacity only;
+   - the Mark draws its crayon stroke from the left: its ::after grows from no width to its own (transform-origin at
+     its left end). The DS stroke is a CSS mask on ::after, not an SVG path, so it has no dash to offset; a scale
+     from the left is the same reveal in transform only.
+   Both over --duration-draw on --ease-standard, as the doodles; `backwards` holds the start through the wait and
+   nothing after the draw. Without JavaScript or with reduced motion, js-motion never arrives: both simply show. */
+html.js-motion :is(h2, h3) .kh-hand:not(.is-in) {
+  opacity: 0;
+}
+html.js-motion :is(h2, h3) .kh-hand.is-in {
+  animation: ks-write var(--duration-draw) var(--ease-standard) var(--duration-enter) backwards;
+}
+html.js-motion :is(h2, h3) .kh-mark::after {
+  transform-origin: left center;
+}
+html.js-motion :is(h2, h3) .kh-mark:not(.is-in)::after {
+  transform: scaleX(var(--ks-stroke-start));
+}
+html.js-motion :is(h2, h3) .kh-mark.is-in::after {
+  animation: ks-stroke var(--duration-draw) var(--ease-standard) var(--duration-enter) backwards;
+}
+@keyframes ks-write {
+  from { opacity: 0; transform: translateX(calc(var(--space-2) * -1)); }
+}
+@keyframes ks-stroke {
+  from { transform: scaleX(var(--ks-stroke-start)); }
+}
+
 /* ---------- 4A. Phone buy bar slides up ----------
    StickyBuyBar toggles .is-hidden: hidden until the hero CTA leaves, and while an inline chilli CTA is on screen
    (G-09). Position, safe-area padding and the 900 px cut-off are the bar's own CSS. */
@@ -140,6 +181,53 @@ dialog.kh-drawer[open]::backdrop {
   .kh-btn--cta:hover .ks-btn__arrow {
     transform: translateX(var(--ks-nudge));
   }
+}
+/* Keyboard focus shows the hover's state (D064 item 10). */
+.kh-btn--cta:focus-visible .ks-btn__arrow {
+  transform: translateX(var(--ks-nudge));
+}
+
+/* ---------- D064 item 10. Micro-interactions: feedback the visitor starts ----------
+   Hover only on pointer devices (a phone's tap leaves no hover behind); keyboard focus shows the same state; presses
+   (DS README "Motion": presses and hovers take --duration-fast) on every device. Transform only, so nothing shifts
+   layout; under reduced motion nothing moves (the block at the end). The look of each state (the card's shadow, the
+   underline's place and colour) is its component's own CSS (card.css, nav-bar.css).
+   - A card with a link (`kh-card` holding a `kh-card__link`: Home's guides, the hub's guide cards, the contact route
+     cards, the founders) lifts one DS step, and its link's arrow nudges as the chilli button's does.
+   - A ghost link's end arrow ("See all questions", "Read the guide") nudges the same way.
+   - The nav link's underline slides in from the left: its ::after (nav-bar.css) grows to its full width.
+   - A tag or chip that is a link or a button (the hub's topics) presses half a DS step. */
+.kh-card:has(.kh-card__link),
+.kh-card__link .kh-icon,
+.kh-btn--ghost > span + .kh-icon,
+.kh-nav__link::after,
+:is(a, button):is(.kh-tag, .kh-chip) {
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+@media (hover: hover) and (pointer: fine) {
+  .kh-card:has(.kh-card__link):hover {
+    transform: translateY(calc(var(--space-1) * -1));
+  }
+  .kh-card:has(.kh-card__link):hover .kh-card__link .kh-icon,
+  .kh-btn--ghost:hover > span + .kh-icon {
+    transform: translateX(var(--ks-nudge));
+  }
+  .kh-nav__link:hover::after {
+    transform: none;
+  }
+}
+.kh-card:has(.kh-card__link:focus-visible) {
+  transform: translateY(calc(var(--space-1) * -1));
+}
+.kh-card__link:focus-visible .kh-icon,
+.kh-btn--ghost:focus-visible > span + .kh-icon {
+  transform: translateX(var(--ks-nudge));
+}
+.kh-nav__link:focus-visible::after {
+  transform: none;
+}
+:is(a, button):is(.kh-tag, .kh-chip):active {
+  transform: translateY(calc(var(--space-1) / 2));
 }
 
 /* ---------- 7B. FAQ answers open smoothly ----------
@@ -269,6 +357,35 @@ html[data-buybar="shown"] .ks-wa.is-hidden {
   }
   .kh-btn--cta:hover .ks-btn__arrow,
   .ks-film.is-focus .ks-film__frame {
+    transform: none;
+  }
+  /* D064 item 10: an accent shows at once, drawn; no hover, focus or press moves anything (the nav link's underline
+     still shows on hover and focus, at once: a state, not a movement). */
+  html.js-motion :is(h2, h3) .kh-hand:not(.is-in),
+  html.js-motion :is(h2, h3) .kh-hand.is-in {
+    opacity: 1;
+    animation: none;
+  }
+  html.js-motion :is(h2, h3) .kh-mark:not(.is-in)::after,
+  html.js-motion :is(h2, h3) .kh-mark.is-in::after {
+    transform: none;
+    animation: none;
+  }
+  .kh-card:has(.kh-card__link),
+  .kh-card__link .kh-icon,
+  .kh-btn--ghost > span + .kh-icon,
+  .kh-nav__link::after,
+  :is(a, button):is(.kh-tag, .kh-chip) {
+    transition: none;
+  }
+  .kh-btn--cta:focus-visible .ks-btn__arrow,
+  .kh-card:has(.kh-card__link):hover,
+  .kh-card:has(.kh-card__link:focus-visible),
+  .kh-card:has(.kh-card__link):hover .kh-card__link .kh-icon,
+  .kh-card__link:focus-visible .kh-icon,
+  .kh-btn--ghost:hover > span + .kh-icon,
+  .kh-btn--ghost:focus-visible > span + .kh-icon,
+  :is(a, button):is(.kh-tag, .kh-chip):active {
     transform: none;
   }
   .ks-wa__label {

@@ -17,8 +17,9 @@ export interface NavBarProps {
 
 /**
  * The marketing site's navigation: the DS NavBar (`kh-nav`) exactly as mockup/partials/nav.html composes it. On phones
- * the logo and the menu button only, so the hero's chilli button is the one in view; from 1024 px the four links and
- * the small chilli button (`ks-nav-cta`, nav-bar.css; G-06, D041), tracked `navbar`. A server component: the links
+ * the logo and the menu button only, so the hero's chilli button is the one in view; from 900 px the four links and
+ * the small chilli button (`ks-nav-cta`, nav-bar.css; G-06, D041), tracked `navbar`, in a bar that sticks to the top
+ * (task Q2.5). A server component: the links
  * and the menu button are the small client parts in NavBar.client.tsx; the chilli button is rendered here and never
  * reaches a client bundle (wave-2 close ruling).
  */

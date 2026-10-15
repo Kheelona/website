@@ -1121,11 +1121,14 @@ describe("motion.css", () => {
     all = selectors.join("\n");
   });
 
-  // Architecture §11.3 (hooks) and §11.2 (the DS classes each preset acts on).
+  // Architecture §11.3 (hooks) and §11.2 (the DS classes each preset acts on). Task Q2.5 (D064 item 10) adds the DS
+  // classes its line drawing and micro-interactions act on: a heading's accent (kh-hand, kh-mark), a card with a link
+  // and its arrow (kh-card, kh-card__link, kh-icon), the nav link's underline, the ghost link's arrow, tags and chips.
   const CONTRACT_CLASSES = new Set([
     "js-motion", "is-in", "is-focus", "is-hidden", "ks-doodle", "ks-doodle__fill", "ks-btn__arrow", "kh-btn--cta",
     "ks-faq__clip", "kh-faq__item", "kh-faq__sign", "ks-film", "ks-film__frame", "kh-buybar", "kh-drawer", "kh-drawer__panel",
     "ks-wa", "ks-wa__label", "ks-has-float", "kh-sticker",
+    "kh-hand", "kh-mark", "kh-card", "kh-card__link", "kh-icon", "kh-nav__link", "kh-btn--ghost", "kh-tag", "kh-chip",
   ]);
   // data-scroll-behavior is Next 16's own opt-in on <html>, set by the root layout (see the scroll-behavior test).
   const CONTRACT_ATTRIBUTES = new Set(["data-reveal", "data-draw", "data-draw-order", "data-buybar", "open", "pathLength", "data-scroll-behavior"]);
@@ -1153,6 +1156,13 @@ describe("motion.css", () => {
       ["8B film focus", /\.ks-film\.is-focus \.ks-film__frame/],
       ["D050 lift", /html\[data-buybar="shown"\] \.ks-wa/],
       ["D050 label", /\.ks-wa__label/],
+      ["D064 hand writes", /html\.js-motion :is\(h2, h3\) \.kh-hand\.is-in/],
+      ["D064 mark draws", /html\.js-motion :is\(h2, h3\) \.kh-mark\.is-in::after/],
+      ["D064 card lift", /\.kh-card:has\(\.kh-card__link\):hover/],
+      ["D064 card arrow", /\.kh-card__link:focus-visible \.kh-icon/],
+      ["D064 nav underline", /\.kh-nav__link:hover::after/],
+      ["D064 ghost arrow", /\.kh-btn--ghost:hover > span \+ \.kh-icon/],
+      ["D064 tag press", /:is\(a, button\):is\(\.kh-tag, \.kh-chip\):active/],
     ];
     for (const [row, pattern] of rows) expect(all, row).toMatch(pattern);
     expect(css).toMatch(/@supports selector\(::details-content\)/);
@@ -1160,6 +1170,91 @@ describe("motion.css", () => {
     expect(css).toMatch(/translateX\(var\(--ks-nudge\)\)/);
     expect(css).toMatch(/scale\(var\(--ks-film-focus\)\)/);
     expect(css).toMatch(/var\(--ks-buybar-h/);
+  });
+
+  /* Task Q2.5 (D064 item 10): line drawing and the micro-interactions. */
+  /** Every rule outside @keyframes with its selectors, its declarations and where it applies. */
+  const rulesOf = () => {
+    const out: Array<{ selectors: string[]; decls: Map<string, string>; reduced: boolean; media: string[] }> = [];
+    root.walkRules((r) => {
+      if (inKeyframes(r)) return;
+      const decls = new Map<string, string>();
+      r.each((n) => { if (n.type === "decl") decls.set(n.prop, n.value); });
+      const media = atRules(r).filter((a) => a.name === "media").map((a) => a.params);
+      out.push({ selectors: r.selectors.map((s) => s.replace(/\s+/g, " ").trim()), decls, reduced: inReducedMotion(r), media });
+    });
+    return out;
+  };
+  const POINTER = "(hover: hover) and (pointer: fine)";
+
+  it("draws only a heading's accent (an h2's or h3's Hand or Mark) under html.js-motion: never an h1's, so never the hero", () => {
+    const accents = all.split("\n").filter((s) => /\.kh-(hand|mark)(?![\w-])/.test(s));
+    expect(accents.length).toBeGreaterThan(0);
+    for (const s of accents) {
+      expect(s).toMatch(/^html\.js-motion :is\(h2, h3\) \.kh-(hand|mark)[.:]/);
+      expect(s).not.toMatch(/\bh1\b/);
+    }
+  });
+
+  it("writes a Hand in from the left and draws a Mark's stroke from the left, once, over --duration-draw after the block's entrance", () => {
+    const shorthand = (selector: string) => rulesSetting("animation").find((r) => r.selector === selector && !r.reduced)?.value;
+    expect(shorthand("html.js-motion :is(h2, h3) .kh-hand.is-in")).toBe("ks-write var(--duration-draw) var(--ease-standard) var(--duration-enter) backwards");
+    expect(shorthand("html.js-motion :is(h2, h3) .kh-mark.is-in::after")).toBe("ks-stroke var(--duration-draw) var(--ease-standard) var(--duration-enter) backwards");
+    // Each keyframe set is a start only: it ends on the element's own style, so the Hand settles on the DS's own tilt
+    // (bundle.css .kh-hand rotate) and the Mark on its full stroke, and nothing is held once the draw has run.
+    const frames = (name: string) => {
+      const out: Record<string, Record<string, string>> = {};
+      root.walkAtRules(/keyframes$/i, (a) => {
+        if (a.params !== name) return;
+        a.walkRules((r) => { out[r.selector] = Object.fromEntries((r.nodes ?? []).filter((n) => n.type === "decl").map((d) => [d.prop, d.value])); });
+      });
+      return out;
+    };
+    expect(frames("ks-write")).toEqual({ from: { opacity: "0", transform: "translateX(calc(var(--space-2) * -1))" } });
+    expect(frames("ks-stroke")).toEqual({ from: { transform: "scaleX(var(--ks-stroke-start))" } });
+    // A waiting accent: the Hand unseen, the Mark's stroke not yet drawn.
+    expect(rulesSetting("opacity").find((r) => r.selector === "html.js-motion :is(h2, h3) .kh-hand:not(.is-in)" && !r.reduced)?.value).toBe("0");
+    expect(rulesSetting("transform").find((r) => r.selector === "html.js-motion :is(h2, h3) .kh-mark:not(.is-in)::after" && !r.reduced)?.value).toBe("scaleX(var(--ks-stroke-start))");
+    expect(rulesSetting("--ks-stroke-start")).toEqual([{ selector: ":root", reduced: false, value: "0" }]);
+  });
+
+  it("gives every hover to pointer devices only, and the same state to keyboard focus", () => {
+    const rules = rulesOf().filter((r) => !r.reduced);
+    for (const rule of rules) {
+      for (const s of rule.selectors.filter((x) => x.includes(":hover"))) expect(rule.media, s).toEqual([POINTER]);
+    }
+    const PAIRS: Array<[hover: string, focus: string]> = [
+      [".kh-btn--cta:hover .ks-btn__arrow", ".kh-btn--cta:focus-visible .ks-btn__arrow"],
+      [".kh-card:has(.kh-card__link):hover", ".kh-card:has(.kh-card__link:focus-visible)"],
+      [".kh-card:has(.kh-card__link):hover .kh-card__link .kh-icon", ".kh-card__link:focus-visible .kh-icon"],
+      [".kh-nav__link:hover::after", ".kh-nav__link:focus-visible::after"],
+      [".kh-btn--ghost:hover > span + .kh-icon", ".kh-btn--ghost:focus-visible > span + .kh-icon"],
+    ];
+    const transformOf = (selector: string, media: string[]) =>
+      rules.find((r) => r.selectors.includes(selector) && r.decls.has("transform") && r.media.join() === media.join())?.decls.get("transform");
+    for (const [hover, focus] of PAIRS) {
+      const state = transformOf(hover, [POINTER]);
+      expect(state, hover).toBeDefined();
+      expect(transformOf(focus, []), focus).toBe(state);
+    }
+    // A card lifts a DS step, its arrow nudges the D049 value; a tag or chip presses half a step.
+    expect(transformOf(".kh-card:has(.kh-card__link):hover", [POINTER])).toBe("translateY(calc(var(--space-1) * -1))");
+    expect(transformOf(".kh-card:has(.kh-card__link):hover .kh-card__link .kh-icon", [POINTER])).toBe("translateX(var(--ks-nudge))");
+    expect(transformOf(":is(a, button):is(.kh-tag, .kh-chip):active", [])).toBe("translateY(calc(var(--space-1) / 2))");
+  });
+
+  it("moves nothing on hover, focus or press under reduced motion, and shows every accent at once", () => {
+    const rules = rulesOf();
+    const reducedTransform = (selector: string) =>
+      rules.find((r) => r.reduced && r.selectors.includes(selector) && r.decls.has("transform"))?.decls.get("transform");
+    const moved = rules
+      .filter((r) => !r.reduced && r.decls.has("transform") && r.decls.get("transform") !== "none")
+      .flatMap((r) => r.selectors.filter((s) => /:(hover|focus-visible|active)|:has\([^)]*:focus-visible/.test(s)));
+    expect(moved.length).toBeGreaterThan(0);
+    for (const s of moved) expect(reducedTransform(s), s).toBe("none");
+    const reducedOpacity = rules.find((r) => r.reduced && r.selectors.includes("html.js-motion :is(h2, h3) .kh-hand:not(.is-in)"))?.decls.get("opacity");
+    expect(reducedOpacity).toBe("1");
+    expect(reducedTransform("html.js-motion :is(h2, h3) .kh-mark:not(.is-in)::after")).toBe("none");
   });
 
   it("never keys a doodle stroke on [pathLength], which Chromium does not restyle when html.js-motion arrives", () => {

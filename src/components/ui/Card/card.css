@@ -22,3 +22,12 @@
 .ks-card-links .kh-card__link {
   margin-top: 0;
 }
+
+/* Task Q2.5 (D064 item 10): a card with a link lifts a little on hover (pointer devices) and on keyboard focus of its
+   link. motion.css moves it (one DS step up, transform only, nothing under reduced motion) and nudges its arrow; the
+   lifted card takes the DS shadow for what floats (DS README: shadow-lift). The shadow is not animated (only transform
+   and opacity move, brief §9.11); it shows with the lift, under reduced motion too, where nothing moves. */
+@media (hover: hover) and (pointer: fine) {
+  .kh-card:has(.kh-card__link):hover { box-shadow: var(--shadow-lift); }
+}
+.kh-card:has(.kh-card__link:focus-visible) { box-shadow: var(--shadow-lift); }

@@ -1,5 +1,36 @@
 /* NavBar (task 3.1): mockup/mockup.css:24 and :91 (.mk-nav-cta), ported as .ks-nav-cta. On phones the nav shows the
    logo and the menu only, so the hero's chilli button is the one in view (G-06); the nav's own button appears at the
-   DS laptop width, beside the four links (D041). */
+   DS laptop width, beside the four links (D041).
+   Task Q2.5 (main-session ruling 2 of the selling update): from 900 px, the DS's laptop width (bundle.css shows the
+   links and hides the menu button there, and the phone buy bar is hidden from there), the bar sticks to the top with
+   its button, so a laptop always has a buy button in view; the button came at 1024 px until then, which left 900 to
+   1023 px with neither it nor the buy bar. Sticky moves nothing in the flow (no layout shift), on the DS's sticky layer,
+   only the marketing nav (`nav.kh-nav`: the store's header is a `header.kh-nav` and stays put). An in-page jump (#faq,
+   a legal part) lands below the bar: the page's scroll padding is the DS bar's height (bundle.css .kh-nav min-height
+   72 px, 64 + 8). */
 .ks-nav-cta { display: none; }
-@media (min-width: 1024px) { .ks-nav-cta { display: inline-flex; } }
+@media (min-width: 900px) {
+  .ks-nav-cta { display: inline-flex; }
+  nav.kh-nav { position: sticky; top: 0; z-index: var(--z-sticky); }
+  html:has(> body > nav.kh-nav) { scroll-padding-top: calc(var(--space-8) + var(--space-2)); }
+}
+
+/* D064 item 10: the link's hover line slides in. It is the DS's own hover line (bundle.css: Sunshine, --stroke-focus
+   thick, the link's bottom border), drawn instead by ::after over that border, resting at no width; motion.css grows it
+   from the left on hover (pointer devices) and keyboard focus, at once under reduced motion. The DS's hover border is
+   left transparent so the line is not drawn twice; the current page's ink line stays the DS's border, with no ::after.
+   ::before is the DS's tap area. */
+.kh-nav__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--stroke-focus) * -1);
+  height: var(--stroke-focus);
+  background: var(--sun-500);
+  transform: scaleX(var(--ks-stroke-start));
+  transform-origin: left center;
+  pointer-events: none;
+}
+.kh-nav__link[aria-current="page"]::after { content: none; }
+.kh-nav__link:not([aria-current="page"]):hover { border-bottom-color: transparent; }
