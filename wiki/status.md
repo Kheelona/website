@@ -7,6 +7,7 @@ sources: [log.md, open-questions.md]
 
 # Status (2026-10-14)
 
+**NOW: quick visual changes, batch by batch, until the site is final (D062, 2026-10-15); detailed QA and integrations after. Summary to resume from: [project summary](engineering/project-summary.md).**
 **Phase:** **5, build, wave 8 of 10 closed** (Phase 6 QA round 1 and its fixes done) (Gate A approved D046; Phase 4 plan done 2026-10-12). The
 founder asked for the full website with animation on **betawebsite.kheelona.com** and
 **betastore.kheelona.com** before it goes live (D048). Plan: [tasks](engineering/tasks.md) (10 waves),
@@ -28,7 +29,7 @@ env=beta; noindex. Founder's only step (the two domains, architecture §15.4) is
 Gate B (rows without one come off the page), the setup light's colour, the C6 listing names; to-dos: WhatsApp calls (D032), provider contracts vs the Home safety line,
 GST/HSN, app fixes (D044), section D checks (C1, C2, C4, C11, C12, C15, C18); the beta QA bypass secret (task 7.2).
 
-**Founder decisions so far:** D010-D061 + R1-R10 (see index). Latest: **D061 the advisor's proposal: Kheelu on the first phone screen, ads on Home, the later price, parents' words**; **D060 the beta links open to the public** (founder turns off Vercel Authentication; then beta QA without the bypass secret); **D059 the journal's voice rule, uploads, timing**; D058 follow the live code check; D057 the journal from the dashboard and three wordings; D056 answers to the built-page reviews (wave 8); D055 page facts (task 6.7); D054 every open build question answered (tasks 6.4, 6.6); D053 remove the 3-6-9-12 article (task 6.5); D052 QA at checkpoints; D051 beta without store integrations;
+**Founder decisions so far:** D010-D062 + R1-R10 (see index). Latest: **D062 quick visual changes until final**; **D061 the advisor's proposal: Kheelu on the first phone screen, ads on Home, the later price, parents' words**; **D060 the beta links open to the public** (founder turns off Vercel Authentication; then beta QA without the bypass secret); **D059 the journal's voice rule, uploads, timing**; D058 follow the live code check; D057 the journal from the dashboard and three wordings; D056 answers to the built-page reviews (wave 8); D055 page facts (task 6.7); D054 every open build question answered (tasks 6.4, 6.6); D053 remove the 3-6-9-12 article (task 6.5); D052 QA at checkpoints; D051 beta without store integrations;
 D050 WhatsApp bubble; D049 motion picks; D048 beta hosts.
 
 **Traps:** read legacy files at tag `archive/pre-reset-2026-10-10` (D008); never `git add -A`;

@@ -1229,3 +1229,12 @@ Vercel Ready at 06:12:18Z. The runbook's check (§5), run 5.5 minutes later: `HI
 STALE (Vercel's runtime render, still under `"c":["","index"]`) carries `class="kh-buybar`. Chromium on beta at
 390 × 844 and 1440 × 900: Home and the product page each one buy bar, no page or console error (Vercel's feedback
 script excluded). The CMO's m1 is fixed on Vercel.
+
+## [2026-10-15 12:07] decision | D062: quick visual changes from here on; the project summary written
+The founder: "now we are going to do quick visual changes from here on, and till we do final changes, we will keep it
+quick changes" and "we will do detailed QA and other integrations once website is final." Recorded as
+[D062](decisions/D062-quick-visual-changes-until-final-2026-10-15.md): per batch, `npm run verify` and the build, a
+quick review only for a risky change, push `beta`, docs updated; the full Playwright, Lighthouse, CMO reviews, beta QA
+and the integrations deferred to the final pass; the non-negotiables kept. [Project summary](engineering/project-summary.md)
+written: where it lives, what is built (waves 1-8c), the decisions, the quality at `398c5ee`, how a batch runs,
+what is deferred, what waits on the founder, and the first quick-change batch.
