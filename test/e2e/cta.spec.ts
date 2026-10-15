@@ -22,6 +22,13 @@ import { VIEWPORTS } from "./support/viewports";
  * after Gate A: whatsapp-float (D050) and share-whatsapp (D061); tracking inventory §6 lists them.
  * The registry itself (task 1.4) is checked against them by its own guards
  * (test/guards/tracking-registry.test.ts).
+ *
+ * Since the selling update (D065; task Q2.9) the values placed after Gate A are read from the registry, as every value
+ * it holds that no approved mockup carries (hero-film, home-why, home-asks, home-asks-learn, home-offer, product-ask,
+ * safety-facts, guide-answers besides the two above), each on the paths the registry places it, and so are a value's
+ * later placements (`added`: finale on /setup); a value the registry says "stops firing" (its note) is no longer
+ * expected on its page (Home's see-it-ask, see-it-ask-learn, hero-learn, compare-learn and faq-more; the product page's
+ * product-safety): it stays registered and is never reused.
  */
 
 const LABEL = "Pre-order Kheelu";
@@ -31,26 +38,37 @@ const RESERVED = ["home-arc", "compare"];
 const D050 = "whatsapp-float";
 /** The share link under the offer cards (D061, task 8c.2). */
 const D061 = "share-whatsapp";
-/** The values a founder decision placed after Gate A (inventory §6, the second table): no approved mockup carries them. */
-const AFTER_GATE_A: readonly string[] = [D050, D061];
-
 function mockupValues(slug: MockupSlug): string[] {
   const html = readRepoFile(`mockup/${slug}.html`);
   return [...new Set([...html.matchAll(/data-ph-capture-attribute-cta="([^"]+)"/g)].map((m) => m[1]))].sort();
 }
 const MOCKUP_VALUES: ReadonlySet<string> = new Set(MOCKUP_SLUGS.flatMap(mockupValues));
+/** The values a founder decision placed after Gate A (inventory §6, the second table): the registry's values no approved
+ *  mockup carries (D050's bubble, D061's share link, the selling update's eight, D065), never a reserved one. */
+const AFTER_GATE_A: readonly string[] = CTA_VALUES.filter((v) => !CTAS[v].reserved && !MOCKUP_VALUES.has(v));
 const REGISTERED = new Set([...MOCKUP_VALUES, ...AFTER_GATE_A]);
 
-/** The values placed after Gate A that a built route carries besides its mockup's: the D050 bubble on every page, and
- *  each other one where the registry places it on this path (share-whatsapp on / and /products/kheelu). The registry's
- *  paths are the marketing site's: the store's own "/" is not Home. */
+/** A route's own path in the registry's terms: the registry's paths are the marketing site's (the store's "/" is not
+ *  Home). */
+const placesOn = (where: readonly string[], route: Pick<Route, "host" | "path">) => route.host === "marketing" && where.includes(route.path);
+
+/** The values placed after Gate A that a built route carries besides its mockup's: the D050 bubble on every page, each
+ *  other one where the registry places it on this path (share-whatsapp on / and /products/kheelu; the selling update's
+ *  values), and a value's later placements on this path (`added`: finale on /setup, D065). */
 function afterGateA(route: Pick<Route, "host" | "path">): string[] {
   return CTA_VALUES.filter((v) => {
+    const added: readonly string[] = CTAS[v].added?.pages ?? [];
+    if (placesOn(added, route)) return true;
     if (!AFTER_GATE_A.includes(v)) return false;
     if (v === D050) return true;
-    const where: readonly string[] = CTAS[v].pages;
-    return route.host === "marketing" && where.includes(route.path);
+    return placesOn(CTAS[v].pages, route);
   });
+}
+
+/** The values the registry says stop firing on this path (their note; the selling update, D065): registered, never
+ *  reused, and no longer on the page. */
+function stoppedOn(route: Pick<Route, "host" | "path">): string[] {
+  return CTA_VALUES.filter((v) => /\bstops firing\b/.test(CTAS[v].note ?? "") && placesOn(CTAS[v].pages, route));
 }
 
 test.describe("CTA values: the approved mockup (control)", () => {
@@ -59,7 +77,8 @@ test.describe("CTA values: the approved mockup (control)", () => {
     for (const v of RESERVED) expect(REGISTERED.has(v), `${v} is reserved (A16)`).toBe(false);
   });
 
-  test("carries none of the values placed after Gate A (D050, D061), each one in the registry", () => {
+  test("carries none of the values placed after Gate A (D050, D061, D065), each one in the registry", () => {
+    for (const v of [D050, D061, "hero-film", "home-why", "home-asks", "home-asks-learn", "home-offer"]) expect(AFTER_GATE_A, v).toContain(v);
     for (const v of AFTER_GATE_A) {
       expect(MOCKUP_VALUES.has(v), `an approved mockup carries ${v}`).toBe(false);
       expect(CTA_VALUES, `${v} is not in src/lib/tracking/cta.ts`).toContain(v);
@@ -101,10 +120,15 @@ for (const route of sweepRoutes()) {
         .soft(values.includes("sticky-bar"), `${route.id}: the phone buy bar (sticky-bar) is ${route.buybar ? "missing" : "on a page that has none"}`)
         .toBe(route.buybar);
       if (route.mockup && mockupRoutes().some((r) => r.id === route.id)) {
-        // The values placed after Gate A (D050, D061): the mockup itself (self-test) carries none of them.
+        // The values placed after Gate A (D050, D061, D065), less those the registry says stop firing here: the mockup
+        // itself (self-test) carries none of them and stops nothing.
         const added = PARITY_TARGET === "mockup" ? [] : afterGateA(route);
-        const expected = [...new Set([...mockupValues(route.mockup), ...added])].sort();
-        expect(values, `${route.id}: the values on the page differ from its approved mockup plus ${added.join(", ")}`).toEqual(expected);
+        const stopped = PARITY_TARGET === "mockup" ? [] : stoppedOn(route);
+        const expected = [...new Set([...mockupValues(route.mockup).filter((v) => !stopped.includes(v)), ...added])].sort();
+        expect(
+          values,
+          `${route.id}: the values on the page differ from its approved mockup plus ${added.join(", ")}${stopped.length ? `, less ${stopped.join(", ")}` : ""}`,
+        ).toEqual(expected);
       } else {
         expect(values.every((v) => REGISTERED.has(v)), `${route.id}: unregistered values ${values.filter((v) => !REGISTERED.has(v))}`).toBe(true);
       }
