@@ -65,6 +65,10 @@ export interface FilmsStripConfig {
   readonly link?: SectionLink;
   /** Parents' own words under the strip, each with a button that plays its film in the strip (task 8c.3). */
   readonly quotes?: FilmQuotes;
+  /** Each tile carries its film's id, so an in-page link (`#<film id>`) can name it, and a press on that link plays the
+   *  film in the strip as a quote's button does (the product page, whose languages answer links film 6; task 8c.8). Home
+   *  and the store leave it off: their strips keep the approved markup, with no ids. */
+  readonly anchored?: boolean;
 }
 
 /** One landscape film shown on its own (task 8c.6; D061 items 12-13): the expert clip. Every word is content's

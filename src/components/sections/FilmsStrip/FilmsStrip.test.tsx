@@ -1,9 +1,11 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
+import postcss, { type AtRule, type Rule } from "postcss";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ICON_PLAY } from "@/assets/icons.generated";
 import { expertClip, expertFold } from "@/content/en-IN/expert-video";
 import { filmQuotes, films, filmsStrip } from "@/content/en-IN/films";
 import { COPY_FIXES } from "../../../../test/e2e/support/deviations";
+import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { outline, parseMockup } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 import { FilmsStrip, type FilmsStripConfig, type FilmsStripProps } from "./FilmsStrip";
@@ -352,6 +354,88 @@ describe("FilmsStrip: parents' own words (task 8c.3)", () => {
   });
 });
 
+/* Task 8c.8 (the CMO's wave 8c review, m8; the main session's ruling, 2026-10-15): the product page's languages answer
+   names film 6, about 12,000 px below the strip. Its name is an in-page link to the film's tile (`#<film id>`, faqs.ts),
+   so on that page (`anchored`) each tile carries its film's id; pressed anywhere on the page, the strip's island plays
+   that film as a quote's "Watch the film" does (scrolled to the middle of the screen, played in its tile, focused, focus
+   back on the link at the end) and keeps the address as it was. Without JavaScript the link still takes the reader to the
+   film. Home and the store keep the approved strip's markup: no ids. */
+describe("FilmsStrip: an in-page link to a film (task 8c.8)", () => {
+  const SIX = films.find((f) => f.id === "a-story-in-two-languages")!;
+  /** The strip, with an answer's link to a film elsewhere on the page (as the product page's FAQ holds it). */
+  const page = (href: string) =>
+    render(
+      <>
+        <FilmsStrip {...PROPS} anchored />
+        <p>
+          You can watch it happen in the film <a href={href}>“{SIX.chip}”</a>.
+        </p>
+      </>,
+    );
+  const link = () => document.querySelector<HTMLAnchorElement>("p > a")!;
+
+  it("gives each tile its film's id where the page anchors the strip, so a link can name it; none elsewhere", () => {
+    const { container, rerender } = render(<FilmsStrip {...PROPS} anchored />);
+    expect([...container.querySelectorAll(".ks-film")].map((li) => li.id)).toEqual(PROPS.films.map((f) => f.id));
+    rerender(<FilmsStrip {...PROPS} />);
+    expect(container.querySelectorAll(".ks-film[id]")).toHaveLength(0);
+  });
+
+  it("plays the linked film in its tile, scrolled into view and focused, and keeps the address", async () => {
+    const focused: Element[] = [];
+    const focusSpy = vi.spyOn(HTMLElement.prototype, "focus").mockImplementation(function (this: HTMLElement) {
+      focused.push(this);
+    });
+    const scrolled: { el: Element; options: ScrollIntoViewOptions }[] = [];
+    Element.prototype.scrollIntoView = vi.fn(function (this: Element, options?: boolean | ScrollIntoViewOptions) {
+      scrolled.push({ el: this, options: options as ScrollIntoViewOptions });
+    });
+    const { container } = page(`#${SIX.id}`);
+    expect(container.querySelector("video")).toBeNull();
+    let prevented = false;
+    await act(async () => {
+      prevented = !fireEvent.click(link());
+    });
+    const tile = container.querySelector(`#${SIX.id}`)!;
+    const videos = container.querySelectorAll("video");
+    expect(videos).toHaveLength(1);
+    expect(tile.contains(videos[0])).toBe(true);
+    expect(videos[0].getAttribute("src")).toBe(SIX.video);
+    expect(focused.at(-1)).toBe(videos[0]);
+    expect(scrolled.at(-1)).toEqual({ el: tile, options: expect.objectContaining({ block: "center", inline: "nearest" }) });
+    expect(prevented).toBe(true);
+    expect(play).toHaveBeenCalledTimes(1);
+    focusSpy.mockRestore();
+    delete (Element.prototype as Partial<Element>).scrollIntoView;
+  });
+
+  it("gives focus back to the link when the film ends", async () => {
+    const { container } = page(`#${SIX.id}`);
+    await act(async () => fireEvent.click(link()));
+    await act(async () => fireEvent.ended(container.querySelector("video")!));
+    expect(container.querySelector("video")).toBeNull();
+    expect(document.activeElement).toBe(link());
+  });
+
+  it("leaves alone a link to anything but one of its films, and a click that opens a new tab", async () => {
+    const { container } = page("#faq");
+    let prevented = false;
+    await act(async () => {
+      prevented = !fireEvent.click(link());
+    });
+    expect(prevented).toBe(false);
+    expect(container.querySelector("video")).toBeNull();
+    link().setAttribute("href", `#${SIX.id}`);
+    for (const modifier of [{ ctrlKey: true }, { metaKey: true }, { shiftKey: true }]) {
+      await act(async () => {
+        prevented = !fireEvent.click(link(), modifier);
+      });
+      expect(prevented).toBe(false);
+    }
+    expect(container.querySelector("video")).toBeNull();
+  });
+});
+
 /* Task 8c.6 (D061 items 12-13): one landscape film on its own, the expert clip on the product page. No mockup has it (a
    deviation row for the founder); it is composed from the strip's own parts: the band-less section with the centred
    heading, the DS chip, the DS primary play button in the strip's place, and the strip's playback (one <video>, only
@@ -395,7 +479,7 @@ describe("FilmsStrip: one film on its own (task 8c.6)", () => {
     expect(poster).toHaveAttribute("alt", film.poster.alt);
     expect(poster).toHaveAttribute("width", "1280");
     expect(poster).toHaveAttribute("height", "720");
-    expect(poster.getAttribute("sizes")).toBe("(min-width: 1024px) 944px, (min-width: 720px) calc(100vw - 64px), calc(100vw - 32px)");
+    expect(poster.getAttribute("sizes")).toBe("(min-width: 764px) 700px, (min-width: 720px) calc(100vw - 64px), calc(100vw - 32px)");
     const chip = frame.querySelector(".ks-clip__chip")!;
     expect(chip).toHaveAttribute("aria-hidden", "true");
     expect(chip.querySelector(".kh-chip")?.textContent).toBe(film.chip);
@@ -465,6 +549,52 @@ describe("FilmsStrip: one film on its own (task 8c.6)", () => {
       expect(() => render(<FilmsStrip {...SINGLE} film={{ ...film, [missing]: " " }} />)).toThrow(new RegExp(missing));
     }
     vi.mocked(console.error).mockRestore();
+  });
+});
+
+/* Task 8c.8 (the CMO's wave 8c review of the product page, m5, m6, m10; main-session rulings 2026-10-15): the clip's
+   layout, read from films-strip.css (where it lands on the page is measured in a browser; the task report has the boxes).
+   - m6: from 720 px the figure stops at the site's narrow measure, the reading column's 700 px (ArticleBody's
+     `--content-max * 7 / 12`), centred, so the toy's hero board stays the largest picture on the page; the poster's
+     `sizes` follow.
+   - m5: the poster is the whole front frame (her face in the upper third, public/video/expert), so the play control sits
+     lower, on her coat (60 % down the frame), and the chip at the frame's foot: neither on her face or her hair.
+   - m10: under 720 px the credit and the disclosure start at the left and keep out of the WhatsApp bubble's column (its
+     56 px and --space-2 beside it, as the hero's help line does since task 8c.5). */
+describe("FilmsStrip: the single film's layout (task 8c.8)", () => {
+  /** The declarations of the rule with exactly this selector, inside the at-rule with these params ("" for top level). */
+  const declarations = (selector: string, media = ""): string[] => {
+    const out: string[] = [];
+    postcss.parse(readRepoFile("src/components/sections/FilmsStrip/films-strip.css")).walkRules((rule: Rule) => {
+      const parent = rule.parent;
+      const where = parent?.type === "atrule" ? (parent as AtRule).params : "";
+      if (where === media && rule.selectors.includes(selector)) rule.each((d) => void (d.type === "decl" && out.push(`${d.prop}: ${d.value}`)));
+    });
+    return out;
+  };
+
+  it("m6: stops the clip at the narrow measure from 720 px, centred, and no longer at the strip's 944 px", () => {
+    expect(declarations(".ks-clip", "(min-width: 720px)")).toEqual(["max-width: calc(var(--content-max) * 7 / 12)", "margin-inline: auto"]);
+    expect(declarations(".ks-clip", "(min-width: 1024px)")).toEqual([]);
+    const { container } = render(<FilmsStrip {...expertFold} />);
+    expect(container.querySelector(".ks-clip__frame img")?.getAttribute("sizes")).toBe(
+      "(min-width: 764px) 700px, (min-width: 720px) calc(100vw - 64px), calc(100vw - 32px)",
+    );
+  });
+
+  it("m5: puts the play control on her coat and the chip at the frame's foot, off her face and hair", () => {
+    expect(declarations(".ks-clip__frame .ks-film__play")).toEqual(["top: 60%"]);
+    const chip = declarations(".ks-clip__chip");
+    expect(chip).toContain("bottom: var(--space-3)");
+    expect(chip).toContain("left: var(--space-3)");
+    expect(chip.some((d) => d.startsWith("top:"))).toBe(false);
+  });
+
+  it("m10: on phones starts the credit and the disclosure at the left, out of the WhatsApp bubble's column", () => {
+    expect(declarations(".ks-clip__credit", "(max-width: 719px)")).toEqual([
+      "text-align: start",
+      "padding-right: calc(var(--space-8) + env(safe-area-inset-right))",
+    ]);
   });
 });
 

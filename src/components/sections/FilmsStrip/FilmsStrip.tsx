@@ -10,8 +10,9 @@ export type { FilmQuote, FilmQuotes, FilmsConfig, FilmsSingleConfig, FilmsStripC
 /** One film tile: 80% of the column on phones, a third of the strip from 720 px, which stops at 944 px from 1024 px
  *  (mockup.css:41, 83, 90). */
 const POSTER_SIZES = "(min-width: 1024px) 304px, (min-width: 720px) calc((100vw - 64px) / 3), calc((100vw - 32px) * 0.8)";
-/** The single film's frame: the column on phones and tablets, the strip's own 944 px from 1024 px (films-strip.css). */
-const CLIP_SIZES = "(min-width: 1024px) 944px, (min-width: 720px) calc(100vw - 64px), calc(100vw - 32px)";
+/** The single film's frame: the column on phones and small tablets, the narrow measure's 700 px once the column is wider
+ *  (from 764 px: 700 px plus the container's two 32 px; films-strip.css, task 8c.8). */
+const CLIP_SIZES = "(min-width: 764px) 700px, (min-width: 720px) calc(100vw - 64px), calc(100vw - 32px)";
 
 /**
  * The single film's fold (task 8c.6; D061 items 12-13; the expert clip on the product page): a plain section named by
@@ -68,7 +69,7 @@ function quotedFilms(quotes: FilmQuotes, films: readonly FilmTile[]): QuotedFilm
  */
 export function FilmsStrip(props: FilmsStripProps) {
   if (props.layout === "single") return <SingleFilmFold {...props} />;
-  const { id, heading, films, labels, proof, posters, link, quotes, after, offer } = props;
+  const { id, heading, films, labels, proof, posters, link, quotes, anchored, after, offer } = props;
   return (
     <Section id={id} band labelledBy={heading.id}>
       <Container>
@@ -82,6 +83,7 @@ export function FilmsStrip(props: FilmsStripProps) {
             posters={posters}
             sizes={POSTER_SIZES}
             quotes={quotes === undefined ? undefined : quotedFilms(quotes, films)}
+            anchored={anchored}
           >
             {proof && <RichText as="p" className={`kh-${proof.size} ks-films-proof`} text={proof.text} offer={offer} />}
           </FilmsStripIsland>

@@ -67,6 +67,14 @@ describe("the burned-in captions (tasks.md 8c.6; DS 08-accessibility)", () => {
     expect(expertBurnedDisclosure.from).toBe(0);
     expect(expertBurnedDisclosure.to).toBe(5);
   });
+
+  /* Task 8c.8 (the CMO's wave 8c review, m4): drawn at caption size so a phone can read it (it was about 7 px tall at
+     390), top left. At 52 px a pill of "Chaitra was compensated." is 702 px wide, over her face (which spans about 45-61 %
+     of the frame's width in the first seconds); in these four lines the widest pill, "compensated.", is 393 px, so the
+     block stays over the blinds, left of her face, the words unchanged. */
+  it("breaks the disclosure into four short lines, so at caption size it stays top left, clear of her face (task 8c.8, m4)", () => {
+    expect(expertBurnedDisclosure.lines).toEqual(["Made with", "Kheelona.", "Chaitra was", "compensated."]);
+  });
 });
 
 describe("the fold's words (tasks.md 8c.6; D061 items 12-13)", () => {

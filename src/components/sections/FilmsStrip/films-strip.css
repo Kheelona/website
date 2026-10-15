@@ -140,8 +140,12 @@
 
 /* One film on its own (task 8c.6; D061 items 12-13): the expert clip on the product page. No mockup has it (deviation
    row drafted in the task report); it is the strip's frame at the film's own 16:9, the DS chip on the poster, the
-   strip's play button in the middle, and under it the credit and the disclosure in body type, centred like the heading
-   above. The film covers the chip once it plays (it comes after it in the frame). Nothing moves (D049). */
+   strip's play button, and under it the credit and the disclosure in body type, centred like the heading above. The
+   film covers the chip once it plays (it comes after it in the frame). Nothing moves (D049).
+   Since task 8c.8 (the CMO's wave 8c review, m5, m6, m10): the poster is the whole front frame, her face in the upper
+   third, so the play button sits lower, on her coat, and the chip at the frame's foot, neither on her face or her hair
+   (DS 02-imagery: never cover the face); from 720 px the figure stops at the reading column's narrow measure (below);
+   under 720 px the credit and the disclosure keep out of the WhatsApp bubble's column (below). */
 .ks-clip {
   display: grid;
   gap: var(--space-4);
@@ -152,9 +156,14 @@
 }
 .ks-clip__chip {
   position: absolute;
-  top: var(--space-3);
+  bottom: var(--space-3);
   left: var(--space-3);
   margin: 0;
+}
+/* Her chin sits at about a third of the frame's height, so the play button's top (35 % down at 360 px, centred) would
+   touch it; 60 % down puts it on her coat at every width, still clear of the chip at the frame's foot. */
+.ks-clip__frame .ks-film__play {
+  top: 60%;
 }
 .ks-clip__credit {
   display: grid;
@@ -163,6 +172,16 @@
 }
 .ks-clip__credit > p {
   margin: 0;
+}
+/* Phones (m10): the resting WhatsApp bubble (D050: 56 px wide, --space-4 and the safe area from the right edge) crossed
+   the centred credit and disclosure, the fold's one line with a legal job, as they scrolled past. They start at the left,
+   as a caption under its picture, and keep out of the bubble's column, its 56 px and --space-2 beside it (--space-8), as
+   the hero's help line does since task 8c.5. */
+@media (max-width: 719px) {
+  .ks-clip__credit {
+    text-align: start;
+    padding-right: calc(var(--space-8) + env(safe-area-inset-right));
+  }
 }
 
 @media (min-width: 720px) {
@@ -175,11 +194,16 @@
   .ks-film:last-child .ks-film__frame {
     transform-origin: 50% 50%;
   }
+  /* The single film stops at the site's narrow measure, the reading column's 700 px (ArticleBody), centred (m6): at the
+     strip's 944 px it was the page's largest picture, larger than Kheelu's hero board. */
+  .ks-clip {
+    max-width: calc(var(--content-max) * 7 / 12);
+    margin-inline: auto;
+  }
 }
 @media (min-width: 1024px) {
-  /* Keeps a 9:16 film inside a laptop screen; the single film takes the strip's width. */
-  .ks-films-wrap,
-  .ks-clip {
+  /* Keeps a 9:16 film inside a laptop screen. */
+  .ks-films-wrap {
     max-width: calc(var(--content-max) - var(--space-10) * 2);
     margin-inline: auto;
   }
