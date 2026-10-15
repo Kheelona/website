@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { useSitePath } from "@/lib/site-path";
+import { usePagePath } from "@/lib/page-path";
 
 /* The phone buy bar's behaviour (task 3.1), ported from mockup/mockup.js §2 (CMO M2; DS gap G-09; strategy §3.4):
  *   - hidden while the hero CTA (#hero-cta) is on screen, so a page that opens with one shows the bar only once it
@@ -189,12 +189,12 @@ export interface BuyBarControllerProps {
 
 /**
  * The bar's element and behaviour. It renders on the pages in `paths` only: the shell is a layout, so the page is read
- * from the path (useSitePath: usePathname() with Vercel's "/index" for Home folded to "/", task 8c.7), which a static
+ * from the path (usePagePath: usePathname() with Vercel's "/index" for Home folded to "/", task 8c.7), which a static
  * prerender and a Vercel runtime render know too, so the bar is in the server HTML exactly where it belongs (hidden, as
  * the mockup ships it). Re-armed on every page change (lessons §2).
  */
 export function BuyBarController({ label, paths, children }: BuyBarControllerProps) {
-  const pathname = useSitePath();
+  const pathname = usePagePath();
   const present = paths.includes(pathname);
   const ref = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<BuyBarState>("hidden");

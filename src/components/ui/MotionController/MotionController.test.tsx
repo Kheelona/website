@@ -268,8 +268,8 @@ describe("MotionController", () => {
   });
 
   /* Vercel re-renders Home in its runtime under the route segments ["", "index"], so usePathname() reads "/index" on the
-     server and "/" in the browser (task 8c.7; CMO wave 8c review m1). The controller reads the path through useSitePath
-     (src/lib/site-path.ts): it renders nothing either way, and the two are one page, so it never re-arms between them. */
+     server and "/" in the browser (task 8c.7; CMO wave 8c review m1). The controller reads the path through usePagePath
+     (src/lib/page-path.ts): it renders nothing either way, and the two are one page, so it never re-arms between them. */
   it("takes /index for Home, as Vercel's runtime render gives it: nothing rendered, and no re-arm between the two (task 8c.7)", async () => {
     document.body.innerHTML = PAGE;
     nav.pathname = "/index";

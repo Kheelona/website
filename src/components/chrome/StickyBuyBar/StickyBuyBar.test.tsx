@@ -145,7 +145,7 @@ describe("StickyBuyBar: markup (partials/buybar.html)", () => {
 
 /* Vercel re-renders Home in its runtime under the route segments ["", "index"], so usePathname() reads "/index" on the
    server and "/" in the browser (task 8c.7; CMO wave 8c review m1). The bar was left out of beta's server HTML and added
-   by the browser: React error #418 on every load. The bar reads the path through useSitePath (src/lib/site-path.ts). */
+   by the browser: React error #418 on every load. The bar reads the path through usePagePath (src/lib/page-path.ts). */
 describe("StickyBuyBar: the page path as Vercel's runtime render gives it (task 8c.7)", () => {
   const element = <StickyBuyBar offer={offer} label="Pre-order Kheelu" paths={PATHS} />;
   const serverHtml = (pathname: string) => {

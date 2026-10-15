@@ -12,12 +12,12 @@ import { usePathname } from "next/navigation";
 const INDEX = "/index";
 
 /** The path with a trailing "/index" folded into its parent: "/index" is "/", "/stories/index" is "/stories". */
-export function sitePath(pathname: string): string {
+export function pagePath(pathname: string): string {
   if (pathname === INDEX) return "/";
   return pathname.endsWith(INDEX) ? pathname.slice(0, -INDEX.length) : pathname;
 }
 
-/** usePathname(), folded by `sitePath`: the same on the server and in the browser for every page of the site. */
-export function useSitePath(): string {
-  return sitePath(usePathname());
+/** usePathname(), folded by `pagePath`: the same on the server and in the browser for every page of the site. */
+export function usePagePath(): string {
+  return pagePath(usePathname());
 }

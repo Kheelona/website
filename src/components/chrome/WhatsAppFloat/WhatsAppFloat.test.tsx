@@ -520,7 +520,7 @@ describe("WhatsAppFloat: steps aside from the store's form on a phone (task 4.7)
 
     /* Vercel re-renders Home in its runtime under the route segments ["", "index"], so usePathname() reads "/index" on
        the server and "/" in the browser (task 8c.7; CMO wave 8c review m1). The bubble reads the path through
-       useSitePath (src/lib/site-path.ts): one page, one markup, one arming. */
+       usePagePath (src/lib/page-path.ts): one page, one markup, one arming. */
     it("takes /index for Home, as Vercel's runtime render gives it: the same markup, and no re-arm between the two (task 8c.7)", () => {
       const markup = (pathname: string) => {
         nav.pathname = pathname;

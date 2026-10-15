@@ -131,8 +131,8 @@ describe("NavBar", () => {
 });
 
 /* Vercel re-renders Home in its runtime under the route segments ["", "index"], so usePathname() reads "/index" on the
-   server and "/" in the browser (task 8c.7; CMO wave 8c review m1). The current link reads the path through useSitePath
-   (src/lib/site-path.ts), so the server HTML marks what the browser marks. A link to Home makes the difference visible
+   server and "/" in the browser (task 8c.7; CMO wave 8c review m1). The current link reads the path through usePagePath
+   (src/lib/page-path.ts), so the server HTML marks what the browser marks. A link to Home makes the difference visible
    (the approved four links have none). */
 describe("NavBar: the page path as Vercel's runtime render gives it (task 8c.7)", () => {
   const WITH_HOME: NavBarProps = { ...PROPS, links: [{ label: "Home", href: "/" }, ...PROPS.links] };

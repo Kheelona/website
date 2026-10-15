@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ICON_LIST } from "@/assets/icons.generated";
 import { Glyph } from "@/components/ui/Icon/Glyph";
-import { useSitePath } from "@/lib/site-path";
+import { usePagePath } from "@/lib/page-path";
 
 /* The NavBar's two client parts (task 3.1). The shell is a layout and cannot know its page, so the current link is
- * read from the path here (useSitePath: usePathname() with Vercel's "/index" for Home folded to "/", task 8c.7), and the
+ * read from the path here (usePagePath: usePathname() with Vercel's "/index" for Home folded to "/", task 8c.7), and the
  * menu button opens the drawer dialog it names. Neither imports Icon or Button (test/guards/client-icons.test.ts): the
  * menu icon is the one named constant drawn by Glyph. */
 
@@ -24,7 +24,7 @@ export function isCurrent(pathname: string, href: string): boolean {
 
 /** The four laptop links (`kh-nav__links`), the current page's marked `aria-current="page"` (mockup/build.mjs). */
 export function NavBarLinks({ links }: { links: readonly NavLinkItem[] }) {
-  const pathname = useSitePath();
+  const pathname = usePagePath();
   return (
     <div className="kh-nav__links">
       {links.map((link) => (

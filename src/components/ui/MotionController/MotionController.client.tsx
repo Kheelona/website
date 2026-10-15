@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect } from "react";
-import { useSitePath } from "@/lib/site-path";
+import { usePagePath } from "@/lib/page-path";
 
 /* The one observer behind the reveals and the doodle draws (task 2.8; ADR-007, architecture §11.1-§11.3,
  * D049 picks 1A and 3B), ported from mockup/mockup.js §1. Mounted once, in the site shell. It only sets the
@@ -139,8 +139,8 @@ export function smoothScrollOnceLoaded(): () => void {
 }
 
 export function MotionController() {
-  // The page (useSitePath: Vercel's "/index" for Home is "/", task 8c.7); it renders nothing from it.
-  const pathname = useSitePath();
+  // The page (usePagePath: Vercel's "/index" for Home is "/", task 8c.7); it renders nothing from it.
+  const pathname = usePagePath();
 
   // Once per page load: the shell outlives a client navigation, and the attribute with it.
   useEffect(() => smoothScrollOnceLoaded(), []);

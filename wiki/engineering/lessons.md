@@ -141,7 +141,7 @@ CP = `docs/checkpoints/`. Code references (`src/`, `package.json`, `tools/`, `ne
   (`create-initial-router-state.js`, Next 16.3.8). The buy bar, rendered from the path, was missing from beta's server
   HTML and the browser added it: React error #418 on every load of Home. React rebuilt the page in the browser, so every
   check of the page still passed, and a local build, even through a stub adapter, prerenders Home with `/`. Shell
-  components read the path through `useSitePath()` (`src/lib/site-path.ts` folds a trailing `/index` into its parent;
+  components read the path through `usePagePath()` (`src/lib/page-path.ts` folds a trailing `/index` into its parent;
   its test refuses any other `usePathname` reader but the Meta Pixel and the PostHog gate, which read it in effects
   only); the e2e harness fails a test on any page error and on a hydration message in the console
   (`test/e2e/support/fixtures.ts`); after each beta deploy Home's runtime render (a `HIT` after a `STALE`, at least

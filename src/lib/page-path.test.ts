@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { sitePath, useSitePath } from "./site-path";
+import { pagePath, usePagePath } from "./page-path";
 
 /* The page path the shell components render from (task 8c.7; CMO wave 8c review m1). Vercel re-renders Home in its
  * runtime under the route segments ["", "index"], so usePathname() reads "/index" on the server and "/" in the browser,
@@ -16,40 +16,40 @@ afterEach(() => {
   nav.pathname = "/";
 });
 
-describe("sitePath", () => {
+describe("pagePath", () => {
   it.each([
     ["/index", "/"],
     ["/stories/index", "/stories"],
     ["/products/kheelu/index", "/products/kheelu"],
   ])("folds %s into its parent, %s", (pathname, expected) => {
-    expect(sitePath(pathname)).toBe(expected);
+    expect(pagePath(pathname)).toBe(expected);
   });
 
   it.each(["/", "/safety", "/products/kheelu", "/stories/learning-toys-for-a-three-year-old", "/indexes", "/stories/index-of-toys", "/reindex"])(
     "leaves %s as it is",
     (pathname) => {
-      expect(sitePath(pathname)).toBe(pathname);
+      expect(pagePath(pathname)).toBe(pathname);
     },
   );
 });
 
-describe("useSitePath", () => {
+describe("usePagePath", () => {
   it("reads the path from usePathname(), folded", () => {
     nav.pathname = "/index";
-    expect(renderHook(() => useSitePath()).result.current).toBe("/");
+    expect(renderHook(() => usePagePath()).result.current).toBe("/");
     nav.pathname = "/safety";
-    expect(renderHook(() => useSitePath()).result.current).toBe("/safety");
+    expect(renderHook(() => usePagePath()).result.current).toBe("/safety");
   });
 });
 
-/* The rule that keeps it so: a module under src/ that renders from the page path reads it through useSitePath, never
+/* The rule that keeps it so: a module under src/ that renders from the page path reads it through usePagePath, never
  * usePathname() itself, nor the segment readers that see the same "index" (useSelectedLayoutSegment(s), useParams), nor
  * a re-export, require() or import() of next/navigation that would hand them on. Two modules read the browser's path in
  * effects only and stay as they are (tracking parity): the Meta Pixel's page-view-on-route-change and the PostHog gate's
  * replay rule. */
 
 const RAW_PATH_ALLOWED = new Set([
-  "src/lib/site-path.ts",
+  "src/lib/page-path.ts",
   "src/components/tracking/MetaPixel.tsx",
   "src/components/tracking/PostHogGate.tsx",
 ]);
@@ -83,12 +83,12 @@ function sourceTree(): Array<{ path: string; text: string }> {
 }
 
 describe("the page path: one reader (task 8c.7)", () => {
-  it("no shipped module under src/ but site-path.ts and the two tracking gates reads the route from next/navigation", () => {
+  it("no shipped module under src/ but page-path.ts and the two tracking gates reads the route from next/navigation", () => {
     const tree = sourceTree();
     expect(tree.length).toBeGreaterThan(100);
     expect(
       rawPathReaders(tree),
-      "read the page path through useSitePath() (src/lib/site-path.ts): Vercel renders Home as /index (task 8c.7)",
+      "read the page path through usePagePath() (src/lib/page-path.ts): Vercel renders Home as /index (task 8c.7)",
     ).toEqual([]);
   });
 
@@ -107,7 +107,7 @@ describe("the page path: one reader (task 8c.7)", () => {
   });
 
   /* The same segments reach every route reader, and a module can hand the hook on or load the whole module without an
-     import statement: each is a reader outside site-path.ts. */
+     import statement: each is a reader outside page-path.ts. */
   it.each([
     ["a re-export", `export { usePathname } from "next/navigation";`],
     ["a re-export, renamed, over lines", `export {\n  useRouter,\n  usePathname as path,\n} from 'next/navigation';`],
