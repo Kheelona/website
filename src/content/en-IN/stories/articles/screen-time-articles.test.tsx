@@ -46,6 +46,13 @@ interface Stub {
   readonly updated: IsoDate;
 }
 
+/** The screen-time topic's close since the selling update (the D2C plan v2 §7; task Q2.12): its heading, the Hand on its
+ *  last words, and its lead, with the daily limit as D065 item 5 confirms it. */
+const SCREEN_TIME_CLOSE = {
+  title: 'A toy that talks, <span class="kh-hand">with no screen.</span>',
+  lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It answers your child, then asks a question back, and each Kheelu has a daily limit on how long it talks.",
+} as const;
+
 /** The guide that left the journal (D053). */
 const REMOVED = "screen-time-rules-parents-swear-by";
 /** Where CMO built-page review B's ring (finding m3, task 7.1d) changed a stub's list: the guides the article offers
@@ -442,6 +449,9 @@ describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) =
       row.querySelector(".kh-listitem__title")!.textContent = toPlainText(cardTitle(article.related[i]));
     });
     reference.querySelectorAll('a[href="store.html"]').forEach((link) => link.setAttribute("href", STORE_URL));
+    /* The screen-time topic's own heading and lead (the D2C plan v2 §7; task Q2.12), in the same markup. */
+    reference.querySelector("#close-title")!.innerHTML = SCREEN_TIME_CLOSE.title;
+    reference.querySelector("#close .kh-heading__lead")!.textContent = SCREEN_TIME_CLOSE.lead;
     const aside = { ...OPTIONS, skip: ".kh-art" };
     expect(skeleton(built, aside)).toBe(skeleton(reference, aside));
     expect(words(built, { skip: ".kh-art" })).toBe(words(reference, { skip: ".kh-art" }));

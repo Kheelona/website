@@ -2,7 +2,7 @@ import type { GuideLink } from "@/components/sections/RelatedGuides/related-guid
 import type { Crumb } from "@/components/ui/Breadcrumbs/Breadcrumbs";
 import { organization } from "@/content/en-IN/organization";
 import { routes } from "@/content/en-IN/routes";
-import { articlePageCopy, getArticle, PLAIN_CLOSE_ART } from "@/content/en-IN/stories/articles";
+import { articlePageCopy, getArticle, PLAIN_CLOSE_ART, type ArticlePageCopy } from "@/content/en-IN/stories/articles";
 import { hubGroupsOf } from "@/content/en-IN/stories/hub";
 import { topics } from "@/content/en-IN/stories/topics";
 import type { Article, ArtBoardRef, Offer, SitePath } from "@/content/types";
@@ -37,16 +37,28 @@ export function articlePath(slug: string): SitePath {
  */
 const KNOWN_AUTHOR_IDS = personIds(organizationFacts(organization));
 
-/** The visible crumbs: the hub, then the topic the hub lists the article under (hub.ts's groups over the journal,
- *  topics.ts). */
-export function articleTrail(article: Article): Crumb[] {
-  const { hub } = articlePageCopy.crumbs;
+/** The topic the hub lists the article under (hub.ts's groups over the journal, topics.ts). */
+function articleTopic(article: Article): (typeof topics)[number] {
   const group = hubGroupsOf.find((g) => g.featured === article.slug || g.slugs.includes(article.slug));
   const topic = group && topics.find((t) => t.id === group.topic);
   if (topic === undefined) {
-    throw new Error(`Article "${article.slug}" sits under no hub topic (src/content/en-IN/stories/hub.ts): its crumbs lead to its topic`);
+    throw new Error(`Article "${article.slug}" sits under no hub topic (src/content/en-IN/stories/hub.ts): its crumbs and close follow its topic`);
   }
+  return topic;
+}
+
+/** The visible crumbs: the hub, then the topic the hub lists the article under. */
+export function articleTrail(article: Article): Crumb[] {
+  const { hub } = articlePageCopy.crumbs;
+  const topic = articleTopic(article);
   return [hub, { name: topic.title, path: `${hub.path}#${topic.id}` }];
+}
+
+/** The journal close's heading: its topic's own words, or the shared heading the hub and the learning guides close on
+ *  (the D2C plan v2 §7; task Q2.12). */
+export function closeHeading(article: Article): ArticlePageCopy["close"]["heading"] {
+  const { heading, topicHeadings }: ArticlePageCopy["close"] = articlePageCopy.close;
+  return topicHeadings[articleTopic(article).id] ?? heading;
 }
 
 /** The article's three related guides, each by its own card title, linked to its page. */

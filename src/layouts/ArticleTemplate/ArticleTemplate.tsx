@@ -10,7 +10,7 @@ import { articlePageCopy } from "@/content/en-IN/stories/articles";
 import { trustItems } from "@/content/en-IN/trust";
 import type { Article, Offer } from "@/content/types";
 import { jsonLd } from "@/lib/seo/jsonld";
-import { articleGraph, articleTrail, closeArt, relatedGuides } from "./article-page";
+import { articleGraph, articleTrail, closeArt, closeHeading, relatedGuides } from "./article-page";
 
 export { articleMeta } from "./article-page";
 
@@ -30,7 +30,8 @@ export interface ArticleTemplateProps {
  * photo as the page's LCP image), then the reading column (the answer first, the parts and their photos, the numbered
  * sources last). Then the close the module names: `journal`, the related guides band and the journal close with the
  * pre-order button (`finale`); or `keep`, the keep-reading close with no pre-order button (B5). Last, the page's own
- * graph: BlogPosting and BreadcrumbList (architecture §9.2). Nothing reveals (no article mockup has `data-reveal`); the
+ * graph: BlogPosting and BreadcrumbList (architecture §9.2). The journal close's heading is its topic's (closeHeading; the
+ * D2C plan v2 §7, task Q2.12). Nothing reveals (no article mockup has `data-reveal`); the
  * phone buy bar is the shell's, on the articles whose close carries the button (sticky-bar-paths.ts). Server component.
  */
 export function ArticleTemplate({ article, offer }: ArticleTemplateProps) {
@@ -66,7 +67,7 @@ export function ArticleTemplate({ article, offer }: ArticleTemplateProps) {
           <RelatedGuides variant="related" title={copy.related.title} items={related} />
           <CloseSection
             variant="journal"
-            heading={copy.close.heading}
+            heading={closeHeading(article)}
             cta={{
               cta: copy.close.cta,
               arrow: true,

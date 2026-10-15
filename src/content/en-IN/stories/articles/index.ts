@@ -6,6 +6,7 @@ import type { CtaId } from "@/lib/tracking/cta";
 import { navigation } from "../../navigation";
 import type { ArticleSlug } from "../../routes";
 import { TRUST_COMPACT, type TrustId } from "../../trust";
+import type { TopicId } from "../topics";
 
 /**
  * The article registry (architecture §5.4, §6.1; wave-3 close ruling, task 4.2; ADR-014, task 8b.2e): the journal's
@@ -45,7 +46,11 @@ export interface ArticlePageCopy {
   readonly keep: { readonly title: string; readonly action: { readonly label: string; readonly href: SitePath } };
   /** The journal close (identical to the hub's, stories.md fold 6): the pre-order button with the price beside it. */
   readonly close: {
+    /** The hub's heading, and every guide's whose topic has none of its own below. */
     readonly heading: { readonly title: Copy; readonly lead: Copy };
+    /** The heading by the article's topic (the D2C plan v2 §7; task Q2.12): a topic named here closes in its own words,
+     *  any other in `heading`. A talking guide has no such close (B5). */
+    readonly topicHeadings: Readonly<Partial<Record<TopicId, { readonly title: Copy; readonly lead: Copy }>>>;
     readonly cta: CtaId;
     readonly trust: readonly TrustId[];
     /** The ghost link under the help line; a close's "See how it works" carries no tracking value. */
@@ -78,6 +83,21 @@ export const articlePageCopy = {
     heading: {
       title: "A toy that {hand:asks back.}",
       lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It answers your child, then asks a question back.",
+    },
+    /* The selling update's close by topic (the D2C plan v2 §7, the CMO's review of v2; task Q2.12). The learning guides
+       keep the shared heading: they cite adult-child talk research, and a close about more back-and-forth would make
+       Kheelu the caring adult (source verification C08; the CMO's F1). The talking guides keep their keep-reading close
+       (D054 item 16). Claims §1 (no camera, no browsing, every conversation), D017, D065 item 5 (the daily limit, never
+       one a parent sets). */
+    topicHeadings: {
+      "screen-time": {
+        title: "A toy that talks, {hand:with no screen.}",
+        lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It answers your child, then asks a question back, and each Kheelu has a daily limit on how long it talks.",
+      },
+      "ai-and-safety": {
+        title: "A toy you can {hand:check.}",
+        lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It has no camera and can’t browse the internet, and you can read every conversation in the parent app.",
+      },
     },
     cta: "finale",
     trust: TRUST_COMPACT,
