@@ -14,13 +14,18 @@ import { VIEWPORTS, type Viewport } from "./support/viewports";
  *   - the film pauses once less than half of it is on screen; when it ends the poster comes back and focus returns to
  *     its play button;
  *   - axe: no critical or serious finding with the film mounted or unmounted (the accepted exceptions of
- *     support/axe.ts are printed apart).
+ *     support/axe.ts are printed apart);
+ *   - the single film (task 8c.6, the product page's expert clip, story Expert): at rest no <video> and no request for
+ *     the film, the poster, the chip and one named play control; Tab and Enter play it focused, with sound; focus
+ *     returns at the end; axe at 360, 390 and 1440 with the film unmounted and mounted.
  * Playback is observed, not watched: an init script stands in for HTMLMediaElement play() and pause() (the Chromium
  * Playwright ships may not decode H.264), recording each call; the element, its attributes and its events are real.
  */
 
 const HOME = "sections-filmsstrip--home";
 const PRODUCT = "sections-filmsstrip--product";
+/** The single film (task 8c.6): the product page's expert clip, FilmsStrip's `single` layout. */
+const EXPERT = "sections-filmsstrip--expert";
 const phone = VIEWPORTS.find((v) => v.width === 390)!;
 const laptop = VIEWPORTS.find((v) => v.width === 1440 && v.height === 900)!;
 
@@ -49,7 +54,7 @@ async function openStory(context: BrowserContext, info: TestInfo, story: string)
   await context.addInitScript(stubMedia);
   const page = await context.newPage();
   await page.goto(`${baseURL}/iframe.html?id=${story}&viewMode=story`);
-  await page.locator("#storybook-root [data-films]").waitFor();
+  await page.locator(story === EXPERT ? "#storybook-root .ks-clip" : "#storybook-root [data-films]").waitFor();
   await page.evaluate(() => document.fonts.ready.then(() => undefined));
   return page;
 }
@@ -177,6 +182,76 @@ async function axeWhenIdle(page: Page): ReturnType<typeof runAxe> {
     }
   }
 }
+
+/* The single film (task 8c.6; D061 items 12-13): the expert clip as the product page shows it (the Expert story is the
+   page's own fold from content). At rest: no <video>, no request for the film (resource timing names every fetch), the
+   poster, the chip hidden from screen readers and one play control named as the plan says. Keyboard: Tab reaches the
+   play control, Enter plays the film with sound and native controls, focused; at the end the poster comes back and focus
+   returns. axe below. */
+const CLIP = "/video/expert/expert-clip.mp4";
+const CLIP_PLAY = "Play the video from an expert: Chaitra, therapist and developmental coach. 34 seconds, with captions.";
+
+test.describe("the single film: the expert clip (task 8c.6)", () => {
+  for (const vp of [phone, laptop]) {
+    test(`${vp.name}: at rest, no video and no byte of the film; the poster, the chip and one named play control`, async ({ browser }, info) => {
+      await withStory(browser, info, vp, EXPERT, async (page) => {
+        await expect(page.locator("video")).toHaveCount(0);
+        await expect(page.locator(".ks-clip__frame img")).toBeVisible();
+        await expect(page.getByRole("button", { name: CLIP_PLAY })).toBeVisible();
+        await expect(page.getByRole("button")).toHaveCount(1);
+        await expect(page.locator(".ks-clip__chip")).toHaveAttribute("aria-hidden", "true");
+        await expect(page.locator(".ks-clip__chip")).toHaveText("0:34 · With captions");
+        await expect(page.locator(".ks-clip__credit")).toHaveText(/Chaitra, therapist and developmental coach\s*Kheelona made this video with Chaitra and compensated her for it\./);
+        const fetched = await page.evaluate(() => performance.getEntriesByType("resource").map((e) => e.name));
+        expect(fetched.filter((url) => url.includes("expert-clip.mp4"))).toEqual([]);
+        // The frame is the film's 16:9 and the credit sits under it.
+        const frame = (await page.locator(".ks-clip__frame").boundingBox())!;
+        expect(frame.width / frame.height).toBeCloseTo(16 / 9, 1);
+        expect((await page.locator(".ks-clip__credit").boundingBox())!.y).toBeGreaterThanOrEqual(frame.y + frame.height);
+      });
+    });
+  }
+
+  test("keyboard: Tab reaches the play control, Enter plays the film with sound and native controls, focused; on end focus returns", async ({ browser }, info) => {
+    await withStory(browser, info, phone, EXPERT, async (page) => {
+      await page.keyboard.press("Tab");
+      expect(await page.evaluate(() => document.activeElement?.getAttribute("aria-label"))).toBe(CLIP_PLAY);
+      await page.keyboard.press("Enter");
+      const video = page.locator("video");
+      await expect(video).toHaveCount(1);
+      await expect(video).toHaveAttribute("src", CLIP);
+      await expect(video).toHaveAttribute("controls", "");
+      await expect(video).toHaveAttribute("playsinline", "");
+      await expect(video).toHaveAttribute("preload", "none");
+      await expect(video).not.toHaveAttribute("muted", "");
+      await expect(video).not.toHaveAttribute("autoplay", "");
+      await expect(video).not.toHaveAttribute("loop", "");
+      await expect(video).toHaveAttribute("aria-label", "The video from an expert: Chaitra, therapist and developmental coach");
+      await expect.poll(() => page.evaluate(() => document.activeElement?.tagName)).toBe("VIDEO");
+      expect(await page.evaluate(() => window.__khMedia?.play)).toEqual([CLIP]);
+      await expect(page.locator(".ks-film__play")).toBeHidden();
+      await video.dispatchEvent("ended");
+      await expect(video).toHaveCount(0);
+      await expect(page.getByRole("button", { name: CLIP_PLAY })).toBeFocused();
+    });
+  });
+
+  for (const vp of [VIEWPORTS.find((v) => v.width === 360)!, phone, laptop]) {
+    test(`${vp.name}: axe, no critical or serious finding with the film unmounted, then mounted`, async ({ browser }, info) => {
+      await withStory(browser, info, vp, EXPERT, async (page) => {
+        for (const state of ["unmounted", "mounted"] as const) {
+          if (state === "mounted") {
+            await page.locator(".ks-film__play").click();
+            await expect(page.locator("video")).toHaveCount(1);
+          }
+          const { blocking, accepted, apart } = await axeWhenIdle(page);
+          if (accepted.length || apart.length) console.log(`[expert clip axe ${vp.name} ${state}] accepted or apart:\n${describeFindings([...accepted, ...apart])}`);
+          expect(blocking, `${state}:\n${describeFindings(blocking)}`).toEqual([]);
+        }
+      });
+    });
+  }
+});
 
 test.describe("films strip: axe", () => {
   for (const vp of [phone, laptop]) {
