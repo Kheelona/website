@@ -65,11 +65,12 @@ function sharedChunks(): Set<string> | null {
   return new Set([...shared].map((f) => `/_next/${f}`));
 }
 
-/** A film poster: public/video/moments/<id>.<image>, served directly or through /_next/image. */
+/** A film poster: public/video/moments/<id>.<image> or the expert clip's public/video/expert/<id>.<image> (task 8c.6),
+ *  served directly or through /_next/image. */
 function isPoster(url: string): boolean {
   const u = new URL(url);
   const source = u.pathname === "/_next/image" ? (u.searchParams.get("url") ?? "") : u.pathname;
-  return /\/video\/moments\/[^/?#]+\.(?:jpe?g|png|webp|avif)$/i.test(source);
+  return /\/video\/(?:moments|expert)\/[^/?#]+\.(?:jpe?g|png|webp|avif)$/i.test(source);
 }
 
 for (const route of sweepRoutes()) {

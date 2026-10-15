@@ -148,7 +148,7 @@ Claims that are not live (for example a weekly four-skills report) stay behind
 | Understands a 3-year-old's speech first time | Needs a pilot rate; positioning notes "speech recognition is weaker under 4". Speech wording also follows [D025](../decisions/D025-speech-and-language.md) | `mid:MARKETING-TODO.md:126`; positioning docx ("Where I depart from the research") | G5 | EXTERNAL IF CONFIRMED (G5) |
 | "[X] of 500 left" | The live count is never published, by design | `mid:MARKETING-TODO.md:66`; [pricing.md](pricing.md) | none (by design) | INTERNAL (commercial; never published, by design) |
 | Market price ranges in a comparison row | Need checked ranges and a "checked on" date. Note the live buyer's guide already states "around ₹14,000 for a robot with a screen" without a source | `mid:src/lib/comparison.ts:22-24`; `src/app/(site)/ai-toys-for-kids-in-india/page.tsx:131` | Q4 (SKM's competitor review) | INTERNAL: competitor prices ([D013](../decisions/D013-internal-vs-external-content.md), which closed Q4); the live "around ₹14,000" line does not carry over |
-| A named advisor, "Reviewed by [advisor]" | There is no advisor (founder, 2026-10-11) | `mid:MARKETING-TODO.md:70,82`; [D038](../decisions/D038-trust-content-rulings.md) | F9, answered | BANNED: every advisor reference is dropped (D038) |
+| A named advisor, "Reviewed by [advisor]" | There is no advisor (founder, 2026-10-11); one exception since 2026-10-15, the expert clip on `/products/kheelu` (D061 items 12-13, §4 below), shown as an expert on talk and screens, never as Kheelona's advisor | `mid:MARKETING-TODO.md:70,82`; [D038](../decisions/D038-trust-content-rulings.md) | F9, answered | BANNED: every advisor reference is dropped (D038) |
 
 ### 3.1 Origin: "designed and built here"
 

@@ -58,7 +58,8 @@ export function pricingText(offer: Offer): string {
     "",
     "## Included with every Kheelu",
     "",
-    ...offerCopy.card.perks.product.map((perk) => `- ${plain(perk.text)}`),
+    /* "Made in India" (task 8c.5) is a fact about Kheelu, not something included; the manufacturer block above says it. */
+    ...offerCopy.card.perks.product.filter((perk) => perk.icon !== "house").map((perk) => `- ${plain(perk.text)}`),
     "",
     "## Returns and warranty",
     "",

@@ -52,7 +52,7 @@ export const expertClip = {
     src: "/video/expert/expert-clip.jpg",
     width: 1280,
     height: 720,
-    alt: "Chaitra, smiling, seated in a white coat, with window blinds behind her.",
+    alt: "Chaitra, smiling, seated at a desk, with window blinds behind her.",
   },
   still: "/video/expert/expert-clip.webp",
   chip: "0:34 · With captions",

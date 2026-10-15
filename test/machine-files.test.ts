@@ -145,8 +145,8 @@ const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } 
     // wave 8b merge). Earlier the same day: the age-3 advice in one wording (CMO review A M8; task 7.1b). 2026-10-13: it
     // added the product page's Manufacturer declaration (task 4.5 item 6).
     date: "2026-10-15",
-    token: "2d95e816c71bd4dda438cfa502110da64bfcf6ecfb9d275837eb175beb29ba4e",
-    full: "b4143787e41060f9032386dffeba968817e231656da759a8d4900861d8d33ca1",
+    token: "deb48accd5d9db1699eac3aa172d5448b2accae41165cbe52e3b064b213724bc",
+    full: "f90f7ec9298153e34c36dcc38aa96545c61b835006666e5d76f83acec4f06818",
   },
 };
 

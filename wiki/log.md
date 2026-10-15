@@ -1155,3 +1155,18 @@ folded into 8c.5 ([tasks](engineering/tasks.md) "8c.1-8c.4 merge rulings").
 `KH_SLUGS=home,meet-kheelu` on the merged build (`aed858d`): visual and text parity (with the V38-V46 rules),
 first-screen, cta, axe, no-sideways, perf-budget, content-integrity, chrome, no-js: 190 passed, 8 skipped, 0 failed.
 The 8c worktrees removed (merged, clean). 8c.5 and 8c.6 building (workflow `wf_011a9512-2c5`, base `aed858d`).
+
+## [2026-10-15 09:14] build | Wave 8c 8c.5 and 8c.6 merged (`576c8d9`, `2729940`); review follow-ups fixed by the main session
+Workflow `wf_011a9512-2c5`: both passed review first time. 8c.5: "Made in India" on both offer cards (DS `house`),
+the share link in a new tab (Button gains `target`), the hero's help line out of the WhatsApp bubble's column (no
+hero link under the bubble at the matrix phones; Kheelu's first-screen boxes unchanged), content-integrity allows the
+cap twice on Home, llms.txt answers the languages question. 8c.6: the 34-second expert clip in its own fold after the
+product page's offer (poster first, tap to play, captions in the DS style, Nunito ExtraBold on white pills, which the
+main session accepted over the task's dark box; the disclosure burned in and printed under the credit); the final
+file transcribed locally holds only the 11 caption lines. The clip's build and words-check scripts kept beside the
+local-only source (`wiki/raw/feedback/advisor-homepage-2026-10-12/expert-video/`). The optional Home link was not
+built (fold 3's one link slot is taken). Main-session follow-ups from the reviews: the poster's alt no longer says
+"white coat"; the fold's never-list test reads each line apart (a leading "Dr." was missed); the endorsement entry also
+catches "Recommended by a speech therapist", "Paediatrician-approved" and the like; perf-budget weighs the expert
+poster; `/pricing.md` no longer lists "Made in India" under "Included" (pins re-set). Rows V47 and V48 filed; V38, V40,
+V42 amended; claims.md's advisor row points to D061.

@@ -259,7 +259,7 @@ const BACKED_BY = [
 /** Who an endorsement would cite (D061 items 12-13, task 8c.6): an expert, a therapist, a doctor or a specialist, one or
  *  many, a child-development one too. A paediatrician is left out: the D025 line and the journal tell parents to talk to
  *  theirs, and no endorsement reads "talk to". */
-const ENDORSER = `(?:child[- ]development )?(?:experts?|therapists?|doctors?|specialists?)`;
+const ENDORSER = `(?:child[- ]development |speech |child |developmental |leading |top )?(?:experts?|therapists?|doctors?|specialists?|paediatricians?|pediatricians?|psychologists?|counsell?ors?)`;
 /** Up to two small words before a span of time ("within a few weeks", "in just two months"). */
 const SOON = `(?:(?:a few|just|only|about|two|three|four|six|\\d+) ){0,2}`;
 /** Words just before a certification that deny it: "not yet safety certified". */

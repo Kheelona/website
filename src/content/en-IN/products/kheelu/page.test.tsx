@@ -664,9 +664,14 @@ describe("the product page's expert clip (task 8c.6)", () => {
   });
 
   it("never names Kheelu, a doctor or Dr. in the fold: nothing says Kheelu fills the gap she describes (D061 item 13)", () => {
-    const printed = text(fold());
+    // Each element's words apart (textContent alone glues "captions" and "Dr." into one word), plus the image's alt.
+    const f = fold();
+    const printed = [...f.querySelectorAll("*")]
+      .flatMap((el) => [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent ?? ""))
+      .concat([...f.querySelectorAll("img")].map((img) => img.getAttribute("alt") ?? ""))
+      .join(" \n ");
     expect(printed).not.toMatch(/kheelu/i);
-    expect(printed).not.toMatch(/\bdr\b\.?|doctor|counsel+or|recommended by|approved by/i);
+    expect(printed).not.toMatch(/\bdr\b\.?|doctor|counsel+or|recommended by|approved by|white coat/i);
   });
 
   it("hides for the pixels exactly the fold, found once on the page and gone from the page compared", () => {
