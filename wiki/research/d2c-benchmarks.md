@@ -1,8 +1,15 @@
 ---
-title: D2C benchmarks (Phase 1)
+title: D2C benchmarks (Phase 1; conversion review of the beta 2026-10-15)
 type: research
-updated: 2026-10-11
+updated: 2026-10-15
 sources:
+  - "raw/research/benchmarks/kheelona-beta-2026-10-15/ (betawebsite.kheelona.com at beta 398c5ee, before quick batch 2: phone 390 × 844 and laptop 1440 × 900 scrolled chunks at 1x, plus phone-report.json and laptop-report.json with every heading, buy link and sticky element and its y position; Playwright 1.63.0 Chromium, Android Chrome user agent, en-IN, analytics requests blocked; 2026-10-15 ~12:30 IST)"
+  - "raw/qa/beta-2026-10-15/store-shots/ (the store form as built, local; the beta store is the D051 placeholder)"
+  - "raw/feedback/advisor-homepage-2026-10-12/ (content-docx.txt, home-phone.png, recommendations.md AP-01..AP-37); qa/cmo-review-advisor-proposal-2026-10-15.md; decisions D061-D064"
+  - "design-system/project/07-selling.md (the DS selling skeleton and CTA rules, read-only); design-system/project/components/NavBar/README.md"
+  - "git show archive/pre-reset-2026-10-10:src/components/organisms/Navbar.tsx (line 18, the old sticky header)"
+  - "test/guards/banned-phrases.data.ts findBanned, run 2026-10-15 on every line proposed in section 7"
+  - "Web, 2026-10-15: Social Media Today, 'Meta Publishes New Guide on Landing Page Best Practices' (26 Apr 2022), https://www.socialmediatoday.com/news/meta-publishes-new-guide-on-landing-page-best-practices/622743/ ; atherenergy.com phone Home probed with Playwright (buy links and price lines only); one web search on refundable pre-booking in India (2021 news results only)"
   - "raw/research/benchmarks/{allbirds,boat,kiwico,lenskart,lovevery,mamaearth,miko,mywonder,oura,playshifu,scoobies,skillmatics,smartivity,the-whole-truth,tonies,ultrahuman,wakefit,warby-parker,yoto}/notes.md, with the screenshots beside each (captured 2026-10-10 evening machine time = 2026-10-11 UTC; exact times per file)"
   - research/posthog-audit.md (PostHog project 617632, 2026-09-19 to 2026-10-10)
   - qa/baseline-2026-10-10.md (Lighthouse 13.4.1 medians and phone first-screen checks of the live site)
@@ -33,6 +40,9 @@ asks for personal details. Lighthouse 13.4.1 mobile preset, simulated throttling
 for most sites, median of three for boAt, Mamaearth, The Whole Truth and Ultrahuman. Several flows,
 360 × 640 screens and Lighthouse runs came from a US connection; each notes file says which. The
 captures ran on the evening of 2026-10-10 machine time, which is 2026-10-11 in UTC.
+
+**Section 7 (2026-10-15)** maps these patterns onto the rebuilt site on beta, after the founder's
+feedback that the site "is pretty informative but lacks clear CTA and things required for conversion".
 
 ## In one screen
 
@@ -456,6 +466,117 @@ Returned to the orchestrator; none duplicates an existing ID.
   email after delivery, with explicit consent for first name, city and the child's age, shown with
   the DS Testimonial. (b) No reviews on the site until a third-party review service is set up.
   **Recommendation (a)**, starting with the first dispatches. Owner: founder. Customer-visible.
+
+## 7. Conversion review of the rebuilt site (beta, 2026-10-15)
+
+The founder, 2026-10-15: the site "is pretty informative but lacks clear CTA and things required for conversion",
+and the advisor's sections read "direct and clean". This section maps sections 2-3 onto the pages as they stand on
+beta `398c5ee` (wave 8c; quick batch 2, [D064](../decisions/D064-quick-batch-2-landing-page-and-motion-2026-10-15.md),
+is planned and not built). Captures and the measured positions: `raw/research/benchmarks/kheelona-beta-2026-10-15/`
+(phone and laptop chunks, `phone-report.json`, `laptop-report.json`). The beta store is the
+[D051](../decisions/D051-beta-without-store-integrations.md) placeholder; the store as built is in
+`raw/qa/beta-2026-10-15/store-shots/`. Every line proposed here passed `findBanned`
+(`test/guards/banned-phrases.data.ts`, run 2026-10-15); the copywriter writes the final words and the founder signs
+([D015](../decisions/D015-founder-signs-off-copy.md)).
+
+### 7.1 What the beta measures
+
+Phone 390 × 844 unless stated; y is the element's top in px.
+
+| Page | Height | Buy buttons in the page (y, `cta`) | Links to other pages in `main` | Offer card | FAQ | Persistent buy action |
+|---|---|---|---|---|---|---|
+| Home | 16,681 (19.8 screens) | 376 `hero` · 2,725 `see-it-ask` · 10,012 `safety` · 14,502 `finale` | 11: see how it works, see what else it does, read more (talking), see what each mode does, see what the app shows you, see how we built safety in, how to choose an AI toy, three guide links, see all questions | 13,904 (83% down) | 13,082 (78%) | Phone bar after the hero button leaves |
+| Product | 17,453 (20.7) | 332 · 3,407 · 11,595 · 15,414 | 3 (setup, safety, refund) | 2,729 (16%) | 13,924 (80%) | Phone bar |
+| `/safety` | 9,296 (11.0) | 7,436 `finale` | 4 (the AI-toy guide twice, the app fold, privacy) and 2 sources | none | 6,197 | Phone bar |
+| Home, laptop 1440 × 900 | 11,399 (12.7) | 14 nav · 484 · 2,182 · 6,989 · 10,160 | as phone | | | **None**: the header scrolls away; only the WhatsApp bubble is fixed |
+| Product, laptop | 12,320 (13.7) | 14 nav · 419 · 2,863 · 8,435 · 11,180 | | | | **None** |
+
+Home's ten H2s in order: "Kheelu asks. Watch them think." · "Recognised by." · "Conversation helps a young brain
+grow." · "What is Kheelu?" · "You see every conversation." · "Safety you can check." · "Other AI gives answers.
+Kheelu asks questions." · "How we can help, from 3 to 7." · "Questions parents ask." · "What you get, and what you
+pay." Two say what the child gets or why Kheelu beats the alternative; eight name a topic.
+
+**Already at the level of the best benchmarks:** one label everywhere; button, the D028 sentence, delivery and
+returns in the first small-phone screen (A3-A5); the phone bar with "₹499 today" and the total (A1, D2); the offer
+card with what is included and the trust row (A5, A6); the films and parents' own words (A10); a store that opens on
+the price and the form (A4).
+
+**Diagnosis.** The pieces that sell exist; the order and the section endings inform. Home, where the ads land
+([D061](../decisions/D061-advisor-proposal-what-we-take-2026-10-15.md) item 2), reads as an explainer: what it is,
+the science, the modes, the app, safety, a comparison, guides, then the price at 83% of the page, with eleven
+"learn more" exits and no "what will my child get" fold (no steps, no sample conversation, no age, no day). The DS's
+own selling skeleton ([07-selling](../design-system/overview.md#selling-project07-sellingmd): hero → films → StepLoop
+→ AgeTimeline → a day with Kheelu → safety → … → OfferCard) and the advisor's page both answer that question in the
+middle; ours answers "is it safe?" twice instead. On laptops no buy action follows the reader at all.
+
+### 7.2 Pattern → page → recommendation
+
+| ID | Pattern | Seen at | Beta today | Recommendation | Tied to | P |
+|---|---|---|---|---|---|---|
+| C1 | **Sell in the order of the buying questions**; offer early, close again | DS selling skeleton; Yoto, Miko, boAt product pages; our own product page (offer at fold 3) | Home's offer at 13,904 px; two full safety folds (D064 merges them) | Home: hero → C3 steps and one C4 example → films and quotes → offer card with C8, C10 and C11 → C6 day → languages → the compact safety block → science and the expert clip → C14 → full FAQ → close → guides last or footer only. Offer heading within about 5 phone screens (≤ about 4,500 px) and Home ≤ about 12 screens | [PH §8](posthog-audit.md#8-top-10-issues-ranked-by-estimated-revenue-impact) #1, #5, #6; A4, A13; brief 9.1 | P1 |
+| C2 | **A buy action that stays in view on laptops** | Yoto (full-width "£119.99 / Pre-order" bar under the header), Ultrahuman (laptop buy page: a full-width bottom bar with the total and "Continue"), Lovevery (header button after scroll), Allbirds (sticky buy column), MyWonder (full-width offer bar) | None below the first screen; 4,807 px (5.3 screens) between Home's 2nd and 3rd buttons, 5,572 px on the product page. Production's header was sticky (`Navbar.tsx:18` at the archive tag) and its button was the most-tapped laptop CTA, 11 of 24 ([PH §5](posthog-audit.md#which-ctas-people-tap-h13-h14-h14b-h14h-human-sessions)) | NavBar `position: sticky` from 1024 px (DS NavBar, `--z-sticky` token; same `navbar` value; no new component) | PH §5; laptop is 47% of non-paid sessions ([PH §2](posthog-audit.md#2-baseline-metrics-for-the-post-launch-comparison)); the CMO's R17: all three buyers came through the bar or the nav button | P1 |
+| C3 | **How it works in steps** on the landing page | KiwiCo (three steps on Home and again at the close), tonies (three steps), DS StepLoop; advisor §7 | Four steps on the product page only (5,050 px) | StepsSection `four` on Home under "Kheelu asks. Your child thinks." with the product page's approved steps | [Positioning, the problem](../brand/positioning.md#the-problem) ("Kheelu asks, your child thinks"); D017, D018 | P1 |
+| C4 | **Sample interactions** a parent can read without pressing play | tonies (tap-to-listen sampler), Miko (chips of questions a child might ask); advisor §8 tabs | One labelled example on the product page (6,038 px); none on Home | ExampleConversation inside DS Tabs: three or four labelled exchanges, one per kind of question Kheelu asks back ("Why do you think…?", "What happens next?" in conversation, "What else do you wonder?", one in a home language); heading "Four kinds of questions Kheelu asks back." | [The four thinking skills](../brand/positioning.md#the-four-thinking-skills) (what Kheelu does in each row is F8); D017; D027 (never Story mode); D044 | P2 |
+| C5 | **Age first** | KiwiCo (every card led by its band), Lovevery and tonies (age chips), Yoto (age tick boxes), Skillmatics, PlayShifu ("Shop By Age"); DS AgeTimeline | "Ages 3 to 7" eyebrow; no age-by-age content (D063 item 4 replaced by D064 item 7) | Tap an age (3, 4, 5, 6, 7) with DS AgeTimeline or Tabs: an illustrative exchange per age and the confirmed mechanism (a parent sets the age in the app; the model gets child-safety rules for that age, D036, D058); heading "From age 3. Still asking back at 7." Answers "will they outgrow it?" (DS: "₹4,999 is a lot for a toy") | [Positioning, the age correction](../brand/positioning.md#the-age-correction); [D009](../decisions/D009-brief-readings.md) | P2 |
+| C6 | **A day in the life** | Yoto ("Built for the rhythm of family life", "The way to waaay better bedtimes"); DS skeleton §7 "A day with Kheelu" | Modes as a list under "What is Kheelu?" (4,947 px) | D064's sticky-scroll "What is Kheelu?" becomes the day: morning "why" questions (AI mode, home Wi-Fi), after school telling Kheelu about the day (it remembers earlier conversations), in the car stories, poems and jingles with no Wi-Fi (Story mode), bedtime one last story; closed by the daily talk-time limit in the live team's words (D058 item 1, G28). Not: games (D044), family songs (unconfirmed), Bluetooth music (CMO AP-18) | [Positioning, foundation chips](../brand/positioning.md#pillars-and-foundation); D027, D036, D058 | P2 |
+| C7 | **Each persuasion block ends on the buy action**, the learn link under it | KiwiCo (one micro-line under four CTAs), Ultrahuman ("Buy now" + "Learn more" per section); DS "a cta after sections 3, 8, 11 and 14" | 11 exits vs 4 buy buttons on Home; 7,287 px (8.6 phone screens) between the 2nd and 3rd buttons | Phones (the bar already covers): cut Home's exits to the two that close objections (safety, all questions); the guide links go below the close. Laptops: a button with the D028 micro-line after each block of C1, the learn link as text under it | PH §8 #1, #5; A2, A3 | P1 |
+| C8 | **Risk reversal as one named promise** | Wakefit ("Try for 100 Days / Not satisfied? Get your money back", three times), tonies ("30 days happiness guarantee"), Warby Parker (the list with its conditions) | "Refundable until dispatch" inside the price sentence; "7-day returns, no questions asked" as a small link | In the offer card's perks: "Before dispatch, your ₹499 is refundable." / "After delivery, you have 7 days to return Kheelu, no questions asked." and D021's "Opened is fine." | [D021](../decisions/D021-returns-policy.md) (the founder: parents can buy without risk); PH §8 #4 | P2 |
+| C9 | **Honest urgency** | Yoto (dispatch date at every step); DS "'First 500 only' is enough" | "₹4,999 for the first 500 units. ₹7,999 once they are gone." on the offer cards only (D061 item 3) | C1 brings the card up to about screen 5; a first-screen copy of the line is the founder's call (OQ-8). Never a counter, strike-through, deadline or "only N left" (X1, X2, PRICE-01) | [Pricing](../product/pricing.md#live-state) (count never published) | P2 |
+| C10 | **Proof at the decision point without reviews** | The Whole Truth (unpaid fans), Ultrahuman ("Read the study"), DS trust signals ("Recognised by" names, "Designed by parents in Bengaluru"); ratings are out (§4.1) | Quotes at about 2,400 px and "Recognised by" at 3,117 px; nothing beside the offer card | One parent quote (D061 item 4, word for word, "Watch the film") and the "Recognised by" names beside the offer card on Home and the product page | [Positioning, pillars](../brand/positioning.md#pillars-and-foundation) ("None is fully in place yet"); D009, D061 | P2 |
+| C11 | **Answers beside the button** | Oura, Lovevery, Wakefit (FAQ mid page); Meta's "Stick the landing" guide (2022): speed, "answers to common questions", mobile-friendly interfaces | Home FAQ at 78% depth, right before the offer | Three buying questions (think-less, ages, price and the advance, "What if my child doesn't like it?") beside the moved-up offer card; the full FAQ before the close | A8; PH §8 #4 | P2 |
+| C12 | **Category and age in one glance** | Smartivity (category eyebrow), KiwiCo and Lovevery (age first); advisor's badge | Eyebrow "Ages 3 to 7"; H1 [D045](../decisions/D045-hero-headline.md); lead "A screen-free plush toy by Kheelona…" | Eyebrow "Screen-free AI toy · Ages 3 to 7" (extends today's eyebrow, so no new line under D061 item 6); lead "Stories, poems and answers to every 'why'. Then Kheelu asks a question back, so your child does the thinking."; H1 unchanged | Voice rule 1 ("AI" outside the headline noun is fine, [messaging](../brand/messaging.md#words-to-stop-using)) | P1 |
+| C13 | **The ad landing does the whole job** | No benchmark ad landing was captured (§5); Meta's guide as in C11 | Ads land on Home (D061 item 2); paid phone sessions 0 orders, 97% of measured paid Home views never reached 25% (PH §5) | Home's first three phone screens carry C12, C3 and the films; once ads restart, a `utm_content` split sending half the creatives to `/products/kheelu` (exists, offer at fold 3, no new page) | PH §8 #1, #6 | P2 |
+| C14 | **Comparison kept short** | tonies (own models), Wakefit (direct vs platforms) | 1,458 px of stacked cards on phones; 0 taps in 26 days on the old site (CMO R17) | Keep the heading (the advisor's banner, already ours); a four-row Kheelu checklist with the categories in one line each, after the offer | D10; G-05 | P3 |
+| C15 | **Motion that never delays the sale** | §2.9 | D064 adds line drawing, micro-interactions and a laptop sticky-scroll | Nothing animates the hero, price, buttons or bar; reveals never hold back the offer card or its button; the sticky-scroll stays laptop-only | A15, X5; [D049](../decisions/D049-motion-picks.md) | P3 |
+
+**Tracking.** Moving Home's offer card up keeps the element but changes its meaning: keep `finale` on the page's
+closing button (production's meaning) and give the moved card a new value such as `home-offer`, mirroring
+`product-offer`; every new button (steps, day, age) gets a new registered value; `home-arc` and `compare` stay
+reserved ([tracking inventory](../site/tracking-inventory.md); `src/lib/tracking/cta.ts`).
+
+### 7.3 The advisor's lines the founder liked, checked
+
+| Line | `findBanned` | Rule beyond the guard | Most direct line that passes | What changing the rule would buy |
+|---|---|---|---|---|
+| "Screen-free AI toy · Ages 3+" | `open-ended-ages` | D009 | "Screen-free AI toy · Ages 3 to 7" | Nothing a parent needs; "3+" next to "AI toy" invites toddler use (CMO AP-06) |
+| "The AI toy that helps your child's brain grow." | `helps-child-brain-grow` | [D016](../decisions/D016-brain-wording.md); voice rule 1 | H1 stays D045; the D016 form "An AI toy built for the conversations that help a young brain grow." ([messaging](../brand/messaging.md#taglines-and-hero): EXTERNAL) as a lead or the science fold's line | The advisor's exact H1 and the outcome arm of the Meta test, at the substantiation risk the positioning records (L119, L188) |
+| "Stories, rhymes and answers to every 'why'. Then Kheelu asks a question back." | pass | Story mode is "stories, poems and jingles" ([D027](../decisions/D027-story-mode-wording.md)); "rhymes" is in no fact | C12's lead | "Rhymes" only if the founder confirms Story mode has them |
+| "Kheelu asks. Your child thinks." (four steps) | pass | The advisor's step lines overclaim ("Any question, any story", "Tomorrow builds on today", CMO AP-14) | The heading as written over our approved steps (C3) | — |
+| "Stories and poems that build 4 thinking skills." | pass (the guard does not cover it) | "Builds" is a learning outcome (claims §3, messaging #19); the four-skills report is withdrawn (D058 item 8); no questions inside Story mode (D027); word games and counting songs (D044) | "Four kinds of questions Kheelu asks back." (C4) | An outcome promise that needs F8 product confirmation and substantiation (legal L7); no pilot data supports it |
+| "A day with Kheelu, sunrise to bedtime." | pass | The tile's games (D044) and family songs (unconfirmed) | The heading as written, with C6's moments and the talk-time limit | — |
+| "Starts talking at 3. Still teaching for years." (eyebrow "Grows with your child") | pass (eyebrow: `adapts`) | "Teaching" frames a tutor (messaging, D063 item 4); "6+" (D009); no age-by-age source (D038) | "From age 3. Still asking back at 7." (C5) | "Grows with your child" needs the product to adapt, which D036 did not confirm (F8) |
+| "Pre-order for ₹499" | `part-price-button` | D028, D041 G1 | "Pre-order Kheelu" with "₹499 today" big beside it in the bar, as built | Nothing: the bar already puts ₹499 first beside the button |
+| "Only 500 at the founding price. Ships 20 October." | pass | D023 (mid-November); X1, X2 | "₹4,999 for the first 500 units. ₹7,999 once they are gone." (D061) | — |
+
+### 7.4 Lookups and limits
+
+- **Refundable token, still no live model.** Ather's phone Home (probed 2026-10-15) shows "Book Now", "Book a
+  testride" and full prices with a monthly figure, no token; a web search returned only 2021 news of ₹499 refundable
+  scooter reservations, not live pages. §5's gap stands.
+- **Meta's landing-page guide** ("Stick the landing", 33 pages, 500 landing-page experiences analysed with Branding
+  Brand) is known here only through Social Media Today's report of 26 April 2022, which names speed, answers to
+  common questions and mobile-friendly interfaces; message match and CTA placement are not in that report.
+- **Not measured:** the beta before quick batch 2; the store's payment step (D051); any lift from these patterns (no
+  benchmark publishes conversion data); in-app browsers.
+
+### 7.5 Open questions raised here
+
+Returned to the main session; none duplicates an existing ID.
+
+- **OQ-5. Home's order (C1, C7).** (a) As built plus D064. (b) Reordered to the buying questions, offer card by about
+  screen 5, exits cut to two. (c) A short Home that hands over to the product page after screen 3. **Recommendation
+  (b).** Founder.
+- **OQ-6. A buy action on laptops (C2).** (a) Sticky NavBar from 1024 px. (b) A laptop buy bar (the DS StickyBuyBar is
+  phone-only: a gap request). (c) As built. **Recommendation (a).** Founder (DS owner).
+- **OQ-7. The advisor's three sections (C4-C6).** (a) All three in our words: tabs on Home, the day as D064's
+  sticky-scroll, the age selector on the product page. (b) Steps (C3) only. (c) None. **Recommendation (a).** Founder;
+  copywriter, then the CMO.
+- **OQ-8. The first-500 line in Home's first screen (C9).** (a) Offer cards only (D061), with C1 bringing the card up.
+  (b) Also under the hero's price sentence (costs the 360 × 590 first screen, D061 item 14). **Recommendation (a).**
+- **OQ-9. Where ads land (C13).** (a) Home with C1, C3, C12 (D061 item 2). (b) (a) plus a `utm_content` split to
+  `/products/kheelu` once ads restart. (c) `/lp`. **Recommendation (b).** Founder.
+- **OQ-10. The hero's eyebrow and lead (C12).** (a) As built. (b) "Screen-free AI toy · Ages 3 to 7" and the
+  advisor-derived lead. (c) (b) with the D016-form brain line as the lead. **Recommendation (b).** Founder.
 
 ## Related
 
