@@ -1188,3 +1188,16 @@ went through (`ee273b5..cf60e8a`). Vercel "Deployment has completed" in 32 s; th
 fold, "Made in India", the later-price line and the parents' quotes. GitHub's push reply flagged Dependabot alerts on
 the default branch (`main`, the live site: G25 is Aman's). The CMO reviews wave 8c on beta, phone first (workflow
 `wf_cb359084-f20`); a second reviewer checks any blocking finding.
+
+## [2026-10-15 09:57] qa | The CMO's review of wave 8c on beta: passed, 12 minor; tasks 8c.7 and 8c.8 building
+[The review](qa/cmo-review-wave-8c-2026-10-15.md) on `cf60e8a`: all eight checks pass (the first phone screen, the offer
+cards, the quotes, the strip, the expert fold, the FAQ, the page order, every new line); Lighthouse on beta Home 91,
+product 99. m1 (not from 8c): Home throws React #418 on every load on beta. The main session found the cause: Vercel
+re-renders Home (ISR, STALE) under the segments `["", "index"]`, so `usePathname()` is `/index` on the server and
+the buy bar is left out of the HTML, then added in the browser. A stub-adapter local build prerenders `/` and has the
+bar, so only Vercel's runtime shows it. Task 8c.7: a path hook that normalises `/index`, the four shell components on
+it, a page-error guard in the e2e fixtures, a beta deploy check. Task 8c.8: the product page's rulings (the strip after
+the offer, the clip re-encoded with raised captions, a readable disclosure and a clean poster, the clip capped on
+laptops, the FAQ's "What if my child doesn't like it, or it stops working?", the film button in the languages answer,
+the credit clear of the bubble, the example's closing line dropped). m9 and m12 are the founder's (workflow
+`wf_71b12167-174`, base `1963f060`).
