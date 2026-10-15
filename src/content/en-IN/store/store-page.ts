@@ -26,6 +26,10 @@ import { paymentsLine } from "./payments-line";
  * bundle carries neither this module nor its imports (seller.ts, organization.ts, trust.ts, the image's URL).
  */
 
+/** The store's age band (store.md fold 1), which the event page's eyebrow keeps beside a tier's price name (event-page.ts;
+ *  task 7.1c). */
+export const STORE_AGE_BAND = "Ages 3 to 7";
+
 /** The store page's own folds. */
 export interface StorePageContent {
   readonly meta: Meta;
@@ -50,7 +54,9 @@ export const storePage = {
     og: DEFAULT_OG,
   },
   top: {
-    eyebrow: "Ages 3 to 7",
+    /* The founder's eyebrow (D065 item 1; the D2C plan v2 §10; task Q2.12), the age band kept whole when it wraps beside
+       the small Kheelu on a phone. Only the first screen's marketing words change: the checkout is untouched (ADR-013). */
+    eyebrow: `Screen-free AI toy · {nowrap:${STORE_AGE_BAND}}`,
     title: "Pre-order Kheelu.",
     titleId: "store-title",
     image: { src: kheeluFront, alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." },
@@ -68,8 +74,9 @@ export const storePage = {
     items: ["paying-today", "change-my-mind", "store-arrival", "how-to-pay"],
   },
   films: {
-    /* Home's heading and lede (D040: claim only what the films show; the live heading is banned, claims §4). */
-    heading: { title: "See Kheelu {nowrap:{hand:ask},} in real homes.", lead: "Real children in real homes. Press play on any of them.", id: "ask-title" },
+    /* D040: claim only what the films show; the live heading is banned, claims §4. Not every film was shot at home, so
+       "in real homes" went (D057 item 2; the D2C plan v2 §10; task Q2.12). */
+    heading: { title: "See Kheelu {hand:ask.}", lead: "Real children, real families. Press play on any of them.", id: "ask-title" },
     proof: { text: "Kids doing the talking. Parents, in their own words.", size: "body-s" },
     posters: "lazy",
     link: { label: "Back to your details", href: "#details", iconEnd: "caret-up" },

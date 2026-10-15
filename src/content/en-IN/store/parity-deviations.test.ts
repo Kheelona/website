@@ -3,7 +3,7 @@ import { createElement } from "react";
 import { describe, expect, it } from "vitest";
 import { StorePaymentsLine } from "@/components/sections/store/StorePaymentsLine/StorePaymentsLine";
 import { HOSTS } from "@/config/env";
-import { CLAIM_FIXES, PARITY_ELSEWHERE, TEXT_DEVIATIONS, VISUAL_HIDDEN, hiddenCss, parityElsewhere } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, PARITY_ELSEWHERE, SELLING_CLOSES, TEXT_DEVIATIONS, VISUAL_HIDDEN, hiddenCss, parityElsewhere } from "../../../../test/e2e/support/deviations";
 import { htmlToText } from "../../../../test/e2e/support/mockup-text";
 import { sentences } from "../../../../test/e2e/support/parity";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
@@ -22,6 +22,10 @@ const IN_APP_ONLY = /V25, D056 item 3/;
 /** The order summary's small print (task 8b.1, V34): D058's Kheelona+ sentence and "Kheelu's price is", proven with the
  *  other pages' claim fixes (src/content/en-IN/pages/parity-deviations.test.ts). */
 const CLAIMS = CLAIM_FIXES.store.approvedBy;
+/** The first screen's eyebrow and the films fold's heading (task Q2.12; D065 item 1, D057 item 2), proven with the other
+ *  pages' selling closes (src/content/en-IN/pages/parity-deviations.test.ts). */
+const SELLING = SELLING_CLOSES.store.approvedBy;
+const [EYEBROW, FILMS_HEADING] = SELLING_CLOSES.store.hidden.both;
 
 const textOf = (el: Element) => sentences(htmlToText(el.outerHTML));
 const mockupDoc = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
@@ -38,13 +42,18 @@ const NEW_TAB = navigation.labels.newTabNote.trim();
 const MOCKUP_LINE = 'footer p:has(> a[href$="#chargeback"])';
 
 describe("store parity deviations: the visual pass (D056 item 3, V1)", () => {
-  it("store: hides the mockup's in-app note (shown only in the in-app browsers, D056 item 3) and the payments line on both sides, the mockup's footer line and the build's line in main (V1), then the small print (V34)", () => {
+  it("store: hides the mockup's in-app note (shown only in the in-app browsers, D056 item 3) and the payments line on both sides, the mockup's footer line and the build's line in main (V1), then the small print (V34), then the eyebrow and the films heading (task Q2.12)", () => {
+    expect([EYEBROW, FILMS_HEADING]).toEqual(['section[aria-labelledby="store-title"] .kh-eyebrow', 'section[aria-labelledby="ask-title"] .kh-heading']);
     expect(VISUAL_HIDDEN.store).toEqual([
       expect.objectContaining({ side: "mockup", selector: ".mk-inapp", approvedBy: expect.stringMatching(IN_APP_ONLY) }),
       expect.objectContaining({ side: "mockup", selector: MOCKUP_LINE, approvedBy: expect.stringContaining("V1") }),
       expect.objectContaining({ side: "build", selector: ".ks-store-payments", approvedBy: expect.stringContaining("V1") }),
       expect.objectContaining({ side: "mockup", selector: ".mk-agree__fine", approvedBy: CLAIMS }),
       expect.objectContaining({ side: "build", selector: ".ks-agree__fine", approvedBy: CLAIMS }),
+      expect.objectContaining({ side: "mockup", selector: EYEBROW, approvedBy: SELLING }),
+      expect.objectContaining({ side: "mockup", selector: FILMS_HEADING, approvedBy: SELLING }),
+      expect.objectContaining({ side: "build", selector: EYEBROW, approvedBy: SELLING }),
+      expect.objectContaining({ side: "build", selector: FILMS_HEADING, approvedBy: SELLING }),
     ]);
   });
 
@@ -67,8 +76,8 @@ describe("store parity deviations: the visual pass (D056 item 3, V1)", () => {
   });
 
   it("each side's style hides that side's selectors only, and nothing on a page without a rule", () => {
-    expect(hiddenCss("store", "mockup")).toBe(`.mk-inapp, ${MOCKUP_LINE}, .mk-agree__fine { display: none !important; }`);
-    expect(hiddenCss("store", "build")).toBe(".ks-store-payments, .ks-agree__fine { display: none !important; }");
+    expect(hiddenCss("store", "mockup")).toBe(`.mk-inapp, ${MOCKUP_LINE}, .mk-agree__fine, ${EYEBROW}, ${FILMS_HEADING} { display: none !important; }`);
+    expect(hiddenCss("store", "build")).toBe(`.ks-store-payments, .ks-agree__fine, ${EYEBROW}, ${FILMS_HEADING} { display: none !important; }`);
     expect(hiddenCss("store-confirmation", "mockup")).toBe(`${MOCKUP_LINE} { display: none !important; }`);
     expect(hiddenCss("store-confirmation", "build")).toBe(".ks-store-payments { display: none !important; }");
     expect(hiddenCss("contact", "build")).toBe("");
@@ -89,9 +98,10 @@ describe("store parity deviations: the visual pass (D056 item 3, V1)", () => {
 describe("store parity deviations: the text pass (D056 item 3, V1)", () => {
   const [note, payments] = TEXT_DEVIATIONS.store ?? [];
 
-  it("three rules: the in-app note's lines missing outside the in-app browsers (D056 item 3), the payments line moved (V1), the small print (V34)", () => {
-    expect(TEXT_DEVIATIONS.store).toHaveLength(3);
+  it("four rules: the in-app note's lines missing outside the in-app browsers (D056 item 3), the payments line moved (V1), the small print (V34), the marketing words (task Q2.12)", () => {
+    expect(TEXT_DEVIATIONS.store).toHaveLength(4);
     expect(TEXT_DEVIATIONS.store[2].approvedBy).toBe(CLAIMS);
+    expect(TEXT_DEVIATIONS.store[3].approvedBy).toBe(SELLING);
     expect(note.approvedBy).toMatch(IN_APP_ONLY);
     expect(note.reason).toMatch(/Instagram, Facebook or WhatsApp browser/);
     expect(note.build).toBeUndefined();

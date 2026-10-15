@@ -131,10 +131,13 @@ describe("the visible lines equal the approved mockup", () => {
     }
   });
 
-  it("prints the store header's help line as store.html does, the call off (D063 item 2)", () => {
+  /* The selling update (task Q2.12; the D2C plan v2 §1.1 and §10, CMO m9): one help line everywhere, so the store's
+     header reads as every close's, "Questions?" in place of the mockup's "Need help?". */
+  it("prints the store header's help line as every close's: the call off (D063 item 2), “Questions?” as its lead (CMO m9)", () => {
     const help = norm(doc("store").querySelector(".mk-store-head__help")?.textContent);
     expect(help).toBe("Need help? WhatsApp or call");
-    expect(`${seller.storeHelp.lead} ${toPlainText(seller.storeHelp.contact)}`).toBe("Need help? WhatsApp us");
+    expect(`${seller.storeHelp.lead} ${toPlainText(seller.storeHelp.contact)}`).toBe("Questions? WhatsApp us");
+    expect(seller.storeHelp).toEqual(seller.help);
   });
 
   it("states the manufacturer and origin as the product page's declarations do (D034)", () => {

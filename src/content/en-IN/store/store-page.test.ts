@@ -6,7 +6,7 @@ import type { Copy } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
-import { CLAIM_FIXES, KHEELONA_PLUS } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, KHEELONA_PLUS, SELLING_CLOSES, STORE_WORDS } from "../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupRoute, parseMockup, trustLinkHref } from "../../../../test/support/mockup-compare";
@@ -36,7 +36,9 @@ const plain = (copy: Copy) => toPlainText(copy, token);
  * 3, which lets the store's top marketing line take it); the store's price and everything at the checkout stay as
  * approved. */
 const mockup = parseMockup("store");
-const main = mockup.querySelector("main")!;
+/* With the selling update's marketing words (task Q2.12; D065 item 1, D057 item 2; the D2C plan v2 §10; SELLING_CLOSES):
+   the first screen's eyebrow and the films fold's heading and lead. The checkout's words stay the mockup's. */
+const main = withFacts(mockup.querySelector("main")!, SELLING_CLOSES.store.edits);
 function the(selector: string, root: ParentNode = main): Element {
   const el = root.querySelector(selector);
   if (!el) throw new Error(`mockup/store.html has no ${selector}`);
@@ -87,6 +89,13 @@ describe("store page module: fold 1, heading and price", () => {
     expect(storePage.top.titleId).toBe(the("h1", top).id);
     expect(storePage.top.image.alt).toBe(the("img", top).getAttribute("alt"));
     expect(storePage.top.priceId).toBe(the(".mk-store-top__price", top).id);
+  });
+
+  /* D065 item 1 (the D2C plan v2 §10): the founder's eyebrow, the age band kept whole when it wraps beside the small
+     Kheelu on a phone (as the event page keeps it, task 7.1c). */
+  it("the eyebrow is the founder's, “Screen-free AI toy · Ages 3 to 7”, the age band on one line", () => {
+    expect(plain(storePage.top.eyebrow)).toBe(STORE_WORDS.eyebrow.build);
+    expect(storePage.top.eyebrow).toBe("Screen-free AI toy · {nowrap:Ages 3 to 7}");
   });
 
   it("the image is the DS kheelu-front.webp, the mockup's file (a static import: Next reads its 1080 x 1324 size)", () => {
@@ -231,6 +240,14 @@ describe("store page module: fold 6, films", () => {
     expect(plain(proof!.text)).toBe(norm(the(".mk-films-proof", fold).textContent));
     expect(link).toEqual({ label: norm(the(".kh-section__actions a", fold).textContent), href: the(".kh-section__actions a", fold).getAttribute("href"), iconEnd: "caret-up" });
     expect(posters).toBe("lazy");
+  });
+
+  /* D057 item 2: not every film was shot at home, so "in real homes" goes (the D2C plan v2 §10). */
+  it("the heading and lede say “See Kheelu ask.” and “Real children, real families.”, never “in real homes”", () => {
+    const { heading } = storePage.films;
+    expect(heading.title).toBe("See Kheelu {hand:ask.}");
+    expect([plain(heading.title), plain(heading.lead!)]).toEqual([STORE_WORDS.filmsTitle.build, STORE_WORDS.filmsLead.build]);
+    expect(`${plain(heading.title)} ${plain(heading.lead!)}`).not.toMatch(/real homes/);
   });
 
   it("the seven films the strip shows are films.ts's, in the mockup's order", () => {

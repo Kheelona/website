@@ -39,10 +39,16 @@ describe("StoreShell: the store chrome equals the approved mockup's (mockup/stor
   });
 
   /* The header's help line, the footer's seller lines and its grievance line as D063 items 2-3 rule them (task Q2.3;
-     test/e2e/support/seller-facts.ts): WhatsApp and the email, no GSTIN, no number, no call. */
+     test/e2e/support/seller-facts.ts): WhatsApp and the email, no GSTIN, no number, no call. The help line's lead is
+     every close's since the selling update (task Q2.12; the D2C plan v2 §1.1 and §10, CMO m9): "Questions?" for "Need
+     help?". */
   it("store header", () => {
     const { container } = shell();
-    expect(differences(container.querySelector("header.ks-store-head")!, withSellerFacts(mockup.querySelector("header.mk-store-head")!))).toEqual([]);
+    const ref = withSellerFacts(mockup.querySelector("header.mk-store-head")!);
+    const lead = ref.querySelector(".mk-store-head__help")!.firstChild!;
+    expect(lead.textContent).toBe("Need help? ");
+    lead.textContent = "Questions? ";
+    expect(differences(container.querySelector("header.ks-store-head")!, ref)).toEqual([]);
   });
 
   it("store footer, but for the payments line (held back: see the test below)", () => {

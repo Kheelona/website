@@ -1614,9 +1614,14 @@ export const JOURNAL_SAFETY_CLOSE = {
   },
 } as const;
 
-/** The store's first-screen eyebrow (D065 item 1) and its films fold's heading and lead (the plan's §10; D057 item 2). */
+/** The store's first-screen eyebrow (D065 item 1) and its films fold's heading and lead (the plan's §10; D057 item 2). The
+ *  eyebrow keeps the age band whole when it wraps beside the small Kheelu on a phone, as the event page's does (7.1c). */
 export const STORE_WORDS = {
-  eyebrow: { mockup: "Ages 3 to 7", build: "Screen-free AI toy · Ages 3 to 7" },
+  eyebrow: {
+    mockup: "Ages 3 to 7",
+    build: "Screen-free AI toy · Ages 3 to 7",
+    markup: 'Screen-free AI toy · <span class="mk-nowrap">Ages 3 to 7</span>',
+  },
   filmsTitle: { mockup: "See Kheelu ask, in real homes.", build: "See Kheelu ask.", markup: 'See Kheelu <span class="kh-hand">ask.</span>' },
   filmsLead: { mockup: "Real children in real homes. Press play on any of them.", build: "Real children, real families. Press play on any of them." },
 } as const;
@@ -1713,7 +1718,7 @@ export const SELLING_CLOSES = {
   },
   store: {
     edits: [
-      rewrite(".kh-eyebrow", STORE_WORDS.eyebrow.mockup, STORE_WORDS.eyebrow.build),
+      rewrite(".kh-eyebrow", STORE_WORDS.eyebrow.mockup, STORE_WORDS.eyebrow.markup),
       rewrite("#ask-title", STORE_WORDS.filmsTitle.mockup, STORE_WORDS.filmsTitle.markup),
       rewrite(".kh-heading__lead", STORE_WORDS.filmsLead.mockup, STORE_WORDS.filmsLead.build),
     ],

@@ -6,7 +6,9 @@ import { navigation } from "@/content/en-IN/navigation";
 import { storePage } from "@/content/en-IN/store/store-page";
 import { isSitePath } from "@/lib/links";
 import { buildOffer } from "@/lib/offer/offer";
+import { SELLING_CLOSES } from "../../../../../test/e2e/support/deviations";
 import { mockupDiff, mockupFold, mockupRoute } from "../../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../../test/support/mockup-facts";
 import { StoreTop } from "./StoreTop";
 import type { StoreTopConfig } from "./store-top.types";
 
@@ -33,10 +35,15 @@ const content: StoreTopConfig = {
   image: { src: { src: "/_next/static/media/kheelu-front.webp", width: 1080, height: 1324 } as StaticImageData, alt: storePage.top.image.alt },
 };
 
+/** The store's first screen as approved, with the eyebrow of the selling update (task Q2.12; D065 item 1; the D2C plan v2
+ *  §10; SELLING_CLOSES.store): "Screen-free AI toy · Ages 3 to 7", the band no-wrap. */
+const FIRST_SCREEN_EDITS = SELLING_CLOSES.store.edits.filter((edit) => edit.at === ".kh-eyebrow");
+
 describe("StoreTop", () => {
   it("equals the mockup's first screen (token mode)", () => {
     const { container } = render(<StoreTop content={content} offer={token} newTabNote={NOTE} />);
-    expect(differences(container.firstElementChild!, mockupFold("store", "section.mk-store-top"))).toEqual([]);
+    expect(FIRST_SCREEN_EDITS).toHaveLength(1);
+    expect(differences(container.firstElementChild!, withFacts(mockupFold("store", "section.mk-store-top"), FIRST_SCREEN_EDITS))).toEqual([]);
   });
 
   it("is the page's one h1, named by its id, and labels the section with it", () => {

@@ -7,7 +7,7 @@ import { DELIVERY_TEXT } from "@/content/en-IN/delivery";
 import { navigation } from "@/content/en-IN/navigation";
 import { seller } from "@/content/en-IN/seller";
 import { eventPage } from "@/content/en-IN/store/event-page";
-import { storePage } from "@/content/en-IN/store/store-page";
+import { STORE_AGE_BAND, storePage } from "@/content/en-IN/store/store-page";
 import { revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 
 const startCheckout = vi.hoisted(() => vi.fn());
@@ -35,8 +35,9 @@ describe("TierCheckout: the store page's folds for an event tier", () => {
   it("shows the tier's price name beside the store's age band, above the store's h1 (5.15 review; CMO review C m2)", () => {
     const { container } = renderCheckout();
     const top = container.querySelector(".ks-store-top")!;
-    // The band stays on the first screen (task 7.1c): the tier's name first, then the store's own eyebrow.
-    expect(top.querySelector(".kh-eyebrow")!.textContent).toBe(`Bangalore expo price · ${storePage.top.eyebrow}`);
+    // The band stays on the first screen (task 7.1c): the tier's name first, then the store's own age band (the band
+    // alone since task Q2.12, whose "Screen-free AI toy" opens the store's own eyebrow).
+    expect(top.querySelector(".kh-eyebrow")!.textContent).toBe(`Bangalore expo price · ${STORE_AGE_BAND}`);
     expect(top.querySelector(".kh-eyebrow")!.textContent).toBe("Bangalore expo price · Ages 3 to 7");
     expect(within(top as HTMLElement).getByRole("heading", { level: 1 }).textContent).toBe("Pre-order Kheelu.");
     expect(container.querySelectorAll("h1")).toHaveLength(1);

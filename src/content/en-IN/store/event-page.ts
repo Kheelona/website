@@ -5,7 +5,7 @@ import type { Meta, RichTextString } from "@/content/types";
 import type { TierResult } from "@/lib/store/tiers";
 import { DEFAULT_OG } from "../organization";
 import { notFoundPage } from "../pages/not-found";
-import { storePage, type StorePageContent } from "./store-page";
+import { STORE_AGE_BAND, storePage, type StorePageContent } from "./store-page";
 
 /**
  * The event page, store.kheelona.com/e/<tier>?sig=…, and the store's dead end (task 6.1; structure §5 row "(no
@@ -83,8 +83,9 @@ export const eventPage = {
       trust: storePage.top.trust,
     },
     /* The tier's price name, then the store's own band ("Ages 3 to 7"): two approved words, no new copy. Beside the
-       small Kheelu on a phone the eyebrow wraps (at 360 and 390 px), so the band is kept whole. */
-    eyebrow: (tierLabel: string) => `${tierLabel} · {nowrap:${storePage.top.eyebrow}}`,
+       small Kheelu on a phone the eyebrow wraps (at 360 and 390 px), so the band is kept whole. The band alone, without
+       the store's "Screen-free AI toy" (task Q2.12): an event page's words stay as they were. */
+    eyebrow: (tierLabel: string) => `${tierLabel} · {nowrap:${STORE_AGE_BAND}}`,
     details: storePage.details,
     beside: storePage.beside,
     questions: storePage.questions,
