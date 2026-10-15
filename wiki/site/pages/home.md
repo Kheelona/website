@@ -1,7 +1,7 @@
 ---
 title: "Home (/): page copy, Phase 3 draft"
 type: page-copy
-updated: 2026-10-14
+updated: 2026-10-15
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - ../strategy.md (§1 hierarchy, §2 journey, §3 CTA rules, §5 Home row, §7 search rules)
@@ -23,6 +23,7 @@ sources:
   - "../../qa/live-main-reconciliation-2026-10-14.md (§1 T3; §2 the table of withdrawn claims, with the live team's wording from origin/main c630a49, PR #19, and dd04e6d, PR #18; task 8b.1)"
   - "src/content/en-IN/pages/home.ts:216-219, 250-264, policies.ts:50, faqs.ts:41, offer.ts:51, navigation.ts:75, read 2026-10-14 for the built lines task 8b.1 changes"
   - "../../qa/cmo-review-claims-8b.1-2026-10-14.md (round 2 of task 8b.1: m8 applied; m6, m7, m11 as questions 13-15)"
+  - "../d2c-conversion-plan-2026-10-15.md (v2 §2 \"Home: title, meta, keywords\"; D065; task Q2.9: the two metas)"
 ---
 
 # Home (`/`): page copy
@@ -55,8 +56,8 @@ sources:
 | Item | Draft |
 |---|---|
 | Title (54 characters) | Kheelu by Kheelona: a screen-free plush toy that talks |
-| Meta description, token mode (150 characters) | Kheelu by Kheelona: a screen-free plush toy, ages 3 to 7, that answers your child, then asks back. ₹4,999`{price-source}` (incl. GST); reserve with a refundable ₹499`{price-source}`. |
-| Meta description, full mode (147 characters) | Kheelu by Kheelona: a screen-free plush toy, ages 3 to 7, that answers your child, then asks back. ₹7,999`{price-source}` (incl. GST), delivered anywhere in India. |
+| Meta description, token mode (149 characters) | Kheelu by Kheelona: a screen-free AI toy for ages 3 to 7 that answers every why, then asks one back. ₹4,999`{price-source}` in total; reserve with a refundable ₹499`{price-source}`. |
+| Meta description, full mode (146 characters) | Kheelu by Kheelona: a screen-free AI toy for ages 3 to 7 that answers every why, then asks one back. ₹7,999`{price-source}` in total, delivered anywhere in India. |
 | H1 | The founder picks from five options in [Gate A round 2](#gate-a-round-2-2026-10-11); recommended H1-1 "Shh. Your child is explaining the moon to Kheelu." (round 1's A to E were all rejected, [D041](../../decisions/D041-gate-a-round-1.md)) |
 | CTA label, everywhere | Pre-order Kheelu ([strategy §3.1](../strategy.md#31-the-one-action-and-its-label-gate-a-g1); G1) |
 | Price sentence, token mode (18 words; option (d), OQ2) | Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST). |
@@ -66,11 +67,10 @@ sources:
 | Help line | Questions? WhatsApp or call +91 91875 46483 |
 | OG | `og:title` = title; `og:description` = meta; image `kheelu-on-fur.jpg` (DS, "for … OG images"), alt as the hero product alt below |
 
-Title and meta are machine-read, so they lead with ₹4,999 (incl. GST) and give the advance second
+Title and meta are machine-read, so they lead with the total and give the advance second
 ([D028](../../decisions/D028-price-wording.md); [keyword map §5.1](../../research/keyword-map.md#5-placement-rules) rule 5).
-Only the sentence next to the CTA leads with ₹499. The meta keeps "asks back" rather than the page's one
-behaviour form ("answers your child, then asks a question back"): the full form would take the token-mode meta
-to 161 characters, over the 155 limit, and the CMO review exempts the H1 and the meta (S6).
+Only the sentence next to the CTA leads with ₹499. The two meta rows are the selling update's (task Q2.9; see
+[Changes after approval (task Q2.9)](#changes-after-approval-task-q29)); the rest of this table is Gate A's.
 
 ---
 
@@ -1273,3 +1273,17 @@ sentence is a fact D058 names.
   3's sentence verbatim; whether Kheelona+ could ever charge by itself is the store's question 6 (m10 (b)). The four
   thinking skills stay off until the report ships (m14; the main session logs it).
 - **Notes kept true:** the fold 5 note and source row; questions 13 to 15 are new.
+
+## Changes after approval (task Q2.9)
+
+The selling update ([D065](../../decisions/D065-selling-site-founder-answers-2026-10-15.md); the copy is the
+[D2C conversion plan v2 §2](../d2c-conversion-plan-2026-10-15.md#home-title-meta-keywords), checked by the claims
+guard and the [CMO](../../qa/cmo-review-d2c-plan-v2-2026-10-15.md)). Recorded here by the builder of task Q2.9 only
+where this page's rows are read by a test (`test/metadata-lengths.test.ts` reads the title and the two meta rows); the
+plan holds every other changed line of Home. The founder signs them at Gate B
+([D015](../../decisions/D015-founder-signs-off-copy.md)).
+
+| # | Where | What changed | Why |
+|---|---|---|---|
+| 1 | Both metas | "a screen-free plush toy, ages 3 to 7, that answers your child, then asks back" becomes "a screen-free AI toy for ages 3 to 7 that answers every why, then asks one back"; "(incl. GST)" becomes "in total" (150 and 147 characters become 149 and 146); the total still leads in token mode ([D028](../../decisions/D028-price-wording.md)) | D065 item 3; plan v2 §2 "Home: title, meta, keywords" (both match the ad's H1) |
+| 2 | Title | Unchanged (54 characters) | Plan v2 §2 |
