@@ -17,6 +17,7 @@ import {
   FAQ_FIXES,
   FOUNDER_ANSWERS,
   FOUNDER_ANSWERS_APPROVED,
+  G28_LINES,
   LANGUAGES_FAQ,
   OFFER_ADDITIONS,
   PRODUCT_CHATS,
@@ -773,20 +774,27 @@ describe("the product page's selling update (task Q2.10; the D2C plan v2 §3)", 
     });
   });
 
-  it("fold 7: Good to know says \"instead of guessing\" (D065 item 8) and the daily limit (D065 item 5), in the plan's order", () => {
+  /* Task Q2.17 (D066 item 7, G28's other half, both true): "Between conversations nothing is sent anywhere, and when Kheelu
+     rests, its Wi‑Fi is switched off." after the wake-up line (G28's row: "beside the wake-up button"), before the daily
+     limit, with the DS moon (Kheelu resting). */
+  it("fold 7: Good to know says \"instead of guessing\" (D065 item 8), Wi‑Fi off at rest (D066 item 7) and the daily limit (D065 item 5), in order", () => {
     const know = [...fold("modes-title").querySelectorAll("#know-title ~ ul > li")];
     const lines = know.map(text);
-    expect(lines.slice(0, 5)).toEqual([
+    expect(lines.slice(0, 6)).toEqual([
       "AI mode needs your home Wi‑Fi. Story mode and Bluetooth mode work without it.",
       PRODUCT_KNOW.browse.build,
       PRODUCT_KNOW.wake,
+      G28_LINES.know,
       PRODUCT_KNOW.limit,
       "At setup, you enter your child’s age in the parent app.",
     ]);
-    expect(lines[5]).toBe("It charges with the charger in the box.");
-    expect([...know[3].querySelectorAll("path")].map((path) => path.getAttribute("d"))).toEqual([ICON_PATHS.clock]);
-    // Never that a parent sets the limit (D065 item 5), and no Wi-Fi-at-rest line (G28, still open).
-    expect(text(fold("modes-title"))).not.toMatch(/you set (?:the|its) (?:daily )?limit|Wi‑?Fi off|switched off at rest/i);
+    expect(lines[6]).toBe("It charges with the charger in the box.");
+    expect(G28_LINES.know).toBe("Between conversations nothing is sent anywhere, and when Kheelu rests, its Wi‑Fi is switched off.");
+    expect([...know[3].querySelectorAll("path")].map((path) => path.getAttribute("d"))).toEqual([ICON_PATHS.moon]);
+    expect([...know[4].querySelectorAll("path")].map((path) => path.getAttribute("d"))).toEqual([ICON_PATHS.clock]);
+    expect(findBanned(G28_LINES.know)).toEqual([]);
+    // Never that a parent sets the limit (D065 item 5).
+    expect(text(fold("modes-title"))).not.toMatch(/you set (?:the|its) (?:daily )?limit/i);
   });
 
   it("fold 8: compares by kind of product, moved from Home in its built words, with no link (compare-learn stays Home's)", () => {

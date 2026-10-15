@@ -282,6 +282,8 @@ export const kheeluPage = {
             /* "instead of guessing" (D065 item 8, G29's confirmed half; the D2C plan v2 §3 fold 7). */
             { icon: "wifi-slash", text: "It can’t browse the internet. When it doesn’t know something, it says so instead of guessing." },
             { icon: "microphone", text: "Each conversation starts with a press of the wake-up button. It switches itself off after a couple of minutes of quiet." },
+            /* G28's other half in the founder's words (D066 item 7; task Q2.17), beside the wake-up line. */
+            { icon: "moon", text: "Between conversations nothing is sent anywhere, and when Kheelu rests, its Wi‑Fi is switched off." },
             /* The daily limit in the founder's words (D065 item 5, G28): never that a parent sets it. */
             { icon: "clock", text: "Each Kheelu has a daily limit on how long it talks." },
             { icon: "sliders-horizontal", text: "At setup, you enter your child’s age in the parent app." },

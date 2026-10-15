@@ -164,8 +164,12 @@ describe("/safety: the rendered page against the approved mockup", () => {
     for (const line of CLAIM_FIXES.safety.build.filter((l) => !SAFETY_SELLING.mockup.some((gone) => l.includes(gone)))) {
       expect(page).toContain(line);
     }
-    for (const line of SAFETY_SELLING.build) expect(page).toContain(line);
+    /* Task Q2.11's lines, but the one task Q2.17 rewords (the daily limit, with G28's other half, D066 item 7). */
+    const answers = FOUNDER_ANSWERS.safety;
+    for (const line of SAFETY_SELLING.build.filter((l) => !(answers.mockup as readonly string[]).includes(l))) expect(page).toContain(line);
     for (const line of SAFETY_SELLING.mockup) expect(page).not.toContain(line);
+    for (const line of answers.build) expect(page).toContain(line);
+    expect(page).not.toMatch(/before launch|make it say/i);
   });
 
   /* Build condition C1 (the D2C plan v2 §1.1; CMO review C1): after every button the price line is its own block, a <p>
