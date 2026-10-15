@@ -13,7 +13,7 @@ import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../.
 import { APP_STORE, GOOGLE_PLAY, PAGE_FACTS, type FactEdit } from "../../../../test/e2e/support/page-facts";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
-import { mockupFold, mockupLinks, mockupRoute, skeleton, words } from "../../../../test/support/mockup-compare";
+import { mockupFold, mockupLinks, skeleton, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 import { DEFAULT_OG } from "../organization";
 import { routeFor } from "../routes";
@@ -258,6 +258,10 @@ describe("Setup: help, then one pre-order close, and no buy bar (task Q2.12)", (
     expect(hrefs(help)).toEqual([seller.support.whatsapp, `mailto:${seller.support.email}`, "/contact"]);
     expect(help.querySelector(".ks-setup-meet")).toBeNull();
     expect(words(help)).not.toMatch(/Don’t have Kheelu yet|\+91|91875/);
+    /* The plan's §5 fold 7 words: "Message us on WhatsApp", the help line's verb (§1.1). */
+    expect(words(help.querySelector(".ks-setup-help")!)).toBe(
+      `Message us on WhatsApp or email ${seller.support.email}. Tell us your order number, and what you see on Kheelu and in the app.`,
+    );
   });
 
   it("closes with the plan's fold 8: the eyebrow, the title, the lead, the button, the price line in a block of its own, the trust line, no help line, no picture", () => {

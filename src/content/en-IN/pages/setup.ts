@@ -152,8 +152,9 @@ export const setupPage = {
       config: {
         variant: "links",
         heading: { title: "Stuck? {hand:We’ll help.}" },
-        /* WhatsApp or email: the call came off (D063 item 2, D064 item 11; task Q2.3). */
-        contact: `${seller.support.reach}. Tell us your order number, and what you see on Kheelu and in the app.`,
+        /* WhatsApp or email: the call came off (D063 item 2, D064 item 11; task Q2.3). In the plan's §5 fold 7 words since
+           the selling update (task Q2.12): "Message us on WhatsApp", the help line's verb (§1.1). */
+        contact: `[Message us on WhatsApp](${seller.support.whatsapp}) or email [${seller.support.email}](mailto:${seller.support.email}). Tell us your order number, and what you see on Kheelu and in the app.`,
         action: { label: "All the ways to reach us", href: "/contact", variant: "secondary", icon: "chat-circle-dots" },
       },
     },

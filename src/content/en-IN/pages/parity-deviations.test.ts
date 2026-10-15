@@ -22,6 +22,7 @@ import {
   SELLING_CLOSES,
   type SellingClosesSlug,
   SETUP_CLOSE,
+  SETUP_CONTACT,
   SETUP_STEP_BUILD,
   TEAM_BIOS_BUILD,
   TEAM_LEAD_BUILD,
@@ -196,10 +197,10 @@ describe("setup parity deviations (V8, the founder's page facts V15, and task 7.
     /* Fold 6's two deletion sentences, D058's words, came off with task Q2.12 (G27; the D2C plan v2 §5). */
     const claims = CLAIM_FIXES.setup.build.filter((line) => !SELLING_CLOSES.setup.mockup.includes(line));
     expect(claims).toHaveLength(CLAIM_FIXES.setup.build.length - 2);
-    /* The close's own words, then its trust line's, which setup.ts carries as trust.ts's items; its button and price line
-       come from cta.ts and the offer. */
+    /* Fold 7's contact line in the plan's words, then the close's own words and its trust line's, which setup.ts carries
+       as trust.ts's items; its button and price line come from cta.ts and the offer. */
     const close = SELLING_CLOSES.setup.build.filter((line) => contentSentences(setupPage).includes(line));
-    expect(close).toEqual([SETUP_CLOSE.eyebrow, SETUP_CLOSE.lead, PRICE_LINE.returns.build, PRICE_LINE.delivery]);
+    expect(close).toEqual([sentences(SETUP_CONTACT.build)[0], SETUP_CLOSE.eyebrow, SETUP_CLOSE.lead, PRICE_LINE.returns.build, PRICE_LINE.delivery]);
     for (const line of [...SETUP_STEP_BUILD, ...FACTS.build, ...COPY_FIXES.setup.build, ...claims]) expect(contentSentences(setupPage)).toContain(line);
     expect(accepted("setup", contentSentences(setupPage))).toEqual([
       FACTS.build[0],

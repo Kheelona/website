@@ -183,7 +183,8 @@ describe("CloseSection: every close of the approved mockup, exactly (art aside)"
   it("links: without `meet`, the fold ends on its secondary button, with no empty line after it", () => {
     const links = CASES[8][3];
     if (links.variant !== "links") throw new Error("CASES[8] is the links close");
-    const { meet: _meet, ...help } = links;
+    const { meet, ...help } = links;
+    expect(meet).toBeDefined();
     const el = renderedElement(<CloseSection {...help} {...context()} />);
     expect(el.querySelector(".ks-setup-meet")).toBeNull();
     const container = el.querySelector(".kh-container")!;

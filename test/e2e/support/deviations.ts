@@ -10,6 +10,7 @@ import type { Page } from "@playwright/test";
 import { ICON_PATHS, type IconName } from "@/assets/icons.generated";
 import { SITE_DRAWINGS } from "@/components/ui/Icon/site-drawings";
 import { HOSTS } from "@/config/env";
+import { CONTACT_EMAIL, SUPPORT_WHATSAPP_HREF } from "@/config/site";
 import { expertClip, expertFold } from "@/content/en-IN/expert-video";
 import { filmQuotes } from "@/content/en-IN/films";
 import { faqs } from "@/content/en-IN/faqs";
@@ -1547,6 +1548,14 @@ export const SETUP_TALK_LINE = {
 } as const;
 /** /setup's fold 7 line that leaves (the plan's §5 fold 7: fold 8 does its job). */
 const SETUP_MEET = "Don’t have Kheelu yet? Meet Kheelu";
+/** /setup's fold 7 contact line: the approved one (with the call, which D063 item 2 took off: seller-facts.ts), then the
+ *  plan's §5 fold 7 words, "Message us on WhatsApp" (the help line's verb, §1.1) or the email, no number. */
+export const SETUP_CONTACT = {
+  mockup:
+    "WhatsApp or call us on +91 91875 46483, or email hello@kheelona.com. Tell us your order number, and what you see on Kheelu and in the app.",
+  build: `Message us on WhatsApp or email ${CONTACT_EMAIL}. Tell us your order number, and what you see on Kheelu and in the app.`,
+  markup: `<a href="${SUPPORT_WHATSAPP_HREF}">Message us on WhatsApp</a> or email <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>. Tell us your order number, and what you see on Kheelu and in the app.`,
+} as const;
 /** /setup's fold 7 as the approved mockup prints it, without that line, read from the frozen file so the contact line
  *  stays the mockup's own (task Q2.3's rules then read it as the build prints it). */
 const SETUP_HELP_WITHOUT_MEET = (() => {
@@ -1635,14 +1644,19 @@ export const SELLING_CLOSES = {
     edits: [
       rewrite("p.kh-body-l", SETUP_TALK_LINE.claimFixed, SETUP_TALK_LINE.build),
       { at: "p.mk-setup-meet", was: SETUP_MEET, scope: "section", now: `${SETUP_HELP_WITHOUT_MEET}${SETUP_CLOSE_MARKUP}` },
+      rewrite("p.mk-setup-help", SETUP_CONTACT.mockup, SETUP_CONTACT.markup),
     ],
-    mockup: [...sentencesBeyond(SETUP_TALK_LINE.claimFixed, SETUP_TALK_LINE.build), "Meet Kheelu"],
-    build: [SETUP_CLOSE.eyebrow, SETUP_CLOSE.lead, "Pre-order Kheelu", ...SELLING_LINES],
+    mockup: [
+      ...sentencesBeyond(SETUP_TALK_LINE.claimFixed, SETUP_TALK_LINE.build),
+      ...sentencesBeyond(SETUP_CONTACT.mockup, SETUP_CONTACT.build),
+      "Meet Kheelu",
+    ],
+    build: [...sentencesBeyond(SETUP_CONTACT.build, SETUP_CONTACT.mockup), SETUP_CLOSE.eyebrow, SETUP_CLOSE.lead, "Pre-order Kheelu", ...SELLING_LINES],
     /* Fold 6's paragraph is shorter at every width; the meet line comes off the mockup's fold 7; the new close is the
        build's alone. */
     hidden: { both: ['[aria-labelledby="talk-title"] .kh-body-l:nth-child(2)'], mockup: [".mk-setup-meet"], build: ["section#close"] },
     reason:
-      "/setup's fold 6 without the deletion sentences (G27, §13 item 4 (a)), fold 7 without its Meet Kheelu line, and a close of its own: the button, the price line and the trust line (D065; the D2C plan v2 §5)",
+      "/setup's fold 6 without the deletion sentences (G27, §13 item 4 (a)), fold 7 in the plan's words (\"Message us on WhatsApp\") without its Meet Kheelu line, and a close of its own: the button, the price line and the trust line (D065; the D2C plan v2 §5)",
     approvedBy: SELLING_CLOSES_APPROVED,
   },
   "ai-toys-for-kids-in-india": {
