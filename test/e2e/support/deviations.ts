@@ -1177,7 +1177,11 @@ const faqItem = (question: string, answer: string) =>
   `<details class="kh-faq__item"><summary class="kh-faq__q"><span>${question}</span><span class="kh-faq__sign" aria-hidden="true">${icon("plus")}</span></summary><div class="kh-faq__a"><p>${answer}</p></div></details>`;
 /** A page's FAQ item, by its place in the questions fold (both pages, both sides). */
 const faqAt = (n: number) => `section[aria-labelledby="faq-title"] .kh-faq__item:nth-child(${n})`;
-const faqApproved = (row: string, page: string) => `deviations.md ${row} (founder, D061, 2026-10-15; ${page}; CMO review of the advisor's proposal; task 8c.4)`;
+/** D061 lists both among the main session's rulings, each signed as a deviation row for the founder's information; the
+ *  founder signs the rows at Gate B (D015). V41 and V42 are provisional: the main session numbers the rows at the merge
+ *  (wiki/qa/deviations.md ends at V37 today) and the product page's test pins the prefix ("deviations.md V4"). */
+const faqApproved = (row: string, page: string) =>
+  `deviations.md ${row} (the main session's D061 ruling (AP-30), for the founder's signature at Gate B (D015), 2026-10-15; ${page}; CMO review of the advisor's proposal; task 8c.4)`;
 
 export const FAQ_FIXES = {
   home: {
@@ -1187,7 +1191,7 @@ export const FAQ_FIXES = {
     /* The question is three characters longer and may wrap to another height on a phone, moving every chunk below. */
     hidden: { both: [faqAt(4)], mockup: [], build: [] },
     reason: "Home's fourth question in the parent's words, \"What if my child doesn’t like it?\" (AP-30); its answer unchanged",
-    approvedBy: faqApproved("V41", "home.md fold 8, AP-30"),
+    approvedBy: faqApproved("V41", "home.md fold 8"),
   },
   "meet-kheelu": {
     edits: [

@@ -82,6 +82,20 @@ describe("every entry is red on its planted example", () => {
   });
 });
 
+/* The build loads this file: scripts/journal/sync-posts.mjs imports findBanned in prebuild step 15 and postbuild step 20,
+ * on whatever Node the host runs (Vercel's is a dashboard setting, not .nvmrc; the diagnosis of 2026-10-15 ran 22.23.3).
+ * A RegExp modifier group, "(?i:…)" or "(?-i:…)", is ES2025 (V8 12.5, Node 23 and later): Node 22 refuses the whole file
+ * and every build stops at prebuild (task 8c.4 review). An entry that needs a word in one case (COD, the programmes) is
+ * compiled without the `i` flag instead, its other words in either case (the data file's anyCase). */
+describe("no pattern carries a RegExp modifier group, so Node 22 loads this file (the journal sync, every build)", () => {
+  it.each(BANNED_PHRASES.map((e) => [e.id, e] as const))("%s", (_id, entry) => {
+    for (const re of [entry.pattern, entry.allowSentence]) {
+      if (!re) continue;
+      expect(re.source, `${entry.id}: "(?i:…)" and "(?-i:…)" need Node 23`).not.toMatch(/\(\?[a-z]*-?[a-z]+:/);
+    }
+  });
+});
+
 describe("every entry is green on approved copy", () => {
   it.each(MOCKUP_SLUGS)("mockup %s", (slug) => {
     const hits = findBannedOnMockup(slug, approvedMockupText(slug));
@@ -285,6 +299,9 @@ describe("the D061 entries: the advisor's stale facts, the idea not one phrasing
     ["cash-on-delivery", "COD available on every order."],
     ["cash-on-delivery", "Pay when it arrives."],
     ["cash-on-delivery", "Pay the balance in cash at the door."],
+    /* In capitals or title case too (a badge typed in capitals; the entry is compiled without `i` so COD keeps its case). */
+    ["cash-on-delivery", "CASH ON DELIVERY · 15-DAY RETURNS"],
+    ["cash-on-delivery", "Pay On Delivery"],
     /* "Ships 20 Oct" (D023: new orders deliver from mid-November). */
     ["ships-20-october", "Ships 20 Oct"],
     ["ships-20-october", "Ships 20 October 2026"],
@@ -306,6 +323,9 @@ describe("the D061 entries: the advisor's stale facts, the idea not one phrasing
     ["open-ended-ages", "Suitable from 3 years onwards."],
     ["open-ended-ages", "Made for 3+ year olds."],
     ["open-ended-ages", "For kids aged three and older."],
+    ["open-ended-ages", "Kids 3+ love it."],
+    ["open-ended-ages", "Perfect for kids 3+ who love stories."],
+    ["open-ended-ages", "Ages 3 plus"],
     /* A part-price in the pre-order button (D028, D041 G1: "Pre-order Kheelu"; DARK-03). */
     ["part-price-button", "Pre-order for ₹499"],
     ["part-price-button", "Button: Pre-order ₹499"],
@@ -327,6 +347,15 @@ describe("the D061 entries: the advisor's stale facts, the idea not one phrasing
     ["backed-by", "An NVIDIA-backed startup."],
     ["backed-by", "Supported by NVIDIA Inception and nasscom startups."],
     ["backed-by", "Funded by Karnataka Elevate."],
+    /* The label at the start of a line or a sentence, before nothing, a colon or the "top programmes"; and "backed by" a
+     * programme anywhere. */
+    ["backed-by", "BACKED BY TOP PROGRAMS"],
+    ["backed-by", "Backed by:"],
+    ["backed-by", "Proud to be here. Backed by leading accelerators."],
+    ["backed-by", "Backed by\nNVIDIA Inception · Karnataka Elevate · nasscom"],
+    ["backed-by", "Kheelu is backed by NVIDIA Inception."],
+    ["backed-by", "We are backed by leading accelerators."],
+    ["backed-by", "Kheelona is backed by top startup programmes."],
     /* "Safety certified" (claims §6: BIS applied for, not granted). */
     ["safety-certified", "Safety certified"],
     ["safety-certified", "[Safety certified · confirm]"],
@@ -374,6 +403,23 @@ describe("the D061 entries: the advisor's stale facts, the idea not one phrasing
     "“Trusted” means we chose them carefully; it is not a certification.",
     "Over a decade in hardware, including years at Intel leading Thunderbolt 4 and 5 compliance, he took products from a blank page to certification.",
     "Kheelu is not yet safety certified.",
+    /* The task 8c.4 review's probes: the same denial in other words, cod the fish, an app's system requirement, a count
+     * with its unit, and advice backed by research, a study, a body or experts (a journal line stops the build, rule 15). */
+    "Nothing more to pay when it arrives.",
+    "There is nothing left to pay when it arrives.",
+    "No COD: every order is paid online.",
+    "A spoon of cod liver oil.",
+    "Android 9+.",
+    "Requires iOS 15+ or Android 9+.",
+    "Give kids 2+ hours of outdoor play.",
+    "This advice is backed by decades of research.",
+    "The guidance is backed by a large study of 2,000 families.",
+    "The approach is backed by the American Academy of Pediatrics.",
+    "A habit backed by experts.",
+    "Backed by research, the advice is simple: read together.",
+    "The approach is backed by leading programmes in early education.",
+    "The idea has been supported by parents since its inception.",
+    "Games that elevate a child’s mood are supported by research.",
   ];
 
   it.each(VARIANTS)("%s is red on “%s”", (id, line) => {
