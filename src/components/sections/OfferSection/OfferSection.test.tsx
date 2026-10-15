@@ -419,6 +419,16 @@ describe("OfferSection: the share link under the card", () => {
     expect(row.previousElementSibling?.classList.contains("ks-trust")).toBe(true);
   });
 
+  /* Task Q2.13's screenshots: at 360-412 px and on the product page's 432 px laptop column the link wrapped mid-sentence
+     ("… Share Kheelu on" over an orphaned "WhatsApp"). Balanced, it breaks at its sentence on both cards at every width
+     where it wraps ("Know a parent who needs this?" over "Share Kheelu on WhatsApp"; measured in a browser, the report). */
+  it("wraps at its sentence when it wraps: the share row balances its lines, on both cards", () => {
+    const css = readFileSync(join(process.cwd(), "src/components/sections/OfferSection/offer-section.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    const rules = [...css.matchAll(/([^{}]+)\{([^}]*)\}/g)].map(([, selector, body]) => ({ selector: selector.trim(), body }));
+    expect(rules.filter((r) => /text-wrap:\s*balance;/.test(r.body)).map((r) => r.selector)).toEqual([".ks-offer-share"]);
+    for (const config of [HOME_OFFER, PRODUCT]) expect(shareOf(config).link.parentElement).toHaveClass("ks-offer-share");
+  });
+
   it("is never a chilli button, never the bubble's green, and leaves the card's button the section's one chilli button", () => {
     for (const config of [HOME_OFFER, PRODUCT]) {
       const { section, link } = shareOf(config);
