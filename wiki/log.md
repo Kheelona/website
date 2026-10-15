@@ -1260,3 +1260,16 @@ price line (GST and the breakdown only at checkout), first 500 on offer cards on
 "Nothing renews without you." (G30), "Delete all chats" deletes from the servers since the app changed (G26), the
 doesn't-know line (G29) ([D065](decisions/D065-selling-site-founder-answers-2026-10-15.md)). The copywriter's plan is
 being written (workflow `wf_2e1884fe-cd4`); then the build.
+
+## [2026-10-15 13:42] build | The selling update: the D2C plan, copy v2 and wave 1 running (founder asleep)
+The copywriter's D2C plan (workflow `wf_2e1884fe-cd4`: copy audit, D2C patterns, PostHog, claims; the CMO and a growth
+marketer challenged it) was written before D065 and contradicted it; both challengers said so. Main-session rulings on
+what D065 left open (recorded in the copy v2 run and tasks): Home keeps D064's sequence with the offer moved up after the
+expert clip, the compare table to the product page, the guides and "How we can help" off Home, at most three exits; the
+sticky-scroll section headed "Kheelu asks. Your child thinks." with six points and "What is Kheelu?" kept as FAQ 1; a
+sticky laptop nav from 900 px; one risk-reversal line "Full refund until dispatch · {returnDays}-day returns"; the hero
+link "Watch Kheelu with real children" (new cta `hero-film`); offer cards keep the split without "incl. GST"; real film
+posters, not AI cast photos, beside real captions. Copy v2 (workflow `wf_14d4124c-342`: rewrite, guard, CMO, fix) and
+build wave q2a (`wf_708188f8-5e5`, base `f6096ce5`: Q2.1 picture, films, offer; Q2.3 GSTIN and phone; Q2.4 WhatsApp logo
+and footer; Q2.5 motion and the sticky nav; Q2.6 the clip without burned-in words; Q2.8 the short price line) run in
+parallel; wave 2 (Home's middle, safety, every page's close) follows the approved copy.
