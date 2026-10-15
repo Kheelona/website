@@ -37,6 +37,19 @@
 html:has(dialog[open]) .ks-wa {
   visibility: hidden;
 }
+/* After the hero (D066 item 1, task Q2.17): on a phone, on a page whose buy bar waits for the hero's Pre-order button
+   (Home's #hero-cta; WhatsAppFloat.client.tsx WAIT_FOR_BAR holds this query and selector, and keeps the link inert
+   while they match), the bubble waits for the bar: hidden in place until the bar first shows (html[data-buybar-seen],
+   StickyBuyBar), so the first phone screen has one action, Pre-order. Then it stays, stepping aside as before. Fixed, so
+   nothing moves around it. It appears with the bar on motion.css's own opacity and transform transition for .ks-wa,
+   at once with reduced motion; nothing here moves. Only with scripting: without it the bar never shows, so the bubble
+   shows as before. Pages whose bar shows from first paint, pages with no bar, /contact and laptops are unchanged. */
+@media (max-width: 899px) and (scripting: enabled) {
+  html:not([data-buybar-seen]):has(.kh-buybar):has(#hero-cta.kh-btn--cta) .ks-wa {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
 /* The laptop label ("Chat with us on WhatsApp", the link's own name; P13) is for laptops only. */
 .ks-wa__label {
   display: none;

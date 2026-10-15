@@ -12,7 +12,9 @@ import { usePagePath } from "@/lib/page-path";
  *   - inert while hidden: the DS hidden state is only opacity and pointer-events (motion.css), so its button would
  *     otherwise stay in the tab order (architecture §5.3);
  *   - its state on <html> as data-buybar ("shown", "aside" or "hidden") and its height as --ks-buybar-h, read by the
- *     WhatsApp bubble, which rises above it while it shows (motion.css, D050 row).
+ *     WhatsApp bubble, which rises above it while it shows (motion.css, D050 row); and data-buybar-seen from its first
+ *     "shown" on the page until it leaves the page, read by the bubble, which on a phone waits for the bar where the
+ *     bar waits for the hero's button (Home), then stays (D066 item 1, task Q2.17; whatsapp-float.css).
  * The slide up and the fade are motion.css's (D049 pick 4). This island never imports Icon or Button: the bar's
  * contents arrive as children, rendered on the server (test/guards/client-icons.test.ts). */
 
@@ -84,6 +86,9 @@ function arm(bar: HTMLElement, setState: (state: BuyBarState) => void): () => vo
     const fade = next !== "shown" && root.dataset.buybar === "shown" ? fadeInPlaceMs(getComputedStyle(bar)) : 0;
     if (fade <= 0) {
       root.dataset.buybar = next;
+      /* The bar has shown on this page (D066 item 1, task Q2.17): the bubble, which waits for it on a phone where it
+         waits for the hero's button, shows from now on, even when the bar hides again (whatsapp-float.css). */
+      if (next === "shown") root.dataset.buybarSeen = "";
       return;
     }
     const done = () => {
@@ -174,6 +179,7 @@ function arm(bar: HTMLElement, setState: (state: BuyBarState) => void): () => vo
     mo.disconnect();
     ro?.disconnect();
     delete root.dataset.buybar;
+    delete root.dataset.buybarSeen;
     root.style.removeProperty(HEIGHT_VAR);
   };
 }

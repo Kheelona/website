@@ -25,7 +25,7 @@ import { OrderSummary } from "@/features/preorder/components/OrderSummary";
 import { buildOffer } from "@/lib/offer/offer";
 import { fullTier, launchTier } from "@/lib/store/tiers";
 import { STEP_ASIDE_FROM, WhatsAppFloat, whatsAppChatUrl } from "./WhatsAppFloat";
-import { bandMargin, isFieldIn, LAPTOP_QUERY } from "./WhatsAppFloat.client";
+import { bandMargin, isFieldIn, LAPTOP_QUERY, WAIT_FOR_BAR, waitsForBar } from "./WhatsAppFloat.client";
 
 /** The page the bubble's link lives on: the site's bubble sits in a layout and re-arms on every page change. */
 const nav = vi.hoisted(() => ({ pathname: "/" }));
@@ -638,6 +638,100 @@ describe("WhatsAppFloat: steps aside from the store's form on a phone (task 4.7)
   });
 });
 
+/* D066 item 1 (task Q2.17): after the hero. On a phone, on a page whose buy bar waits for the hero's Pre-order button
+ * (Home's #hero-cta), the bubble waits too, until the bar first shows (html[data-buybar-seen], StickyBuyBar), then
+ * stays. The CSS hides it from first paint (whatsapp-float.css, by WAIT_FOR_BAR's media query and page selector); the
+ * link is inert while it waits, by the same query and selector, so it is never focused or read while hidden. Pages
+ * whose bar shows from first paint, pages with no bar, /contact (whose #hero-cta is its ways-to-reach group) and
+ * laptops are unchanged. */
+describe("WhatsAppFloat: waits for the buy bar after the hero on a phone (D066 item 1)", () => {
+  const html = document.documentElement;
+  /** The media queries the browser answers: WAIT_FOR_BAR's (a phone, scripting on) or not. */
+  let phone = true;
+  const listeners = new Set<() => void>();
+  beforeEach(() => {
+    phone = true;
+    listeners.clear();
+    vi.stubGlobal("matchMedia", (query: string) => ({
+      get matches() {
+        return query === WAIT_FOR_BAR.media && phone;
+      },
+      media: query,
+      addEventListener: (_: string, listener: () => void) => listeners.add(listener),
+      removeEventListener: (_: string, listener: () => void) => listeners.delete(listener),
+    }));
+  });
+  afterEach(() => {
+    cleanup();
+    delete html.dataset.buybarSeen;
+    vi.unstubAllGlobals();
+    document.body.innerHTML = "";
+  });
+
+  /** A page body as SiteShell holds it: <main>, then the bar where the page carries one, then the bubble. */
+  function pageWith(main: string, bar = true) {
+    document.body.innerHTML = `<main>${main}</main>${bar ? '<div class="kh-buybar is-hidden" inert=""></div>' : ""}`;
+    render(<WhatsAppFloat href={HREF} chat={CHAT} context="site" />, { container: document.body.appendChild(document.createElement("div")) });
+    return screen.getByRole("link", { name: CHAT.label, hidden: true });
+  }
+  const HOME_HERO = '<a id="hero-cta" class="kh-btn kh-btn--cta kh-btn--l">Pre-order Kheelu</a><p class="ks-price">₹499 today</p>';
+
+  // The bar's mark reaches the link through a MutationObserver, whose records arrive in a microtask: an async act.
+  it("on Home's phone screens is inert until the bar has shown, then stays reachable when the bar hides again", async () => {
+    const link = pageWith(HOME_HERO);
+    expect(link).toHaveAttribute("inert");
+    await act(async () => {
+      html.dataset.buybarSeen = "";
+    });
+    expect(link).not.toHaveAttribute("inert");
+    // The bar's mark goes only when it leaves the page (a page change): the next page waits again.
+    await act(async () => {
+      delete html.dataset.buybarSeen;
+    });
+    expect(link).toHaveAttribute("inert");
+  });
+
+  it("never waits on a laptop, and stops waiting when the window widens past 900 px", () => {
+    const link = pageWith(HOME_HERO);
+    expect(link).toHaveAttribute("inert");
+    phone = false;
+    act(() => {
+      for (const listener of listeners) listener();
+    });
+    expect(link).not.toHaveAttribute("inert");
+  });
+
+  it.each([
+    ["the product page: the bar shows from first paint (no #hero-cta)", '<a class="kh-btn kh-btn--cta">Pre-order Kheelu</a>', true],
+    ["/contact: its #hero-cta is the ways-to-reach group, not the Pre-order button", '<div id="hero-cta" class="ks-contact-ways"><a class="kh-btn kh-btn--secondary">WhatsApp us</a></div>', true],
+    ["a page with a hero button but no bar", HOME_HERO, false],
+  ] as const)("never waits on %s", (_name, main, bar) => {
+    expect(pageWith(main, bar)).not.toHaveAttribute("inert");
+  });
+
+  it("names the CSS's own media query and page selector, so the link is inert exactly while the CSS hides it", () => {
+    expect(WAIT_FOR_BAR).toEqual({
+      media: "(max-width: 899px) and (scripting: enabled)",
+      page: "html:not([data-buybar-seen]):has(.kh-buybar):has(#hero-cta.kh-btn--cta)",
+    });
+  });
+
+  it("waitsForBar: false where the browser cannot read the selector (no :has) or the query does not match", () => {
+    const noHas = { matches: () => { throw new SyntaxError("':has' is not a valid selector"); } } as unknown as Element;
+    expect(waitsForBar(noHas, { matches: true })).toBe(false);
+    document.body.innerHTML = `<main>${HOME_HERO}</main><div class="kh-buybar"></div>`;
+    expect(waitsForBar(html, { matches: true })).toBe(true);
+    expect(waitsForBar(html, { matches: false })).toBe(false);
+    html.dataset.buybarSeen = "";
+    expect(waitsForBar(html, { matches: true })).toBe(false);
+  });
+
+  it("keeps the server's markup unchanged: no inert and no class before it arms, so nothing mismatches at hydration", () => {
+    const markup = renderToStaticMarkup(<WhatsAppFloat href={HREF} chat={CHAT} context="site" />);
+    expect(markup).not.toMatch(/\binert\b|is-hidden/);
+  });
+});
+
 describe("whatsapp-float.css", () => {
   it("defines WhatsApp green once, as the D050 exception, and fills the logo's ground with it", () => {
     expect(CSS.match(/--ks-wa-green\s*:/g)).toHaveLength(1);
@@ -708,6 +802,18 @@ describe("whatsapp-float.css", () => {
 
   it("hides under any open modal dialog", () => {
     expect(rule("html:has(dialog[open]) .ks-wa")).toContain("visibility: hidden");
+  });
+
+  /* D066 item 1 (task Q2.17): hidden in place (visibility, so never focused or read; no layout shift: it is fixed) and
+     transparent, so when the bar first shows it fades in and rises with it on motion.css's own opacity and transform
+     transition (at once with reduced motion), and no transition here. */
+  it("waits for the bar on a phone, with scripting, where the bar waits for the hero's button: hidden in place until the bar first shows", () => {
+    const at = CSS.indexOf(`@media ${WAIT_FOR_BAR.media} {`);
+    expect(at).toBeGreaterThan(-1);
+    const block = CSS.slice(at + `@media ${WAIT_FOR_BAR.media} {`.length, CSS.indexOf("\n}", at));
+    expect(rule(`${WAIT_FOR_BAR.page} .ks-wa`, block)).toBe("visibility: hidden; opacity: 0;");
+    const motion = readFileSync("src/motion/motion.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(rule(".ks-wa", motion)).toBe("transition: transform var(--duration-base) var(--ease-standard), opacity var(--duration-base) var(--ease-standard);");
   });
 
   it("shows the label on laptops only, beside the bubble, as dark text on a raised surface", () => {

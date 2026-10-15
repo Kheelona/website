@@ -45,7 +45,9 @@ import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
  *     page, lifted or not, and the paid /thanks address step (task 4.9); each swept top to bottom at every phone size;
  *     from the store's and the event page's agreement card and answers, every answer open, swept in 40 px steps at 360,
  *     390 and 412 against every ₹ amount too (task 7.1a, CMO built-page review C, B1); with reduced motion it waits for
- *     the bar's fade before it drops, frame by frame (task 7.1a, review B, m5).
+ *     the bar's fade before it drops, frame by frame (task 7.1a, review B, m5). Since task Q2.17 (D066 item 1, "after the
+ *     hero") on Home's phone screens it waits for the bar (hidden in place, inert) until the bar first shows, then stays;
+ *     the cases that read it at Home's first screen scroll past the hero first, and the sweeps accept it waiting there.
  *   - The layouts as served: lang, the smooth-scroll hook, the body classes, the three font preloads, the mockup's
  *     viewport with viewport-fit=cover (the safe areas) on both hosts, noindex, nofollow on beta and no robots meta
  *     elsewhere; the store layout noindex, its policy links on the marketing site of the target.
@@ -470,6 +472,9 @@ function coveredByBubble(page: Page, selector: string): Promise<string[]> {
 test.describe("chrome: WhatsApp bubble (D050)", () => {
   test("is the D050 link, after the page content in the tab order", async ({ harness }) => {
     const page = await openBuilt(harness, phone390);
+    // On Home's phone screens it comes with the bar, once the hero's button has left (D066 item 1, task Q2.17).
+    await scrollPastHero(page);
+    await expect.poll(async () => (await barState(page)).published).toBe("shown");
     const bubble = page.getByRole("link", { name: "Chat with us on WhatsApp" });
     await expect(bubble).toHaveAttribute("href", `https://wa.me/919187546483?text=${encodeURIComponent(SITE_TEXT)}`);
     await expect(bubble).toHaveAttribute("target", "_blank");
@@ -489,7 +494,8 @@ test.describe("chrome: WhatsApp bubble (D050)", () => {
   test("at 360 x 590 it never covers the bar, a price, a field or the pay button, nor at the end the footer's lines", async ({ harness }) => {
     const page = await openBuilt(harness, phone360short);
     await page.waitForTimeout(300);
-    // First screen: Home's hero CTA is on screen, so the bar waits and the bubble rests beside the hero's price.
+    // First screen: Home's hero CTA is on screen, so the bar waits, and the bubble with it, hidden in its resting place
+    // (D066 item 1): where it will rest, it covers nothing either.
     expect((await barState(page)).published).toBe("hidden");
     expect(await coveredByBubble(page, NEVER_COVERED), "first screen: bubble over a price, a field or the pay button").toEqual([]);
     // Past the hero CTA the bar shows and the bubble rises above it.
@@ -603,6 +609,8 @@ test.describe("chrome: WhatsApp bubble (D050)", () => {
 
   test("is hidden while the drawer is open", async ({ harness }) => {
     const page = await openBuilt(harness, phone390);
+    // Shown once Home's bar has shown (D066 item 1, task Q2.17).
+    await scrollPastHero(page);
     await expect(page.locator(".ks-wa")).toBeVisible();
     await page.locator(".kh-nav__menu").click();
     await expect(page.locator(".ks-wa")).toBeHidden();
@@ -653,6 +661,33 @@ function bubbleAside(page: Page) {
 }
 const ASIDE = { hidden: true, inert: true, offScreen: true };
 const AT_REST = { hidden: false, inert: false, offScreen: false };
+/** D066 item 1 (task Q2.17): on Home's phone screens, until the bar first shows, the bubble waits for it: hidden in place
+ *  (visibility) and inert, neither aside nor at rest. */
+const WAITING = { hidden: false, inert: true, offScreen: false };
+
+/** The bubble aside in full, at rest, or waiting for the bar, the last only hidden in place and before the page's bar
+ *  has first shown (html[data-buybar-seen] absent); returns which. Polled, as the cover checks are: the bar's first show
+ *  reaches the link's `inert` a render after <html> says so. */
+async function bubbleStateOf(page: Page, where: string): Promise<"aside" | "rest" | "waiting"> {
+  const read = () =>
+    page.locator(".ks-wa").evaluate((el) => ({
+      hidden: el.classList.contains("is-hidden"),
+      inert: el.hasAttribute("inert"),
+      offScreen: el.getBoundingClientRect().left >= innerWidth,
+      visibility: getComputedStyle(el).visibility,
+      seen: document.documentElement.hasAttribute("data-buybar-seen"),
+    }));
+  const name = (s: Awaited<ReturnType<typeof read>>) => {
+    const state = JSON.stringify({ hidden: s.hidden, inert: s.inert, offScreen: s.offScreen });
+    if (state === JSON.stringify(ASIDE)) return "aside";
+    if (state === JSON.stringify(AT_REST)) return "rest";
+    if (state === JSON.stringify(WAITING) && s.visibility === "hidden" && !s.seen) return "waiting";
+    return `none of them: ${JSON.stringify(s)}`;
+  };
+  let last = "";
+  await expect.poll(async () => (last = name(await read())), `${where}: aside in full, at rest, or waiting for the bar (hidden, before it has shown)`).toMatch(/^(aside|rest|waiting)$/);
+  return last as "aside" | "rest" | "waiting";
+}
 
 /** What the bubble would cover at its resting place, measured with its step aside switched off for the read. */
 function coveredAtRest(page: Page, selector: string): Promise<string[]> {
@@ -683,17 +718,16 @@ async function scrollFieldIntoBand(page: Page): Promise<void> {
 }
 
 /** Sweeps the page top to bottom in quarter screens: at each stop the bubble covers nothing of NEVER_COVERED, is aside
- *  in full or at rest, and the page never scrolls sideways (off the right edge it must not widen the page). Returns the
- *  states it met, "aside" and "rest". */
+ *  in full or at rest (or, on Home's phones before its bar has shown, waiting for it: D066 item 1), and the page never
+ *  scrolls sideways (off the right edge it must not widen the page). Returns the states it met, "aside", "rest" and
+ *  "waiting". */
 async function sweepBubble(page: Page): Promise<string[]> {
   const { height, step } = await page.evaluate(() => ({ height: document.documentElement.scrollHeight - innerHeight, step: Math.round(innerHeight / 4) }));
   const seen = new Set<string>();
   for (let y = 0; y < height + step; y += step) {
     await scrollToY(page, Math.min(y, height));
     await expect.poll(() => coveredByBubble(page, NEVER_COVERED), `scrolled to ${Math.min(y, height)}`).toEqual([]);
-    const state = await bubbleAside(page);
-    expect([ASIDE, AT_REST], `scrolled to ${Math.min(y, height)}: aside in full or at rest`).toContainEqual(state);
-    seen.add(state.hidden ? "aside" : "rest");
+    seen.add(await bubbleStateOf(page, `scrolled to ${Math.min(y, height)}`));
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   }
   return [...seen].sort();
@@ -886,9 +920,7 @@ async function placePricesUnderBubble(page: Page): Promise<number> {
     }
     if (!placed) continue;
     await expect.poll(() => coveredByBubble(page, NEVER_COVERED), `price ${i} under the bubble`).toEqual([]);
-    const state = await bubbleAside(page);
-    expect([ASIDE, AT_REST], `price ${i}: aside in full or at rest`).toContainEqual(state);
-    if (state.hidden) aside++;
+    if ((await bubbleStateOf(page, `price ${i}`)) === "aside") aside++;
   }
   return aside;
 }
@@ -924,8 +956,9 @@ test.describe("chrome: WhatsApp bubble beside the prices (task 4.9; D050)", () =
         else await scrollToY(page, 0);
         await expect.poll(async () => (await barState(page)).published).toBe(state);
       };
-      // The control: just past the hero, lifted by the bar, the bubble covers no price of the page, so it rests.
-      await expect.poll(() => bubbleAside(page)).toEqual(AT_REST);
+      // At the top it waits for the bar (D066 item 1, task Q2.17). The control: just past the hero, lifted by the bar, the
+      // bubble covers no price of the page, so it rests; back at the top it stays, at rest.
+      await expect.poll(() => bubbleAside(page)).toEqual(WAITING);
       await lift("shown");
       await page.waitForTimeout(400);
       await expect.poll(() => bubbleAside(page), `${reducedMotion}: lifted, nothing to clear`).toEqual(AT_REST);
@@ -1013,6 +1046,75 @@ test.describe("chrome: WhatsApp bubble beside the first screens' tap targets (ta
     // Not vacuous: at rest the bubble would sit over the link.
     expect(await coveredAtRest(page, ".ks-store-payments a")).toEqual(["<a>"]);
     expect(await coveredByBubble(page, ".ks-store-payments a")).toEqual([]);
+  });
+});
+
+/* ── WhatsApp bubble after the hero (D066 item 1, task Q2.17) ────────────────────────────────────────────────────
+
+   The founder: "after the hero", so Home's first phone screen has one action, Pre-order. On a phone, on a page whose bar
+   waits for the hero's Pre-order button (Home's #hero-cta), the bubble waits too: hidden in place (whatsapp-float.css)
+   and inert (WhatsAppFloat.client.tsx) until the bar first shows (html[data-buybar-seen], StickyBuyBar), then it stays
+   (D050), stepping aside as before. Pages whose bar shows from first paint, pages with no bar, /contact and laptops are
+   unchanged. It appears on motion.css's own transition for .ks-wa (an opacity fade and the lift), at once with reduced
+   motion. Home's first screen at 360, 390 and 412 is first-screen.spec.ts's. */
+
+test.describe("chrome: WhatsApp bubble after the hero (D066 item 1)", () => {
+  /** Whether the bubble shows (visibility) and can be reached (inert). */
+  const shownOf = (page: Page) =>
+    page.evaluate(() => {
+      const bubble = document.querySelector(".ks-wa")!;
+      return { visibility: getComputedStyle(bubble).visibility, inert: bubble.hasAttribute("inert") };
+    });
+  const WAITS = { visibility: "hidden", inert: true };
+  const SHOWS = { visibility: "visible", inert: false };
+
+  test("on Home's phone screens it waits for the bar, never reachable by keyboard, then comes with it and stays when the bar hides again", async ({ harness }) => {
+    const page = await openBuilt(harness, phone390);
+    expect(await shownOf(page)).toEqual(WAITS);
+    // A keyboard visitor tabs on from the page's last link while the hero is still on screen (focused without scrolling,
+    // so the bar keeps waiting): the waiting bubble is never focused. (Scrolled to the footer, the bar shows, and the
+    // bubble with it, as it should.)
+    await page.locator("footer.kh-footer a").last().evaluate((el: HTMLElement) => el.focus({ preventScroll: true }));
+    for (let i = 0; i < 3; i++) {
+      await page.keyboard.press(tab(page));
+      expect(await page.evaluate(() => document.activeElement?.matches(".ks-wa") ?? false), `tab ${i + 1}`).toBe(false);
+      expect(await page.evaluate(() => document.documentElement.hasAttribute("data-buybar-seen")), `tab ${i + 1}: still waiting`).toBe(false);
+    }
+    await scrollToY(page, 0);
+    await scrollPastHero(page);
+    await expect.poll(async () => (await barState(page)).published).toBe("shown");
+    await expect.poll(() => shownOf(page)).toEqual(SHOWS);
+    await scrollToY(page, 0);
+    await expect.poll(async () => (await barState(page)).published).toBe("hidden");
+    expect(await shownOf(page)).toEqual(SHOWS);
+  });
+
+  test("shows from first paint where the bar does (the product page), where there is no bar (/privacy), on /contact, and on laptops", async ({ harness }) => {
+    for (const [vp, route] of [
+      [phone390, PRODUCT],
+      [phone390, { host: "marketing", path: "/privacy" }],
+      [VIEWPORTS.find((v) => v.width === 412 && v.group === "phone")!, { host: "marketing", path: "/contact" }],
+      [laptop, HOME],
+    ] as const) {
+      const page = await openBuilt(harness, vp, {}, route);
+      const state = await shownOf(page);
+      expect(state.visibility, `${route.path} ${vp.name}`).toBe("visible");
+      // Unless it steps aside from a tap target or a price at first paint (tasks 4.9, Q2.16), it is reachable.
+      expect(state.inert, `${route.path} ${vp.name}`).toBe(await page.locator(".ks-wa.is-hidden").count() > 0);
+    }
+  });
+
+  test("fades in with the bar on motion.css's transition with motion on; with reduced motion it shows at once", async ({ harness }) => {
+    for (const reducedMotion of ["no-preference", "reduce"] as const) {
+      const page = await openBuilt(harness, phone390, { reducedMotion, recordMotion: true });
+      expect(await shownOf(page)).toEqual(WAITS);
+      await scrollPastHero(page);
+      await expect.poll(() => shownOf(page)).toEqual(SHOWS);
+      await page.waitForTimeout(400);
+      const moved = (await motionStarted(page)).filter((m) => m.type === "transition" && /ks-wa/.test(m.target)).map((m) => m.name);
+      if (reducedMotion === "no-preference") expect(moved, "motion on: it fades in and rises with the bar").toEqual(expect.arrayContaining(["opacity", "transform"]));
+      else expect(moved, "reduced motion: it shows at once").toEqual([]);
+    }
   });
 });
 

@@ -410,6 +410,46 @@ describe("StickyBuyBar: behaviour (mockup.js §2)", () => {
     });
   });
 
+  /* D066 item 1 (task Q2.17): on a phone the WhatsApp bubble waits for the bar on a page whose bar waits for the hero's
+     button (Home), then stays. The bar tells it on <html>: data-buybar-seen, from the bar's first "shown" on this page
+     (not a fade's wait, not "aside"), kept when the bar steps aside or hides again, gone when the bar leaves the page. */
+  it("marks <html> data-buybar-seen from the bar's first show on this page, keeps it when it hides again, and drops it when it leaves", () => {
+    const { main, unmount } = page(`<a id="hero-cta" class="kh-btn kh-btn--cta">hero</a><p>…</p><a class="kh-btn kh-btn--cta">inline</a>`);
+    const [hero, inline] = Array.from(main.querySelectorAll("a"));
+    expect(html.hasAttribute("data-buybar-seen")).toBe(false);
+    io().report([[hero, true], [inline, false]]);
+    expect(html.hasAttribute("data-buybar-seen"), "the hero on screen: the bar waits").toBe(false);
+    io().report([[hero, false], [inline, true]]);
+    expect(html.dataset.buybar).toBe("aside");
+    expect(html.hasAttribute("data-buybar-seen"), "aside is not shown").toBe(false);
+    io().report([[inline, false]]);
+    expect(html.dataset.buybar).toBe("shown");
+    expect(html.hasAttribute("data-buybar-seen")).toBe(true);
+    io().report([[hero, true]]);
+    expect(html.dataset.buybar).toBe("hidden");
+    expect(html.hasAttribute("data-buybar-seen"), "back at the hero: the bar hides, the mark stays").toBe(true);
+    unmount();
+    expect(html.hasAttribute("data-buybar-seen")).toBe(false);
+  });
+
+  it("never marks data-buybar-seen while the bar takes no room (from 900 px), and drops it on a page change", () => {
+    barHeight = 0;
+    const first = page(`<p>no buttons</p>`);
+    expect(html.dataset.buybar).toBe("hidden");
+    expect(html.hasAttribute("data-buybar-seen")).toBe(false);
+    first.unmount();
+    barHeight = 72;
+    const { rerender } = page(`<p>no buttons</p>`);
+    expect(html.hasAttribute("data-buybar-seen")).toBe(true);
+    nav.pathname = "/safety";
+    rerender(<StickyBuyBar offer={offer} label="Pre-order Kheelu" paths={PATHS} />);
+    // Re-armed for the new page: shown again at once (nothing to wait for), so marked again by its own show.
+    expect(html.dataset.buybar).toBe("shown");
+    nav.pathname = "/setup";
+    rerender(<StickyBuyBar offer={offer} label="Pre-order Kheelu" paths={PATHS} />);
+    expect(html.hasAttribute("data-buybar-seen")).toBe(false);
+  });
+
   it("goes away on a client navigation to a page without the bar", () => {
     const { rerender } = page(`<p>none</p>`);
     expect(html.dataset.buybar).toBe("shown");
