@@ -2411,6 +2411,20 @@ export const PRODUCT_SAFETY_LINE = {
 /** The note both offer cards print since task Q2.13 (offer.ts `PLUS_NOTE`; the D2C plan v2 §2 fold 7 and §3 fold 3: "the
  *  same note under the perks"). */
 export const OFFER_NOTE = "Kheelona+ is our paid subscription, on top of the free parent app.";
+/** One linked trust item as the mockups print it (mockup/build.mjs; the harness reads its address's part by its words,
+ *  `trustLinkHref`). */
+const trustItemMarkup = (href: string, name: IconName, words: string) => `<li><a href="${href}">${icon(name)}${words}</a></li>`;
+/** The offer cards' rows (task Q2.15; the consistency review's CON-3): the mockup's one row as the harness reads it (the
+ *  trust line, then the card's third row, task Q2.8's review, its items rebuilt with no space between them), then the
+ *  build's two lists, the third row named. */
+export const OFFER_ROWS = {
+  was: [PRICE_LINE.returns.build, PRICE_LINE.delivery, PRICE_LINE.rows.warranty, PRICE_LINE.rows.payment].join(""),
+  markup:
+    `<ul class="kh-trustline mk-trust">${trustItemMarkup("refund.html", "arrow-counter-clockwise", PRICE_LINE.returns.build)}` +
+    `${trustItemMarkup("shipping.html", "truck", PRICE_LINE.delivery)}</ul>` +
+    `<ul class="kh-trustline mk-trust mk-offer-third">${trustItemMarkup("refund.html", "shield-check", PRICE_LINE.rows.warranty)}` +
+    `${trustItemMarkup("terms.html", "currency-inr", PRICE_LINE.rows.payment)}</ul>`,
+} as const;
 /** The product page's offer card as both cards print it since task Q2.13 (the D2C plan v2 §2 fold 7 and §3 fold 3; the
  *  CMO's m9): the Kheelona+ note inside the card, after the perks and before the button (ui/OfferCard's `note`); the price
  *  printed once, as Home's card prints it (the card's fine print off: the price block stands in for the price line); and
@@ -2428,6 +2442,13 @@ export const PRODUCT_OFFER_CARD = [
   },
   cut("#offer .kh-offer__fine", PRICE_LINE.sentence.build),
   cut("#offer .mk-help", PRODUCT_HERO.help),
+  /* Task Q2.15 (the consistency review's CON-3, QAL-2, CMO-2): the trust line and the card's third row as two lists, so
+     both cards group them alike at every width (plan §1.1 "Offer cards only, a third row"); the same links and words. */
+  {
+    at: "#offer ul.mk-trust",
+    was: OFFER_ROWS.was,
+    now: OFFER_ROWS.markup,
+  },
 ] as const satisfies readonly FactEdit[];
 export const SELLING_UPDATE = {
   "meet-kheelu": {

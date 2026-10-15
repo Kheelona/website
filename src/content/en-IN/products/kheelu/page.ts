@@ -20,7 +20,7 @@ import { PLUS_NOTE } from "../../offer";
 import { RETURN_DAYS, RETURN_PICKUP_FREE, WARRANTY_MONTHS } from "../../policies";
 import { recognitionLabel } from "../../recognition";
 import { seller } from "../../seller";
-import { TRUST_COMPACT, TRUST_OFFER, trustItems, type TrustId } from "../../trust";
+import { TRUST_COMPACT, TRUST_OFFER_THIRD, trustItems, type TrustId } from "../../trust";
 import { product, type Mode } from "./product";
 
 /**
@@ -160,8 +160,10 @@ export const kheeluPage = {
         heading: { eyebrow: "What you get", title: "Everything that {hand:comes with it.}" },
         cta: "product-offer",
         /* Under the card's button, the offer cards' row (task Q2.8's review; the D2C plan v2 §1.1, product fold 3): the one
-           risk-reversal line, the delivery line, then the card's third row. No help line (task Q2.13; §3 fold 3, CMO m9). */
-        trust: trust(TRUST_OFFER),
+           risk-reversal line, the delivery line, then the card's third row, two lists since task Q2.15 (CON-3), so they
+           wrap as Home's do. No help line (task Q2.13; §3 fold 3, CMO m9). */
+        trust: COMPACT,
+        third: trust(TRUST_OFFER_THIRD),
         /* In the card, after the perks and before the button: the same note as Home's card (task Q2.13; §3 fold 3). */
         note: PLUS_NOTE,
         /* The page's keyword in the alt, true of the picture (the D2C plan v2 §3 fold 3). */

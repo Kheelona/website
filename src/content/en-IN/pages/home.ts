@@ -23,7 +23,7 @@ import { DEFAULT_OG } from "../organization";
 import { RETENTION_MONTHS } from "../policies";
 import { product } from "../products/kheelu/product";
 import { recognitionLabel } from "../recognition";
-import { TRUST_COMPACT, TRUST_OFFER, trustItems, type TrustId } from "../trust";
+import { TRUST_COMPACT, TRUST_OFFER_THIRD, trustItems, type TrustId } from "../trust";
 
 /**
  * Home, `/`, since the selling update (task Q2.9; D064, D065; the main session's rulings of 2026-10-15): the D2C plan
@@ -289,7 +289,8 @@ export const homePage = {
 
     /* Fold 7 · What you get, and what you pay: the offer card moved up (the plan's fold 7). The one perk list (CMO m8),
        the Kheelona+ note under it, the trust line and the card's third row under the button, the share link (D061 item 7,
-       its approved text: the main session's ruling (b)); Myra's board, top-aligned with the card (D064 item 5). */
+       its approved text: the main session's ruling (b)); Myra's board, top-aligned with the card (D064 item 5). The same
+       composition and the same two rows as the product page's offer since task Q2.15 (CON-3, QAL-2, CMO-2). */
     {
       kind: "offer-section",
       config: {
@@ -298,7 +299,8 @@ export const homePage = {
         cta: "home-offer",
         cardLabel: "Kheelu offer",
         note: PLUS_NOTE,
-        trust: trust(TRUST_OFFER),
+        trust: COMPACT,
+        third: trust(TRUST_OFFER_THIRD),
         art: {
           tone: "sun",
           label: "A curious girl in a mustard flowered frock beside Kheelu, the cream plush rabbit",

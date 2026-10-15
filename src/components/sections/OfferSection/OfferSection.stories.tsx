@@ -7,7 +7,7 @@ import { DoodleDefs } from "@/components/ui/Doodle/DoodleDefs";
 import { cta } from "@/content/en-IN/cta";
 import { PLUS_NOTE } from "@/content/en-IN/offer";
 import { seller } from "@/content/en-IN/seller";
-import { TRUST_OFFER, trustItems } from "@/content/en-IN/trust";
+import { TRUST_COMPACT, TRUST_OFFER_THIRD, trustItems } from "@/content/en-IN/trust";
 import { buildOffer } from "@/lib/offer/offer";
 import { OfferSection } from "./OfferSection";
 
@@ -36,7 +36,8 @@ const meta: Meta<typeof OfferSection> = {
     cta: "home-offer",
     cardLabel: "Kheelu offer",
     note: PLUS_NOTE,
-    trust: TRUST_OFFER.map((id) => trustItems[id]),
+    trust: TRUST_COMPACT.map((id) => trustItems[id]),
+    third: TRUST_OFFER_THIRD.map((id) => trustItems[id]),
     art: {
       tone: "sun",
       label: "A curious girl in a mustard flowered frock beside Kheelu, the cream plush rabbit",
