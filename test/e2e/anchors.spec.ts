@@ -150,7 +150,10 @@ test.describe("anchors: links that promise a part of a page land on it (m8, QA-0
     const page = await context.newPage();
     await page.goto(builtUrl({ host: "marketing", path: "/" }), { waitUntil: "load" });
     const hrefs = [...new Set(await page.locator(".ks-trust a[href]").evaluateAll((links) => links.map((a) => a.getAttribute("href")!)))].sort();
-    expect(hrefs).toEqual(["/refund#faulty", "/refund#returns", "/shipping#when", "/shipping#where", "/terms#payment"]);
+    // Since task Q2.8 and its review (D065 item 3; the D2C plan v2 §1.1) Home's trust lines are the risk-reversal line,
+    // the delivery line and the offer card's third row; the returns and delivery-included items are the store's full
+    // row's (trust.test.ts holds every item's part on its legal page).
+    expect(hrefs).toEqual(["/refund#before-dispatch", "/refund#faulty", "/shipping#when", "/terms#payment"]);
     for (const href of hrefs) {
       const [path, id] = href.split("#");
       await page.goto(builtUrl({ host: "marketing", path }), { waitUntil: "load" });
