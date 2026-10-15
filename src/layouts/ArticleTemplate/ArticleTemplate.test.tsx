@@ -1,14 +1,19 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { SELLING_CLOSES } from "../../../test/e2e/support/deviations";
 import { withSellerFacts } from "../../../test/e2e/support/seller-facts";
 import { mockupFold, skeleton, words } from "../../../test/support/mockup-compare";
+import { withFacts } from "../../../test/support/mockup-facts";
 import { STORE_URL } from "@/config/site";
 import { organization } from "@/content/en-IN/organization";
 import { APPROVED_ARTICLES, approvedArticle } from "../../../test/fixtures/journal/approved";
 import type { Article } from "@/content/types";
 import { siteGraphOf } from "@/layouts/SiteShell/site-graph";
+import { articlePageCopy, articles } from "@/content/en-IN/stories/articles";
+import { hubGroupsOf } from "@/content/en-IN/stories/hub";
+import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { articlePath } from "./article-page";
+import { articlePath, closeHeading } from "./article-page";
 import { ArticleTemplate, articleMeta } from "./ArticleTemplate";
 
 /* ArticleTemplate (task 4.2; structure §5): a journal article rendered as its page, in the approved order (story-*.html):
@@ -49,9 +54,13 @@ const OPTIONS = {
 /** The mockup's main, its addresses read as the build's: the related rows link each guide's own page, as the copy
  *  pages' "Real URL" column says (the mockup links the hub's topic while a guide waits for its rewrite;
  *  articles.test.ts maps the titles to the slugs), and the mockup's store page is the store host. The close's help line
- *  and the safe-AI-toy guide's contact line as D063 item 2 rules them (task Q2.3; seller-facts.ts). */
+ *  and the safe-AI-toy guide's contact line as D063 item 2 rules them (task Q2.3; seller-facts.ts). The close by topic of
+ *  the selling update (task Q2.12; the D2C plan v2 §7; SELLING_CLOSES): the safe-AI-toy guide closes on "A toy you can
+ *  check."; the learning guide keeps the shared close and the late-talker guide its keep-reading close. */
 function approvedMain(slug: Slug): Element {
-  const main = withSellerFacts(mockupFold(`story-${slug}`, "main"));
+  const key = `story-${slug}`;
+  const selling = Object.hasOwn(SELLING_CLOSES, key) ? SELLING_CLOSES[key as keyof typeof SELLING_CLOSES].edits : [];
+  const main = withSellerFacts(withFacts(mockupFold(key, "main"), selling));
   main.querySelectorAll(".mk-related a.kh-listitem").forEach((row, i) => row.setAttribute("href", `/stories/${approvedArticle(slug).related[i]}`));
   main.querySelectorAll('a[href="store.html"]').forEach((link) => link.setAttribute("href", STORE_URL));
   return main;
@@ -117,6 +126,34 @@ describe("ArticleTemplate: the three approved articles", () => {
     for (const slug of ["what-to-look-for-in-a-safe-ai-toy", "questions-parents-ask-about-ai-toys", "should-kids-use-ai", "ai-toys-and-indias-data-law"] as const) {
       expect(closeOf(slug).querySelectorAll(".ks-doodle"), slug).toHaveLength(0);
     }
+  });
+
+  /* The selling update (task Q2.12; the D2C plan v2 §7): every guide with the button closes on its topic's words, the hub's
+     and the learning guides' the shared ones; the talking guides keep the keep-reading close (D054 item 16). */
+  it("closes each guide in its topic's words: screen time, AI toys and safety, learning (the shared close), and never the talking guides", () => {
+    const topicOf = (slug: string) => hubGroupsOf.find((g) => g.featured === slug || g.slugs.includes(slug))!.topic;
+    const seen = new Set<string>();
+    for (const article of Object.values(articles)) {
+      const topic = topicOf(article.slug);
+      cleanup();
+      const close = page(article).querySelector("#close");
+      if (topic === "talking") {
+        expect(article.close, article.slug).toBe("keep");
+        expect(close, article.slug).toBeNull();
+        continue;
+      }
+      seen.add(topic);
+      const expected = articlePageCopy.close.topicHeadings[topic as keyof typeof articlePageCopy.close.topicHeadings] ?? articlePageCopy.close.heading;
+      expect(closeHeading(article), article.slug).toBe(expected);
+      const heading = close!.querySelector("#close-title")!;
+      const lead = close!.querySelector(".kh-heading__lead")!;
+      expect([heading.textContent, lead.textContent], article.slug).toEqual([toPlainText(expected.title, TOKEN), toPlainText(expected.lead, TOKEN)]);
+    }
+    expect([...seen].sort()).toEqual(["ai-and-safety", "learning", "screen-time"]);
+    cleanup();
+    expect(page(approvedArticle("what-to-look-for-in-a-safe-ai-toy")).querySelector("#close-title")?.textContent).toBe("A toy you can check.");
+    cleanup();
+    expect(page(approvedArticle("learning-toys-for-a-three-year-old")).querySelector("#close-title")?.textContent).toBe("A toy that asks back.");
   });
 
   it("sends the journal close's button to the store, tracked as finale, with the arrow", () => {

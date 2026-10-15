@@ -10,6 +10,7 @@ import type { Page } from "@playwright/test";
 import { ICON_PATHS, type IconName } from "@/assets/icons.generated";
 import { SITE_DRAWINGS } from "@/components/ui/Icon/site-drawings";
 import { HOSTS } from "@/config/env";
+import { CONTACT_EMAIL, SUPPORT_WHATSAPP_HREF } from "@/config/site";
 import { expertClip, expertFold } from "@/content/en-IN/expert-video";
 import { filmQuotes } from "@/content/en-IN/films";
 import { faqs } from "@/content/en-IN/faqs";
@@ -23,6 +24,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { MOCKUP_SLUGS, type MockupSlug } from "./mockup-text";
 import { PAGE_FACTS, type FactEdit, type PageFacts, type PageFactsSlug } from "./page-facts";
 import { sentences } from "./parity";
+import { readRepoFile } from "./repo";
 import { sellerFactsHidden, sellerFactsText } from "./seller-facts";
 
 export type VisualDeviation = {
@@ -1640,6 +1642,267 @@ export const SAFETY_SELLING_LAYOUT_HIDDEN: readonly VisualHide[] = [
   },
 ];
 
+/* Task Q2.12, the selling update's closes (D064, D065; the D2C plan v2 §5-§10, wiki/site/d2c-conversion-plan-2026-10-15.md,
+   with the CMO's conditions, wiki/qa/cmo-review-d2c-plan-v2-2026-10-15.md; the main session's rulings on §13 items 4
+   and 5): every page that is not Home, the product page or /safety closes the way they do, with the same button, short
+   price line and risk-reversal line (task Q2.8's CtaBlock and PriceSentence), and the plan's words change a few approved
+   lines.
+   - /setup: fold 6 drops G27's deletion sentences (§13 item 4 (a)); fold 7 drops "Don’t have Kheelu yet? Meet Kheelu";
+     a new fold 8 closes the page: "Pre-order", "Don’t have Kheelu yet?", the lead, the button (`finale`, its placement
+     registered under D065), the price line and the trust line, no help line, no picture;
+   - the buyer's guide: fold 3's "Every conversation" answer in G26's words and its "Open internet" answer's last sentence
+     as D065 item 8 confirms it, then a button after the fold (`guide-answers`), the price line and the trust line; fold 5's
+     price question is Home's rewritten one (no GST, no first 500, no balance), faqs.ts `price-in-total`;
+   - /team: fold 4's keys line in G26's words, and the close's new lead "Designed by parents in Bengaluru. Made in India.";
+   - the journal: the close by topic (§7), so the safe-AI-toy guide (AI toys and safety) closes on "A toy you can check."
+     (the hub and the learning guides keep the built close; the talking guides keep their keep-reading close, D054 item
+     16, §13 item 5 (a));
+   - the store's first screen: the eyebrow "Screen-free AI toy · Ages 3 to 7" (D065 item 1), and the films fold's heading
+     and lead without "in real homes" (D057 item 2).
+   /contact needed no change: its close already has the button, the price line and the trust line (task Q2.8), and its
+   GSTIN went with task Q2.3. In page-facts.ts's form, applied after each page's earlier rules (its page facts and copy
+   fixes, then its claim fixes): `edits` turn that mockup into the build, and `mockup` and `build` are the sentences they
+   change, for the text pass (each page's parity-deviations unit test proves them exactly those). Literal, because
+   Playwright cannot load every content module; each page's content test holds every literal to its module. The
+   deviations.md rows are the main session's (the plan's §12 lists them); the founder signs the words at Gate B (D015). */
+export const SELLING_CLOSES_APPROVED =
+  "D065 and the D2C plan v2 §5-§10 (founder, 2026-10-15; the main session's rulings on §13 items 4-5; the CMO's review of v2; task Q2.12; deviations.md rows to come)";
+const SELLING_CLOSES_WHOSE = "task Q2.12's selling closes (D065)";
+
+/** The one price line, the risk-reversal line and the delivery line beside every button since task Q2.8, as the mockups
+ *  read once the comparison harness has applied them (test/support/mockup-compare.ts `withPriceLine`): the lines a new
+ *  CTA block prints. */
+const SELLING_LINES = [...sentences(PRICE_LINE.sentence.build), PRICE_LINE.returns.build, PRICE_LINE.delivery] as const;
+/** A CTA block as the approved mockups print one (mockup.css:27-28; the team and guide closes), with task Q2.8's lines:
+ *  the chilli button, then the price line and the trust line (the risk-reversal line first), grouped. The store's address
+ *  is the mockup's `store.html`; the trust links read their parts of /refund and /shipping by their words (the harness's
+ *  `trustLinkHref`). */
+const ctaBlockMarkup = ({ cta, center = false, arrow = false, block = false }: { cta: string; center?: boolean; arrow?: boolean; block?: boolean }) =>
+  `<div class="kh-section__actions${center ? " kh-section__actions--center" : ""}">` +
+  `<a href="store.html" class="kh-btn kh-btn--cta kh-btn--l${block ? " kh-btn--block" : ""}" data-ph-capture-attribute-cta="${cta}"><span>Pre-order Kheelu</span>${arrow ? icon("arrow-right") : ""}</a></div>` +
+  `<div class="mk-beside${center ? " mk-beside--center" : ""}"><p class="kh-body-s mk-price">${PRICE_LINE.sentence.build}</p>` +
+  `<ul class="kh-trustline mk-trust"><li><a href="refund.html">${icon("arrow-counter-clockwise")}${PRICE_LINE.returns.build}</a></li>` +
+  `<li><a href="shipping.html">${icon("truck")}${PRICE_LINE.delivery}</a></li></ul></div>`;
+
+/** /setup's new close (the plan's §5 fold 8): centred, no picture, no help line (fold 7 is the help). */
+export const SETUP_CLOSE = {
+  eyebrow: "Pre-order",
+  title: { text: "Don’t have Kheelu yet?", markup: 'Don’t have Kheelu <span class="kh-hand">yet?</span>' },
+  lead: "Day one takes your phone, the parent app and your home Wi‑Fi password.",
+} as const;
+/** /setup's fold 6, second paragraph: D058's claim-fixed words (V29), then the words G27's answer leaves (§13 item 4 (a)). */
+export const SETUP_TALK_LINE = {
+  claimFixed: "Later, open the parent app to read every word of it. Removing a chat in the app hides it on that phone. Deleting your account deletes every conversation and recording.",
+  build: "Later, open the parent app to read every word of it.",
+} as const;
+/** /setup's fold 7 line that leaves (the plan's §5 fold 7: fold 8 does its job). */
+const SETUP_MEET = "Don’t have Kheelu yet? Meet Kheelu";
+/** /setup's fold 7 contact line: the approved one (with the call, which D063 item 2 took off: seller-facts.ts), then the
+ *  plan's §5 fold 7 words, "Message us on WhatsApp" (the help line's verb, §1.1) or the email, no number. */
+export const SETUP_CONTACT = {
+  mockup:
+    "WhatsApp or call us on +91 91875 46483, or email hello@kheelona.com. Tell us your order number, and what you see on Kheelu and in the app.",
+  build: `Message us on WhatsApp or email ${CONTACT_EMAIL}. Tell us your order number, and what you see on Kheelu and in the app.`,
+  markup: `<a href="${SUPPORT_WHATSAPP_HREF}">Message us on WhatsApp</a> or email <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>. Tell us your order number, and what you see on Kheelu and in the app.`,
+} as const;
+/** /setup's fold 7 as the approved mockup prints it, without that line, read from the frozen file so the contact line
+ *  stays the mockup's own (task Q2.3's rules then read it as the build prints it). */
+const SETUP_HELP_WITHOUT_MEET = (() => {
+  const help = /<section class="kh-section" id="help"[\s\S]*?<\/section>/.exec(readRepoFile("mockup/setup.html"))?.[0];
+  if (!help) throw new Error("mockup/setup.html: no section#help");
+  const meet = /\s*<p class="kh-body mk-help mk-setup-meet">[\s\S]*?<\/p>/;
+  if (!meet.test(help)) throw new Error("mockup/setup.html: no Meet Kheelu line in section#help");
+  return help.replace(meet, "");
+})();
+const SETUP_CLOSE_MARKUP =
+  `<section class="kh-section" id="close" aria-labelledby="close-title"><div class="kh-container">` +
+  `<header class="kh-heading kh-heading--center"><p class="kh-eyebrow">${SETUP_CLOSE.eyebrow}</p>` +
+  `<h2 class="kh-heading__title" id="close-title">${SETUP_CLOSE.title.markup}</h2><p class="kh-heading__lead">${SETUP_CLOSE.lead}</p></header>` +
+  `${ctaBlockMarkup({ cta: "finale", center: true })}</div></section>`;
+
+/** The buyer's guide's fold 3 answers, D058's claim-fixed words (V31), then the plan's §6 (G26; D065 items 7-8). */
+export const GUIDE_ANSWERS = {
+  conversation: {
+    claimFixed: "Yes, in the parent app, word for word. Removing a chat in the app hides it on that phone. Deleting your account deletes the conversations and recordings from our servers.",
+    build: "Yes, in the parent app, word for word. “Delete all chats” in the app deletes them from our servers.",
+  },
+  internet: {
+    claimFixed:
+      "It can’t browse the internet. Its answers are generated by an AI model. The model is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top. When it doesn’t know something, it says so.",
+    from: "it says so.",
+    to: "it says so instead of guessing.",
+  },
+} as const;
+/** The guide's fold 3 link row as the approved mockup prints it; the new CTA block follows it. */
+const GUIDE_SAFETY_LINK = `<div class="kh-section__actions"><a href="safety.html" class="kh-btn kh-btn--secondary">${icon("shield-check")}<span>See the full safety facts</span></a></div>`;
+/** The guide's fifth question: the approved one (faqs.ts `how-much`, as the mockup prints it), then Home's rewritten price
+ *  answer (the plan's §2 fold 10 question 3 and §6 fold 5; faqs.ts `price-in-total`), in token mode. */
+export const GUIDE_PRICE_FAQ = {
+  mockup: {
+    question: "How much is Kheelu?",
+    answer:
+      "Kheelu is ₹4,999 (incl. GST) for the first 500 units, with delivery anywhere in India included. A refundable ₹499 advance reserves yours today, and the remaining ₹4,500 is due before delivery. After the first 500, it is ₹7,999 (incl. GST), paid in full. You can pay by UPI, card or net banking, and you get a GST invoice.",
+  },
+  build: {
+    question: "How much is Kheelu, and how does the advance work?",
+    answer:
+      "Kheelu is ₹4,999 in total, with delivery anywhere in India included. A refundable ₹499 reserves yours today, and the rest is due before delivery, by a payment link we send you. You can pay by UPI, card or net banking.",
+  },
+} as const;
+
+/** /team's fold 4 keys line: D058's claim-fixed words (V30), then G26's (the plan's §8 fold 4; D065 item 7). */
+export const TEAM_KEYS_LINE = {
+  claimFixed:
+    "And you hold the keys. You can read every conversation in the parent app, and delete them all by deleting your account. You set your child’s age, and Kheelu’s AI is given child-safety rules and that age on every conversation.",
+  build:
+    "And you hold the keys. You can read every conversation in the parent app, and “Delete all chats” there deletes them from our servers. You set your child’s age, and Kheelu’s AI is given child-safety rules and that age on every conversation.",
+} as const;
+/** /team's close lead (the plan's §8 fold 6; D034, the footer's line). */
+export const TEAM_CLOSE_LEAD = "Designed by parents in Bengaluru. Made in India.";
+
+/** The journal close of the AI toys and safety topic (the plan's §7), against the built close every article shares. */
+export const JOURNAL_SAFETY_CLOSE = {
+  mockup: {
+    title: "A toy that asks back.",
+    lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It answers your child, then asks a question back.",
+  },
+  build: {
+    title: { text: "A toy you can check.", markup: 'A toy you can <span class="kh-hand">check.</span>' },
+    lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It has no camera and can’t browse the internet, and you can read every conversation in the parent app.",
+  },
+} as const;
+
+/** The store's first-screen eyebrow (D065 item 1) and its films fold's heading and lead (the plan's §10; D057 item 2). The
+ *  eyebrow keeps the age band whole when it wraps beside the small Kheelu on a phone, as the event page's does (7.1c). */
+export const STORE_WORDS = {
+  eyebrow: {
+    mockup: "Ages 3 to 7",
+    build: "Screen-free AI toy · Ages 3 to 7",
+    markup: 'Screen-free AI toy · <span class="mk-nowrap">Ages 3 to 7</span>',
+  },
+  filmsTitle: { mockup: "See Kheelu ask, in real homes.", build: "See Kheelu ask.", markup: 'See Kheelu <span class="kh-hand">ask.</span>' },
+  filmsLead: { mockup: "Real children in real homes. Press play on any of them.", build: "Real children, real families. Press play on any of them." },
+} as const;
+
+/** Fold 3 of the guide and the FAQ's fifth item, by what both pages share (the build's CTA block by its place after the
+ *  link row: the second actions row of the fold, and its group). */
+const guideAnswer = (n: number) => `section[aria-labelledby="answers-title"] .kh-trust__item:nth-child(${n}) .kh-trust__body`;
+
+export const SELLING_CLOSES = {
+  setup: {
+    edits: [
+      rewrite("p.kh-body-l", SETUP_TALK_LINE.claimFixed, SETUP_TALK_LINE.build),
+      { at: "p.mk-setup-meet", was: SETUP_MEET, scope: "section", now: `${SETUP_HELP_WITHOUT_MEET}${SETUP_CLOSE_MARKUP}` },
+      rewrite("p.mk-setup-help", SETUP_CONTACT.mockup, SETUP_CONTACT.markup),
+    ],
+    mockup: [
+      ...sentencesBeyond(SETUP_TALK_LINE.claimFixed, SETUP_TALK_LINE.build),
+      ...sentencesBeyond(SETUP_CONTACT.mockup, SETUP_CONTACT.build),
+      "Meet Kheelu",
+    ],
+    build: [...sentencesBeyond(SETUP_CONTACT.build, SETUP_CONTACT.mockup), SETUP_CLOSE.eyebrow, SETUP_CLOSE.lead, "Pre-order Kheelu", ...SELLING_LINES],
+    /* Fold 6's paragraph is shorter at every width; the meet line comes off the mockup's fold 7; the new close is the
+       build's alone. */
+    hidden: { both: ['[aria-labelledby="talk-title"] .kh-body-l:nth-child(2)'], mockup: [".mk-setup-meet"], build: ["section#close"] },
+    reason:
+      "/setup's fold 6 without the deletion sentences (G27, §13 item 4 (a)), fold 7 in the plan's words (\"Message us on WhatsApp\") without its Meet Kheelu line, and a close of its own: the button, the price line and the trust line (D065; the D2C plan v2 §5)",
+    approvedBy: SELLING_CLOSES_APPROVED,
+  },
+  "ai-toys-for-kids-in-india": {
+    edits: [
+      swap(".kh-trust__body", GUIDE_ANSWERS.internet.claimFixed, GUIDE_ANSWERS.internet.from, GUIDE_ANSWERS.internet.to),
+      rewrite(".kh-trust__body", GUIDE_ANSWERS.conversation.claimFixed, GUIDE_ANSWERS.conversation.build),
+      {
+        at: 'section[aria-labelledby="answers-title"] .kh-section__actions',
+        was: "See the full safety facts",
+        now: `${GUIDE_SAFETY_LINK}${ctaBlockMarkup({ cta: "guide-answers", arrow: true, block: true })}`,
+      },
+      {
+        at: ".kh-faq__item",
+        was: `${GUIDE_PRICE_FAQ.mockup.question}${GUIDE_PRICE_FAQ.mockup.answer}`,
+        now: faqItem(GUIDE_PRICE_FAQ.build.question, GUIDE_PRICE_FAQ.build.answer),
+      },
+    ],
+    mockup: [
+      ...sentencesBeyond(GUIDE_ANSWERS.internet.claimFixed, GUIDE_ANSWERS.internet.claimFixed.replace(GUIDE_ANSWERS.internet.from, GUIDE_ANSWERS.internet.to)),
+      ...sentencesBeyond(GUIDE_ANSWERS.conversation.claimFixed, GUIDE_ANSWERS.conversation.build),
+      GUIDE_PRICE_FAQ.mockup.question,
+      ...sentences(GUIDE_PRICE_FAQ.mockup.answer),
+    ],
+    build: [
+      ...sentencesBeyond(GUIDE_ANSWERS.internet.claimFixed.replace(GUIDE_ANSWERS.internet.from, GUIDE_ANSWERS.internet.to), GUIDE_ANSWERS.internet.claimFixed),
+      ...sentencesBeyond(GUIDE_ANSWERS.conversation.build, GUIDE_ANSWERS.conversation.claimFixed),
+      "Pre-order Kheelu",
+      ...SELLING_LINES,
+      GUIDE_PRICE_FAQ.build.question,
+      ...sentences(GUIDE_PRICE_FAQ.build.answer),
+    ],
+    /* The two answers wrap to other heights; the new CTA block is the build's alone (its row after the link row, and its
+       group); the fifth question is longer and may wrap. */
+    hidden: {
+      both: [guideAnswer(3), guideAnswer(4), 'section[aria-labelledby="faq-title"] .kh-faq__item:nth-child(5)'],
+      mockup: [],
+      build: [
+        'section[aria-labelledby="answers-title"] .kh-section__actions + .kh-section__actions',
+        'section[aria-labelledby="answers-title"] .ks-beside',
+      ],
+    },
+    reason:
+      "the guide's answers on deleting (G26) and on not knowing (D065 item 8), a button after them with the price line and the trust line, and Home's rewritten price question in place of the one with GST, the first 500 and the balance (D065 items 3-4; the D2C plan v2 §6)",
+    approvedBy: SELLING_CLOSES_APPROVED,
+  },
+  team: {
+    edits: [
+      rewrite("p.kh-body-l", TEAM_KEYS_LINE.claimFixed, TEAM_KEYS_LINE.build),
+      {
+        at: "#close-title",
+        was: "Bring Kheelu home.",
+        now: `<h2 class="kh-heading__title" id="close-title">Bring Kheelu <span class="kh-hand">home.</span></h2><p class="kh-heading__lead">${TEAM_CLOSE_LEAD}</p>`,
+      },
+    ],
+    mockup: sentencesBeyond(TEAM_KEYS_LINE.claimFixed, TEAM_KEYS_LINE.build),
+    build: [...sentencesBeyond(TEAM_KEYS_LINE.build, TEAM_KEYS_LINE.claimFixed), ...sentences(TEAM_CLOSE_LEAD)],
+    /* The keys line wraps to another height; the close's lead is the build's alone. */
+    hidden: { both: ['[aria-labelledby="why-title"] .kh-body-l:nth-child(3)'], mockup: [], build: ["#close .kh-heading__lead"] },
+    reason: "/team's keys line in G26's words, and the close's lead, Designed by parents in Bengaluru. Made in India. (D065 item 7, D034; the D2C plan v2 §8)",
+    approvedBy: SELLING_CLOSES_APPROVED,
+  },
+  "story-what-to-look-for-in-a-safe-ai-toy": {
+    edits: [
+      rewrite("#close-title", JOURNAL_SAFETY_CLOSE.mockup.title, JOURNAL_SAFETY_CLOSE.build.title.markup),
+      rewrite(".kh-heading__lead", JOURNAL_SAFETY_CLOSE.mockup.lead, JOURNAL_SAFETY_CLOSE.build.lead),
+    ],
+    mockup: [JOURNAL_SAFETY_CLOSE.mockup.title, ...sentencesBeyond(JOURNAL_SAFETY_CLOSE.mockup.lead, JOURNAL_SAFETY_CLOSE.build.lead)],
+    build: [JOURNAL_SAFETY_CLOSE.build.title.text, ...sentencesBeyond(JOURNAL_SAFETY_CLOSE.build.lead, JOURNAL_SAFETY_CLOSE.mockup.lead)],
+    /* The close's heading and lead wrap to other heights. */
+    hidden: { both: ["#close .kh-heading"], mockup: [], build: [] },
+    reason: "the AI toys and safety guides' close: \"A toy you can check.\", with no camera, no browsing and every conversation in the parent app (claims §1; the D2C plan v2 §7)",
+    approvedBy: SELLING_CLOSES_APPROVED,
+  },
+  store: {
+    edits: [
+      rewrite(".kh-eyebrow", STORE_WORDS.eyebrow.mockup, STORE_WORDS.eyebrow.markup),
+      rewrite("#ask-title", STORE_WORDS.filmsTitle.mockup, STORE_WORDS.filmsTitle.markup),
+      rewrite(".kh-heading__lead", STORE_WORDS.filmsLead.mockup, STORE_WORDS.filmsLead.build),
+    ],
+    mockup: [STORE_WORDS.eyebrow.mockup, STORE_WORDS.filmsTitle.mockup, ...sentencesBeyond(STORE_WORDS.filmsLead.mockup, STORE_WORDS.filmsLead.build)],
+    build: [STORE_WORDS.eyebrow.build, STORE_WORDS.filmsTitle.build, ...sentencesBeyond(STORE_WORDS.filmsLead.build, STORE_WORDS.filmsLead.mockup)],
+    /* The longer eyebrow may wrap beside the small Kheelu; the films heading is shorter. */
+    hidden: { both: ['section[aria-labelledby="store-title"] .kh-eyebrow', 'section[aria-labelledby="ask-title"] .kh-heading'], mockup: [], build: [] },
+    reason: "the store's first-screen eyebrow (D065 item 1) and its films fold without \"in real homes\" (D057 item 2; the D2C plan v2 §10); the checkout unchanged",
+    approvedBy: SELLING_CLOSES_APPROVED,
+  },
+} as const satisfies Readonly<Record<string, PageFacts>>;
+export type SellingClosesSlug = keyof typeof SELLING_CLOSES;
+
+/** The passes a page's earlier rules make before task Q2.12's, each a pass of its own because each rewrites words an
+ *  earlier one wrote: its page facts and copy fixes, then its claim fixes (an approved article's own), then its FAQ fixes.
+ *  The mockup the selling closes start from is the frozen one through every pass. */
+export function passesBeforeSellingCloses(slug: string): readonly (readonly FactEdit[])[] {
+  const claims = CLAIM_FIXES[slug as ClaimFixesSlug]?.edits ?? ARTICLE_CLAIM_FIXES[slug as keyof typeof ARTICLE_CLAIM_FIXES]?.edits ?? [];
+  return [editsBeforeClaimFixes(slug), claims, FAQ_FIXES[slug as FaqFixesSlug]?.edits ?? []].filter((pass) => pass.length > 0);
+}
+
 export const VISUAL_DEVIATIONS: Readonly<Record<string, readonly VisualDeviation[]>> = {};
 
 /* D042's payments line (wiki/qa/deviations.md V1): both store mockups print it in the store footer; the build prints it
@@ -1885,10 +2148,16 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...paymentsHidden,
     /* The order summary's small print (V34, task 8b.1), compared by the text pass. */
     ...factsHidden(CLAIM_FIXES.store, CLAIM_FIXES_WHOSE),
+    /* The first screen's eyebrow and the films heading (task Q2.12, D065). */
+    ...factsHidden(SELLING_CLOSES.store, SELLING_CLOSES_WHOSE),
   ],
   "store-confirmation": paymentsHidden,
   /* The safe-AI-toy guide's reworded facts and the one that came off (task 8b.2a, D058), compared by the text pass. */
-  "story-what-to-look-for-in-a-safe-ai-toy": factsHidden(ARTICLE_CLAIM_FIXES["story-what-to-look-for-in-a-safe-ai-toy"], ARTICLE_CLAIM_FIXES_WHOSE),
+  "story-what-to-look-for-in-a-safe-ai-toy": [
+    ...factsHidden(ARTICLE_CLAIM_FIXES["story-what-to-look-for-in-a-safe-ai-toy"], ARTICLE_CLAIM_FIXES_WHOSE),
+    /* The close of the AI toys and safety topic (task Q2.12, D065). */
+    ...factsHidden(SELLING_CLOSES["story-what-to-look-for-in-a-safe-ai-toy"], SELLING_CLOSES_WHOSE),
+  ],
   /* The 3-6-9-12 card (V9) is hidden in the approved hub, so its screen-time topic lists the build's five guides in the
      build's order and every fold below it lines up. The mockup alone: hidden there, the topic's rows reflow into the
      build's grid (two columns from 900 px), and the build has nothing of the card to hide. */
@@ -1926,8 +2195,12 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...factsHidden(SAFETY_SELLING, SAFETY_SELLING_WHOSE),
     ...SAFETY_SELLING_LAYOUT_HIDDEN,
   ],
-  /* Check 4 and Kheelu's three answers (V31, task 8b.1), compared by the text pass. */
-  "ai-toys-for-kids-in-india": factsHidden(CLAIM_FIXES["ai-toys-for-kids-in-india"], CLAIM_FIXES_WHOSE),
+  /* Check 4 and Kheelu's three answers (V31, task 8b.1), compared by the text pass; then two answers, the button after
+     them and the price question (task Q2.12, D065). */
+  "ai-toys-for-kids-in-india": [
+    ...factsHidden(CLAIM_FIXES["ai-toys-for-kids-in-india"], CLAIM_FIXES_WHOSE),
+    ...factsHidden(SELLING_CLOSES["ai-toys-for-kids-in-india"], SELLING_CLOSES_WHOSE),
+  ],
   team: [
     /* What still differs on purpose (V7): the hero lead (CMO M-T1), and the mockup's placeholders that the founder's
        answers resolved (D054 item 20), each with other words or another height on the build's side, so every chunk
@@ -1964,6 +2237,8 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ),
     /* Aman's job line and fold 4's keys line (V30, task 8b.1), compared by the text pass. */
     ...factsHidden(CLAIM_FIXES.team, CLAIM_FIXES_WHOSE),
+    /* The keys line in G26's words and the close's lead (task Q2.12, D065). */
+    ...factsHidden(SELLING_CLOSES.team, SELLING_CLOSES_WHOSE),
   ],
   setup: [
     ...(["mockup", "build"] as const).map((side) => ({
@@ -1980,6 +2255,8 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...factsHidden(COPY_FIXES.setup, COPY_FIXES_WHOSE),
     /* The age, languages, button and first-conversation lines (V29, task 8b.1), compared by the text pass. */
     ...factsHidden(CLAIM_FIXES.setup, CLAIM_FIXES_WHOSE),
+    /* Fold 6 without the deletion sentences, fold 7 without Meet Kheelu, and the new close (task Q2.12, D065). */
+    ...factsHidden(SELLING_CLOSES.setup, SELLING_CLOSES_WHOSE),
   ],
   "meet-kheelu": [
     ...pageFactsHidden("meet-kheelu"),
@@ -2140,10 +2417,16 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     paymentsMoved,
     /* The order summary's small print (V34, task 8b.1): CLAIM_FIXES above. */
     factsRule(CLAIM_FIXES.store),
+    /* The first screen's eyebrow and the films heading (task Q2.12, D065): SELLING_CLOSES above. */
+    factsRule(SELLING_CLOSES.store),
   ],
   "store-confirmation": [paymentsMoved],
   /* The safe-AI-toy guide's facts in the code-checked words (task 8b.2a, D058): ARTICLE_CLAIM_FIXES above. */
-  "story-what-to-look-for-in-a-safe-ai-toy": [factsRule(ARTICLE_CLAIM_FIXES["story-what-to-look-for-in-a-safe-ai-toy"])],
+  "story-what-to-look-for-in-a-safe-ai-toy": [
+    factsRule(ARTICLE_CLAIM_FIXES["story-what-to-look-for-in-a-safe-ai-toy"]),
+    /* The close of the AI toys and safety topic (task Q2.12, D065): SELLING_CLOSES above. */
+    factsRule(SELLING_CLOSES["story-what-to-look-for-in-a-safe-ai-toy"]),
+  ],
   stories: [
     {
       /* The 3-6-9-12 card's title and summary (stories.html fold 2), missing from the build; nothing replaces them. */
@@ -2217,7 +2500,12 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
   safety: [factsRule(COPY_FIXES.safety), factsRule(SAFETY_SELLING), factsRule(CLAIM_FIXES.safety)],
   /* The age answer's "At 3" sentence (V22, wave 8 merge): COPY_FIXES above. It sits in a closed item, which the text
      pass does not read; the route's unit test holds it. */
-  "ai-toys-for-kids-in-india": [factsRule(COPY_FIXES["ai-toys-for-kids-in-india"]), factsRule(CLAIM_FIXES["ai-toys-for-kids-in-india"])],
+  "ai-toys-for-kids-in-india": [
+    factsRule(COPY_FIXES["ai-toys-for-kids-in-india"]),
+    factsRule(CLAIM_FIXES["ai-toys-for-kids-in-india"]),
+    /* Two answers, the button after them and the price question (task Q2.12, D065): SELLING_CLOSES above. */
+    factsRule(SELLING_CLOSES["ai-toys-for-kids-in-india"]),
+  ],
   team: [
     {
       /* CMO fix M-T1 (task 5.7): the hero lead says what Kheelu is, for whom, and the search term (team.ts). */
@@ -2245,6 +2533,8 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     },
     /* D058's claim fixes (V30, task 8b.1): CLAIM_FIXES above. */
     factsRule(CLAIM_FIXES.team),
+    /* The keys line in G26's words and the close's lead (task Q2.12, D065): SELLING_CLOSES above. */
+    factsRule(SELLING_CLOSES.team),
   ],
   setup: [
     {
@@ -2260,6 +2550,8 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     factsRule(COPY_FIXES.setup),
     /* D058's claim fixes (V29, task 8b.1): CLAIM_FIXES above. */
     factsRule(CLAIM_FIXES.setup),
+    /* Fold 6, fold 7 and the new close (task Q2.12, D065): SELLING_CLOSES above. */
+    factsRule(SELLING_CLOSES.setup),
   ],
   privacy: [
     {

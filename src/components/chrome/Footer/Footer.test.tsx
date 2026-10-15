@@ -84,4 +84,18 @@ describe("Footer", () => {
     const [space1, space2, line] = [4, 8, 24];
     expect(line + 2 * (space2 + space1 / 2)).toBe(44);
   });
+
+  /* The selling update (task Q2.12; the main session's ruling on the footer on laptops): with a mouse or a trackpad (a
+     fine pointer that hovers) the column links sit closer, 32 px rows (a space-1 above and below the 24 px line), so a
+     column reads as one list; every link stays a target of at least 24 x 24 px (WCAG 2.2 SC 2.5.8, its full column wide),
+     and a touch screen keeps the 44 px rows above. Still the link's own padding, never a margin. */
+  it("tightens the column links to 32 px rows on pointer-fine devices only, never under WCAG 2.5.8's 24 px", () => {
+    const query = /@media \(hover: hover\) and \(pointer: fine\) \{\s*([^{}]*\{[^}]*\})\s*\}/.exec(CSS)?.[1].replace(/\s+/g, " ").trim();
+    expect(query).toBe(".kh-footer__col a { padding-block: var(--space-1); }");
+    /* The touch rows stay the first, unqueried rule. */
+    expect(CSS.indexOf(".kh-footer__col a {")).toBeLessThan(CSS.indexOf("@media (hover: hover) and (pointer: fine)"));
+    const [space1, line, target] = [4, 24, 24];
+    expect(line + 2 * space1).toBe(32);
+    expect(line + 2 * space1).toBeGreaterThanOrEqual(target);
+  });
 });

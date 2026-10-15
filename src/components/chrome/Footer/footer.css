@@ -7,3 +7,11 @@
    below the 24 px line); here 44 px, the site's smallest tap target (tasks.md SPA 4), still the link's own padding,
    never a margin, so every pixel between two links belongs to one of them: 10 px, space-2 and half a space-1. */
 .kh-footer__col a { padding-block: calc(var(--space-2) + var(--space-1) / 2); }
+
+/* The footer on laptops (task Q2.12, the main session's ruling for the selling update): with a mouse or a trackpad (a
+   fine pointer that hovers) the rows close up to 32 px, a space-1 above and below the 24 px line, so a column reads as one
+   list. Each link stays a target at least 24 px tall, its column wide (WCAG 2.2 SC 2.5.8); a touch screen keeps the
+   44 px rows above. */
+@media (hover: hover) and (pointer: fine) {
+  .kh-footer__col a { padding-block: var(--space-1); }
+}

@@ -9,7 +9,7 @@ import { PageTemplate } from "@/layouts/PageTemplate/PageTemplate";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
-import { CLAIM_FIXES, COPY_FIXES } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, COPY_FIXES, GUIDE_PRICE_FAQ, SELLING_CLOSES } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { parseMockup, words } from "../../../../test/support/mockup-compare";
@@ -17,9 +17,10 @@ import { withFacts } from "../../../../test/support/mockup-facts";
 
 /* The /ai-toys-for-kids-in-india route (task 5.4; structure §3.1, §5): the buyer's guide module through PageTemplate with
  * the live offer, thin, and as a whole page equal to the approved mockup's <main> (mockup/ai-toys-for-kids-in-india.html,
- * D046): the same words fold by fold, the one chilli button (`finale`), reveals only where the mockup reveals and never
- * on money, and a FAQPage of exactly the five questions the page shows (architecture §9.2). Its description names the
- * price, so its metadata follows the live mode. */
+ * D046): the same words fold by fold, the chilli buttons (`guide-answers` after Kheelu's answers since the selling update,
+ * task Q2.12, and the close's `finale`), reveals only where the mockup reveals and never on money, and a FAQPage of
+ * exactly the five questions the page shows (architecture §9.2). Its description names the price, so its metadata
+ * follows the live mode. */
 
 const PATH = "/ai-toys-for-kids-in-india";
 
@@ -52,8 +53,12 @@ const mockupDoc = parseMockup("ai-toys-for-kids-in-india");
 /* The approved main with its copy fix applied: the age answer's "At 3" sentence in the site's one wording (CMO review A
  * M8; deviations.ts COPY_FIXES, V22); then task 8b.1's claim fixes (D058; CLAIM_FIXES, V31) in a pass of their own:
  * check 4, Kheelu's answers and the age answer in the live team's code-checked words. */
+const SLUG = "ai-toys-for-kids-in-india";
 const mockupMain = withSellerFacts(
-  withFacts(withFacts(mockupDoc.querySelector("main")!, COPY_FIXES["ai-toys-for-kids-in-india"].edits), CLAIM_FIXES["ai-toys-for-kids-in-india"].edits),
+  /* Then the selling update's (task Q2.12; D065; the D2C plan v2 §6; SELLING_CLOSES), in a pass of its own: two of Kheelu's
+     answers in the founder's words, the button after them with the price line and the trust line, and the price question
+     without GST, the first 500 or the balance. */
+  withFacts(withFacts(withFacts(mockupDoc.querySelector("main")!, COPY_FIXES[SLUG].edits), CLAIM_FIXES[SLUG].edits), SELLING_CLOSES[SLUG].edits),
 ); /* Then D063 item 2: the close's help line without the call (task Q2.3; seller-facts.ts). */
 
 /** The page as the site shell holds it: the route's output inside <main>. */
@@ -95,8 +100,8 @@ describe("/ai-toys-for-kids-in-india: the route file", () => {
   });
 
   it.each([
-    ["token", "AI toys for kids in India: five checks to make before you buy, and how Kheelu meets each. Ages 3 to 7. ₹4,999 (incl. GST); reserve with a refundable ₹499."],
-    ["full", "AI toys for kids in India: five checks to make before you buy, and how Kheelu meets each. Ages 3 to 7. ₹7,999 (incl. GST), delivered anywhere in India."],
+    ["token", "AI toys for kids in India: five checks to make before you buy, and how Kheelu meets each. Ages 3 to 7. ₹4,999 in total; reserve with a refundable ₹499."],
+    ["full", "AI toys for kids in India: five checks to make before you buy, and how Kheelu meets each. Ages 3 to 7. ₹7,999 in total, delivered anywhere in India."],
   ] as const)("gives the head its canonical, a complete Open Graph card and a large Twitter card, worded as the copy page (%s; SPA 5)", async (mode, description) => {
     const metadata = await (await route(mode)).generateMetadata();
     const title = "AI toys for kids in India: how to choose one · Kheelona";
@@ -155,21 +160,25 @@ describe("/ai-toys-for-kids-in-india: the rendered page against the approved moc
     expect(words(visible(main))).toBe(words(mockupMain));
   });
 
-  it("changes only the price answer and the price sentence in full mode (D028; the guide's copy, folds 5 and 6)", async () => {
+  it("changes only the price question and answer and the price lines in full mode (D028; the guide's copy, folds 3, 5 and 6)", async () => {
     const token = await renderPage(buildOffer("token"));
     const full = await renderPage(buildOffer("full"));
     const offer = buildOffer("full");
-    expect(full.main.querySelector("#close .ks-price")?.textContent).toBe(toPlainText(offer.priceLine, offer));
+    const prices = (main: Element) => Array.from(main.querySelectorAll(".ks-price")).map((p) => p.textContent);
+    expect(prices(full.main)).toEqual([toPlainText(offer.priceLine, offer), toPlainText(offer.priceLine, offer)]);
     expect(full.main.querySelector("#close .ks-price")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
     const answers = (main: Element) => Array.from(main.querySelectorAll(".kh-faq__a")).map((a) => words(a));
     expect(answers(full.main).at(-1)).toBe(
-      "Kheelu is ₹7,999 (incl. GST), paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking, and you get a GST invoice. Deliveries start mid-November. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.",
+      "Kheelu is ₹7,999 in total, paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking. Deliveries start mid-November. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.",
     );
+    expect(answers(token.main).at(-1)).toBe(GUIDE_PRICE_FAQ.build.answer);
+    const questions = (main: Element) => Array.from(main.querySelectorAll(".kh-faq__q")).map((q) => words(q));
+    expect([questions(token.main).at(-1), questions(full.main).at(-1)]).toEqual([GUIDE_PRICE_FAQ.build.question, "How much is Kheelu?"]);
     expect(answers(full.main).slice(0, -1)).toEqual(answers(token.main).slice(0, -1));
     const others = (main: Element) => {
       const copy = visible(main);
       copy.querySelectorAll(".ks-price").forEach((n) => n.remove());
-      copy.querySelectorAll(".kh-faq__item:last-child .kh-faq__a").forEach((n) => n.remove());
+      copy.querySelectorAll(".kh-faq__item:last-child").forEach((n) => n.remove());
       return words(copy);
     };
     expect(others(full.main)).toBe(others(token.main));
@@ -184,11 +193,27 @@ describe("/ai-toys-for-kids-in-india: the rendered page against the approved moc
     expect(main.querySelector('section[aria-labelledby="hero-title"] .kh-btn--cta')).toBeNull();
   });
 
-  it("has one chilli button, the close's, tracked `finale`, and no other tracked link (architecture §8.3)", async () => {
+  /* Since the selling update (task Q2.12; the D2C plan v2 §6, §11): `guide-answers` after Kheelu's answers, registered
+     under D065, then the close's `finale`. Build condition C1: each price line is a block of its own after its button. */
+  it("has two chilli buttons, `guide-answers` after Kheelu's answers and the close's `finale`, and no other tracked link (architecture §8.3)", async () => {
     const { main } = await renderPage(buildOffer("token"));
-    expect([...main.querySelectorAll("[data-ph-capture-attribute-cta]")].map((el) => el.getAttribute("data-ph-capture-attribute-cta"))).toEqual(["finale"]);
-    expect(main.querySelectorAll(".kh-btn--cta")).toHaveLength(1);
-    expect(main.querySelector("#close .kh-btn--cta")?.textContent).toBe("Pre-order Kheelu");
+    expect([...main.querySelectorAll("[data-ph-capture-attribute-cta]")].map((el) => el.getAttribute("data-ph-capture-attribute-cta"))).toEqual([
+      "guide-answers",
+      "finale",
+    ]);
+    const buttons = [...main.querySelectorAll(".kh-btn--cta")];
+    expect(buttons.map((b) => b.textContent)).toEqual(["Pre-order Kheelu", "Pre-order Kheelu"]);
+    expect(buttons[0].closest("section")?.getAttribute("aria-labelledby")).toBe("answers-title");
+    expect(main.querySelector("#close .kh-btn--cta")).toBe(buttons[1]);
+    for (const button of buttons) {
+      const price = button.closest("section")!.querySelector(".ks-price")!;
+      expect(price.tagName).toBe("P");
+      expect(button.contains(price)).toBe(false);
+      expect(button.compareDocumentPosition(price) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    }
+    /* No help line after Kheelu's answers (the plan's fold 3); the close keeps its own. */
+    expect(main.querySelector('section[aria-labelledby="answers-title"] .ks-help')).toBeNull();
+    expect(main.querySelector("#close .ks-help")).not.toBeNull();
   });
 
   it("links where the mockup links, read as the routes its pages became", async () => {
@@ -203,6 +228,8 @@ describe("/ai-toys-for-kids-in-india: the rendered page against the approved moc
     expect(internal(main)).toEqual([
       "/stories/what-to-look-for-in-a-safe-ai-toy",
       "/safety",
+      "/refund#before-dispatch",
+      "/shipping#when",
       "/products/kheelu",
       "/safety",
       "/refund#before-dispatch",
@@ -212,6 +239,8 @@ describe("/ai-toys-for-kids-in-india: the rendered page against the approved moc
     expect(internal(mockupMain).filter((h) => h !== "store.html")).toEqual([
       "story-what-to-look-for-in-a-safe-ai-toy.html",
       "safety.html",
+      "refund.html",
+      "shipping.html",
       "meet-kheelu.html",
       "safety.html",
       "refund.html",
@@ -259,8 +288,11 @@ type FaqGraph = { "@graph": { "@type": string; mainEntity: { name: string; accep
 
 describe("/ai-toys-for-kids-in-india: its JSON-LD", () => {
   it("is one FAQPage: the five questions of fold 5, in the page's order, in both modes", async () => {
-    for (const offer of [buildOffer("token"), buildOffer("full")]) {
-      const { html, main } = await renderPage(offer);
+    for (const [mode, price] of [
+      ["token", GUIDE_PRICE_FAQ.build.question],
+      ["full", "How much is Kheelu?"],
+    ] as const) {
+      const { html, main } = await renderPage(buildOffer(mode));
       expect(main.querySelectorAll('script[type="application/ld+json"]')).toHaveLength(1);
       const [graph] = jsonLdBlocks(html) as FaqGraph[];
       expect(graph["@graph"].map((n) => n["@type"])).toEqual(["FAQPage"]);
@@ -269,7 +301,7 @@ describe("/ai-toys-for-kids-in-india: its JSON-LD", () => {
         "Is an AI toy better than a tablet for a young child?",
         "What age is an AI toy for?",
         "Does Kheelu need Wi-Fi?",
-        "How much is Kheelu?",
+        price,
       ]);
     }
   });

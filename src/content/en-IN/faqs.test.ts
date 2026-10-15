@@ -15,6 +15,8 @@ import {
   LANGUAGES_FAQ,
   NOT_RIGHT_QUESTION,
   RETURNS_QUESTION,
+  SELLING_CLOSES,
+  type SellingClosesSlug,
   TEXT_DEVIATIONS,
   VISUAL_HIDDEN,
 } from "../../../test/e2e/support/deviations";
@@ -58,9 +60,13 @@ const PAGES: Readonly<Record<string, readonly FaqId[]>> = {
     "speech",
   ],
   safety: ["age-three", "child-safety-groups"],
-  "ai-toys-for-kids-in-india": ["what-is-an-ai-toy", "ai-toy-or-tablet", "ai-toy-age", "wifi", "how-much"],
+  /* The price question in Home's rewritten words since the selling update (task Q2.12; the D2C plan v2 §6 fold 5). */
+  "ai-toys-for-kids-in-india": ["what-is-an-ai-toy", "ai-toy-or-tablet", "ai-toy-age", "wifi", "price-in-total"],
   store: ["paying-today", "change-my-mind", "store-arrival", "how-to-pay"],
 };
+/** Items no page lists, kept for a machine file: the guide's approved price answer, which /pricing.md reads (task Q2.12
+ *  took it off the guide; task Q2.8 lets a machine file keep "incl. GST"). */
+const MACHINE_ONLY: readonly FaqId[] = ["how-much"];
 
 /** P15's default (open questions §P; applied by task 4.7, deviation V6): the shared answer to "What if it isn’t right
  *  for us, or stops working?" gives D033's remedy for a faulty Kheelu, a replacement or a full refund (Rule 7(4)), as
@@ -96,10 +102,12 @@ describe("ids", () => {
     }
   });
 
-  it("cover every page's FAQ, each item on exactly one page", () => {
+  it("cover every page's FAQ, each item on exactly one page, or kept for a machine file alone", () => {
     const listed = Object.values(PAGES).flat();
     expect(new Set(listed).size).toBe(listed.length);
-    expect([...listed].sort()).toEqual(Object.keys(faqs).sort());
+    expect(listed.filter((id) => MACHINE_ONLY.includes(id))).toEqual([]);
+    expect([...listed, ...MACHINE_ONLY].sort()).toEqual(Object.keys(faqs).sort());
+    expect(readRepoFile("src/app/pricing.md/route.ts")).toContain('faqs["how-much"]');
   });
 
   it("are picked in the order a page lists them", () => {
@@ -117,7 +125,10 @@ function approvedItems(slug: string): Element[] {
   // claim fixes leave it (the first-week answer without "or delete"), so they take a pass of their own too.
   const claims = Object.hasOwn(CLAIM_FIXES, slug) ? CLAIM_FIXES[slug as ClaimFixesSlug].edits.filter((e) => /faq|^li$/.test(e.at)) : [];
   const later = Object.hasOwn(FAQ_FIXES, slug) ? FAQ_FIXES[slug as FaqFixesSlug].edits : [];
-  return Array.from(withFacts(withFacts(withFacts(main, fixes), claims), later).querySelectorAll(".kh-faq__item"));
+  // Task Q2.12's selling closes start from the page as every earlier rule leaves it: only those inside the questions (the
+  // guide's price question).
+  const selling = Object.hasOwn(SELLING_CLOSES, slug) ? SELLING_CLOSES[slug as SellingClosesSlug].edits.filter((e) => /faq/.test(e.at)) : [];
+  return Array.from(withFacts(withFacts(withFacts(withFacts(main, fixes), claims), later), selling).querySelectorAll(".kh-faq__item"));
 }
 
 describe.each(Object.entries(PAGES))("mockup %s, token mode, word for word", (slug, ids) => {
@@ -373,9 +384,19 @@ describe("full mode (copy pages)", () => {
     );
   });
 
-  it("the guide's price question becomes Home's full-mode answer", () => {
+  it("/pricing.md's price answer (the guide's until task Q2.12) becomes Home's full-mode answer", () => {
     expect(plain(faqs["how-much"].question, full)).toBe("How much is Kheelu?");
     expect(plain(faqs["how-much"].answer, full)).toBe(homeFull);
+  });
+
+  /* The D2C plan v2 §2 fold 10 question 3, full mode, which the guide takes (§6 fold 5): "in total", no GST note, no GST
+     invoice beside the price (D065 item 3). */
+  it("the guide's price question becomes the plan's full-mode answer, in total and without GST", () => {
+    expect(plain(faqs["price-in-total"].question, full)).toBe("How much is Kheelu?");
+    expect(plain(faqs["price-in-total"].answer, full)).toBe(
+      "Kheelu is ₹7,999 in total, paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking. Deliveries start mid-November. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.",
+    );
+    for (const offer of [token, full]) expect(plain(faqs["price-in-total"].answer, offer)).not.toMatch(/GST|first 500|MRP|₹4,500/);
   });
 
   it("the store's first answer pays the whole price; its delivery answer drops the balance sentence", () => {
@@ -387,16 +408,16 @@ describe("full mode (copy pages)", () => {
     );
   });
 
-  it("changes only the five price-bearing items; every other item reads the same in both modes", () => {
+  it("changes only the six price-bearing items; every other item reads the same in both modes", () => {
     const variant = Object.values(faqs)
       .filter((f) => isModeVariant(f.question) || isModeVariant(f.answer))
       .map((f) => f.id)
       .sort();
-    expect(variant).toEqual(["cost-and-advance", "how-much", "paying-today", "price-and-advance", "store-arrival"]);
+    expect(variant).toEqual(["cost-and-advance", "how-much", "paying-today", "price-and-advance", "price-in-total", "store-arrival"]);
   });
 
   it("never mentions the advance, the balance or the cap in a full-mode answer", () => {
-    for (const id of ["cost-and-advance", "how-much", "paying-today", "price-and-advance", "store-arrival"] as const) {
+    for (const id of ["cost-and-advance", "how-much", "paying-today", "price-and-advance", "price-in-total", "store-arrival"] as const) {
       const text = plain(faqs[id].answer, full);
       expect(text, id).not.toMatch(/₹499|₹4,500|advance|first 500|reserve/);
     }

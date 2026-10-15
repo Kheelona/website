@@ -1,7 +1,7 @@
 ---
 title: "Buyer's guide (/ai-toys-for-kids-in-india): page copy, Gate A mockup draft"
 type: page-copy
-updated: 2026-10-14
+updated: 2026-10-15
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - ../strategy.md (§3.2-3.5 CTA rules, §4 URL plan, §5 the guide row, §7 search rules)
@@ -17,6 +17,7 @@ sources:
   - ../../qa/live-main-reconciliation-2026-10-14.md (§1 rows P11-P12; §2 rows "closed content library", "One-tap delete", "About a minute of quiet", "Age-graded safety layer"; task 8b.1)
   - "origin/main c630a49 (#19) and dd04e6d (#18), the live team's code check of 2026-10-12, as quoted in the reconciliation map (task 8b.1)"
   - "../../qa/cmo-review-claims-8b.1-2026-10-14.md (round 2 of task 8b.1: m13 applied; m6, m11, m12 as questions 5, 3, 4)"
+  - "../d2c-conversion-plan-2026-10-15.md (v2 §6; D065; task Q2.12: the metas, fold 3, the button after it, fold 5)"
 ---
 
 # Buyer's guide (`/ai-toys-for-kids-in-india`): page copy
@@ -39,8 +40,8 @@ source markers. No `[PLACEHOLDER]` is needed on this page.
 | Primary search cluster | **AI toys for kids in India** (BUY-5, [keyword map §4.1](../../research/keyword-map.md#41-marketing-pages-13)) |
 | Secondaries placed | AI robot or AI plush (fold 4 H2, CMP-3); ai plush toy (fold 4); what age is an AI toy for (FAQ); best AI toy for a 3 to 7 year old (fold 1 lead, answered by the checks) |
 | Title (55 characters) | AI toys for kids in India: how to choose one · Kheelona |
-| Meta description, token mode (154 characters) | AI toys for kids in India: five checks to make before you buy, and how Kheelu meets each. Ages 3 to 7. ₹4,999`{price-source}` (incl. GST); reserve with a refundable ₹499`{price-source}`. |
-| Meta description, full mode (151 characters) | AI toys for kids in India: five checks to make before you buy, and how Kheelu meets each. Ages 3 to 7. ₹7,999`{price-source}` (incl. GST), delivered anywhere in India. |
+| Meta description, token mode (151 characters) | AI toys for kids in India: five checks to make before you buy, and how Kheelu meets each. Ages 3 to 7. ₹4,999`{price-source}` in total; reserve with a refundable ₹499`{price-source}`. |
+| Meta description, full mode (148 characters) | AI toys for kids in India: five checks to make before you buy, and how Kheelu meets each. Ages 3 to 7. ₹7,999`{price-source}` in total, delivered anywhere in India. |
 | H1 | Options in [fold 1](#fold-1--hero-answer-first); recommended **B** "AI toys for kids in India: five checks before you buy." |
 | CTA | One: the close, **Pre-order Kheelu**, `cta` = `finale`; plus the phone sticky bar (`sticky-bar`), from first paint (no hero CTA) |
 | Mockup meta | `{"title": "AI toys for kids in India: how to choose one · Kheelona", "description": "<token-mode meta above, amounts as text>", "url": "/ai-toys-for-kids-in-india", "buybar": true, "active": ""}` |
@@ -514,3 +515,18 @@ question 3), which wait on the CTO, the founder and Aman; every other word of th
 `src/content/en-IN/pages/ai-toys-for-kids-in-india.ts:121, 126, 128` and `src/content/en-IN/faqs.ts:174`. The approved
 mockup keeps the old lines and stays frozen, so each is a text-parity deviation. The founder signs the changed lines at
 Gate B ([D015](../../decisions/D015-founder-signs-off-copy.md)).
+
+## Changes after approval (task Q2.12)
+
+The selling update ([D065](../../decisions/D065-selling-site-founder-answers-2026-10-15.md); the copy is the
+[D2C conversion plan v2 §6](../d2c-conversion-plan-2026-10-15.md#6-the-buyers-guide-ai-toys-for-kids-in-india), checked
+by the claims guard and the [CMO](../../qa/cmo-review-d2c-plan-v2-2026-10-15.md)). Recorded here by the builder of task
+Q2.12 only where this page's rows are read by a test (`test/metadata-lengths.test.ts` reads the two meta rows); the plan
+holds every other changed line. The founder signs them at Gate B ([D015](../../decisions/D015-founder-signs-off-copy.md)).
+
+| # | Where | What changed | Why |
+|---|---|---|---|
+| 1 | Both metas | "(incl. GST)" becomes "in total" (154 and 151 characters become 151 and 148); the total still leads in token mode ([D028](../../decisions/D028-price-wording.md)) | D065 item 3; plan v2 §6 "The guide: title, meta, keywords" |
+| 2 | Fold 3, "Every conversation" and "Open internet" | G26's "“Delete all chats” in the app deletes them from our servers."; "…it says so instead of guessing." | D065 items 7-8; plan v2 §6 fold 3 |
+| 3 | After fold 3 | A pre-order button (`guide-answers`), the price line and the trust line | Plan v2 §6 fold 3, §11 |
+| 4 | Fold 5, the fifth question | Home's rewritten price answer (`faqs.ts` `price-in-total`) in place of `how-much`, which stays for `/pricing.md` | D065 items 3-4; plan v2 §6 fold 5 |

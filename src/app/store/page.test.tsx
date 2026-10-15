@@ -90,7 +90,8 @@ describe("store page: the configured store (token mode)", () => {
       "Your details",
       "What you are agreeing to",
       "Questions before you pay",
-      "See Kheelu ask, in real homes.",
+      /* The selling update (task Q2.12; D057 item 2; the D2C plan v2 §10). */
+      "See Kheelu ask.",
     ]);
     expect(main.querySelectorAll("h1")).toHaveLength(1);
   });

@@ -57,7 +57,7 @@ export interface Seller {
   };
   /** The help line beside every chilli button: WhatsApp, no number (D063 item 2). */
   readonly help: HelpLineCopy;
-  /** The store header's help line. */
+  /** The store header's help line: the help line's words since task Q2.12 (one wording everywhere, CMO m9). */
   readonly storeHelp: HelpLineCopy;
   /** The grievance officer (D029) and the D032 published line. */
   readonly grievance: {
@@ -116,8 +116,10 @@ export const seller = {
     lead: "Questions?",
     contact: whatsappUs,
   },
+  /* The help line's words in the store's header too (the D2C plan v2 §1.1 and §10, CMO m9; task Q2.12): "Questions?" in
+     place of the mockup's "Need help?", so a parent reads one help line on every page. */
   storeHelp: {
-    lead: "Need help?",
+    lead: "Questions?",
     contact: whatsappUs,
   },
   grievance: {

@@ -8,7 +8,7 @@ import { readRepoFile, tagText } from "../../../../test/e2e/support/repo";
 import { DEFAULT_OG } from "../organization";
 import { notFoundPage } from "../pages/not-found";
 import { eventPage, storeNotFound, type StorePanelCopy } from "./event-page";
-import { storePage } from "./store-page";
+import { STORE_AGE_BAND, storePage } from "./store-page";
 
 /* The event page's words and the store's dead end (task 6.1; structure §5 row "(no mockup)"; architecture §16.1).
  * Neither has a mockup: the event page reuses the store page's folds and words (store.md), its own lines are the live
@@ -34,13 +34,16 @@ describe("event page: the tier checkout's words are the store page's (store.md; 
   /* CMO review C m2 (task 7.1c): the tier's price name took the eyebrow's place, so the age band left the first screen.
      The eyebrow keeps the store's own band beside the tier's name, from two approved words and no new copy (the CMO's
      7.1c copy review, "Not in this round"). */
+  /* Since the selling update (task Q2.12) the store's own eyebrow opens with "Screen-free AI toy" (D065 item 1); the
+     event page keeps the tier's name and the store's age band alone (STORE_AGE_BAND), its words unchanged. */
   it("the eyebrow is the tier's own price name, then the store's age band (CMO review C m2)", () => {
     expect(toPlainText(eventPage.checkout.eyebrow("Bangalore expo price"))).toBe("Bangalore expo price · Ages 3 to 7");
-    expect(toPlainText(eventPage.checkout.eyebrow("Bangalore expo price")).endsWith(` · ${storePage.top.eyebrow}`)).toBe(true);
+    expect(toPlainText(eventPage.checkout.eyebrow("Bangalore expo price")).endsWith(` · ${STORE_AGE_BAND}`)).toBe(true);
+    expect(toPlainText(storePage.top.eyebrow).endsWith(` · ${STORE_AGE_BAND}`)).toBe(true);
   });
 
   it("keeps the age band on one line when the eyebrow wraps beside the small Kheelu on a phone", () => {
-    expect(eventPage.checkout.eyebrow("Bangalore expo price")).toBe(`Bangalore expo price · {nowrap:${storePage.top.eyebrow}}`);
+    expect(eventPage.checkout.eyebrow("Bangalore expo price")).toBe(`Bangalore expo price · {nowrap:${STORE_AGE_BAND}}`);
   });
 
   it("the details heading, what sits beside the pay button, the questions and the payments line are the store's own", () => {

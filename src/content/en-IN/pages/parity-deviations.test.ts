@@ -17,6 +17,12 @@ import {
   FAQ_FIXES,
   FOOTER_FIX,
   FOOTER_PROMISE,
+  passesBeforeSellingCloses,
+  PRICE_LINE,
+  SELLING_CLOSES,
+  type SellingClosesSlug,
+  SETUP_CLOSE,
+  SETUP_CONTACT,
   SETUP_STEP_BUILD,
   TEAM_BIOS_BUILD,
   TEAM_LEAD_BUILD,
@@ -28,6 +34,7 @@ import { htmlToText } from "../../../../test/e2e/support/mockup-text";
 import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../test/e2e/support/parity";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
+import { findBanned } from "../../../../test/guards/banned-phrases.data";
 import { mockupFold } from "../../../../test/support/mockup-compare";
 import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../test/support/mockup-facts";
 import { setupPage } from "./setup";
@@ -176,17 +183,24 @@ describe("setup parity deviations (V8, the founder's page facts V15, and task 7.
   const FACTS = PAGE_FACTS.setup;
   const factsRule = TEXT_DEVIATIONS.setup.find((rule) => rule.approvedBy === FACTS.approvedBy)!;
 
-  it("is four rules: V8 for step 2's light, the founder's page facts (task 6.7), fold 4's age line (task 7.1b), then D058's claim fixes (task 8b.1)", () => {
+  it("is five rules: V8 for step 2's light, the founder's page facts (task 6.7), fold 4's age line (task 7.1b), D058's claim fixes (task 8b.1), then the selling close (task Q2.12)", () => {
     expect(TEXT_DEVIATIONS.setup.map((rule) => rule.approvedBy)).toEqual([
       V8.approvedBy,
       FACTS.approvedBy,
       COPY_FIXES.setup.approvedBy,
       CLAIM_FIXES.setup.approvedBy,
+      SELLING_CLOSES.setup.approvedBy,
     ]);
   });
 
-  it("accepts step 2's light, the facts' lines, the age line and D058's lines as setup.ts renders them, and nothing else", () => {
-    const claims = CLAIM_FIXES.setup.build;
+  it("accepts step 2's light, the facts' lines, the age line, D058's lines and the selling close's as setup.ts renders them, and nothing else", () => {
+    /* Fold 6's two deletion sentences, D058's words, came off with task Q2.12 (G27; the D2C plan v2 §5). */
+    const claims = CLAIM_FIXES.setup.build.filter((line) => !SELLING_CLOSES.setup.mockup.includes(line));
+    expect(claims).toHaveLength(CLAIM_FIXES.setup.build.length - 2);
+    /* Fold 7's contact line in the plan's words, then the close's own words and its trust line's, which setup.ts carries
+       as trust.ts's items; its button and price line come from cta.ts and the offer. */
+    const close = SELLING_CLOSES.setup.build.filter((line) => contentSentences(setupPage).includes(line));
+    expect(close).toEqual([sentences(SETUP_CONTACT.build)[0], SETUP_CLOSE.eyebrow, SETUP_CLOSE.lead, PRICE_LINE.returns.build, PRICE_LINE.delivery]);
     for (const line of [...SETUP_STEP_BUILD, ...FACTS.build, ...COPY_FIXES.setup.build, ...claims]) expect(contentSentences(setupPage)).toContain(line);
     expect(accepted("setup", contentSentences(setupPage))).toEqual([
       FACTS.build[0],
@@ -196,8 +210,7 @@ describe("setup parity deviations (V8, the founder's page facts V15, and task 7.
       claims[1],
       FACTS.build[1],
       claims[2],
-      claims[3],
-      claims[4],
+      ...close,
     ]);
   });
 
@@ -296,8 +309,9 @@ describe.each(Object.keys(CLAIM_FIXES) as ClaimFixesSlug[])("%s: task 8b.1's cla
     const rules = TEXT_DEVIATIONS[slug] ?? [];
     const mine = rules.filter((r) => r.approvedBy === fixes.approvedBy);
     expect(mine).toHaveLength(1);
-    // Only a rule whose edits apply to the page as these leave it follows: task 8c.4's FAQ fixes (D061).
-    const later = new Set<string>(Object.values(FAQ_FIXES).map((f) => f.approvedBy));
+    // Only a rule whose edits apply to the page as these leave it follows: task 8c.4's FAQ fixes (D061), then task
+    // Q2.12's selling closes (D065).
+    const later = new Set<string>([...Object.values(FAQ_FIXES), ...Object.values(SELLING_CLOSES)].map((f) => f.approvedBy));
     expect(rules.slice(rules.indexOf(mine[0]) + 1).filter((r) => !later.has(r.approvedBy))).toEqual([]);
     expect(ruleReach(base, fixes.edits, mine[0])).toEqual({ excused: once(fixes.mockup), accepted: once(fixes.build) });
     expect(mine[0].jsOff).toBeUndefined();
@@ -314,6 +328,51 @@ describe.each(Object.keys(CLAIM_FIXES) as ClaimFixesSlug[])("%s: task 8b.1's cla
   it("says none of the claims D058 withdraws in a sentence it adds, and names its deviations.md row and D058 as its approval", () => {
     for (const line of fixes.build) expect(line).not.toMatch(WITHDRAWN);
     expect(fixes.approvedBy).toMatch(/^deviations\.md V\d+ \(founder, D058, 2026-10-14; /);
+  });
+});
+
+/* Task Q2.12's selling closes (D065; the D2C plan v2 §5-§10; test/e2e/support/deviations.ts SELLING_CLOSES): on each page
+ * the rule excuses and accepts exactly the sentences its edits change, those are exactly the ones the edits make to the
+ * frozen mockup with every earlier rule of the page applied, it is the page's last rule, and none of the words it adds
+ * says a claim D058 withdraws or puts GST, the first 500, the balance or the number beside a button. The route and content
+ * tests hold each page's build to that edited mockup, markup and words alike. */
+describe.each(Object.keys(SELLING_CLOSES) as SellingClosesSlug[])("%s: task Q2.12's selling closes (D065) as a parity deviation", (slug) => {
+  const fixes = SELLING_CLOSES[slug];
+  const base = passesBeforeSellingCloses(slug).reduce<Element>((el, pass) => withFacts(el, pass), mockupFold(slug, "main"));
+  const once = (lines: readonly string[]) => [...new Set(lines)];
+
+  it("lists exactly the sentences the edits change, against the mockup with every earlier rule of the page applied", () => {
+    expect(factSentences(base, fixes.edits)).toEqual({ missing: [...fixes.mockup], extra: [...fixes.build] });
+    expect(fixes.mockup.length + fixes.build.length).toBeGreaterThan(0);
+  });
+
+  it("is the page's last rule, which excuses and accepts exactly those sentences and no other line", () => {
+    const rules = TEXT_DEVIATIONS[slug] ?? [];
+    const mine = rules.filter((r) => r.approvedBy === fixes.approvedBy);
+    expect(mine).toHaveLength(1);
+    expect(rules.at(-1)).toBe(mine[0]);
+    expect(ruleReach(base, fixes.edits, mine[0])).toEqual({ excused: once(fixes.mockup), accepted: once(fixes.build) });
+    expect(mine[0].jsOff).toBeUndefined();
+  });
+
+  it("hides for the pixels the blocks it lists, in VISUAL_HIDDEN in its order, each found once on its side and holding a sentence its edits change", () => {
+    expect(hiddenProblems(base, fixes)).toEqual([]);
+    const rules = (VISUAL_HIDDEN[slug] ?? []).filter((r) => r.approvedBy === fixes.approvedBy);
+    const sel = (side: string) => rules.filter((r) => r.side === side).map((r) => r.selector);
+    expect(sel("mockup")).toEqual([...fixes.hidden.both, ...fixes.hidden.mockup]);
+    expect(sel("build")).toEqual([...fixes.hidden.both, ...fixes.hidden.build]);
+  });
+
+  it("adds no withdrawn claim, no GST, first 500 or balance, no number and no banned phrase in a line it adds (D058, D063, D065)", () => {
+    for (const line of fixes.build) {
+      expect(line).not.toMatch(WITHDRAWN);
+      expect(line).not.toMatch(/incl\. GST|first 500|₹4,500|balance|\+91|91875/);
+    }
+    expect(findBanned(fixes.build.join("\n"))).toEqual([]);
+  });
+
+  it("names D065, the plan and this task as its approval, for the main session's deviations.md row", () => {
+    expect(fixes.approvedBy).toMatch(/^D065 and the D2C plan v2 §5-§10 \(founder, 2026-10-15; .*task Q2\.12; deviations\.md rows to come\)$/);
   });
 });
 

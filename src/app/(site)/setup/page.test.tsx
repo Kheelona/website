@@ -53,11 +53,11 @@ describe("/setup: the route file", () => {
     expect("robots" in metadata).toBe(false);
   });
 
-  /* The page shows no price and no buy bar, so it sets no revalidate of its own: the (site) layout's 300 s (the drawer
-   * shows the price sentence on every marketing page) is the route's, the lowest across its segments. */
-  it("sets no revalidate of its own: nothing on the page changes with the offer", async () => {
-    expect("revalidate" in (await import("./page"))).toBe(false);
-    expect(code).not.toMatch(/\brevalidate\b/);
+  /* Since the selling update (task Q2.12; the D2C plan v2 §5 fold 8) the page's close shows the price line, so it
+   * revalidates as every page that shows a price does (ADR-005; architecture §7), still without a buy bar. */
+  it("revalidates like every page that shows a price: its close shows the price line", async () => {
+    expect((await import("./page")).revalidate).toBe(300);
+    expect(code).toMatch(/^export const revalidate = 300;$/m);
   });
 
   it("is thin: no copy, price or outside address typed in it, only its own path (structure §3.1)", () => {

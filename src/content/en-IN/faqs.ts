@@ -233,6 +233,19 @@ export const faqs = {
       full: FULL_PRICE_ANSWER,
     },
   },
+  /* The guide's price question since the selling update (task Q2.12; D065 items 3-4; the D2C plan v2 §6 fold 5, which
+     takes Home's rewritten answer, §2 fold 10 question 3): the total, the refundable advance and the rest before delivery,
+     with no "incl. GST", no MRP, no first 500 and no balance amount on a selling page. `how-much` above stays as it is:
+     /pricing.md, a machine file, still reads it (task Q2.8). */
+  "price-in-total": {
+    id: "price-in-total",
+    question: { token: "How much is Kheelu, and how does the advance work?", full: "How much is Kheelu?" },
+    answer: {
+      token:
+        "Kheelu is {price:headline} in total, with delivery anywhere in India included. A refundable {price:token} reserves yours today, and the rest is due before delivery, by a payment link we send you. You can pay by UPI, card or net banking.",
+      full: `Kheelu is {price:full} in total, paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking. {delivery}. If it isn’t right for your family, you can return it within ${RETURN_DAYS} days of delivery, no questions asked.`,
+    },
+  },
 
   /* ── The store (fold 5) ── */
   "paying-today": {

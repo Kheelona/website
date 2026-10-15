@@ -47,8 +47,9 @@ export type CloseSectionConfig =
       readonly contact: Copy;
       /** The secondary button to every way of reaching us. */
       readonly action: CtaSecondary;
-      /** "Don't have Kheelu yet?" and the link to the product page. */
-      readonly meet: { readonly lead: Copy; readonly link: Copy };
+      /** "Don't have Kheelu yet?" and the link to the product page; left out where the page's own close does that job
+       *  (/setup since the selling update, task Q2.12: its fold 8 is the pre-order close). */
+      readonly meet?: { readonly lead: Copy; readonly link: Copy };
     });
 
 export type CloseSectionProps = CloseSectionConfig & SellingContext;
