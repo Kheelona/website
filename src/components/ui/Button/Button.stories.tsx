@@ -52,6 +52,19 @@ export const GhostLongLabel: Story = {
   parameters: { viewport: { defaultViewport: "mobile1" } },
 };
 
+/** A link that opens in a new tab with rel="noopener" (`target="_blank"`), as D061's share link opens WhatsApp (task
+ *  8c.5); the message here is a stand-in. */
+export const GhostNewTab: Story = {
+  name: "Ghost, opens in a new tab",
+  args: {
+    variant: "ghost",
+    cta: "share-whatsapp",
+    href: "https://wa.me/?text=Kheelu",
+    target: "_blank",
+    children: "Know a parent who needs this? Share Kheelu on WhatsApp",
+  },
+};
+
 export const Danger: Story = {
   args: { variant: "danger", children: "Delete conversation" },
 };

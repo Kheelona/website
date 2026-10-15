@@ -220,6 +220,17 @@ describe("OfferSection: the share link under the card", () => {
     expect(link.getAttribute("href")).toMatch(/^https:\/\/wa\.me\/\?text=/);
   });
 
+  /* Task 8c.5 (the 8c merge's follow-up): WhatsApp opens in a new tab, as from the D050 bubble, so the page the parent
+     was reading stays where it was. */
+  it.each([
+    ["Home", HOME],
+    ["the product page", PRODUCT],
+  ] as const)("%s: opens WhatsApp in a new tab with rel=noopener, as the D050 bubble does", (_name, config) => {
+    const { link } = shareOf(config);
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toBe("noopener");
+  });
+
   it.each([
     ["Home", HOME],
     ["the product page", PRODUCT],

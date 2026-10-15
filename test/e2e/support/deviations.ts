@@ -1223,7 +1223,8 @@ const FAQ_FIXES_WHOSE = "task 8c.4's FAQ fixes (D061)";
    - the later price, in token mode only, a plain line under the amount in the DS card's later-price place (never struck
      through, no counter, no "save"; PRICE-01, DARK-01): "₹4,999 for the first 500 units. ₹7,999 once they are gone.";
    - "Know a parent who needs this? Share Kheelu on WhatsApp", the live site's label, last in the offer's column: a ghost
-     link that opens WhatsApp with the message share.ts holds (tracked `share-whatsapp`, architecture §8.3).
+     link that opens WhatsApp with the message share.ts holds (tracked `share-whatsapp`, architecture §8.3), in a new tab
+     with rel="noopener", as the D050 bubble does (task 8c.5, the 8c merge's follow-up).
    In page-facts.ts's form, applied after a page's earlier rules (editsBeforeClaimFixes, then CLAIM_FIXES): `edits` add
    the two lines to that mockup (the help line under the card is written out again, the share link after it), the build
    prints four sentences more and none fewer, and the pixels compare each page without the two added blocks on the
@@ -1239,7 +1240,7 @@ const OFFER_ADDITIONS_APPROVED =
  *  build's `ks-` by the comparisons). */
 const helpThenShare = (): string =>
   `<p class="kh-body-s mk-help">${icon("whatsapp-logo")} Questions? <a href="https://wa.me/919187546483">WhatsApp</a> or <a href="tel:+919187546483" class="mk-nowrap">call +91 91875 46483</a></p>` +
-  `<div class="kh-section__actions mk-offer-share"><a href="${buildOffer("token").share?.href ?? ""}" class="kh-btn kh-btn--ghost" data-ph-capture-attribute-cta="share-whatsapp"><span>${OFFER_SHARE.join(" ")}</span></a></div>`;
+  `<div class="kh-section__actions mk-offer-share"><a href="${buildOffer("token").share?.href ?? ""}" class="kh-btn kh-btn--ghost" data-ph-capture-attribute-cta="share-whatsapp" target="_blank" rel="noopener"><span>${OFFER_SHARE.join(" ")}</span></a></div>`;
 const offerAdditions = (fold: string) => ({
   edits: [
     {

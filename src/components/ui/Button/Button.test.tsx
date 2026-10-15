@@ -160,6 +160,34 @@ describe("Button: as a button or a link", () => {
     expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("data-next-link");
   });
 
+  /* Task 8c.5 (the 8c merge's follow-up): a link that leaves the site for an app, such as D061's share link to WhatsApp,
+     opens in a new tab with rel="noopener", as the D050 bubble does (WhatsAppFloat). Without `target` a link opens in
+     place and carries neither attribute. */
+  it("opens a link in a new tab with rel=noopener when target is _blank, a plain anchor or next/link alike", () => {
+    render(
+      <>
+        <Button variant="ghost" href="https://wa.me/?text=hi" target="_blank" cta="share-whatsapp">
+          Share
+        </Button>
+        <Button href="/safety" target="_blank">
+          Safety
+        </Button>
+        <Button href="https://store.kheelona.com">Store</Button>
+      </>,
+    );
+    const share = screen.getByRole("link", { name: "Share" });
+    expect(share).toHaveAttribute("target", "_blank");
+    expect(share).toHaveAttribute("rel", "noopener");
+    expect(share).toHaveAttribute("data-ph-capture-attribute-cta", "share-whatsapp");
+    const safety = screen.getByRole("link", { name: "Safety" });
+    expect(safety).toHaveAttribute("data-next-link");
+    expect(safety).toHaveAttribute("target", "_blank");
+    expect(safety).toHaveAttribute("rel", "noopener");
+    const store = screen.getByRole("link", { name: "Store" });
+    expect(store).not.toHaveAttribute("target");
+    expect(store).not.toHaveAttribute("rel");
+  });
+
   it("is reached by the keyboard in order, as a link or a button; a disabled or loading button is skipped", async () => {
     const user = userEvent.setup();
     render(
