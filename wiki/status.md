@@ -1,38 +1,43 @@
 ---
 title: Status
 type: status
-updated: 2026-10-14
+updated: 2026-10-15
 sources: [log.md, open-questions.md]
 ---
 
-# Status (2026-10-14)
+# Status (2026-10-15 15:50 IST)
 
-**NOW: quick visual changes, batch by batch, until the site is final (D062, 2026-10-15); detailed QA and integrations after. Summary to resume from: [project summary](engineering/project-summary.md). Quick batch 1 ON HOLD (founder, 2026-10-15; specified in tasks Q1.1-Q1.6, nothing built yet; D063: hero photo, sticky-scroll year by year, safety collapsible, films order, offer alignment, footer gaps, GSTIN and phone, WhatsApp logo).**
-**Phase:** **5, build, wave 8 of 10 closed** (Phase 6 QA round 1 and its fixes done) (Gate A approved D046; Phase 4 plan done 2026-10-12). The
-founder asked for the full website with animation on **betawebsite.kheelona.com** and
-**betastore.kheelona.com** before it goes live (D048). Plan: [tasks](engineering/tasks.md) (10 waves),
-[architecture](engineering/architecture.md), [QA review](qa/architecture-review-2026-10-12.md), [test plan](qa/test-plan.md).
-After the build: Phase 6 QA, push `beta`, founder runbook (architecture §15.4), **Gate B** on beta, merge to `main`.
-**Account:** apoorva@kheelona.com (since 00:00 2026-10-14). **Branch:** `reset/website-v2`, not pushed.
-**RESUME FROM [build runbook](engineering/build-runbook.md) §4.** **Waves 1-4 closed** (verify 4570 tests; e2e red only on
-`/stories/*` until wave 5, ruled). **Wave 5 closed at M1** (2026-10-14: full `verify:e2e` ruled; V7, V8; JS budget re-based on Lighthouse 92-98 mobile; see log). **Wave 6 closed at M2** (2026-10-14: batches `cb55153` and 6b; verify 5983 tests; `verify:e2e` 1485 passed after one flaky test made robust; Lighthouse ≥ 90 on every page, see log). **Wave 7 merged** (2026-10-14, `4a05b92`). **Wave 8 closed** (2026-10-14: round 1, D056, fix batch 7.1a-f merged, reconciliation `ec3991a`; verify 5467 tests; Playwright 1609 passed + stand-in 453; `qa:payment` clean on the sandbox; Lighthouse ≥ 92 on every page). **Wave 8b running** (D057, D058: the live `main` moved, PRs #18-#22): **8b.1 merged** (`24ea2e4`: claims and the parent app on the pages; V26-V36; verify 5512 tests; new questions G26-G31; follow-ups 8b.1b); 8b.2 the journal from the dashboard (designed: ADR-014, D059; **wave i merged**: 8b.2a guides, 8b.2b sync, 8b.2c video; **wave ii merged** (`9908c4c`: 8b.2d the adapter, 8b.1b the follow-ups; verify 6015 tests; targeted Playwright 459 + 61 passed); **wave iii merged** (8b.2e the journal now reads the snapshot, the 20 modules gone; 8b.1d the claim guard narrowed; verify 6038 tests); **8b.3 merged** (`dae33e6`: `origin/main` at `8c4718a` merged keeping the rebuild's tree). **8b close checkpoint passed** (full Playwright 1613, stand-in 453, `qa:payment` clean, Lighthouse local 94-98, CMO hidden-blocks review passed and its m1-m3 fixed; lp-tags `/stories` 88, to re-measure). **`beta` pushed `d79299d`, `f2491b0`: Vercel failed both** (the founder's build log: on Vercel, Next writes prerendered pages under `.next/server/route-cache`, and postbuild steps 10 and 20 read only `.next/server/app`); **fixed** (`scripts/prerendered.mjs`, both layouts; verify 6048; lessons §1): **`beta` `99afe51` deployed** (CI green). **Wave 9 (7.2): `beta` pushed** (2026-10-14, `82b9444`, then **`ac68650`** with 8b.1 and 8b.2 wave i: full Playwright 1609 passed, stand-in 453, `qa:payment` clean; CI green; Vercel deployed; both hosts behind Vercel login); **beta is public (D060)**; **beta QA ON HOLD** (founder, 2026-10-15; workflow `wf_9d6aaf76-174` stopped, resumable), no bypass secret needed. **Advisor's homepage proposal** reviewed (six reviews, the CMO, two challengers; D061): **wave 8c merged and on beta `398c5ee`** (Kheelu on the first phone screen at 390/412; later price, Made in India and share link on the offer cards; parents' quotes, recognition strip, steps, example; the expert clip; FAQ + guard; deviation rows V38-V48; verify 6489, Playwright 215, Lighthouse local 93/94/98); the CMO's built-page review passed (12 minor: fixed by 8c.7, Home's React #418 on Vercel's `/index` render, and 8c.8, the product page; confirmed on beta's runtime render). **G25:** the live `main` has a critical Next.js hole (Aman to patch now).
-**Incident 2026-10-12:** a push meant for `beta` landed on `main` (`24e92e3`, vercel.json only; production
-healthy; [lessons](engineering/lessons.md)). `beta` exists on GitHub (builds nothing yet); **beta domains attached to branch `beta`** (founder, done).
-**Done before wave 1:** dev tools pinned (Playwright 1.63.0, axe 4.12.1, Lighthouse 13.4.1, jscpd 5.3.2,
-subset-font 2.9.0); **security patch next 16.3.4 → 16.3.8, sharp → 0.35.5** (npm audit: next's own critical
-next/og RCE, high image SSRF, ISR cache poisoning; floors raised in test/dependency-floor.test.ts).
-**Motion (D049):** 1A 2A 3B 4A 5A 6B 7B 8B. **WhatsApp bubble (D050):** `#25D366` (G-20). **Beta (D048, D051):**
-no Supabase, Razorpay or email (the code refuses store keys there, task 2.10); Meta, GA4, Ahrefs off; PostHog
-env=beta; noindex. Founder's only step (the two domains, architecture §15.4) is done.
+**NOW: the selling update (D064, D065), in the quick-changes phase (D062): quick checks per batch, detailed QA and the
+integrations once the founder calls the site final.** Summary to resume from: [project summary](engineering/project-summary.md).
+Copy: [D2C plan v2](site/d2c-conversion-plan-2026-10-15.md) ([CMO review](qa/cmo-review-d2c-plan-v2-2026-10-15.md)).
+**Wave q2a merged** (Q2.1 Kabir hero, films order, offer alignment; Q2.3 GSTIN and phone off; Q2.4 WhatsApp logo, footer
+gaps; Q2.5 motion and the sticky laptop nav; Q2.6 the clip without burned words; Q2.8 the short price line): verify 6728
+tests, build green; rows V49-V57. **The new cta values are registered** (`ffa029da`).
+**Wave 2 running** (`wf_20668add-448`, base `ffa029da`): Q2.9 Home end to end (high), Q2.10 the product page, Q2.11
+`/safety`, Q2.12 every other page's close and the footer's laptop rows. **Next:** merge them, verify and build,
+screenshots at 360/390/412/1440 for consistency, push `beta`, check the deploy, report to the founder.
+**Branch:** `reset/website-v2` (`721b2e5c`). **Beta (public, D060):** `beta` at `398c5ee` (wave 8c); betawebsite and
+betastore.kheelona.com. **Production:** `main` `8c4718a`, untouched until Gate B. Beta QA (task 7.2) on hold.
 
-**Waiting on the founder:** all build questions answered (D054, D055, 2026-10-14); G16-G17 answered (D056); open: G18 (one CSP host), G21 (a `/thanks` tab title), **G26-G30, G32 (8b.1, 8b.2a: the privacy screenshot, `/setup` fold 6, talk-time and WiFi lines, the pre-launch test, Kheelona+ charging, the providers' place in four guides)**; for Aman: **G31** (five `/privacy` facts); to-do: the app's grievance link to aman@ (D058); pass journal-pipeline §13 (backend changes B1-B5 and five questions) to Aman; to-do: Meta automatic events off in Events Manager (D056). Still to come: F4 spec values before
-Gate B (rows without one come off the page), the setup light's colour, the C6 listing names; to-dos: WhatsApp calls (D032), provider contracts vs the Home safety line,
-GST/HSN, app fixes (D044), section D checks (C1, C2, C4, C11, C12, C15, C18); the beta QA bypass secret (task 7.2).
+**Rulings taken while the founder sleeps (to report):** the WhatsApp bubble stays persistent on Home's first phone screen
+(D050; plan §13 item 7 is the founder's), with the hero photo cropped clear of it; the share text stays as D061 item 7
+until the founder signs plan §1.7 (§13 item 9); §13 items 1-6 and 8 as recommended; the product page's statutory
+"Consumer care" row keeps the phone.
 
-**Founder decisions so far:** D010-D062 + R1-R10 (see index). Latest: **D062 quick visual changes until final**; **D061 the advisor's proposal: Kheelu on the first phone screen, ads on Home, the later price, parents' words**; **D060 the beta links open to the public** (founder turns off Vercel Authentication; then beta QA without the bypass secret); **D059 the journal's voice rule, uploads, timing**; D058 follow the live code check; D057 the journal from the dashboard and three wordings; D056 answers to the built-page reviews (wave 8); D055 page facts (task 6.7); D054 every open build question answered (tasks 6.4, 6.6); D053 remove the 3-6-9-12 article (task 6.5); D052 QA at checkpoints; D051 beta without store integrations;
-D050 WhatsApp bubble; D049 motion picks; D048 beta hosts.
+**Waiting on the founder:** sign plan §1.7 (share text) and §13 item 7 (bubble); F7 (what keeps working after 6 months of
+Kheelona+, and its price); G28's other half (Wi-Fi at rest, per-conversation limit) and G29's pre-launch test before
+Gate B; G18, G21, G27, G32; the Vercel toolbar off for the beta project; sign V1-V57 and the legal pages at Gate B;
+forward [For the advisor](brand/for-the-advisor.md) and [For Aman](engineering/for-aman.md) (G25 patch, G31, the
+journal's backend changes); Meta automatic events off (D056); F4 values before dispatch; the WhatsApp ₹ check.
+**Deferred to the final pass (D062):** full Playwright re-based on the approved beta (cta.spec, parity), Lighthouse on
+mains power, the CMO's built-page review, beta QA, tracking evidence, accessibility, store and payment sandbox,
+production integrations, legal sign-off, the Gate B pack; the buy bar's small line wraps at 360 (Q2.8 notes).
 
-**Traps:** read legacy files at tag `archive/pre-reset-2026-10-10` (D008); never `git add -A`;
-the DS deny rule stays anchored (D005); ~101 MB of raw screenshots/Lighthouse files stay
-local and UNcommitted (founder, D039).
+**Founder decisions so far:** D010-D065 + R1-R10 (see [index](index.md)). Latest: **D065 the site sells (promise, ages,
+button and price line; G26, G28, G29, G30)**; D064 quick batch 2 (landing page, motion); D063; D062 quick changes until
+final; D061 the advisor's proposal; D060 beta public.
+
+**Traps:** read legacy files at tag `archive/pre-reset-2026-10-10` (D008); never `git add -A`; push only
+`git push origin reset/website-v2:refs/heads/beta` (with the http buffer flags, build-runbook §5); the beta deploy check
+waits ≥ 5 min after Ready (§5); raw screenshots and captures stay local (D039); the advisor's files stay local.
 **Due:** production still shows 20 Oct (held, D011); new orders mid-Nov (D023); schema 2026-11-15 (D037).
