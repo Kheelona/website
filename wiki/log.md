@@ -1336,3 +1336,24 @@ line under the product card; the product page's "Recognised by" label strip and 
 unused `close` variant; anchors M2; the help line in the plan's words "Questions? Message us on WhatsApp." and its tap
 target at 360; a shared footer rule for parity (V54, V64); `/privacy`'s deletion paragraph against G26; stale comments
 and catalogue rows. Home's phone length (18 screens at 390 × 844 against the plan's 13-14) goes to the consistency review.
+
+## [2026-10-15 21:40] build | Fix wave q2c merged (Q2.13, Q2.14); verify 6917 passed, the build green
+`wf_97f23df3-150`: both passed review. Merged `bea71b73` (Q2.13: the Kheelona+ note inside both offer cards before the
+button, no help line or repeated price under the product card, the product page's "Recognised by" label strip and its
+fifth question, the guide on `price-and-advance` with `price-in-total` gone, `/team`'s close lead from navigation,
+OfferSection's unused `close` variant gone, anchors M2 proven over the sample-chat tabs) and `e676c84e` (Q2.14: the help
+line "Questions? Message us on WhatsApp." from one source, its link a 44 px tap area by DS padding, the footer's columns
+one shared parity rule, `/privacy` names "Delete all chats" in two places, six-item TrustSection docs). Catalogue rows
+combined. Main-session clean-up `5b245a26`: one "Recognised by" label (`recognitionLabel`), the note with `text-wrap:
+pretty`, `/setup` reads `seller.support.message`, films.spec's chip "0:34", chrome.spec's not-vacuous step-aside case on
+Home only (the product hero's price is clear of the resting bubble since Q2.10), structure.md's map for Home, the product
+page and `/safety`. Rulings: the out-of-Owns edits of both tasks accepted (home.test, the fixtures' `note`, the guide's
+test, confirmation.ts, the machine files' "Message us on WhatsApp: <wa.me>" and their DATED re-pins); the store's
+checkout column keeps "Rather talk to a person?" (approved mockup, checkout-adjacent). `npm run verify`: 315 files, 6917
+passed; jscpd no new clone; DS intact; the build green (20 journal pages, no open placeholder).
+
+## [2026-10-15 21:45] qa | Consistency review of every page at phone and laptop sizes (`wf_78365aa5-dfe`, `5b245a26`)
+The founder asked for "website consistency across pages" and "website and Mobile version both are good", so one review
+runs before beta although D062 defers the full QA: four lenses on the local production build (the CMO selling on a phone
+with a ruling on Home's 18-screen phone length; QA on phones 360/390/412; QA on laptops 1024-1440; a cross-page
+consistency extraction), then one independent verifier per blocking or major finding.
