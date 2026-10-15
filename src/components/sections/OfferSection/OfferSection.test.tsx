@@ -2,6 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { ICON_PATHS } from "@/assets/icons.generated";
 import { cta } from "@/content/en-IN/cta";
 import { seller } from "@/content/en-IN/seller";
 import { TRUST_FULL, trustItems } from "@/content/en-IN/trust";
@@ -133,12 +134,37 @@ describe("OfferSection: variants", () => {
     expect(section.textContent?.split(TOKEN.plus)).toHaveLength(2);
   });
 
-  it("lists the perks of its placement: Home's four, the product page's five (Kheelona+ among them)", () => {
+  it("lists the perks of its placement: Home's five, the product page's six (Kheelona+ among them), Made in India last on both", () => {
     const perks = (config: OfferSectionConfig) =>
       [...renderedElement(<OfferSection {...config} {...context()} />).querySelectorAll(".kh-offer__list li")].map((li) => li.textContent);
-    expect(perks(HOME)).toEqual(["Deliveries start mid-November", "In the box: Kheelu plush toy, charger and quick-start card", "Delivery anywhere in India, included", "A GST invoice with every order"]);
-    expect(perks(PRODUCT)).toHaveLength(5);
+    expect(perks(HOME)).toEqual([
+      "Deliveries start mid-November",
+      "In the box: Kheelu plush toy, charger and quick-start card",
+      "Delivery anywhere in India, included",
+      "A GST invoice with every order",
+      "Made in India",
+    ]);
+    expect(perks(PRODUCT)).toHaveLength(6);
     expect(perks(PRODUCT)[1]).toBe(KHEELONA_PLUS.build);
+    expect(perks(PRODUCT)[5]).toBe("Made in India");
+  });
+
+  /* Task 8c.5 (D061 item 10, confirming D034): "Made in India" on both offer cards, in both modes, the seller's own origin
+     line (the footer's "Made in India" and the product page's Country of origin say the same), with the DS house icon:
+     the closest of the DS set's 76 to a home-grown product, as map-pin is the delivery perk's. */
+  it.each([
+    ["Home", HOME],
+    ["the product page", PRODUCT],
+  ] as const)("%s: the Made in India perk on the card in both modes, the seller's origin line, with the DS house icon", (_name, config) => {
+    for (const offer of [TOKEN, FULL]) {
+      const items = [...renderedElement(<OfferSection {...config} {...context(offer)} />).querySelectorAll(".kh-offer__list > li")];
+      const made = items.filter((li) => li.textContent === seller.origin.line);
+      expect(made, offer.mode).toHaveLength(1);
+      expect(items.at(-1)).toBe(made[0]);
+      expect(made[0].querySelector("svg.kh-icon path")?.getAttribute("d")).toBe(ICON_PATHS.house);
+      expect(made[0].querySelector("svg")?.getAttribute("aria-hidden")).toBe("true");
+      expect(made[0].lastElementChild?.outerHTML).toBe("<span>Made in India</span>");
+    }
   });
 
   /* Task 3.6 item 6: the help line is content (`Copy`) and renders with the page's offer, as in CtaBlock. */
@@ -220,6 +246,17 @@ describe("OfferSection: the share link under the card", () => {
     expect(link.getAttribute("href")).toMatch(/^https:\/\/wa\.me\/\?text=/);
   });
 
+  /* Task 8c.5 (the 8c merge's follow-up): WhatsApp opens in a new tab, as from the D050 bubble, so the page the parent
+     was reading stays where it was. */
+  it.each([
+    ["Home", HOME],
+    ["the product page", PRODUCT],
+  ] as const)("%s: opens WhatsApp in a new tab with rel=noopener, as the D050 bubble does", (_name, config) => {
+    const { link } = shareOf(config);
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toBe("noopener");
+  });
+
   it.each([
     ["Home", HOME],
     ["the product page", PRODUCT],
@@ -260,18 +297,20 @@ describe("OfferSection: the share link under the card", () => {
   });
 });
 
-/* The two lines as a parity deviation (deviations.ts OFFER_ADDITIONS; the rows the main session files for task 8c.2):
-   on each page the rule accepts exactly the four sentences the edits add and excuses none, and the pixels hide exactly
-   the two added blocks, on the build's side. */
-describe.each(["home", "meet-kheelu"] as const)("%s: task 8c.2's offer additions as a parity deviation", (slug) => {
+/* The three additions as a parity deviation (deviations.ts OFFER_ADDITIONS; the rows the main session files for task 8c.2
+   and V47 for task 8c.5): on each page the rule accepts exactly the five sentences the edits add (the later price's two,
+   the Made in India perk, the share link's two, in the page's order) and excuses none, and the pixels hide exactly the
+   three added blocks, on the build's side. */
+describe.each(["home", "meet-kheelu"] as const)("%s: the offer additions of tasks 8c.2 and 8c.5 as a parity deviation", (slug) => {
   const additions = OFFER_ADDITIONS[slug];
   const base = claimFixed(slug);
 
-  it("adds exactly the later price's two sentences and the share link's two, and takes none away", () => {
+  it("adds exactly the later price's two sentences, the Made in India perk and the share link's two, and takes none away", () => {
     expect(factSentences(base, additions.edits)).toEqual({ missing: [], extra: [...additions.build] });
     expect(additions.build).toEqual([
       "₹4,999 for the first 500 units.",
       "₹7,999 once they are gone.",
+      "Made in India",
       "Know a parent who needs this?",
       "Share Kheelu on WhatsApp",
     ]);
@@ -291,13 +330,20 @@ describe.each(["home", "meet-kheelu"] as const)("%s: task 8c.2's offer additions
     expect(own[0].jsOff).toBeUndefined();
   });
 
-  it("hides for the pixels the two added blocks on the build's side, each found once", () => {
+  it("hides for the pixels the three added blocks on the build's side, each found once", () => {
     expect(hiddenProblems(base, additions)).toEqual([]);
     const rows = (VISUAL_HIDDEN[slug] ?? []).filter((r) => r.approvedBy === additions.approvedBy);
     expect(rows.map((r) => [r.side, r.selector])).toEqual([
       ["build", ".ks-offer__later"],
+      ["build", ".kh-offer__list > li:last-child"],
       ["build", ".ks-offer-share"],
     ]);
+  });
+
+  it("names V47 for the Made in India perk (D061 item 10) beside task 8c.2's rows", () => {
+    expect(additions.approvedBy).toMatch(/^deviations\.md rows for task 8c\.2/);
+    expect(additions.approvedBy).toContain("V47");
+    expect(additions.approvedBy).toContain("D061 item 10");
   });
 
   it("finds each hidden block once in the section as it renders (token mode)", () => {

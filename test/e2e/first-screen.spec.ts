@@ -25,7 +25,8 @@ const tapViewport = VIEWPORTS[0];
 /* D061 item 1 (task 8c.1): Kheelu on the first phone screen, Home and the product page. At 390 x 844 and 412 x 915 the
  * h1, the chilli button, the price sentence and the delivery line end inside the first screen, as at 360 (D045), and
  * Kheelu (the hero board's own Kheelu sticker, in the board that shows) lies wholly inside it and inside its board. At
- * the three phone sizes the D050 WhatsApp bubble covers neither Kheelu nor the word sticker ("It asks. They think.").
+ * the three phone sizes the D050 WhatsApp bubble covers neither Kheelu nor the word sticker ("It asks. They think."),
+ * and at every phone of the matrix no hero link (task 8c.5: the help line's "call +91 …" at 412 x 915).
  * At 360 x 590 the DS phone hero (the words, the full-width button, the trust line, then the board: design-system
  * 10-pages.md "Phones") leaves 82 px under the price sentence, so the board starts below the fold there: Kheelu's box
  * is printed, not asserted (the task 8c.1 report lists the options for the founder). Build only: the approved mockup
@@ -224,10 +225,16 @@ for (const slug of FIRST_SCREEN_PAGES) {
         expect(overlap(art.bubble!, art.kheelu!), `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers Kheelu ${fmt(art.kheelu)}`).toBe(false);
         expect(overlap(art.bubble!, art.sticker!), `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers the word sticker ${fmt(art.sticker)}`).toBe(false);
         expect(overlap(art.bubble!, art.head!), `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers the child's head ${fmt(art.head)}`).toBe(false);
-        // The hero's links under the bubble at rest: printed for the main session (task 8c.1 review). Clearing the
-        // phone number from the bubble's column wraps the approved help line at 390 px, a visual-parity change it rules on.
+        // No hero link under the bubble at rest (task 8c.5, the 8c merge's follow-up: at 412 x 915 it sat over "call +91
+        // …"). The hero's help line keeps out of the bubble's column on phones (hero-section.css), so its phone link wraps
+        // to a line of its own wherever the line would reach that column (390 px and wider, as at 360 px already).
         const covered = art.links.filter((link) => overlap(art.bubble!, link.box));
         console.log(`[first-screen] ${route.id} ${vp.name}: hero links under the bubble: ${covered.map((link) => `"${link.name}" ${fmt(link.box)}`).join("; ") || "none"}`);
+        expect(art.links.length, `${route.id} ${vp.name}: the instrument found no hero links`).toBeGreaterThan(0);
+        expect(
+          covered.map((link) => `"${link.name}" ${fmt(link.box)}`),
+          `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers a hero link`,
+        ).toEqual([]);
       });
     }
   });

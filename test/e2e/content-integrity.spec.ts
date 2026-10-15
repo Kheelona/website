@@ -14,7 +14,8 @@ import { VIEWPORTS } from "./support/viewports";
  *     articles included: 20 articles, 3 with a mockup, since D053 took one off the journal) and in
  *     /llms.txt; nothing that implies under 3;
  *   - no internal material: competitor names, "PostHog" outside /privacy, analytics words, a unit
- *     count other than "first 500 units" once; every percentage printed for review (D026);
+ *     count other than "first 500 units", which a page prints once (D041) and Home twice, its offer
+ *     card and its price FAQ (D061 item 3; task 8c.5); every percentage printed for review (D026);
  *   - no mockup-only markup in the HTML (mk- classes, data-src, review labels; N22);
  *   - JSON-LD restates only what the page shows;
  *   - placeholders listed (beta and development show them; production refuses them, task 2.9).
@@ -40,6 +41,13 @@ const COMPETITORS =
 const ANALYTICS = /\b(?:sessions?|conversion rate|funnel|bounce rate|pageviews?)\b/i;
 const POSTHOG = /\bPostHog\b/;
 const UNITS = /\b\d[\d,]*\s+units\b/gi;
+const CAP_MORE_THAN_ONCE = '"first 500 units" more than once (D041: once, in the price FAQ)';
+const CAP_MORE_THAN_TWICE_ON_HOME = '"first 500 units" more than twice on Home (D061 item 3: the offer card and the price FAQ)';
+/** How many times a page may print the 500-unit cap: once (D041: in the price FAQ), and twice on Home, whose offer card
+ *  prints the later price while the first-500 price is live (D061 item 3: "Home then says it twice"). */
+function capMentionsAllowed(path: string): number {
+  return path === "/" ? 2 : 1;
+}
 const PERCENT = /\b\d+(?:\.\d+)?\s?%/g;
 const PLACEHOLDER = /\[PLACEHOLDER[^\]]*\]/g;
 
@@ -58,7 +66,8 @@ function contentProblems(path: string, text: string, ageBand: boolean, mockup?: 
   const units = [...text.matchAll(UNITS)].map((m) => m[0]);
   const stray = units.filter((u) => !/^500 units$/i.test(u));
   if (stray.length) out.push(`unit counts other than the 500-unit cap: ${stray.join(", ")}`);
-  if (units.filter((u) => /^500 units$/i.test(u)).length > 1) out.push('"first 500 units" more than once (D041: once, in the price FAQ)');
+  const allowed = capMentionsAllowed(path);
+  if (units.filter((u) => /^500 units$/i.test(u)).length > allowed) out.push(allowed === 2 ? CAP_MORE_THAN_TWICE_ON_HOME : CAP_MORE_THAN_ONCE);
   return out;
 }
 
@@ -100,6 +109,32 @@ test.describe("content integrity: the age-band detector", () => {
     expect(machineProblems("/llms.txt", "Kheelu is a plush toy for ages 3 to 7.")).toEqual([]);
     expect(needsAgeBand(mockupRoute("refund"))).toBe(false);
     expect(machineProblems("/pricing.md", "Kheelu costs the price on the page.")).toEqual([]);
+  });
+});
+
+/* Task 8c.5 (D061 item 3; the 8c merge's follow-up): Home prints the 500-unit cap twice, its offer card's later price and
+   its price FAQ; every other page and both machine files at most once (D041). A third on Home, or a second elsewhere, is
+   red. The page's visible text is what counts, so an answer in a closed FAQ item counts only when it is open. */
+test.describe("content integrity: the 500-unit cap detector (D041, D061 item 3)", () => {
+  const card = "₹4,999 for the first 500 units. ₹7,999 once they are gone.";
+  const faq = "Kheelu is ₹4,999 (incl. GST) for the first 500 units, with delivery anywhere in India included.";
+  test("Home may print it twice, the offer card and the price FAQ; a third time is red", () => {
+    expect(contentProblems("/", card, false)).toEqual([]);
+    expect(contentProblems("/", `${card}\n${faq}`, false)).toEqual([]);
+    expect(contentProblems("/", `${card}\n${faq}\n${faq}`, false)).toEqual([CAP_MORE_THAN_TWICE_ON_HOME]);
+  });
+  test("every other page and the machine files once; a second time is red", () => {
+    expect(contentProblems("/products/kheelu", card, false)).toEqual([]);
+    expect(contentProblems("/products/kheelu", `${card}\n${faq}`, false)).toEqual([CAP_MORE_THAN_ONCE]);
+    expect(contentProblems("/terms", `${faq}\n${faq}`, false)).toEqual([CAP_MORE_THAN_ONCE]);
+    expect(machineProblems("/llms.txt", `Kheelu is for children aged 3 to 7. ${faq}`)).toEqual([]);
+    expect(machineProblems("/llms.txt", `Kheelu is for children aged 3 to 7. ${faq}\n${card}`)).toEqual([CAP_MORE_THAN_ONCE]);
+  });
+  test("Home's allowance is the home page's alone: a path that merely starts with a slash and more counts once", () => {
+    expect(capMentionsAllowed("/")).toBe(2);
+    for (const path of ["/products/kheelu", "/home", "/terms", "/llms.txt", "/pricing.md", "/stories/busy-hands-no-screens"]) {
+      expect(capMentionsAllowed(path), path).toBe(1);
+    }
   });
 });
 

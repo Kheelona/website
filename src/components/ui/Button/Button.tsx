@@ -18,7 +18,8 @@ import { Icon, type IconName } from "../Icon/Icon";
  * - `arrow` (Chilli only) ends the button with the arrow-right icon carrying `ks-btn__arrow`, the hook
  *   motion.css nudges on hover with a fine pointer (D049 pick 6; architecture §11.3).
  * - `href` renders a link: a site path (`isSitePath`, src/lib/links.ts: one leading slash) through next/link, anything
- *   else (store URL, anchor, a protocol-relative `//host/path` or `/\host/path`) a plain `<a>`.
+ *   else (store URL, anchor, a protocol-relative `//host/path` or `/\host/path`) a plain `<a>`. `target="_blank"`
+ *   (links only) opens it in a new tab with `rel="noopener"`, as the D050 bubble does (task 8c.5).
  * - Ghost buttons keep the mockup's markup (`kh-btn kh-btn--ghost`); button.css ports mockup.css's ghost rule onto
  *   `.kh-btn--ghost`, so a long label may wrap on a phone.
  *
@@ -56,6 +57,9 @@ interface Other {
 
 interface AsLink {
   href: string;
+  /** `_blank` opens the link in a new tab, with `rel="noopener"`, as the D050 bubble opens WhatsApp (task 8c.5: D061's
+   *  share link). Without it a link opens in place. */
+  target?: "_blank";
   type?: never;
   loading?: never;
   disabled?: never;
@@ -64,6 +68,7 @@ interface AsLink {
 
 interface AsButton {
   href?: undefined;
+  target?: never;
   type?: "button" | "submit" | "reset";
   /** Shows the DS spinner, sets aria-busy and disables the button; keep the label. */
   loading?: boolean;
@@ -128,12 +133,13 @@ export function Button(props: ButtonProps) {
 
   if (props.href !== undefined) {
     const { href } = props;
+    const tab = props.target === "_blank" ? ({ target: "_blank", rel: "noopener" } as const) : {};
     return isSitePath(href) ? (
-      <Link id={id} href={href} className={cls} {...track}>
+      <Link id={id} href={href} className={cls} {...tab} {...track}>
         {content}
       </Link>
     ) : (
-      <a id={id} href={href} className={cls} {...track}>
+      <a id={id} href={href} className={cls} {...tab} {...track}>
         {content}
       </a>
     );

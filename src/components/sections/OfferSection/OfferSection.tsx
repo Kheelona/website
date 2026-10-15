@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Button } from "@/components/ui/Button/Button";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { ContentIcon } from "@/components/ui/Icon/Icon";
 import { Actions, Container, Section, SectionHead, Split } from "@/components/ui/Layout/Layout";
@@ -8,7 +9,6 @@ import { PreorderButton } from "@/components/ui/PreorderButton/PreorderButton";
 import { RichText } from "@/components/ui/RichText/RichText";
 import type { OfferCardPlacement } from "@/content/types";
 import { CloseArt } from "../CloseSection/close-art";
-import { SecondaryLink } from "../CtaBlock/CtaBlock";
 import { SellingHelpLine, SellingTrustLine } from "../CtaBlock/selling-lines";
 import type { OfferSectionProps } from "./offer-section.types";
 
@@ -46,10 +46,13 @@ export function OfferSection(props: OfferSectionProps) {
     />
   );
   /* The share link, last in the column under both cards (D061; task 8c.2): a ghost link through Button, never chilli
-     and never the bubble's green (D050), tracked `share-whatsapp`. Its words and its message come with the offer. */
+     and never the bubble's green (D050), tracked `share-whatsapp`. Its words and its message come with the offer. It
+     opens WhatsApp in a new tab with rel="noopener", as the D050 bubble does (task 8c.5). */
   const share = offer.share && (
     <Actions className="ks-offer-share">
-      <SecondaryLink link={{ label: offer.share.label, href: offer.share.href, cta: "share-whatsapp", variant: "ghost" }} />
+      <Button variant="ghost" href={offer.share.href} cta="share-whatsapp" target="_blank">
+        {offer.share.label}
+      </Button>
     </Actions>
   );
   const lines = (

@@ -19,20 +19,25 @@ import { share } from "./share";
 /** D058 item 3, verbatim: which features stay free is not decided, so the sentence lists none. */
 const PLUS = "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.";
 
-/** Each offer-card perk, written once; the cards below list them in their own order. */
+/** Each offer-card perk, written once; the cards below list them in their own order. `origin` (task 8c.5; D061 item 10,
+ *  confirming D034): the seller's origin line, "Made in India", which the footer and the product page's Country of
+ *  origin already state, with the DS house icon, the closest of the DS set to a home-grown product (map-pin is the
+ *  delivery perk's). Typed here, not read from seller.ts: the checkout's client words load this module, and the seller
+ *  data stays out of the browser (store/client-words.test.ts); src/lib/offer/offer.test.ts holds the two equal. */
 const perk = {
   delivery: { icon: "truck", text: "{delivery}" },
   box: { icon: "package", text: "In the box: Kheelu plush toy, charger and quick-start card" },
   plus: { icon: "star", text: PLUS },
   anywhere: { icon: "map-pin", text: "Delivery anywhere in India, included" },
   invoice: { icon: "check-circle", text: "A GST invoice with every order" },
+  origin: { icon: "house", text: "Made in India" },
 } as const satisfies Readonly<Record<string, IconText>>;
 
-/** Home's card (fold 9): the delivery line first, then three perks. */
-const homePerks: readonly IconText[] = [perk.delivery, perk.box, perk.anywhere, perk.invoice];
+/** Home's card (fold 9): the delivery line first, then three perks; Made in India last (task 8c.5, after Gate A). */
+const homePerks: readonly IconText[] = [perk.delivery, perk.box, perk.anywhere, perk.invoice, perk.origin];
 
-/** The product page's card (fold 3): five perks, Kheelona+ among them. */
-const productPerks: readonly IconText[] = [perk.box, perk.plus, perk.anywhere, perk.delivery, perk.invoice];
+/** The product page's card (fold 3): five perks, Kheelona+ among them; Made in India last (task 8c.5, after Gate A). */
+const productPerks: readonly IconText[] = [perk.box, perk.plus, perk.anywhere, perk.delivery, perk.invoice, perk.origin];
 
 export const offerCopy = {
   /* D028, option (d): beside every chilli button. Full mode: home.md "At a glance". */

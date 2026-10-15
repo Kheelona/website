@@ -1216,30 +1216,40 @@ export const FAQ_FIXES = {
 } as const satisfies Readonly<Record<string, PageFacts>>;
 export type FaqFixesSlug = keyof typeof FAQ_FIXES;
 const FAQ_FIXES_WHOSE = "task 8c.4's FAQ fixes (D061)";
-/* Task 8c.2's offer additions (D061 item 3, and the main session's D061 ruling on the share link; the CMO's review,
-   wiki/qa/cmo-review-advisor-proposal-2026-10-15.md, AP-28). Two lines the frozen mockup (D046) does not have, on both
-   offer cards, each a deviation row the main session files in wiki/qa/deviations.md and the founder signs at Gate B
-   (D015):
+/* The offer additions: task 8c.2's (D061 item 3, and the main session's D061 ruling on the share link; the CMO's review,
+   wiki/qa/cmo-review-advisor-proposal-2026-10-15.md, AP-28) and task 8c.5's (D061 item 10, confirming D034). Three lines
+   the frozen mockup (D046) does not have, on both offer cards, each a deviation row the main session files in
+   wiki/qa/deviations.md and the founder signs at Gate B (D015):
    - the later price, in token mode only, a plain line under the amount in the DS card's later-price place (never struck
      through, no counter, no "save"; PRICE-01, DARK-01): "₹4,999 for the first 500 units. ₹7,999 once they are gone.";
+   - "Made in India", the seller's origin line (seller.ts `origin.line`; the footer and the product page's Country of
+     origin say it already), last among the card's perks in both modes, with the DS house icon (map-pin is the delivery
+     perk's) (task 8c.5; row V47);
    - "Know a parent who needs this? Share Kheelu on WhatsApp", the live site's label, last in the offer's column: a ghost
-     link that opens WhatsApp with the message share.ts holds (tracked `share-whatsapp`, architecture §8.3).
+     link that opens WhatsApp with the message share.ts holds (tracked `share-whatsapp`, architecture §8.3), in a new tab
+     with rel="noopener", as the D050 bubble does (task 8c.5, the 8c merge's follow-up).
    In page-facts.ts's form, applied after a page's earlier rules (editsBeforeClaimFixes, then CLAIM_FIXES): `edits` add
-   the two lines to that mockup (the help line under the card is written out again, the share link after it), the build
-   prints four sentences more and none fewer, and the pixels compare each page without the two added blocks on the
-   build's side. The text pass reads token mode (no store in the parity build). The share link's address is the offer's
+   the three lines to that mockup (the last perk and the help line under the card are written out again, the new perk
+   and the share link after them), the build prints five sentences more and none fewer, and the pixels compare each page
+   without the three added blocks on the build's side. The text pass reads token mode (no store in the parity build). The share link's address is the offer's
    own (buildOffer, so the rule follows share.ts; src/content/en-IN/share.test.ts holds its words). OfferSection.test.tsx
    proves each page's rule against the mockup. */
 const OFFER_LATER = ["₹4,999 for the first 500 units.", "₹7,999 once they are gone."] as const;
 const OFFER_SHARE = ["Know a parent who needs this?", "Share Kheelu on WhatsApp"] as const;
-const OFFER_ADDITIONS_WHOSE = "task 8c.2's offer additions (D061)";
+/** The perk task 8c.5 adds last on both cards: the seller's origin line (src/lib/offer/offer.test.ts holds it equal to
+ *  seller.ts `origin.line`, and offer.ts's perk to it), with its DS icon. */
+export const OFFER_ORIGIN_PERK = "Made in India";
+const OFFER_ORIGIN_ICON: IconName = "house";
+/** The approved card's last perk (both cards end with it), written out again with the new perk after it. */
+const OFFER_LAST_PERK = "A GST invoice with every order";
+const OFFER_ADDITIONS_WHOSE = "the offer additions of tasks 8c.2 and 8c.5 (D061)";
 const OFFER_ADDITIONS_APPROVED =
-  "deviations.md rows for task 8c.2, numbered at the merge (founder, D061 item 3, and the main session's D061 ruling on the share link, 2026-10-15; task 8c.2)";
+  "deviations.md rows for task 8c.2, numbered at the merge (founder, D061 item 3, and the main session's D061 ruling on the share link, 2026-10-15; task 8c.2), and V47 for the Made in India perk (founder, D061 item 10, confirming D034; task 8c.5)";
 /** Each card's help line as the mockup prints it, then the share link after it (mockup markup: `mk-` names, read as the
  *  build's `ks-` by the comparisons). */
 const helpThenShare = (): string =>
   `<p class="kh-body-s mk-help">${icon("whatsapp-logo")} Questions? <a href="https://wa.me/919187546483">WhatsApp</a> or <a href="tel:+919187546483" class="mk-nowrap">call +91 91875 46483</a></p>` +
-  `<div class="kh-section__actions mk-offer-share"><a href="${buildOffer("token").share?.href ?? ""}" class="kh-btn kh-btn--ghost" data-ph-capture-attribute-cta="share-whatsapp"><span>${OFFER_SHARE.join(" ")}</span></a></div>`;
+  `<div class="kh-section__actions mk-offer-share"><a href="${buildOffer("token").share?.href ?? ""}" class="kh-btn kh-btn--ghost" data-ph-capture-attribute-cta="share-whatsapp" target="_blank" rel="noopener"><span>${OFFER_SHARE.join(" ")}</span></a></div>`;
 const offerAdditions = (fold: string) => ({
   edits: [
     {
@@ -1248,14 +1258,21 @@ const offerAdditions = (fold: string) => ({
       now: `<span class="kh-offer__price">₹4,999</span><span class="kh-body-s">incl. GST</span><p class="kh-body-s mk-offer__later">${OFFER_LATER.join(" ")}</p>`,
       inner: true,
     },
+    {
+      at: ".kh-offer__list > li",
+      was: OFFER_LAST_PERK,
+      now: `<li>${icon("check-circle")}<span>${OFFER_LAST_PERK}</span></li><li>${icon(OFFER_ORIGIN_ICON)}<span>${OFFER_ORIGIN_PERK}</span></li>`,
+    },
     { at: `${fold} .mk-help`, was: "Questions? WhatsApp or call +91 91875 46483", now: helpThenShare() },
   ] satisfies FactEdit[],
   mockup: [],
-  build: [...OFFER_LATER, ...OFFER_SHARE],
-  /* The later line makes the card taller and the share link the column longer, at every width: each moves what is below
-     it. The build's side alone, as nothing on the mockup's stands for them. */
-  hidden: { both: [], mockup: [], build: [".ks-offer__later", ".ks-offer-share"] },
-  reason: "the later price under the amount while the first-500 price is live, and the share link under the offer card (D061)",
+  build: [...OFFER_LATER, OFFER_ORIGIN_PERK, ...OFFER_SHARE],
+  /* The later line and the new perk make the card taller and the share link the column longer, at every width: each moves
+     what is below it. The build's side alone, as nothing on the mockup's stands for them; the perk is the list's last
+     item (one offer card a page). */
+  hidden: { both: [], mockup: [], build: [".ks-offer__later", ".kh-offer__list > li:last-child", ".ks-offer-share"] },
+  reason:
+    "the later price under the amount while the first-500 price is live, Made in India last among the card's perks, and the share link under the offer card (D061)",
   approvedBy: OFFER_ADDITIONS_APPROVED,
 });
 export const OFFER_ADDITIONS = {
@@ -1263,7 +1280,7 @@ export const OFFER_ADDITIONS = {
   "meet-kheelu": offerAdditions("#offer"),
 } as const satisfies Readonly<Record<string, PageFacts>>;
 export type OfferAdditionsSlug = keyof typeof OFFER_ADDITIONS;
-/** The pixels' rows for a page's offer additions: the two added blocks, on the build's side. */
+/** The pixels' rows for a page's offer additions: the three added blocks, on the build's side. */
 const offerAdditionsHidden = (slug: OfferAdditionsSlug): VisualHide[] =>
   OFFER_ADDITIONS[slug].hidden.build.map((selector) => ({
     side: "build",

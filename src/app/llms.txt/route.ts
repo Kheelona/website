@@ -38,10 +38,12 @@ export const revalidate = 300;
 export const LLMS_UPDATED = "2026-10-15";
 
 /** The questions it answers, in order: the rename first (Kheelu was Lumi), then Home's and the product page's
- *  answers a model is asked about most. One price answer only, so "first 500 units" appears once (D041). */
+ *  answers a model is asked about most. One price answer only, so "first 500 units" appears once (D041). The languages
+ *  answer the product page gives since task 8c.4 (D061) follows the ages (task 8c.5). */
 const QUESTIONS: readonly FaqId[] = [
   "same-as-lumi",
   "what-ages",
+  "languages",
   "price-and-advance",
   "think-less",
   "wifi",
