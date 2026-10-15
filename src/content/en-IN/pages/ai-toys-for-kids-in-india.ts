@@ -28,7 +28,8 @@ import { TRUST_COMPACT, trustItems } from "../trust";
  * The selling update (task Q2.12; D065; the D2C plan v2 §6, with the CMO's review of v2): the meta without "incl. GST";
  * Kheelu's "Every conversation" answer in G26's words and its "Open internet" answer ending on D065 item 8's line; a
  * pre-order button after the answers (`guide-answers`) with the price line and the trust line, as every close has them
- * (CtaBlock); and the price question in Home's rewritten words (faqs.ts `price-in-total`, in place of `how-much`).
+ * (CtaBlock); and the price question in Home's rewritten words (faqs.ts `price-and-advance`, Home's own entry since task
+ * Q2.13, in place of `how-much`).
  */
 
 /** The languages answer: the product's languages by name and its launch ceiling (product.ts). */
@@ -171,13 +172,14 @@ export const aiToysPage = {
       },
     },
     /* Fold 5: the five answers from faqs.ts, all closed (the page's FAQPage), Ira's photo, the two sources inline. The
-       price question is Home's rewritten one since the selling update (`price-in-total`; the D2C plan v2 §6 fold 5). */
+       price question is Home's rewritten one since the selling update (the D2C plan v2 §6 fold 5), by Home's own entry,
+       `price-and-advance`, since task Q2.13 (the plan names it; its words are unchanged). */
     {
       kind: "faq-section",
       config: {
         variant: "photo",
         heading: { id: "faq-title", eyebrow: "Questions", title: "Questions parents {hand:ask.}" },
-        items: pickFaqs(["what-is-an-ai-toy", "ai-toy-or-tablet", "ai-toy-age", "wifi", "price-in-total"]),
+        items: pickFaqs(["what-is-an-ai-toy", "ai-toy-or-tablet", "ai-toy-age", "wifi", "price-and-advance"]),
         sourceMarker: "Source",
         photo: {
           image: {

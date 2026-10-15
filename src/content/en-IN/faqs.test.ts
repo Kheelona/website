@@ -57,6 +57,8 @@ const PAGES: Readonly<Record<string, readonly FaqId[]>> = {
     "talks-back",
     "right-for-a-three-year-old",
     "cost-and-advance",
+    /* Home's question, fifth here since task Q2.13 (the D2C plan v2 §3 fold 11: "As Home's question 4"). */
+    "screen-time-in-disguise",
     "returns-and-warranty",
     "after-the-first-week",
     "after-six-months",
@@ -64,13 +66,24 @@ const PAGES: Readonly<Record<string, readonly FaqId[]>> = {
     "speech",
   ],
   safety: ["age-three", "child-safety-groups"],
-  /* The price question in Home's rewritten words since the selling update (task Q2.12; the D2C plan v2 §6 fold 5). */
-  "ai-toys-for-kids-in-india": ["what-is-an-ai-toy", "ai-toy-or-tablet", "ai-toy-age", "wifi", "price-in-total"],
+  /* The price question in Home's rewritten words since the selling update (task Q2.12; the D2C plan v2 §6 fold 5), Home's
+     own entry since task Q2.13. */
+  "ai-toys-for-kids-in-india": ["what-is-an-ai-toy", "ai-toy-or-tablet", "ai-toy-age", "wifi", "price-and-advance"],
   store: ["paying-today", "change-my-mind", "store-arrival", "how-to-pay"],
 };
 /** Items no page lists, kept for a machine file: the guide's approved price answer, which /pricing.md reads (task Q2.12
  *  took it off the guide; task Q2.8 lets a machine file keep "incl. GST"). */
 const MACHINE_ONLY: readonly FaqId[] = ["how-much"];
+/** Items two pages list, where the plan asks for the same question on both (task Q2.13): one entry, so the same words on
+ *  both pages and in both FAQPages. Home's price question on the guide (the D2C plan v2 §6 fold 5 names
+ *  `price-and-advance`) and Home's screen-time question on the product page (§3 fold 11, question 5: "As Home's question
+ *  4"). Every other item is on exactly one page. */
+const SHARED: Readonly<Partial<Record<FaqId, readonly string[]>>> = {
+  "price-and-advance": ["home", "ai-toys-for-kids-in-india"],
+  "screen-time-in-disguise": ["home", "meet-kheelu"],
+};
+/** The pages that list an item, in PAGES's order. */
+const pagesOf = (id: FaqId) => Object.entries(PAGES).filter(([, ids]) => ids.includes(id)).map(([slug]) => slug);
 
 /** P15's default (open questions §P; applied by task 4.7, deviation V6): the shared answer to "What if it isn’t right
  *  for us, or stops working?" gives D033's remedy for a faulty Kheelu, a replacement or a full refund (Rule 7(4)), as
@@ -106,9 +119,10 @@ describe("ids", () => {
     }
   });
 
-  it("cover every page's FAQ, each item on exactly one page, or kept for a machine file alone", () => {
-    const listed = Object.values(PAGES).flat();
-    expect(new Set(listed).size).toBe(listed.length);
+  it("cover every page's FAQ, each item on exactly one page but the plan's shared ones, or kept for a machine file alone", () => {
+    const listed = [...new Set(Object.values(PAGES).flat())];
+    for (const ids of Object.values(PAGES)) expect(new Set(ids).size).toBe(ids.length);
+    expect(Object.fromEntries(listed.filter((id) => pagesOf(id).length > 1).map((id) => [id, pagesOf(id)]))).toEqual(SHARED);
     expect(listed.filter((id) => MACHINE_ONLY.includes(id))).toEqual([]);
     expect([...listed, ...MACHINE_ONLY].sort()).toEqual(Object.keys(faqs).sort());
     expect(readRepoFile("src/app/pricing.md/route.ts")).toContain('faqs["how-much"]');
@@ -515,8 +529,9 @@ describe("full mode (copy pages)", () => {
     );
   });
 
-  /* `how-much` keeps the full-mode answer Home had until task Q2.9, GST and all: /pricing.md reads it, and machine
-     files may keep "incl. GST" (task Q2.8: they are not selling pages). The guide takes Home's answer (task Q2.12). */
+  /* `how-much` keeps the full-mode answer Home had until task Q2.9, GST and all: /pricing.md and /llms.txt read it, and
+     machine files may keep "incl. GST" (task Q2.8: they are not selling pages). The guide takes Home's answer (task Q2.12;
+     Home's entry itself since task Q2.13). */
   it("/pricing.md's price answer (the guide's until task Q2.12) becomes Home's full-mode answer", () => {
     expect(plain(faqs["how-much"].question, full)).toBe("How much is Kheelu?");
     expect(plain(faqs["how-much"].answer, full)).toBe(
@@ -527,14 +542,16 @@ describe("full mode (copy pages)", () => {
     );
   });
 
-  /* The D2C plan v2 §2 fold 10 question 3, full mode, which the guide takes (§6 fold 5): "in total", no GST note, no GST
-     invoice beside the price (D065 item 3). */
-  it("the guide's price question becomes the plan's full-mode answer, in total and without GST", () => {
-    expect(plain(faqs["price-in-total"].question, full)).toBe("How much is Kheelu?");
-    expect(plain(faqs["price-in-total"].answer, full)).toBe(
-      "Kheelu is ₹7,999 in total, paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking. Deliveries start mid-November. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.",
-    );
-    for (const offer of [token, full]) expect(plain(faqs["price-in-total"].answer, offer)).not.toMatch(/GST|first 500|MRP|₹4,500/);
+  /* The D2C plan v2 §2 fold 10 question 3, which the guide takes since task Q2.13 by its id (§6 fold 5 names
+     `price-and-advance`): the guide's own copy of it, `price-in-total` (task Q2.12), said the same words and left. */
+  it("the guide's price question is Home's entry, so no second copy of its words stays in faqs.ts", () => {
+    expect(PAGES["ai-toys-for-kids-in-india"].at(-1)).toBe("price-and-advance");
+    expect(Object.keys(faqs)).not.toContain("price-in-total");
+    const words = (id: FaqId, offer: Offer) => `${plain(faqs[id].question, offer)}\n${plain(faqs[id].answer, offer)}`;
+    for (const offer of [token, full]) {
+      const same = (Object.keys(faqs) as FaqId[]).filter((id) => words(id, offer) === words("price-and-advance", offer));
+      expect(same, offer.mode).toEqual(["price-and-advance"]);
+    }
   });
 
   it("the store's first answer pays the whole price; its delivery answer drops the balance sentence", () => {
@@ -546,16 +563,16 @@ describe("full mode (copy pages)", () => {
     );
   });
 
-  it("changes only the six price-bearing items; every other item reads the same in both modes", () => {
+  it("changes only the five price-bearing items; every other item reads the same in both modes", () => {
     const variant = Object.values(faqs)
       .filter((f) => isModeVariant(f.question) || isModeVariant(f.answer))
       .map((f) => f.id)
       .sort();
-    expect(variant).toEqual(["cost-and-advance", "how-much", "paying-today", "price-and-advance", "price-in-total", "store-arrival"]);
+    expect(variant).toEqual(["cost-and-advance", "how-much", "paying-today", "price-and-advance", "store-arrival"]);
   });
 
   it("never mentions the advance, the balance or the cap in a full-mode answer", () => {
-    for (const id of ["cost-and-advance", "how-much", "paying-today", "price-and-advance", "price-in-total", "store-arrival"] as const) {
+    for (const id of ["cost-and-advance", "how-much", "paying-today", "price-and-advance", "store-arrival"] as const) {
       const text = plain(faqs[id].answer, full);
       expect(text, id).not.toMatch(/₹499|₹4,500|advance|first 500|reserve/);
     }

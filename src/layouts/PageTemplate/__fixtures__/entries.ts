@@ -93,7 +93,7 @@ export const ENTRY_FIXTURES: { readonly [K in SectionKind]: SectionEntryOf<K> } 
   },
   "offer-section": {
     kind: "offer-section",
-    config: { variant: "photo", heading: { title: "Pre-order {hand:Kheelu}" }, cta: "product-offer", trust: COMPACT, photo: IMAGE },
+    config: { variant: "photo", heading: { title: "Pre-order {hand:Kheelu}" }, cta: "product-offer", trust: COMPACT, note: "A note in the card.", photo: IMAGE },
   },
   "close-section": {
     kind: "close-section",

@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { Button } from "@/components/ui/Button/Button";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { ContentIcon } from "@/components/ui/Icon/Icon";
@@ -9,35 +8,34 @@ import { PreorderButton } from "@/components/ui/PreorderButton/PreorderButton";
 import { RichText } from "@/components/ui/RichText/RichText";
 import type { OfferCardPlacement } from "@/content/types";
 import { CloseArt } from "../CloseSection/close-art";
-import { SellingHelpLine, SellingTrustLine } from "../CtaBlock/selling-lines";
+import { SellingTrustLine } from "../CtaBlock/selling-lines";
 import type { OfferSectionProps } from "./offer-section.types";
 
-/** The section ids and its heading ids, as the approved mockup has them (fragments other pages link to); Home's offer
- *  since task Q2.9 takes the product page's, as it is no longer the page's close. */
-const IDS = {
-  close: { section: "close", title: "close-title" },
-  photo: { section: "offer", title: "offer-title" },
-  home: { section: "offer", title: "offer-title" },
-} as const;
 /** Whose perks the card lists (content/en-IN/offer.ts; one list for both since task Q2.9). */
-const PLACEMENT: Record<OfferSectionProps["variant"], OfferCardPlacement> = { close: "home", photo: "product", home: "home" };
+const PLACEMENT: Record<OfferSectionProps["variant"], OfferCardPlacement> = { photo: "product", home: "home" };
 
 /** The product photo beside the card: 256 px on phones (meet-kheelu.css:22), at most 512 px from 900 px (:27). */
 const OFFER_PHOTO_SIZES = "(min-width: 1024px) 512px, (min-width: 900px) 480px, 256px";
 
 /**
- * Everything a parent needs to say yes in one place (architecture §5.2; home.md fold 9; meet-kheelu.md fold 3): the
- * centred heading, the DS OfferCard for the live mode (G-08: no split in full mode), the linked trust row and the help
- * line, beside the art board (Home's close) or the product photo (the product page). The card's button is the
- * placement's `PreorderButton`. Server component; never revealed on arrival (the offer card and the price, §11.2).
+ * Everything a parent needs to say yes in one place (architecture §5.2; meet-kheelu.md fold 3; the D2C plan v2 §2 fold 7
+ * and §3 fold 3): the centred heading, section `#offer` (the fragment other pages link to), the DS OfferCard for the live
+ * mode (G-08: no split in full mode) and the linked trust row under it, beside the product photo (the product page) or
+ * the art board (Home's offer, moved up to fold 7 by task Q2.9). The card's button is the placement's `PreorderButton`.
+ * Server component; never revealed on arrival (the offer card and the price, §11.2).
  *
  * Since task 8c.2 (D061, after Gate A): the card prints the later price in token mode (OfferCard), and the column ends
  * with the share link, "Know a parent who needs this? Share Kheelu on WhatsApp", for both placements, from the offer's
  * `share` (content/en-IN/share.ts through src/lib/offer/offer.ts), never from the page files.
+ *
+ * Since task Q2.13 (the D2C plan v2 §2 fold 7 and §3 fold 3; the CMO's m9) both cards alike: the page's note (the
+ * Kheelona+ line, offer.ts `PLUS_NOTE`) inside the card after the perks and before the button; the price printed once,
+ * in the card's price block (no fine print: "not repeated"); under the button only the trust row (the trust line and the
+ * card's third row) and the share link, no help line (the closes and the store carry it, plan §1.1; the WhatsApp bubble
+ * everywhere). Home's close (the `close` variant) left: Home's close is a CloseSection since task Q2.9.
  */
 export function OfferSection(props: OfferSectionProps) {
-  const { variant, heading, cta, trust, offer, ctaLabel, help } = props;
-  const ids = IDS[variant];
+  const { variant, heading, cta, trust, note, offer, ctaLabel } = props;
   const card = (
     <OfferCard
       offer={offer}
@@ -45,10 +43,10 @@ export function OfferSection(props: OfferSectionProps) {
         icon: <ContentIcon name={perk.icon} />,
         text: <RichText text={perk.text} offer={offer} />,
       }))}
+      note={<RichText text={note} offer={offer} />}
       action={<PreorderButton cta={cta} label={ctaLabel} size="l" block />}
-      label={props.variant === "photo" ? undefined : props.cardLabel}
-      id={variant === "close" ? "offer" : undefined}
-      fine={variant !== "home"}
+      label={props.variant === "home" ? props.cardLabel : undefined}
+      fine={false}
     />
   );
   /* The share link, last in the column under both cards (D061; task 8c.2): a ghost link through Button, never chilli
@@ -61,58 +59,33 @@ export function OfferSection(props: OfferSectionProps) {
       </Button>
     </Actions>
   );
-  const lines = (
-    <>
-      <SellingTrustLine items={trust} offer={offer} />
-      <SellingHelpLine help={help} offer={offer} />
-      {share}
-    </>
-  );
-  let body: ReactNode;
-  if (props.variant === "home") {
-    /* Task Q2.9: Home's offer, moved up (the D2C plan v2 §2 fold 7). The card's price block stands in for the short price
-       line, so the card prints no fine print (the plan: "not repeated"). The page's note under the card, the trust row, no
-       help line (Home has none: the WhatsApp bubble replaces them, plan §1.1), the share link; the board beside. */
-    body = (
-      <Split>
-        <div>
-          {card}
-          <RichText as="p" className="kh-body-s" text={props.note} offer={offer} />
-          <SellingTrustLine items={trust} offer={offer} />
-          {share}
-        </div>
-        <CloseArt art={props.art} />
-      </Split>
-    );
-  } else if (props.variant === "close") {
-    body = (
-      <Split>
-        <div>
-          {card}
-          <RichText as="p" className="kh-body-s" text={offer.plus} offer={offer} />
-          {lines}
-        </div>
-        <CloseArt art={props.art} />
-      </Split>
-    );
-  } else {
-    body = (
-      <Split className="ks-offer-split">
-        <div className="ks-offer-col">
-          {card}
-          {lines}
-        </div>
-        <Photo image={props.photo} sizes={OFFER_PHOTO_SIZES} variant="square" xl className="ks-offer-photo" />
-      </Split>
-    );
-  }
+  const trustRow = <SellingTrustLine items={trust} offer={offer} />;
   return (
-    <Section id={ids.section} labelledBy={ids.title}>
+    <Section id="offer" labelledBy="offer-title">
       <Container>
         <SectionHead>
-          <Heading align="center" eyebrow={heading.eyebrow} title={heading.title} lead={heading.lead} id={ids.title} offer={offer} />
+          <Heading align="center" eyebrow={heading.eyebrow} title={heading.title} lead={heading.lead} id="offer-title" offer={offer} />
         </SectionHead>
-        {body}
+        {props.variant === "home" ? (
+          /* Home's offer (task Q2.9; the D2C plan v2 §2 fold 7): the board beside the column, top-aligned from 900 px. */
+          <Split>
+            <div>
+              {card}
+              {trustRow}
+              {share}
+            </div>
+            <CloseArt art={props.art} />
+          </Split>
+        ) : (
+          <Split className="ks-offer-split">
+            <div className="ks-offer-col">
+              {card}
+              {trustRow}
+              {share}
+            </div>
+            <Photo image={props.photo} sizes={OFFER_PHOTO_SIZES} variant="square" xl className="ks-offer-photo" />
+          </Split>
+        )}
       </Container>
     </Section>
   );

@@ -336,7 +336,7 @@ describe("fold 5: questions parents ask", () => {
   it("shows the guide's five answers from faqs.ts (never retyped), in the mockup's order, all closed, on the page cream", () => {
     const config = faqOf();
     const el = fold("faq-title");
-    const listed = [faqs["what-is-an-ai-toy"], faqs["ai-toy-or-tablet"], faqs["ai-toy-age"], faqs.wifi, faqs["price-in-total"]];
+    const listed = [faqs["what-is-an-ai-toy"], faqs["ai-toy-or-tablet"], faqs["ai-toy-age"], faqs.wifi, faqs["price-and-advance"]];
     expect(config.items).toEqual(listed);
     config.items.forEach((item, i) => expect(item).toBe(listed[i]));
     expect(config.items.map((i) => plain(i.question))).toEqual(Array.from(el.querySelectorAll(".kh-faq__q")).map((q) => norm(q.textContent)));
@@ -354,10 +354,12 @@ describe("fold 5: questions parents ask", () => {
 
   /* The selling update (task Q2.12; D065 items 3-4; the D2C plan v2 §6 fold 5): Home's rewritten price answer takes the
      place of `how-much`, which carried "incl. GST", the first 500 and the balance; `how-much` stays in faqs.ts for
-     /pricing.md, a machine file (task Q2.8). */
+     /pricing.md, a machine file (task Q2.8). Since task Q2.13 by Home's own entry, `price-and-advance`, as the plan names
+     it (its words were already the same). */
   it("asks the price question in the plan's words: the total, the refundable advance, no GST, no first 500, no balance", () => {
     const price = faqOf().items.at(-1)!;
-    expect(price.id).toBe("price-in-total");
+    expect(price.id).toBe("price-and-advance");
+    expect(price).toBe(faqs["price-and-advance"]);
     expect(plain(price.question)).toBe(GUIDE_PRICE_FAQ.build.question);
     expect(plain(price.answer)).toBe(GUIDE_PRICE_FAQ.build.answer);
     for (const offer of [token, full]) expect(toPlainText(price.answer, offer)).not.toMatch(/incl\. GST|first 500|₹4,500|MRP/);
@@ -459,7 +461,7 @@ describe("the buyer's guide: page-wide rules", () => {
    * source can. The trust pair's delivery label is the {delivery} token, so only its typed labels are listed. */
   it("reads the shared words by reference: no FAQ question or answer, or trust label typed in its source", () => {
     const source = readRepoFile(`src/content/en-IN/pages/${SLUG}.ts`);
-    const ids = ["what-is-an-ai-toy", "ai-toy-or-tablet", "ai-toy-age", "wifi", "price-in-total"] as const;
+    const ids = ["what-is-an-ai-toy", "ai-toy-or-tablet", "ai-toy-age", "wifi", "price-and-advance"] as const;
     /* The price question reads differently in each mode: both of its forms. */
     const forms = (copy: Copy): string[] => (typeof copy === "string" ? [copy] : [copy.token, copy.full]);
     const shared = [

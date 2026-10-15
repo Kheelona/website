@@ -17,6 +17,8 @@ import {
   editsBeforeClaimFixes,
   KHEELONA_PLUS,
   OFFER_ADDITIONS,
+  OFFER_NOTE,
+  PRODUCT_OFFER_CARD,
   TEXT_DEVIATIONS,
   VISUAL_HIDDEN,
 } from "../../../../test/e2e/support/deviations";
@@ -27,8 +29,9 @@ import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../..
 import { OfferSection } from "./OfferSection";
 import type { OfferSectionConfig } from "./offer-section.types";
 
-/* OfferSection (task 3.2): Home's close (home.html fold 9, variant close) and the product page's offer
-   (meet-kheelu.html fold 3, variant photo), from the real content in both modes. The art board and the photo are
+/* OfferSection (task 3.2): the product page's offer (meet-kheelu.html fold 3, variant photo) and, since task Q2.9, Home's
+   offer moved up to fold 7 (variant home), from the real content in both modes. Home's close (home.html fold 9, the
+   `close` variant) left with task Q2.13: Home's close is a CloseSection since task Q2.9. The art board and the photo are
    the media primitives' (task 2.3) and are checked here only for what the section passes them. */
 
 const TOKEN = buildOffer("token");
@@ -51,21 +54,15 @@ const PHOTO: ImageRef = {
   alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy.",
 };
 
-const HOME: OfferSectionConfig = {
-  variant: "close",
-  heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}" },
-  cta: "finale",
-  cardLabel: "Kheelu offer",
-  /* Both cards' row since task Q2.8's review: the trust line, then the card's third row (the D2C plan v2 §1.1; the
-     harness reads the mockup's rows so, test/support/mockup-compare.ts withPriceLine). */
-  trust: TRUST_OFFER.map((id) => trustItems[id]),
-  art: HOME_ART,
-};
 const PRODUCT: OfferSectionConfig = {
   variant: "photo",
   heading: { eyebrow: "What you get", title: "Everything that {hand:comes with it.}" },
   cta: "product-offer",
+  /* Both cards' row since task Q2.8's review: the trust line, then the card's third row (the D2C plan v2 §1.1; the
+     harness reads the mockup's rows so, test/support/mockup-compare.ts withPriceLine). */
   trust: TRUST_OFFER.map((id) => trustItems[id]),
+  /* The Kheelona+ note in the card since task Q2.13 (the D2C plan v2 §3 fold 3: "the same note under the perks"). */
+  note: PLUS_NOTE,
   photo: PHOTO,
 };
 /** Home's offer since task Q2.9 (the selling update; the D2C plan v2 §2 fold 7): moved up to fold 7, so not the close. */
@@ -84,26 +81,24 @@ type Slug = "home" | "meet-kheelu";
 /** A page's main with the page's earlier accepted changes applied: since task 8b.1 the Kheelona+ line under Home's card
  *  and the product card's perk read D058 item 3's sentence (deviations.md V26, V27; CLAIM_FIXES). */
 const claimFixed = (slug: Slug) => withFacts(withFacts(mockupFold(slug, "main"), editsBeforeClaimFixes(slug)), CLAIM_FIXES[slug].edits);
-/** A page's fold as approved, with the page's accepted changes applied, then task 8c.2's: the later price on the card and
- *  the share link under it (D061; OFFER_ADDITIONS); then D063's: the help line's call off (task Q2.3). */
-const approvedFold = (slug: Slug, fold: string) => withSellerFacts(withFacts(claimFixed(slug), OFFER_ADDITIONS[slug].edits)).querySelector(fold)!;
+/** The product page's offer fold as approved, with the page's accepted changes applied, then task 8c.2's: the later price
+ *  on the card and the share link under it (D061; OFFER_ADDITIONS); then task Q2.13's (PRODUCT_OFFER_CARD, the selling
+ *  update's: the note in the card, the price printed once, no help line); then D063's (task Q2.3; seller-facts.ts). */
+const approvedProductOffer = () =>
+  withSellerFacts(withFacts(withFacts(claimFixed("meet-kheelu"), OFFER_ADDITIONS["meet-kheelu"].edits), PRODUCT_OFFER_CARD)).querySelector("#offer")!;
 /* A perk's words are always in a span (OfferCard), so a value-marked perk keeps its span. */
 const KEEP = ".kh-offer__list span";
 
-describe("OfferSection: the approved folds, exactly (media aside)", () => {
-  it.each([
-    ["Home close (home.html fold 9)", "home", "#close", HOME],
-    ["product offer (meet-kheelu.html fold 3)", "meet-kheelu", "#offer", PRODUCT],
-  ] as const)("%s", (_name, slug, fold, config) => {
-    const expected = builtMarkup([without(approvedFold(slug, fold), MEDIA)], { keepSpans: KEEP });
-    const actual = canonical(without(renderedElement(<OfferSection {...config} {...context()} />), MEDIA));
+describe("OfferSection: the approved fold, exactly (media aside)", () => {
+  it("product offer (meet-kheelu.html fold 3, with its accepted changes)", () => {
+    const expected = builtMarkup([without(approvedProductOffer(), MEDIA)], { keepSpans: KEEP });
+    const actual = canonical(without(renderedElement(<OfferSection {...PRODUCT} {...context()} />), MEDIA));
     expect(actual).toBe(expected);
   });
 });
 
 describe("OfferSection: the card's button", () => {
   it.each([
-    ["Home's close (until task Q2.9)", HOME, "finale"],
     ["the product page", PRODUCT, "product-offer"],
     ["Home's offer (task Q2.9)", HOME_OFFER, "home-offer"],
   ] as const)("on %s carries the placement's CTA value and links to the store", (_name, config, value) => {
@@ -117,17 +112,17 @@ describe("OfferSection: the card's button", () => {
 });
 
 describe("OfferSection: variants", () => {
-  it("close: a section named by its heading, the card a named region with id offer, the Kheelona+ line under it", () => {
-    render(<OfferSection {...HOME} {...context()} />);
-    const section = screen.getByRole("region", { name: "What you get, and what you pay." });
-    expect(section).toHaveAttribute("id", "close");
-    const card = within(section).getByRole("region", { name: "Kheelu offer" });
-    expect(card).toHaveAttribute("id", "offer");
-    expect(card.nextElementSibling).toHaveTextContent(TOKEN.plus);
+  /* Task Q2.13: Home's close is a CloseSection since task Q2.9, so the `close` variant left (its tests, stories and
+     catalogue wording with it). */
+  it("has two variants, photo and home: no close variant", () => {
+    const types = readFileSync(join(process.cwd(), "src/components/sections/OfferSection/offer-section.types.ts"), "utf8");
+    expect([...types.matchAll(/readonly variant: "([a-z]+)"/g)].map((m) => m[1])).toEqual(["photo", "home"]);
+    const section = readFileSync(join(process.cwd(), "src/components/sections/OfferSection/OfferSection.tsx"), "utf8");
+    expect(section).not.toMatch(/\bclose: \{|variant === "close"|"close"/);
   });
 
-  it("close: the art board beside the card, named, below the first screen (its doodle draws, nothing loads eagerly)", () => {
-    const board = renderedElement(<OfferSection {...HOME} {...context()} />).querySelector(".kh-art")!;
+  it("home: the art board beside the card, named, below the first screen (its doodle draws, nothing loads eagerly)", () => {
+    const board = renderedElement(<OfferSection {...HOME_OFFER} {...context()} />).querySelector(".kh-art")!;
     expect(board.getAttribute("class")).toBe("kh-art kh-tone-sun");
     expect(board).toHaveAttribute("role", "img");
     expect(board).toHaveAttribute("aria-label", HOME_ART.label);
@@ -140,7 +135,7 @@ describe("OfferSection: variants", () => {
      card's top. The DS split centres its two columns (bundle.css:1136), so beside the taller column the board started
      around the card's "Today, refundable" row. One rule from 900 px, where the split begins, on the board beside an offer
      card; the column and the markup are as approved. Its effect is measured in a browser (the task report). */
-  it("close: the board top-aligned with the card from 900 px, where the split begins, by one rule on the board beside a card", () => {
+  it("home: the board top-aligned with the card from 900 px, where the split begins, by one rule on the board beside a card", () => {
     const css = readFileSync(join(process.cwd(), "src/components/sections/OfferSection/offer-section.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
     const media = [...css.matchAll(/@media \(min-width: 900px\) \{([\s\S]*?)\n\}/g)].map((m) => m[1]);
     const rules = media.flatMap((block) => [...block.matchAll(/([^{}]+)\{([^}]*)\}/g)].map(([, selector, body]) => ({ selector: selector.trim(), body })));
@@ -148,7 +143,7 @@ describe("OfferSection: variants", () => {
     expect(aligned.map((r) => r.selector)).toEqual([".kh-split:has(> :first-child > .kh-offer) > .kh-art"]);
     expect(css.split(aligned[0].selector)).toHaveLength(2);
     // It reaches Home's board, and neither the product page's photo nor any other block of either fold.
-    const home = renderedElement(<OfferSection {...HOME} {...context()} />);
+    const home = renderedElement(<OfferSection {...HOME_OFFER} {...context()} />);
     const product = renderedElement(<OfferSection {...PRODUCT} {...context()} />);
     const split = home.querySelector(".kh-split")!;
     expect(split.firstElementChild?.firstElementChild).toHaveClass("kh-offer");
@@ -166,10 +161,56 @@ describe("OfferSection: variants", () => {
     expect(photo.getAttribute("class")).toBe("kh-photo kh-photo--square kh-photo--xl ks-offer-photo");
     expect(photo.querySelector("img")).toHaveAttribute("alt", PHOTO.alt);
     expect(photo.querySelector("img")).toHaveAttribute("loading", "lazy");
-    // No Kheelona+ line under the card: Kheelona+ is the one perk list's perk (task Q2.9), and the store's sentence
-    // (offer.plus) is not on the card.
+    // No line under the card: the Kheelona+ note is inside it since task Q2.13, and the store's sentence (offer.plus) is
+    // not on the card.
     expect(section.querySelector(".kh-offer + p")).toBeNull();
     expect(section.textContent).not.toContain(TOKEN.plus);
+  });
+
+  /* Task Q2.13 (the D2C plan v2 §2 fold 7 and §3 fold 3; the CMO's m9): both cards alike. The Kheelona+ note inside the
+     card, after the perks and before the button; the price printed once, in the card's price block; under the button only
+     the trust line (with the card's third row) and the share link: no help line (§1.1: the closes and the store only). */
+  describe.each([
+    ["the product page", PRODUCT],
+    ["Home", HOME_OFFER],
+  ] as const)("both cards alike: %s", (_name, config) => {
+    it("prints the Kheelona+ note in the card, after the perks and before the button, in the plan's words", () => {
+      const card = renderedElement(<OfferSection {...config} {...context()} />).querySelector(".kh-offer")!;
+      const note = card.querySelector(":scope > .ks-offer__note")!;
+      expect(note.outerHTML).toBe(`<p class="kh-body-s ks-offer__note">${OFFER_NOTE}</p>`);
+      expect(note.previousElementSibling).toHaveClass("kh-offer__list");
+      expect(note.nextElementSibling).toHaveClass("kh-btn--cta");
+      expect(OFFER_NOTE).toBe(PLUS_NOTE);
+    });
+
+    it.each([
+      ["token", TOKEN],
+      ["full", FULL],
+    ] as const)("prints the price once, in the card's price block: the button ends the card (%s mode)", (_mode, offer) => {
+      const el = renderedElement(<OfferSection {...config} {...context(offer)} />);
+      const card = el.querySelector(".kh-offer")!;
+      expect(card.querySelector(".kh-offer__fine")).toBeNull();
+      expect(card.lastElementChild).toHaveClass("kh-btn--cta");
+      expect(el.textContent).not.toContain(offer.mode === "token" ? "today, refundable." : "paid in full when you order.");
+    });
+
+    it("puts only the trust line, with the card's third row, and the share link under the card: no help line", () => {
+      const el = renderedElement(<OfferSection {...config} {...context()} />);
+      const column = el.querySelector(".kh-offer")!.parentElement!;
+      expect([...column.children].map((c) => [...c.classList].find((k) => /^(?:kh-offer|ks-trust|ks-offer-share)$/.test(k)))).toEqual([
+        "kh-offer",
+        "ks-trust",
+        "ks-offer-share",
+      ]);
+      expect([...column.querySelectorAll(".ks-trust li")].map((li) => li.textContent)).toEqual([
+        "Full refund until dispatch · 7-day returns",
+        "Deliveries start mid-November",
+        "6-month warranty",
+        "UPI, card or net banking",
+      ]);
+      expect(el.querySelector(".ks-help")).toBeNull();
+      expect(el.textContent).not.toContain("Questions?");
+    });
   });
 
   /* Task Q2.9 (the D2C plan v2 §2 fold 7; the CMO's m8): one perk list, in Home's order, on every card. */
@@ -183,7 +224,7 @@ describe("OfferSection: variants", () => {
       "6 months of Kheelona+ included. Nothing renews without you.",
       "Made in India",
     ];
-    for (const config of [HOME, PRODUCT, HOME_OFFER]) expect(perks(config)).toEqual(PLAN);
+    for (const config of [PRODUCT, HOME_OFFER]) expect(perks(config)).toEqual(PLAN);
     expect(perks(PRODUCT)).not.toContain(KHEELONA_PLUS.build);
   });
 
@@ -191,7 +232,7 @@ describe("OfferSection: variants", () => {
      line (the footer's "Made in India" and the product page's Country of origin say the same), with the DS house icon:
      the closest of the DS set's 76 to a home-grown product, as map-pin is the delivery perk's. */
   it.each([
-    ["Home", HOME],
+    ["Home", HOME_OFFER],
     ["the product page", PRODUCT],
   ] as const)("%s: the Made in India perk on the card in both modes, the seller's origin line, with the DS house icon", (_name, config) => {
     for (const offer of [TOKEN, FULL]) {
@@ -205,22 +246,20 @@ describe("OfferSection: variants", () => {
     }
   });
 
-  /* Task 3.6 item 6: the help line is content (`Copy`) and renders with the page's offer, as in CtaBlock. */
-  it("renders the help line with the offer: copy that changes with the mode", () => {
-    const help = { lead: { token: "Questions before you pay the advance?", full: "Questions before you pay?" }, contact: seller.help.contact };
-    for (const [offer, lead] of [
-      [TOKEN, "Questions before you pay the advance?"],
-      [FULL, "Questions before you pay?"],
-    ] as const) {
-      for (const config of [HOME, PRODUCT]) {
-        const line = renderedElement(<OfferSection {...config} offer={offer} ctaLabel={cta.preorder} help={help} />).querySelector(".ks-help");
-        expect(line?.textContent).toContain(lead);
+  /* Task Q2.13 (the D2C plan v2 §1.1, §3 fold 3; the CMO's m9): neither card takes a help line, whatever help the page
+     passes (the WhatsApp bubble and the page's close carry it). */
+  it("prints no help line under either card, whatever help line the page passes, in both modes", () => {
+    for (const offer of [TOKEN, FULL]) {
+      for (const config of [HOME_OFFER, PRODUCT]) {
+        const el = renderedElement(<OfferSection {...config} offer={offer} ctaLabel={cta.preorder} help={seller.help} />);
+        expect(el.querySelector(".ks-help")).toBeNull();
+        expect(el.querySelector('a[href^="https://wa.me/91"]')).toBeNull();
       }
     }
   });
 
   it("never moves on arrival: no data-reveal anywhere in the section (the offer card and the price, §11.2)", () => {
-    for (const config of [HOME, PRODUCT]) expect(renderToStaticMarkup(<OfferSection {...config} {...context()} />)).not.toContain("data-reveal");
+    for (const config of [HOME_OFFER, PRODUCT]) expect(renderToStaticMarkup(<OfferSection {...config} {...context()} />)).not.toContain("data-reveal");
   });
 });
 
@@ -240,15 +279,12 @@ describe("OfferSection: home (Home's offer, moved up; task Q2.9)", () => {
     expect(region.querySelector(".kh-heading--center .kh-heading__lead")?.textContent).toBe("There every day at home, with no screen to switch off.");
   });
 
-  it("names the card as a region without an id of its own, its button home-offer, and the plan's Kheelona+ note under it", () => {
+  it("names the card as a region without an id of its own, its button home-offer, and the plan's Kheelona+ note in it", () => {
     render(<OfferSection {...HOME_OFFER} {...context()} />);
     const card = screen.getByRole("region", { name: "Kheelu offer" });
     expect(card).not.toHaveAttribute("id");
     expect(card.querySelector(".kh-btn--cta")).toHaveAttribute("data-ph-capture-attribute-cta", "home-offer");
-    const note = card.nextElementSibling!;
-    expect(note.tagName).toBe("P");
-    expect(note.className).toBe("kh-body-s");
-    expect(note.textContent).toBe("Kheelona+ is our paid subscription, on top of the free parent app.");
+    expect(within(card).getByText("Kheelona+ is our paid subscription, on top of the free parent app.")).toHaveClass("ks-offer__note");
     expect(section().textContent).not.toContain(TOKEN.plus);
   });
 
@@ -267,7 +303,7 @@ describe("OfferSection: home (Home's offer, moved up; task Q2.9)", () => {
   it("puts the trust line with the card's third row under it, no help line, then the share link last in the column", () => {
     const el = section();
     const column = el.querySelector(".kh-offer")!.parentElement!;
-    expect([...column.children].map((c) => c.className)).toEqual(["kh-offer", "kh-body-s", "kh-trustline ks-trust", "kh-section__actions ks-offer-share"]);
+    expect([...column.children].map((c) => c.className)).toEqual(["kh-offer", "kh-trustline ks-trust", "kh-section__actions ks-offer-share"]);
     expect([...column.querySelectorAll(".ks-trust li")].map((li) => li.textContent)).toEqual([
       "Full refund until dispatch · 7-day returns",
       "Deliveries start mid-November",
@@ -304,7 +340,7 @@ describe("OfferSection: the later price on the card (D061 item 3)", () => {
   const LATER = "₹4,999 for the first 500 units. ₹7,999 once they are gone.";
 
   it.each([
-    ["Home", HOME],
+    ["Home", HOME_OFFER],
     ["the product page", PRODUCT],
   ] as const)("%s, token mode: a plain line under the amount, in the card's prices row", (_name, config) => {
     const prices = renderedElement(<OfferSection {...config} {...context(TOKEN)} />).querySelector(".kh-offer__prices")!;
@@ -316,7 +352,7 @@ describe("OfferSection: the later price on the card (D061 item 3)", () => {
   });
 
   it.each([
-    ["Home", HOME],
+    ["Home", HOME_OFFER],
     ["the product page", PRODUCT],
   ] as const)("%s, full mode: no later price anywhere (the later price is the price)", (_name, config) => {
     const full = renderedElement(<OfferSection {...config} {...context(FULL)} />);
@@ -326,7 +362,7 @@ describe("OfferSection: the later price on the card (D061 item 3)", () => {
 
   it("never strikes a price through, never counts units, never says save, in either mode", () => {
     for (const offer of [TOKEN, FULL]) {
-      for (const config of [HOME, PRODUCT]) {
+      for (const config of [HOME_OFFER, PRODUCT]) {
         const section = renderedElement(<OfferSection {...config} {...context(offer)} />);
         expect(section.querySelectorAll("s, del, strike, .kh-offer__was, .kh-offer__count, .kh-offer__bar, .kh-sticker")).toHaveLength(0);
         expect(section.textContent).not.toMatch(/\bsave\b|\bleft at this price\b|\bunits left\b/i);
@@ -347,7 +383,7 @@ describe("OfferSection: the share link under the card", () => {
   };
 
   it.each([
-    ["Home", HOME],
+    ["Home", HOME_OFFER],
     ["the product page", PRODUCT],
   ] as const)("%s: one ghost link with the live site's words, opening WhatsApp with the offer's message", (_name, config) => {
     const { link } = shareOf(config);
@@ -361,7 +397,7 @@ describe("OfferSection: the share link under the card", () => {
   /* Task 8c.5 (the 8c merge's follow-up): WhatsApp opens in a new tab, as from the D050 bubble, so the page the parent
      was reading stays where it was. */
   it.each([
-    ["Home", HOME],
+    ["Home", HOME_OFFER],
     ["the product page", PRODUCT],
   ] as const)("%s: opens WhatsApp in a new tab with rel=noopener, as the D050 bubble does", (_name, config) => {
     const { link } = shareOf(config);
@@ -370,9 +406,9 @@ describe("OfferSection: the share link under the card", () => {
   });
 
   it.each([
-    ["Home", HOME],
+    ["Home", HOME_OFFER],
     ["the product page", PRODUCT],
-  ] as const)("%s: sits last in the offer's column, after the help line, in an actions row of its own", (_name, config) => {
+  ] as const)("%s: sits last in the offer's column, after the trust line (no help line, task Q2.13), in an actions row of its own", (_name, config) => {
     const { section, link } = shareOf(config);
     const row = link.parentElement!;
     expect(row.getAttribute("class")).toBe("kh-section__actions ks-offer-share");
@@ -380,11 +416,21 @@ describe("OfferSection: the share link under the card", () => {
     const column = section.querySelector(".kh-offer")!.parentElement!;
     expect(row.parentElement).toBe(column);
     expect(column.lastElementChild).toBe(row);
-    expect(row.previousElementSibling?.classList.contains("ks-help")).toBe(true);
+    expect(row.previousElementSibling?.classList.contains("ks-trust")).toBe(true);
+  });
+
+  /* Task Q2.13's screenshots: at 360-412 px and on the product page's 432 px laptop column the link wrapped mid-sentence
+     ("… Share Kheelu on" over an orphaned "WhatsApp"). Balanced, it breaks at its sentence on both cards at every width
+     where it wraps ("Know a parent who needs this?" over "Share Kheelu on WhatsApp"; measured in a browser, the report). */
+  it("wraps at its sentence when it wraps: the share row balances its lines, on both cards", () => {
+    const css = readFileSync(join(process.cwd(), "src/components/sections/OfferSection/offer-section.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    const rules = [...css.matchAll(/([^{}]+)\{([^}]*)\}/g)].map(([, selector, body]) => ({ selector: selector.trim(), body }));
+    expect(rules.filter((r) => /text-wrap:\s*balance;/.test(r.body)).map((r) => r.selector)).toEqual([".ks-offer-share"]);
+    for (const config of [HOME_OFFER, PRODUCT]) expect(shareOf(config).link.parentElement).toHaveClass("ks-offer-share");
   });
 
   it("is never a chilli button, never the bubble's green, and leaves the card's button the section's one chilli button", () => {
-    for (const config of [HOME, PRODUCT]) {
+    for (const config of [HOME_OFFER, PRODUCT]) {
       const { section, link } = shareOf(config);
       expect(link.className).not.toMatch(/kh-btn--cta|kh-btn--primary|ks-wa/);
       expect(section.querySelectorAll(".kh-btn--cta")).toHaveLength(1);
@@ -392,7 +438,7 @@ describe("OfferSection: the share link under the card", () => {
   });
 
   it("follows the mode: the full-mode message never names the advance", () => {
-    for (const config of [HOME, PRODUCT]) {
+    for (const config of [HOME_OFFER, PRODUCT]) {
       const { link } = shareOf(config, FULL);
       expect(link.getAttribute("href")).toBe(FULL.share?.href);
       const text = new URL(link.getAttribute("href")!).searchParams.get("text")!;
@@ -403,7 +449,7 @@ describe("OfferSection: the share link under the card", () => {
 
   it("is left out when an offer has no share copy (a locale without one)", () => {
     const bare: Offer = { ...TOKEN, share: undefined };
-    for (const config of [HOME, PRODUCT]) {
+    for (const config of [HOME_OFFER, PRODUCT]) {
       expect(renderedElement(<OfferSection {...config} {...context(bare)} />).querySelector(".ks-offer-share")).toBeNull();
     }
   });
@@ -475,7 +521,7 @@ describe.each(["home", "meet-kheelu"] as const)("%s: the offer additions of task
   });
 
   it("finds each hidden block once in the section as it renders (token mode)", () => {
-    const config = slug === "home" ? HOME : PRODUCT;
+    const config = slug === "home" ? HOME_OFFER : PRODUCT;
     const section = renderedElement(<OfferSection {...config} {...context()} />);
     for (const selector of additions.hidden.build) expect(section.querySelectorAll(selector), selector).toHaveLength(1);
   });
@@ -483,20 +529,19 @@ describe.each(["home", "meet-kheelu"] as const)("%s: the offer additions of task
 
 describe("OfferSection: full mode (ADR-005, G-08)", () => {
   it.each([
-    ["Home", HOME],
+    ["Home", HOME_OFFER],
     ["the product page", PRODUCT],
-  ] as const)("%s: no split, the full price and sentence; perks, trust line and help line unchanged", (_name, config) => {
+  ] as const)("%s: no split, the full price once; perks, the note and the trust line unchanged", (_name, config) => {
     const full = renderedElement(<OfferSection {...config} {...context(FULL)} />);
     const token = renderedElement(<OfferSection {...config} {...context(TOKEN)} />);
     expect(full.querySelector(".kh-offer__split")).toBeNull();
     expect(token.querySelector(".kh-offer__split")).not.toBeNull();
-    // No note beside the amount and the short price line as fine print (D065 item 3; task Q2.8).
+    // No note beside the amount (D065 item 3; task Q2.8), and the price once: no fine print (task Q2.13).
     expect(full.querySelector(".kh-offer__prices")?.textContent).toBe("₹7,999");
-    expect(full.querySelector(".kh-offer__fine")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
+    expect(full.querySelector(".kh-offer__fine")).toBeNull();
     expect(full.textContent).not.toMatch(/₹499|₹4,500|₹4,999/);
-    for (const part of [".kh-offer__list", ".ks-trust", ".ks-help"]) {
+    for (const part of [".kh-offer__list", ".ks-offer__note", ".ks-trust"]) {
       expect(full.querySelector(part)?.outerHTML, part).toBe(token.querySelector(part)?.outerHTML);
     }
-    if (config.variant === "close") expect(full.textContent).toContain(FULL.plus);
   });
 });

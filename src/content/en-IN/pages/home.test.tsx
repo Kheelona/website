@@ -372,7 +372,11 @@ describe("Home fold 7 · what you get, and what you pay (plan fold 7; D065 items
       "6 months of Kheelona+ included. Nothing renews without you.",
       "Made in India",
     ]);
-    expect(text(card.nextElementSibling)).toBe(PLUS_NOTE);
+    // The note in the card, after the perks and before the button, since task Q2.13 (OfferCard `note`; plan fold 7).
+    const note = card.querySelector(":scope > .ks-offer__note");
+    expect(text(note)).toBe(PLUS_NOTE);
+    expect(note?.previousElementSibling?.className).toBe("kh-offer__list");
+    expect(note?.nextElementSibling?.getAttribute("data-ph-capture-attribute-cta")).toBe("home-offer");
   });
 
   it.each(["token", "full"] as const)("prints the price once, in the card's price block: no short price line under its button (%s mode)", (mode) => {
