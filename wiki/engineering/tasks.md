@@ -2116,6 +2116,10 @@ claims guard, design-system/ untouched. The founder looks at the result on beta.
 
 ## Quick batch 2 (D062, D064; 2026-10-15)
 
+**Progress (2026-10-15):** wave q2a built and merged (run `wf_708188f8-5e5`): Q2.1, Q2.3, Q2.4, Q2.5, Q2.6, Q2.8 (merges
+`c37ef820` to `88fadce2`; rows V49-V57). Q2.2 and Q2.7 were not built on their own: the selling update absorbed them
+(Q2.9 Home's middle and compact safety block, Q2.10 the product page's link, Q2.11 `/safety`).
+
 The founder's changes 1-10 with D064's answers. D062's quick rules: targeted checks plus `npm run verify` and the
 production build per task; one review for risk normal; no full Playwright, Lighthouse or CMO review of the built pages
 (the CMO reviews the new copy of Q2.7 before it is built). Each change drafts its deviation row in the builder's notes.
@@ -2226,6 +2230,11 @@ As quick batch 1's Q1.5 (D063 items 2-3, confirmed by D064 item 11), word for wo
   test, story; components.md row), the product page's expert fold removal, the matching rules in `deviations.ts`.
 
 ## The selling update, wave 2 (D064, D065; the copy: wiki/site/d2c-conversion-plan-2026-10-15.md v2)
+
+**Progress (2026-10-15):** Q2.9-Q2.12 built (runs `wf_20668add-448`, stopped by a session limit, and `wf_195cc865-68e`)
+and merged (`62896f3e`, `9d1c29e3`, `98373f7f`; rows V58-V64); the follow-ups Q2.13 and Q2.14 built (`wf_97f23df3-150`)
+and merged (`bea71b73`, `e676c84e`), with the main session's clean-up `5b245a26`: `npm run verify` 6917 passed, the build
+green. A consistency review of every page at phone and laptop sizes follows (`wf_78365aa5-dfe`), then beta.
 
 **The copy is the plan's v2, checked by the guard and the CMO** ([its review](../qa/cmo-review-d2c-plan-v2-2026-10-15.md));
 use its words exactly, its pictures, its cta values (register the new ones in `src/lib/tracking/cta.ts`, tracking

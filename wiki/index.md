@@ -48,6 +48,40 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [D2C conversion plan](site/d2c-conversion-plan-2026-10-15.md): the site planned to sell (v2 on D064, D065): the CTA system, every page's sections and exact copy, the first phone screens measured; built as the selling update.
 - [home copy](site/pages/home.md): Phase 3 homepage copy, nine folds phone-first, H1 options A-E, the D028 price sentence, sources per claim, open questions for Gate A.
 - Page copy, one page per route in `site/pages/`: the 15 site pages (for example [product](site/pages/meet-kheelu.md), [store](site/pages/store.md), [stories hub](site/pages/stories.md)) and one `story-<slug>.md` per journal article (21); the 18 rewrites were written and CMO-approved in wave 5 part C (2026-10-14), each with its sources and questions for the founder at the foot.
+  - [404](site/pages/404.md): Page not found (404): page copy, Gate A mockup draft
+  - [ai-toys-for-kids-in-india](site/pages/ai-toys-for-kids-in-india.md): Buyer's guide (/ai-toys-for-kids-in-india): page copy, Gate A mockup draft
+  - [contact](site/pages/contact.md): Contact (/contact): page copy, Gate A mockup draft
+  - [meet-kheelu](site/pages/meet-kheelu.md): Meet Kheelu (/products/kheelu): page copy, Gate A mockup draft
+  - [privacy](site/pages/privacy.md): Privacy (/privacy): page copy, Gate A draft
+  - [refund](site/pages/refund.md): Refunds (/refund): page copy, Gate A draft
+  - [safety](site/pages/safety.md): Safety (/safety): page copy, Gate A mockup draft
+  - [setup](site/pages/setup.md): Setup (/setup): page copy, Gate A mockup draft
+  - [shipping](site/pages/shipping.md): Shipping (/shipping): page copy, Gate A draft
+  - [store-confirmation](site/pages/store-confirmation.md): Store confirmation (store.kheelona.com/thanks): page copy for the Gate A mockup
+  - [store](site/pages/store.md): Store (store.kheelona.com): page copy for the Gate A mockup
+  - [stories](site/pages/stories.md): Stories hub (/stories): page copy, Gate A draft
+  - [story-a-toy-that-talks-vs-a-toy-that-listens](site/pages/story-a-toy-that-talks-vs-a-toy-that-listens.md): Story: Toys for language development: talk or listen? (/stories/a-toy-that-talks-vs-a-toy-that-listens): page copy, task 5.18 draft
+  - [story-ai-toys-and-indias-data-law](site/pages/story-ai-toys-and-indias-data-law.md): Story: What India's data law asks of a toy that listens (/stories/ai-toys-and-indias-data-law): page copy, Phase 5 draft (task 5.19)
+  - [story-busy-hands-no-screens](site/pages/story-busy-hands-no-screens.md): Story: Busy hands, no screens (/stories/busy-hands-no-screens): page copy, task 5.17 draft
+  - [story-does-a-three-year-old-need-an-ai-tutor](site/pages/story-does-a-three-year-old-need-an-ai-tutor.md): Story: Does a three-year-old need an AI tutor? (/stories/does-a-three-year-old-need-an-ai-tutor): page copy, task 5.19 draft
+  - [story-how-children-collect-words](site/pages/story-how-children-collect-words.md): Story: How to build a 3-year-old's vocabulary (/stories/how-children-collect-words): page copy, task 5.18 draft
+  - [story-how-children-learn-by-talking](site/pages/story-how-children-learn-by-talking.md): Story: Serve and return: how children learn by talking (/stories/how-children-learn-by-talking): page copy, task 5.18 draft
+  - [story-how-much-screen-time-for-a-3-to-6-year-old](site/pages/story-how-much-screen-time-for-a-3-to-6-year-old.md): Story: Screen time for a 3-year-old, and up to age 7 (/stories/how-much-screen-time-for-a-3-to-6-year-old): page copy, task 5.17 draft
+  - [story-how-to-get-your-child-talking](site/pages/story-how-to-get-your-child-talking.md): Story: How to get your child to talk more (/stories/how-to-get-your-child-talking): page copy, task 5.18 draft
+  - [story-learning-toys-for-a-three-year-old](site/pages/story-learning-toys-for-a-three-year-old.md): Story: Learning toys for a 3-year-old (/stories/learning-toys-for-a-three-year-old): page copy, Gate A draft
+  - [story-questions-parents-ask-about-ai-toys](site/pages/story-questions-parents-ask-about-ai-toys.md): Story: The hard questions parents ask about AI toys (/stories/questions-parents-ask-about-ai-toys): page copy, Phase 5 draft (task 5.19)
+  - [story-raising-a-bilingual-child-in-india](site/pages/story-raising-a-bilingual-child-in-india.md): Story: Raising a bilingual child in India (/stories/raising-a-bilingual-child-in-india): page copy, task 5.18 draft
+  - [story-screen-free-does-not-mean-silent](site/pages/story-screen-free-does-not-mean-silent.md): Story: Screen-free does not mean silent (/stories/screen-free-does-not-mean-silent): page copy, task 5.17 draft
+  - [story-screen-time-and-tantrums](site/pages/story-screen-time-and-tantrums.md): Story: Screen time and tantrums: what is actually happening (/stories/screen-time-and-tantrums): page copy, task 5.17 draft
+  - [story-should-kids-use-ai](site/pages/story-should-kids-use-ai.md): Story: Should kids use AI? An honest answer from people who build it (/stories/should-kids-use-ai): page copy, Phase 5 draft (task 5.19)
+  - [story-talking-late-or-talking-little](site/pages/story-talking-late-or-talking-little.md): Story: 3-year-old not talking in sentences? What to do (/stories/talking-late-or-talking-little): page copy, task 5.18 draft
+  - [story-talking-toys-and-late-talkers](site/pages/story-talking-toys-and-late-talkers.md): Story: Late talker? What helps a child find their words (/stories/talking-toys-and-late-talkers): page copy, Gate A draft
+  - [story-the-gentle-way-off-the-phone](site/pages/story-the-gentle-way-off-the-phone.md): Story: The gentle way off the phone (/stories/the-gentle-way-off-the-phone): page copy, task 5.17 draft
+  - [story-what-actually-builds-a-sharp-brain](site/pages/story-what-actually-builds-a-sharp-brain.md): Story: What actually builds a sharp brain in the early years (/stories/what-actually-builds-a-sharp-brain): page copy, task 5.19 draft
+  - [story-what-to-look-for-in-a-safe-ai-toy](site/pages/story-what-to-look-for-in-a-safe-ai-toy.md): Story: What to look for in a safe AI toy (/stories/what-to-look-for-in-a-safe-ai-toy): page copy, Gate A draft
+  - [story-why-three-to-six-are-the-years-that-matter-most](site/pages/story-why-three-to-six-are-the-years-that-matter-most.md): Story: Why the early years matter most (/stories/why-three-to-six-are-the-years-that-matter-most): page copy, task 5.19 draft
+  - [team](site/pages/team.md): Team (/team): page copy, Gate A mockup draft
+  - [terms](site/pages/terms.md): Terms (/terms): page copy, Gate A draft
 
 ## Design system (documents the DS in `design-system/`; never a copy)
 - [overview](design-system/overview.md): what DS v11 contains and the rules a page builder follows.
