@@ -491,9 +491,9 @@ No event fires Meta for the three new names: Meta receives only its fixed conver
 | Value | Status | Element | Pages |
 |---|---|---|---|
 | `hero` | Existing | Home hero button (`id="hero-cta"`, arrow) | `/` |
-| `navbar` | Existing | Laptop nav button (shown from 1024 px; G-06, D041) | every marketing page |
+| `navbar` | Existing | Laptop nav button (the nav sticks to the top from 900 px; G-06, D041; Q2.5, D064) | every marketing page |
 | `navbar-mobile` | Existing | Drawer button | every marketing page |
-| `finale` | Existing | Close button | `/`, `/safety`, `/ai-toys-for-kids-in-india`, `/stories`, articles with a close, `/team`, `/contact`, 404 |
+| `finale` | Existing | Close button | `/`, `/safety`, `/ai-toys-for-kids-in-india`, `/stories`, articles with a close, `/team`, `/contact`, 404 (added after Gate A by D065, the selling update: /setup) |
 | `product-top` | Existing | Product hero button (no `id`, arrow) | `/products/kheelu` |
 | `product-foot` | Existing | Product close button | `/products/kheelu` |
 | `home-arc`, `compare` | Existing, **reserved** | No equivalent button (A16); never reused | none |
@@ -507,6 +507,17 @@ No event fires Meta for the three new names: Meta receives only its fixed conver
 | `refund-learn`, `shipping-learn` | New, secondary | "Meet Kheelu" close links | `/refund`, `/shipping` |
 | `whatsapp-float` | New (D050) | The WhatsApp bubble (not a chilli button) | every page (with `ph-no-capture` on `/thanks`) |
 | `share-whatsapp` | New, secondary (D061, task 8c.2) | The "Share Kheelu on WhatsApp" ghost link under the offer card | `/`, `/products/kheelu` |
+| `hero-film`, `home-asks-learn` | New, secondary (D065, the selling update) | Home hero link "Watch Kheelu ask, in a 30-second film" (laptops only, from 900 px); the sticky-scroll link "See how it works" | `/` |
+| `home-why`, `home-asks`, `home-offer` | New (D065, the selling update) | Home buttons: "Why it matters", the sticky scroll, the offer card (moved up) | `/` |
+| `product-ask` | New (D065, the selling update) | Product button after "What asking back sounds like." | `/products/kheelu` |
+| `safety-facts` | New (D065, the selling update) | `/safety` button after the four facts | `/safety` |
+| `guide-answers` | New (D065, the selling update) | Guide button after "How Kheelu meets each check." | `/ai-toys-for-kids-in-india` |
+
+**The selling update (D065; [plan §11](../site/d2c-conversion-plan-2026-10-15.md#11-tracking-values)):** `see-it-ask`,
+`see-it-ask-learn`, `compare-learn`, `faq-more`, `hero-learn` (Home) and `product-safety` (the product page) stop firing
+when their elements leave the built pages; they stay registered (the table above is reconciled from the approved
+mockups) and are never reused. The browser spec `test/e2e/cta.spec.ts` compares each built page with its mockup, so it is
+re-based on the approved beta at the final pass ([D062](../decisions/D062-quick-visual-changes-until-final-2026-10-15.md)).
 
 Not tagged (as live or as the copy says): the store's pay button, contact buttons, film play buttons
 (their `aria-label`s carry the "Play:" measure, D040), `/privacy` and `/terms` closes.

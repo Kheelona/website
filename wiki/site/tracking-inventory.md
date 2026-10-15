@@ -291,6 +291,20 @@ any other host load none of the three.
 |---|---|---|
 | `whatsapp-float` | The WhatsApp chat bubble, every page (`src/components/chrome/WhatsAppFloat/WhatsAppFloat.tsx`) | [D050](../decisions/D050-whatsapp-chat-button.md) |
 | `share-whatsapp` | The "Know a parent who needs this? Share Kheelu on WhatsApp" link under the offer card on `/` and `/products/kheelu` (`src/components/sections/OfferSection/OfferSection.tsx`, task 8c.2) | [D061](../decisions/D061-advisor-proposal-what-we-take-2026-10-15.md) |
+| `hero-film` | Home hero link "Watch Kheelu ask, in a 30-second film", laptops only (the selling update, task Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
+| `home-why` | Home's "Why it matters" button (Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
+| `home-asks` | Home's sticky-scroll section button (Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
+| `home-asks-learn` | Home's sticky-scroll link "See how it works" to `/products/kheelu#modes` (Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
+| `home-offer` | Home's offer-card button, the offer moved up (Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
+| `product-ask` | The product page's button after "What asking back sounds like." (Q2.10) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
+| `safety-facts` | `/safety`'s button after the four facts (Q2.11) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
+| `guide-answers` | The buyer's guide's button after "How Kheelu meets each check." (Q2.12) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
+
+- **A placement added after Gate A to an existing value:** `finale` on `/setup` (its new close, the selling update,
+  task Q2.12; [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md)). The value and its meaning are unchanged; `src/lib/tracking/cta.ts` holds it under `finale.added`.
+- **Values that stop firing with the selling update** (they stay registered and are never reused): `see-it-ask`,
+  `see-it-ask-learn`, `compare-learn`, `faq-more`, `hero-learn` (Home) and `product-safety` (the product page);
+  [architecture §8.3](../engineering/architecture.md#83-cta-values-data-ph-capture-attribute-cta-reconciled-from-the-mockups).
 
 - **Custom funnel events:** the same six names and parameters as GA4 (table in section 3), fired by
   `phCapture` beside each `track()` call (`analytics.ts:66`, `:72`, `:78`, `:113-118`, `:128`, `:133`).

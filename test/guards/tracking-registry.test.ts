@@ -798,12 +798,37 @@ describe("cta.ts: the cta values", () => {
   });
 
   it("lists in inventory §6 every value a founder decision placed after Gate A: each new, never reserved, its decision on file", () => {
-    expect([...AFTER_GATE_A.keys()].sort()).toEqual(["share-whatsapp", "whatsapp-float"]);
+    expect([...AFTER_GATE_A.keys()].sort()).toEqual(
+      [
+        "share-whatsapp",
+        "whatsapp-float",
+        /* D065, the selling update (plan §11). */
+        "guide-answers",
+        "hero-film",
+        "home-asks",
+        "home-asks-learn",
+        "home-offer",
+        "home-why",
+        "product-ask",
+        "safety-facts",
+      ].sort(),
+    );
     for (const [value, decision] of AFTER_GATE_A) {
       expect(CTA_VALUES, `${value} is not in cta.ts`).toContain(value);
       expect(spec(value)).toMatchObject({ status: "new", reserved: false });
       expect(decisionFiles().some((f) => f.startsWith(`${decision}-`)), `${decision} has no file in wiki/decisions`).toBe(true);
     }
+  });
+
+  /* The selling update (D065): an existing value placed on a page after Gate A keeps its mockup placements in `pages`
+     and holds the new one under `added`, so the mockup comparison below stays exact. */
+  it("finale's /setup close was added after Gate A (D065): under added, not pages; inventory §6 names it", () => {
+    expect(spec("finale").added).toEqual({ pages: ["/setup"], decision: "D065" });
+    expect(spec("finale").pages).not.toContain("/setup");
+    expect(section(INVENTORY, "## 6. ")).toContain("`finale` on `/setup`");
+    expect(decisionFiles().some((f) => f.startsWith("D065-"))).toBe(true);
+    const withAdded = CTA_VALUES.filter((v) => CTAS[v].added);
+    expect(withAdded).toEqual(["finale"]);
   });
 
   it("spells every value in kebab-case (structure §2)", () => {
