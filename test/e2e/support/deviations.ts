@@ -2925,7 +2925,7 @@ const FOOTER_LEGAL_APPROVED =
 export const FOOTER_LEGAL = {
   rules:
     ".kh-footer__legal a { display: inline-block; padding-block: var(--space-4); margin-block: calc(var(--space-4) * -1); color: var(--link); }\n" +
-    ".ks-footer__links { display: flex; flex-wrap: wrap; gap: var(--space-6) var(--space-4); }",
+    ".ks-footer__links { display: flex; flex-wrap: wrap; gap: var(--space-6) var(--space-4); padding-bottom: var(--space-4); }",
   undo: ".kh-footer__legal a { min-height: 0; }",
   approvedBy: FOOTER_LEGAL_APPROVED,
 } as const;
@@ -2952,6 +2952,18 @@ export function groupFooterLinks(root?: ParentNode): ParentNode {
   }
   return scope;
 }
+
+/* The store header's row (task Q2.16, the consistency review's QAP-5), on the store and /thanks: the logo keeps the DS's
+   96 x 30 at every width (its link, a flex item, gave way to the help line on phones: 86.6 px wide at 360) and the help
+   line's link stays whole, so a phone reads "Questions?" / "Message us on WhatsApp." instead of a split link.
+   chrome.spec.ts compares the header with mockup/store.html's, so the mockup's header takes the same two rules first,
+   store-header.css's own with the mockup's block name (StoreHeader.test.tsx holds them equal). */
+const STORE_HEAD_ROW_APPROVED =
+  "tasks.md Q2.16 (main session, 2026-10-15; the consistency review's QAP-5, wf_78365aa5-dfe); its deviations.md row is the main session's";
+export const STORE_HEAD_ROW = {
+  css: ".mk-store-head__in > .kh-logo-link { flex: none; }\n.mk-store-head__help a { white-space: nowrap; }",
+  approvedBy: STORE_HEAD_ROW_APPROVED,
+} as const;
 
 /** The rules every page shares, in order: the tap areas' (task 7.1a), task Q2.8's price lines, then the footer's
  *  columns (V54, V64; task Q2.14). */

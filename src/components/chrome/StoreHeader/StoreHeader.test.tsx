@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { STORE_HEAD_ROW } from "../../../../test/e2e/support/deviations";
 import { StoreHeader } from "./StoreHeader";
 
 /* StoreHeader (task 3.1): the store's own header, mockup/store.html fold 0 (shared with store-confirmation.html):
@@ -57,5 +58,18 @@ describe("StoreHeader", () => {
   it("keeps the logo at its size and the help line's link on one line", () => {
     expect(CSS).toContain(".ks-store-head__in > .kh-logo-link { flex: none; }");
     expect(CSS).toContain(".ks-store-head__help a { white-space: nowrap; }");
+  });
+
+  /* chrome.spec.ts holds the store header to mockup/store.html pixel by pixel; the mockup's header (mk-store-head) takes
+     these two rules first, one shared rule of deviations.ts (STORE_HEAD_ROW, task Q2.16), written as store-header.css
+     writes them, with the mockup's block name. */
+  it("hands the store chrome's parity spec these two rules, under the mockup's block name", () => {
+    const asMockup = (css: string) => css.replace(/\bks-store-head/g, "mk-store-head");
+    expect(STORE_HEAD_ROW.css.split("\n")).toEqual([
+      asMockup(".ks-store-head__in > .kh-logo-link { flex: none; }"),
+      asMockup(".ks-store-head__help a { white-space: nowrap; }"),
+    ]);
+    for (const rule of STORE_HEAD_ROW.css.split("\n")) expect(CSS).toContain(rule.replace(/\bmk-store-head/g, "ks-store-head"));
+    expect(STORE_HEAD_ROW.approvedBy).toMatch(/Q2\.16.*QAP-5/);
   });
 });

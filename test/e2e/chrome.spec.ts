@@ -3,7 +3,7 @@ import { dirname } from "node:path";
 import type { BrowserContext, Page, TestInfo } from "@playwright/test";
 import { expect, hideForParity, motionStarted, requiresServer, test, type OpenOptions } from "./support/fixtures";
 import { ORIGINS, REAL_ORIGINS, STORYBOOK_PORT, TARGET } from "./support/env";
-import { FOOTER_LEGAL, FOOTER_ROWS, PRICE_LINE, groupFooterLinks } from "./support/deviations";
+import { FOOTER_LEGAL, FOOTER_ROWS, PRICE_LINE, STORE_HEAD_ROW, groupFooterLinks } from "./support/deviations";
 import { CHUNK_MAX_DIFF_RATIO } from "./support/parity";
 import { builtUrl } from "./support/routes";
 import { ruleMockupPage } from "./support/seller-facts";
@@ -24,7 +24,8 @@ import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
  *     compare the same words on both sides; its footer takes the approved link rows first (V54, V64: 44 px on touch,
  *     32 px with a fine pointer; deviations.ts FOOTER_ROWS, task Q2.14), and the built rows are held to those heights,
  *     and the build's legal row (the contact line and the grievance officer link one group, on the copyright's line;
- *     deviations.ts FOOTER_LEGAL, task Q2.16).
+ *     deviations.ts FOOTER_LEGAL, task Q2.16); the store's header takes the build's row first (the logo at its size,
+ *     the help line's link whole; deviations.ts STORE_HEAD_ROW, task Q2.16).
  *   - Sticky bar (G-09, pick 4): hidden while the hero CTA is on screen, shown past it, aside while an inline chilli
  *     button is on screen, inert while hidden, data-buybar and --ks-buybar-h on <html>, gone from 900 px, sliding up
  *     with motion on and only fading with reduced motion. The page's own hero CTA (#hero-cta) is on screen at first
@@ -272,6 +273,9 @@ test.describe("chrome: store header and footer parity with mockup/store.html", (
       // The header's help line, the seller lines and the grievance line without the GSTIN and the number (D063 items
       // 2-3; task Q2.3; support/seller-facts.ts).
       await ruleMockupPage(ref, ["header.mk-store-head", "footer.mk-store-foot"]);
+      // The header's row as task Q2.16 builds it (QAP-5): the logo at its size, the help line's link whole
+      // (deviations.ts STORE_HEAD_ROW).
+      await ref.addStyleTag({ content: STORE_HEAD_ROW.css });
       const page = await openBuilt(harness, vp, {}, STORE);
       await hideForParity(page);
       compare(testInfo, `chrome-store-header-${vp.name}.png`, await shot(ref, "header.mk-store-head"), await shot(page, "header.ks-store-head"));

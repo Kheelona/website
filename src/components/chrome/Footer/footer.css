@@ -8,8 +8,10 @@
 /* The contact line and the grievance officer link, one group (SellerLines' footer `links`): they wrap together, beside
    the address on a wide row, on a row of their own below it from 1280 px down, in the phones' order. Side by side a
    space-4 apart, the row's own column gap; where the group wraps (343 px and narrower) a space-6 apart, so the two 48 px
-   targets never overlap (a tap on the lower half of "WhatsApp" opened the grievance officer). */
-.ks-footer__links { display: flex; flex-wrap: wrap; gap: var(--space-6) var(--space-4); }
+   targets never overlap (a tap on the lower half of "WhatsApp" opened the grievance officer). Its own space-4 below
+   holds its last line's targets inside the row, so the footer's bottom clearance (whatsapp-float.css) still keeps the
+   bubble off them at the end of the page. */
+.ks-footer__links { display: flex; flex-wrap: wrap; gap: var(--space-6) var(--space-4); padding-bottom: var(--space-4); }
 
 /* The column links' gaps tightened (D064 item 6, task Q2.4). bundle.css stacks them as 48 px rows (space-3 above and
    below the 24 px line); here 44 px, the site's smallest tap target (tasks.md SPA 4), still the link's own padding,

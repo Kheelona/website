@@ -80,14 +80,17 @@ describe("Footer", () => {
      copyright and the address on the same row at 1440 px. Each link's own padding makes the 48 px (--tap-min: its 16 px
      line and a space-4 above and below), and its negative margins give the line its height back, as the store footer's
      links do (store-footer.css). The group wraps its two parts a space-6 apart, so their 48 px targets never overlap
-     where it wraps (343 px and narrower), and a space-4 apart side by side, the row's own column gap. */
-  it("keeps each legal link a full tap target on the seller lines' baseline, and the group's targets apart", () => {
+     where it wraps (343 px and narrower), and a space-4 apart side by side, the row's own column gap. Its own padding
+     below holds its last line's targets inside the row: the footer's bottom clearance keeps the WhatsApp bubble off its
+     lines at the end of the page (whatsapp-float.css), and a target running 16 px out under the row met the bubble at
+     360 x 590 (chrome.spec.ts). */
+  it("keeps each legal link a full tap target on the seller lines' baseline, and the group's targets apart and in the row", () => {
     const rule = (selector: string) =>
       new RegExp(`(?:^|})\\s*${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*\\{([^}]*)\\}`).exec(CSS)?.[1].replace(/\s+/g, " ").trim();
     expect(rule(".kh-footer__legal a")).toBe(
       "display: inline-block; padding-block: var(--space-4); margin-block: calc(var(--space-4) * -1); color: var(--link);",
     );
-    expect(rule(".ks-footer__links")).toBe("display: flex; flex-wrap: wrap; gap: var(--space-6) var(--space-4);");
+    expect(rule(".ks-footer__links")).toBe("display: flex; flex-wrap: wrap; gap: var(--space-6) var(--space-4); padding-bottom: var(--space-4);");
     const [line, space4, tapMin] = [16, 16, 48];
     expect(line + 2 * space4).toBe(tapMin);
     expect(CSS).not.toContain("inline-flex");
