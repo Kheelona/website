@@ -61,7 +61,7 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [lessons](engineering/lessons.md): hard-won behaviour of this stack (Next 16, Vercel, store host, payments, tracking verification, SEO, QA, git).
 - [phase 4 kickoff](engineering/phase-4-kickoff.md): what the Architect starts from after Gate A: the approved sources, hard constraints, the seven architecture decisions to make, and what carries into Phase 5.
 - [artifacts](engineering/artifacts.md): every published Artifact (the Gate A mockup link), updated in place; check before publishing.
-- [project summary](engineering/project-summary.md): where the rebuild stands on 2026-10-15 (built, decided, quality, waiting on), and how the quick-changes phase runs (D062). Start here to resume.
+- [project summary](engineering/project-summary.md): where the rebuild stands on 2026-10-15 evening (the selling update built and merged locally; quality; rulings; waiting on), and how the quick-changes phase runs (D062). Start here to resume.
 - [architecture](engineering/architecture.md): the Phase 4 plan (2026-10-12): visual layer, components, content model, offer, tracking, SEO, media, motion (D049), performance, environments and beta (D048), release, rollback, checkout boundary.
 - [build runbook](engineering/build-runbook.md): **read first when resuming the build**: the `build-wave` workflow, merge and wave close, resume after a break, wave progress.
 - [tasks](engineering/tasks.md): the build in ten dependency waves with owners, owned files, acceptance criteria and the guard-test ownership table.

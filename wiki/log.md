@@ -1357,3 +1357,8 @@ The founder asked for "website consistency across pages" and "website and Mobile
 runs before beta although D062 defers the full QA: four lenses on the local production build (the CMO selling on a phone
 with a ruling on Home's 18-screen phone length; QA on phones 360/390/412; QA on laptops 1024-1440; a cross-page
 consistency extraction), then one independent verifier per blocking or major finding.
+
+## [2026-10-15 22:00] cleanup | Docs updated at the founder's request; the consistency review paused
+The project summary rewritten for the selling update (waves q2a-q2c, quality at `5b245a26`, the rulings to confirm,
+next steps, waiting on the founder); status and index follow. The consistency review `wf_78365aa5-dfe` was stopped to
+save the usage allowance; resume it with `resumeFromRunId` (finished reviewers replay from cache).
