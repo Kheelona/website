@@ -15,17 +15,21 @@ import { seller } from "./seller";
 
 /* The seller block and the support chat (architecture §6.1; task 2.1 acceptance 2): the seller
  * strings equal the existing src/config/site.ts constants, which the store footer and the emails
- * already print; the visible lines equal the approved mockups; the chat carries D050's number and
- * three texts, never an order number. */
+ * already print; the visible lines equal the approved mockups, as D063 items 2-3 rule them (the
+ * GSTIN off the website, the number only on /contact and the legal pages; task Q2.3); the chat
+ * carries D050's number and three texts, never an order number. */
 
 const doc = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const home = doc("home");
 
+/** The support number as a page prints it ("+91 91875 46483"), or a call link; never the wa.me address's digits, which
+ *  stay everywhere. */
+const PHONE = /91875\s46483|tel:/;
+
 describe("the seller strings equal src/config/site.ts", () => {
-  it("entity, GSTIN, address, support number, WhatsApp link and email", () => {
+  it("entity, address, support number, WhatsApp link and email", () => {
     expect(seller.legalName).toBe(LEGAL_ENTITY);
-    expect(seller.gstin).toBe(GSTIN);
     expect(seller.address).toEqual(REGISTERED_ADDRESS);
     expect(seller.addressLine).toBe(REGISTERED_ADDRESS_LINE);
     expect(seller.support.phone).toBe(SUPPORT_WHATSAPP_DISPLAY);
@@ -34,15 +38,53 @@ describe("the seller strings equal src/config/site.ts", () => {
   });
 });
 
+describe("the GSTIN and the number on the website (D063 items 2-3, D064 item 11; task Q2.3)", () => {
+  it("holds no GSTIN: the website prints none; src/config/site.ts keeps it for the receipts and invoices", () => {
+    expect(seller).not.toHaveProperty("gstin");
+    expect(JSON.stringify(seller)).not.toContain(GSTIN);
+  });
+
+  it("words every line a selling page or a footer prints without the number: WhatsApp and the email stay", () => {
+    for (const [name, line] of [
+      ["help line", seller.help.contact],
+      ["store header's help line", seller.storeHelp.contact],
+      ["footers' contact line", seller.support.footerLine],
+      ["the WhatsApp-or-email phrase", seller.support.reach],
+    ] as const) {
+      expect(line, name).not.toMatch(PHONE);
+      expect(line, name).toContain(SUPPORT_WHATSAPP_HREF);
+    }
+    expect(seller.support.footerLine).toContain(`mailto:${CONTACT_EMAIL}`);
+    /* The officer's line names him by his email, as the D032 line always has; only the number comes off. */
+    expect(seller.grievance.footerLine.text).not.toMatch(PHONE);
+    expect(seller.grievance.footerLine.text).toContain("mailto:aman@kheelona.com");
+  });
+
+  it("says \"WhatsApp or email\" in one phrase where a sentence offers both (setup's close, two guides)", () => {
+    expect(toPlainText(seller.support.reach)).toBe(`WhatsApp or email ${CONTACT_EMAIL}`);
+    expect(seller.support.reach).toBe(`[WhatsApp](${SUPPORT_WHATSAPP_HREF}) or email [${CONTACT_EMAIL}](mailto:${CONTACT_EMAIL})`);
+  });
+
+  it("keeps the number in the lines /contact and the legal pages print (E-Commerce Rules r.4(2)(d); ECOM-01, ECOM-02)", () => {
+    expect(seller.support.line).toMatch(PHONE);
+    expect(seller.grievance.line.text).toMatch(PHONE);
+  });
+
+  it("prints the store footer's grievance line as the D032 line without the number, word for word otherwise", () => {
+    expect(seller.grievance.footerLine.lead).toBe(seller.grievance.line.lead);
+    expect(toPlainText(seller.grievance.footerLine.text)).toBe(toPlainText(seller.grievance.line.text).replace(`, ${SUPPORT_WHATSAPP_DISPLAY}`, ""));
+  });
+});
+
 describe("the visible lines equal the approved mockup", () => {
-  it("prints the footer's four seller lines exactly (partials/footer.html)", () => {
+  it("prints the footer's seller lines as the mockup does, the GSTIN and the number off (partials/footer.html; D063)", () => {
     const lines = Array.from(home.querySelectorAll(".kh-footer__legal span")).map((s) => norm(s.textContent));
-    expect([
-      toPlainText(seller.copyright),
-      `GSTIN ${seller.gstin}`,
-      seller.addressLine,
-      toPlainText(seller.support.line),
-    ]).toEqual(lines.slice(0, 4));
+    expect(lines.slice(0, 4)).toEqual([toPlainText(seller.copyright), `GSTIN ${GSTIN}`, seller.addressLine, toPlainText(seller.support.line)]);
+    expect([toPlainText(seller.copyright), seller.addressLine, toPlainText(seller.support.footerLine)]).toEqual([
+      lines[0],
+      lines[2],
+      `WhatsApp · ${CONTACT_EMAIL}`,
+    ]);
   });
 
   it("prints the D032 grievance line verbatim, as the contact and store pages do", () => {
@@ -61,10 +103,10 @@ describe("the visible lines equal the approved mockup", () => {
     expect(toPlainText(seller.support.line)).toContain("(WhatsApp or call)");
   });
 
-  it("prints the help line exactly as every CTA block does (Home hero)", () => {
+  it("prints the help line every CTA block prints (Home hero), the call off (D063 item 2)", () => {
     const help = norm(home.querySelector(".mk-help")?.textContent);
-    expect(`${seller.help.lead} ${toPlainText(seller.help.contact)}`).toBe(help);
     expect(help).toBe("Questions? WhatsApp or call +91 91875 46483");
+    expect(`${seller.help.lead} ${toPlainText(seller.help.contact)}`).toBe("Questions? WhatsApp us");
   });
 
   /* Task 3.6 item 7. Every no-wrap phone link of the approved mockup puts the no-wrap on the link itself
@@ -80,7 +122,6 @@ describe("the visible lines equal the approved mockup", () => {
       parseRichText(source).flatMap((node) => (node.kind === "nowrap" ? node.children : [node])).filter((n) => n.kind === "link" && n.href.startsWith("tel:"));
     for (const [name, source] of [
       ["support line", seller.support.line],
-      ["help line", seller.help.contact],
       ["grievance line", seller.grievance.line.text],
     ] as const) {
       const nodes = parseRichText(source);
@@ -90,9 +131,10 @@ describe("the visible lines equal the approved mockup", () => {
     }
   });
 
-  it("prints the store header's help line exactly (store.html)", () => {
+  it("prints the store header's help line as store.html does, the call off (D063 item 2)", () => {
     const help = norm(doc("store").querySelector(".mk-store-head__help")?.textContent);
-    expect(`${seller.storeHelp.lead} ${toPlainText(seller.storeHelp.contact)}`).toBe(help);
+    expect(help).toBe("Need help? WhatsApp or call");
+    expect(`${seller.storeHelp.lead} ${toPlainText(seller.storeHelp.contact)}`).toBe("Need help? WhatsApp us");
   });
 
   it("states the manufacturer and origin as the product page's declarations do (D034)", () => {

@@ -9,6 +9,7 @@ import { signAddressToken } from "@/lib/store/signing";
 import { formatThanksSession } from "@/lib/store/thanks-session";
 import { fakeClient, fakeEnv } from "../../../../test/helpers/fake-supabase";
 import { readRepoFile, tagText } from "../../../../test/e2e/support/repo";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { skeleton, words } from "../../../../test/support/mockup-compare";
 import { DELIVERY_TEXT } from "../delivery";
 import { navigation } from "../navigation";
@@ -179,9 +180,9 @@ describe("fold 4, what happens next", () => {
 describe("fold 5, help and changing your mind", () => {
   const help = fold("help-title");
 
-  it("has the mockup's heading, help line, undo paragraph and refund link words", () => {
+  it("has the mockup's heading, help line (the call off, D063 item 2), undo paragraph and refund link words", () => {
     expect(confirmation.help.heading).toBe(text(help, "h2"));
-    expect(toPlainText(confirmation.help.contact)).toBe(text(help, ".mk-help"));
+    expect(toPlainText(confirmation.help.contact)).toBe(text(withSellerFacts(help), ".mk-help"));
     expect(confirmation.help.undo).toBe(text(help, "p.kh-body.mk-muted"));
     expect(confirmation.help.refund.label).toBe(text(help, ".kh-btn--ghost"));
     expect(confirmation.help.refund.href).toBe("/refund");
@@ -202,7 +203,7 @@ describe("the other states, in the live page's words", () => {
     expect(live).toContain(fillSlots(created.lede, {}));
   });
 
-  it("link needed: the eyebrow, h1, lede, and the help line with the call option (D032)", () => {
+  it("link needed: the eyebrow, h1, lede, and the help line, WhatsApp since D063 took the call off (D032, D063 item 2)", () => {
     const { linkNeeded } = confirmation.head;
     expect(live).toContain(`> ${linkNeeded.eyebrow} </p>`);
     expect(live).toContain(`> ${linkNeeded.heading} </h1>`);
@@ -219,18 +220,23 @@ describe("the other states, in the live page's words", () => {
 
   /* CMO review C m4 (task 7.1c): a parent who has paid and cannot see their order got only a small muted WhatsApp link.
      The copy page gives a secondary WhatsApp button, then the call line (store-confirmation.md, Other states), every word
-     an approved one: the store's not-switched-on button, the D032 help line's call, this state's live tail. */
-  it("cannot open: a WhatsApp button, then the call line, each from its one source (store-confirmation.md, Other states)", () => {
+     an approved one: the store's not-switched-on button, the D032 help line's call, this state's live tail. D063 item 2
+     (task Q2.3) took the number off the store: the line under the button offers the email in the call's place. */
+  it("cannot open: a WhatsApp button, then the email line, each from its one source (store-confirmation.md, Other states; D063)", () => {
     const { cannotOpen } = confirmation;
     expect(cannotOpen.action).toBe("Message us on WhatsApp");
     expect(cannotOpen.action).toBe(storePage.notConfigured.action);
-    expect(toPlainText(cannotOpen.call)).toBe(`Or call ${seller.support.phone} with your order number and a person will find it.`);
-    expect(cannotOpen.call).toContain(`(${seller.support.tel})`);
+    expect(toPlainText(cannotOpen.call)).toBe(`Or email ${seller.support.email} with your order number and a person will find it.`);
+    expect(cannotOpen.call).toContain(`(mailto:${seller.support.email})`);
+    expect(cannotOpen.call).not.toMatch(/tel:|91875 46483/);
     expect(cannotOpen.call.endsWith(storeNotFound.panel.help.tail)).toBe(true);
     const page = readRepoFile("wiki/site/pages/store-confirmation.md");
     const rowLine = page.split("\n").find((l) => l.startsWith("| Signed link, order will not load"))!;
     expect(rowLine).toContain(`**[${cannotOpen.action}]**`);
-    expect(rowLine).toContain(`Or [call ${seller.support.phone}] with your order number and a person will find it.`);
+    /* The approved line, which D063 changes only in the call's place. */
+    const approved = `Or [call ${seller.support.phone}] with your order number and a person will find it.`;
+    expect(rowLine).toContain(approved);
+    expect(toPlainText(cannotOpen.call)).toBe(approved.replace(`[call ${seller.support.phone}]`, `email ${seller.support.email}`));
   });
 
   it("names the paid and confirming states with an icon each (check-circle as the mockup, a clock while confirming)", () => {
@@ -275,9 +281,10 @@ async function page() {
   return render(await ThanksPage());
 }
 /** The mockup's main as this build prints it on the store: placeholders and value markers are sample data, the fields'
- *  ids the DS Field's own, and the refund page the marketing site's. */
+ *  ids the DS Field's own, the refund page the marketing site's, and the help line without the call (D063 item 2; task
+ *  Q2.3; seller-facts.ts). */
 function mockupMain(): Element {
-  const copy = main.firstElementChild!.cloneNode(true) as Element;
+  const copy = withSellerFacts(main.firstElementChild!);
   copy.querySelectorAll("input[id], select[id]").forEach((field) => field.removeAttribute("id"));
   copy.querySelector('a[href="refund.html"]')!.setAttribute("href", `${MARKETING_ORIGIN}/refund`);
   return copy;
@@ -357,13 +364,13 @@ describe("/thanks, the page", () => {
     expect(screen.getByText("We have your address.")).toBeInTheDocument();
   });
 
-  it("link needed: its head and the help line with the call option, the bubble, and no order data", async () => {
+  it("link needed: its head and the help line (WhatsApp, no call: D063 item 2), the bubble, and no order data", async () => {
     cookieValue = undefined;
     order();
     const { container } = await page();
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("We need your link again.");
-    expect(screen.getByRole("link", { name: "WhatsApp" })).toHaveAttribute("href", seller.support.whatsapp);
-    expect(screen.getByRole("link", { name: `call ${seller.support.phone}` })).toHaveAttribute("href", seller.support.tel);
+    expect(screen.getByRole("link", { name: "WhatsApp us" })).toHaveAttribute("href", seller.support.whatsapp);
+    expect(container.querySelector('a[href^="tel:"]')).toBeNull();
     expect(container.textContent).toContain("Cannot find the email?");
     expect(container.textContent).not.toContain(REF);
     expect(container.querySelector(".ph-mask")).toBeNull();
@@ -379,10 +386,10 @@ describe("/thanks, the page", () => {
   });
 
   /* CMO review C m4 (task 7.1c; store-confirmation.md, Other states): the reader may have paid, so a secondary WhatsApp
-     button (never orange, never a button to buy again), then the call line with the number as a tel: link. The panel
-     sits outside the order's container, so it carries ph-no-capture itself, as the bubble and the payments line do:
-     /thanks keeps zero autocapture events (tracking inventory row 18). */
-  it("cannot open: a secondary WhatsApp button, then the call line with its tel: link, all inside ph-no-capture", async () => {
+     button (never orange, never a button to buy again), then the line under it, by email since D063 item 2 took the
+     number off the store (task Q2.3). The panel sits outside the order's container, so it carries ph-no-capture itself,
+     as the bubble and the payments line do: /thanks keeps zero autocapture events (tracking inventory row 18). */
+  it("cannot open: a secondary WhatsApp button, then the email line with its mailto: link, all inside ph-no-capture", async () => {
     results["preorders.select"] = { data: null };
     const { container } = await page();
     const panel = container.querySelector("section[aria-labelledby]")!;
@@ -394,7 +401,8 @@ describe("/thanks, the page", () => {
     expect(within(panel as HTMLElement).queryByRole("link", { name: /pre-order/i })).toBeNull();
     const line = panel.querySelector("p.ks-store-closed")!;
     expect(line.textContent).toBe(toPlainText(confirmation.cannotOpen.call));
-    expect(within(line as HTMLElement).getByRole("link", { name: `call ${seller.support.phone}` })).toHaveAttribute("href", seller.support.tel);
+    expect(within(line as HTMLElement).getByRole("link", { name: seller.support.email })).toHaveAttribute("href", `mailto:${seller.support.email}`);
+    expect(panel.querySelector('a[href^="tel:"]')).toBeNull();
     // The old muted line is gone: the button is the WhatsApp option now.
     expect(container.textContent).not.toContain("Message us on WhatsApp with your order number");
     expect(container.textContent).not.toContain(REF);

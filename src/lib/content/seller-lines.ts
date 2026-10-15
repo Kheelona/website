@@ -1,14 +1,13 @@
 import type { RichTextString } from "@/content/types";
 
 /**
- * The seller lines (task 4.3, wave-3 close): content/en-IN/seller.ts holds the facts (entity, GSTIN, the registered
- * address in parts, the grievance officer and the D032 line); this one helper composes what the pages print from
- * them, so a fact is written once and every line that carries it says the same words (architecture §6.1; 4.4's guard:
- * no page hard-codes the GSTIN).
+ * The seller lines (task 4.3, wave-3 close): content/en-IN/seller.ts holds the facts (entity, the registered address
+ * in parts, the grievance officer and the D032 line); this one helper composes what the pages print from them, so a
+ * fact is written once and every line that carries it says the same words (architecture §6.1). The website prints no
+ * GSTIN (D063 item 3, D064 item 11; task Q2.3): src/config/site.ts keeps it for the receipt emails and invoices.
  *
- *   gstinLine            "GSTIN <gstin>"                                  footer, store footer, contact
- *   legalSellerSentence  "<entity>, registered at <address>. GSTIN <gstin>."  the legal pages' seller line
- *   grievanceOfficerLine the D032 line, `{ lead, text }`                    the legal pages' grievance card
+ *   legalSellerSentence  "<entity>, registered at <address>."  the legal pages' seller line
+ *   grievanceOfficerLine the D032 line, `{ lead, text }`       the legal pages' grievance card
  *
  * Each takes `{ nowrap }`. With it, the phrases a line break would split badly stay on one line, as the approved
  * refund and shipping pages mark them (refund.html:133, 141; shipping.html:114, 118): a house number ("No 51"), a
@@ -33,7 +32,6 @@ export interface AddressParts {
 /** What the lines are built from: the shape content/en-IN/seller.ts already has. */
 export interface SellerFacts {
   readonly legalName: string;
-  readonly gstin: string;
   readonly address: AddressParts;
   /** The footer's one-line address; the parts must make exactly this. */
   readonly addressLine: string;
@@ -49,8 +47,6 @@ export interface LineOptions {
   readonly nowrap?: boolean;
 }
 
-/** The label the GSTIN is printed after, as the footer prints it (partials/footer.html). */
-const GSTIN_LABEL = "GSTIN";
 /** Between the entity and its address in the legal seller sentence (privacy.html:294, refund.html:141). */
 const REGISTERED_AT = "registered at";
 
@@ -61,12 +57,6 @@ const HYPHENATED = /[\p{L}\d]+(?:-[\p{L}\d]+)+/gu;
 
 const keep = (text: string): RichTextString => `{nowrap:${text}}`;
 const keepEach = (text: string, phrase: RegExp): RichTextString => text.replace(phrase, (match) => keep(match));
-
-/** "GSTIN <gstin>"; with nowrap the label never ends a line apart from its number. */
-export function gstinLine(seller: Pick<SellerFacts, "gstin">, { nowrap = false }: LineOptions = {}): RichTextString {
-  const line = `${GSTIN_LABEL} ${seller.gstin}`;
-  return nowrap ? keep(line) : line;
-}
 
 /** The registered address in one line, its parts in the footer's order, each phrase kept whole with nowrap. */
 function addressLine(seller: SellerFacts, nowrap: boolean): RichTextString {
@@ -79,10 +69,10 @@ function addressLine(seller: SellerFacts, nowrap: boolean): RichTextString {
   return `${keepEach(line1, ADDRESS_PHRASE)}, ${line2}, ${keep(`${city} ${pincode}`)}, ${state}, ${country}`;
 }
 
-/** "<entity>, registered at <address>. GSTIN <gstin>." The legal pages' seller line (privacy.html:294, terms.html:218,
- *  refund.html:141, shipping.html:114). The GSTIN stays as the sentence prints it, nowrap or not. */
+/** "<entity>, registered at <address>." The legal pages' seller line (privacy.html:294, terms.html:218,
+ *  refund.html:141, shipping.html:114), whose closing "GSTIN …." came off with D063 item 3. */
 export function legalSellerSentence(seller: SellerFacts, { nowrap = false }: LineOptions = {}): RichTextString {
-  return `${seller.legalName}, ${REGISTERED_AT} ${addressLine(seller, nowrap)}. ${gstinLine(seller)}.`;
+  return `${seller.legalName}, ${REGISTERED_AT} ${addressLine(seller, nowrap)}.`;
 }
 
 /** The D032 grievance line, verbatim from seller.ts; with nowrap, the hyphenated words of the officer's role stay

@@ -18,6 +18,7 @@ import {
   VISUAL_HIDDEN,
 } from "../../../../test/e2e/support/deviations";
 import { findBanned } from "../../../../test/guards/banned-phrases.data";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { builtMarkup, canonical, mockupFold, renderedElement, STORE, without } from "../../../../test/support/mockup-compare";
 import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../test/support/mockup-facts";
 import { OfferSection } from "./OfferSection";
@@ -69,8 +70,8 @@ type Slug = "home" | "meet-kheelu";
  *  and the product card's perk read D058 item 3's sentence (deviations.md V26, V27; CLAIM_FIXES). */
 const claimFixed = (slug: Slug) => withFacts(withFacts(mockupFold(slug, "main"), editsBeforeClaimFixes(slug)), CLAIM_FIXES[slug].edits);
 /** A page's fold as approved, with the page's accepted changes applied, then task 8c.2's: the later price on the card and
- *  the share link under it (D061; OFFER_ADDITIONS). */
-const approvedFold = (slug: Slug, fold: string) => withFacts(claimFixed(slug), OFFER_ADDITIONS[slug].edits).querySelector(fold)!;
+ *  the share link under it (D061; OFFER_ADDITIONS); then D063's: the help line's call off (task Q2.3). */
+const approvedFold = (slug: Slug, fold: string) => withSellerFacts(withFacts(claimFixed(slug), OFFER_ADDITIONS[slug].edits)).querySelector(fold)!;
 /* A perk's words are always in a span (OfferCard), so a value-marked perk keeps its span. */
 const KEEP = ".kh-offer__list span";
 

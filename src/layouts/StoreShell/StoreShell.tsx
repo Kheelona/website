@@ -7,7 +7,6 @@ import { RichText } from "@/components/ui/RichText/RichText";
 import { MARKETING_ORIGIN } from "@/config/env";
 import { navigation } from "@/content/en-IN/navigation";
 import { seller } from "@/content/en-IN/seller";
-import { gstinLine } from "@/lib/content/seller-lines";
 
 /**
  * The store host's shell (architecture §16.1; structure §3.1), rendered by src/app/store/layout.tsx around the store
@@ -24,8 +23,10 @@ import { gstinLine } from "@/lib/content/seller-lines";
  * links, and refund#chargeback would be a sixth. The line renders as the last line of the store page's `main` instead
  * (task 5.15; wiki/qa/deviations.md V1). `StoreFooter` still takes it as `payments`.
  *
- * Every word comes from content: the logo link's name and the new-tab note from `navigation.labels` (task 3.6); the
- * seller's GSTIN line from the seller-lines helper (task 4.3), as in SiteShell.
+ * Every word comes from content: the logo link's name and the new-tab note from `navigation.labels` (task 3.6), the
+ * seller's lines from seller.ts. The store prints no GSTIN and no number (D063 items 2-3, D064 item 11; task Q2.3): the
+ * header's help line and the footer's contact line are WhatsApp (and the email), the grievance line the D032 line
+ * without the number (`seller.grievance.footerLine`).
  */
 export function StoreShell({ children }: { children: ReactNode }) {
   const { labels } = navigation;
@@ -45,13 +46,12 @@ export function StoreShell({ children }: { children: ReactNode }) {
         }}
         seller={{
           entity: seller.legalName,
-          gstin: gstinLine(seller),
           address: seller.addressLine,
-          contact: <RichText text={seller.support.line} />,
+          contact: <RichText text={seller.support.footerLine} />,
         }}
         grievance={
           <>
-            <RichText text={seller.grievance.line.lead} /> <RichText text={seller.grievance.line.text} />
+            <RichText text={seller.grievance.footerLine.lead} /> <RichText text={seller.grievance.footerLine.text} />
           </>
         }
         copyright={<RichText text={seller.copyright} />}

@@ -8,6 +8,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { CLAIM_FIXES, editsBeforeClaimFixes } from "../../../../../test/e2e/support/deviations";
 import { ROOT, readRepoFile } from "../../../../../test/e2e/support/repo";
+import { withSellerFacts } from "../../../../../test/e2e/support/seller-facts";
 import { withFacts } from "../../../../../test/support/mockup-facts";
 import { seller } from "../../seller";
 import { product, type SpecRow } from "./product";
@@ -24,8 +25,9 @@ const doc = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mock
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const approved = doc("meet-kheelu");
 /** The approved page with the founder's page facts applied (test/e2e/support/page-facts.ts), and task 7.1b's copy fixes,
- *  then task 8b.1's claim fixes in a pass of their own (test/e2e/support/deviations.ts). */
-const page = withFacts(withFacts(approved.querySelector("main")!, editsBeforeClaimFixes("meet-kheelu")), CLAIM_FIXES["meet-kheelu"].edits);
+ *  then task 8b.1's claim fixes in a pass of their own (test/e2e/support/deviations.ts), then D063 item 2: the consumer
+ *  care row without the call (task Q2.3; test/e2e/support/seller-facts.ts). */
+const page = withSellerFacts(withFacts(withFacts(approved.querySelector("main")!, editsBeforeClaimFixes("meet-kheelu")), CLAIM_FIXES["meet-kheelu"].edits));
 const offer = buildOffer("token");
 const text = (value: RichTextString) => toPlainText(value, offer);
 

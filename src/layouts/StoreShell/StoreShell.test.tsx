@@ -2,6 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MARKETING_ORIGIN } from "@/config/env";
 import { isSitePath } from "@/lib/links";
+import { withSellerFacts } from "../../../test/e2e/support/seller-facts";
 import { mockupDiff, mockupPage, mockupRoute } from "../../../test/support/mockup-compare";
 import { StoreShell } from "./StoreShell";
 
@@ -37,14 +38,16 @@ describe("StoreShell: the store chrome equals the approved mockup's (mockup/stor
     expect(differences(container.querySelector(".ks-skip")!, mockup.querySelector(".mk-skip")!)).toEqual([]);
   });
 
+  /* The header's help line, the footer's seller lines and its grievance line as D063 items 2-3 rule them (task Q2.3;
+     test/e2e/support/seller-facts.ts): WhatsApp and the email, no GSTIN, no number, no call. */
   it("store header", () => {
     const { container } = shell();
-    expect(differences(container.querySelector("header.ks-store-head")!, mockup.querySelector("header.mk-store-head")!)).toEqual([]);
+    expect(differences(container.querySelector("header.ks-store-head")!, withSellerFacts(mockup.querySelector("header.mk-store-head")!))).toEqual([]);
   });
 
   it("store footer, but for the payments line (held back: see the test below)", () => {
     const { container } = shell();
-    const ref = mockup.querySelector("footer.mk-store-foot")!.cloneNode(true) as Element;
+    const ref = withSellerFacts(mockup.querySelector("footer.mk-store-foot")!);
     const payments = Array.from(ref.querySelectorAll("p.kh-body-s")).find((p) => /Payments by Razorpay/.test(p.textContent ?? ""))!;
     payments.remove();
     expect(differences(container.querySelector("footer.ks-store-foot")!, ref)).toEqual([]);

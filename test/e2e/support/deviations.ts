@@ -19,8 +19,10 @@ import { inAppNote } from "@/content/en-IN/store/in-app-note";
 import { paymentsLine } from "@/content/en-IN/store/payments-line";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
+import { MOCKUP_SLUGS, type MockupSlug } from "./mockup-text";
 import { PAGE_FACTS, type FactEdit, type PageFacts, type PageFactsSlug } from "./page-facts";
 import { sentences } from "./parity";
+import { sellerFactsHidden, sellerFactsText } from "./seller-facts";
 
 export type VisualDeviation = {
   /** Viewport name from viewports.ts, for example "phone-360x640". */
@@ -1766,9 +1768,10 @@ export const TAP_AREA_HIDDEN: readonly VisualHide[] = [
   },
 ];
 
-/** Every rule the visual pass applies to one page: the rules every page shares (TAP_AREA_HIDDEN), then the page's own. */
+/** Every rule the visual pass applies to one page: the rules every page shares (TAP_AREA_HIDDEN), then the page's own,
+ *  then D063's for that page (task Q2.3; seller-facts.ts). */
 export function visualHidden(slug: string): readonly VisualHide[] {
-  return [...TAP_AREA_HIDDEN, ...(VISUAL_HIDDEN[slug] ?? [])];
+  return [...TAP_AREA_HIDDEN, ...(VISUAL_HIDDEN[slug] ?? []), ...sellerHidden(slug)];
 }
 
 const hidingStyle = (rules: readonly VisualHide[], side: VisualHide["side"]): string => {
@@ -1792,11 +1795,16 @@ export function hiddenCss(slug: string, side: VisualHide["side"]): string {
   return hidingStyle(VISUAL_HIDDEN[slug] ?? [], side);
 }
 
+/** The style of D063's rules for one page on one side (task Q2.3), or "" on a page the ruling does not change. */
+export function sellerHiddenCss(slug: string, side: VisualHide["side"]): string {
+  return hidingStyle(sellerHidden(slug), side);
+}
+
 /** Hides one side's approved elements on the page (before it is settled and measured): the rules every page shares,
- *  then the page's own, each as a style of its own; prints each rule it applies under `label`, the calling spec's name
- *  ("visual-parity", "thanks-paid"; task 4.9 item 6). */
+ *  then the page's own, then D063's, each as a style of its own; prints each rule it applies under `label`, the calling
+ *  spec's name ("visual-parity", "thanks-paid"; task 4.9 item 6). */
 export async function hideDeviations(page: Page, slug: string, side: VisualHide["side"], label: string): Promise<void> {
-  for (const css of [sharedHiddenCss(side), hiddenCss(slug, side)]) if (css) await page.addStyleTag({ content: css });
+  for (const css of [sharedHiddenCss(side), hiddenCss(slug, side), sellerHiddenCss(slug, side)]) if (css) await page.addStyleTag({ content: css });
   for (const rule of visualHidden(slug).filter((r) => r.side === side)) {
     console.log(`[${label}] ${slug}: ${rule.selector} hidden in the ${side}${rule.media ? ` at ${rule.media}` : ""} (${rule.approvedBy}): ${rule.reason}`);
   }
@@ -1957,3 +1965,15 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
   /* Section 8's refund timing (V21, task 7.1b): COPY_FIXES above. */
   terms: [pageFacts("terms"), factsRule(COPY_FIXES.terms), factsRule(CLAIM_FIXES.terms)],
 };
+
+/* D063 items 2-3 (task Q2.3; seller-facts.ts): the GSTIN off the website and the number only on /contact and the legal
+   pages. One shared ruling, as TAP_AREA_HIDDEN is: never a row per page key. Its rules for one page are read from the
+   frozen mockup as the ruling rewrites it, and applied after the page's own. */
+const isMockupSlug = (slug: string): slug is MockupSlug => (MOCKUP_SLUGS as readonly string[]).includes(slug);
+const sellerText = (slug: string): readonly TextDeviation[] => (isMockupSlug(slug) ? sellerFactsText(slug) : []);
+const sellerHidden = (slug: string): readonly VisualHide[] => (isMockupSlug(slug) ? sellerFactsHidden(slug) : []);
+
+/** Every rule the text pass applies to one page: the page's own (TEXT_DEVIATIONS), then D063's. */
+export function textDeviations(slug: string): readonly TextDeviation[] {
+  return [...(TEXT_DEVIATIONS[slug] ?? []), ...sellerText(slug)];
+}

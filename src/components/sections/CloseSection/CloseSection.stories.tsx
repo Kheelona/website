@@ -141,7 +141,7 @@ export const Links: Story = {
     variant: "links",
     heading: { title: "Stuck? {hand:We’ll help.}" },
     contact:
-      "[WhatsApp](https://wa.me/919187546483) or [call us on {nowrap:+91 91875 46483}](tel:+919187546483), or email [hello@kheelona.com](mailto:hello@kheelona.com). Tell us your order number, and what you see on Kheelu and in the app.",
+      "[WhatsApp](https://wa.me/919187546483) or email [hello@kheelona.com](mailto:hello@kheelona.com). Tell us your order number, and what you see on Kheelu and in the app.",
     action: { label: "All the ways to reach us", href: "/contact", variant: "secondary", icon: "chat-circle-dots" },
     meet: { lead: "Don’t have Kheelu yet?", link: "[Meet Kheelu](/products/kheelu)" },
   },

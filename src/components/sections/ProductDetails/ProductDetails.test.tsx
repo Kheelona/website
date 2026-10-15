@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import { runApprovedTabScript, tabStates } from "@/components/ui/Tabs/approved-tabs.test-support";
 import { buildOffer } from "@/lib/offer/offer";
 import { CLAIM_FIXES, editsBeforeClaimFixes } from "../../../../test/e2e/support/deviations";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 import { ProductDetails } from "./ProductDetails";
@@ -38,7 +39,8 @@ function served(ui: ReactElement): Element {
 const SLUG = "meet-kheelu";
 /** The approved fold 7 through the route's accepted changes (see above), as the server sends it: before any script ran. */
 function approvedFold(): Element {
-  const main = withFacts(withFacts(mockupFold(SLUG, "main"), editsBeforeClaimFixes(SLUG)), CLAIM_FIXES[SLUG].edits);
+  /* Then D063's: the consumer care row's call off (task Q2.3). */
+  const main = withSellerFacts(withFacts(withFacts(mockupFold(SLUG, "main"), editsBeforeClaimFixes(SLUG)), CLAIM_FIXES[SLUG].edits));
   return main.querySelector("section#specs")!;
 }
 

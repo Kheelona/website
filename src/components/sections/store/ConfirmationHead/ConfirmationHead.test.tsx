@@ -54,17 +54,17 @@ describe("ConfirmationHead", () => {
     const header = screen.getByRole("heading", { level: 1 }).parentElement!;
     const line = header.lastElementChild!;
     expect(line.className).toBe("kh-body ks-help");
-    expect(line.textContent).toBe(
-      "Cannot find the email? WhatsApp or call +91 91875 46483 and a person will pull up your order and add your address for you.",
-    );
-    expect(screen.getByRole("link", { name: "call +91 91875 46483" })).toHaveAttribute("href", "tel:+919187546483");
+    /* WhatsApp, the call off (D063 item 2; task Q2.3). */
+    expect(line.textContent).toBe("Cannot find the email? WhatsApp us and a person will pull up your order and add your address for you.");
+    expect(screen.getByRole("link", { name: "WhatsApp us" })).toHaveAttribute("href", "https://wa.me/919187546483");
+    expect(line.querySelector('a[href^="tel:"]')).toBeNull();
   });
 
   it("its LinkNeeded story shows the state as the page renders it, the help line included (every variant in Storybook)", () => {
     const { container } = render(<ConfirmationHead {...stories.args} {...LinkNeeded.args} />);
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("We need your link again.");
     expect(container.querySelector(".ks-help")!.textContent).toBe(
-      `${confirmation.linkNeededHelp.lead} WhatsApp or call +91 91875 46483 and a person will pull up your order and add your address for you.`,
+      `${confirmation.linkNeededHelp.lead} WhatsApp us and a person will pull up your order and add your address for you.`,
     );
   });
 

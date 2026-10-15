@@ -17,8 +17,9 @@ export interface FooterProps {
   made: string;
   /** Kheelu, Read, Help: content/en-IN/navigation.ts `footer.columns`. */
   columns: readonly { readonly id: string; readonly title: string; readonly links: readonly FooterLink[] }[];
-  /** The four seller lines, printed as the footer prints them (the shell renders the contact line with RichText). */
-  seller: { entity: ReactNode; gstin: ReactNode; address: ReactNode; contact: ReactNode };
+  /** The seller lines, printed as the footer prints them (the shell renders the contact line with RichText); no GSTIN
+   *  and no number on the website's footer (D063 items 2-3). */
+  seller: { entity: ReactNode; address: ReactNode; contact: ReactNode };
   /** The legal row's last line: the grievance officer, on the contact page (D032). */
   grievance: FooterLink;
 }

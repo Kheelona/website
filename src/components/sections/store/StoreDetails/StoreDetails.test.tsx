@@ -12,6 +12,7 @@ import { storePage } from "@/content/en-IN/store/store-page";
 import { isSitePath } from "@/lib/links";
 import { buildOffer } from "@/lib/offer/offer";
 import { CLAIM_FIXES } from "../../../../../test/e2e/support/deviations";
+import { withSellerFacts } from "../../../../../test/e2e/support/seller-facts";
 import { mockupDiff, mockupFold, mockupRoute } from "../../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../../test/support/mockup-facts";
 import { PayBeside, StoreDetails } from "./StoreDetails";
@@ -63,9 +64,10 @@ function comparable(source: Element, faq: string): Element {
 
 /** The mockup's two columns as the build must print them: the in-app note built switched off (N7, renders nothing),
  *  the consent box unrequired and its links' live rel (the rendered contract, ADR-013), the delivery head whole
- *  (checkout-presentation.test.tsx), the small print as task 8b.1 words it (D058 item 3; deviations.md V34). */
+ *  (checkout-presentation.test.tsx), the small print as task 8b.1 words it (D058 item 3; deviations.md V34), the help
+ *  line without the call (D063 item 2; task Q2.3). */
 function approved(): Element {
-  const el = comparable(withFacts(mockupFold("store", "div.mk-store"), CLAIM_FIXES.store.edits), "section.mk-faq");
+  const el = comparable(withSellerFacts(withFacts(mockupFold("store", "div.mk-store"), CLAIM_FIXES.store.edits)), "section.mk-faq");
   el.querySelector(".mk-inapp")!.remove();
   el.querySelector('input[name="accepted"]')!.removeAttribute("required");
   el.querySelectorAll(".kh-check__text a").forEach((a) => a.setAttribute("rel", "noopener noreferrer"));
@@ -113,7 +115,7 @@ describe("PayBeside", () => {
         <PayBeside content={storePage.beside} offer={token} newTabNote={NOTE} />
       </div>,
     );
-    const ref = mockupFold("store", ".mk-pay-beside").cloneNode(true) as Element;
+    const ref = withSellerFacts(mockupFold("store", ".mk-pay-beside"));
     ref.querySelector(".mk-price")!.remove();
     expect(differences(container.firstElementChild!, ref)).toEqual([]);
   });

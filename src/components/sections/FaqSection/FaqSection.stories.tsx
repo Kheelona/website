@@ -137,7 +137,7 @@ export const Product: Story = {
     help: {
       icon: "whatsapp-logo",
       lead: "Still have a question?",
-      contact: "[WhatsApp](https://wa.me/919187546483) or {nowrap:[call +91 91875 46483](tel:+919187546483)}",
+      contact: "[WhatsApp us](https://wa.me/919187546483)",
     },
   },
 };

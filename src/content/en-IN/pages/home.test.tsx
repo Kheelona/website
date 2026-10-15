@@ -13,6 +13,7 @@ import { findBanned } from "../../../../test/guards/banned-phrases.data";
 import { filmQuotes, films } from "../films";
 import { recognitionStrip } from "../recognition";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupFold, mockupLinks, skeleton, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 import { homePage } from "./home";
@@ -50,9 +51,12 @@ const staticImport = vi.hoisted(() => async (file: string) => {
 vi.mock("@ds/assets/Cast/advik-sticker.png", () => staticImport("design-system/project/assets/Cast/advik-sticker.png"));
 vi.mock("@ds/assets/Kheelu/kheelu-front-sticker.png", () => staticImport("design-system/project/assets/Kheelu/kheelu-front-sticker.png"));
 
-const MOCKUP = withFacts(
-  withFacts(withFacts(withFacts(mockupFold("home", "main"), COPY_FIXES.home.edits), CLAIM_FIXES.home.edits), OFFER_ADDITIONS.home.edits),
-  FAQ_FIXES.home.edits,
+/* Then D063 item 2: the hero's and the close's help lines without the call (task Q2.3; seller-facts.ts). */
+const MOCKUP = withSellerFacts(
+  withFacts(
+    withFacts(withFacts(withFacts(mockupFold("home", "main"), COPY_FIXES.home.edits), CLAIM_FIXES.home.edits), OFFER_ADDITIONS.home.edits),
+    FAQ_FIXES.home.edits,
+  ),
 );
 const LABELS = ["hero-title", "ask-title", "why-title", "what-title", "see-title", "safety-title", "compare-title", "guides-title", "faq-title", "close-title"];
 
@@ -131,10 +135,11 @@ describe("Home: the folds of the approved page", () => {
     expect(BUILT.querySelector(`${hide} .kh-faq__q`)?.textContent).toBe(NOT_RIGHT_QUESTION.build);
   });
 
-  it("differs from the frozen mockup only in the lines task 7.1b (V18), task 8b.1 (V26) and task 8c.4 changed", () => {
+  it("differs from the frozen mockup only in the lines task 7.1b (V18), task 8b.1 (V26), task 8c.4 and D063 changed", () => {
     const frozen = mockupFold("home", "main");
     const changed = LABELS.filter((label) => words(fold(frozen, label)) !== words(fold(MOCKUP, label)));
-    expect(changed).toEqual(["see-title", "safety-title", "guides-title", "faq-title", "close-title"]);
+    /* The hero: its help line without the call (D063 item 2; task Q2.3). */
+    expect(changed).toEqual(["hero-title", "see-title", "safety-title", "guides-title", "faq-title", "close-title"]);
     for (const line of CLAIM_FIXES.home.build) expect(words(BUILT)).toContain(line);
     // Each block the visual pass hides for the claim fixes is found once on the page as it renders.
     for (const hide of CLAIM_FIXES.home.hidden.both) expect(BUILT.querySelectorAll(hide), hide).toHaveLength(1);

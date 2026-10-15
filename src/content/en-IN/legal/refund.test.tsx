@@ -11,6 +11,7 @@ import { ORDER_REF_PATTERN } from "@/lib/store/order-ref";
 import { GRIEVANCE_NOTE, PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { refundFixture } from "../../../../test/fixtures/legal/refund";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupFold, mockupRoute, skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 import { DEFAULT_OG } from "../organization";
@@ -57,8 +58,9 @@ const OPTIONS: SkeletonOptions = {
   unwrap: "span[data-src]",
 };
 
-/** The approved page with the founder's page facts applied (task 6.7). */
-const mockupMain = withFacts(mockupFold("refund", "main"), PAGE_FACTS.refund.edits);
+/** The approved page with the founder's page facts applied (task 6.7), then D063 item 3: the seller sentence without the
+ *  GSTIN (task Q2.3; seller-facts.ts). */
+const mockupMain = withSellerFacts(withFacts(mockupFold("refund", "main"), PAGE_FACTS.refund.edits));
 const SOURCE = readRepoFile("src/content/en-IN/legal/refund.ts");
 /** The module's code without its comments. */
 const CODE = SOURCE.replace(/\/\*[\s\S]*?\*\/|(?<!:)\/\/.*$/gm, "");

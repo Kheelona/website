@@ -11,6 +11,7 @@ import { CLAIM_FIXES, COPY_FIXES, SETUP_STEP_BUILD, VISUAL_HIDDEN } from "../../
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { APP_STORE, GOOGLE_PLAY, PAGE_FACTS, type FactEdit } from "../../../../test/e2e/support/page-facts";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupFold, mockupRoute, skeleton, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 import { DEFAULT_OG } from "../organization";
@@ -44,8 +45,9 @@ const STEP_2 = { title: "Press and hold the button on Kheelu’s back.", body: S
 const V8: FactEdit = { at: ".kh-step__body", was: "Hold it for 3 seconds, until the light starts pulsing blue.", now: STEP_2.body, inner: true };
 
 /** The approved page: the mockup's <main> with V8, the founder's page facts and task 7.1b's age line applied, then task
- *  8b.1's claim fixes in a pass of their own. */
-const APPROVED = withFacts(withFacts(MOCKUP, [...PAGE_FACTS.setup.edits, V8, ...COPY_FIXES.setup.edits]), CLAIM_FIXES.setup.edits);
+ *  8b.1's claim fixes in a pass of their own, then D063 item 2: the close's contact line without the call (WhatsApp or
+ *  email; task Q2.3; seller-facts.ts). */
+const APPROVED = withSellerFacts(withFacts(withFacts(MOCKUP, [...PAGE_FACTS.setup.edits, V8, ...COPY_FIXES.setup.edits]), CLAIM_FIXES.setup.edits));
 
 const LABELS = ["hero-title", "before-title", "connect-title", "age-title", "button-title", "talk-title", "help-title"];
 
@@ -111,7 +113,7 @@ describe("Setup: the folds of the approved page", () => {
     expect(folds(BUILT).map((f) => f.id || null)).toEqual(folds(MOCKUP).map((f) => f.id || null));
   });
 
-  it("differs from the mockup only in fold 2's first and last items, step 2's light, fold 4's lines, fold 5's lines and fold 6's deleting line", () => {
+  it("differs from the mockup only in fold 2's first and last items, step 2's light, fold 4's lines, fold 5's lines, fold 6's deleting line and the close's contact line", () => {
     const step = (main: Element) => main.querySelector("#connect .kh-step:nth-child(2)")!;
     expect(words(step(MOCKUP))).toBe("2 Press and hold the button on Kheelu’s back. Hold it for 3 seconds, until the light starts pulsing blue.");
     expect(words(step(BUILT))).toBe(`2 ${STEP_2.title} ${STEP_2.body}`);
@@ -135,6 +137,8 @@ describe("Setup: the folds of the approved page", () => {
         '[aria-labelledby="age-title"] p:nth-of-type(3)',
         // D058's claim fixes (task 8b.1, V29).
         ...CLAIM_FIXES.setup.hidden.both,
+        // The close's contact line: WhatsApp or email, the call off (D063 item 2; task Q2.3).
+        '[aria-labelledby="help-title"] .mk-setup-help',
       ].join(", ");
       for (const el of copy.querySelectorAll(gone)) el.remove();
       return words(copy);
@@ -221,7 +225,8 @@ describe("Setup: no chilli button and no buy bar (setup.md question 4; CMO view:
     expect(button.className).toBe("kh-btn kh-btn--secondary");
     expect(button.getAttribute("href")).toBe("/contact");
     expect(button.querySelector("svg path")?.getAttribute("d")).toBe(ICON_PATHS["chat-circle-dots"]);
-    expect(hrefs(help)).toEqual([seller.support.whatsapp, seller.support.tel, `mailto:${seller.support.email}`, "/contact", "/products/kheelu"]);
+    /* WhatsApp and the email; no call link (D063 item 2; task Q2.3). */
+    expect(hrefs(help)).toEqual([seller.support.whatsapp, `mailto:${seller.support.email}`, "/contact", "/products/kheelu"]);
   });
 });
 

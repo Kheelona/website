@@ -22,7 +22,7 @@ const PROPS: FooterProps = {
       ],
     },
   ],
-  seller: { entity: "© 2026 Entity", gstin: "GSTIN 123", address: "1 Road", contact: <a href="tel:+91">+91</a> },
+  seller: { entity: "© 2026 Entity", address: "1 Road", contact: <a href="https://wa.me/91">WhatsApp</a> },
   grievance: { label: "Grievance officer", href: "/contact" },
 };
 
@@ -59,11 +59,12 @@ describe("Footer", () => {
     ]);
   });
 
+  /* Three seller lines: the mockup's GSTIN line came off the website (D063 item 3, D064 item 11; task Q2.3). */
   it("prints the seller lines, then the grievance officer link, each in its own span of the legal row", () => {
     const { container } = render(<Footer {...PROPS} />);
     const spans = Array.from(container.querySelectorAll(".kh-footer__legal > span"));
-    expect(spans.map((s) => s.textContent)).toEqual(["© 2026 Entity", "GSTIN 123", "1 Road", "+91", "Grievance officer"]);
-    expect(within(spans[4] as HTMLElement).getByRole("link")).toHaveAttribute("href", "/contact");
+    expect(spans.map((s) => s.textContent)).toEqual(["© 2026 Entity", "1 Road", "WhatsApp", "Grievance officer"]);
+    expect(within(spans[3] as HTMLElement).getByRole("link")).toHaveAttribute("href", "/contact");
   });
 
   it("gives the legal row's links the DS link colour and a full tap height (mockup.css:126)", () => {

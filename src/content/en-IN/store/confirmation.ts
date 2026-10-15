@@ -17,7 +17,8 @@ import { paymentsLine } from "./payments-line";
  * The store confirmation, `store.kheelona.com/thanks` (task 5.16; structure §3.3, §5; ADR-013). Words as the approved
  * mockup prints them (mockup/pages/store-confirmation.html: the paid state of a token order with no address yet), and
  * for the states it does not show, as the copy page gives them (wiki/site/pages/store-confirmation.md, "as live": the
- * page's words at the freeze tag; the link-needed help line with the call option, D032).
+ * page's words at the freeze tag; the link-needed help line with the call option, D032), the number and the call off
+ * since D063 item 2 (D064 item 11; task Q2.3): WhatsApp and the email stay.
  *
  * Every amount and the email come from the order row, never from the store's current mode, so they are not `{price:…}`
  * tokens here: the words around them are slot text (`ConfirmationHead/slot-text.ts`) and the page fills the slots with
@@ -41,7 +42,7 @@ export interface ConfirmationContent {
   /** Under the link-needed lede: a person who can find the order. */
   readonly linkNeededHelp: HelpLineCopy;
   /** A signed link whose order will not load (the store's not-found panel): its title and body, then a WhatsApp button
-   *  and the call line (CMO review C m4, task 7.1c). */
+   *  and the line under it (CMO review C m4, task 7.1c), by email since D063 item 2 took the call off the store. */
   readonly cannotOpen: { readonly title: string; readonly body: string; readonly action: string; readonly call: RichTextString };
   readonly order: OrderRowsCopy;
   readonly address: { readonly empty: AddressStepCopy; readonly saved: AddressStepCopy };
@@ -111,8 +112,9 @@ export const confirmation = {
     body: "Your link is fine. The order behind it did not load, which is ours to sort out and not yours.",
     /* The store's not-switched-on button (store-page.ts notConfigured.action), the same words as the dead end's link. */
     action: deadEndHelp.linkAlone,
-    /* "Or", the D032 help line's call, then the live tail: a person who can find the order, by phone too. */
-    call: `${deadEndHelp.or} {nowrap:[call ${seller.support.phone}](${seller.support.tel})} ${deadEndHelp.tail}`,
+    /* "Or", the second way to reach a person, then the live tail: a person who can find the order. The email since the
+       call came off the store (D063 item 2, D064 item 11; task Q2.3); the key keeps its name for the frozen page. */
+    call: `${deadEndHelp.or} email [${email}](mailto:${email}) ${deadEndHelp.tail}`,
   },
   order: {
     heading: "Your order",

@@ -2,7 +2,18 @@ import type { Page } from "@playwright/test";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ARTICLE_SLUGS as PLAN_ARTICLES } from "@/content/en-IN/routes";
 import { ARTICLE_CLOSES, stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
-import { TAP_AREA_HIDDEN, VISUAL_HIDDEN, hiddenCss, hideDeviations, sharedHiddenCss, visualHidden } from "./e2e/support/deviations";
+import {
+  TAP_AREA_HIDDEN,
+  TEXT_DEVIATIONS,
+  VISUAL_HIDDEN,
+  hiddenCss,
+  hideDeviations,
+  sellerHiddenCss,
+  sharedHiddenCss,
+  textDeviations,
+  visualHidden,
+} from "./e2e/support/deviations";
+import { SELLER_FACTS_APPROVED } from "./e2e/support/seller-facts";
 import { ARTICLE_SLUGS, articleClose, NOT_FOUND_PATH, snapshotPosts, sweepRoutes } from "./e2e/support/routes";
 
 /* The e2e harness's shared pieces that task 4.9 item 6 changed, where they can be read without a browser.
@@ -71,11 +82,11 @@ describe("hideDeviations", () => {
     return { styles, page: { addStyleTag: async ({ content }: { content: string }) => void styles.push(content) } as unknown as Page };
   };
 
-  it("adds the side's hiding styles, the shared rules' then the page's own, and prints each rule under the calling spec's name", async () => {
+  it("adds the side's hiding styles, the shared rules' then the page's own then D063's, and prints each rule under the calling spec's name", async () => {
     const log = vi.spyOn(console, "log").mockImplementation(() => {});
     const { page, styles } = fakePage();
     await hideDeviations(page, "store-confirmation", "build", "thanks-paid");
-    expect(styles).toEqual([sharedHiddenCss("build"), hiddenCss("store-confirmation", "build")]);
+    expect(styles).toEqual([sharedHiddenCss("build"), hiddenCss("store-confirmation", "build"), sellerHiddenCss("store-confirmation", "build")]);
     expect(log.mock.calls.length).toBeGreaterThan(0);
     for (const [line] of log.mock.calls) expect(String(line)).toMatch(/^\[thanks-paid\] store-confirmation: /);
     log.mockClear();
@@ -84,21 +95,53 @@ describe("hideDeviations", () => {
   });
 
   /* Since task 7.1a every page shares one rule (TAP_AREA_HIDDEN, the tap-area row V23: a help line under a trust line sits
-     lower in the build), applied before the page's own, so no page is without one. */
+     lower in the build), applied before the page's own, so no page is without one. A guide the approved mockups do not
+     show has no rule of its own and none of D063's (task Q2.3: the ruling reads the mockups). */
   it("applies the rules every page shares to a page with none of its own on that side, and prints exactly those", async () => {
     const log = vi.spyOn(console, "log").mockImplementation(() => {});
     const { page, styles } = fakePage();
-    expect(VISUAL_HIDDEN.contact ?? []).toEqual([]);
-    expect(hiddenCss("contact", "build")).toBe("");
-    await hideDeviations(page, "contact", "build", "visual-parity");
+    const slug = "article:busy-hands-no-screens";
+    expect(VISUAL_HIDDEN[slug] ?? []).toEqual([]);
+    expect(hiddenCss(slug, "build")).toBe("");
+    expect(sellerHiddenCss(slug, "build")).toBe("");
+    await hideDeviations(page, slug, "build", "visual-parity");
     const shared = TAP_AREA_HIDDEN.filter((r) => r.side === "build");
     expect(styles).toEqual([`${shared.map((r) => r.selector).join(", ")} { display: none !important; }`]);
     expect(styles).toEqual([sharedHiddenCss("build")]);
-    expect(log.mock.calls.map(([line]) => String(line))).toEqual(shared.map((r) => `[visual-parity] contact: ${r.selector} hidden in the build (${r.approvedBy}): ${r.reason}`));
+    expect(log.mock.calls.map(([line]) => String(line))).toEqual(shared.map((r) => `[visual-parity] ${slug}: ${r.selector} hidden in the build (${r.approvedBy}): ${r.reason}`));
   });
 
-  it("puts the shared rules first, then the page's own", () => {
+  it("puts the shared rules first, then the page's own, then D063's (task Q2.3)", () => {
+    const own = VISUAL_HIDDEN.store ?? [];
     expect(visualHidden("store").slice(0, TAP_AREA_HIDDEN.length)).toEqual(TAP_AREA_HIDDEN);
-    expect(visualHidden("store").slice(TAP_AREA_HIDDEN.length)).toEqual(VISUAL_HIDDEN.store);
+    expect(visualHidden("store").slice(TAP_AREA_HIDDEN.length, TAP_AREA_HIDDEN.length + own.length)).toEqual(own);
+    const ruling = visualHidden("store").slice(TAP_AREA_HIDDEN.length + own.length);
+    expect(ruling.length).toBeGreaterThan(0);
+    for (const rule of ruling) expect(rule.approvedBy).toBe(SELLER_FACTS_APPROVED);
+  });
+
+  it("gives the text pass each page's own rules, then D063's, which excuse the help line and accept its new words", () => {
+    const home = textDeviations("home");
+    expect(home.slice(0, TEXT_DEVIATIONS.home.length)).toEqual(TEXT_DEVIATIONS.home);
+    const [ruling, ...more] = home.slice(TEXT_DEVIATIONS.home.length);
+    expect(more).toEqual([]);
+    expect(ruling.approvedBy).toBe(SELLER_FACTS_APPROVED);
+    expect(ruling.mockup.test("WhatsApp or call +91 91875 46483")).toBe(true);
+    expect(ruling.build?.test("WhatsApp us")).toBe(true);
+    expect(ruling.mockup.test("Questions?")).toBe(false);
+    /* /contact's main changes nothing the text pass reads but the seller card's GSTIN line. */
+    expect(textDeviations("contact").map((r) => r.approvedBy)).toEqual([SELLER_FACTS_APPROVED]);
+    expect(textDeviations("article:busy-hands-no-screens")).toEqual([]);
+  });
+
+  it("hides /contact's seller card on both sides, its only block D063 rewords (the GSTIN line off)", () => {
+    expect(VISUAL_HIDDEN.contact ?? []).toEqual([]);
+    const contact = visualHidden("contact").filter((r) => r.approvedBy === SELLER_FACTS_APPROVED);
+    expect(contact.map((r) => [r.side, r.selector])).toEqual([
+      ["mockup", ".kh-footer__legal"],
+      ["build", ".kh-footer__legal"],
+      ["mockup", 'section[aria-labelledby="seller-title"]'],
+      ["build", 'section[aria-labelledby="seller-title"]'],
+    ]);
   });
 });

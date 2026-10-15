@@ -10,6 +10,7 @@ import { freshBuiltPages } from "../../test/e2e/support/page-checks";
 import { ROOT } from "../../test/e2e/support/repo";
 import { isStillLegacy } from "../../test/guards/legacy-paths";
 import { FOOTER_FIX } from "../../test/e2e/support/deviations";
+import { withSellerFacts } from "../../test/e2e/support/seller-facts";
 import { mockupDiff, mockupPage } from "../../test/support/mockup-compare";
 import { withFacts } from "../../test/support/mockup-facts";
 import NotFound, { metadata } from "./not-found";
@@ -68,8 +69,9 @@ describe("not-found: the page equals the approved mockup (mockup/404.html)", () 
   ])("chrome: %s", async (_name, mockupSelector, builtSelector) => {
     const { container } = await page();
     const approved = mockup.querySelector(mockupSelector);
-    /* The footer's promise reads "No web browsing." since task 8b.1 (D058 item 1; deviations.ts FOOTER_FIX). */
-    const ref = approved && mockupSelector === "footer.kh-footer" ? withFacts(approved, [FOOTER_FIX]) : approved;
+    /* The footer's promise reads "No web browsing." since task 8b.1 (D058 item 1; deviations.ts FOOTER_FIX), and its
+       legal row has no GSTIN and no number since D063 items 2-3 (task Q2.3; seller-facts.ts). */
+    const ref = approved && mockupSelector === "footer.kh-footer" ? withSellerFacts(withFacts(approved, [FOOTER_FIX])) : approved;
     const built = container.querySelector(builtSelector);
     expect(ref, mockupSelector).not.toBeNull();
     expect(built, builtSelector).not.toBeNull();
@@ -79,7 +81,8 @@ describe("not-found: the page equals the approved mockup (mockup/404.html)", () 
   it("main: fold 1, the empty state, and fold 2, the centred close, in order", async () => {
     const { container } = await page();
     const main = container.querySelector("main#main")!;
-    const ref = mockup.querySelector("main")!;
+    /* The close's help line without the call (D063 item 2; task Q2.3). */
+    const ref = withSellerFacts(mockup.querySelector("main")!);
     expect(differences(main, ref)).toEqual([]);
   });
 

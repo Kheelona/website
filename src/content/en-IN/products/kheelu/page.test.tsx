@@ -32,6 +32,7 @@ import { PAGE_FACTS } from "../../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../../test/e2e/support/parity";
 import { ROOT } from "../../../../../test/e2e/support/repo";
 import { mockupRoute as mockupPageRoute } from "../../../../../test/e2e/support/routes";
+import { withSellerFacts } from "../../../../../test/e2e/support/seller-facts";
 import { mockupLinks, mockupPage, STORE, words } from "../../../../../test/support/mockup-compare";
 import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../../test/support/mockup-facts";
 import { expertClip, expertFold } from "../../expert-video";
@@ -87,13 +88,16 @@ const withoutPhoneArt = (main: Element) => {
 const BUILT = { ...RENDERED, main: withoutPhoneArt(RENDERED.main) };
 const APPROVED = mockupPage("meet-kheelu").querySelector("main")!;
 /** The approved page with the founder's page facts (task 6.7) and task 7.1b's copy fixes applied, then task 8b.1's claim
- *  fixes, task 8c.2's offer additions and task 8c.4's FAQ fix, each in a pass of its own: what the build must say. */
-const MOCKUP = withFacts(
+ *  fixes, task 8c.2's offer additions and task 8c.4's FAQ fix, each in a pass of its own; then D063 item 2: the help lines
+ *  and the consumer care row without the call (task Q2.3; seller-facts.ts): what the build must say. */
+const MOCKUP = withSellerFacts(
   withFacts(
-    withFacts(withFacts(APPROVED, [...PAGE_FACTS["meet-kheelu"].edits, ...COPY_FIXES["meet-kheelu"].edits]), CLAIM_FIXES["meet-kheelu"].edits),
-    OFFER_ADDITIONS["meet-kheelu"].edits,
+    withFacts(
+      withFacts(withFacts(APPROVED, [...PAGE_FACTS["meet-kheelu"].edits, ...COPY_FIXES["meet-kheelu"].edits]), CLAIM_FIXES["meet-kheelu"].edits),
+      OFFER_ADDITIONS["meet-kheelu"].edits,
+    ),
+    FAQ_FIXES["meet-kheelu"].edits,
   ),
-  FAQ_FIXES["meet-kheelu"].edits,
 );
 /** The folds: `main`'s sections, in order (React's image preload links and the JSON-LD script left out). */
 const folds = (main: Element) => [...main.children].filter((el) => el.tagName === "SECTION");
@@ -143,11 +147,12 @@ describe("the product page as rendered (token mode)", () => {
     expect(folds(BUILT.main).map((f) => f.id)).toEqual(folds(MOCKUP).map((f) => f.id));
   });
 
-  it("changes the approved page only where the founder's facts, task 7.1b's copy fixes and task 8b.1's claim fixes do", () => {
+  it("changes the approved page only where the founder's facts, task 7.1b's copy fixes, task 8b.1's claim fixes and D063 do", () => {
     const changed = folds(APPROVED).filter((fold, i) => words(fold) !== words(folds(MOCKUP)[i])).map(name);
     // Fold 2's heading and fold 8's sources line (V17, task 7.1b); fold 4's charging line and fold 7's details (V16); the
-    // offer card, Good to know, fold 5, fold 6, fold 7 and two answers (V27, task 8b.1).
-    expect(changed).toEqual(["films-title", "offer-title", "modes-title", "app-title", "safety-title", "specs-title", "faq-title"]);
+    // offer card, Good to know, fold 5, fold 6, fold 7 and two answers (V27, task 8b.1); the hero's and the close's help
+    // lines (D063 item 2; task Q2.3).
+    expect(changed).toEqual(["hero-title", "films-title", "offer-title", "modes-title", "app-title", "safety-title", "specs-title", "faq-title", "close-title"]);
     for (const hide of CLAIM_FIXES["meet-kheelu"].hidden.both) expect(BUILT.main.querySelectorAll(hide), hide).toHaveLength(1);
     const facts = withFacts(APPROVED, PAGE_FACTS["meet-kheelu"].edits);
     expect(folds(APPROVED).filter((fold, i) => words(fold) !== words(folds(facts)[i])).map(name)).toEqual(["modes-title", "specs-title"]);

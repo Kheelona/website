@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { LATE_TALKERS_ANSWER, LEARNING_TOYS_ANSWER, SAFE_AI_TOY_ANSWER, SOURCE_LABEL } from "../ArticleBody/ArticleBody.stories";
 import { AnswerSection } from "./AnswerSection";
@@ -47,9 +48,9 @@ describe("AnswerSection: article", () => {
 });
 
 describe("AnswerSection: team", () => {
-  it("markup and words equal team.html fold 2", () => {
+  it("markup and words equal team.html fold 2, the number off its last sentence (D063 item 2; task Q2.3)", () => {
     const { container } = render(<AnswerSection {...TEAM_ANSWER} variant="team" />);
-    const mockup = mockupFold("team", "section[aria-labelledby='who-title']");
+    const mockup = withSellerFacts(mockupFold("team", "section[aria-labelledby='who-title']"));
     expect(skeleton(container.firstElementChild!)).toBe(skeleton(mockup));
     expect(words(container.firstElementChild!)).toBe(words(mockup));
   });
