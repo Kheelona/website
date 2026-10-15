@@ -1,13 +1,24 @@
 /* FoundersSection (task 3.4), ported from mockup/css/team.css:16-21 (founder cards: the badge beside the name and
-   role; the profile link a full tap target, G-01). The link's display, alignment, gap and 44 px height are Card's
-   shared ks-card__link--tap rule; only its own alignment stays here. */
+   role, above them at 720-1199 px since task Q2.16; the profile link a full tap target, G-01). The link's display,
+   alignment, gap and 44 px height are Card's shared ks-card__link--tap rule; only its own alignment stays here. */
 .ks-founder {
   gap: var(--space-3);
 }
+/* The head's top edge holds the name (task Q2.16, the consistency review's QAL-6): centred, a founder's two-line role
+   lifted his name 9 px above the others' at 1440. */
 .ks-founder__head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-4);
+}
+/* While the DS's three columns are narrow (from 720 px, bundle.css .kh-cols--3, to 1199 px) the badge sits above the
+   name and role: beside the 96 px badge the name had 62-131 px, so "Apoorva" ran past its card's edge at 720, every
+   name wrapped at 900 and "Apoorva / Sahu" at 1024 (QAL-6). Phones, one column, and 1200 px up keep it beside them. */
+@media (min-width: 720px) and (max-width: 1199px) {
+  .ks-founder__head {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
 }
 .ks-founder__who {
   display: grid;

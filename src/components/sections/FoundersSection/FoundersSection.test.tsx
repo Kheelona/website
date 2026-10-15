@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { CLAIM_FIXES, editsBeforeClaimFixes } from "../../../../test/e2e/support/deviations";
+import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
 import { FoundersSection } from "./FoundersSection";
@@ -103,6 +104,21 @@ describe("FoundersSection: parts", () => {
     expect(link.className).toBe("kh-card__link ks-card__link--tap");
     expect(within(link).getByText("Aman on LinkedIn")).toBeInTheDocument();
     expect(link.lastElementChild!.matches("svg.kh-icon")).toBe(true);
+  });
+
+  /* Task Q2.16 (the consistency review's QAL-6): the DS's three columns start at 720 px (bundle.css .kh-cols--3), where
+     the 96 px badge beside the name left it 62-131 px: "Apoorva" ran past its card's edge at 720, every name wrapped at
+     900 and "Apoorva / Sahu" at 1024. While the three columns are narrow (720-1199 px) the badge sits above the name and
+     role; at every width the head aligns to the top, so one founder's two-line role no longer lifts his name (9 px at
+     1440). Phones (one column) and 1200 px up keep the badge beside the name. */
+  it("stacks the badge above the name while the three columns are narrow, and tops the heads at every width", () => {
+    const css = readRepoFile("src/components/sections/FoundersSection/founders-section.css").replace(/\/\*[\s\S]*?\*\//g, "");
+    const head = /\.ks-founder__head \{([^}]*)\}/.exec(css)?.[1].replace(/\s+/g, " ").trim();
+    expect(head).toBe("display: flex; align-items: flex-start; gap: var(--space-4);");
+    expect(css).toMatch(
+      /@media \(min-width: 720px\) and \(max-width: 1199px\) \{\s*\.ks-founder__head \{\s*flex-direction: column;\s*gap: var\(--space-3\);\s*\}\s*\}/,
+    );
+    expect(css).not.toContain("align-items: center");
   });
 
   it("gives the name the person's fragment, so a byline can point at it", () => {
