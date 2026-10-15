@@ -518,6 +518,24 @@ describe("WhatsAppFloat: steps aside from the store's form on a phone (task 4.7)
       nav.pathname = "/";
     });
 
+    /* Vercel re-renders Home in its runtime under the route segments ["", "index"], so usePathname() reads "/index" on
+       the server and "/" in the browser (task 8c.7; CMO wave 8c review m1). The bubble reads the path through
+       usePagePath (src/lib/page-path.ts): one page, one markup, one arming. */
+    it("takes /index for Home, as Vercel's runtime render gives it: the same markup, and no re-arm between the two (task 8c.7)", () => {
+      const markup = (pathname: string) => {
+        nav.pathname = pathname;
+        return renderToStaticMarkup(<WhatsAppFloat href={HREF} chat={CHAT} context="site" />);
+      };
+      expect(markup("/index")).toBe(markup("/"));
+      nav.pathname = "/index";
+      const { rerender } = sitePage();
+      const armed = io();
+      nav.pathname = "/";
+      rerender(<WhatsAppFloat href={HREF} chat={CHAT} context="site" />);
+      expect(armed.disconnected, "the same page: it stays armed").toBe(false);
+      expect(io()).toBe(armed);
+    });
+
     it("keeps its place where the browser cannot tell the width or watch the band, as without JavaScript", () => {
       for (const missing of ["matchMedia", "IntersectionObserver"] as const) {
         vi.stubGlobal(missing, undefined);

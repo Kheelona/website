@@ -1,5 +1,7 @@
 import { readFileSync } from "node:fs";
 import { act, render, screen, within } from "@testing-library/react";
+import { hydrateRoot } from "react-dom/client";
+import { renderToString } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { STORE_URL } from "@/config/site";
 import { buildOffer } from "@/lib/offer/offer";
@@ -138,6 +140,49 @@ describe("StickyBuyBar: markup (partials/buybar.html)", () => {
     page(`<a class="kh-btn kh-btn--cta">x</a>`, "/setup");
     expect(document.querySelector(".kh-buybar")).toBeNull();
     expect(html.dataset.buybar).toBeUndefined();
+  });
+});
+
+/* Vercel re-renders Home in its runtime under the route segments ["", "index"], so usePathname() reads "/index" on the
+   server and "/" in the browser (task 8c.7; CMO wave 8c review m1). The bar was left out of beta's server HTML and added
+   by the browser: React error #418 on every load. The bar reads the path through usePagePath (src/lib/page-path.ts). */
+describe("StickyBuyBar: the page path as Vercel's runtime render gives it (task 8c.7)", () => {
+  const element = <StickyBuyBar offer={offer} label="Pre-order Kheelu" paths={PATHS} />;
+  const serverHtml = (pathname: string) => {
+    nav.pathname = pathname;
+    return renderToString(element);
+  };
+
+  it.each([
+    ["/index", "/"],
+    ["/products/kheelu/index", "/products/kheelu"],
+  ])("renders on %s exactly as on %s: the bar is in the server HTML", (runtime, browser) => {
+    const html = serverHtml(runtime);
+    expect(html).toContain('class="kh-buybar');
+    expect(html).toBe(serverHtml(browser));
+  });
+
+  it("hydrates Home's server HTML rendered as /index in the browser at / without a mismatch (React #418)", async () => {
+    const container = document.createElement("div");
+    container.innerHTML = serverHtml("/index");
+    document.body.appendChild(container);
+    nav.pathname = "/";
+    const recoverable = vi.fn();
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    let root: ReturnType<typeof hydrateRoot> | undefined;
+    try {
+      await act(async () => {
+        root = hydrateRoot(container, element, { onRecoverableError: recoverable });
+      });
+      expect(recoverable).not.toHaveBeenCalled();
+      expect(consoleError).not.toHaveBeenCalled();
+      expect(container.querySelector(".kh-buybar")).not.toBeNull();
+    } finally {
+      // A failed expect must not leave a hydrated root, its container or a muted console.error to the tests after it.
+      act(() => root?.unmount());
+      container.remove();
+      consoleError.mockRestore();
+    }
   });
 });
 

@@ -267,6 +267,24 @@ describe("MotionController", () => {
     expect(firstWith(log, "next-top", "is-in"), log.join("\n")).toBeLessThan(on);
   });
 
+  /* Vercel re-renders Home in its runtime under the route segments ["", "index"], so usePathname() reads "/index" on the
+     server and "/" in the browser (task 8c.7; CMO wave 8c review m1). The controller reads the path through usePagePath
+     (src/lib/page-path.ts): it renders nothing either way, and the two are one page, so it never re-arms between them. */
+  it("takes /index for Home, as Vercel's runtime render gives it: nothing rendered, and no re-arm between the two (task 8c.7)", async () => {
+    document.body.innerHTML = PAGE;
+    nav.pathname = "/index";
+    const view = render(<MotionController />);
+    await nextFrame();
+    expect(view.container).toBeEmptyDOMElement();
+    const [armed] = FakeObserver.instances;
+    nav.pathname = "/";
+    view.rerender(<MotionController />);
+    await nextFrame();
+    expect(armed.disconnected, "the same page: it stays armed").toBe(false);
+    expect(FakeObserver.instances).toHaveLength(1);
+    expect(html()).toHaveClass("js-motion");
+  });
+
   it("on a re-arm, leaves blocks already shown alone and keeps a doodle already drawn from drawing again", async () => {
     document.body.innerHTML = `<footer><svg id="kept" class="ks-doodle" data-draw></svg><div id="kept-block" data-reveal></div></footer>`;
     const view = render(<MotionController />);

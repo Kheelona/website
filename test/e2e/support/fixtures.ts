@@ -8,6 +8,8 @@
  *   - Reduced motion is on unless a spec asks otherwise.
  *   - A route still served by a legacy page is skipped as "pending"; a route not listed as legacy
  *     must render the new design (legacy-paths.ts).
+ *   - An uncaught error in a page, or a console error naming a hydration mismatch, fails the test
+ *     (task 8c.7, `pageErrorGuard` below).
  */
 import http from "node:http";
 import https from "node:https";
@@ -269,7 +271,49 @@ export const PLANTS: Record<string, string> = {
   visual: `document.body.insertAdjacentHTML("beforeend", '<div style="position:absolute;top:0;left:0;width:240px;height:160px;background:#c00;z-index:2147483647"></div>');`,
   // Layout only: a block that pushes the page down, for the page-height check.
   height: `${MAIN}.insertAdjacentHTML("afterbegin", '<div style="height:400px"></div>');`,
+  // The page-error guard (task 8c.7), red on every spec: an uncaught error, raised as Next raises React's hydration
+  // error in production (reportError, "Minified React error #418"), and a hydration message in the console only.
+  pageerror: `window.reportError(new Error("Minified React error #418; planted page error (task 8c.7)"));`,
+  hydration: `console.error("Hydration failed because the server rendered HTML didn't match the client. (planted, task 8c.7)");`,
 };
+
+/* The page-error guard (task 8c.7; CMO wave 8c review m1). Beta's Home threw React's hydration error #418 on every load
+ * (Vercel rendered it as /index, so the buy bar was missing from the server HTML and the browser added it) and every
+ * spec stayed green: a mismatch is "recoverable", React rebuilds the page in the browser and the checks read the rebuilt
+ * page. So a test now fails on any uncaught error in a page it opens (Next reports React's recoverable errors through
+ * reportError, which the browser raises as an uncaught error: Playwright's pageerror), and on a console error naming a
+ * hydration mismatch. It watches every context the test's browser opens (the `context` event), so the specs that open
+ * their own (films, motion-*, the tracking probe's control host) are covered too. Not watched: the approved mockup,
+ * opened from disk (file:), the frozen reference rather than the page under test; and the tracking probe's LP pages,
+ * which run in a browser of their own (lp.ts launches it). Proven red by the plants above:
+ *   KH_E2E_PLANT=pageerror KH_SLUGS=home npx playwright test --project=site test/e2e/cta.spec.ts */
+
+/** A console error that names a hydration mismatch: React's production code or any of its development messages. */
+export const HYDRATION_CONSOLE = /Minified React error #418\b|hydrat/i;
+
+/** One page error the guard caught: what it was, on which page, and its words. */
+export type PageError = { kind: "uncaught error" | "console error"; url: string; text: string };
+
+/** Records the page errors of one context into `into` (file: pages excepted, as above). */
+export function watchPageErrors(context: BrowserContext, into: PageError[]): void {
+  const underTest = (url: string) => !url.startsWith("file:");
+  context.on("weberror", (webError) => {
+    const url = webError.page()?.url() ?? webError.location().url;
+    const error = webError.error();
+    if (underTest(url)) into.push({ kind: "uncaught error", url, text: error.stack ?? `${error.name}: ${error.message}` });
+  });
+  context.on("console", (message) => {
+    if (message.type() !== "error" || !HYDRATION_CONSOLE.test(message.text())) return;
+    const url = message.page()?.url() ?? message.location().url;
+    if (underTest(url)) into.push({ kind: "console error", url, text: message.text() });
+  });
+}
+
+/** The guard's failure message: every error, its page and its first lines. */
+export function describePageErrors(errors: readonly PageError[]): string {
+  const lines = errors.map((e) => `  ${e.kind} on ${e.url || "(no page)"}: ${e.text.split("\n").slice(0, 4).join("\n    ")}`);
+  return `${errors.length} page error(s): an uncaught error or a hydration mismatch fails the test (task 8c.7)\n${lines.join("\n")}`;
+}
 
 type Harness = {
   /** Opens a built route in a fresh guarded context; skips (pending) or fails as gateOnNewDesign says. */
@@ -279,7 +323,26 @@ type Harness = {
   context(vp: Viewport, opts?: OpenOptions): Promise<BrowserContext>;
 };
 
-export const test = base.extend<{ harness: Harness }>({
+export const test = base.extend<{ harness: Harness; pageErrorGuard: void }>({
+  // Live on every test of every spec (auto): set up before the harness and torn down after it, once its contexts have
+  // closed, so an error up to the last moment of a page counts.
+  pageErrorGuard: [
+    async ({ browser }, provide) => {
+      const errors: PageError[] = [];
+      const watch = (context: BrowserContext) => watchPageErrors(context, errors);
+      browser.on("context", watch);
+      try {
+        await provide();
+      } finally {
+        browser.off("context", watch);
+      }
+      expect(
+        errors.map((e) => `${e.kind} on ${e.url}`),
+        describePageErrors(errors),
+      ).toEqual([]);
+    },
+    { auto: true },
+  ],
   harness: async ({ browser }, provide, testInfo) => {
     const contexts: BrowserContext[] = [];
     const meta = testInfo.project.metadata as ProjectMeta;
