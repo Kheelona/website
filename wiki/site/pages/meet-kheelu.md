@@ -1,7 +1,7 @@
 ---
 title: "Meet Kheelu (/products/kheelu): page copy, Gate A mockup draft"
 type: page-copy
-updated: 2026-10-15
+updated: 2026-10-16
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - ../strategy.md (§3.1-3.5 CTA rules, §4 URL plan, §5 product-page row, §7 search rules)
@@ -1139,3 +1139,14 @@ every other changed line. The founder signs them at Gate B ([D015](../../decisio
 | 1 | Both metas | "(incl. GST)" becomes "in total" (152 and 146 characters become 149 and 143); the total still leads in token mode ([D028](../../decisions/D028-price-wording.md)) | D065 item 3; plan v2 §3 "Product page: title, meta, keywords" |
 | 2 | The page's folds | Twelve folds in the plan's order: the hero's eyebrow and lead; the offer card after the films; the steps; three sample chats on tabs with their own button (`product-ask`); "instead of guessing" and the daily limit in Good to know; the comparison from Home; safety as one line to `/safety`. The parent-app and safety folds go to `/safety`, the expert clip to Home | Plan v2 §3 folds 1-12 |
 | 3 | Fold 8, the questions | The price question leads with the total, without GST or the balance (`faqs.ts` `cost-and-advance`); "When does delivery start?" leaves the page; "Will Kheelona+ charge me after the 6 months?" (`after-six-months`) follows the first-week question. In the plan's exact words the new answers are 37 words (token mode) and 31 (full mode) for the price, and 31 for Kheelona+, under [architecture §9.5](../../engineering/architecture.md)'s 40-60; the main session rules on them | D065 items 3, 4 and 6; plan v2 §3 fold 11 |
+
+## Changes after approval (task Q2.17)
+
+The founder's answers on the built selling update ([D066](../../decisions/D066-selling-update-founder-answers-2026-10-16.md),
+2026-10-16), recorded by the builder of task Q2.17. Each line departs from the frozen mockup (`mockup/meet-kheelu.html`),
+so it is a parity deviation (`FOUNDER_ANSWERS["meet-kheelu"]` in `test/e2e/support/deviations.ts`; the main session
+writes its deviations.md row). The founder signs the words at Gate B ([D015](../../decisions/D015-founder-signs-off-copy.md)).
+
+| # | Where | What changed | Why |
+|---|---|---|---|
+| 1 | Fold 7, the details' Safety tab (`products/kheelu/product.ts`) | "Tested before launch by trying to make it say unsafe things." comes off; the tab keeps the mechanism line and the BIS line (two confirmed items, the F4 lines still hidden). `/llms.txt` lists the same safety lines, so it drops it too (`LLMS_UPDATED` 2026-10-16) | D066 item 6: G29's other half is not true, so it comes off everywhere (the plan v2 §13 item 3 (b), the ready fallback) |

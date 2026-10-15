@@ -6,7 +6,7 @@ import { KHEELU_LANGUAGES } from "@/config/site";
 import type { IconText, RichTextString } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { CLAIM_FIXES, editsBeforeClaimFixes } from "../../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, editsBeforeClaimFixes, FOUNDER_ANSWERS, PRE_LAUNCH_TEST } from "../../../../../test/e2e/support/deviations";
 import { ROOT, readRepoFile } from "../../../../../test/e2e/support/repo";
 import { withSellerFacts } from "../../../../../test/e2e/support/seller-facts";
 import { withFacts } from "../../../../../test/support/mockup-facts";
@@ -27,8 +27,14 @@ const approved = doc("meet-kheelu");
 /** The approved page with the founder's page facts applied (test/e2e/support/page-facts.ts), and task 7.1b's copy fixes,
  *  then task 8b.1's claim fixes in a pass of their own (test/e2e/support/deviations.ts), then D063 item 2 (task Q2.3;
  *  test/e2e/support/seller-facts.ts), which leaves the consumer care row with its number since task Q2.10 (the Legal
- *  Metrology declaration). */
-const page = withSellerFacts(withFacts(withFacts(approved.querySelector("main")!, editsBeforeClaimFixes("meet-kheelu")), CLAIM_FIXES["meet-kheelu"].edits));
+ *  Metrology declaration). Then task Q2.17's founder answers (D066 item 6; FOUNDER_ANSWERS): the Safety tab without the
+ *  pre-launch test line (its one edit in the details). */
+const page = withSellerFacts(
+  withFacts(
+    withFacts(withFacts(approved.querySelector("main")!, editsBeforeClaimFixes("meet-kheelu")), CLAIM_FIXES["meet-kheelu"].edits),
+    FOUNDER_ANSWERS["meet-kheelu"].edits.filter((e) => e.at.startsWith("#panel-")),
+  ),
+);
 const offer = buildOffer("token");
 const text = (value: RichTextString) => toPlainText(value, offer);
 
@@ -79,9 +85,13 @@ describe("the details panels (product fold 7)", () => {
     expect(contentTicks(product.box)).toEqual(ticksOf(approved.querySelector("#panel-box ul")));
   });
 
-  it("safety: the three confirmed items with their icons, the two F4 lines hidden; BIS applied for, not granted (claims §6)", () => {
+  /* Since task Q2.17 without "Tested before launch by trying to make it say unsafe things.": the founder ruled it not true
+     (D066 item 6, G29), so two confirmed items stay. */
+  it("safety: the two confirmed items with their icons, the two F4 lines hidden, no pre-launch test; BIS applied for, not granted (claims §6)", () => {
     expect(contentTicks(product.safety)).toEqual(ticksOf(page.querySelector("#panel-safety ul")));
-    expect(product.safety).toHaveLength(3);
+    expect(product.safety).toHaveLength(2);
+    expect(contentTicks(product.safety).map((t) => t.text)).not.toContain(PRE_LAUNCH_TEST.safetyTab);
+    expect(JSON.stringify(product)).not.toMatch(/before launch|make it say/i);
   });
 
   it("declarations: MRP from its own value, origin, manufacturer, care (D034); net quantity and the month of manufacture hidden (F4)", () => {

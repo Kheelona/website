@@ -11,7 +11,7 @@ import { OFFER_REVALIDATE_SECONDS } from "@/lib/offer/get-offer";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { termsFixture } from "../../../../test/fixtures/legal/terms";
-import { CLAIM_FIXES, COPY_FIXES, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, COPY_FIXES, FOUNDER_ANSWERS, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { GRIEVANCE_NOTE, PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupFold, skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
@@ -40,10 +40,14 @@ const approvedMain = mockupFold("terms", "main");
 /** The approved page with the founder's page facts applied (task 6.7; D055 items 7, 8, 10 and 11; page-facts.ts), and
  *  section 8's refund timing as /refund words it (task 7.1b; D056 item 4; deviations.ts COPY_FIXES.terms, V21); then
  *  D058's claim fixes in a pass of their own (task 8b.1; deviations.ts CLAIM_FIXES.terms, V33): Kheelona+, the mechanism
- *  in the live team's words, and the parent app's terms of the live /terms; then D063 items 2-3: the seller sentence
- *  without the GSTIN, the close's help line without the call (task Q2.3; seller-facts.ts). */
+ *  in the live team's words, and the parent app's terms of the live /terms; then task Q2.17's founder answers in a pass
+ *  of their own (D066 item 6; deviations.ts FOUNDER_ANSWERS.terms): section 12 without the pre-launch test; then D063
+ *  items 2-3: the seller sentence without the GSTIN, the close's help line without the call (task Q2.3; seller-facts.ts). */
 const mockupMain = withSellerFacts(
-  withFacts(withFacts(approvedMain, [...PAGE_FACTS.terms.edits, ...COPY_FIXES.terms.edits]), CLAIM_FIXES.terms.edits),
+  withFacts(
+    withFacts(withFacts(approvedMain, [...PAGE_FACTS.terms.edits, ...COPY_FIXES.terms.edits]), CLAIM_FIXES.terms.edits),
+    FOUNDER_ANSWERS.terms.edits,
+  ),
 );
 
 const TOKEN = buildOffer("token");
@@ -135,7 +139,9 @@ describe("/terms: the rendered page against the approved mockup (token mode, the
     // The complaint-reference line is the template's (legal/shared.ts), so the fixture's render already lacks it.
     const documentFacts = PAGE_FACTS.terms.edits.filter((edit) => edit !== GRIEVANCE_NOTE);
     const earlier = withFacts(fixtureMain, [...documentFacts, ...COPY_FIXES.terms.edits], { built: true });
-    expect(main.innerHTML).toBe(withFacts(earlier, CLAIM_FIXES.terms.edits, { built: true }).innerHTML);
+    // Then task 8b.1's claim fixes, then task Q2.17's founder answers (D066 item 6), each in a pass of its own.
+    const claimed = withFacts(earlier, CLAIM_FIXES.terms.edits, { built: true });
+    expect(main.innerHTML).toBe(withFacts(claimed, FOUNDER_ANSWERS.terms.edits, { built: true }).innerHTML);
   });
 
   it("is LegalTemplate's reference family (privacy and terms; mockup-css-mapping §6.1)", async () => {

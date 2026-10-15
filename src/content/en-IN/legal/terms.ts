@@ -352,9 +352,11 @@ export const termsPage = {
           kind: "p",
           text: "Kheelu uses AI to understand and answer your child. The AI model that writes its replies is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top. It cannot browse or search the web.",
         },
+        /* Without the pre-launch test since task Q2.17: the founder ruled it not true (D066 item 6, G29); the rest of the
+           sentence stays (D065 item 8). A draft until the founder signs the legal pages (D029). */
         {
           kind: "p",
-          text: "We test it before launch by trying to make it say unsafe things, and when it isn’t sure, it says it doesn’t know rather than guess. Even so, an answer can sometimes be wrong, so treat its replies as conversation, not advice. Kheelu doesn’t replace you: stay close, and read its conversations in the parent app.",
+          text: "When it isn’t sure, it says it doesn’t know rather than guess. Even so, an answer can sometimes be wrong, so treat its replies as conversation, not advice. Kheelu doesn’t replace you: stay close, and read its conversations in the parent app.",
         },
       ],
     },

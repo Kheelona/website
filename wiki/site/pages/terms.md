@@ -1,7 +1,7 @@
 ---
 title: "Terms (/terms): page copy, Gate A draft"
 type: page-copy
-updated: 2026-10-14
+updated: 2026-10-16
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - ../strategy.md (§3, §5 policy-pages row, line 213)
@@ -884,3 +884,14 @@ holds the Gate A text of sections 3, 9, 10 and 12). Section 3's Kheelona+ senten
 Home and the product page (map T3), which the other copy pages of task 8b.1 carry. The approved mockup `terms.html`
 keeps its Gate A text; each changed line is a deviation row the main session writes, and the founder signs them at
 Gate B with D029's legal sign-off.
+
+## Changes after approval (task Q2.17)
+
+The founder's answers on the built selling update ([D066](../../decisions/D066-selling-update-founder-answers-2026-10-16.md),
+2026-10-16), recorded by the builder of task Q2.17. The line departs from the frozen mockup (`mockup/terms.html`), so it
+is a parity deviation (`FOUNDER_ANSWERS.terms` in `test/e2e/support/deviations.ts`; the main session writes its
+deviations.md row). The page stays a draft until the founder signs the legal pages ([D029](../../decisions/D029-grievance-officer-legal-review.md)).
+
+| # | Where | What changed | Why |
+|---|---|---|---|
+| 1 | Section 12 ("A toy, not a therapy."), its second paragraph (`legal/terms.ts`) | "We test it before launch by trying to make it say unsafe things, and when it isn't sure, it says it doesn't know rather than guess." becomes "When it isn't sure, it says it doesn't know rather than guess." The rest of the paragraph is unchanged | D066 item 6: G29's other half is not true, so it comes off everywhere (the plan v2 §13 item 3 (b)); the not-knowing half stays ([D065](../../decisions/D065-selling-site-founder-answers-2026-10-15.md) item 8) |

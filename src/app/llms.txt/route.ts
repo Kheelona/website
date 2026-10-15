@@ -35,7 +35,7 @@ export const revalidate = 300;
 
 /** The day this file's body last changed in substance. Bump it in the same commit as the change: a model that
  *  reads "Last updated" trusts the rest exactly that much. */
-export const LLMS_UPDATED = "2026-10-15";
+export const LLMS_UPDATED = "2026-10-16";
 
 /** The questions it answers, in order: the rename first (Kheelu was Lumi), then Home's and the product page's
  *  answers a model is asked about most. One price answer only, so "first 500 units" appears once (D041). The languages

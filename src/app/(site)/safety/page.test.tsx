@@ -11,6 +11,8 @@ import {
   CLAIM_FIXES,
   CLOSES_ALIKE,
   COPY_FIXES,
+  FOUNDER_ANSWERS,
+  FOUNDER_ANSWERS_PASSES,
   PRICE_LINE,
   SAFETY_SELLING,
   SAFETY_SELLING_LAYOUT_HIDDEN,
@@ -47,10 +49,11 @@ const mockupDoc = parseMockup("safety");
 const frozenMain = mockupDoc.querySelector("main")!;
 /* Task 7.1b's copy fixes (V19), then task 8b.1's claim fixes (V28; D058) in a pass of their own, then task Q2.11's
    selling update (the D2C plan v2 §4; deviations.ts SAFETY_SELLING), then task Q2.15's (the first question's
-   non-breaking hyphens, QAP-6; CLOSES_ALIKE.safety), then D063 item 2: the close's help line without the call (task
-   Q2.3; seller-facts.ts). */
+   non-breaking hyphens, QAP-6; CLOSES_ALIKE.safety), then task Q2.17's founder answers (D066; FOUNDER_ANSWERS.safety),
+   each in a pass of its own (FOUNDER_ANSWERS_PASSES.safety), then D063 item 2: the close's help line without the call
+   (task Q2.3; seller-facts.ts). */
 const mockupMain = withSellerFacts(
-  withFacts(withFacts(withFacts(withFacts(frozenMain, COPY_FIXES.safety.edits), CLAIM_FIXES.safety.edits), SAFETY_SELLING.edits), CLOSES_ALIKE.safety.edits),
+  [...FOUNDER_ANSWERS_PASSES.safety, FOUNDER_ANSWERS.safety.edits].reduce<Element>((el, pass) => withFacts(el, pass), frozenMain),
 );
 
 /** The page as the site shell holds it: the route's output inside <main>. */

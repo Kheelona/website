@@ -15,6 +15,8 @@ import {
   CLAIM_FIXES,
   COPY_FIXES,
   FAQ_FIXES,
+  FOUNDER_ANSWERS,
+  FOUNDER_ANSWERS_APPROVED,
   LANGUAGES_FAQ,
   OFFER_ADDITIONS,
   PRODUCT_CHATS,
@@ -113,9 +115,11 @@ const BEFORE_SELLING = withFacts(
   FAQ_FIXES["meet-kheelu"].edits,
 );
 const SELLING = SELLING_UPDATE["meet-kheelu"];
-/** Then task Q2.10's selling update (SELLING_UPDATE) in a pass of its own, and D063 item 2: the help lines without the
- *  call (task Q2.3; seller-facts.ts; the consumer care declaration keeps it, task Q2.10): what the build must say. */
-const MOCKUP = withSellerFacts(withFacts(BEFORE_SELLING, SELLING.edits));
+/** Then task Q2.10's selling update (SELLING_UPDATE) in a pass of its own, then task Q2.17's founder answers in theirs
+ *  (FOUNDER_ANSWERS; D066), and D063 item 2: the help lines without the call (task Q2.3; seller-facts.ts; the consumer
+ *  care declaration keeps it, task Q2.10): what the build must say. */
+const ANSWERS = FOUNDER_ANSWERS["meet-kheelu"];
+const MOCKUP = withSellerFacts(withFacts(withFacts(BEFORE_SELLING, SELLING.edits), ANSWERS.edits));
 /* And the one CTA block shape (task Q2.15, the consistency review's R2): every CTA block's button full width on phones
    with the arrow (test/support/mockup-compare.ts `withOneCtaShape`). */
 withOneCtaShape(MOCKUP);
@@ -516,9 +520,10 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
     ]);
     // The route's other rules are P15's (V6, task 4.7), the founder's page facts (V16, task 6.7), task 7.1b's copy fixes
     // (V17), task 8c.2's offer additions (D061, rows numbered at the merge), task 8c.3's added blocks, task Q2.10's
-    // selling update and its added folds, task 8b.1's claim fixes (V27) and task 8c.4's FAQ fix, for both runs: the FAQ
-    // answer, the details, the heading, the sources, the offer's two lines, the added blocks, the selling update's lines,
-    // D058's lines and the languages question read the same with JavaScript off. (Task 8c.6's expert clip left the page.)
+    // selling update and its added folds, task 8b.1's claim fixes (V27), task 8c.4's FAQ fix and task Q2.17's founder
+    // answers (D066), for both runs: the FAQ answer, the details, the heading, the sources, the offer's two lines, the added
+    // blocks, the selling update's lines, D058's lines, the languages question and D066's lines read the same with
+    // JavaScript off. (Task 8c.6's expert clip left the page.)
     expect(TEXT_DEVIATIONS["meet-kheelu"].map((rule) => [rule.approvedBy.slice(0, "deviations.md V3".length), rule.jsOff ?? false])).toEqual([
       ["deviations.md V3", true],
       ["deviations.md V6", false],
@@ -531,6 +536,7 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
       [SELLING_UPDATE_APPROVED.slice(0, "deviations.md V3".length), true],
       ["deviations.md V2", false],
       ["deviations.md V4", false],
+      [FOUNDER_ANSWERS_APPROVED.slice(0, "deviations.md V3".length), false],
     ]);
     expect(TEXT_DEVIATIONS["meet-kheelu"][2].approvedBy).toBe(PAGE_FACTS["meet-kheelu"].approvedBy);
     expect(TEXT_DEVIATIONS["meet-kheelu"][3].approvedBy).toBe(COPY_FIXES["meet-kheelu"].approvedBy);
@@ -541,6 +547,7 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
     expect(TEXT_DEVIATIONS["meet-kheelu"][8].approvedBy).toBe(SELLING_UPDATE_APPROVED);
     expect(TEXT_DEVIATIONS["meet-kheelu"][9].approvedBy).toBe(CLAIM_FIXES["meet-kheelu"].approvedBy);
     expect(TEXT_DEVIATIONS["meet-kheelu"][10].approvedBy).toBe(FAQ_FIXES["meet-kheelu"].approvedBy);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][11].approvedBy).toBe(ANSWERS.approvedBy);
   });
 
   it("accepts on the build side exactly the stacked panels' lines, as the page prints them, and no other line of the page", () => {

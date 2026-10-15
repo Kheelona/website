@@ -130,6 +130,8 @@ const MACHINE = [
  */
 const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } & Record<OfferMode, string>> = {
   "llms.txt": {
+    // 2026-10-16 (task Q2.17): the Safety list without "Tested before launch by trying to make it say unsafe things." (the
+    // product page's Safety tab, product.ts): the founder ruled it not true (D066 item 6, G29).
     // 2026-10-15 (task Q2.14): the contact line in the help line's words, "Message us on WhatsApp: https://wa.me/…" (the
     // D2C plan v2 §1.1, CMO m9; seller.ts `support.message`), the email on its own line as before. Earlier the same day
     // (task Q2.9, the selling update): the price question is /pricing.md's ("How much is Kheelu?", `how-much`,
@@ -146,9 +148,9 @@ const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } 
     // safety mechanism, the age answer, the first-week answer and the Kheelona+ perk. Earlier the same day: the
     // screen-time topic's lead (CMO reviews A M5, B m1), Home's refund and age-3 answers (task 7.1b) and the product's
     // Parent app row "On iPhone and Android." (D055 item 26; task 6.7).
-    date: "2026-10-15",
-    token: "4a879ff3f8b868ef9a93c5e69094ecaf561cab781c2cce59f71e28c37967ba77",
-    full: "b4c46e22dbd458e3a26cc6e1cade7e1c029a8a7cf92ce3470fbdadda4e5bcd5f",
+    date: "2026-10-16",
+    token: "a86719d62fafe6e89a4728e7034720c820b6c850701ce90bb7e150ea0489607c",
+    full: "60f3b8f1451e22985edb9c1a4faa6087155dff2bf488b34391a30088d1462185",
   },
   "pricing.md": {
     // 2026-10-15 (task Q2.14): the contact line as /llms.txt's, "Message us on WhatsApp: https://wa.me/…" (the help line's

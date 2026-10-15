@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { runApprovedTabScript, tabStates } from "@/components/ui/Tabs/approved-tabs.test-support";
 import { buildOffer } from "@/lib/offer/offer";
-import { CLAIM_FIXES, editsBeforeClaimFixes } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, editsBeforeClaimFixes, FOUNDER_ANSWERS } from "../../../../test/e2e/support/deviations";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
@@ -22,7 +22,8 @@ import { PRODUCT_DETAILS, PRODUCT_DETAILS_OPEN } from "./ProductDetails.stories"
    first, as the product page's own test applies them (task 8b.1d): its earlier rules (the founder's page facts, task 6.7:
    the F4 rows and lines hidden, the parent app's phones filled; task 7.1b's copy fixes), then task 8b.1's claim fixes
    (D058; deviations.md V27: the Microphone and Parent app rows and the Safety tab's first line in the live team's
-   code-checked words). The story data is the product page's own fold 7, so the stories print what the site prints. */
+   code-checked words), then task Q2.17's founder answers (D066 item 6: the Safety tab without the pre-launch test line).
+   The story data is the product page's own fold 7, so the stories print what the site prints. */
 
 const offer = buildOffer("token");
 /* The mockup names its split mk-details, which the store page also uses for a different block (mapping §6.2), so the
@@ -39,8 +40,10 @@ function served(ui: ReactElement): Element {
 const SLUG = "meet-kheelu";
 /** The approved fold 7 through the route's accepted changes (see above), as the server sends it: before any script ran. */
 function approvedFold(): Element {
-  /* Then D063's: the consumer care row's call off (task Q2.3). */
-  const main = withSellerFacts(withFacts(withFacts(mockupFold(SLUG, "main"), editsBeforeClaimFixes(SLUG)), CLAIM_FIXES[SLUG].edits));
+  /* Then task Q2.17's founder answers in the details (D066 item 6: the Safety tab without the pre-launch test line), then
+     D063's: the consumer care row's call off (task Q2.3). */
+  const claimed = withFacts(withFacts(mockupFold(SLUG, "main"), editsBeforeClaimFixes(SLUG)), CLAIM_FIXES[SLUG].edits);
+  const main = withSellerFacts(withFacts(claimed, FOUNDER_ANSWERS[SLUG].edits.filter((edit) => edit.at.startsWith("#panel-"))));
   return main.querySelector("section#specs")!;
 }
 

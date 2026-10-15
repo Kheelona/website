@@ -7,7 +7,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { TYPED_AMOUNT } from "@/lib/seo/price-lead";
-import { COPY_FIXES, KHEELONA_PLUS } from "../../../../test/e2e/support/deviations";
+import { COPY_FIXES, KHEELONA_PLUS, PRE_LAUNCH_TEST } from "../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { termsFixture } from "../../../../test/fixtures/legal/terms";
 import { offerCopy } from "../offer";
@@ -23,7 +23,7 @@ import { termsPage } from "./terms";
  *     10 and 11: the date, GST as D024 confirms it, the training switch; item 7 is the template's) and section 8's
  *     refund timing as task 7.1b changed it (D056 item 4; deviation V21), and D058's claim fixes (task 8b.1; deviation V33:
  *     Kheelona+ as D058 item 3 words it, the mechanism in the live team's words, the parent app's terms of the live /terms),
- *     and nothing else;
+ *     and section 12 without the pre-launch test (task Q2.17; D066 item 6, G29: not true), and nothing else;
  *   - read in full mode, it is the fixture with exactly the copy page's full-mode variants (terms.md folds 2 and 4, the
  *     two "token mode only" paragraphs of sections 5 and 6) and nothing else changed;
  *   - a draft until the founder approves it (D029); D035's training disclosure and D041's AI-image note;
@@ -150,6 +150,17 @@ function withTermsFacts(doc: LegalPage): LegalPage {
         }),
       };
     }
+    if (p.id === "toy") {
+      /* Task Q2.17 (D066 item 6, G29): the pre-launch test is not true; the sentence keeps "When it isn’t sure, …". */
+      return {
+        ...p,
+        blocks: p.blocks.map((b) =>
+          b.kind === "p" && typeof b.text === "string" && b.text.includes(PRE_LAUNCH_TEST.terms.was)
+            ? { ...b, text: b.text.replace(PRE_LAUNCH_TEST.terms.was, PRE_LAUNCH_TEST.terms.now) }
+            : b,
+        ),
+      };
+    }
     if (p.id === "training") {
       return {
         ...p,
@@ -230,6 +241,10 @@ describe("the terms page: the approved mockup's words (parity with the fixture c
     expect(JSON.stringify(body(termsFixture))).toContain(REFUND_TIMING.approved);
     expect(JSON.stringify(FACTS_FIXTURE)).not.toContain(REFUND_TIMING.approved);
     expect(JSON.stringify(FACTS_FIXTURE)).toContain(REFUND_TIMING.now);
+    // And section 12 without the pre-launch test (task Q2.17; D066 item 6): there to be changed, and changed.
+    expect(JSON.stringify(body(termsFixture))).toContain(PRE_LAUNCH_TEST.terms.was);
+    expect(JSON.stringify(FACTS_FIXTURE)).not.toMatch(/before launch|make it say/i);
+    expect(JSON.stringify(FACTS_FIXTURE)).toContain(PRE_LAUNCH_TEST.terms.now);
     expect(inMode(body(termsPage), "token")).toEqual(FACTS_FIXTURE);
   });
 

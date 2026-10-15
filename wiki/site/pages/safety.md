@@ -1,7 +1,7 @@
 ---
 title: "Safety (/safety): page copy, Gate A mockup draft"
 type: page-copy
-updated: 2026-10-14
+updated: 2026-10-16
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - "../../qa/cmo-review-built-a-2026-10-14.md (M4: the open FAQ pointed to a collapsed answer; M8: one wording for the age-3 advice; task 7.1b)"
@@ -782,3 +782,14 @@ builder note above on the fold 4 screenshot's alt. No line of the Copy blocks ch
 The frozen mockup (`mockup/safety.html`, fold 4) keeps the old alt: the `safety` rule of task 8b.1's claim fixes
 (`CLAIM_FIXES.safety` in `test/e2e/support/deviations.ts`) now swaps the image's alt too, so the content test holds the
 module to the new words. An alt is not visible text, so the text and visual passes are unchanged.
+
+## Changes after approval (task Q2.17)
+
+The founder's answers on the built selling update ([D066](../../decisions/D066-selling-update-founder-answers-2026-10-16.md),
+2026-10-16), recorded by the builder of task Q2.17. Each line departs from the frozen mockup (`mockup/safety.html`), so
+it is a parity deviation (`FOUNDER_ANSWERS.safety` in `test/e2e/support/deviations.ts`; the main session writes its
+deviations.md row). The founder signs the words at Gate B ([D015](../../decisions/D015-founder-signs-off-copy.md)).
+
+| # | Where | What changed | Why |
+|---|---|---|---|
+| 1 | Fold 7, the second question's "Replies" line (`faqs.ts` `child-safety-groups`) | "Before launch, we test it by trying to make it say things it shouldn't." comes off; the line keeps "When it doesn't know something, it says so." and ends "You can read every conversation." | D066 item 6: G29's other half is not true, so it comes off everywhere (the plan v2 §13 item 3 (b)); "it says so" stays ([D065](../../decisions/D065-selling-site-founder-answers-2026-10-15.md) item 8) |

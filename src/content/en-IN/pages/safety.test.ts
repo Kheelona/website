@@ -7,6 +7,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import {
   CLAIM_FIXES,
   COPY_FIXES,
+  FOUNDER_ANSWERS,
   SAFETY_SELLING,
   SAFETY_SELLING_LAYOUT_HIDDEN,
   SAFETY_SELLING_LINES,
@@ -38,9 +39,10 @@ const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").tr
 const plain = (copy: Copy) => toPlainText(copy, token);
 
 const mockup = new DOMParser().parseFromString(readRepoFile("mockup/safety.html"), "text/html");
+/* Then task Q2.17's founder answers (D066; FOUNDER_ANSWERS.safety) in a pass of their own. */
 const main = withFacts(
-  withFacts(withFacts(mockup.querySelector("main")!, COPY_FIXES.safety.edits), CLAIM_FIXES.safety.edits),
-  SAFETY_SELLING.edits,
+  withFacts(withFacts(withFacts(mockup.querySelector("main")!, COPY_FIXES.safety.edits), CLAIM_FIXES.safety.edits), SAFETY_SELLING.edits),
+  FOUNDER_ANSWERS.safety.edits,
 );
 const fold = (labelledBy: string) => {
   const el = main.querySelector(`[aria-labelledby="${labelledBy}"]`);
@@ -481,10 +483,10 @@ describe("the safety page: page-wide rules", () => {
   });
 
   /* The plan v2 §1.4 and §13: G28's other half (Wi-Fi off at rest; a conversation that cannot run on without end) is not
-     confirmed, the pre-launch test gets no new use, "one tap" never comes back (D058 item 1), nobody is said to set the
-     daily limit (D065 item 5), and no "incl. GST" on a selling page (D065 item 3). The page's own words: fold 7's shared
-     answers (faqs.ts) keep the pre-launch-test sentence where it was already built (§13 item 3). */
-  it("says nothing the selling update keeps out: Wi‑Fi at rest, a per-conversation limit, a new pre-launch-test line, one tap, who sets the limit, GST", () => {
+     confirmed, "one tap" never comes back (D058 item 1), nobody is said to set the daily limit (D065 item 5), and no
+     "incl. GST" on a selling page (D065 item 3). The pre-launch test is not true (D066 item 6, G29, task Q2.17): it is on
+     no line of the page, fold 7's shared answers (faqs.ts) included. */
+  it("says nothing the selling update keeps out: Wi‑Fi at rest, a per-conversation limit, the pre-launch test, one tap, who sets the limit, GST", () => {
     const own = [safetyPage.meta, ...sections.filter((e) => e.kind !== "faq-section")];
     const all = strings(own)
       .flatMap((s) => [toPlainText(s, token), toPlainText(s, full)])
@@ -492,6 +494,8 @@ describe("the safety page: page-wide rules", () => {
     expect(all).toContain("No talking all day.");
     expect(all).not.toMatch(/Wi[‑-]Fi|run on without end|endless|Before launch|tested before|one tap|\bGST\b/i);
     expect(all).not.toMatch(/(?:you|parents?) (?:can )?set (?:a |the )?(?:daily )?limit/i);
+    const page = strings(safetyPage).map((s) => toPlainText(s, token)).join("\n");
+    expect(page).not.toMatch(/before launch|make it say/i);
   });
 
   it("names no amount, no placeholder and none of the retired safety lines (copy page, live page changes)", () => {

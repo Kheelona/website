@@ -133,7 +133,8 @@ export const product = {
       icon: "shield-check",
       text: "Every reply comes from an AI model given child-safety rules and the age you enter in the parent app, with Google’s safety filters on top.",
     },
-    { icon: "check-circle", text: "Tested before launch by trying to make it say unsafe things." },
+    /* "Tested before launch by trying to make it say unsafe things." came off: the founder ruled it not true (D066 item 6,
+       G29; task Q2.17). */
     {
       icon: "info",
       text: "Toy-safety certification (BIS): applied for, not yet granted. We show no mark until it is granted.",
