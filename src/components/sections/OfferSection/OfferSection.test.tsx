@@ -487,7 +487,8 @@ describe("OfferSection: the share link under the card", () => {
       const { link } = shareOf(config, FULL);
       expect(link.getAttribute("href")).toBe(FULL.share?.href);
       const text = new URL(link.getAttribute("href")!).searchParams.get("text")!;
-      expect(text).toContain("₹7,999 (incl. GST), paid in full when you order.");
+      // The founder's full-mode clause (D066 item 2): the total "in total", without GST.
+      expect(text).toContain("₹7,999 in total, paid in full when you order.");
       expect(text).not.toContain("₹499");
     }
   });

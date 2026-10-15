@@ -11,10 +11,11 @@ import type { OfferShareCopy } from "@/content/types";
  * - The label is the live site's own (WHATSAPP_SHARE_LABEL, src/config/site.ts), reused word for word. The old share
  *   link (WHATSAPP_SHARE_HREF) stays as it is, pinned in the frozen money block (ADR-013), and is never used here: its
  *   message said "talking friend that teaches" and "first 500".
- * - The message is new, a draft the founder signs at Gate B (D015): it leads with the total, incl. GST (D028, as for ad
- *   text), names the advance only as refundable (DARK-03), never "first 500" (D041 as D061 changed it allows that line on
- *   the cards alone). Its first two sentences follow the approved H1 (D045). Full mode has no advance, so its last
- *   sentence is the approved full-mode price sentence (home.md "At a glance"; offer.ts `sentence.full`).
+ * - The message is new. Its price clause is the founder's (D066 item 2, the D2C plan v2 §1.7, replacing D061 item 7's):
+ *   it leads with the total, "in total", without "incl. GST" (D028, as for ad text; the message is read cold, away from
+ *   the page), names the advance only as refundable (DARK-03), never "first 500" (D041 as D061 changed it allows that
+ *   line on the cards alone). Its first two sentences follow the approved H1 (D045). Full mode has no advance, so its
+ *   clause is the site's short price line in full mode (D065 item 3; offer.ts).
  * - For the founder's sign-off: the prices reach the payload as the site prints them, with the rupee sign, because the
  *   message takes tokens only (task 8c.2). The live site's message wrote "Rs" instead: its note
  *   (WHATSAPP_SHARE_HREF, src/config/site.ts) says the rupee sign garbles in some WhatsApp clients. Before Gate B the
@@ -30,8 +31,8 @@ export const share = {
   href: "https://wa.me/",
   text: {
     token:
-      "Kheelu is a screen-free talking toy for children aged 3 to 7. It answers every why, then asks one back. {price:headline} (incl. GST); pre-order with {price:token} today, refundable until dispatch.",
-    full: "Kheelu is a screen-free talking toy for children aged 3 to 7. It answers every why, then asks one back. {price:full} (incl. GST), paid in full when you order.",
+      "Kheelu is a screen-free talking toy for children aged 3 to 7. It answers every why, then asks one back. {price:headline} in total; {price:token} today reserves yours, refundable.",
+    full: "Kheelu is a screen-free talking toy for children aged 3 to 7. It answers every why, then asks one back. {price:full} in total, paid in full when you order.",
   },
   address: `${CANONICAL_ORIGIN}/?utm_source=whatsapp&utm_medium=referral&utm_campaign=2026-10-share`,
 } as const satisfies OfferShareCopy;

@@ -8,20 +8,23 @@ import * as utm from "../../../tools/utm/build-link.mjs";
 import { share } from "./share";
 
 /* The "Share Kheelu on WhatsApp" link under the offer cards (task 8c.2; D061, the main session's ruling on the share
- * link; tracking inventory §6). The label is the live site's (WHATSAPP_SHARE_LABEL, reused); the message is new, a draft
- * the founder signs at Gate B (D015), because the old one said "talking friend that teaches" and "first 500". It leads
- * with the total (D028, as for ad text), states the advance as refundable (DARK-03), and ends with kheelona.com tagged
- * as the campaign conventions say (docs/utm-conventions.md, tools/utm/build-link.mjs). */
+ * link; tracking inventory §6). The label is the live site's (WHATSAPP_SHARE_LABEL, reused); the message is new, because
+ * the old one said "talking friend that teaches" and "first 500", and the founder signed its price clause (D066 item 2,
+ * the D2C plan v2 §1.7). It leads with the total "in total", without GST (D028, as for ad text), states the advance as
+ * refundable (DARK-03), and ends with kheelona.com tagged as the campaign conventions say (docs/utm-conventions.md,
+ * tools/utm/build-link.mjs). */
 
 /* The tool is plain JavaScript that `allowJs` types from its code (test/utm.test.ts does the same). */
 type UtmInput = { source: string; medium: string; campaign: string; path?: string; content?: string; term?: string };
 const buildUtmUrl = utm.buildUtmUrl as (input: UtmInput) => string;
 
 const ADDRESS = "https://kheelona.com/?utm_source=whatsapp&utm_medium=referral&utm_campaign=2026-10-share";
+/* The founder's words (D066 item 2; the D2C plan v2 §1.7): the total first, "in total", without "incl. GST"; in token
+   mode the advance after it, refundable. */
 const MESSAGE = {
   token:
-    "Kheelu is a screen-free talking toy for children aged 3 to 7. It answers every why, then asks one back. ₹4,999 (incl. GST); pre-order with ₹499 today, refundable until dispatch.",
-  full: "Kheelu is a screen-free talking toy for children aged 3 to 7. It answers every why, then asks one back. ₹7,999 (incl. GST), paid in full when you order.",
+    "Kheelu is a screen-free talking toy for children aged 3 to 7. It answers every why, then asks one back. ₹4,999 in total; ₹499 today reserves yours, refundable.",
+  full: "Kheelu is a screen-free talking toy for children aged 3 to 7. It answers every why, then asks one back. ₹7,999 in total, paid in full when you order.",
 } as const;
 
 /** The words WhatsApp opens with: the `text` parameter of the share link, decoded. */
@@ -78,14 +81,16 @@ describe("the message's rules (task 8c.2 acceptance 4)", () => {
     for (const { mode, text } of messages) expect(findBanned(text), mode).toEqual([]);
   });
 
-  it("leads with the total, incl. GST (D028 for ad-like text), and names the advance only as refundable (DARK-03)", () => {
+  it("leads with the total, \"in total\" and without GST (D066 item 2, D028), and names the advance only as refundable (DARK-03)", () => {
     for (const { offer, text } of messages) {
       const amounts = text.match(/₹[\d,]+/g) ?? [];
       expect(amounts[0]).toBe(offer.prices.headline);
-      expect(text).toContain(`${offer.prices.headline} (incl. GST)`);
+      expect(text).toContain(`${offer.prices.headline} in total`);
+      expect(text).not.toMatch(/GST/);
     }
     const [token, full] = messages;
-    expect(token.text).toContain(`pre-order with ${token.offer.prices.token} today, refundable until dispatch.`);
+    expect(token.text).toContain(`${token.offer.prices.headline} in total; ${token.offer.prices.token} today reserves yours, refundable.`);
+    expect(full.text).toContain(`${full.offer.prices.headline} in total, paid in full when you order.`);
     expect(full.text).not.toContain(full.offer.prices.token);
     expect(full.text).not.toMatch(/refundable|advance|today/);
   });
