@@ -11,6 +11,7 @@ import { CLAIM_FIXES, SELLING_CLOSES, TEAM_CLOSE_LEAD, TEAM_KEYS_LINE } from "..
 import { ROOT, readRepoBytes, readRepoFile, tagBytes } from "../../../../test/e2e/support/repo";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { withFacts } from "../../../../test/support/mockup-facts";
+import { navigation } from "../navigation";
 import { DEFAULT_OG, organization } from "../organization";
 import { routeFor } from "../routes";
 import { seller } from "../seller";
@@ -419,6 +420,14 @@ describe("fold 6: the close", () => {
     const button = el.querySelector(".kh-btn--cta")!;
     expect(button.getAttribute("data-ph-capture-attribute-cta")).toBe(config.cta.cta);
     expect(button.classList.contains("kh-btn--block")).toBe(false);
+  });
+
+  /* Task Q2.13 (the follow-ups of the q2b merge): the close's lead is the footer's line (D034), read from navigation.ts,
+     so the two can never drift apart; the page's source never types it again. */
+  it("reads the close's lead from the footer's line (navigation.footer.made), never typing it again", () => {
+    if (close.config.variant !== "center") throw new Error("not the centred close");
+    expect(close.config.heading.lead).toBe(navigation.footer.made);
+    expect(readRepoFile("src/content/en-IN/pages/team.ts")).not.toContain(navigation.footer.made);
   });
 });
 

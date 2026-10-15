@@ -3,6 +3,7 @@ import kheeluSticker from "@ds/assets/Kheelu/kheelu-front-sticker.png";
 import heartChilli from "@ds/assets/Shapes/heart-chilli.svg";
 import type { ImageRef, SitePath } from "@/content/types";
 import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
+import { navigation } from "../navigation";
 import { DEFAULT_OG, organization } from "../organization";
 import { seller } from "../seller";
 import { TRUST_COMPACT, trustItems } from "../trust";
@@ -25,8 +26,8 @@ import { TRUST_COMPACT, trustItems } from "../trust";
  * answer reaches the team by WhatsApp and email; its "or by phone at …" came off (D063 item 2, D064 item 11; task Q2.3:
  * the number shows only on /contact and the legal pages).
  * The selling update (task Q2.12; D065 item 7; the D2C plan v2 §8): fold 4's keys line in G26's words, and the close's
- * lead "Designed by parents in Bengaluru. Made in India." (the footer's line, D034); the close keeps the button, the price
- * line, the trust line and the help line every close has (CtaBlock), and no picture.
+ * lead, the footer's line (D034), read from navigation.ts since task Q2.13 so the two never drift apart; the close keeps
+ * the button, the price line, the trust line and the help line every close has (CtaBlock), and no picture.
  */
 
 const [apoorva, aman, kashyap] = organization.founders;
@@ -174,12 +175,13 @@ export const teamPage = {
       },
     },
     /* Fold 6: the one action, centred, with the price sentence, delivery and returns, and a person to ask; the lead since
-       the selling update (the D2C plan v2 §8 fold 6). No picture: the page shows no cast child. */
+       the selling update (the D2C plan v2 §8 fold 6), the footer's line itself (task Q2.13). No picture: the page shows no
+       cast child. */
     {
       kind: "close-section",
       config: {
         variant: "center",
-        heading: { title: "Bring Kheelu {hand:home.}", lead: "Designed by parents in Bengaluru. Made in India." },
+        heading: { title: "Bring Kheelu {hand:home.}", lead: navigation.footer.made },
         cta: {
           cta: "finale",
           trust: TRUST_COMPACT.map((id) => trustItems[id]),
