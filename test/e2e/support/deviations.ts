@@ -1316,7 +1316,7 @@ const IN_APP_REASON =
   "the in-app browser note (fold 2) shows only inside the Instagram, Facebook or WhatsApp browser, and the parity browser is plain Chromium, so the build shows no fold 2";
 
 /* Kheelu on the first phone screen (D061 item 1, task 8c.1): under 720 px the hero's art is the board's phone
-   composition, 16:10 right under the trust line (the help line and the secondary link follow it), where the approved
+   composition, 4:3 right under the trust line (the help line and the secondary link follow it), where the approved
    page has the 1:1 board after them. Its words are the approved board's (the text pass compares them); its place and
    picture are new, so the visual pass compares Home's and the product page's phone heroes without their art on both
    sides, and every fold below lines up again. Phones only: from 720 px the approved board shows, compared as before.
@@ -1335,7 +1335,7 @@ const HERO_PHONE_ART: readonly VisualHide[] = [
     side: "build",
     selector: ".ks-hero .kh-art",
     media: "(max-width: 719px)",
-    reason: "the hero board's phone composition (16:10, under the trust line, so Kheelu is on the first screen): new art in a new place, its words compared by the text pass",
+    reason: "the hero board's phone composition (4:3, under the trust line, so Kheelu is on the first screen): new art in a new place, its words compared by the text pass",
     approvedBy: HERO_PHONE_ART_BY,
   },
 ];

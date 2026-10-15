@@ -41,9 +41,10 @@ export type HeroSectionConfig =
       readonly art: ArtBoardRef;
       /**
        * D061 item 1 (task 8c.1): the board's phone composition, so Kheelu is wholly on the first phone screen. The same
-       * board (tone, name, sticker) with these layers, the board's own DS files placed for a 16:10 board, takes the
-       * board's place under 720 px, right under the trust line (the help line and the secondary link follow it); the
-       * approved `art` shows from 720 px as it always has. Without it the hero is the approved fold.
+       * board (tone, name, sticker) with these layers, the board's own DS files placed for a 4:3 board (the ratio the
+       * approved mockup renders a board at on phones), takes the board's place under 720 px, right under the trust line
+       * (the help line and the secondary link follow it); the approved `art` shows from 720 px as it always has.
+       * Without it the hero is the approved fold.
        */
       readonly phoneLayers?: readonly ArtLayer[];
     }

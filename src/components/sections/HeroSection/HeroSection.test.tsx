@@ -146,16 +146,16 @@ describe("HeroSection: product (product fold 1)", () => {
 });
 
 /* D061 item 1 (task 8c.1): on a phone, under 720 px, Kheelu is wholly on the first screen. The board's phone composition
- * (`phoneLayers`: the same DS files, placed for a 16:10 board) takes the approved board's place right under the trust
- * line; the approved board shows from 720 px as it always has. Where each board shows, and the order on a phone, is
+ * (`phoneLayers`: the same DS files, placed for a 4:3 board, the ratio the approved mockup's phone boards render at,
+ * ai-toys-for-kids-in-india.css:30) takes the approved board's place right under the trust line; the approved board shows from 720 px as it always has. Where each board shows, and the order on a phone, is
  * hero-section.css's, measured in a browser by test/e2e/first-screen.spec.ts; this file holds the markup and loading. */
 const HOME_PHONE_LAYERS: ArtBoardRef["layers"] = [
-  { image: svg("sun-sun"), left: 3, width: 18, bottom: 5 },
-  { image: raster("advik-sticker.png", 744, 1198), left: 59, width: 34, bottom: 0 },
-  { image: raster("kheelu-front-sticker.png", 1154, 1397), left: 37, width: 30, bottom: 4, rotate: -6 },
-  { doodle: { name: "chalk-question-mark", draw: true }, left: 52, width: 8, top: 3, rotate: 10 },
+  { image: svg("sun-sun"), right: 3, width: 18, top: 5 },
+  { image: raster("advik-sticker.png", 744, 1198), left: 52, width: 30, bottom: 0 },
+  { image: raster("kheelu-front-sticker.png", 1154, 1397), left: 32, width: 27, bottom: 16, rotate: -6 },
+  { doodle: { name: "chalk-question-mark", draw: true }, left: 45, width: 8, top: 22, rotate: 10 },
 ];
-const PHONE_SIZES = { lcp: "(min-width: 720px) calc(1px * 0.34), calc((100vw - 32px) * 0.34)" };
+const PHONE_SIZES = { lcp: "(min-width: 720px) calc(1px * 0.3), calc((100vw - 32px) * 0.3)" };
 const APPROVED_SIZES = {
   lcp: "(min-width: 1296px) calc(480px * 0.54), (min-width: 900px) calc(40vw * 0.54), (min-width: 720px) calc((100vw - 32px) * 0.54), calc(1px * 0.54)",
 };
@@ -165,16 +165,16 @@ describe("HeroSection: the phone board (D061 item 1)", () => {
   const boards = (container: Element) => [...container.querySelectorAll(".kh-art")];
   const placements = (board: Element) => [...board.querySelectorAll(".kh-art__layer")].map((layer) => layer.getAttribute("style")?.replace(/color:\s*transparent;?/, ""));
 
-  it("puts the phone composition before the approved board: the board's tone, name and sticker, its own layers, 16:10", () => {
+  it("puts the phone composition before the approved board: the board's tone, name and sticker, its own layers, 4:3", () => {
     const { container } = render(<HeroSection {...props} cta={CTA} />);
     expect(boards(container)).toHaveLength(2);
     const [phone, approved] = boards(container);
     expect(phone).toHaveClass("kh-art", "kh-tone-blue", "ks-hero__phone-art");
-    expect(phone.getAttribute("style")).toContain("--kh-ratio: 16 / 10");
+    expect(phone.getAttribute("style")).toContain("--kh-ratio: 4 / 3");
     expect(phone).toHaveAttribute("role", "img");
     expect(phone).toHaveAttribute("aria-label", HOME_ART.label);
     expect(phone.querySelectorAll(".kh-art__layer")).toHaveLength(HOME_PHONE_LAYERS.length);
-    expect(placements(phone)[2]).toContain("left: 37%; width: 30%; bottom: 4%; transform: rotate(-6deg)");
+    expect(placements(phone)[2]).toContain("left: 32%; width: 27%; bottom: 16%; transform: rotate(-6deg)");
     expect(phone.querySelector(".kh-sticker")?.textContent).toBe("It asks.They think.");
     expect(phone.querySelector(".kh-sticker")?.getAttribute("style")).toContain("--kh-tilt: 8deg");
     // The approved board follows, its layers where they always were and without a ratio of its own (the DS 1:1).

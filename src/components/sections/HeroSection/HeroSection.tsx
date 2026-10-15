@@ -20,9 +20,10 @@ const CLAMPED_SIZES = "(min-width: 1296px) 480px, (min-width: 900px) 40vw, (min-
  *  image still loads, so there it asks for the smallest rendition (1 px), never a second full-size picture. */
 const PHONE_SIZES = "(min-width: 720px) 1px, calc(100vw - 32px)";
 const FROM_TABLET_SIZES = "(min-width: 1296px) 480px, (min-width: 900px) 40vw, (min-width: 720px) calc(100vw - 32px), 1px";
-/** The phone board's DS ratio (the mockup's phone boards, refund.css:12 and shipping.css:12): low enough that the whole
- *  board, Kheelu with it, sits under the trust line inside a 390 x 844 screen. */
-const PHONE_RATIO = "16 / 10";
+/** The phone board's ratio: 4:3, the one the approved mockup renders a board at on phones (the buyer's guide's plush
+ *  board, ai-toys-for-kids-in-india.css:30, 1:1 from 900 px). The DS recipe's 1:1 or 4:5 board would end 122 or 212 px
+ *  below a 390 x 844 screen on Home; at 4:3 Kheelu, placed by the content's `phoneLayers`, ends inside it. */
+const PHONE_RATIO = "4 / 3";
 
 /**
  * The first fold of a page (task 3.3; components §2): `Section` (`ks-hero`: the tighter top padding that lands the

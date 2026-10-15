@@ -33,14 +33,17 @@ const tapViewport = VIEWPORTS[0];
 const kheeluPhone = (width: number, height: number): Viewport => ({ name: `phone-${width}x${height}`, width, height, isMobile: true, group: "phone" });
 const KHEELU_VIEWPORTS: readonly Viewport[] = [kheeluPhone(390, 844), kheeluPhone(412, 915)];
 /* The bubble also at every phone of the audit matrix (test plan §3): a phone's screen ends at any height, and wherever
-   it ends the bubble sits in the board's right-hand column, so the word sticker and Kheelu stay out of that column. */
+   it ends the bubble sits in the board's right-hand column, so the word sticker, Kheelu and the child's head stay out of
+   that column. The child's head is the top half of the cast sticker: never cover a face (design-system 10-pages.md, the
+   scrapbook board; CMO V2), and Advik's eyes sit at 37 % of his sticker, below its top third. */
 const BUBBLE_VIEWPORTS: readonly Viewport[] = [kheeluPhone(360, 590), ...KHEELU_VIEWPORTS, ...VIEWPORTS.filter((v) => v.group === "phone")].filter(
   (v, i, all) => all.findIndex((w) => w.name === v.name) === i,
 );
 
 type Box = { top: number; bottom: number; left: number; right: number };
 
-/** The hero art that shows (the phone board under 720 px), its Kheelu and word sticker, and the WhatsApp bubble. */
+/** The hero art that shows (the phone board under 720 px), its Kheelu, cast sticker's head and word sticker, the hero's
+ *  links and the WhatsApp bubble. */
 async function heroArt(page: Page) {
   // The bubble rises above the buy bar while the bar shows (D050): measure once the bar has settled on its state.
   await page.waitForFunction(() => document.documentElement.hasAttribute("data-buybar"), undefined, { timeout: 5_000 }).catch(() => undefined);
@@ -51,12 +54,19 @@ async function heroArt(page: Page) {
       return { top: Math.round(r.top), bottom: Math.round(r.bottom), left: Math.round(r.left), right: Math.round(r.right) };
     };
     const board = [...document.querySelectorAll("main .ks-hero .kh-art")].find((el) => el.checkVisibility());
-    const kheelu = [...(board?.querySelectorAll("img") ?? [])].find((img) => /kheelu-front-sticker/.test(img.currentSrc || img.src));
+    const layers = [...(board?.querySelectorAll("img") ?? [])];
+    const kheelu = layers.find((img) => /kheelu-front-sticker/.test(img.currentSrc || img.src));
+    const cast = layers.find((img) => /(advik|myra)-sticker/.test(img.currentSrc || img.src));
+    const castBox = box(cast);
     const bubble = document.querySelector(".ks-wa");
     return {
       board: box(board),
       kheelu: box(kheelu),
+      head: castBox && { ...castBox, bottom: Math.round((castBox.top + castBox.bottom) / 2) },
       sticker: box(board?.querySelector(".kh-sticker")),
+      links: [...document.querySelectorAll("main .ks-hero a")]
+        .filter((a) => a.checkVisibility())
+        .map((a) => ({ name: (a.textContent ?? "").trim(), box: box(a)! })),
       bubble: bubble?.checkVisibility() ? box(bubble) : null,
       width: window.innerWidth,
       height: window.innerHeight,
@@ -208,11 +218,16 @@ for (const slug of FIRST_SCREEN_PAGES) {
       test(vp.name, async ({ harness }) => {
         const { page } = await harness.open(route, vp);
         const art = await heroArt(page);
-        console.log(`[first-screen] ${route.id} ${vp.name}: bubble ${fmt(art.bubble)}, Kheelu ${fmt(art.kheelu)}, sticker ${fmt(art.sticker)}`);
+        console.log(`[first-screen] ${route.id} ${vp.name}: bubble ${fmt(art.bubble)}, Kheelu ${fmt(art.kheelu)}, sticker ${fmt(art.sticker)}, child's head ${fmt(art.head)}`);
         expect(art.bubble, `${route.id} ${vp.name}: the WhatsApp bubble does not show`).not.toBeNull();
-        expect(art.kheelu && art.sticker, `${route.id} ${vp.name}: no Kheelu or word sticker in the board that shows`).toBeTruthy();
+        expect(art.kheelu && art.sticker && art.head, `${route.id} ${vp.name}: no Kheelu, word sticker or cast sticker in the board that shows`).toBeTruthy();
         expect(overlap(art.bubble!, art.kheelu!), `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers Kheelu ${fmt(art.kheelu)}`).toBe(false);
         expect(overlap(art.bubble!, art.sticker!), `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers the word sticker ${fmt(art.sticker)}`).toBe(false);
+        expect(overlap(art.bubble!, art.head!), `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers the child's head ${fmt(art.head)}`).toBe(false);
+        // The hero's links under the bubble at rest: printed for the main session (task 8c.1 review). Clearing the
+        // phone number from the bubble's column wraps the approved help line at 390 px, a visual-parity change it rules on.
+        const covered = art.links.filter((link) => overlap(art.bubble!, link.box));
+        console.log(`[first-screen] ${route.id} ${vp.name}: hero links under the bubble: ${covered.map((link) => `"${link.name}" ${fmt(link.box)}`).join("; ") || "none"}`);
       });
     }
   });
