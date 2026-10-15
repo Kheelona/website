@@ -1137,3 +1137,16 @@ Chaitra and compensated her for it."; the CMO found her coat badge reads "Dr Cha
 Founder: no "doctor" in our text, the coat and badge shown as they are (risk accepted), the CMO's 34-second cut, the
 original YouTube video unchanged (the site hosts its own copy, never the full video), built from the 720p download.
 Task 8c.6 in [tasks](engineering/tasks.md) carries the cut, the 11 caption lines, the copy, the guard entries.
+
+## [2026-10-15 08:00] build | Wave 8c 8c.1-8c.4 merged; verify after one guard exception; production build green
+Workflow `wf_6522caae-8ac`: 8c.3 passed its adversarial review; 8c.2 and 8c.4 failed review once and were fixed (the
+main session checked both fixes: the CTA spec reads the values placed after Gate A from the registry; the claims guard
+has no RegExp modifier group and loads on Node 22.23.3, prebuild step 15 green on it); 8c.1 met 390 × 844 and
+412 × 915 on both pages with a 4:3 phone board, not 360 × 590 (the founder: leave as built, D061 item 14), and its
+last fix round was lost to a network error (worktree clean). Merged `1cdc5c1`, `6677665`, `38a1d96`, `a6e06f4`;
+the main session resolved the shared rule lists (deviations.ts, two route tests, components.md) in one order and
+updated two assertions (the offer rule before the claim fixes; two hero LCP images, one per board). `npm run verify`
+found one red: `test/utm.test.ts` refused `src/content/en-IN/share.ts` (the share message's tagged kheelona.com
+address); ruled not an internal link and given a named, self-checking exception. Production build: 20 journal pages,
+no open placeholders. Deviation rows V38-V46 filed; the Gate B pack lists them and the WhatsApp ₹ check. Follow-ups
+folded into 8c.5 ([tasks](engineering/tasks.md) "8c.1-8c.4 merge rulings").

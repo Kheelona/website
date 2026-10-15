@@ -87,6 +87,10 @@ founder's; the founder answered each.
     hosts its own trimmed copy like the films and never links to or embeds the full video. Built from the 720p
     download (landscape, large burned-in captions).
 
+14. **Small phones (360 × 590) stay as built** (founder, after seeing the options): there Kheelu starts just below the
+    first screen; the headline, button and price sentence keep their approved order (D045, D028). Neither option (the
+    price sentence or the lead line moved below a wider 22:10 picture) was taken.
+
 Build: wave 8c in [tasks](../engineering/tasks.md).
 
 **Approved by.** Founder (items 1-4). **Date.** 2026-10-15.

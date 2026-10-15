@@ -116,10 +116,26 @@ describe("the site's own links stay clean", () => {
    *  a literal or through URLSearchParams. */
   const WRITES_A_TAG = /[?&]utm_(source|medium|campaign|content|term)=|(?:set|append)\(\s*["'`]utm_/;
 
+  /** Files that tag a link which is not a link between our pages, each with why. One today: the share message (task
+   *  8c.2, D061), whose kheelona.com address is words a parent sends someone else in WhatsApp; that visit starts in
+   *  WhatsApp, so the tag attributes it instead of cutting a visit short. src/content/en-IN/share.test.ts proves the
+   *  address is never a link on a page, only words inside the message (it reaches the page URL-encoded inside wa.me's
+   *  text). Main session ruling at the wave 8c merge, 2026-10-15. */
+  const NOT_INTERNAL: ReadonlyMap<string, string> = new Map([
+    ["src/content/en-IN/share.ts", "the WhatsApp share message's address (task 8c.2, D061): words sent to someone else, never an internal link"],
+  ]);
+
   it("no source file writes a utm_ parameter into a link", () => {
     expect(sources.length).toBeGreaterThan(50);
-    const offenders = sources.filter((f) => WRITES_A_TAG.test(readFileSync(f, "utf8")));
+    const offenders = sources.filter((f) => !NOT_INTERNAL.has(f) && WRITES_A_TAG.test(readFileSync(f, "utf8")));
     expect(offenders, `these tag an internal link: ${offenders.join(", ")}`).toEqual([]);
+  });
+
+  it("keeps each exception live: the file exists and still writes its tag (else the exception comes off)", () => {
+    for (const [file] of NOT_INTERNAL) {
+      expect(sources, file).toContain(file);
+      expect(WRITES_A_TAG.test(readFileSync(file, "utf8")), file).toBe(true);
+    }
   });
 
   it("catches a tagged internal link if one is ever added", () => {

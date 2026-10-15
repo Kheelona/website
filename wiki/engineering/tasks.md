@@ -1878,9 +1878,37 @@ parallel worktrees; each owns its files so the merges stay mechanical.
 - **What (D061 item 10, confirming D034):** a perk "Made in India" (icon from the DS set, e.g. `map-pin` is taken:
   pick the closest DS icon) on the Home and product-page offer cards, from `offer.ts`'s perk list; the footer line and
   the product page's "Country of origin" already say it. A deviation row for the founder.
+- **Also (follow-ups from the 8c merge):** keep the WhatsApp bubble clear of the hero's "call +91 …" link at 412 × 915 on
+  both pages (first-screen.spec asserts it); `test/e2e/content-integrity.spec.ts`: "first 500 units" twice on Home (offer
+  card and price FAQ, D061 item 3), once elsewhere; the share link opens in a new tab with `rel="noopener"` like the D050
+  bubble (Button gains the prop if it has none); `/llms.txt` lists "Which languages does Kheelu speak?".
 - **Owns:** `src/content/en-IN/offer.ts` (the perk), the offer card tests and story data, the offer rule in
-  `test/e2e/support/deviations.ts`.
-- **Acceptance:** the perk on both cards in both modes; `findBanned` green; text parity green with the new rule.
+  `test/e2e/support/deviations.ts`; for the follow-ups: the hero CSS and `first-screen.spec.ts`, `content-integrity.spec.ts`,
+  `ui/Button` (a target prop) and OfferSection's share link, `src/app/llms.txt/route.ts` and the machine-file pins.
+- **Acceptance:** the perk on both cards in both modes; `findBanned` green; text parity green with the new rule; the
+  bubble clear of every hero link at the matrix phones; content-integrity green with the D061 count; a deviation row
+  drafted (V47).
+
+### 8c.1-8c.4 merge rulings (main session, 2026-10-15)
+
+- **Merged** (`1cdc5c1` 8c.4, `6677665` 8c.2, `38a1d96` 8c.3, `a6e06f4` 8c.1). 8c.3 passed its adversarial review;
+  8c.2's and 8c.4's fixes were checked by the main session (the CTA spec now expects the values placed after Gate A from
+  the registry; the guard loads on Node 22.23.3 with no RegExp modifier group, and prebuild step 15 runs on it). 8c.1:
+  360 × 590 left as built (D061 item 14); its 4:3 phone board is a recorded DS exception (V38); its last fix round was
+  lost to a network error, with the worktree clean at `240dc68`.
+- **Accepted outside the written Owns:** 8c.1's two page tests and the visual-hide harness's `media` field; 8c.2's
+  `src/content/types.ts`, `src/lib/offer/offer.ts`, `src/lib/tracking/cta.ts`, the two route tests and
+  `test/e2e/cta.spec.ts`; 8c.4's journal fixture's "aged 3 to 7". Each hero board keeps its own LCP image (one asks for
+  a 1px image at the other's widths), so a page with a phone board has two; Home's test says so.
+- **Conflicts resolved by the main session:** each page's text and visual rules in the order copy fixes, offer additions
+  (8c.2), proof additions (8c.3), claim fixes, FAQ fix (8c.4), then the hero's phone art (8c.1); the components rows
+  each from the side that changed them.
+- **Follow-ups (into 8c.5):** the WhatsApp bubble over the "call +91 …" link at 412 × 915 (product and Home);
+  `content-integrity.spec.ts` still says "first 500" once (D061 item 3 makes it twice on Home); the share link opens in
+  the same tab while the D050 bubble opens a new one; llms.txt could list the languages question. Minor, kept on the
+  list: the 4:3 board's DS exception; the steps' two-sentence bodies (V45); the example heading's alignment at 1440;
+  `proofText` accepts very short lines ("1", "Kheelu") anywhere on the page; the Quote cards without the DS initials
+  avatar; a film started by "Watch the film" pauses only once it has been half on screen.
 
 ### 8c.6 The expert clip (builder; risk high; after 8c.3 merges)
 
