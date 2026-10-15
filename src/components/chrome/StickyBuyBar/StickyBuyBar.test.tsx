@@ -128,6 +128,16 @@ describe("StickyBuyBar: markup (partials/buybar.html)", () => {
     expect(within(cta as HTMLElement).getByText("Pre-order Kheelu", { selector: "span" })).toBeInTheDocument();
   });
 
+  it("splits the small line after its dot, so a narrow phone breaks it there and never inside a part (words unchanged)", () => {
+    page(`<a id="hero-cta" class="kh-btn kh-btn--cta">x</a>`);
+    const small = document.querySelector(".kh-buybar__small")!;
+    expect(Array.from(small.querySelectorAll(".ks-buybar__part")).map((s) => s.textContent)).toEqual([
+      "refundable ·",
+      "₹4,999 in total",
+    ]);
+    expect(small.textContent).toBe("refundable · ₹4,999 in total");
+  });
+
   it("prints the full-mode lines when the store has moved to full price, without GST (D065 item 3)", () => {
     nav.pathname = "/";
     render(<StickyBuyBar offer={buildOffer("full")} label="Pre-order Kheelu" paths={PATHS} />);

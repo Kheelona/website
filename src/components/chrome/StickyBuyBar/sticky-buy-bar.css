@@ -3,3 +3,6 @@
    bar for screens narrower than 900 px. Position (sticky at the bottom), surface and shadow are bundle.css's .kh-buybar. */
 .kh-buybar { padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom)); }
 @media (min-width: 900px) { .kh-buybar { display: none; } }
+/* The small line breaks only between its parts on a narrow phone (StickyBuyBar.tsx `parts`; Q2.8's notes: at 360 px it
+   read "refundable · ₹4,999 in" / "total"). */
+.ks-buybar__part { display: inline-block; }
