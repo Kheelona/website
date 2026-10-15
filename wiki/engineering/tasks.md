@@ -2010,6 +2010,110 @@ parallel worktrees; each owns its files so the merges stay mechanical.
 - **Acceptance:** each item done with evidence (screenshots at 360, 390 and 1440 kept local); visual and text parity,
   first-screen, axe, no-sideways and perf-budget green on home and meet-kheelu; draft amendments for V41, V44, V46, V48.
 
+## Quick batch 1 (D062, D063; 2026-10-15)
+
+Quick-changes rules (D062): targeted checks plus `npm run verify` and the production build; one review only for a risky
+change (risk normal); no full Playwright, Lighthouse or CMO review. Each change is still a deviation row (drafted in the
+builder's notes). Non-negotiables stay: no secrets, checkout logic unchanged, tracking IDs and events unchanged, the
+claims guard, design-system/ untouched. The founder looks at the result on beta.
+
+### Q1.1 Home's hero picture: "Advik · studio hug" (builder; risk normal)
+
+- **What (D063 item 1):** Home's hero picture becomes the photo library's `advik-03-studio-hug` (4:5, a child hugging
+  Kheelu on the cream studio sweep) on laptop and phone, through the DS `Photo` (lcp) the hero already supports (or a
+  generated derivative outside design-system/). The headline, CTA, price sentence and trust line stay as approved
+  (D045, D028). On phones it keeps 8c.1's place under the trust line, cropped (object-position) so Advik and Kheelu are
+  both wholly in view, and Kheelu stays on the first screen at 390 × 844 and 412 × 915 (360 as before, D061 item 14).
+  The product page's hero is unchanged.
+- **Owns:** Home's hero block in `pages/home.ts`, HeroSection only if the photo path needs it, Home's hero rules in
+  `test/e2e/support/deviations.ts`, `test/e2e/first-screen.spec.ts` (Home's boxes), assets.md rows.
+- **Acceptance:** the photo is the LCP image (eager, high priority, right `sizes`), sharp at 360, 390, 412 and 1440;
+  first-screen boxes reported; the WhatsApp bubble clear of the hero links; one LCP image per hero form; verify green.
+
+### Q1.2 "What is Kheelu?" as a sticky-scroll section with the year-by-year content (builder; risk normal)
+
+- **What (D063 item 4):** Home fold 4 redesigned. Laptop (from 900 px): a two-column sticky scroll. The left column stays
+  in view while the right column scrolls: eyebrow "Ages 3 to 7", the heading "What is {hand:Kheelu?}", the approved lead
+  (the answer-first block stays in Home's FAQPage, unchanged), the three modes as a compact row (AI mode: open
+  conversation on home Wi‑Fi; Story mode: stories, poems and jingles, no Wi‑Fi needed; Bluetooth mode: a speaker for your
+  phone; the existing mode words and icons), the languages line ("Up to {languageCeiling} languages at launch", from
+  product.ts) and the link "See what each mode does"; under them a picture that changes as each age card becomes active.
+  The right column: the subheading "What your child gets, year by year." and four cards, in these words exactly:
+  - "At 3" · "Asking why, and why again." · "Why is the sky blue? Kheelu answers the fourth why as patiently as the
+    first, then asks one back." · photo `myra-01-breakfast-why`
+  - "At 4" · "Counting, stories and rhymes." · "How many apples did the squirrel take? Kheelu counts along out loud. In
+    Story mode it tells stories, poems and jingles, with no Wi‑Fi needed." · photo `advik-01-counting-carriages`
+  - "At 5" · "Bigger questions." · "Why do planes stay up? Kheelu answers, then asks what your child thinks, so they do
+    the explaining. It remembers earlier conversations, and you can read every one of them." · photo
+    `ira-01-story-on-the-bed`
+  - "At 6 and 7" · "Bigger ideas, more languages." · "Longer stories and bigger questions, in up to {languageCeiling}
+    languages at launch. It can switch between them mid-sentence." · photo `kabir-02-block-rocket`
+  Phones: no sticky column; the heading, lead, modes and languages first, then each card with its own photo, stacked.
+  Motion: the active card and photo change with a DS fade only; with `prefers-reduced-motion` nothing animates (the
+  picture shows the first card's photo, or each card shows its photo). Built from DS parts (cards, AgeTimeline's look,
+  Photo, Chip); a new section variant or component registered in components.md.
+- **Owns:** Home fold 4 in `pages/home.ts`, the section's component (ModesSection variant or a new section) with test and
+  story, Home's fold-4 rules in `deviations.ts`, components.md and assets.md rows.
+- **Acceptance:** the copy word for word and `findBanned` green; keyboard and screen-reader order is the reading order;
+  no layout shift; reduced motion respected; Home HTML ≤ 60 KB (lazy photos below the fold); verify green.
+
+### Q1.3 "Safety you can check." on Home: collapsible, half as wide, shorter (builder; risk normal)
+
+- **What:** Home fold 6's four items become a collapsible list (native `<details>` like the DS FAQ: each title visible,
+  its body opens on a tap; the first may start open), the list column half the page's width on laptops (the privacy
+  screen beside it as now), and the bodies shortened to exactly:
+  - "You’ll always see when it’s listening." · "The microphone turns on only when someone presses the wake-up button, and
+    switches itself off after a couple of minutes of quiet. A light shows whenever it’s listening."
+  - "How it understands and answers." · "Trusted speech and AI providers process your child’s voice only to produce
+    Kheelu’s reply. They don’t keep it or train their AI on it; our contracts say so."
+  - "You can read every conversation." · "In the parent app. Deleting your account deletes your child’s profile,
+    conversations and recordings from our servers."
+  - "We don’t sell your data." · "Your child’s data is never used to advertise to them."
+  The product page's safety fold is unchanged.
+- **Owns:** Home fold 6 in `pages/home.ts`, TrustSection (a collapsible variant) with test and story, Home's fold-6
+  rules in `deviations.ts`, components.md row.
+- **Acceptance:** the words exact and `findBanned` green; works without JavaScript; 44 px tap targets; verify green.
+
+### Q1.4 Home's films order, the offer picture's alignment, the footer's link gaps (builder; risk mechanical)
+
+- **Films ("Kheelu asks. Watch them think."):** the 2nd film is replaced by the 4th and the 3rd by the 7th (they swap
+  places: new order 1, 4, 7, 2, 5, 6, 3 of today's list). On Home; if the strip's order is shared and cannot differ by
+  page, apply it everywhere and say so.
+- **"What you get, and what you pay."** (Home fold 9): the picture (the girl in the yellow dress) aligns with the offer
+  card: its top level with the card's top on laptop (today it starts around the "Today, refundable" row).
+- **Footer:** the gaps between the links in each column are much smaller (DS spacing tokens; keep 44 px tap targets with
+  padding, not margins).
+- **Owns:** films order (films.ts or Home's strip config), OfferSection/Home fold 9 CSS, Footer CSS, their tests and the
+  matching rules in `deviations.ts`.
+
+### Q1.5 The GSTIN off the website; the phone number off every selling page (builder; risk normal)
+
+- **What (D063 items 2-3):** remove "GSTIN 29AAMCK1530E1ZN" from everything the website renders: the footer, the store
+  footer, `/contact`, the legal pages, and the Organization JSON-LD `taxID`; keep `GSTIN` in `src/config/site.ts` for the
+  receipt emails and invoices (frozen, ADR-013). Remove "+91 91875 46483" and every `tel:` link from every selling page
+  and component (the hero and CTA help lines, the offer's help line, the footer, the store's pages and help block, FAQ
+  answers), keeping WhatsApp links and email; keep the number on `/contact` and in the legal pages' seller block (the
+  E-Commerce Rules). The two journal guides that say "or call +91 91875 46483": change the approved export
+  (`test/fixtures/journal/approved/`) and the snapshot together, as journal-pipeline §16 and the journal rules allow for
+  the approved export before the flip, so they read "WhatsApp" with the email if the sentence needs it; tests hold them
+  equal. The receipt emails are not touched.
+- **Owns:** `src/content/en-IN/seller.ts`, `organization.ts`, `SellerLines`, the help-line content and components, the
+  store's presentational components (not `src/lib/store/**` or `src/features/preorder/lib/**`), the two guides in the
+  approved export and the snapshot, the affected tests, `deviations.ts` rules, `wiki/product/legal-requirements.md` rows
+  ECOM-01 and ECOM-02 (one line each: where the number now shows).
+- **Acceptance:** `grep` of the built HTML (all prerendered pages and the store pages at runtime) finds no GSTIN and no
+  phone number except on `/contact` and the legal pages; checkout-contract fixtures unchanged; verify green.
+
+### Q1.6 The WhatsApp logo from Wikimedia Commons (builder; risk mechanical)
+
+- **What:** fetch `https://commons.wikimedia.org/wiki/File:WhatsApp.svg`'s original SVG (the upload.wikimedia.org file),
+  keep only its path data (no script, no external reference), and make a site asset outside design-system/ (for example
+  `src/assets/whatsapp-logo.svg` or an icons entry) in two forms as needed: the full-colour logo for the floating bubble
+  (D050: it stays bottom right, same size, same tracking value) and a one-colour glyph (currentColor) for the WhatsApp
+  links and buttons that today use the DS `whatsapp-logo` icon. Record its source and licence in assets.md.
+- **Owns:** the new asset and its generator or file, WhatsAppFloat and the components that draw the WhatsApp icon,
+  their tests and stories, assets.md row.
+
 ## Wave 9: beta deploy and beta QA (after wave 8)
 
 ### 7.2 Beta deploy and beta QA (main session, founder, QA)
