@@ -72,4 +72,16 @@ describe("Footer", () => {
       ".kh-footer__legal a { display: inline-flex; align-items: center; min-height: var(--tap-min); color: var(--link); }",
     );
   });
+
+  /* D064 item 6 (task Q2.4): the gaps between a column's links tightened. The DS stacks them as 48 px rows (bundle.css
+     .kh-footer__col a: 12 px above and below a 24 px line); the rows become 44 px, the smallest tap target the site keeps
+     (tasks.md SPA 4), still made of the link's own padding, never margins, so the space between two links is always one
+     of them to tap: 10 px (space-2 and half a space-1) above and below the 24 px line. */
+  it("tightens each column's links to 44 px rows of their own padding, never margins", () => {
+    const rule = /\.kh-footer__col a \{([^}]*)\}/.exec(CSS)?.[1].replace(/\s+/g, " ").trim();
+    expect(rule).toBe("padding-block: calc(var(--space-2) + var(--space-1) / 2);");
+    expect(CSS).not.toMatch(/\.kh-footer__col[^{]*\{[^}]*margin/);
+    const [space1, space2, line] = [4, 8, 24];
+    expect(line + 2 * (space2 + space1 / 2)).toBe(44);
+  });
 });

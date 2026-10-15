@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { ICON_WHATSAPP_LOGO } from "@/assets/icons.generated";
+import { WHATSAPP_LOGO_GROUND, WHATSAPP_LOGO_HANDSET, WHATSAPP_LOGO_RIM, WHATSAPP_LOGO_VIEWBOX } from "@/assets/whatsapp-logo.generated";
 import { CtaBlock } from "@/components/sections/CtaBlock/CtaBlock";
 import { FaqSection } from "@/components/sections/FaqSection/FaqSection";
 import { AddressStep } from "@/components/sections/store/AddressStep/AddressStep";
@@ -95,11 +95,24 @@ describe("WhatsAppFloat", () => {
     expect(link).toHaveAttribute("data-ph-capture-attribute-cta", "whatsapp-float");
   });
 
-  it("draws the DS whatsapp-logo icon, hidden from screen readers", () => {
+  /* D064 item 3 (task Q2.4, as Q1.6): the bubble is the full-colour WhatsApp logo from Wikimedia Commons, the white
+     speech bubble, the green ground and the white handset, drawn from the site's asset; the colours are the stylesheet's
+     (below), never the markup's. Same place, same size, same CTA value (D050). */
+  it("draws the full-colour WhatsApp logo: the white bubble, the green ground and the handset, hidden from screen readers", () => {
     const { container } = render(<WhatsAppFloat href={HREF} chat={CHAT} context="site" />);
-    const svg = container.querySelector("a > svg.kh-icon");
+    const svg = container.querySelector("a > svg.ks-wa__logo");
+    expect(svg).toHaveAttribute("viewBox", WHATSAPP_LOGO_VIEWBOX);
     expect(svg).toHaveAttribute("aria-hidden", "true");
-    expect(svg?.querySelector("path")).toHaveAttribute("d", ICON_WHATSAPP_LOGO);
+    expect(svg).toHaveAttribute("focusable", "false");
+    expect(Array.from(svg!.querySelectorAll("path")).map((p) => [p.getAttribute("class"), p.getAttribute("d")])).toEqual([
+      ["ks-wa__rim", WHATSAPP_LOGO_RIM],
+      ["ks-wa__ground", WHATSAPP_LOGO_GROUND],
+      ["ks-wa__handset", WHATSAPP_LOGO_HANDSET],
+    ]);
+    for (const path of Array.from(svg!.querySelectorAll("path"))) expect(path).not.toHaveAttribute("fill");
+    // One drawing: no DS glyph beside the logo.
+    expect(container.querySelectorAll("a svg")).toHaveLength(1);
+    expect(container.querySelector(".kh-icon")).toBeNull();
   });
 
   it("carries the laptop label as hidden-from-readers text (the link's name says it already)", () => {
@@ -568,11 +581,23 @@ describe("WhatsAppFloat: steps aside from the store's form on a phone (task 4.7)
 });
 
 describe("whatsapp-float.css", () => {
-  it("defines WhatsApp green once, as the D050 exception, and paints the bubble with it, also on hover", () => {
+  it("defines WhatsApp green once, as the D050 exception, and fills the logo's ground with it", () => {
     expect(CSS.match(/--ks-wa-green\s*:/g)).toHaveLength(1);
     expect(CSS).toMatch(/--ks-wa-green:\s*#25D366;/i);
-    expect(rule(".ks-wa")).toContain("background: var(--ks-wa-green)");
-    expect(rule(".ks-wa:hover")).toBe("background: var(--ks-wa-green);");
+    expect(rule(".ks-wa__ground")).toBe("fill: var(--ks-wa-green);");
+    // The bubble's white and the handset are the DS white.
+    expect(rule(".ks-wa__rim, .ks-wa__handset")).toBe("fill: var(--white);");
+  });
+
+  /* Q2.4: the logo is the bubble. It fills the 56 px button edge to edge (no DS border inside it), over a white ground the
+     colour of its own rim, so its round edge shows no fringe, also on hover (bundle.css turns an icon button's ground to
+     the band colour there). */
+  it("lets the logo fill the 56 px bubble on a ground of the logo's own white, also on hover", () => {
+    expect(rule(".ks-wa")).toContain("background: var(--white)");
+    expect(rule(".ks-wa")).toContain("border: 0");
+    expect(rule(".ks-wa")).not.toContain("--ks-wa-green)");
+    expect(rule(".ks-wa:hover")).toBe("background: var(--white);");
+    expect(rule(".ks-wa__logo")).toBe("width: 100%; height: 100%;");
   });
 
   it("sits fixed at the bottom right: space-4 plus the safe areas on phones, space-5 from 900 px", () => {

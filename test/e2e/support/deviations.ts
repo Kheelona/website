@@ -8,6 +8,7 @@
  */
 import type { Page } from "@playwright/test";
 import { ICON_PATHS, type IconName } from "@/assets/icons.generated";
+import { SITE_DRAWINGS } from "@/components/ui/Icon/site-drawings";
 import { HOSTS } from "@/config/env";
 import { expertClip, expertFold } from "@/content/en-IN/expert-video";
 import { filmQuotes } from "@/content/en-IN/films";
@@ -315,9 +316,11 @@ const COPY_FIXES_WHOSE = "task 7.1b's copy fixes";
    parity-deviations unit test proves them exactly those). Literal, because Playwright cannot load every content module;
    the content modules' tests hold each literal to the module. */
 
-/** The DS icon as the mockups print it inline (mockup/build.mjs), for an item the fixes add. */
+/** The DS icon as the mockups print it inline (mockup/build.mjs), for an item the fixes add; a drawing the site replaces
+ *  (`SITE_DRAWINGS`: the WhatsApp logo, D064 item 3, task Q2.4) as the build draws it, as the comparison harness reads
+ *  the mockup's own (test/support/mockup-compare.ts `parseMockup`). */
 const icon = (name: IconName) =>
-  `<svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="${ICON_PATHS[name]}"></path></svg>`;
+  `<svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="${SITE_DRAWINGS[name] ?? ICON_PATHS[name]}"></path></svg>`;
 /** An approved element whose words are replaced whole (plain text, or inline markup). */
 const rewrite = (at: string, was: string, now: string): FactEdit => ({ at, was, now, inner: true });
 /** An approved element that comes off, found by a heading or label inside it (`scope`, the element that goes). */
