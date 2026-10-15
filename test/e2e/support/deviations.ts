@@ -50,6 +50,9 @@ export type VisualHide = {
   /** The page the element is hidden on: the approved mockup or the build. */
   side: "mockup" | "build";
   selector: string;
+  /** The media query the hide applies under, for a change that shows at some widths only (the hero's phone board, D061
+   *  item 1: "(max-width: 719px)"); without it, every width. */
+  media?: string;
   reason: string;
   approvedBy: string;
 };
@@ -1511,6 +1514,30 @@ const proofText = (slug: ProofSlug): TextDeviation => ({
   reason: "the lines of the blocks task 8c.3 adds: parents' quotes, the recognition strip, and on the product page the four steps and the example conversation",
   approvedBy: PROOF_ADDITIONS_APPROVED,
 });
+/* Kheelu on the first phone screen (D061 item 1, task 8c.1): under 720 px the hero's art is the board's phone
+   composition, 4:3 right under the trust line (the help line and the secondary link follow it), where the approved
+   page has the 1:1 board after them. Its words are the approved board's (the text pass compares them); its place and
+   picture are new, so the visual pass compares Home's and the product page's phone heroes without their art on both
+   sides, and every fold below lines up again. Phones only: from 720 px the approved board shows, compared as before.
+   The first screen itself (Kheelu, h1, button, price sentence; the WhatsApp bubble clear of Kheelu and the sticker) is
+   test/e2e/first-screen.spec.ts's. */
+const HERO_PHONE_ART_BY = "D061 item 1 (founder, 2026-10-15; task 8c.1; its deviations.md row is the main session's)";
+const HERO_PHONE_ART: readonly VisualHide[] = [
+  {
+    side: "mockup",
+    selector: ".mk-hero .kh-art",
+    media: "(max-width: 719px)",
+    reason: "the approved 1:1 hero board, after the help line and the secondary link: the build shows its phone composition under the trust line instead",
+    approvedBy: HERO_PHONE_ART_BY,
+  },
+  {
+    side: "build",
+    selector: ".ks-hero .kh-art",
+    media: "(max-width: 719px)",
+    reason: "the hero board's phone composition (4:3, under the trust line, so Kheelu is on the first screen): new art in a new place, its words compared by the text pass",
+    approvedBy: HERO_PHONE_ART_BY,
+  },
+];
 
 export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   store: [
@@ -1544,13 +1571,14 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   ],
   /* The screen-time guide card's line (V18, task 7.1b), then the parent-app bullets and the safety bodies (V26, task 8b.1),
      then the fourth question (task 8c.4, D061), compared by the text pass; then the offer card's later price and the
-     share link the build adds (task 8c.2, D061); then the quotes and the strip (task 8c.3). */
+     share link the build adds (task 8c.2, D061); then the quotes and the strip (task 8c.3); then the hero's phone art (task 8c.1, D061 item 1), under 720 px only. */
   home: [
     ...factsHidden(COPY_FIXES.home, COPY_FIXES_WHOSE),
     ...factsHidden(CLAIM_FIXES.home, CLAIM_FIXES_WHOSE),
     ...factsHidden(FAQ_FIXES.home, FAQ_FIXES_WHOSE),
     ...offerAdditionsHidden("home"),
     ...proofHidden("home"),
+    ...HERO_PHONE_ART,
   ],
   /* The open FAQ answer (V19, task 7.1b), then the facts, controls and retention card (V28, task 8b.1), compared by the
      text pass. */
@@ -1622,6 +1650,8 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...offerAdditionsHidden("meet-kheelu"),
     /* The quotes, the strip, the steps and the example (task 8c.3). */
     ...proofHidden("meet-kheelu"),
+    /* The hero's phone art (D061 item 1, task 8c.1), under 720 px only. */
+    ...HERO_PHONE_ART,
   ],
   /* The Google Analytics block's paragraph and the PostHog block's first one say more in the build (V10), so they wrap
      to more lines and every block below would shift; the pixels compare the page without the two paragraphs on both
@@ -1678,8 +1708,13 @@ export function visualHidden(slug: string): readonly VisualHide[] {
 }
 
 const hidingStyle = (rules: readonly VisualHide[], side: VisualHide["side"]): string => {
-  const selectors = rules.filter((rule) => rule.side === side).map((rule) => rule.selector);
-  return selectors.length ? `${selectors.join(", ")} { display: none !important; }` : "";
+  const mine = rules.filter((rule) => rule.side === side);
+  const block = (list: readonly VisualHide[]) => (list.length ? `${list.map((rule) => rule.selector).join(", ")} { display: none !important; }` : "");
+  // A rule with a media query hides under it only (HERO_PHONE_ART): one @media block per query, after the rest.
+  const scoped = [...new Set(mine.flatMap((rule) => (rule.media ? [rule.media] : [])))].map(
+    (media) => `@media ${media} { ${block(mine.filter((rule) => rule.media === media))} }`,
+  );
+  return [block(mine.filter((rule) => !rule.media)), ...scoped].filter(Boolean).join("\n");
 };
 
 /** The style of the rules every page shares (TAP_AREA_HIDDEN) on one side. */
@@ -1699,7 +1734,7 @@ export function hiddenCss(slug: string, side: VisualHide["side"]): string {
 export async function hideDeviations(page: Page, slug: string, side: VisualHide["side"], label: string): Promise<void> {
   for (const css of [sharedHiddenCss(side), hiddenCss(slug, side)]) if (css) await page.addStyleTag({ content: css });
   for (const rule of visualHidden(slug).filter((r) => r.side === side)) {
-    console.log(`[${label}] ${slug}: ${rule.selector} hidden in the ${side} (${rule.approvedBy}): ${rule.reason}`);
+    console.log(`[${label}] ${slug}: ${rule.selector} hidden in the ${side}${rule.media ? ` at ${rule.media}` : ""} (${rule.approvedBy}): ${rule.reason}`);
   }
 }
 

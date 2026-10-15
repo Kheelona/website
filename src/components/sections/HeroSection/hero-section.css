@@ -21,7 +21,9 @@
   right: 4%;
   top: 6%;
 }
-/* Product page: the word sticker sits top left, clear of the child's face (meet-kheelu.css:8, .mk-hero-sticker). */
+/* Product page: the word sticker sits top left, clear of the child's face (meet-kheelu.css:8, .mk-hero-sticker). The
+   phone board's sticker sits there too, on both pages (D061 item 1): out of the right-hand column, which the WhatsApp
+   bubble (D050) covers wherever the screen's bottom edge falls. */
 .ks-hero .kh-art .ks-hero-sticker {
   left: 5%;
   right: auto;
@@ -40,6 +42,36 @@
 @media (min-width: 1024px) {
   .ks-hero {
     padding-top: var(--space-8);
+  }
+}
+
+/* D061 item 1 (task 8c.1): Kheelu on the first phone screen. A hero with the board's phone composition
+   (ks-hero__phone-art, HeroSection's `phoneLayers`) keeps the DS phone hero, "the words first, a full-width cta, the
+   trust line, then the board under them" (design-system 10-pages.md, Phones), and moves the board up to it: under
+   720 px the words column's rows join the split's grid (its row gap 0, so every row keeps its own top margin), the
+   phone board follows the trust line, and the help line and the secondary link follow the board. The approved board
+   shows from 720 px, laptops and tablets as built. Without :has() the rows stay in their column and the phone board
+   follows them, as the approved board did. */
+@media (max-width: 719px) {
+  .ks-hero .kh-split:has(> .ks-hero__phone-art) {
+    gap: 0;
+  }
+  .ks-hero .kh-split:has(> .ks-hero__phone-art) > :first-child {
+    display: contents;
+  }
+  .ks-hero .kh-split:has(> .ks-hero__phone-art) > :first-child > .kh-trustline ~ * {
+    order: 1;
+  }
+  .ks-hero .ks-hero__phone-art {
+    margin-top: var(--space-5);
+  }
+  .ks-hero .ks-hero__phone-art ~ .kh-art {
+    display: none;
+  }
+}
+@media (min-width: 720px) {
+  .ks-hero .ks-hero__phone-art {
+    display: none;
   }
 }
 

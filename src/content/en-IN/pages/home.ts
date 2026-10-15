@@ -101,6 +101,18 @@ export const homePage = {
           ],
           sticker: { tone: "sun", variant: "round", tilt: 8, lead: "It asks.", lines: ["They think."] },
         },
+        /* D061 item 1 (task 8c.1): the same board on a phone, on a 4:3 board under the trust line (HeroSection), so
+           Kheelu is wholly on the first screen at 390 x 844 and 412 x 915; the same files in the DS order (10-pages.md,
+           the scrapbook board): the word sticker in the top left corner (HeroSection), the shape in the top right one,
+           the boy bottom-aligned, Kheelu tilted beside him, clear of his face and raised so it ends inside 844 px, and
+           the question mark between their heads. The boy ends at 82 % of the board, so the right-hand column, which the
+           WhatsApp bubble covers wherever a phone's screen ends, holds only the shape and the blue. */
+        phoneLayers: [
+          { image: { src: sunSun, alt: "" }, right: 3, width: 18, top: 5 },
+          { image: { src: advikSticker, alt: "" }, left: 52, width: 30, bottom: 0 },
+          { image: { src: kheeluSticker, alt: "" }, left: 32, width: 27, bottom: 16, rotate: -6 },
+          { doodle: { name: "chalk-question-mark" }, left: 45, width: 8, top: 22, rotate: 10 },
+        ],
       },
       cta: heroCta,
     },

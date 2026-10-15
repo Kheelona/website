@@ -80,7 +80,15 @@ function rendered(mode: OfferMode) {
 
 const TOKEN = rendered("token");
 const FULL = rendered("full");
-const BUILT = TOKEN.doc.querySelector("main")!;
+/** D061 item 1 (task 8c.1): the hero's phone board is the one block the approved page does not have (its markup is
+ *  HeroSection's test's, its place test/e2e/first-screen.spec.ts's): the page is compared with the mockup without it. */
+const PHONE_ART = ".ks-hero__phone-art";
+const withoutPhoneArt = (main: Element) => {
+  const copy = main.cloneNode(true) as Element;
+  copy.querySelectorAll(PHONE_ART).forEach((el) => el.remove());
+  return copy;
+};
+const BUILT = withoutPhoneArt(TOKEN.doc.querySelector("main")!);
 
 const folds = (main: Element) => [...main.children].filter((el) => el.tagName === "SECTION");
 const fold = (main: Element, label: string) => folds(main).find((el) => el.getAttribute("aria-labelledby") === label)!;
@@ -226,6 +234,21 @@ describe("Home: the hero (D045) and the first screen", () => {
     expect(high[0].getAttribute("loading")).toBe("eager");
     // The boy's sticker, the board's largest drawn raster (layers in the mockup's order: sun, boy, Kheelu, question mark).
     expect(all(hero, ".kh-art > .kh-art__layer").indexOf(high[0])).toBe(1);
+  });
+
+  it("adds one block to the approved page, the hero's phone board (D061 item 1): the board's name, tone, files and words", () => {
+    const phone = all(TOKEN.doc.querySelector("main")!, PHONE_ART);
+    expect(phone).toHaveLength(1);
+    const approved = hero.querySelector(".kh-art")!;
+    expect(phone[0].closest("section")?.getAttribute("aria-labelledby")).toBe("hero-title");
+    expect(phone[0].getAttribute("aria-label")).toBe(approved.getAttribute("aria-label"));
+    expect(phone[0].className).toBe(`${approved.className} ${PHONE_ART.slice(1)}`);
+    const files = (board: Element) => all(board, ".kh-art__layer").map((layer) => layer.getAttribute("src")).sort();
+    expect(files(phone[0])).toEqual(files(approved));
+    // The same words; on the phone board top left (ks-hero-sticker), out of the WhatsApp bubble's column.
+    expect(phone[0].querySelector(".kh-sticker")?.textContent).toBe(approved.querySelector(".kh-sticker")?.textContent);
+    expect(phone[0].querySelector(".kh-sticker")?.classList.contains("ks-hero-sticker")).toBe(true);
+    expect(all(phone[0], "[data-draw], [data-reveal]")).toEqual([]);
   });
 
   it("never moves money on arrival: no price, chilli button, offer card or h1 inside a reveal", () => {
@@ -395,7 +418,11 @@ describe("Home: parents' own words and the recognition strip (task 8c.3)", () =>
   it("keeps the page's tracking values, its one h1 and its one LCP image", () => {
     expect(ctaValues(WHOLE)).toEqual(ctaValues(BUILT));
     expect(WHOLE.querySelectorAll("h1")).toHaveLength(1);
-    expect(all(WHOLE, '[fetchpriority="high"]')).toHaveLength(1);
+    // One LCP image per hero board since task 8c.1 (D061 item 1): the phone composition's under 720 px and the approved
+    // board's from 720 px, each asking for a 1px image at the other's widths (HeroSection's test holds the sizes).
+    const high = all(WHOLE, '[fetchpriority="high"]');
+    expect(high).toHaveLength(2);
+    for (const img of high) expect(img.closest(".ks-hero"), "inside the hero").not.toBeNull();
     expect(revealOnMoneyInDocument(TOKEN.whole)).toEqual([]);
   });
 

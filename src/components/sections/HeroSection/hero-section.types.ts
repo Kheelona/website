@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { ArtBoardRef, Copy, ImageRef, Offer } from "@/content/types";
+import type { ArtBoardRef, ArtLayer, Copy, ImageRef, Offer } from "@/content/types";
 import type { HeadingProps } from "@/components/ui/Heading/Heading";
 import type { IconName } from "@/components/ui/Icon/Icon";
 
@@ -7,6 +7,7 @@ import type { IconName } from "@/components/ui/Icon/Icon";
  * doodles (D049 pick 2). Layouts from the approved mockup:
  * - `art`: Home (D045), the hero heading and the CTA block beside the scrapbook board;
  * - `product`: the product page, the same with the word sticker moved clear of the child's face;
+ *   both may carry the board's phone composition (`phoneLayers`, D061 item 1);
  * - `answer`: an answer-first heading beside a photo or a board (safety, the buyer's guide, team), or alone (setup);
  * - `contact`: the heading beside the three ways to reach the team;
  * - `hub`: the stories hub, on the band, with the byline and the topic links. */
@@ -34,7 +35,19 @@ export interface HeroWay {
 }
 
 export type HeroSectionConfig =
-  | { readonly variant: "art" | "product"; readonly heading: HeroHeading; readonly art: ArtBoardRef }
+  | {
+      readonly variant: "art" | "product";
+      readonly heading: HeroHeading;
+      readonly art: ArtBoardRef;
+      /**
+       * D061 item 1 (task 8c.1): the board's phone composition, so Kheelu is wholly on the first phone screen. The same
+       * board (tone, name, sticker) with these layers, the board's own DS files placed for a 4:3 board (the ratio the
+       * approved mockup renders a board at on phones), takes the board's place under 720 px, right under the trust line
+       * (the help line and the secondary link follow it); the approved `art` shows from 720 px as it always has.
+       * Without it the hero is the approved fold.
+       */
+      readonly phoneLayers?: readonly ArtLayer[];
+    }
   | { readonly variant: "answer"; readonly heading: HeroHeading; readonly media?: HeroMedia }
   | { readonly variant: "contact"; readonly heading: HeroHeading; readonly ways: readonly HeroWay[] }
   | {

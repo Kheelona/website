@@ -33,7 +33,9 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Home (D045): the CTA block beside the board; the board's doodle stays still and its largest sticker is the LCP image. */
+/** Home (D045): the CTA block beside the board; the board's doodle stays still and its largest sticker is the LCP image.
+ *  Under 720 px the board's phone composition (D061 item 1: 4:3, the same files) shows in its place, right under the
+ *  words and the button, so Kheelu is on the first phone screen; view it at a phone width. */
 export const HomeArt: Story = {
   args: {
     variant: "art",
@@ -54,11 +56,18 @@ export const HomeArt: Story = {
       ],
       sticker: { ...STICKER, tilt: 8 },
     },
+    phoneLayers: [
+      { image: { src: sunSun, alt: "" }, right: 3, width: 18, top: 5 },
+      { image: { src: advikSticker, alt: "" }, left: 52, width: 30, bottom: 0 },
+      { image: { src: kheeluSticker, alt: "" }, left: 32, width: 27, bottom: 16, rotate: -6 },
+      { doodle: { name: "chalk-question-mark" }, left: 45, width: 8, top: 22, rotate: 10 },
+    ],
     cta: cta("hero"),
   },
 };
 
-/** The product page: the word sticker top left, clear of Myra's face. */
+/** The product page: the word sticker top left, clear of Myra's face; under 720 px the phone composition (D061 item 1),
+ *  its sticker top left too. */
 export const Product: Story = {
   args: {
     variant: "product",
@@ -79,6 +88,12 @@ export const Product: Story = {
       ],
       sticker: { ...STICKER, tilt: -8 },
     },
+    phoneLayers: [
+      { image: { src: starSun, alt: "" }, right: 3, width: 18, top: 5 },
+      { image: { src: myraSticker, alt: "" }, left: 52, width: 30, bottom: 0 },
+      { image: { src: kheeluSticker, alt: "" }, left: 32, width: 27, bottom: 4, rotate: -5 },
+      { doodle: { name: "chalk-speech-bubble" }, left: 43, width: 11, top: 20, rotate: -8 },
+    ],
     cta: cta("product-top"),
   },
 };

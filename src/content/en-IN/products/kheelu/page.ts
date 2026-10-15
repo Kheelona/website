@@ -97,6 +97,18 @@ export const kheeluPage = {
           ],
           sticker: { tone: "sun", variant: "round", tilt: -8, lead: "It asks.", lines: ["They think."] },
         },
+        /* D061 item 1 (task 8c.1): the same board on a phone, on a 4:3 board under the trust line (HeroSection), so
+           Kheelu is wholly on the first screen at 390 x 844 and 412 x 915; the same files in the DS order (10-pages.md,
+           the scrapbook board): the word sticker top left as on the approved board, the star top right as there, Myra
+           bottom-aligned, Kheelu tilted beside her, clear of her face, and the speech bubble by their heads. Myra ends
+           at 82 % of the board, so the right-hand column, which the WhatsApp bubble covers wherever a phone's screen
+           ends, holds only the star and the blue. */
+        phoneLayers: [
+          { image: { src: starSun, alt: "" }, right: 3, width: 18, top: 5 },
+          { image: { src: myraSticker, alt: "" }, left: 52, width: 30, bottom: 0 },
+          { image: { src: kheeluSticker, alt: "" }, left: 32, width: 27, bottom: 4, rotate: -5 },
+          { doodle: { name: "chalk-speech-bubble" }, left: 43, width: 11, top: 20, rotate: -8 },
+        ],
       },
       cta: { cta: "product-top", arrow: true, block: true, layout: "stack", trust: COMPACT, helpLine: true },
     },
