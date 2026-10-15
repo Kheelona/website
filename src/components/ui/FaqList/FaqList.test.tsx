@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { FaqItem, Offer } from "@/content/types";
+import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { FaqList, faqPlainItems } from "./FaqList";
 
 const sign = <svg className="kh-icon" data-icon="plus" aria-hidden="true" />;
@@ -48,6 +49,24 @@ describe("FaqList", () => {
     const faq = list(<FaqList items={ITEMS} sign={sign} reveal className="ks-faq-list" />);
     expect(faq.getAttribute("data-reveal")).toBe("");
     expect(faq.className).toBe("kh-faq ks-faq-list");
+  });
+
+  /* Task Q2.16 (the consistency review's QAL-10; D064 item 10): a question row showed only the pointer on hover, where the
+     site's other clickable rows take the band ground (bundle.css a.kh-listitem:hover). On a pointer device the hovered
+     question takes the same ground in the item's rounded frame (squared below while its answer is open), its sign the
+     raised ground so the circle stays seen. Pointer devices only, as every hover of the site (a tap leaves none behind);
+     a state, never a movement, so nothing changes under reduced motion; keyboard focus keeps the DS ring. */
+  it("gives a question row the site's row hover on pointer devices only, a ground and never a movement", () => {
+    const css = readRepoFile("src/components/ui/FaqList/faq-list.css").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ").trim();
+    expect(css).toBe(
+      "@media (hover: hover) and (pointer: fine) { " +
+        ".kh-faq__q:hover { border-radius: var(--radius-l); background: var(--surface-band); } " +
+        ".kh-faq__item[open] > .kh-faq__q:hover { border-end-start-radius: 0; border-end-end-radius: 0; } " +
+        ".kh-faq__q:hover .kh-faq__sign { background: var(--surface-raised); } }",
+    );
+    expect(css).not.toMatch(/transition|animation|transform/);
+    const item = list(<FaqList items={ITEMS} sign={sign} />).querySelector(".kh-faq__item")!;
+    expect(item.querySelector(":scope > .kh-faq__q > .kh-faq__sign")).not.toBeNull();
   });
 });
 
