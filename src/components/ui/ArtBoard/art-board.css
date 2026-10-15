@@ -8,3 +8,12 @@
     width: min(100%, calc(var(--space-10) * 3 + var(--space-9))); /* 3 × 128 + 96 = 480 */
   }
 }
+
+/* Never stretch a layer (wave 8c merge, main session). Each layer is sized by its width with the height following the
+   picture, so `contain` changes nothing on screen. It also tells Lighthouse's image-aspect-ratio audit, which checks only
+   `object-fit: fill` images, that these are not distorted: a hero board hidden at the other widths (task 8c.1: one per
+   width range) asks for a 1 px candidate whose rounded size the audit read from the width and height attributes and
+   flagged, though the element has no box. */
+.kh-art > .kh-art__layer {
+  object-fit: contain;
+}

@@ -1170,3 +1170,14 @@ built (fold 3's one link slot is taken). Main-session follow-ups from the review
 catches "Recommended by a speech therapist", "Paediatrician-approved" and the like; perf-budget weighs the expert
 poster; `/pricing.md` no longer lists "Made in India" under "Included" (pins re-set). Rows V47 and V48 filed; V38, V40,
 V42 amended; claims.md's advisor row points to D061.
+
+## [2026-10-15 09:26] qa | Wave 8c close checkpoint: verify, build, Storybook, browser, Lighthouse
+`npm run verify` 307 files, 6489 passed; production build green (20 journal pages, no open placeholders); Storybook
+built; Playwright on Home and the product page (parity with V38-V48, first-screen, cta, axe, no-sideways, perf-budget,
+content-integrity, chrome, no-js, films, tap-areas): 215 passed. Lighthouse (battery, indicative): local Home 93,
+product 94, store 98; with the tags Home 85, product 83, store 84 (the unchanged store also fell from 88-91, so the drop
+is mostly the run's conditions; re-measure on mains power with `/stories`, Gate B pack). Found: Best Practices lost
+`image-aspect-ratio` on Home and the product page: the hero board hidden at phone widths (task 8c.1) asks for a 1 px
+candidate, and Lighthouse read its size from the width and height attributes although the element has no box. Phones
+get sharp candidates (w=256-384, probed in Chromium at 360, 390 and 412). Fixed with `object-fit: contain` on art-board
+layers (no change on screen: visual parity green on six art-board pages; BP back to 96, the audit passes).
