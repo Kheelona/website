@@ -44,3 +44,8 @@
 .ks-exchange__after {
   margin: var(--space-5) 0 0;
 }
+/* A link in the line after the exchange (the sample chats' film, task Q2.10) takes the DS link colour, as links in
+   running text do (rich-text.css, help-line.css), never the browser's own blue. */
+.ks-exchange__after a {
+  color: var(--link);
+}

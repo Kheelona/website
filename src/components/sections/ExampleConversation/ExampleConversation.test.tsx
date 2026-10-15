@@ -227,6 +227,12 @@ describe("ExampleConversation: its CSS", () => {
     expect(CSS).toMatch(/\.kh-section--band \.ks-exchange__line--child\s*\{[^}]*background:\s*var\(--surface\)/);
     expect(CSS).not.toMatch(/\d+px|#[0-9a-f]{3,8}\b/i);
   });
+
+  /* Task Q2.10: the line under the tabs links to film 6; without a rule the browser's own blue showed (screenshots at
+     390 and 1440). The DS link colour, as the page's other links in running text take it (rich-text.css, help-line.css). */
+  it("gives a link in the line after the exchange the DS link colour", () => {
+    expect(CSS).toMatch(/\.ks-exchange__after a\s*\{[^}]*color:\s*var\(--link\)/);
+  });
 });
 
 describe("ExampleConversation: the stories", () => {

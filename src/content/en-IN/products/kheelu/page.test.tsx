@@ -512,6 +512,7 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
       [PROOF_ADDITIONS_APPROVED.slice(0, "deviations.md V3".length), false],
       [SELLING_UPDATE_APPROVED.slice(0, "deviations.md V3".length), false],
       [SELLING_UPDATE_APPROVED.slice(0, "deviations.md V3".length), false],
+      [SELLING_UPDATE_APPROVED.slice(0, "deviations.md V3".length), true],
       ["deviations.md V2", false],
       ["deviations.md V4", false],
     ]);
@@ -521,8 +522,9 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
     expect(TEXT_DEVIATIONS["meet-kheelu"][5].approvedBy).toBe(PROOF_ADDITIONS_APPROVED);
     expect(TEXT_DEVIATIONS["meet-kheelu"][6].approvedBy).toBe(SELLING_UPDATE_APPROVED);
     expect(TEXT_DEVIATIONS["meet-kheelu"][7].approvedBy).toBe(SELLING_UPDATE_APPROVED);
-    expect(TEXT_DEVIATIONS["meet-kheelu"][8].approvedBy).toBe(CLAIM_FIXES["meet-kheelu"].approvedBy);
-    expect(TEXT_DEVIATIONS["meet-kheelu"][9].approvedBy).toBe(FAQ_FIXES["meet-kheelu"].approvedBy);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][8].approvedBy).toBe(SELLING_UPDATE_APPROVED);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][9].approvedBy).toBe(CLAIM_FIXES["meet-kheelu"].approvedBy);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][10].approvedBy).toBe(FAQ_FIXES["meet-kheelu"].approvedBy);
   });
 
   it("accepts on the build side exactly the stacked panels' lines, as the page prints them, and no other line of the page", () => {
@@ -832,7 +834,7 @@ describe("the product page's selling update (task Q2.10; the D2C plan v2 §3)", 
      the page does, and excuses no other approved line. */
   describe("as a parity deviation", () => {
     const once = (lines: readonly string[]) => [...new Set(lines)];
-    const rules = TEXT_DEVIATIONS["meet-kheelu"].filter((r) => r.approvedBy === SELLING_UPDATE_APPROVED);
+    const rules = TEXT_DEVIATIONS["meet-kheelu"].filter((r) => r.approvedBy === SELLING_UPDATE_APPROVED && !r.jsOff);
 
     it("lists exactly the sentences its edits change, against the mockup with the page's earlier rules applied", () => {
       expect(factSentences(BEFORE_SELLING, SELLING.edits)).toEqual({ missing: [...SELLING.mockup], extra: [...SELLING.build] });
@@ -854,6 +856,21 @@ describe("the product page's selling update (task Q2.10; the D2C plan v2 §3)", 
       expect(sel("mockup")).toEqual([...SELLING.hidden.both, ...SELLING.hidden.mockup]);
       expect(sel("build")).toEqual([...SELLING.hidden.both, ...SELLING.hidden.build, ...SELLING_ADDITIONS["meet-kheelu"].selectors]);
       for (const selector of [...SELLING.hidden.both, ...SELLING.hidden.build]) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
+    });
+
+    /* Without JavaScript the three chats stand stacked under their tabs' words, as the details panels do (V3): the
+       JavaScript-off run (no-js.spec.ts) reads the second and third chats, and the first chat's words once (its tab and
+       its screen-reader heading read twice with JavaScript on). */
+    it("is one JavaScript-off rule for the stacked chats: it accepts every line of the second and third chat and excuses only the first tab's words", () => {
+      const jsOff = TEXT_DEVIATIONS["meet-kheelu"].filter((r) => r.approvedBy === SELLING_UPDATE_APPROVED && r.jsOff);
+      expect(jsOff).toHaveLength(1);
+      const panels = [...fold("example-title").querySelectorAll(".kh-tabs__panel")].map((el) => el.cloneNode(true) as Element);
+      for (const p of panels) p.querySelectorAll(".ks-exchange__who").forEach((who) => who.after("\n"));
+      const later = panels.slice(1).flatMap((p) => blockSentences(p).filter((line) => !PRODUCT_CHATS.tabs.includes(line as never)));
+      expect(later.length).toBeGreaterThan(10);
+      expect(later.filter((line) => !jsOff[0].build!.test(line))).toEqual([]);
+      const page = sentences(words(BEFORE_SELLING));
+      expect([...PRODUCT_CHATS.tabs, ...page].filter((line) => jsOff[0].mockup.test(line))).toEqual([PRODUCT_CHATS.tabs[0]]);
     });
 
     it("hides the added folds for the pixels, each found once on the page and gone from the page compared", () => {

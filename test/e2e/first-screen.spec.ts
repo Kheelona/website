@@ -282,3 +282,51 @@ for (const route of sweepRoutes()) {
     });
   });
 }
+
+/* Task Q2.10 (the D2C plan v2 §3.0, the CMO's m12; the selling update): the product page's first phone screen as the plan
+ * measures it. The eyebrow, the H1, the lead, the button, the price line (a block of its own, C1) and both trust rows
+ * (the risk-reversal line, then the delivery line) end inside the first screen at 360 x 590, 390 x 844 and 412 x 915
+ * (at 360 x 590 the board starts below it, D061 item 14; at the two larger phones Kheelu is wholly in view, the block
+ * above). The hero carries no help line (plan §1.1: the closes and the store) and no link but its button and the trust
+ * line's. Build only: the approved mockup predates the plan. */
+{
+  const route = mockupRoute("meet-kheelu");
+  test.describe(`first screen, the selling update (task Q2.10): ${route.id}`, () => {
+    test.skip(PARITY_TARGET === "mockup", "self-test: the approved mockup predates the D2C plan");
+    gateRouteGroup(route);
+    for (const vp of [kheeluPhone(360, 590), ...KHEELU_VIEWPORTS]) {
+      test(vp.name, async ({ harness }) => {
+        const { page } = await harness.open(route, vp);
+        const m = await page.evaluate(() => {
+          const hero = document.querySelector("main .ks-hero")!;
+          const bottom = (el: Element | null) => (el ? Math.round(el.getBoundingClientRect().bottom) : null);
+          const button = hero.querySelector(".kh-btn--cta");
+          return {
+            words: {
+              eyebrow: bottom(hero.querySelector(".kh-eyebrow")),
+              h1: bottom(hero.querySelector("h1")),
+              lead: bottom(hero.querySelector(".kh-heading__lead")),
+              button: bottom(button),
+              price: bottom(hero.querySelector(".ks-price")),
+            },
+            trust: [...hero.querySelectorAll(".ks-trust li")].map(bottom),
+            priceIsOwnBlock: hero.querySelector(".ks-price")?.tagName === "P" && !button?.closest(".kh-section__actions")?.contains(hero.querySelector(".ks-price")),
+            help: hero.querySelectorAll(".ks-help").length,
+            links: [...hero.querySelectorAll("a")].filter((a) => !a.closest(".ks-trust") && !a.classList.contains("kh-btn--cta")).map((a) => a.textContent?.trim()),
+            height: window.innerHeight,
+          };
+        });
+        console.log(`[first-screen] ${route.id} ${vp.name} (Q2.10): ${JSON.stringify(m.words)} trust ${JSON.stringify(m.trust)}`);
+        for (const [key, at] of Object.entries(m.words)) {
+          expect(at, `${route.id} ${vp.name}: no ${key}`).not.toBeNull();
+          expect(at!, `${route.id} ${vp.name}: the ${key} ends at ${at} px, below the first screen (${m.height} px)`).toBeLessThanOrEqual(m.height);
+        }
+        expect(m.trust, `${route.id} ${vp.name}: the risk-reversal row and the delivery row`).toHaveLength(2);
+        for (const at of m.trust) expect(at!, `${route.id} ${vp.name}: a trust row ends at ${at} px, below the first screen`).toBeLessThanOrEqual(m.height);
+        expect(m.priceIsOwnBlock, "the price line is a block of its own after the button (C1)").toBe(true);
+        expect(m.help, "no help line in the hero (plan §1.1)").toBe(0);
+        expect(m.links, "no hero link but the button and the trust line's").toEqual([]);
+      });
+    }
+  });
+}

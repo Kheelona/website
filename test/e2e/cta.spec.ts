@@ -1,4 +1,4 @@
-import { CTAS, CTA_VALUES } from "@/lib/tracking/cta";
+import { CTAS, CTA_VALUES, type CtaValue } from "@/lib/tracking/cta";
 import { readRepoFile } from "./support/repo";
 import { MOCKUP_SLUGS, type MockupSlug } from "./support/mockup-text";
 import { mockupRoutes, sweepRoutes, type Route } from "./support/routes";
@@ -39,7 +39,14 @@ function mockupValues(slug: MockupSlug): string[] {
   return [...new Set([...html.matchAll(/data-ph-capture-attribute-cta="([^"]+)"/g)].map((m) => m[1]))].sort();
 }
 const MOCKUP_VALUES: ReadonlySet<string> = new Set(MOCKUP_SLUGS.flatMap(mockupValues));
-const REGISTERED = new Set([...MOCKUP_VALUES, ...AFTER_GATE_A]);
+/** The selling update (D065; the D2C plan v2 §11), by route as its task builds it: the values placed there after Gate A
+ *  and the values that stop firing there, their placement gone (each kept registered and never reused,
+ *  src/lib/tracking/cta.ts). */
+const SELLING_UPDATE: Readonly<Record<string, { readonly adds: readonly CtaValue[]; readonly stops: readonly CtaValue[] }>> = {
+  /* Task Q2.10: the sample chats' button; the safety fold moved to /safety, with its button. */
+  "/products/kheelu": { adds: ["product-ask"], stops: ["product-safety"] },
+};
+const REGISTERED = new Set<string>([...MOCKUP_VALUES, ...AFTER_GATE_A, ...Object.values(SELLING_UPDATE).flatMap((r) => r.adds)]);
 
 /** The values placed after Gate A that a built route carries besides its mockup's: the D050 bubble on every page, and
  *  each other one where the registry places it on this path (share-whatsapp on / and /products/kheelu). The registry's
@@ -57,6 +64,16 @@ test.describe("CTA values: the approved mockup (control)", () => {
   test("carries the six live existing values and neither reserved one (of the eight existing)", () => {
     for (const v of ["hero", "navbar", "navbar-mobile", "finale", "product-top", "product-foot"]) expect(REGISTERED.has(v)).toBe(true);
     for (const v of RESERVED) expect(REGISTERED.has(v), `${v} is reserved (A16)`).toBe(false);
+  });
+
+  test("knows the selling update's values from the registry: each added one placed on its route, each stopped one noted", () => {
+    for (const [path, { adds, stops }] of Object.entries(SELLING_UPDATE)) {
+      for (const v of adds) {
+        expect(MOCKUP_VALUES.has(v), `an approved mockup carries ${v}`).toBe(false);
+        expect(CTAS[v].pages as readonly string[], `${v} is placed on ${path}`).toContain(path);
+      }
+      for (const v of stops) expect(CTAS[v].note ?? "", `${v} stops firing`).toMatch(/stops firing/);
+    }
   });
 
   test("carries none of the values placed after Gate A (D050, D061), each one in the registry", () => {
@@ -102,8 +119,11 @@ for (const route of sweepRoutes()) {
         .toBe(route.buybar);
       if (route.mockup && mockupRoutes().some((r) => r.id === route.id)) {
         // The values placed after Gate A (D050, D061): the mockup itself (self-test) carries none of them.
-        const added = PARITY_TARGET === "mockup" ? [] : afterGateA(route);
-        const expected = [...new Set([...mockupValues(route.mockup), ...added])].sort();
+        // Then the selling update's on this route (D065): its new values in, the values that stopped firing out.
+        const selling = PARITY_TARGET === "mockup" || route.host !== "marketing" ? undefined : SELLING_UPDATE[route.path];
+        const added = PARITY_TARGET === "mockup" ? [] : [...afterGateA(route), ...(selling?.adds ?? [])];
+        const stopped: readonly string[] = selling?.stops ?? [];
+        const expected = [...new Set([...mockupValues(route.mockup).filter((v) => !stopped.includes(v)), ...added])].sort();
         expect(values, `${route.id}: the values on the page differ from its approved mockup plus ${added.join(", ")}`).toEqual(expected);
       } else {
         expect(values.every((v) => REGISTERED.has(v)), `${route.id}: unregistered values ${values.filter((v) => !REGISTERED.has(v))}`).toBe(true);

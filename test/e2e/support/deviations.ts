@@ -1881,20 +1881,22 @@ export const SELLING_UPDATE = {
       AFTER_SIX_MONTHS.question,
       ...sentences(AFTER_SIX_MONTHS.answer).filter((line) => !line.startsWith("Every Kheelu comes with")),
     ],
-    /* The eyebrow, the lead and Good to know's second line wrap to other heights: both sides. The questions' list is one
-       question longer and loses one (closed items, compared by the text pass): both sides, so the help line and the
-       close below line up. The two folds that leave: the mockup's side. The daily limit: the build's. */
+    /* The eyebrow, the lead and Good to know (a line reworded, a line added) wrap to other heights: both sides. The
+       questions' list loses one question and gains one (closed items, compared by the text pass): both sides, so the
+       help line and the close below line up. The two folds that leave: the mockup's side. */
     hidden: {
       both: [
         /* The hero's eyebrow and lead, named by the page's one h1 beside them, so the hero's own rules (HERO_PHONE_ART, the
            phone board) stay the only ones that name the hero (HeroSection.test.tsx). */
         ".kh-eyebrow:has(~ h1)",
         "h1 ~ .kh-heading__lead",
-        "#know-title ~ ul > li:nth-child(2)",
+        /* Good to know whole: the daily limit's new fourth line moves every later line one place down, so the earlier
+           rules' line hides (V16's fifth, the charging line) would find another line on the build's side. */
+        "#know-title ~ ul",
         'section[aria-labelledby="faq-title"] .kh-faq',
       ],
       mockup: ["#app", "#safety"],
-      build: ["#know-title ~ ul > li:nth-child(4)"],
+      build: [],
     },
     reason:
       "the selling update on the product page: the hero's eyebrow and lead, no help line in the hero; the parent-app and safety folds moved to /safety; Good to know with \"instead of guessing\" and the daily limit; the price answer with the total and no GST; the delivery question off and the Kheelona+ question on (D064, D065; the D2C plan v2 §3)",
@@ -1983,6 +1985,23 @@ const sellingAdditionsText = (slug: keyof typeof SELLING_ADDITIONS): TextDeviati
     reason: "the lines of the folds and tabs task Q2.10 adds: the comparison, the safety line, the sample chats' tabs and their two new exchanges",
     approvedBy: SELLING_UPDATE_APPROVED,
   };
+};
+
+/** The sample chats without JavaScript (task Q2.10), for the JavaScript-off run only (no-js.spec.ts), as the details
+ *  fold's V3: the three chats stand stacked under their tabs' words, so the second and third chats' lines (each speaker,
+ *  the label, the words) show only then; with JavaScript the first tab's words are read twice (its tab, and its panel's
+ *  heading kept for screen readers). */
+const SELLING_CHATS_JS_OFF: TextDeviation = {
+  mockup: oneOf([PRODUCT_CHATS.tabs[0]]),
+  build: oneOf([
+    "Your child",
+    "Kheelu",
+    PROOF_EXAMPLE_BUILD[1],
+    ...[...PRODUCT_CHATS.dosa, ...PRODUCT_CHATS.spider].flatMap((line) => sentences(line)),
+  ]),
+  jsOff: true,
+  reason: "the sample chats without JavaScript: the tab row hidden, the three chats stacked under their tabs' words (the tabs with JavaScript, as the details fold's V3)",
+  approvedBy: SELLING_UPDATE_APPROVED,
 };
 
 export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
@@ -2318,6 +2337,7 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
        (task 8c.6) left with the clip (task Q2.9 takes it to Home). */
     factsRule(SELLING_UPDATE["meet-kheelu"]),
     sellingAdditionsText("meet-kheelu"),
+    SELLING_CHATS_JS_OFF,
     /* D058's claim fixes (V27, task 8b.1): CLAIM_FIXES above. */
     factsRule(CLAIM_FIXES["meet-kheelu"]),
     /* The languages question (task 8c.4, D061): FAQ_FIXES above. Its answer sits in a closed item, which the text pass
