@@ -1,6 +1,6 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { SELLING_CLOSES } from "../../../test/e2e/support/deviations";
+import { CLOSES_ALIKE, SELLING_CLOSES } from "../../../test/e2e/support/deviations";
 import { withSellerFacts } from "../../../test/e2e/support/seller-facts";
 import { mockupFold, skeleton, words } from "../../../test/support/mockup-compare";
 import { withFacts } from "../../../test/support/mockup-facts";
@@ -56,11 +56,14 @@ const OPTIONS = {
  *  articles.test.ts maps the titles to the slugs), and the mockup's store page is the store host. The close's help line
  *  and the safe-AI-toy guide's contact line as D063 item 2 rules them (task Q2.3; seller-facts.ts). The close by topic of
  *  the selling update (task Q2.12; the D2C plan v2 §7; SELLING_CLOSES): the safe-AI-toy guide closes on "A toy you can
- *  check."; the learning guide keeps the shared close and the late-talker guide its keep-reading close. */
+ *  check."; the learning guide keeps the shared close and the late-talker guide its keep-reading close. The consistency
+ *  review's (task Q2.15, CON-6 and CON-7; CLOSES_ALIKE): each button close labelled "Pre-order", its ghost link "See how
+ *  Kheelu works". */
 function approvedMain(slug: Slug): Element {
   const key = `story-${slug}`;
   const selling = Object.hasOwn(SELLING_CLOSES, key) ? SELLING_CLOSES[key as keyof typeof SELLING_CLOSES].edits : [];
-  const main = withSellerFacts(withFacts(mockupFold(key, "main"), selling));
+  const alike = Object.hasOwn(CLOSES_ALIKE, key) ? CLOSES_ALIKE[key as keyof typeof CLOSES_ALIKE].edits : [];
+  const main = withSellerFacts(withFacts(withFacts(mockupFold(key, "main"), selling), alike));
   main.querySelectorAll(".mk-related a.kh-listitem").forEach((row, i) => row.setAttribute("href", `/stories/${approvedArticle(slug).related[i]}`));
   main.querySelectorAll('a[href="store.html"]').forEach((link) => link.setAttribute("href", STORE_URL));
   return main;

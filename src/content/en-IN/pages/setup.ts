@@ -165,6 +165,9 @@ export const setupPage = {
       kind: "close-section",
       config: {
         variant: "center",
+        /* On the cream band, after the plain help fold, so the bands alternate to the end (task Q2.15; the consistency
+           review's QAL-8; DS 10-pages.md "Alternate the bands"). */
+        band: true,
         heading: {
           eyebrow: "Pre-order",
           title: "Don’t have Kheelu {hand:yet?}",

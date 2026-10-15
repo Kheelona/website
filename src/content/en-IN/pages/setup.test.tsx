@@ -102,6 +102,15 @@ function strings(value: unknown, out: string[] = [], seen = new Set<unknown>()):
 }
 
 describe("Setup: the folds of the approved page", () => {
+  /* Task Q2.15 (the consistency review's QAL-8): "Stuck? We’ll help." and the close sat on the page's surface one after
+     the other, so they read as one long fold. The bands alternate again (DS 10-pages.md "Alternate the bands"): the close
+     on the cream band after the plain help fold. */
+  it("alternates the bands, surface then band, to the close on the band after the help fold", () => {
+    const band = folds(BUILT).map((el) => el.classList.contains("kh-section--band"));
+    expect(band).toEqual([false, true, false, true, false, true, false, true]);
+    expect(folds(BUILT).at(-1)?.id).toBe("close");
+  });
+
   it("lists the folds in the corrected structure §5 order: hero answer, ticks with the Wi-Fi tip, four steps, three photo splits, the links fold, then the centred close (task Q2.12)", () => {
     expect(sections.map((e) => [e.kind, variantOf(e)])).toEqual([
       ["hero-section", "answer"],

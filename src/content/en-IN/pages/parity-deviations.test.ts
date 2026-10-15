@@ -11,12 +11,17 @@ import { buildOffer } from "@/lib/offer/offer";
 import {
   CLAIM_FIXES,
   type ClaimFixesSlug,
+  CLOSE_EYEBROW,
+  CLOSE_SEE_HOW,
+  CLOSES_ALIKE,
+  type ClosesAlikeSlug,
   COPY_FIXES,
   type CopyFixesSlug,
   editsBeforeClaimFixes,
   FAQ_FIXES,
   FOOTER_FIX,
   FOOTER_PROMISE,
+  passesBeforeClosesAlike,
   passesBeforeSellingCloses,
   PRICE_LINE,
   SELLING_CLOSES,
@@ -310,8 +315,8 @@ describe.each(Object.keys(CLAIM_FIXES) as ClaimFixesSlug[])("%s: task 8b.1's cla
     const mine = rules.filter((r) => r.approvedBy === fixes.approvedBy);
     expect(mine).toHaveLength(1);
     // Only a rule whose edits apply to the page as these leave it follows: task 8c.4's FAQ fixes (D061), then task
-    // Q2.12's selling closes (D065).
-    const later = new Set<string>([...Object.values(FAQ_FIXES), ...Object.values(SELLING_CLOSES)].map((f) => f.approvedBy));
+    // Q2.12's selling closes (D065), then task Q2.15's consistency review.
+    const later = new Set<string>([...Object.values(FAQ_FIXES), ...Object.values(SELLING_CLOSES), ...Object.values(CLOSES_ALIKE)].map((f) => f.approvedBy));
     expect(rules.slice(rules.indexOf(mine[0]) + 1).filter((r) => !later.has(r.approvedBy))).toEqual([]);
     expect(ruleReach(base, fixes.edits, mine[0])).toEqual({ excused: once(fixes.mockup), accepted: once(fixes.build) });
     expect(mine[0].jsOff).toBeUndefined();
@@ -346,11 +351,11 @@ describe.each(Object.keys(SELLING_CLOSES) as SellingClosesSlug[])("%s: task Q2.1
     expect(fixes.mockup.length + fixes.build.length).toBeGreaterThan(0);
   });
 
-  it("is the page's last rule, which excuses and accepts exactly those sentences and no other line", () => {
+  it("is the page's last rule but task Q2.15's, which excuses and accepts exactly those sentences and no other line", () => {
     const rules = TEXT_DEVIATIONS[slug] ?? [];
     const mine = rules.filter((r) => r.approvedBy === fixes.approvedBy);
     expect(mine).toHaveLength(1);
-    expect(rules.at(-1)).toBe(mine[0]);
+    expect(rules.slice(rules.indexOf(mine[0]) + 1).map((r) => r.approvedBy)).toEqual(slug in CLOSES_ALIKE ? [CLOSES_ALIKE[slug as ClosesAlikeSlug].approvedBy] : []);
     expect(ruleReach(base, fixes.edits, mine[0])).toEqual({ excused: once(fixes.mockup), accepted: once(fixes.build) });
     expect(mine[0].jsOff).toBeUndefined();
   });
@@ -373,6 +378,50 @@ describe.each(Object.keys(SELLING_CLOSES) as SellingClosesSlug[])("%s: task Q2.1
 
   it("names D065, the plan and this task as its approval, for the main session's deviations.md row", () => {
     expect(fixes.approvedBy).toMatch(/^D065 and the D2C plan v2 §5-§10 \(founder, 2026-10-15; .*task Q2\.12; deviations\.md rows to come\)$/);
+  });
+});
+
+/* Task Q2.15 (the consistency review's rulings, 2026-10-15; test/e2e/support/deviations.ts CLOSES_ALIKE): the closes
+ * labelled and linked alike ("Pre-order" over every selling close, CON-6; "See how Kheelu works" under the journal's,
+ * CON-7) and /safety's first question with non-breaking hyphens (QAP-6). On each page the rule excuses and accepts exactly
+ * the sentences its edits change, against the frozen mockup with every earlier rule of the page applied (its selling
+ * close's last), it is the page's last rule, and it adds no banned phrase. The route and content tests hold each page's
+ * build to that edited mockup, markup and words alike. */
+describe.each(Object.keys(CLOSES_ALIKE) as ClosesAlikeSlug[])("%s: task Q2.15's consistency review as a parity deviation", (slug) => {
+  const fixes = CLOSES_ALIKE[slug];
+  const base = passesBeforeClosesAlike(slug).reduce<Element>((el, pass) => withFacts(el, pass), mockupFold(slug, "main"));
+  const once = (lines: readonly string[]) => [...new Set(lines)];
+
+  it("lists exactly the sentences the edits change, against the mockup with every earlier rule of the page applied", () => {
+    expect(factSentences(base, fixes.edits)).toEqual({ missing: [...fixes.mockup], extra: [...fixes.build] });
+    expect(fixes.build.length).toBeGreaterThan(0);
+  });
+
+  it("is the page's last rule, which excuses and accepts exactly those sentences and no other line", () => {
+    const rules = TEXT_DEVIATIONS[slug] ?? [];
+    const mine = rules.filter((r) => r.approvedBy === fixes.approvedBy);
+    expect(mine).toHaveLength(1);
+    expect(rules.at(-1)).toBe(mine[0]);
+    expect(ruleReach(base, fixes.edits, mine[0])).toEqual({ excused: once(fixes.mockup), accepted: once(fixes.build) });
+    expect(mine[0].jsOff).toBeUndefined();
+  });
+
+  it("hides for the pixels the blocks it lists, in VISUAL_HIDDEN in its order, each found once on its side and holding a sentence its edits change", () => {
+    expect(hiddenProblems(base, fixes)).toEqual([]);
+    const rules = (VISUAL_HIDDEN[slug] ?? []).filter((r) => r.approvedBy === fixes.approvedBy);
+    const sel = (side: string) => rules.filter((r) => r.side === side).map((r) => r.selector);
+    expect(sel("mockup")).toEqual([...fixes.hidden.both, ...fixes.hidden.mockup]);
+    expect(sel("build")).toEqual([...fixes.hidden.both, ...fixes.hidden.build]);
+  });
+
+  it("adds only the eyebrow, the link's words and the hyphens: no banned phrase, no number, no GST", () => {
+    for (const line of fixes.build) expect(line).not.toMatch(/incl\. GST|first 500|₹|\+91|91875/);
+    expect(findBanned(fixes.build.join("\n"))).toEqual([]);
+    expect(fixes.build.every((line) => line === CLOSE_EYEBROW || line === CLOSE_SEE_HOW.build || line.includes("‑"))).toBe(true);
+  });
+
+  it("names the consistency review and this task as its approval, for the main session's deviations.md row", () => {
+    expect(fixes.approvedBy).toMatch(/^the consistency review's rulings \(main session, 2026-10-15; .*task Q2\.15; deviations\.md rows to come\)$/);
   });
 });
 

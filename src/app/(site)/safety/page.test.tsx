@@ -9,6 +9,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import {
   CLAIM_FIXES,
+  CLOSES_ALIKE,
   COPY_FIXES,
   PRICE_LINE,
   SAFETY_SELLING,
@@ -45,10 +46,11 @@ const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 const mockupDoc = parseMockup("safety");
 const frozenMain = mockupDoc.querySelector("main")!;
 /* Task 7.1b's copy fixes (V19), then task 8b.1's claim fixes (V28; D058) in a pass of their own, then task Q2.11's
-   selling update (the D2C plan v2 §4; deviations.ts SAFETY_SELLING), then D063 item 2: the close's help line without the
-   call (task Q2.3; seller-facts.ts). */
+   selling update (the D2C plan v2 §4; deviations.ts SAFETY_SELLING), then task Q2.15's (the first question's
+   non-breaking hyphens, QAP-6; CLOSES_ALIKE.safety), then D063 item 2: the close's help line without the call (task
+   Q2.3; seller-facts.ts). */
 const mockupMain = withSellerFacts(
-  withFacts(withFacts(withFacts(frozenMain, COPY_FIXES.safety.edits), CLAIM_FIXES.safety.edits), SAFETY_SELLING.edits),
+  withFacts(withFacts(withFacts(withFacts(frozenMain, COPY_FIXES.safety.edits), CLAIM_FIXES.safety.edits), SAFETY_SELLING.edits), CLOSES_ALIKE.safety.edits),
 );
 
 /** The page as the site shell holds it: the route's output inside <main>. */
@@ -204,7 +206,7 @@ describe("/safety: the rendered page against the approved mockup", () => {
     }
   });
 
-  it("finds each block the visual pass hides on the build side, once, on the page as it renders: the open answer (V19), the claim fixes' blocks (V28), the selling update's (Q2.11)", async () => {
+  it("finds each block the visual pass hides on the build side, once, on the page as it renders: the open answer (V19), the claim fixes' blocks (V28), the selling update's (Q2.11), the first question (Q2.15)", async () => {
     const { main } = await renderPage(buildOffer("token"));
     const selectors = (VISUAL_HIDDEN.safety ?? []).filter((rule) => rule.side === "build").map((rule) => rule.selector);
     expect(selectors).toEqual([
@@ -214,6 +216,7 @@ describe("/safety: the rendered page against the approved mockup", () => {
       ...SAFETY_SELLING.hidden.both,
       ...SAFETY_SELLING.hidden.build,
       ...SAFETY_SELLING_LAYOUT_HIDDEN.filter((rule) => rule.side === "build").map((rule) => rule.selector),
+      ...CLOSES_ALIKE.safety.hidden.both,
     ]);
     for (const selector of selectors) expect(main.querySelectorAll(selector), selector).toHaveLength(1);
     expect(words(main.querySelector(selectors[0])!)).toContain(COPY_FIXES.safety.build[0]);
@@ -323,7 +326,7 @@ describe("/safety: its JSON-LD", () => {
         "How does Kheelu understand and answer my child?",
         "Can I read every conversation?",
         "Do you sell my child’s data?",
-        "Is Kheelu OK for a 3-year-old?",
+        "Is Kheelu OK for a 3‑year‑old?",
         "What do child-safety groups say about AI toys?",
       ]);
     }

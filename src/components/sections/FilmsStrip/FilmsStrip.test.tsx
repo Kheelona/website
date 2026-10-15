@@ -625,6 +625,15 @@ describe("FilmsStrip: the single film's layout (task 8c.8)", () => {
       "padding-right: calc(var(--space-8) + env(safe-area-inset-right))",
     ]);
   });
+
+  /* Task Q2.15 (the CMO's built review of the selling update, CMO-5): Home's two clip captions wrapped narrower than their
+     players. The portrait clip (Home's languages film) is drawn 232 px wide and centred under the words on phones
+     (languages-section.css), clear of the bubble's column, so its caption takes the frame's width (2 lines where it took
+     4); and every credit's lines break evenly, so the expert's "coach" no longer sits alone. */
+  it("CMO-5: a portrait clip's caption takes its narrow frame's width on phones, and every credit's lines break evenly", () => {
+    expect(declarations(".ks-clip:has(.ks-clip__frame--portrait) .ks-clip__credit", "(max-width: 719px)")).toEqual(["padding-right: 0"]);
+    expect(declarations(".ks-clip__credit > p")).toEqual(["margin: 0", "text-wrap: balance"]);
+  });
 });
 
 /* Task 3.6 item 19: films.spec.ts and motion-films.spec.ts run on these stories, so the stories show the content itself

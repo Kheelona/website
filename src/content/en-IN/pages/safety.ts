@@ -135,7 +135,8 @@ export const safetyPage = {
     },
     /* Fold 4: every conversation, word for word, moved here from the product page (D064 item 2; plan v2 §4 fold 4): the
        product page's words, its two real screens side by side with their alts, and the app's caption (D058 item 8;
-       meet-kheelu.md fold 5 as task 8b.1 left it). On the band with the controls that follow: both are the parent app. */
+       meet-kheelu.md fold 5 as task 8b.1 left it). On the band; the controls that follow on the surface, so the bands
+       alternate (task Q2.15; the consistency review's CON-9, QAL-8; DS 10-pages.md "Alternate the bands"). */
     {
       kind: "feature-split",
       config: {
@@ -173,7 +174,6 @@ export const safetyPage = {
       config: {
         variant: "app-screens",
         placement: "safety",
-        band: true,
         heading: {
           id: "controls-title",
           eyebrow: "Parent controls",
@@ -205,11 +205,13 @@ export const safetyPage = {
     },
     /* Fold 6: retention (D020's line, then what deleting the account does, D058 item 1; next to the memory claim, D036)
        and certification (claims §6). The single-chat sentence came off with the selling update: what removing one chat
-       does since the app changed is not on file (plan v2 §4 fold 6, §14). */
+       does since the app changed is not on file (plan v2 §4 fold 6, §14). On the band since task Q2.15 (CON-9: the bands
+       alternate again). */
     {
       kind: "feature-split",
       config: {
         variant: "pair",
+        band: true,
         cards: [
           {
             heading: { id: "kept-title", eyebrow: "Retention", title: "How long conversations are {hand:kept.}" },
@@ -229,12 +231,12 @@ export const safetyPage = {
         ],
       },
     },
-    /* Fold 7: the two hard questions left, the first open; their sources under them. */
+    /* Fold 7: the two hard questions left, the first open; their sources under them. On the surface since task Q2.15
+       (CON-9), after the band above, then the close, as the guide's questions run into its close. */
     {
       kind: "faq-section",
       config: {
         variant: "photo",
-        band: true,
         heading: { id: "faq-title", eyebrow: "Questions", title: "Questions parents {hand:ask.}" },
         items: [faqs["age-three"], faqs["child-safety-groups"]],
         firstOpen: true,

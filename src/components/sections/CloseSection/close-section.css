@@ -2,10 +2,9 @@
    the 480 px tablet clamp of the safety and guide boards is ArtBoard's (art-board.css). */
 
 /* journal: the stories hub and article closes (stories.css:45-47 and 143, .mk-close, .mk-close-art). The board is 4:3
-   (ArtBoard ratio) and shows from 900 px only (the copy: optional, beside the block). */
-.ks-close-journal .kh-section__actions {
-  margin-top: var(--space-5);
-}
+   (ArtBoard ratio) and shows from 900 px only (the copy: optional, beside the block). The button's and the ghost link's
+   rows keep the DS's --space-6 above them (bundle.css .kh-section__actions), as every other close's: the mockup's
+   --space-5 (stories.css:45) left with task Q2.15 (the consistency review's CON-1, CON-7). */
 /* The help line follows the group whose last line is the trust line: --space-5, two tap extensions (task 7.1a, CMO
    built-page review A, B1; help-line.css), where the mockup gave --space-4 (stories.css:45). */
 .ks-close-journal .ks-help {

@@ -203,7 +203,9 @@ export const faqs = {
   /* ── Safety ── */
   "age-three": {
     id: "age-three",
-    question: "Is Kheelu OK for a 3-year-old?",
+    /* The age with non-breaking hyphens (U+2011), as the product page's question writes it, so the open question never
+       breaks "3-year-" over "old?" on a phone (task Q2.15; the consistency review's QAP-6). */
+    question: "Is Kheelu OK for a 3‑year‑old?",
     answer:
       "Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. If your child is 3, keep a grown-up nearby. Common Sense Media advises against AI toys at this age. Its advice in full, and our answer, are in the next question.",
   },

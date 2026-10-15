@@ -106,6 +106,16 @@ describe("the safety page: its folds", () => {
     ]);
   });
 
+  /* Task Q2.15 (the consistency review's CON-9, QAL-8): the two parent-app folds sat on the band one after the other, so
+     they read as one long fold. The bands alternate again (DS 10-pages.md "Alternate the bands"): the controls on the
+     surface, the retention and certification pair on the band, the questions on the surface before the close, as the
+     guide's run into its close. */
+  it("alternates the bands: no two band folds in a row", () => {
+    const band = sections.map((e) => "band" in e.config && e.config.band === true);
+    expect(band).toEqual([false, true, false, true, false, true, false, false]);
+    expect(band.some((b, i) => b && band[i + 1])).toBe(false);
+  });
+
   it("names each fold as the mockup does, in the mockup's order", () => {
     const ids = sections.map((e) => {
       const c = e.config as { heading?: { id?: string }; cards?: { heading: { id?: string } }[] };
@@ -287,7 +297,8 @@ describe("fold 5: the grown-up holds the keys", () => {
     const el = fold("controls-title");
     const { config } = controls;
     expect(config.placement).toBe("safety");
-    expect(config.band).toBe(true);
+    // On the surface since task Q2.15 (CON-9), after fold 4's band: the bands alternate.
+    expect(config.band).toBeUndefined();
     expect({ eyebrow: config.heading.eyebrow, title: plain(config.heading.title), lead: config.heading.lead && plain(config.heading.lead), id: config.heading.id }).toEqual(
       headingOf(el),
     );
@@ -356,14 +367,14 @@ describe("fold 6: retention and certification", () => {
 
 describe("fold 7: questions parents ask", () => {
   const faq = entry("faq-section");
-  it("shows the two safety answers from faqs.ts (never retyped), the first open, on the band with the whisper photo", () => {
+  it("shows the two safety answers from faqs.ts (never retyped), the first open, on the surface (task Q2.15, CON-9) with the whisper photo", () => {
     if (faq.config.variant !== "photo") throw new Error("not the photo FAQ");
     const { config } = faq;
     expect(config.items).toEqual([faqs["age-three"], faqs["child-safety-groups"]]);
     expect(config.items[0]).toBe(faqs["age-three"]);
     expect(config.items[1]).toBe(faqs["child-safety-groups"]);
     expect(config.firstOpen).toBe(true);
-    expect(config.band).toBe(true);
+    expect(config.band).toBeUndefined();
     const el = fold("faq-title");
     expect({ eyebrow: config.heading.eyebrow, title: plain(config.heading.title), id: config.heading.id }).toMatchObject({
       eyebrow: headingOf(el).eyebrow,

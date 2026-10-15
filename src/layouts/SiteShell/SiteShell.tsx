@@ -23,10 +23,11 @@ const HOME: SitePath = "/";
 /** The drawer dialog's id, which the menu button's `aria-controls` names. */
 const DRAWER_ID = "menu";
 
-/** The drawer's second note: the compact trust line beside every CTA (when deliveries start, the returns promise),
- *  as one line, as partials/drawer.html prints it. */
-function drawerNote(offer: Offer): string {
-  return offerWords(TRUST_COMPACT.map((id) => trustItems[id].label).join(" · "), offer, "SiteShell drawer note");
+/** The drawer's second note: the compact trust line beside every CTA (the risk-reversal line, then when deliveries
+ *  start), each item a line of its own as the trust line reads them (task Q2.15; the consistency review's CON-8), where
+ *  partials/drawer.html joined its two promises with a dot. */
+function drawerNote(offer: Offer): string[] {
+  return TRUST_COMPACT.map((id) => offerWords(trustItems[id].label, offer, "SiteShell drawer note"));
 }
 
 export interface SiteShellProps {

@@ -802,14 +802,18 @@ describe("the product page's selling update (task Q2.10; the D2C plan v2 §3)", 
     expect(text(compare)).not.toMatch(/Alexa|Echo|ChatGPT|Miko|Tonies|YouTube/);
   });
 
-  it("fold 9: says where the safety facts live in one line, then the built ghost link to /safety (product-safety-learn)", () => {
+  /* Task Q2.15 (the consistency review's CMO-3, CON-4): "See how we built safety in" is the DS secondary button with the
+     shield, as on Home and /team (DS 07-selling.md:52 names it a secondary learning action), where it was a ghost link. */
+  it("fold 9: says where the safety facts live in one line, then the built link to /safety as Home's: the secondary button with the shield (product-safety-learn)", () => {
     const line = fold("safety-line");
     expect(line.id).toBe("safety");
     expect(text(line.querySelector("#safety-line"))).toBe(PRODUCT_SAFETY_LINE.line);
     const links = [...line.querySelectorAll("a")];
     expect(links).toHaveLength(1);
     expect(links[0].getAttribute("href")).toBe("/safety");
-    expect(links[0].className).toBe("kh-btn kh-btn--ghost");
+    expect(links[0].className).toBe("kh-btn kh-btn--secondary");
+    expect(links[0].firstElementChild?.querySelector("path")?.getAttribute("d")).toBe(ICON_PATHS["shield-check"]);
+    expect(links[0].querySelectorAll("svg")).toHaveLength(1);
     expect(links[0].getAttribute("data-ph-capture-attribute-cta")).toBe("product-safety-learn");
     expect(text(links[0])).toBe(PRODUCT_SAFETY_LINE.link);
     expect(PRODUCT_SAFETY_LINE.link).toBe(cta.secondary["product-safety-learn"].label);

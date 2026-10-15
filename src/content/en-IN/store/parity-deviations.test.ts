@@ -80,7 +80,7 @@ describe("store parity deviations: the visual pass (D056 item 3, V1)", () => {
     expect(hiddenCss("store", "build")).toBe(`.ks-store-payments, .ks-agree__fine, ${EYEBROW}, ${FILMS_HEADING} { display: none !important; }`);
     expect(hiddenCss("store-confirmation", "mockup")).toBe(`${MOCKUP_LINE} { display: none !important; }`);
     expect(hiddenCss("store-confirmation", "build")).toBe(".ks-store-payments { display: none !important; }");
-    expect(hiddenCss("contact", "build")).toBe("");
+    expect(hiddenCss("story-talking-toys-and-late-talkers", "build")).toBe("");
   });
 
   it("every rule gives its reason", () => {

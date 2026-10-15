@@ -37,8 +37,9 @@ const PROPS: NavDrawerProps = {
   ],
   ctaLabel: "Pre-order Kheelu",
   offer,
-  /* SiteShell's note: the compact trust line, the risk-reversal line first since task Q2.8 (D2C plan v2 §1.1). */
-  note: "Full refund until dispatch · 7-day returns · Deliveries start mid-November",
+  /* SiteShell's note: the compact trust line, the risk-reversal line first since task Q2.8 (D2C plan v2 §1.1), a line
+     each since task Q2.15 (the consistency review's CON-8). */
+  note: ["Full refund until dispatch · 7-day returns", "Deliveries start mid-November"],
 };
 
 const CSS = readFileSync("src/components/chrome/NavDrawer/nav-drawer.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ");
@@ -105,7 +106,16 @@ describe("NavDrawer", () => {
     expect(price.className).toBe("kh-drawer__note");
     expect(price.textContent).toBe("₹499 today, refundable. ₹4,999 in total.");
     expect(note.className).toBe("kh-drawer__note");
-    expect(note.textContent).toBe("Full refund until dispatch · 7-day returns · Deliveries start mid-November");
+    expect(note.textContent).toBe("Full refund until dispatch · 7-day returnsDeliveries start mid-November");
+  });
+
+  /* Task Q2.15 (the consistency review's CON-8): the risk-reversal line and the delivery line, each a line of its own as the
+     trust line reads them, where one string joined them with a "·" that dangled at a phone line's end. */
+  it("prints the second note's lines each on a line of its own, never joined by a dot", () => {
+    const { container } = render(<NavDrawer {...PROPS} />);
+    const note = container.querySelectorAll(".kh-drawer__note")[1];
+    expect(note.innerHTML).toBe("Full refund until dispatch · 7-day returns<br>Deliveries start mid-November");
+    expect(note.querySelectorAll("br")).toHaveLength(1);
   });
 
   it("follows the offer's mode: the full-mode price line when the store has moved to full price", () => {

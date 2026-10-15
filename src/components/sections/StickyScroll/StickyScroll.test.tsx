@@ -186,6 +186,15 @@ describe("StickyScroll: the layout and its motion (sticky-scroll.css)", () => {
     expect(thumb).not.toMatch(/visibility|opacity|display/);
   });
 
+  /* Task Q2.15 (the consistency review's QAL-11): on laptops the points' words spanned the whole 7-column side, about 100
+     characters a line, well past the DS reading measure (--measure, tokens.css). Each point's title, words and example
+     keep to it, as the line under the points does; the stage beside them is unchanged. */
+  it("keeps each point's title, words and example to the DS reading measure on laptops", () => {
+    const laptop = [...CSS.matchAll(/@media \(min-width: 900px\) \{([\s\S]*?)\n\}/g)].map((m) => m[1]).join("\n");
+    expect(laptop).toMatch(/\.ks-sticky__title,\s*\.ks-sticky__body,\s*\.ks-sticky__example \{\s*max-width: var\(--measure\);\s*\}/);
+    expect(CSS).toMatch(/\.ks-sticky__line \{\s*max-width: var\(--measure\);/);
+  });
+
   it("crossfades and fills only where motion is welcome, on DS tokens, and draws no fill under reduced motion", () => {
     const motion = /@media \(min-width: 900px\) and \(prefers-reduced-motion: no-preference\) \{([\s\S]*?)\n\}/.exec(CSS)?.[1] ?? "";
     expect(motion).toMatch(/\.ks-sticky__pic \{\s*transition: opacity var\(--duration-enter\) var\(--ease-standard\);\s*\}/);

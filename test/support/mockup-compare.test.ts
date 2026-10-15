@@ -19,6 +19,7 @@ import {
   portClass,
   skeleton,
   STORE,
+  withDrawerNoteLines,
   withLinesBeside,
   withOneCtaShape,
   withPriceLine,
@@ -118,7 +119,11 @@ describe("reading the mockup with task Q2.8's price lines (withPriceLine)", () =
     const home = parseMockup("home");
     const rows = [...home.querySelectorAll("ul.mk-trust")].map(linkWords);
     expect(rows.slice(0, 3)).toEqual([0, 1, 2].map(() => [returns.build, delivery]));
-    expect(text(home.querySelectorAll(".kh-drawer__note")[1])).toBe(`${returns.build} · ${delivery}`);
+    // Task Q2.8's reading alone keeps the drawer's dot; the full reading puts each line on its own (task Q2.15, below).
+    const priced = raw("home");
+    withPriceLine(priced);
+    expect(text(priced.querySelectorAll(".kh-drawer__note")[1])).toBe(`${returns.build} · ${delivery}`);
+    expect(home.querySelectorAll(".kh-drawer__note")[1].innerHTML).toBe(`${returns.build}<br>${delivery}`);
     // The trust link opens the refund page's part that keeps the promise (trust.ts), as the build links it.
     expect(mockupLinks(home.querySelector("ul.mk-trust")!)).toEqual(["/refund#before-dispatch", "/shipping#when"]);
     // Each item keeps its own icon: the returns arrow on the risk-reversal line, the truck on the delivery line.
@@ -272,6 +277,27 @@ describe("reading the product close with its lines beside the button (withLinesB
 
   it("fails loudly on a fold without a chilli button's row", () => {
     expect(() => withLinesBeside(html("<section><p>no button</p></section>"))).toThrow(/no actions row/);
+  });
+});
+
+/* Task Q2.15 (the consistency review's CON-8): the drawer's second note, the risk-reversal line and the delivery line, a
+   line each as the trust line reads them, where the mockup joined them with a dot (and task Q2.8's reading kept it). */
+describe("reading the drawer's second note a line each (withDrawerNoteLines, task Q2.15)", () => {
+  const { returns, delivery } = PRICE_LINE;
+
+  it("reads every built page's drawer so: the risk-reversal line, a break, the delivery line", () => {
+    for (const slug of ["home", "team", "404"]) {
+      const notes = [...mockupPage(slug).querySelectorAll(".kh-drawer__note")];
+      expect(notes, slug).toHaveLength(2);
+      expect(notes[1].innerHTML, slug).toBe(`${returns.build}<br>${delivery}`);
+    }
+  });
+
+  it("changes nothing that does not read as that note (control)", () => {
+    const el = html(`<div><p class="kh-drawer__note">${delivery} · ${returns.mockup}</p><p class="kh-drawer__note">Another note</p></div>`);
+    const before = el.outerHTML;
+    withDrawerNoteLines(el);
+    expect(el.outerHTML).toBe(before);
   });
 });
 

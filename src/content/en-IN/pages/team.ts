@@ -181,7 +181,8 @@ export const teamPage = {
       kind: "close-section",
       config: {
         variant: "center",
-        heading: { title: "Bring Kheelu {hand:home.}", lead: navigation.footer.made },
+        /* "Pre-order", as every selling close is labelled (task Q2.15; the consistency review's CON-6). */
+        heading: { eyebrow: "Pre-order", title: "Bring Kheelu {hand:home.}", lead: navigation.footer.made },
         cta: {
           cta: "finale",
           trust: TRUST_COMPACT.map((id) => trustItems[id]),

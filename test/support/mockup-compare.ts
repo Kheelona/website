@@ -51,12 +51,14 @@ export const STORE = "https://store.kheelona.com";
 const REDRAWN = Object.entries(SITE_DRAWINGS).map(([name, d]) => [ICON_PATHS[name as IconName], d] as const);
 
 /** A built mockup page, parsed fresh: for a test that changes what it reads (a stand-in in place of a slot). It carries
- *  the site's icon drawings (`REDRAWN`, task Q2.4) and task Q2.8's price lines as the build prints them (`withPriceLine`). */
+ *  the site's icon drawings (`REDRAWN`, task Q2.4), task Q2.8's price lines as the build prints them (`withPriceLine`)
+ *  and the drawer's second note a line each (`withDrawerNoteLines`, task Q2.15). */
 export function parseMockup(slug: string): Document {
   let html = readRepoFile(`mockup/${slug}.html`);
   for (const [mockup, built] of REDRAWN) html = html.replaceAll(`<path d="${mockup}">`, `<path d="${built}">`);
   const doc = new DOMParser().parseFromString(html, "text/html");
   withPriceLine(doc);
+  withDrawerNoteLines(doc);
   return doc;
 }
 
@@ -133,6 +135,20 @@ export function withPriceLine(root: ParentNode): void {
 }
 
 /* ── One CTA block shape (task Q2.15) ───────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * The drawer's second note a line each (task Q2.15; the consistency review's CON-8): the risk-reversal line, then the
+ * delivery line, as the trust line beside every button reads them, where partials/drawer.html joined its two promises with
+ * a dot (and `withPriceLine` keeps the dot, in the build's words). Only a note that reads exactly so changes.
+ */
+export function withDrawerNoteLines(root: ParentNode): void {
+  const { returns, delivery } = PRICE_LINE;
+  for (const el of root.querySelectorAll(".kh-drawer__note")) {
+    if (wordsOf(el) !== `${returns.build} · ${delivery}`) continue;
+    const doc = el.ownerDocument;
+    el.replaceChildren(doc.createTextNode(returns.build), doc.createElement("br"), doc.createTextNode(delivery));
+  }
+}
 
 /**
  * The one CTA block shape (task Q2.15; the consistency review's R2, CMO-1, QAP-1, QAL-3, CON-1, CON-5): every CTA

@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -137,6 +139,8 @@ const adjust = (el: Element) => {
   addClass(el, ".kh-btn--cta", "ks-cta__button");
   addClass(el, ".kh-btn--cta > svg", "ks-btn__arrow");
   addClass(el, ".ks-beside--center .kh-trustline", "ks-trustline--center");
+  // The guide close's words in the DS's wide start column from 900 px (task Q2.15, CON-11), where the mockup's are half.
+  addClass(el, ".ks-gd-close > .kh-split", "kh-split--wide-start");
 };
 /* Every close as D063 items 2-3 rule its mockup (task Q2.3; test/e2e/support/seller-facts.ts): the help and contact
    lines keep WhatsApp and the email, without the number; the product close with its lines beside the button (Q2.15). */
@@ -267,6 +271,39 @@ describe("CloseSection: the section", () => {
       [...renderedElement(<CloseSection {...config} {...context()} />).querySelectorAll(".ks-beside > *")].map((el) => el.className);
     expect(lines(CASES[1][3])).toEqual(lines(CASES[0][3]));
     expect(lines(CASES[1][3])).toEqual(["kh-body-s ks-price", "kh-trustline ks-trust", "kh-body-s ks-help"]);
+  });
+
+  /* Task Q2.15 (the consistency review's CON-1, CON-7): the journal closes' rows sat --space-5 under the lead and the help
+     line (stories.css:45), every other close's at the DS's --space-6 (bundle.css .kh-section__actions): the ghost link
+     under /team's and /contact's close and under the hub's and the articles' now sits the same gap below its line. */
+  it("spaces every close's button and link rows as the DS does, the journal's too: no close rule moves an actions row", () => {
+    const css = readFileSync(join(process.cwd(), "src/components/sections/CloseSection/close-section.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(css).not.toMatch(/\.kh-section__actions[^{]*\{/);
+    const actions = renderedElement(<CloseSection {...journal} {...context()} />).querySelectorAll(".kh-section__actions");
+    expect([...actions].map((row) => row.className)).toEqual(["kh-section__actions", "kh-section__actions"]);
+  });
+
+  /* Task Q2.15 (CON-11): in the guide's tinted card the words' column was half the card's, 527 px at 1440, too narrow for
+     the trust line's two items (292 + 24 + 229 px), which wrapped; the DS's 7:5 split from 900 px keeps it one row, as
+     every other split close's. */
+  it("guide: the words take the DS's wide start column beside the board (7:5 from 900 px), so the trust line keeps one row", () => {
+    const card = renderedElement(<CloseSection {...CASES[2][3]} {...context()} />).querySelector(".ks-gd-close")!;
+    expect(card.firstElementChild?.getAttribute("class")).toBe("kh-split kh-split--wide-start");
+    for (const other of [CASES[0][3], CASES[1][3], journal]) {
+      expect(renderedElement(<CloseSection {...other} {...context()} />).querySelector(".kh-split")?.getAttribute("class")).toBe("kh-split");
+    }
+  });
+
+  /* Task Q2.15 (the consistency review's QAL-8, CON-9): a close may sit on the cream band, where its page's rhythm asks
+     (DS 10-pages.md "Alternate the bands": /setup's close after its plain help fold); on the page's surface otherwise. */
+  it("sits on the cream band when its page's rhythm asks (band), on the surface otherwise, in every variant", () => {
+    for (const [name, , , config] of CASES) {
+      expect(renderedElement(<CloseSection {...config} {...context()} />).getAttribute("class"), name).not.toContain("kh-section--band");
+      expect(renderedElement(<CloseSection {...config} band {...context()} />).getAttribute("class"), name).toContain("kh-section--band");
+    }
+    const centre = CASES[5][3];
+    if (centre.variant !== "center") throw new Error("CASES[5] is a centred close");
+    expect(renderedElement(<CenterClose {...centre} band {...context()} />).getAttribute("class")).toBe("kh-section kh-section--band");
   });
 
   it("never moves on arrival: no data-reveal in any close (a chilli button and the price, §11.2)", () => {

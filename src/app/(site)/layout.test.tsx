@@ -22,10 +22,10 @@ describe("(site) layout", () => {
     render(await SiteLayout({ children: <p>the page</p> }));
     expect(screen.getByRole("main")).toHaveTextContent("the page");
     // The short price line, the trust line with the risk-reversal line first, and the bar's amount in total, without GST
-    // (D065 item 3; task Q2.8; the D2C plan v2 §1.1-1.2).
-    expect([...document.querySelectorAll(".kh-drawer__note")].map((note) => note.textContent)).toEqual([
+    // (D065 item 3; task Q2.8; the D2C plan v2 §1.1-1.2); the trust line's items a line each (task Q2.15, CON-8).
+    expect([...document.querySelectorAll(".kh-drawer__note")].map((note) => note.innerHTML)).toEqual([
       "₹7,999 in total, paid in full when you order.",
-      "Full refund until dispatch · 7-day returns · Deliveries start mid-November",
+      "Full refund until dispatch · 7-day returns<br>Deliveries start mid-November",
     ]);
     expect(document.querySelector(".kh-buybar__big")?.textContent).toBe("₹7,999 in total");
   });

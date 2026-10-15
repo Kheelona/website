@@ -71,8 +71,8 @@ const chat = (ask: string, answer: string, reply: string): ExampleConversationLi
   { speaker: "child", who: "Your child", text: reply },
 ];
 
-/** The product-safety-learn link as the safety line's ghost link (the D2C plan v2 §3 fold 9): its built label and
- *  address, without the shield, which would make it a secondary button. */
+/** The product-safety-learn link after the safety line (the D2C plan v2 §3 fold 9): its built label, address and shield,
+ *  the DS secondary button Home's "See how we built safety in" is (task Q2.15; the consistency review's CMO-3, CON-4). */
 const SAFETY_LINK = cta.secondary["product-safety-learn"];
 
 /** A language chip: its own name in its own `lang`, the English name under it (English itself needs neither). */
@@ -347,7 +347,8 @@ export const kheeluPage = {
     },
     /* Safety in one line (task Q2.10; D064 item 2; the D2C plan v2 §3 fold 9, ruling 8): the facts live on /safety, which
        now carries the parent app's every-conversation fold too (task Q2.11). The built link "See how we built safety in"
-       (`product-safety-learn`, approved at Gate A; CMO M3) as a DS ghost link. On the band, the page's `#safety` kept. */
+       (`product-safety-learn`, approved at Gate A; CMO M3) as Home's: the DS secondary button with the shield (task Q2.15,
+       CMO-3, CON-4; DS 07-selling.md:52). On the band, the page's `#safety` kept. */
     {
       kind: "trust-section",
       config: {
@@ -355,7 +356,7 @@ export const kheeluPage = {
         id: "safety",
         band: true,
         pointer: "When the microphone is on, how Kheelu answers, and what you can read and delete, fact by fact:",
-        link: { label: SAFETY_LINK.label, href: SAFETY_LINK.href, cta: SAFETY_LINK.cta },
+        link: { label: SAFETY_LINK.label, href: SAFETY_LINK.href, cta: SAFETY_LINK.cta, icon: SAFETY_LINK.icon },
       },
     },
     /* Fold 7 · The details on tabs (3.5; P1), the declarations beside them. */

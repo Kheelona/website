@@ -5,7 +5,7 @@ import { ArticleTemplate } from "@/layouts/ArticleTemplate/ArticleTemplate";
 import { toPlainText } from "@/lib/content/plain-text";
 import { parseRichText, type RichNode } from "@/lib/content/rich-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { ARTICLE_CLAIM_FIXES, RETENTION, SELLING_CLOSES, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../../test/e2e/support/deviations";
+import { ARTICLE_CLAIM_FIXES, CLOSES_ALIKE, RETENTION, SELLING_CLOSES, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../../test/e2e/support/deviations";
 import type { PageFacts } from "../../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../../test/e2e/support/parity";
 import { withSellerFacts } from "../../../../../test/e2e/support/seller-facts";
@@ -217,8 +217,8 @@ describe("the safe-AI-toy guide's claim fixes (D058; tasks 8b.2a and 8b.1b)", ()
 
   /* Then task Q2.12's close by topic (the D2C plan v2 §7; SELLING_CLOSES), proven with the other pages' selling closes
      (src/content/en-IN/pages/parity-deviations.test.ts). */
-  it("are the page's first text rule, before the selling close's, and it excuses and accepts exactly those sentences, no other line of the page", () => {
-    expect(TEXT_DEVIATIONS[SLUG]?.map((rule) => rule.approvedBy)).toEqual([FIXES.approvedBy, SELLING_CLOSES[SLUG].approvedBy]);
+  it("are the page's first text rule, before the selling close's and the consistency review's, and it excuses and accepts exactly those sentences, no other line of the page", () => {
+    expect(TEXT_DEVIATIONS[SLUG]?.map((rule) => rule.approvedBy)).toEqual([FIXES.approvedBy, SELLING_CLOSES[SLUG].approvedBy, CLOSES_ALIKE[SLUG].approvedBy]);
     expect(ruleReach(main(), FIXES.edits, TEXT_DEVIATIONS[SLUG]![0])).toEqual({ excused: [...FIXES.mockup], accepted: [...FIXES.build] });
   });
 
@@ -231,6 +231,9 @@ describe("the safe-AI-toy guide's claim fixes (D058; tasks 8b.2a and 8b.1b)", ()
       ["mockup", ".kh-trust > .kh-trust__item:nth-child(8)", FIXES.approvedBy],
       /* The close's heading and lead in the AI toys and safety topic's words (task Q2.12). */
       ...(["mockup", "build"] as const).map((side) => [side, "#close .kh-heading", SELLING_CLOSES[SLUG].approvedBy]),
+      /* The close's ghost link on both sides and its eyebrow on the build's (task Q2.15: CON-6, CON-7). */
+      ...(["mockup", "build"] as const).map((side) => [side, "#close .kh-btn--ghost", CLOSES_ALIKE[SLUG].approvedBy]),
+      ["build", "#close .kh-eyebrow", CLOSES_ALIKE[SLUG].approvedBy],
     ]);
   });
 });

@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { ARTICLE_SLUGS as PLAN_ARTICLES } from "@/content/en-IN/routes";
 import { ARTICLE_CLOSES, stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import {
+  CLOSES_ALIKE,
   FOOTER_COLS_HIDDEN,
   FOOTER_ROWS,
   PRICE_LINE_HIDDEN,
@@ -178,14 +179,16 @@ describe("hideDeviations", () => {
     expect(ruling.mockup.test("WhatsApp or call +91 91875 46483")).toBe(true);
     expect(ruling.build?.test("Message us on WhatsApp.")).toBe(true);
     expect(ruling.mockup.test("Questions?")).toBe(false);
-    /* Besides the price lines' rule every page shares, /contact's main changes nothing the text pass reads but the seller
-       card's GSTIN line, and a guide the approved mockups do not show has that shared rule alone. */
-    expect(textDeviations("contact").map((r) => r.approvedBy)).toEqual([PRICE_LINE_TEXT.approvedBy, SELLER_FACTS_APPROVED]);
+    /* Besides the price lines' rule every page shares, /contact's main changes nothing the text pass reads but its close's
+       eyebrow (task Q2.15, CON-6) and the seller card's GSTIN line, and a guide the approved mockups do not show has that
+       shared rule alone. */
+    expect(textDeviations("contact").map((r) => r.approvedBy)).toEqual([PRICE_LINE_TEXT.approvedBy, CLOSES_ALIKE.contact.approvedBy, SELLER_FACTS_APPROVED]);
     expect(textDeviations("article:busy-hands-no-screens")).toEqual([PRICE_LINE_TEXT]);
   });
 
   it("hides /contact's seller card on both sides, its only block D063 rewords (the GSTIN line off)", () => {
-    expect(VISUAL_HIDDEN.contact ?? []).toEqual([]);
+    // The page's own rule: its close's eyebrow, the build's alone (task Q2.15, CON-6).
+    expect((VISUAL_HIDDEN.contact ?? []).map((r) => [r.side, r.selector, r.approvedBy])).toEqual([["build", "#close .kh-eyebrow", CLOSES_ALIKE.contact.approvedBy]]);
     const contact = visualHidden("contact").filter((r) => r.approvedBy === SELLER_FACTS_APPROVED);
     expect(contact.map((r) => [r.side, r.selector])).toEqual([
       ["mockup", ".kh-footer__legal"],

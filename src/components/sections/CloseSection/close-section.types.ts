@@ -3,6 +3,9 @@ import type { CtaBlockConfig, CtaSecondary, SellingContext, SellingHeading } fro
 
 interface CloseBase {
   readonly heading: SellingHeading;
+  /** On the cream band (`kh-section--band`), where the page's rhythm asks for it (DS 10-pages.md "Alternate the bands";
+   *  task Q2.15, the consistency review's QAL-8: /setup's close after its plain help fold); the surface without it. */
+  readonly band?: boolean;
 }
 
 /**
