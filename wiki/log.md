@@ -1376,3 +1376,16 @@ crop still downloads on phones (CMO-9; next/image has no per-viewport priority);
 product page's compare table (CMO-8: a new placement, the founder's); Home's hero at 1024 × 768 (QAL-12); the footer's
 full-width layout (QAL-13). Fixes written as tasks Q2.15 (the CTA block, the offer folds, closes, copy and rhythm) and
 Q2.16 (layout and chrome defects).
+
+## [2026-10-16 01:10] build | Fix wave q2d: Q2.16 merged; Q2.15 resumed after an API timeout (`wf_517716ff-de8`)
+`wf_409ee373-453`: Q2.16 (layout and chrome defects) built, failed review on one red browser check (the /thanks
+bubble as a small tap target while stepped aside) and was fixed (the tap-target check skips inert targets; a /thanks
+browser case added). Merged `1c615207`: the bubble steps aside from `/contact`'s contact ways, the hub's topic chips,
+the 404's list and `/thanks`'s chargeback line (D050 otherwise unchanged); titles and wrapping button labels balance
+(no lone last word); links in FAQ answers and trust bodies take the DS link colour; the store header's logo never
+shrinks and its trust rows get 44 px tap rows (CSS only); the footer's legal row is one group; `/safety`'s controls in
+one column from 900 px; `/team`'s founder heads wrap by the card's width; the compare table's caption inset; FAQ rows
+hover on pointer devices. Rulings: `text-wrap-style: balance` over the spec's `pretty` (measured: pretty left 18-29 lone
+words); the founder head's width-dependent wrap (the token guard refuses 1199 px); the out-of-Owns test edits accepted.
+Q2.15's builder stopped on an API timeout (no response for 13 minutes) after committing R2's one CTA shape and the
+product close (`fb3d4ce6`); its offer-fold work was saved as a WIP commit (`b0b3e6df`) and the task resumed.
