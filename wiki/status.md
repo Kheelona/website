@@ -5,7 +5,7 @@ updated: 2026-10-15
 sources: [log.md, open-questions.md]
 ---
 
-# Status (2026-10-15 23:40 IST)
+# Status (2026-10-16 03:10 IST)
 
 **NOW: the selling update (D064, D065), in the quick-changes phase (D062): quick checks per batch, detailed QA and the
 integrations once the founder calls the site final.** Summary to resume from: [project summary](engineering/project-summary.md).
@@ -17,10 +17,10 @@ tests, build green; rows V49-V57. **The new cta values are registered** (`ffa029
 other page's close and the footer's laptop rows; rows V58-V64; verify 6894 passed and 2 product-page parity tests red,
 the build green). **Fix wave q2c merged** (verify 6917, build green; `5b245a26`): Q2.13 the offer cards, the product page,
 the guide; Q2.14 the help line's words and tap target, the footer's parity rule, `/privacy` against G26. **Consistency review done** (`wf_78365aa5-dfe`: 16 serious findings, all confirmed;
-rulings R1 Home's length accepted and guarded, R2 one CTA shape). **Fix wave q2d running** (`wf_409ee373-453`, base
-`cffb759d`): Q2.15 one CTA block and one offer fold, Q2.16 layout and chrome defects. **Next:** merge, verify and build,
-push `beta`, check the deploy, report to the founder.
-**Branch:** `reset/website-v2` (`cffb759d`). **Beta (public, D060):** `beta` at `398c5ee` (wave 8c); betawebsite and
+rulings R1 Home's length accepted and guarded, R2 one CTA shape). **Fix wave q2d merged** (Q2.16 `1c615207`, Q2.15 `0f438089`). **D066** (the founder's
+answers, 2026-10-16) **is being built as Q2.17** (`wf_c035e7f1-354`). **Next:** merge, verify and build, push `beta`,
+check the deploy, report to the founder.
+**Branch:** `reset/website-v2` (`0f438089`). **Beta (public, D060):** `beta` at `398c5ee` (wave 8c); betawebsite and
 betastore.kheelona.com. **Production:** `main` `8c4718a`, untouched until Gate B. Beta QA (task 7.2) on hold.
 
 **Rulings taken while the founder sleeps (to report):** the WhatsApp bubble stays persistent on Home's first phone screen
@@ -37,7 +37,7 @@ journal's backend changes); Meta automatic events off (D056); F4 values before d
 mains power, the CMO's built-page review, beta QA, tracking evidence, accessibility, store and payment sandbox,
 production integrations, legal sign-off, the Gate B pack; the buy bar's small line wraps at 360 (Q2.8 notes).
 
-**Founder decisions so far:** D010-D065 + R1-R10 (see [index](index.md)). Latest: **D065 the site sells (promise, ages,
+**Founder decisions so far:** D010-D066 + R1-R10 (see [index](index.md)). Latest: **D066 the founder's answers on the built selling update**; **D065 the site sells (promise, ages,
 button and price line; G26, G28, G29, G30)**; D064 quick batch 2 (landing page, motion); D063; D062 quick changes until
 final; D061 the advisor's proposal; D060 beta public.
 

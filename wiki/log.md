@@ -1396,3 +1396,15 @@ text signed (no GST); one more Pre-order block after the product page's comparis
 how Kheelu works" (the offer lead and the closes' eyebrow stay as built, so Q2.15's versions of those two are not taken);
 F7 not decided; G29's pre-launch test line removed everywhere; G28's Wi‑Fi-off-at-rest and no-endless-conversation lines
 added; Home's length kept (R1); G27's sentences stay off. Built as task Q2.17 after Q2.15 merges.
+
+## [2026-10-16 03:10] build | Q2.15 merged (`0f438089`); Q2.17 (D066) handed to the build workflow (`wf_c035e7f1-354`)
+`wf_517716ff-de8` (resumed after the API timeout) passed review: one CTA shape on every page (R2: full width with the
+arrow on phones, inline from 720 px); one offer fold on Home and the product page from 900 px (card and picture
+top-aligned, the trust line and the card's third row as two rows); the product close laid out as every close; the
+product's safety link as Home's secondary button; the drawer's note on two lines; the band rhythm on `/safety` and
+`/setup`; Home's language-clip caption at its player's width; the sticky scroll's points at the reading measure; the
+guide's close trust line on one row; "3‑year‑old" unbroken; `test/e2e/home-length.spec.ts` (R1: the offer heading at
+7,545 px, the page 15,003 px at 390 × 844, limits 7,700 and 15,500). Merge conflicts (not-found.test's import,
+two catalogue row pairs) resolved by keeping each side's changed row. Q2.15 also changed Home's offer lead and added a
+"Pre-order" eyebrow to five closes; the founder declined both (D066 item 4), so Q2.17 reverts them along with D066's
+other items.
