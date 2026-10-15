@@ -19,7 +19,8 @@ import { CloseSection } from "./CloseSection";
 
 const trust = (ids: readonly TrustId[]) => ids.map((id) => trustItems[id]);
 const COMPACT = trust(TRUST_COMPACT);
-const seeHow: CtaSecondary = { label: "See how it works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" };
+/* The ghost link under a close, as every close words it since task Q2.15 (the consistency review's CON-7). */
+const seeHow: CtaSecondary = { label: "See how Kheelu works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" };
 
 const meta: Meta<typeof CloseSection> = {
   title: "Sections/CloseSection",
@@ -105,11 +106,13 @@ export const Guide: Story = {
   },
 };
 
-/** `journal`: the stories hub and article closes; the 4:3 board shows from 900 px. */
+/** `journal`: the stories hub and article closes; the 4:3 board shows from 900 px. Labelled "Pre-order" as every selling
+ *  close since task Q2.15 (CON-6). */
 export const Journal: Story = {
   args: {
     variant: "journal",
     heading: {
+      eyebrow: "Pre-order",
       title: "A toy that {hand:asks back.}",
       lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It answers your child, then asks a question back.",
     },
@@ -126,12 +129,12 @@ export const Journal: Story = {
   },
 };
 
-/** `center`: the team close (centred heading and block, no art). */
+/** `center`: the team close (centred heading and block, no art), labelled "Pre-order" since task Q2.15 (CON-6). */
 export const Center: Story = {
   args: {
     variant: "center",
-    heading: { title: "Bring Kheelu {hand:home.}" },
-    cta: { cta: "finale", trust: COMPACT, helpLine: true, secondary: { ...seeHow, label: "See how Kheelu works" } },
+    heading: { eyebrow: "Pre-order", title: "Bring Kheelu {hand:home.}" },
+    cta: { cta: "finale", trust: COMPACT, helpLine: true, secondary: seeHow },
   },
 };
 
@@ -153,10 +156,12 @@ export const LinksHelpOnly: Story = {
   args: { ...Links.args, meet: undefined },
 };
 
-/** `center` with an eyebrow and a lead: /setup's pre-order close (task Q2.12; the D2C plan v2 §5 fold 8), no help line. */
+/** `center` with an eyebrow and a lead: /setup's pre-order close (task Q2.12; the D2C plan v2 §5 fold 8), no help line; on
+ *  the cream band since task Q2.15 (`band`; QAL-8: the page's bands alternate to the end). */
 export const CenterWithLead: Story = {
   args: {
     variant: "center",
+    band: true,
     heading: {
       eyebrow: "Pre-order",
       title: "Don’t have Kheelu {hand:yet?}",
