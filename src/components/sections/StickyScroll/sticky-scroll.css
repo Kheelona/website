@@ -128,11 +128,10 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
   }
-  /* Each point's words at the DS reading measure (task Q2.15; the consistency review's QAL-11), where the 7-column side
-     ran them about 100 characters a line; the line under the points keeps it too. */
-  .ks-sticky__title,
-  .ks-sticky__body,
-  .ks-sticky__example {
+  /* The points' column at the DS reading measure (task Q2.15; the consistency review's QAL-11), where the 7-column side
+     ran the words about 100 characters a line: the points, the example, the line and the CTA block under them, which
+     centre on the words above them. */
+  .ks-sticky__main {
     max-width: var(--measure);
   }
   /* The point's own picture leaves the eye, not the screen reader: it carries the alt (the stage's copies carry none and
