@@ -45,6 +45,9 @@ export interface CtaSecondary {
   readonly icon?: IconRef;
   /** An icon after the label (the ghost links' arrow). */
   readonly iconEnd?: IconRef;
+  /** `laptop`: shown from 900 px only (task Q2.9: Home's hero link, which phones do not show; the D2C plan v2 §2.0). The
+   *  link stays in the HTML at every width; cta-block.css hides its row below 900 px. */
+  readonly from?: "laptop";
 }
 
 /**

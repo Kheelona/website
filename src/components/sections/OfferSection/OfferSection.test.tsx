@@ -6,6 +6,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { ICON_PATHS } from "@/assets/icons.generated";
 import { cta } from "@/content/en-IN/cta";
+import { PLUS_NOTE } from "@/content/en-IN/offer";
 import { seller } from "@/content/en-IN/seller";
 import { TRUST_OFFER, trustItems } from "@/content/en-IN/trust";
 import type { ArtBoardRef, ImageRef, Offer } from "@/content/types";
@@ -67,6 +68,16 @@ const PRODUCT: OfferSectionConfig = {
   trust: TRUST_OFFER.map((id) => trustItems[id]),
   photo: PHOTO,
 };
+/** Home's offer since task Q2.9 (the selling update; the D2C plan v2 §2 fold 7): moved up to fold 7, so not the close. */
+const HOME_OFFER: OfferSectionConfig = {
+  variant: "home",
+  heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}", lead: "There every day at home, with no screen to switch off." },
+  cta: "home-offer",
+  cardLabel: "Kheelu offer",
+  note: PLUS_NOTE,
+  trust: TRUST_OFFER.map((id) => trustItems[id]),
+  art: HOME_ART,
+};
 
 const MEDIA = ".kh-art, figure.kh-photo";
 type Slug = "home" | "meet-kheelu";
@@ -92,8 +103,9 @@ describe("OfferSection: the approved folds, exactly (media aside)", () => {
 
 describe("OfferSection: the card's button", () => {
   it.each([
-    ["Home", HOME, "finale"],
+    ["Home's close (until task Q2.9)", HOME, "finale"],
     ["the product page", PRODUCT, "product-offer"],
+    ["Home's offer (task Q2.9)", HOME_OFFER, "home-offer"],
   ] as const)("on %s carries the placement's CTA value and links to the store", (_name, config, value) => {
     const { container } = render(<OfferSection {...config} {...context()} />);
     const button = container.querySelector(".kh-offer .kh-btn--cta");
@@ -154,24 +166,25 @@ describe("OfferSection: variants", () => {
     expect(photo.getAttribute("class")).toBe("kh-photo kh-photo--square kh-photo--xl ks-offer-photo");
     expect(photo.querySelector("img")).toHaveAttribute("alt", PHOTO.alt);
     expect(photo.querySelector("img")).toHaveAttribute("loading", "lazy");
-    // No Kheelona+ line under the card: the sentence is the card's perk alone (D058 item 3 words both the same).
+    // No Kheelona+ line under the card: Kheelona+ is the one perk list's perk (task Q2.9), and the store's sentence
+    // (offer.plus) is not on the card.
     expect(section.querySelector(".kh-offer + p")).toBeNull();
-    expect(section.textContent?.split(TOKEN.plus)).toHaveLength(2);
+    expect(section.textContent).not.toContain(TOKEN.plus);
   });
 
-  it("lists the perks of its placement: Home's five, the product page's six (Kheelona+ among them), Made in India last on both", () => {
+  /* Task Q2.9 (the D2C plan v2 §2 fold 7; the CMO's m8): one perk list, in Home's order, on every card. */
+  it("lists the one perk list on every card, in the plan's order, Made in India last and no GST invoice", () => {
     const perks = (config: OfferSectionConfig) =>
       [...renderedElement(<OfferSection {...config} {...context()} />).querySelectorAll(".kh-offer__list li")].map((li) => li.textContent);
-    expect(perks(HOME)).toEqual([
-      "Deliveries start mid-November",
+    const PLAN = [
+      "Deliveries start mid-November. Pre-orders go out first, in the order they were placed.",
       "In the box: Kheelu plush toy, charger and quick-start card",
       "Delivery anywhere in India, included",
-      "A GST invoice with every order",
+      "6 months of Kheelona+ included. Nothing renews without you.",
       "Made in India",
-    ]);
-    expect(perks(PRODUCT)).toHaveLength(6);
-    expect(perks(PRODUCT)[1]).toBe(KHEELONA_PLUS.build);
-    expect(perks(PRODUCT)[5]).toBe("Made in India");
+    ];
+    for (const config of [HOME, PRODUCT, HOME_OFFER]) expect(perks(config)).toEqual(PLAN);
+    expect(perks(PRODUCT)).not.toContain(KHEELONA_PLUS.build);
   });
 
   /* Task 8c.5 (D061 item 10, confirming D034): "Made in India" on both offer cards, in both modes, the seller's own origin
@@ -208,6 +221,68 @@ describe("OfferSection: variants", () => {
 
   it("never moves on arrival: no data-reveal anywhere in the section (the offer card and the price, §11.2)", () => {
     for (const config of [HOME, PRODUCT]) expect(renderToStaticMarkup(<OfferSection {...config} {...context()} />)).not.toContain("data-reveal");
+  });
+});
+
+/* Task Q2.9 (the selling update, D064, D065; the D2C plan v2 §2 fold 7): Home's offer card moved up to fold 7, so it is no
+   longer the page's close (the close is a CloseSection after the FAQ). Its own fragment, #offer, as the product page's;
+   the lead under the heading; the card a named region with no id of its own (the section holds #offer); the Kheelona+
+   note under the card in the plan's words; the trust line and the card's third row under the button, and no help line
+   (Home has none: the WhatsApp bubble replaces them, §1.1); the share link last; the board beside it, top-aligned. */
+describe("OfferSection: home (Home's offer, moved up; task Q2.9)", () => {
+  const section = () => renderedElement(<OfferSection {...HOME_OFFER} {...context()} />);
+
+  it("is the #offer section named by its heading, with the plan's lead under it", () => {
+    render(<OfferSection {...HOME_OFFER} {...context()} />);
+    const region = screen.getByRole("region", { name: "What you get, and what you pay." });
+    expect(region).toHaveAttribute("id", "offer");
+    expect(region).toHaveAttribute("aria-labelledby", "offer-title");
+    expect(region.querySelector(".kh-heading--center .kh-heading__lead")?.textContent).toBe("There every day at home, with no screen to switch off.");
+  });
+
+  it("names the card as a region without an id of its own, its button home-offer, and the plan's Kheelona+ note under it", () => {
+    render(<OfferSection {...HOME_OFFER} {...context()} />);
+    const card = screen.getByRole("region", { name: "Kheelu offer" });
+    expect(card).not.toHaveAttribute("id");
+    expect(card.querySelector(".kh-btn--cta")).toHaveAttribute("data-ph-capture-attribute-cta", "home-offer");
+    const note = card.nextElementSibling!;
+    expect(note.tagName).toBe("P");
+    expect(note.className).toBe("kh-body-s");
+    expect(note.textContent).toBe("Kheelona+ is our paid subscription, on top of the free parent app.");
+    expect(section().textContent).not.toContain(TOKEN.plus);
+  });
+
+  it("puts the trust line with the card's third row under it, no help line, then the share link last in the column", () => {
+    const el = section();
+    const column = el.querySelector(".kh-offer")!.parentElement!;
+    expect([...column.children].map((c) => c.className)).toEqual(["kh-offer", "kh-body-s", "kh-trustline ks-trust", "kh-section__actions ks-offer-share"]);
+    expect([...column.querySelectorAll(".ks-trust li")].map((li) => li.textContent)).toEqual([
+      "Full refund until dispatch · 7-day returns",
+      "Deliveries start mid-November",
+      "6-month warranty",
+      "UPI, card or net banking",
+    ]);
+    expect(el.querySelector(".ks-help")).toBeNull();
+    expect(el.querySelectorAll(".kh-btn--cta")).toHaveLength(1);
+  });
+
+  it("keeps the board beside the card, named, lazy, its heart drawing; the top-alignment rule reaches it", () => {
+    const el = section();
+    const split = el.querySelector(".kh-split")!;
+    expect(split.firstElementChild?.firstElementChild).toHaveClass("kh-offer");
+    const board = split.lastElementChild!;
+    expect(board).toHaveClass("kh-art");
+    expect(board).toHaveAttribute("aria-label", HOME_ART.label);
+    expect(board.querySelector("svg.ks-doodle")).toHaveAttribute("data-draw");
+    expect(board.querySelector('img[loading="eager"]')).toBeNull();
+  });
+
+  it("prints the full-mode card without the split or the later price, and moves nothing on arrival", () => {
+    const full = renderedElement(<OfferSection {...HOME_OFFER} {...context(FULL)} />);
+    expect(full.querySelector(".kh-offer__split, .ks-offer__later")).toBeNull();
+    expect(full.querySelector(".kh-offer__fine")?.textContent).toBe("₹7,999 in total, paid in full when you order.");
+    expect(renderToStaticMarkup(<OfferSection {...HOME_OFFER} {...context()} />)).not.toContain("data-reveal");
+    expect(full.textContent).not.toMatch(/GST|first 500/);
   });
 });
 
@@ -330,15 +405,29 @@ describe.each(["home", "meet-kheelu"] as const)("%s: the offer additions of task
   const additions = OFFER_ADDITIONS[slug];
   const base = claimFixed(slug);
 
-  it("adds exactly the later price's two sentences, the Made in India perk and the share link's two, and takes none away", () => {
-    expect(factSentences(base, additions.edits)).toEqual({ missing: [], extra: [...additions.build] });
+  /* Since task Q2.9 the card's list is the one perk list (ONE_PERK_LIST): the frozen card's perks the list no longer
+     says go, its new lines come (Made in India, task 8c.5's perk, among them). */
+  it("adds the later price's two sentences, the one perk list's new lines and the share link's two, and takes away the perks it drops", () => {
+    const sorted = (lines: readonly string[]) => [...lines].sort();
+    const diff = factSentences(base, additions.edits);
+    expect(sorted(diff.missing)).toEqual(sorted(additions.mockup));
+    expect(sorted(diff.extra)).toEqual(sorted(additions.build));
     expect(additions.build).toEqual([
       "₹4,999 for the first 500 units.",
       "₹7,999 once they are gone.",
+      "Deliveries start mid-November.",
+      "Pre-orders go out first, in the order they were placed.",
+      "6 months of Kheelona+ included.",
+      "Nothing renews without you.",
       "Made in India",
       "Know a parent who needs this?",
       "Share Kheelu on WhatsApp",
     ]);
+    expect(additions.mockup).toEqual(
+      slug === "home"
+        ? ["Deliveries start mid-November", "A GST invoice with every order"]
+        : [KHEELONA_PLUS.build, "Deliveries start mid-November", "A GST invoice with every order"],
+    );
   });
 
   it("adds nothing the banned-phrases list refuses (claims, offer terms, spelling)", () => {
@@ -351,16 +440,18 @@ describe.each(["home", "meet-kheelu"] as const)("%s: the offer additions of task
     expect(own).toHaveLength(1);
     const claimsAt = rules.findIndex((r) => r.approvedBy === CLAIM_FIXES[slug].approvedBy);
     expect(claimsAt).toBeGreaterThan(rules.indexOf(own[0]));
-    expect(ruleReach(base, additions.edits, own[0])).toEqual({ excused: [], accepted: [...additions.build] });
+    const reach = ruleReach(base, additions.edits, own[0]);
+    expect([...reach.excused].sort()).toEqual([...additions.mockup].sort());
+    expect([...reach.accepted].sort()).toEqual([...additions.build].sort());
     expect(own[0].jsOff).toBeUndefined();
   });
 
-  it("hides for the pixels the three added blocks on the build's side, each found once", () => {
+  it("hides for the pixels the three added blocks on the build's side, each found once (the whole perk list since task Q2.9)", () => {
     expect(hiddenProblems(base, additions)).toEqual([]);
     const rows = (VISUAL_HIDDEN[slug] ?? []).filter((r) => r.approvedBy === additions.approvedBy);
     expect(rows.map((r) => [r.side, r.selector])).toEqual([
       ["build", ".ks-offer__later"],
-      ["build", ".kh-offer__list > li:last-child"],
+      ["build", ".kh-offer__list"],
       ["build", ".ks-offer-share"],
     ]);
   });

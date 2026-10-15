@@ -86,6 +86,24 @@ export const Imagination: Story = {
   },
 };
 
+/** Home's "Why it matters" since task Q2.9 (the D2C plan v2 §2 fold 3): no frame (Kabir is the hero now), the words and
+ *  the card in two columns under the centred heading, then the source (the page adds its CTA block after it). */
+export const ImaginationWithoutFrame: Story = {
+  args: {
+    variant: "imagination",
+    heading: Imagination.args!.heading!,
+    text: "Harvard’s Center on the Developing Child says back-and-forth “serve and return” exchanges between a young child and a caring adult help build and strengthen neural connections in the child’s brain.[^1]",
+    card: {
+      tone: "sun",
+      tint: true,
+      icon: "chat-circle-dots",
+      title: "Where Kheelu comes in",
+      body: "Kheelu is built around the same idea: it answers your child, then asks a question back. It doesn’t replace that time with you.",
+    },
+    sources: Imagination.args!.sources!,
+  },
+};
+
 /** Home fold 5: the parent app's four lines beside two real screens. */
 export const AppScreensHome: Story = {
   args: {

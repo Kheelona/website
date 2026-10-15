@@ -25,25 +25,27 @@ import { share } from "./share";
 /** D058 item 3, verbatim: which features stay free is not decided, so the sentence lists none. */
 const PLUS = "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.";
 
-/** Each offer-card perk, written once; the cards below list them in their own order. `origin` (task 8c.5; D061 item 10,
- *  confirming D034): the seller's origin line, "Made in India", which the footer and the product page's Country of
- *  origin already state, with the DS house icon, the closest of the DS set to a home-grown product (map-pin is the
- *  delivery perk's). Typed here, not read from seller.ts: the checkout's client words load this module, and the seller
- *  data stays out of the browser (store/client-words.test.ts); src/lib/offer/offer.test.ts holds the two equal. */
-const perk = {
-  delivery: { icon: "truck", text: "{delivery}" },
-  box: { icon: "package", text: "In the box: Kheelu plush toy, charger and quick-start card" },
-  plus: { icon: "star", text: PLUS },
-  anywhere: { icon: "map-pin", text: "Delivery anywhere in India, included" },
-  invoice: { icon: "check-circle", text: "A GST invoice with every order" },
-  origin: { icon: "house", text: "Made in India" },
-} as const satisfies Readonly<Record<string, IconText>>;
+/** The small line under the offer cards' perks since task Q2.9 (the D2C plan v2 §2 fold 7; D058 item 3: a paid
+ *  subscription on top of the free parent app, no feature list): the perk itself says "6 months of Kheelona+ included". */
+export const PLUS_NOTE = "Kheelona+ is our paid subscription, on top of the free parent app.";
 
-/** Home's card (fold 9): the delivery line first, then three perks; Made in India last (task 8c.5, after Gate A). */
-const homePerks: readonly IconText[] = [perk.delivery, perk.box, perk.anywhere, perk.invoice, perk.origin];
-
-/** The product page's card (fold 3): five perks, Kheelona+ among them; Made in India last (task 8c.5, after Gate A). */
-const productPerks: readonly IconText[] = [perk.box, perk.plus, perk.anywhere, perk.delivery, perk.invoice, perk.origin];
+/**
+ * The offer cards' one perk list since task Q2.9 (the selling update; the D2C plan v2 §2 fold 7, the CMO's m8: one order
+ * on both cards, Home's): the delivery line first, with the dispatch order ("Order of dispatch", facts.md, EXTERNAL),
+ * because "when does it come?" is the first pre-order doubt; the box; delivery anywhere in India; 6 months of Kheelona+
+ * and "Nothing renews without you." (D065 item 6, G30); "Made in India" last (task 8c.5; D061 item 10, confirming D034:
+ * the seller's origin line, typed here, not read from seller.ts, because the checkout's client words load this module and
+ * the seller data stays out of the browser, store/client-words.test.ts; src/lib/offer/offer.test.ts holds the two equal),
+ * with the DS house icon (map-pin is the delivery perk's). "A GST invoice with every order" left the cards: GST only at
+ * checkout (D065 item 3), where the store's "How can I pay?" answer says it.
+ */
+const PERKS: readonly IconText[] = [
+  { icon: "truck", text: "{delivery}. Pre-orders go out first, in the order they were placed." },
+  { icon: "package", text: "In the box: Kheelu plush toy, charger and quick-start card" },
+  { icon: "map-pin", text: "Delivery anywhere in India, included" },
+  { icon: "star", text: "6 months of Kheelona+ included. Nothing renews without you." },
+  { icon: "house", text: "Made in India" },
+];
 
 export const offerCopy = {
   /* D028, option (d): the checkout's sentence (the store's first screen and the pre-order form, /terms, /pricing.md).
@@ -65,7 +67,8 @@ export const offerCopy = {
       { label: "Today, refundable", price: "token" },
       { label: "Before delivery", price: "balance" },
     ],
-    perks: { home: homePerks, product: productPerks },
+    /* One list for both placements (task Q2.9; CMO m8). */
+    perks: { home: PERKS, product: PERKS },
     /* D061 item 3, verbatim: token mode only (the view model leaves it out in full mode, when the later price is the
        price). */
     later: "{price:headline} for the first 500 units. {price:full} once they are gone.",

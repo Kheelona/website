@@ -97,7 +97,9 @@ export type FeatureSplitConfig =
       readonly card: FeatureCard;
       /** The small line under the card. */
       readonly aside?: Copy;
-      readonly frame: {
+      /** The imagination frame beside the words; without it (task Q2.9: Home's "Why it matters", the D2C plan v2 §2
+       *  fold 3) the words and the card stand in two columns under the heading. */
+      readonly frame?: {
         readonly photo: ImageRef;
         readonly doodles?: readonly DoodleLayer[];
         readonly question?: Copy;
@@ -157,7 +159,8 @@ export type FeatureSplitConfig =
 
 export interface FeatureSplitSlots {
   readonly offer?: Offer;
-  /** `ticks`: anything after the checklist, inside the fold (the setup page's Wi-Fi tip). */
+  /** `ticks`: anything after the checklist, inside the fold (the setup page's Wi-Fi tip); `imagination`: anything after
+   *  the sources (task Q2.9: Home's CTA block, composed by the section registry). */
   readonly after?: ReactNode;
 }
 

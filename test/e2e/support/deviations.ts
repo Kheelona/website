@@ -1263,46 +1263,82 @@ const OFFER_SHARE = ["Know a parent who needs this?", "Share Kheelu on WhatsApp"
 /** The perk task 8c.5 adds last on both cards: the seller's origin line (src/lib/offer/offer.test.ts holds it equal to
  *  seller.ts `origin.line`, and offer.ts's perk to it), with its DS icon. */
 export const OFFER_ORIGIN_PERK = "Made in India";
-const OFFER_ORIGIN_ICON: IconName = "house";
-/** The approved card's last perk (both cards end with it), written out again with the new perk after it. */
+/** The approved card's last perk (both cards end with it). It left both cards with task Q2.9's one perk list. */
 const OFFER_LAST_PERK = "A GST invoice with every order";
-const OFFER_ADDITIONS_WHOSE = "the offer additions of tasks 8c.2 and 8c.5 (D061)";
+/* Task Q2.9 (the selling update; the D2C plan v2 §2 fold 7, the CMO's m8; D065 items 3 and 6): one perk list on both offer
+   cards, Home's order, read from the offer (offer.ts, through buildOffer, so the rule follows the content; offer.test.ts
+   pins its words to the plan): the delivery line with the dispatch order first, the box, delivery anywhere, Kheelona+ with
+   "Nothing renews without you.", Made in India last (task 8c.5's perk, now in the list itself). The frozen mockups' two
+   lists (Home's four perks; the product page's five, its Kheelona+ perk in D058's words after task 8b.1's claim fix) are
+   written out below, and the edit replaces each card's list whole. */
+export const ONE_PERK_LIST = {
+  /** Each frozen card's perks, in order, as the claim fixes leave them. */
+  mockup: {
+    home: ["Deliveries start mid-November", "In the box: Kheelu plush toy, charger and quick-start card", "Delivery anywhere in India, included", OFFER_LAST_PERK],
+    "meet-kheelu": [
+      "In the box: Kheelu plush toy, charger and quick-start card",
+      KHEELONA_PLUS.build,
+      "Delivery anywhere in India, included",
+      "Deliveries start mid-November",
+      OFFER_LAST_PERK,
+    ],
+  },
+  /** The one list as the cards print it (token mode), with each perk's DS icon. */
+  build: buildOffer("token").card.perks.home.map((perk) => ({ icon: perk.icon as IconName, text: toPlainText(perk.text, buildOffer("token")) })),
+  approvedBy: "the D2C plan v2 §2 fold 7 and the CMO's m8 (founder's D065 items 3 and 6, the main session's rulings of the selling update, 2026-10-15; task Q2.9; its deviations.md row is the main session's)",
+} as const;
+const OFFER_ADDITIONS_WHOSE = "the offer additions of tasks 8c.2 and 8c.5 (D061), and task Q2.9's one perk list";
 const OFFER_ADDITIONS_APPROVED =
-  "deviations.md rows for task 8c.2, numbered at the merge (founder, D061 item 3, and the main session's D061 ruling on the share link, 2026-10-15; task 8c.2), and V47 for the Made in India perk (founder, D061 item 10, confirming D034; task 8c.5)";
+  "deviations.md rows for task 8c.2, numbered at the merge (founder, D061 item 3, and the main session's D061 ruling on the share link, 2026-10-15; task 8c.2), and V47 for the Made in India perk (founder, D061 item 10, confirming D034; task 8c.5); then task Q2.9's one perk list (the D2C plan v2 §2 fold 7, CMO m8)";
+/** The sentences of `lines` (each line a block of its own, as the text pass reads a list) that `not` lacks, counted. */
+const linesBeyond = (lines: readonly string[], not: readonly string[]): string[] => {
+  const left = not.flatMap((line) => sentences(line));
+  return lines.flatMap((line) => sentences(line)).filter((s) => {
+    const at = left.indexOf(s);
+    if (at < 0) return true;
+    left.splice(at, 1);
+    return false;
+  });
+};
 /** Each card's help line as the mockup prints it, then the share link after it (mockup markup: `mk-` names, read as the
  *  build's `ks-` by the comparisons). */
 const helpThenShare = (): string =>
   `<p class="kh-body-s mk-help">${icon("whatsapp-logo")} Questions? <a href="https://wa.me/919187546483">WhatsApp</a> or <a href="tel:+919187546483" class="mk-nowrap">call +91 91875 46483</a></p>` +
   `<div class="kh-section__actions mk-offer-share"><a href="${buildOffer("token").share?.href ?? ""}" class="kh-btn kh-btn--ghost" data-ph-capture-attribute-cta="share-whatsapp" target="_blank" rel="noopener"><span>${OFFER_SHARE.join(" ")}</span></a></div>`;
-const offerAdditions = (fold: string) => ({
-  edits: [
-    {
-      /* The amount alone: its "incl. GST" note is task Q2.8's to take off (PRICE_LINE, below), before these edits. */
-      at: ".kh-offer__prices",
-      was: "₹4,999",
-      now: `<span class="kh-offer__price">₹4,999</span><p class="kh-body-s mk-offer__later">${OFFER_LATER.join(" ")}</p>`,
-      inner: true,
-    },
-    {
-      at: ".kh-offer__list > li",
-      was: OFFER_LAST_PERK,
-      now: `<li>${icon("check-circle")}<span>${OFFER_LAST_PERK}</span></li><li>${icon(OFFER_ORIGIN_ICON)}<span>${OFFER_ORIGIN_PERK}</span></li>`,
-    },
-    { at: `${fold} .mk-help`, was: "Questions? WhatsApp or call +91 91875 46483", now: helpThenShare() },
-  ] satisfies FactEdit[],
-  mockup: [],
-  build: [...OFFER_LATER, OFFER_ORIGIN_PERK, ...OFFER_SHARE],
-  /* The later line and the new perk make the card taller and the share link the column longer, at every width: each moves
-     what is below it. The build's side alone, as nothing on the mockup's stands for them; the perk is the list's last
-     item (one offer card a page). */
-  hidden: { both: [], mockup: [], build: [".ks-offer__later", ".kh-offer__list > li:last-child", ".ks-offer-share"] },
-  reason:
-    "the later price under the amount while the first-500 price is live, Made in India last among the card's perks, and the share link under the offer card (D061)",
-  approvedBy: OFFER_ADDITIONS_APPROVED,
-});
+const offerAdditions = (slug: keyof typeof ONE_PERK_LIST.mockup, fold: string) => {
+  const was = ONE_PERK_LIST.mockup[slug];
+  const now = ONE_PERK_LIST.build.map((perk) => perk.text);
+  return {
+    edits: [
+      {
+        /* The amount alone: its "incl. GST" note is task Q2.8's to take off (PRICE_LINE, below), before these edits. */
+        at: ".kh-offer__prices",
+        was: "₹4,999",
+        now: `<span class="kh-offer__price">₹4,999</span><p class="kh-body-s mk-offer__later">${OFFER_LATER.join(" ")}</p>`,
+        inner: true,
+      },
+      {
+        /* Task Q2.9's one perk list, in place of the card's own (Made in India, task 8c.5's perk, its last item). */
+        at: ".kh-offer__list",
+        was: was.join(" "),
+        now: ONE_PERK_LIST.build.map((perk) => `<li>${icon(perk.icon)}<span>${perk.text}</span></li>`).join(""),
+        inner: true,
+      },
+      { at: `${fold} .mk-help`, was: "Questions? WhatsApp or call +91 91875 46483", now: helpThenShare() },
+    ] satisfies FactEdit[],
+    mockup: linesBeyond(was, now),
+    build: [...OFFER_LATER, ...linesBeyond(now, was), ...OFFER_SHARE],
+    /* The later line and the new list make the card taller and the share link the column longer, at every width: each
+       moves what is below it. The build's side alone, as nothing on the mockup's stands for them (one offer card a page). */
+    hidden: { both: [], mockup: [], build: [".ks-offer__later", ".kh-offer__list", ".ks-offer-share"] },
+    reason:
+      "the later price under the amount while the first-500 price is live, the one perk list (Made in India last, no GST invoice), and the share link under the offer card (D061; task Q2.9)",
+    approvedBy: OFFER_ADDITIONS_APPROVED,
+  };
+};
 export const OFFER_ADDITIONS = {
-  home: offerAdditions("#close"),
-  "meet-kheelu": offerAdditions("#offer"),
+  home: offerAdditions("home", "#close"),
+  "meet-kheelu": offerAdditions("meet-kheelu", "#offer"),
 } as const satisfies Readonly<Record<string, PageFacts>>;
 export type OfferAdditionsSlug = keyof typeof OFFER_ADDITIONS;
 /** The pixels' rows for a page's offer additions: the three added blocks, on the build's side. */

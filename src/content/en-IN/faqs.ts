@@ -41,8 +41,9 @@ import { product } from "./products/kheelu/product";
 const AGE_SETUP =
   "At setup, you enter your child’s age in the parent app. You can change it later. The AI model gets child-safety rules for that age, with Google’s safety filters on top.";
 
-/** Home's full-mode price answer, which the guide's price question also takes (ai-toys… copy). */
-const FULL_PRICE_ANSWER = `Kheelu is {price:full} (incl. GST), paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking, and you get a GST invoice. {delivery}. If it isn’t right for your family, you can return it within ${RETURN_DAYS} days of delivery, no questions asked.`;
+/** Home's full-mode price answer, which the guide's price question also takes (ai-toys… copy). Since task Q2.9 the D2C
+ *  plan v2's words (§2 fold 10; D065 item 3: no GST on a selling page, so no "incl. GST" and no invoice line). */
+const FULL_PRICE_ANSWER = `Kheelu is {price:full} in total, paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking. {delivery}. If it isn’t right for your family, you can return it within ${RETURN_DAYS} days of delivery, no questions asked.`;
 
 /** A film by its id (films.ts), so an answer can name it by its chip. */
 function film(id: string): Film {
@@ -78,13 +79,34 @@ export const faqs = {
     answer:
       `Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby. ${AGE_SETUP}`,
   },
+  /* Rewritten by task Q2.9 (the D2C plan v2 §2 fold 10; D065 items 3-4): the total first, no GST, no MRP, no "first 500"
+     (the offer cards' line alone says it) and no balance amount; no refund sentence either, which the question before it
+     and the trust line carry (CMO m2). */
   "price-and-advance": {
     id: "price-and-advance",
     question: { token: "How much is Kheelu, and how does the advance work?", full: "How much is Kheelu?" },
     answer: {
-      token: `Kheelu is {price:headline} (incl. GST) for the ${CAP_UNITS_TEXT}, with delivery anywhere in India included. Its MRP is {price:mrp} (incl. of all taxes). A refundable {price:token} advance reserves yours today, and the remaining {price:balance} is due before delivery. You can pay by UPI, card or net banking, and you get a GST invoice.`,
+      token:
+        "Kheelu is {price:headline} in total, with delivery anywhere in India included. A refundable {price:token} reserves yours today, and the rest is due before delivery, by a payment link we send you. You can pay by UPI, card or net banking.",
       full: FULL_PRICE_ANSWER,
     },
+  },
+  /* Task Q2.9 (the D2C plan v2 §2 fold 10): Home's answer-first block, "What is Kheelu?", is the first question of its FAQ
+     since the fold it led ("What is Kheelu?", fold 4) became the sticky scroll; its words are that fold's built lead
+     (D017, D027, D058 item 2). */
+  "what-is-kheelu": {
+    id: "what-is-kheelu",
+    question: "What is Kheelu?",
+    answer:
+      "Kheelu by Kheelona is a screen-free plush rabbit that talks with children aged 3 to 7. It answers your child, then asks a question back. It has three modes: AI mode for open conversation on home Wi‑Fi, Story mode for stories, poems and jingles with no Wi‑Fi needed, and Bluetooth mode, which makes it a speaker for your phone.",
+  },
+  /* Task Q2.9 (the D2C plan v2 §2 fold 10): screen-free (claims §1), the daily limit in the founder's words (D065 item 5:
+     never that a parent sets it), the talking time per day in the parent app (D044). */
+  "screen-time-in-disguise": {
+    id: "screen-time-in-disguise",
+    question: "Isn’t this just screen time in disguise?",
+    answer:
+      "No. There’s no screen to watch: your child talks, listens and does the thinking. Each Kheelu has a daily limit on how long it talks, and in the parent app you can see how long your child talked each day.",
   },
   "not-right-for-us": {
     id: "not-right-for-us",

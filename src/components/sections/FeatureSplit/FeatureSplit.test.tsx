@@ -129,6 +129,22 @@ describe("FeatureSplit: imagination (Home fold 3)", () => {
     expect(screen.getByRole("link", { name: "Source 1" })).toHaveAttribute("href", "#src-1");
     expect(container.querySelector("#src-1")).toHaveClass("kh-caption");
   });
+
+  /* Task Q2.9 (the selling update; the D2C plan v2 §2 fold 3): Home's "Why it matters" without a picture (the Kabir frame
+     left with Kabir to the hero, one appearance per page), and with the page's CTA block after the sources. */
+  it("without a frame: the words and the card in two columns under the heading, no split and no picture, then the sources and what follows", () => {
+    const { frame: _frame, aside: _aside, link: _link, ...rest } = props;
+    const cta = <div className="cta-slot" />;
+    const { container } = render(<FeatureSplit {...rest} after={cta} />);
+    const inner = container.querySelector(".kh-container")!;
+    expect([...inner.children].map((el) => el.className)).toEqual(["kh-section__head", "kh-cols kh-cols--2", "kh-caption", "cta-slot"]);
+    expect(container.querySelector(".kh-split, .kh-imagine, img")).toBeNull();
+    const cols = inner.querySelector(".kh-cols")!;
+    expect(cols).toHaveAttribute("data-reveal", "");
+    expect(cols.firstElementChild).toHaveClass("kh-body-l");
+    expect(cols.lastElementChild?.firstElementChild).toHaveClass("kh-card");
+    expect(screen.getByRole("link", { name: "Source 1" })).toHaveAttribute("href", "#src-1");
+  });
 });
 
 describe("FeatureSplit: app-screens", () => {

@@ -93,28 +93,38 @@ function Body({
     case "imagination": {
       const { card, frame, sources } = config;
       const markers = sources ? { label: sources.marker } : undefined;
+      /* Without a frame (task Q2.9; Home's "Why it matters" in the D2C plan v2, §2 fold 3) the words and the card stand
+         in two columns under the heading, with no picture beside them. */
+      const words = (
+        <Cols reveal count={frame ? undefined : 2}>
+          <RichText as="p" className="kh-body-l" text={config.text} offer={offer} sources={markers} />
+          <div>
+            <Card tone={card.tone} variant={card.tint ? "tint" : "plain"} icon={<Icon name={card.icon} />} title={text(card.title)} body={text(card.body)} />
+            {config.aside !== undefined && <RichText as="p" className="kh-body-s" text={config.aside} offer={offer} />}
+          </div>
+        </Cols>
+      );
       return (
         <>
           <SectionHead>{title}</SectionHead>
-          <Split wide="start">
-            <Cols reveal>
-              <RichText as="p" className="kh-body-l" text={config.text} offer={offer} sources={markers} />
-              <div>
-                <Card tone={card.tone} variant={card.tint ? "tint" : "plain"} icon={<Icon name={card.icon} />} title={text(card.title)} body={text(card.body)} />
-                {config.aside !== undefined && <RichText as="p" className="kh-body-s" text={config.aside} offer={offer} />}
-              </div>
-            </Cols>
-            <ImaginationFrame
-              photo={frame.photo}
-              sizes={NARROW_COLUMN}
-              doodles={frame.doodles}
-              question={frame.question === undefined ? undefined : text(frame.question)}
-              zoom={frame.zoom}
-              reveal
-            />
-          </Split>
+          {frame ? (
+            <Split wide="start">
+              {words}
+              <ImaginationFrame
+                photo={frame.photo}
+                sizes={NARROW_COLUMN}
+                doodles={frame.doodles}
+                question={frame.question === undefined ? undefined : text(frame.question)}
+                zoom={frame.zoom}
+                reveal
+              />
+            </Split>
+          ) : (
+            words
+          )}
           {sources && <SourcesNote label={sources.label} sources={sources.items} />}
           <SectionLinkRow link={config.link} center />
+          {after}
         </>
       );
     }

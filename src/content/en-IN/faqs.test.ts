@@ -43,9 +43,10 @@ const full = buildOffer("full");
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const plain = (value: Copy, offer: Offer) => toPlainText(value, offer);
 
-/** Each mockup page's FAQ, in its order. */
+/** Each page's FAQ, in its order. Home's since task Q2.9 (the selling update, D064, D065; the D2C plan v2 §2 fold 10):
+ *  the eight questions in the plan's order, decision questions first, "What is Kheelu?" the page's answer-first block. */
 const PAGES: Readonly<Record<string, readonly FaqId[]>> = {
-  home: ["think-less", "what-ages", "price-and-advance", "not-right-for-us", "when-arrive", "same-as-lumi"],
+  home: ["what-is-kheelu", "not-right-for-us", "price-and-advance", "screen-time-in-disguise", "think-less", "what-ages", "when-arrive", "same-as-lumi"],
   "meet-kheelu": [
     "do-the-thinking",
     "talks-back",
@@ -120,7 +121,11 @@ function approvedItems(slug: string): Element[] {
   return Array.from(withFacts(withFacts(withFacts(main, fixes), claims), later).querySelectorAll(".kh-faq__item"));
 }
 
-describe.each(Object.entries(PAGES))("mockup %s, token mode, word for word", (slug, ids) => {
+/** The pages whose FAQ is still the approved mockup's: Home's left it with the selling update (task Q2.9), compared with
+ *  the D2C plan v2 below instead. */
+const MOCKUP_PAGES = Object.entries(PAGES).filter(([slug]) => slug !== "home");
+
+describe.each(MOCKUP_PAGES)("mockup %s, token mode, word for word", (slug, ids) => {
   const items = approvedItems(slug);
 
   it("has the same number of questions", () => {
@@ -357,9 +362,82 @@ describe.each(Object.keys(FAQ_FIXES) as FaqFixesSlug[])("%s: task 8c.4's FAQ fix
   });
 });
 
+/* Task Q2.9 (the selling update, D064, D065; the D2C plan v2 §2 fold 10, with the CMO's m1 and m2): Home's eight
+   questions, decision questions first. "What is Kheelu?" is the built answer-first lead of the old fold 4 under a new id;
+   "Isn’t this just screen time in disguise?" is new; the price answer is rewritten without GST, the MRP, "first 500" or
+   the balance's amount (D065 items 3-4), and without the refund sentence question 2 and the trust line carry (m2). The
+   other five are built, unchanged. Every amount a token, every policy number from policies.ts. */
+describe("Home's questions (task Q2.9; the D2C plan v2 §2 fold 10)", () => {
+  const PLAN = {
+    "what-is-kheelu": {
+      question: "What is Kheelu?",
+      answer:
+        "Kheelu by Kheelona is a screen-free plush rabbit that talks with children aged 3 to 7. It answers your child, then asks a question back. It has three modes: AI mode for open conversation on home Wi‑Fi, Story mode for stories, poems and jingles with no Wi‑Fi needed, and Bluetooth mode, which makes it a speaker for your phone.",
+    },
+    "screen-time-in-disguise": {
+      question: "Isn’t this just screen time in disguise?",
+      answer:
+        "No. There’s no screen to watch: your child talks, listens and does the thinking. Each Kheelu has a daily limit on how long it talks, and in the parent app you can see how long your child talked each day.",
+    },
+  } as const;
+
+  it("lists the eight in the plan's order, the new two right after the price question in faqs.ts", () => {
+    expect(PAGES.home).toHaveLength(8);
+    const ids = Object.keys(faqs);
+    expect(ids.slice(ids.indexOf("price-and-advance"), ids.indexOf("price-and-advance") + 3)).toEqual([
+      "price-and-advance",
+      "what-is-kheelu",
+      "screen-time-in-disguise",
+    ]);
+  });
+
+  it.each(Object.entries(PLAN))("asks and answers %s in the plan's words, the same in both modes", (id, { question, answer }) => {
+    const item: FaqItem = faqs[id as FaqId];
+    for (const offer of [token, full]) {
+      expect(plain(item.question, offer)).toBe(question);
+      expect(plain(item.answer, offer)).toBe(answer);
+    }
+  });
+
+  it("answers the price question in the plan's token words: the total first, the refundable advance, no GST, MRP, cap or balance amount", () => {
+    expect(plain(faqs["price-and-advance"].question, token)).toBe("How much is Kheelu, and how does the advance work?");
+    expect(plain(faqs["price-and-advance"].answer, token)).toBe(
+      "Kheelu is ₹4,999 in total, with delivery anywhere in India included. A refundable ₹499 reserves yours today, and the rest is due before delivery, by a payment link we send you. You can pay by UPI, card or net banking.",
+    );
+    for (const offer of [token, full]) {
+      expect(plain(faqs["price-and-advance"].answer, offer)).not.toMatch(/GST|MRP|first 500|₹4,500|refundable in full/);
+    }
+  });
+
+  it("keeps the other five built answers word for word (the age and refund ones as their own tests hold them)", () => {
+    expect(PAGES.home.filter((id) => !(id in PLAN) && id !== "price-and-advance")).toEqual(["not-right-for-us", "think-less", "what-ages", "when-arrive", "same-as-lumi"]);
+    expect(plain(faqs["think-less"].answer, token)).toContain("when it doesn’t know something, it says so instead of guessing.");
+  });
+
+  it("is an answer-first block of 40-60 words each (the eight of Home's FAQPage), and passes the claims guard", () => {
+    for (const id of PAGES.home) {
+      for (const offer of [token, full]) {
+        const n = words(plain(faqs[id].answer, offer));
+        expect(n, `${id} ${offer.mode}`).toBeGreaterThanOrEqual(40);
+        expect(n, `${id} ${offer.mode}`).toBeLessThanOrEqual(60);
+        expect(findBanned(`${plain(faqs[id].question, offer)}\n${plain(faqs[id].answer, offer)}`), `${id} ${offer.mode}`).toEqual([]);
+      }
+    }
+    // The plan counts 58 and 40; this file's counter (the answer-length guard's) reads "3 to 7" as three words, so 59.
+    expect(words(plain(faqs["what-is-kheelu"].answer, token))).toBe(59);
+    expect(words(plain(faqs["screen-time-in-disguise"].answer, token))).toBe(40);
+  });
+
+  it("never says a parent sets the daily limit (D065 item 5)", () => {
+    expect(plain(faqs["screen-time-in-disguise"].answer, token)).not.toMatch(/\byou (?:can )?set\b.*limit|limit you set/i);
+  });
+});
+
 describe("full mode (copy pages)", () => {
+  /* Home's full-mode price answer since task Q2.9 (the D2C plan v2 §2 fold 10; D065 item 3: no GST on a selling page), which
+     the guide's price question takes too. */
   const homeFull =
-    "Kheelu is ₹7,999 (incl. GST), paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking, and you get a GST invoice. Deliveries start mid-November. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.";
+    "Kheelu is ₹7,999 in total, paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking. Deliveries start mid-November. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.";
 
   it("Home's price question becomes home.md's full-mode answer", () => {
     expect(plain(faqs["price-and-advance"].question, full)).toBe("How much is Kheelu?");

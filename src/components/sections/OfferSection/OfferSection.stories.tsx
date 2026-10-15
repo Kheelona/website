@@ -5,8 +5,9 @@ import kheeluSticker from "@ds/assets/Kheelu/kheelu-front-sticker.png";
 import flowerChilli from "@ds/assets/Shapes/flower-chilli.svg";
 import { DoodleDefs } from "@/components/ui/Doodle/DoodleDefs";
 import { cta } from "@/content/en-IN/cta";
+import { PLUS_NOTE } from "@/content/en-IN/offer";
 import { seller } from "@/content/en-IN/seller";
-import { TRUST_FULL, trustItems } from "@/content/en-IN/trust";
+import { TRUST_FULL, TRUST_OFFER, trustItems } from "@/content/en-IN/trust";
 import { buildOffer } from "@/lib/offer/offer";
 import { OfferSection } from "./OfferSection";
 
@@ -69,3 +70,18 @@ export const ProductOffer: Story = {
 
 /** `photo` in full mode. */
 export const ProductOfferFullMode: Story = { args: { ...ProductOffer.args, offer: buildOffer("full") } };
+
+/** `home`: Home's offer since task Q2.9 (moved up to fold 7, the D2C plan v2): `#offer`, the lead, the Kheelona+ note, the
+ *  trust row with the card's third row, no help line, the share link, the board beside. */
+export const HomeOffer: Story = {
+  args: {
+    variant: "home",
+    heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}", lead: "There every day at home, with no screen to switch off." },
+    cta: "home-offer",
+    note: PLUS_NOTE,
+    trust: TRUST_OFFER.map((id) => trustItems[id]),
+  },
+};
+
+/** `home` in full mode: no split and no later price. */
+export const HomeOfferFullMode: Story = { args: { ...HomeOffer.args, offer: buildOffer("full") } };
