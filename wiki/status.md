@@ -5,7 +5,7 @@ updated: 2026-10-15
 sources: [log.md, open-questions.md]
 ---
 
-# Status (2026-10-15 15:50 IST)
+# Status (2026-10-15 19:30 IST)
 
 **NOW: the selling update (D064, D065), in the quick-changes phase (D062): quick checks per batch, detailed QA and the
 integrations once the founder calls the site final.** Summary to resume from: [project summary](engineering/project-summary.md).
@@ -13,10 +13,13 @@ Copy: [D2C plan v2](site/d2c-conversion-plan-2026-10-15.md) ([CMO review](qa/cmo
 **Wave q2a merged** (Q2.1 Kabir hero, films order, offer alignment; Q2.3 GSTIN and phone off; Q2.4 WhatsApp logo, footer
 gaps; Q2.5 motion and the sticky laptop nav; Q2.6 the clip without burned words; Q2.8 the short price line): verify 6728
 tests, build green; rows V49-V57. **The new cta values are registered** (`ffa029da`).
-**Wave 2 running** (`wf_195cc865-68e`, resumed after a session-limit stop; base `ffa029da`): Q2.9 Home end to end (high), Q2.10 the product page, Q2.11
-`/safety`, Q2.12 every other page's close and the footer's laptop rows. **Next:** merge them, verify and build,
-screenshots at 360/390/412/1440 for consistency, push `beta`, check the deploy, report to the founder.
-**Branch:** `reset/website-v2` (`721b2e5c`). **Beta (public, D060):** `beta` at `398c5ee` (wave 8c); betawebsite and
+**Wave 2 (q2b) merged** (2026-10-15 19:10: Q2.9 Home end to end, Q2.10 the product page, Q2.11 `/safety`, Q2.12 every
+other page's close and the footer's laptop rows; rows V58-V64; verify 6894 passed and 2 product-page parity tests red,
+the build green). **Fix wave q2c running** (`wf_97f23df3-150`, base `06172e23`): Q2.13 the offer cards, the product page,
+the guide; Q2.14 the help line's words and tap target, the footer's parity rule, `/privacy` against G26. **Next:** merge,
+verify and build, a consistency review of every page at 360/390/412/1440 (Home's phone length: 18 screens), push `beta`,
+check the deploy, report to the founder.
+**Branch:** `reset/website-v2` (`06172e23`). **Beta (public, D060):** `beta` at `398c5ee` (wave 8c); betawebsite and
 betastore.kheelona.com. **Production:** `main` `8c4718a`, untouched until Gate B. Beta QA (task 7.2) on hold.
 
 **Rulings taken while the founder sleeps (to report):** the WhatsApp bubble stays persistent on Home's first phone screen
@@ -26,7 +29,7 @@ until the founder signs plan §1.7 (§13 item 9); §13 items 1-6 and 8 as recomm
 
 **Waiting on the founder:** sign plan §1.7 (share text) and §13 item 7 (bubble); F7 (what keeps working after 6 months of
 Kheelona+, and its price); G28's other half (Wi-Fi at rest, per-conversation limit) and G29's pre-launch test before
-Gate B; G18, G21, G27, G32; the Vercel toolbar off for the beta project; sign V1-V57 and the legal pages at Gate B;
+Gate B; G18, G21, G27 (built as recommended), G32; for Aman G31 and G33 (`/privacy` after G26); the Vercel toolbar off for the beta project; sign V1-V57 and the legal pages at Gate B;
 forward [For the advisor](brand/for-the-advisor.md) and [For Aman](engineering/for-aman.md) (G25 patch, G31, the
 journal's backend changes); Meta automatic events off (D056); F4 values before dispatch; the WhatsApp ₹ check.
 **Deferred to the final pass (D062):** full Playwright re-based on the approved beta (cta.spec, parity), Lighthouse on

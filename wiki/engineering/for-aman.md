@@ -1,7 +1,7 @@
 ---
 title: "For Aman (CTO): what the website rebuild needs from the live site, the backend and the app"
 type: engineering
-updated: 2026-10-14
+updated: 2026-10-15
 sources: [../open-questions.md, journal-pipeline.md, ../decisions/D058-follow-the-live-code-check-2026-10-14.md, ../decisions/D059-journal-voice-uploads-and-timing-2026-10-14.md, ../qa/live-main-reconciliation-2026-10-14.md]
 ---
 
@@ -31,9 +31,13 @@ founder's Gate B.
    recordings kept out of training, and what happens to recordings already kept; (3) each processor's region, one row
    per job; (4) where in the app the training switch is; (5) whether backend PR #39 (the server honouring "Save voice
    recordings") is in production.
-4. **The model's rules** ([open questions](../open-questions.md) G29): do the child-safety rules given to the model
-   tell it to say when it doesn't know? The site says "When it doesn't know something, it says so." on several
-   pages; it comes off if that isn't true.
+4. **The model's rules** ([open questions](../open-questions.md) G29): the founder confirmed on 2026-10-15 that the
+   model says so when it doesn't know (D065 item 8). Still open: was it tested before launch by trying to make it say
+   unsafe things? The site says so on `/safety` and the product page.
+6. **Deleting chats since the app changed** ([open questions](../open-questions.md) G33): the founder says "Delete all
+   chats" now deletes the chats from the servers (D065 item 7). (1) What does removing one chat do now: hide it on
+   that phone, or delete it? (2) Does "Delete all chats" also take the chats out of Kheelu's memory and the training
+   data? `/privacy` is aligned with "Delete all chats" in two places and waits on these two answers.
 5. **The app's grievance link** ([D058](../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 4): the
    grievance officer is Aman Soni, aman@kheelona.com; the app's "Contact our grievance officer" opens
    connect@kheelona.com. The founder decides the change.
