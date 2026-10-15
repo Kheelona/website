@@ -1312,3 +1312,27 @@ sections registry; its scratch test moved out), Q2.12 `8f502c28` (10 files: /set
 `78bf33c4`; Q2.11 had committed `1ffd49f9` and `1207b85f`. The run was resumed with "finish" entries on the same
 worktrees, with a note that Q2.10 and Q2.11 both add to TrustSection (keep both at the merge). The account changed at the
 founder's `/login` (2026-10-15).
+
+## [2026-10-15 19:10] build | Wave q2b merged (Q2.9-Q2.12); 2 parity tests red, the build green; merge rulings
+`wf_195cc865-68e`: Q2.11 and Q2.12 passed review; Q2.9 (two reviews) and Q2.10 (one) were fixed after review and not
+re-reviewed. Merged `--no-ff` in the order Q2.11, Q2.12 (`62896f3e`, deviations.ts both kept), Q2.9 (`9d1c29e3`,
+faqs.test kept both), Q2.10 (`98373f7f`, 7 files: see its message). On the merged tree `npm run verify`: 6894 passed,
+2 failed (the product page's parity list now meets Home's perk list on the shared offer card: ordering, re-pinned by the
+follow-up below); the production build green (20 journal pages, no open placeholder).
+**Main-session rulings at the merge (the founder signs at Gate B):**
+- Edits outside the written Owns accepted, each serving its task's What: Q2.9 CtaBlock, FilmsStrip, HeroSection,
+  OfferSection, ui/OfferCard, FeatureSplit, RecognitionStrip, ui/Photo (`lcp: "eager"`, additive: the phone crop loads
+  eagerly at no high priority, CMO m14), cta.spec and anchors.spec; Q2.10 `filmLink` exported from faqs.ts; Q2.11
+  TrustSection's six-item never list; Q2.12 CloseSection (`meet` optional) and ArticleTemplate (the close by topic). The
+  copy pages' meta rows (home.md, meet-kheelu.md, ai-toys-for-kids-in-india.md) take the plan v2's metas: the plan is
+  the approved copy.
+- The product page's two decision answers stay in the plan's words, approved short and pinned (cost-and-advance 37/31
+  words, after-six-months 31): nothing confirmed can lengthen them (F7).
+- The machine files' contact: "WhatsApp us: <wa.me address>" and the email on its own line, the same in both.
+- Deviation rows V58-V64 written; V28 amended.
+**Follow-ups handed to two fix builders** (next entry): the offer cards' Kheelona+ note above the button and no help
+line under the product card; the product page's "Recognised by" label strip and its fifth question; the guide on
+`price-and-advance` (the duplicate `price-in-total` goes); `/team`'s close lead read from navigation; OfferSection's
+unused `close` variant; anchors M2; the help line in the plan's words "Questions? Message us on WhatsApp." and its tap
+target at 360; a shared footer rule for parity (V54, V64); `/privacy`'s deletion paragraph against G26; stale comments
+and catalogue rows. Home's phone length (18 screens at 390 × 844 against the plan's 13-14) goes to the consistency review.
