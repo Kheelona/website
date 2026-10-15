@@ -1,7 +1,7 @@
 ---
 title: "Folder structure and naming conventions (final, Phase 4, revised after QA round 1)"
 type: engineering
-updated: 2026-10-14
+updated: 2026-10-15
 sources:
   - ../raw/brief/kickoff-brief.md (§4.10, §4.11, §9.12 "Folder structure")
   - architecture.md, adr/ADR-002 to adr/ADR-013
@@ -216,7 +216,9 @@ Every amount is a `{price:…}` token; every unknown fact a `{ph:…}` placehold
 | A doodle that draws | add its file to `scripts/assets/build-doodles.mjs`'s list and regenerate; render it with `Doodle draw` below the first screen only | [assets](assets.md) row |
 | A new motion | a preset in `src/motion/motion.css` on DS tokens, `transform` and `opacity` only; anything else is a founder decision and an ADR-007 addendum | motion-properties guard |
 | A non-DS image | `src/assets/` (static import) or `public/` only when a stable URL is required | [assets](assets.md) row |
-| An icon | it must be one of the 76 DS icons (`IconName`); otherwise a DS gap | |
+| A crop of a DS photo (a hero picture) | add its window to `scripts/assets/hero-crops.mjs` (the one source for the script, its guard and the e2e spec) and run `node scripts/assets/build-hero-crops.mjs`; output in `src/assets/hero/` | [assets](assets.md) row; `generated-hero-crops` guard |
+| The WhatsApp logo (D064 item 3) | `node scripts/assets/build-whatsapp-logo.mjs` regenerates `src/assets/whatsapp-logo.generated.ts` from `src/assets/whatsapp-logo.svg`; the one replaced DS icon drawing is mapped in `src/components/ui/Icon/site-drawings.ts` | [assets](assets.md) row; `generated-whatsapp-logo` guard |
+| An icon | it must be one of the 76 DS icons (`IconName`); otherwise a DS gap (the WhatsApp logo is the one founder-approved replacement, row above) | |
 | A colour, space, radius, shadow, duration | never: DS tokens only; missing → DS gap | |
 | A build or guard script | `scripts/` | npm script; prove it red |
 | An operator tool | `tools/` | |

@@ -24,3 +24,10 @@ that if anyone has any questions, they can click and directly chat with us on wh
 | Existing help lines | The Home help line ("Questions? WhatsApp or call…"), /contact and the footer stay as they are |
 
 **Approved by.** Founder. **Date.** 2026-10-12.
+
+**Changed later (2026-10-15).** The look: the bubble shows WhatsApp's own full-colour logo from Wikimedia Commons
+instead of the DS glyph in white on green ([D064](D064-quick-batch-2-landing-page-and-motion-2026-10-15.md) item 3;
+task Q2.4; [deviations](../qa/deviations.md) V53). The help lines: the phone number left every page but `/contact` and
+the legal pages ([D063](D063-quick-batch-1-choices-2026-10-15.md); V52). Place, size, label, tracking and "persistent on
+every page" are unchanged; the selling update keeps the bubble on the first phone screen (main-session ruling, plan §13
+item 7 left for the founder).

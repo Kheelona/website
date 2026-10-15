@@ -14,7 +14,7 @@ import { VIEWPORTS } from "./support/viewports";
  *     are the DS files as plain images.
  */
 
-const STORIES = ["home-art", "product", "answer-photo", "answer-art", "answer-team", "answer-words", "contact", "hub"].map(
+const STORIES = ["home-photo", "home-art", "product", "answer-photo", "answer-art", "answer-team", "answer-words", "contact", "hub"].map(
   (s) => `sections-herosection--${s}`,
 );
 const viewports = [VIEWPORTS.find((v) => v.width === 390)!, VIEWPORTS.find((v) => v.width === 1440 && v.height === 900)!];

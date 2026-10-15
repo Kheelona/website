@@ -1273,3 +1273,33 @@ posters, not AI cast photos, beside real captions. Copy v2 (workflow `wf_14d4124
 build wave q2a (`wf_708188f8-5e5`, base `f6096ce5`: Q2.1 picture, films, offer; Q2.3 GSTIN and phone; Q2.4 WhatsApp logo
 and footer; Q2.5 motion and the sticky nav; Q2.6 the clip without burned-in words; Q2.8 the short price line) run in
 parallel; wave 2 (Home's middle, safety, every page's close) follows the approved copy.
+
+## [2026-10-15 15:45] build | Wave q2a merged (Q2.1, Q2.3, Q2.4, Q2.5, Q2.6, Q2.8); verify and the build green
+Workflow `wf_708188f8-5e5`: Q2.1 and Q2.3 passed review; Q2.4 and Q2.6 mechanical; Q2.5 and Q2.8 failed review and were
+fixed (`cb0d306d`, `ac9ec874`). Q2.8's merge conflicted in 11 files, so a builder integrated it with the merged work in
+its worktree (`09618ed4`); then `--no-ff` merges `09574fec` (Q2.8) and `88fadce2` (Q2.5), no conflict. On the merged
+tree: `npm run verify` 6728 tests passed (6 skipped); jscpd found one new clone (the micro-interactions' selector list
+repeated in the reduced-motion block), fixed by setting that transition only under `prefers-reduced-motion:
+no-preference` (`91ac40b2`; motion guard 52 green); the production build green. Deviation rows V49-V57 written and V48
+amended (the clip without burned-in words); D050 notes the new logo; structure.md gains the hero-crop and WhatsApp-logo
+recipes; two e2e specs' stale strings fixed (films.spec's play label, motion-hero.spec's `home-photo` story). Open from
+Q2.8's notes for the final pass or wave 2: the bar's small line wraps at 360 ("refundable · ₹4,999 in / total"), the
+full-mode bar line wraps at 360 × 640, the drawer's second note wraps at 360.
+
+## [2026-10-15 15:45] build | The selling update's cta values registered before wave 2 (`ffa029da`)
+`src/lib/tracking/cta.ts`, tracking inventory §6, architecture §8.3 and `test/guards/tracking-registry.test.ts` gain the
+plan §11 values `hero-film`, `home-why`, `home-asks`, `home-asks-learn`, `home-offer`, `product-ask`, `safety-facts`,
+`guide-answers` (new, placed after Gate A, D065) and `finale`'s `/setup` close (held under `finale.added`, so the
+mockup comparison stays exact). `see-it-ask`, `see-it-ask-learn`, `compare-learn`, `faq-more`, `hero-learn` and
+`product-safety` stop firing and stay registered. No event name or ID changes. The guard was proven red on a planted
+change (5 failures), then green (128). `test/e2e/cta.spec.ts` compares built pages with the mockups, so it is re-based at
+the final pass (D062).
+
+## [2026-10-15 15:50] agent | Wave 2 of the selling update (q2b) handed to the build workflow (`wf_20668add-448`, base `ffa029da`)
+Q2.9 Home end to end (risk high), Q2.10 the product page, Q2.11 `/safety`, Q2.12 every other page's close and the
+footer's laptop rows (risk normal), from plan v2. Rulings passed to the builders: the WhatsApp bubble stays persistent
+(D050), the hero photo cropped clear of it; the share text stays as D061 item 7; plan §13 items 1-6 and 8 as
+recommended; `faqs.ts` split by entry (Q2.9 price-and-advance and its two new ids, Q2.10 cost-and-advance,
+delivery-start and after-six-months, Q2.12 the guide's new price answer after how-much); the product page's
+statutory "Consumer care" row gets the phone back (Q2.10, the phone guard narrowed to that row); `/llms.txt` shows the
+wa.me address (Q2.9). Each builder screenshots its pages at 360, 390, 412 and 1440 and fixes what looks wrong.

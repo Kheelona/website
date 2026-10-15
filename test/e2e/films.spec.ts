@@ -189,7 +189,7 @@ async function axeWhenIdle(page: Page): ReturnType<typeof runAxe> {
    play control, Enter plays the film with sound and native controls, focused; at the end the poster comes back and focus
    returns. axe below. */
 const CLIP = "/video/expert/expert-clip.mp4";
-const CLIP_PLAY = "Play the video from an expert: Chaitra, therapist and developmental coach. 34 seconds, with captions.";
+const CLIP_PLAY = "Play the video from an expert: Chaitra, therapist and developmental coach. 34 seconds.";
 
 test.describe("the single film: the expert clip (task 8c.6)", () => {
   for (const vp of [phone, laptop]) {
