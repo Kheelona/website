@@ -10,7 +10,9 @@ import type { SectionHeading, SectionLink } from "@/components/sections/FeatureS
  * - `facts`: the safety page's four facts in full (fold 2, `#facts`), as an ordered list, the tummy unit beside the
  *   heading;
  * - `never`: the safety page's "What you won't find" (fold 3), five items, three then two from 1024 px;
- * - `meets`: the buyer's guide's answers to the five checks (fold 3), in the checks' order, then a pointer line. */
+ * - `meets`: the buyer's guide's answers to the five checks (fold 3), in the checks' order, then a pointer line;
+ * - `pointer` (task Q2.10; the D2C plan v2 §3 fold 9): the product page's safety in one line that points to /safety,
+ *   then the link there: no heading and no facts, a tight section named by its line. */
 
 export type TrustHeading = SectionHeading;
 
@@ -56,7 +58,19 @@ export type TrustSectionConfig =
       /** The line after the answers, pointing to the safety page. */
       readonly pointer?: Copy;
       readonly link?: TrustLink;
-    });
+    })
+  | {
+      readonly variant: "pointer";
+      /** The section's fragment; its line is `<id>-line` and names the section. */
+      readonly id?: string;
+      readonly band?: boolean;
+      /** The one line, pointing to where the safety facts live. */
+      readonly pointer: Copy;
+      /** The link there: a ghost link with its arrow (no `icon`). */
+      readonly link: TrustLink;
+      readonly heading?: never;
+      readonly items?: never;
+    };
 
 export interface TrustSectionSlots {
   readonly offer?: Offer;

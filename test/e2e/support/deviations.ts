@@ -1616,14 +1616,16 @@ export const EXPERT_CLIP = {
   selector: 'section[aria-labelledby="expert-title"]',
   build: [expertFold.heading.eyebrow, toPlainText(expertFold.heading.title), expertClip.chip, expertClip.credit, expertClip.disclosure],
 } as const;
-const EXPERT_CLIP_HIDDEN: VisualHide = {
+/** The clip's two rules, for the page that shows it: since task Q2.10 no longer the product page (task Q2.9 takes the
+ *  clip to Home, D064 item 8). */
+export const EXPERT_CLIP_HIDDEN: VisualHide = {
   side: "build",
   selector: EXPERT_CLIP.selector,
   reason: "the expert clip task 8c.6 adds after the offer card (D061 items 12-13); the approved page has none, so the pixels compare without it",
   approvedBy: EXPERT_CLIP_APPROVED,
 };
 /** Nothing of the approved page is excused (a regex no sentence matches); the fold's lines are accepted. */
-const EXPERT_CLIP_TEXT: TextDeviation = {
+export const EXPERT_CLIP_TEXT: TextDeviation = {
   mockup: /(?!)/,
   build: oneOf([expertFold.heading.eyebrow.toUpperCase(), ...EXPERT_CLIP.build.flatMap((line) => sentences(line))]),
   reason: "the lines of the expert clip task 8c.6 adds: its eyebrow, heading, chip, credit and disclosure",
@@ -1722,6 +1724,264 @@ const HOME_OFFER_ART_HIDDEN: readonly VisualHide[] = (["mockup", "build"] as con
   reason: "the close's board starts level with the offer card's top on laptops, where the approved split centres it",
   approvedBy: HOME_OFFER_ART.approvedBy,
 }));
+
+/* The selling update on the product page (task Q2.10; D064 items 2 and 8, D065 items 1, 3-6 and 8, the main session's
+   rulings of 2026-10-15; the copy: the D2C plan v2 §3, checked by the claims guard and the CMO). Two groups, as the
+   tasks before it split theirs:
+   - SELLING_UPDATE, in page-facts.ts's form, applied after the page's earlier rules (its page facts, task 7.1b's copy
+     fixes, task 8b.1's claim fixes, the offer additions, then task 8c.4's FAQ fixes): `edits` turn that mockup into the
+     build, and `mockup` and `build` are the sentences they change (the route's unit test proves them exactly those):
+     the hero's eyebrow and lead (D065 item 1; §3 fold 1) without the help line (§1.1: closes and the store only); the
+     offer photo's alt with the page's keyword; Good to know's second line "instead of guessing" (D065 item 8) and a new
+     fourth, the daily limit (D065 item 5); the parent-app fold and the safety fold off the page (D064 item 2: their
+     words move to /safety, task Q2.11); the price answer with the total and no GST, balance or first 500 (D065 items
+     3-4); "When does delivery start?" off (the offer card and the trust line carry the date) and "Will Kheelona+ charge me
+     after the 6 months?" after the first-week question (D065 item 6, the CMO's M5).
+   - SELLING_ADDITIONS: the blocks the approved page has nothing for, added on the build's side alone: the comparison
+     moved from Home (§3 fold 8) and the safety line pointing to /safety (fold 9). The three sample chats (fold 6) are
+     task 8c.3's example fold on tabs (ExampleConversation, task Q2.10), which PROOF_ADDITIONS already hides; their new
+     lines are accepted here.
+   The expert clip (task 8c.6) left the page for Home (task Q2.9), so its rules left this page's lists. Literal, as the
+   rest of this file (Playwright loads it): the route's unit test (products/kheelu/page.test.tsx) holds every literal to
+   the content modules. The deviations.md rows are the main session's, drafted in the task's report. */
+export const SELLING_UPDATE_APPROVED =
+  "D064 items 2 and 8, D065 items 1, 3-6 and 8, and the main session's rulings of the selling update (founder, 2026-10-15; the D2C plan v2 §3; task Q2.10; deviations.md rows to come)";
+const SELLING_UPDATE_WHOSE = "task Q2.10's selling update (D064, D065)";
+/** The product hero's words (§3 fold 1): the eyebrow as Home's (D065 item 1), the lead in the founder's words. */
+export const PRODUCT_HERO = {
+  eyebrow: { mockup: "Ages 3 to 7", build: "Screen-free AI toy · Ages 3 to 7" },
+  lead: {
+    mockup: "A screen-free plush toy from Kheelona. It answers your child, then asks a question back, so they do the thinking.",
+    build: "A soft plush rabbit that answers every why, then asks one back.",
+  },
+  /** The approved help line under the hero's trust line, which §1.1 keeps to the closes and the store. */
+  help: "Questions? WhatsApp or call +91 91875 46483",
+} as const;
+/** The offer photo's alt with the page's keyword, true of the picture (§3 fold 3). */
+export const PRODUCT_OFFER_ALT = {
+  mockup: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy.",
+  build: "Kheelu by Kheelona, the cream plush rabbit that talks back, with rainbow ears and a speaker in its tummy.",
+} as const;
+/** Good to know (§3 fold 7): the second line takes "instead of guessing" (D065 item 8), and the daily limit (D065 item 5)
+ *  follows the wake-up line, which task 8b.1's claim fix left at "a couple of minutes". */
+export const PRODUCT_KNOW = {
+  browse: {
+    mockup: "It can’t browse the internet. When it doesn’t know something, it says so.",
+    build: "It can’t browse the internet. When it doesn’t know something, it says so instead of guessing.",
+  },
+  wake: "Each conversation starts with a press of the wake-up button. It switches itself off after a couple of minutes of quiet.",
+  limit: "Each Kheelu has a daily limit on how long it talks.",
+} as const;
+/** The price question's answer (faqs.ts `cost-and-advance`, token mode): with the total, without "incl. GST", the balance
+ *  or the first 500 (D065 items 3-4; §3 fold 11). The question stays. */
+export const PRODUCT_PRICE_ANSWER = {
+  mockup:
+    "Kheelu is ₹4,999 (incl. GST) for the first 500 units, with delivery anywhere in India included. The ₹499 is a refundable advance to reserve yours; the remaining ₹4,500 is due before delivery. After the first 500, it is ₹7,999 (incl. GST), paid in full. Pay by UPI, card or net banking, with no payment fees, and get a GST invoice.",
+  build:
+    "Kheelu is ₹4,999 in total, with delivery anywhere in India included. The ₹499 is a refundable advance that reserves yours; the rest is due before delivery. Pay by UPI, card or net banking, with no payment fees.",
+} as const;
+/** The question that leaves (faqs.ts `delivery-start`; §3 fold 11), and the new one after the first-week question
+ *  (faqs.ts `after-six-months`; D065 item 6, the CMO's M5). */
+export const PRODUCT_DELIVERY_QUESTION = "When does delivery start?";
+export const AFTER_SIX_MONTHS = {
+  question: "Will Kheelona+ charge me after the 6 months?",
+  answer:
+    "No, not unless you sign up for it yourself. Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. Nothing renews without you.",
+} as const;
+/** The safety line and its link (§3 fold 9; the built label, `product-safety-learn`, which the safety fold carried). */
+export const PRODUCT_SAFETY_LINE = {
+  line: "When the microphone is on, how Kheelu answers, and what you can read and delete, fact by fact:",
+  link: "See how we built safety in",
+} as const;
+export const SELLING_UPDATE = {
+  "meet-kheelu": {
+    edits: [
+      /* Fold 1: the eyebrow and the lead; no help line under the hero's trust line (§1.1). */
+      rewrite(".mk-hero .kh-eyebrow", PRODUCT_HERO.eyebrow.mockup, PRODUCT_HERO.eyebrow.build),
+      rewrite(".mk-hero .kh-heading__lead", PRODUCT_HERO.lead.mockup, PRODUCT_HERO.lead.build),
+      cut(".mk-hero .mk-help", PRODUCT_HERO.help),
+      /* Fold 3: the photo's alt. */
+      {
+        at: ".mk-offer-photo img",
+        was: "",
+        now: `<img loading="lazy" src="../design-system/project/assets/Kheelu/kheelu-on-fur.jpg" width="1600" height="1600" alt="${PRODUCT_OFFER_ALT.build}">`,
+      },
+      /* Fold 4 (How it works): Good to know's second line, then the daily limit after the wake-up line. */
+      rewrite("li > span", PRODUCT_KNOW.browse.mockup, PRODUCT_KNOW.browse.build),
+      {
+        at: "#know-title ~ ul > li",
+        was: PRODUCT_KNOW.wake,
+        now: `<li>${icon("microphone")}<span>${PRODUCT_KNOW.wake}</span></li><li>${icon("clock")}<span>${PRODUCT_KNOW.limit}</span></li>`,
+      },
+      /* Folds 5 and 6, the parent app and the safety fold, off the page (D064 item 2; task Q2.11 takes their words to /safety). */
+      cutAround("#app-title", "Every conversation, word for word.", "section"),
+      cutAround("#safety-title", "Safety you can check.", "section"),
+      /* Fold 8: the price answer; the delivery question off; the Kheelona+ question after the first-week one. */
+      rewrite(".kh-faq__a > p", PRODUCT_PRICE_ANSWER.mockup, PRODUCT_PRICE_ANSWER.build),
+      cutAround(".kh-faq__q span", PRODUCT_DELIVERY_QUESTION, ".kh-faq__item"),
+      {
+        at: ".kh-faq__item",
+        was: `${FIRST_WEEK.question}${FIRST_WEEK.answer}`,
+        now: `${faqItem(FIRST_WEEK.question, FIRST_WEEK.answer)}${faqItem(AFTER_SIX_MONTHS.question, AFTER_SIX_MONTHS.answer)}`,
+      },
+    ] satisfies FactEdit[],
+    /* In order of first appearance on the page: the hero's words and its help line; Good to know's line; the parent-app
+       fold and the safety fold whole (its CTA block's button, price line and trust line, and its link, which the build
+       prints again under the sample chats and in the safety line); the price answer, then the delivery question. */
+    mockup: [
+      PRODUCT_HERO.eyebrow.mockup,
+      ...sentences(PRODUCT_HERO.lead.mockup),
+      "Pre-order Kheelu",
+      ...sentences(PRICE_LINE.sentence.build),
+      PRICE_LINE.returns.build,
+      PRICE_LINE.delivery,
+      ...sentences(PRODUCT_HERO.help),
+      sentences(PRODUCT_KNOW.browse.mockup)[1],
+      "The parent app",
+      "Every conversation, word for word.",
+      "Each one appears in the parent app a few minutes after it ends.",
+      "Search them, read a daily summary, or look back over the week or the month.",
+      "The Kheelona app is live on Apple’s App Store and the Google Play Store.",
+      "The Kheelona app is live on Apple’s App Store and the Google Play Store.",
+      "See what we keep, and for how long",
+      "Safety",
+      "Safety you can check.",
+      "You’ll always see when it’s listening.",
+      "Its microphone turns on only when someone presses the wake-up button.",
+      "It stays on while your child talks and switches itself off after a couple of minutes of quiet.",
+      "A light on Kheelu shows whenever it’s listening.",
+      "Left alone, it hears nothing and sends nothing.",
+      "How it understands and answers.",
+      "To understand and answer your child, Kheelu uses trusted speech and AI providers.",
+      "They process your child’s voice only to produce Kheelu’s reply.",
+      "They don’t keep it, and they never use it to train their AI.",
+      "Our contracts with them say so.",
+      "You can read every conversation.",
+      RETENTION.build,
+      ...sentences(DELETE_ACCOUNT),
+      "We don’t sell your data.",
+      "Your child’s data is never used to advertise to them.",
+      "No camera",
+      "It can’t browse the internet",
+      "It says it’s a toy, and never asks your child to keep a secret from you",
+      PRODUCT_SAFETY_LINE.link,
+      ...sentences(PRODUCT_PRICE_ANSWER.mockup),
+      PRODUCT_DELIVERY_QUESTION,
+      "Deliveries start mid-November.",
+      "Orders are sent in the order they were placed, and you get a tracking link when yours leaves us.",
+      "Delivery is included anywhere in India, with nothing to pay at the door; we don’t ship outside India.",
+      "A reserved Kheelu is sent once the rest of the price is paid.",
+    ],
+    build: [
+      PRODUCT_HERO.eyebrow.build,
+      PRODUCT_HERO.lead.build,
+      sentences(PRODUCT_KNOW.browse.build)[1],
+      PRODUCT_KNOW.limit,
+      ...sentences(PRODUCT_PRICE_ANSWER.build),
+      AFTER_SIX_MONTHS.question,
+      ...sentences(AFTER_SIX_MONTHS.answer).filter((line) => !line.startsWith("Every Kheelu comes with")),
+    ],
+    /* The eyebrow, the lead and Good to know's second line wrap to other heights: both sides. The questions' list is one
+       question longer and loses one (closed items, compared by the text pass): both sides, so the help line and the
+       close below line up. The two folds that leave: the mockup's side. The daily limit: the build's. */
+    hidden: {
+      both: [
+        'section[aria-labelledby="hero-title"] .kh-eyebrow',
+        'section[aria-labelledby="hero-title"] .kh-heading__lead',
+        "#know-title ~ ul > li:nth-child(2)",
+        'section[aria-labelledby="faq-title"] .kh-faq',
+      ],
+      mockup: ["#app", "#safety"],
+      build: ["#know-title ~ ul > li:nth-child(4)"],
+    },
+    reason:
+      "the selling update on the product page: the hero's eyebrow and lead, no help line in the hero; the parent-app and safety folds moved to /safety; Good to know with \"instead of guessing\" and the daily limit; the price answer with the total and no GST; the delivery question off and the Kheelona+ question on (D064, D065; the D2C plan v2 §3)",
+    approvedBy: SELLING_UPDATE_APPROVED,
+  },
+} as const satisfies Readonly<Record<string, PageFacts>>;
+export type SellingUpdateSlug = keyof typeof SELLING_UPDATE;
+
+/** The comparison moved from Home (§3 fold 8; home.md fold 7's words), as its phone cards print it. */
+export const PRODUCT_COMPARE = {
+  eyebrow: "Compare",
+  title: "Other AI gives answers. Kheelu asks questions.",
+  lead: "Thinking out loud, not tapping on a screen.",
+  rows: [
+    {
+      label: "Screen-free",
+      us: "Kheelu: Yes",
+      others: ["Puzzles and activity books: yes", "Learning apps and videos: no", "Smart speakers and chatbots: varies"],
+    },
+    {
+      label: "Holds a back-and-forth conversation",
+      us: "Kheelu: Yes",
+      others: ["Puzzles and activity books: no", "Learning apps and videos: rarely, mostly tapping and watching", "Smart speakers and chatbots: yes"],
+    },
+    {
+      label: "Asks your child a question back",
+      us: "Kheelu: Yes, after it answers",
+      others: ["Puzzles and activity books: no", "Learning apps and videos: some ask quiz questions", "Smart speakers and chatbots: usually just answer"],
+    },
+    {
+      label: "You can read every conversation",
+      us: "Kheelu: Yes, in the parent app",
+      others: ["Puzzles and activity books: nothing to read", "Learning apps and videos: nothing to read", "Smart speakers and chatbots: varies"],
+    },
+  ],
+  caption: "Kinds of products, not brands: what each one usually does.",
+} as const;
+/** The sample chats' new lines (§3 fold 6): the tabs' words, the two new exchanges and the line under the tabs. The
+ *  moon exchange, the label and the speakers are task 8c.3's (PROOF_EXAMPLE_BUILD). */
+export const PRODUCT_CHATS = {
+  tabs: ["The moon", "The dosa pan", "Spider legs"],
+  dosa: [
+    "“Why does the dosa pan sizzle?”",
+    "“The pan is very hot, and the batter has water in it. When the water touches the hot pan, it turns into steam, and that’s the sizzle. Why do you think the pan has to be hot first?”",
+    "“So the dosa gets crispy?”",
+  ],
+  spider: [
+    "“How many legs does a spider have?”",
+    "“Eight. That’s two more than an ant, which has six. What else do you know that has more than four legs?”",
+    "“A centipede?”",
+  ],
+  after: "Hear it in two languages: watch “Two languages”.",
+} as const;
+export const SELLING_ADDITIONS = {
+  "meet-kheelu": {
+    selectors: ['section[aria-labelledby="compare-title"]', 'section[aria-labelledby="safety-line"]'],
+    build: [
+      PRODUCT_COMPARE.eyebrow,
+      PRODUCT_COMPARE.title,
+      PRODUCT_COMPARE.lead,
+      ...PRODUCT_COMPARE.rows.flatMap((row) => [row.label, row.us, ...row.others]),
+      PRODUCT_COMPARE.caption,
+      PRODUCT_SAFETY_LINE.line,
+      PRODUCT_SAFETY_LINE.link,
+      ...PRODUCT_CHATS.tabs,
+      ...PRODUCT_CHATS.dosa,
+      ...PRODUCT_CHATS.spider,
+      PRODUCT_CHATS.after,
+    ],
+  },
+} as const;
+const sellingAdditionsHidden = (slug: keyof typeof SELLING_ADDITIONS): VisualHide[] =>
+  SELLING_ADDITIONS[slug].selectors.map((selector) => ({
+    side: "build",
+    selector,
+    reason: "a fold task Q2.10 adds (the comparison moved from Home, the safety line to /safety); the approved page has neither, so the pixels compare without it",
+    approvedBy: SELLING_UPDATE_APPROVED,
+  }));
+/** Nothing of the approved page is excused (a regex no sentence matches); the added lines are accepted, the eyebrow in
+ *  capitals too. */
+const sellingAdditionsText = (slug: keyof typeof SELLING_ADDITIONS): TextDeviation => {
+  const lines = SELLING_ADDITIONS[slug].build.flatMap((line) => sentences(line));
+  return {
+    mockup: /(?!)/,
+    build: oneOf([...lines, PRODUCT_COMPARE.eyebrow.toUpperCase()]),
+    reason: "the lines of the folds and tabs task Q2.10 adds: the comparison, the safety line, the sample chats' tabs and their two new exchanges",
+    approvedBy: SELLING_UPDATE_APPROVED,
+  };
+};
 
 export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   store: [
@@ -1836,12 +2096,15 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...factsHidden(FAQ_FIXES["meet-kheelu"], FAQ_FIXES_WHOSE),
     /* The offer card's later price and the share link the build adds (task 8c.2, D061). */
     ...offerAdditionsHidden("meet-kheelu"),
-    /* The quotes, the strip, the steps and the example (task 8c.3). */
+    /* The quotes, the strip, the steps and the example, on tabs since task Q2.10 (task 8c.3). The expert clip (task 8c.6)
+       left the page for Home (task Q2.9). */
     ...proofHidden("meet-kheelu"),
-    /* The expert clip after the offer card (task 8c.6, D061 items 12-13). */
-    EXPERT_CLIP_HIDDEN,
     /* The hero's phone art (D061 item 1, task 8c.1), under 720 px only. */
     ...HERO_PHONE_ART,
+    /* The selling update (task Q2.10): the hero's words, Good to know, the questions, the two folds that leave; then the
+       comparison and the safety line it adds. */
+    ...factsHidden(SELLING_UPDATE["meet-kheelu"], SELLING_UPDATE_WHOSE),
+    ...sellingAdditionsHidden("meet-kheelu"),
   ],
   /* The Google Analytics block's paragraph and the PostHog block's first one say more in the build (V10), so they wrap
      to more lines and every block below would shift; the pixels compare the page without the two paragraphs on both
@@ -2048,8 +2311,11 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     /* The quotes, the strip, the steps and the example (task 8c.3): PROOF_ADDITIONS above, before the claim fixes, which
        stay last. */
     proofText("meet-kheelu"),
-    /* The expert clip's lines (task 8c.6, D061 items 12-13): EXPERT_CLIP above. */
-    EXPERT_CLIP_TEXT,
+    /* The selling update (task Q2.10): SELLING_UPDATE and SELLING_ADDITIONS above. Before the claim fixes, which only the
+       FAQ fix may follow (pages/parity-deviations.test.ts), though its edits apply after both. The expert clip's lines
+       (task 8c.6) left with the clip (task Q2.9 takes it to Home). */
+    factsRule(SELLING_UPDATE["meet-kheelu"]),
+    sellingAdditionsText("meet-kheelu"),
     /* D058's claim fixes (V27, task 8b.1): CLAIM_FIXES above. */
     factsRule(CLAIM_FIXES["meet-kheelu"]),
     /* The languages question (task 8c.4, D061): FAQ_FIXES above. Its answer sits in a closed item, which the text pass

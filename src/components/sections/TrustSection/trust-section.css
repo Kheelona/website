@@ -65,3 +65,14 @@
 .ks-gd-pointer + .kh-section__actions {
   margin-top: var(--space-4);
 }
+
+/* The product page's safety in one line (task Q2.10; the D2C plan v2 §3 fold 9): centred at the reading measure, the
+   ghost link to /safety a step below it, as the guide's pointer line and its link sit. */
+.ks-pointer {
+  max-width: var(--measure);
+  margin: 0 auto;
+  text-align: center;
+}
+.ks-pointer + .kh-section__actions {
+  margin-top: var(--space-4);
+}

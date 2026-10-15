@@ -149,6 +149,16 @@ describe("the section registry: slots", () => {
     expect(dom(renderSection(trust, ctx)).querySelector(".kh-btn--cta")?.textContent).toBe(cta.preorder);
   });
 
+  /* Task Q2.10 (the D2C plan v2 §3 fold 6): the product page's sample chats end on their button, `product-ask`. */
+  it("composes an example conversation's CTA block last in its column", () => {
+    const example = { ...ENTRY_FIXTURES["example-conversation"], cta: { ...CTA_BLOCK, cta: "product-ask" } } as const satisfies SectionEntry;
+    const ctx = context(TOKEN);
+    expect(markup(renderSection(example, ctx))).toBe(markup(<ExampleConversation {...example.config} offer={TOKEN} cta={<CtaBlock {...example.cta} {...ctx} />} />));
+    const host = dom(renderSection(example, ctx));
+    expect(host.querySelector(".kh-btn--cta")?.getAttribute("data-ph-capture-attribute-cta")).toBe("product-ask");
+    expect(host.querySelector(".ks-exchange__lines")?.compareDocumentPosition(host.querySelector(".kh-btn--cta")!)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+
   it("puts setup's Wi-Fi tip after the checklist of a ticks fold", () => {
     const ticks = {
       kind: "feature-split",

@@ -180,3 +180,50 @@ describe("TrustSection: meets (buyer's guide fold 3)", () => {
     expect(link.firstElementChild?.tagName.toLowerCase()).toBe("svg");
   });
 });
+
+/* Task Q2.10 (the D2C plan v2 §3 fold 9, D064 item 2, ruling 8): the product page's safety fold becomes one line that
+   points to /safety, where the safety facts live, with the built link "See how we built safety in" as a DS ghost link.
+   No mockup fold (the approved page had the whole safety fold): a tight section, named by its line, no heading. */
+describe("TrustSection: pointer (product fold 9, task Q2.10)", () => {
+  const props = {
+    variant: "pointer" as const,
+    id: "safety",
+    band: true,
+    pointer: "When the microphone is on, how Kheelu answers, and what you can read and delete, fact by fact:",
+    link: { label: "See how we built safety in", href: "/safety", cta: "product-safety-learn" as const },
+  };
+
+  it("is a tight section named by its one line, with the page's fragment and no heading", () => {
+    const { container } = render(<TrustSection {...props} />);
+    const section = screen.getByRole("region", { name: props.pointer });
+    expect(container.firstElementChild).toBe(section);
+    expect(section.className).toBe("kh-section kh-section--band kh-section--tight ks-pointer-fold");
+    expect(section.id).toBe("safety");
+    expect(section.querySelector("h1, h2, h3, header")).toBeNull();
+    const line = section.querySelector(".kh-container > p.kh-body-l.ks-pointer")!;
+    expect(line.textContent).toBe(props.pointer);
+    expect(section.getAttribute("aria-labelledby")).toBe(line.id);
+    expect(line.id).toBe("safety-line");
+  });
+
+  it("ends on the ghost link with its arrow, tracked by the page's value, right after the line", () => {
+    const { container } = render(<TrustSection {...props} />);
+    const link = screen.getByRole("link", { name: props.link.label });
+    expect(link).toHaveClass("kh-btn", "kh-btn--ghost");
+    expect(link).toHaveAttribute("href", "/safety");
+    expect(link).toHaveAttribute("data-ph-capture-attribute-cta", "product-safety-learn");
+    expect(link.lastElementChild?.tagName.toLowerCase()).toBe("svg");
+    const row = link.closest(".kh-section__actions")!;
+    expect(row).toHaveClass("kh-section__actions--center");
+    expect(row.previousElementSibling).toHaveClass("ks-pointer");
+    expect(container.querySelector(".kh-container")?.lastElementChild).toBe(row);
+  });
+
+  it("takes the page surface and its own fragment when the page gives them; moves nothing", () => {
+    const { container } = render(<TrustSection {...props} band={undefined} id="where-safety-lives" />);
+    const section = container.firstElementChild!;
+    expect(section.className).toBe("kh-section kh-section--tight ks-pointer-fold");
+    expect(section.getAttribute("aria-labelledby")).toBe("where-safety-lives-line");
+    expect(container.querySelector("[data-reveal], [data-draw]")).toBeNull();
+  });
+});

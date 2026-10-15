@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import { buildOffer } from "@/lib/offer/offer";
 import { ExampleConversation } from "./ExampleConversation";
@@ -24,6 +26,36 @@ const CONFIG: ExampleConversationConfig = {
     { speaker: "child", who: "Your child", text: "“My shadow?”" },
   ],
   after: "It answers first, then asks a question back.",
+};
+/* Task Q2.10 (the D2C plan v2 §3 fold 6, ruling 6): three exchanges as labelled DS Tabs, the label above each exchange. */
+const TABBED: ExampleConversationConfig = {
+  heading: CONFIG.heading,
+  note: CONFIG.note,
+  tabs: {
+    label: "What asking back sounds like.",
+    items: [
+      { id: "chat-moon", label: "The moon", lines: CONFIG.lines },
+      {
+        id: "chat-dosa",
+        label: "The dosa pan",
+        lines: [
+          { speaker: "child", who: "Your child", text: "“Why does the dosa pan sizzle?”" },
+          { speaker: "kheelu", who: "Kheelu", text: "“The pan is very hot. Why do you think the pan has to be hot first?”" },
+          { speaker: "child", who: "Your child", text: "“So the dosa gets crispy?”" },
+        ],
+      },
+      {
+        id: "chat-spider",
+        label: "Spider legs",
+        lines: [
+          { speaker: "child", who: "Your child", text: "“How many legs does a spider have?”" },
+          { speaker: "kheelu", who: "Kheelu", text: "“Eight. What else do you know that has more than four legs?”" },
+          { speaker: "child", who: "Your child", text: "“A centipede?”" },
+        ],
+      },
+    ],
+  },
+  after: "Hear it in two languages: watch [“Two languages”](#a-story-in-two-languages).",
 };
 const CSS = readFileSync(join(process.cwd(), "src/components/sections/ExampleConversation/example-conversation.css"), "utf8");
 
@@ -102,6 +134,91 @@ describe("ExampleConversation: the fold", () => {
   });
 });
 
+describe("ExampleConversation: three exchanges on DS Tabs (task Q2.10; the D2C plan v2 §3 fold 6)", () => {
+  const tabs = TABBED.tabs!;
+
+  it("serves the exchanges stacked under their headings, the tab row hidden, every exchange in the HTML (no JavaScript)", () => {
+    const host = document.createElement("div");
+    host.innerHTML = renderToStaticMarkup(<ExampleConversation {...TABBED} offer={OFFER} />);
+    const box = host.querySelector(".ks-exchange > .kh-tabs[data-tabs]")!;
+    expect(box).not.toBeNull();
+    expect(box.className).toBe("kh-tabs");
+    const list = box.querySelector('[role="tablist"]')!;
+    expect(list).toHaveAttribute("hidden");
+    expect(list.getAttribute("aria-label")).toBe(tabs.label);
+    expect([...list.querySelectorAll('[role="tab"]')].map((t) => [t.id, t.getAttribute("aria-controls"), t.textContent])).toEqual(
+      tabs.items.map((item) => [`tab-${item.id}`, `panel-${item.id}`, item.label]),
+    );
+    const panels = [...box.querySelectorAll(":scope > .kh-tabs__panel")];
+    expect(panels.map((p) => [p.id, p.querySelector("h3.kh-subtitle[data-tab-heading]")?.textContent])).toEqual(
+      tabs.items.map((item) => [`panel-${item.id}`, item.label]),
+    );
+    expect(panels.map((p) => p.querySelectorAll("li.ks-exchange__line").length)).toEqual(tabs.items.map((item) => item.lines.length));
+  });
+
+  it("puts the label above every exchange and lets it name that exchange's list (each its own id)", () => {
+    const host = document.createElement("div");
+    host.innerHTML = renderToStaticMarkup(<ExampleConversation {...TABBED} offer={OFFER} />);
+    for (const item of tabs.items) {
+      const panel = host.querySelector(`#panel-${item.id}`)!;
+      const note = panel.querySelector("p.kh-label-s.ks-exchange__note")!;
+      expect(note.textContent).toBe(TABBED.note);
+      expect(note.id).toBe(`panel-${item.id}-note`);
+      expect(note.previousElementSibling?.matches("h3[data-tab-heading]")).toBe(true);
+      const ol = note.nextElementSibling!;
+      expect(ol.tagName).toBe("OL");
+      expect(ol.getAttribute("aria-labelledby")).toBe(note.id);
+      expect([...ol.querySelectorAll("li")].map((li) => [li.className, li.textContent])).toEqual(
+        item.lines.map((l) => [`kh-body ks-exchange__line ks-exchange__line--${l.speaker}`, `${l.who}${l.text}`]),
+      );
+    }
+    expect(new Set([...host.querySelectorAll("[id]")].map((el) => el.id)).size).toBe(host.querySelectorAll("[id]").length);
+  });
+
+  it("makes tabs of them after hydration: the first exchange shown, the others one tap or arrow key away", async () => {
+    const user = userEvent.setup();
+    render(<ExampleConversation {...TABBED} offer={OFFER} />);
+    const list = screen.getByRole("tablist", { name: tabs.label });
+    expect(within(list).getAllByRole("tab").map((t) => t.textContent)).toEqual(tabs.items.map((item) => item.label));
+    expect(screen.getAllByRole("tabpanel").map((p) => p.id)).toEqual(["panel-chat-moon"]);
+    expect(within(screen.getByRole("tabpanel", { name: "The moon" })).getByRole("list", { name: TABBED.note })).toBeInTheDocument();
+    await user.click(screen.getByRole("tab", { name: "Spider legs" }));
+    expect(screen.getAllByRole("tabpanel").map((p) => p.id)).toEqual(["panel-chat-spider"]);
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("tab", { name: "The moon" })).toHaveFocus();
+  });
+
+  it("ends on the line under the tabs, then the page's CTA block, both outside the tabs", () => {
+    const { container } = render(
+      <ExampleConversation {...TABBED} offer={OFFER} cta={<p className="cta-slot">Pre-order Kheelu</p>} />,
+    );
+    const column = container.querySelector(".ks-exchange")!;
+    const after = column.querySelector(":scope > p.kh-body-l.ks-exchange__after")!;
+    expect(after.textContent).toBe("Hear it in two languages: watch “Two languages”.");
+    expect(after.querySelector("a")?.getAttribute("href")).toBe("#a-story-in-two-languages");
+    expect(after.previousElementSibling).toHaveClass("kh-tabs");
+    expect(after.nextElementSibling).toHaveClass("cta-slot");
+    expect(column.lastElementChild).toHaveClass("cta-slot");
+  });
+
+  it("takes the CTA block after a single exchange too", () => {
+    const { container } = render(<ExampleConversation {...CONFIG} offer={OFFER} cta={<p className="cta-slot">Pre-order Kheelu</p>} />);
+    expect(container.querySelector(".ks-exchange")?.lastElementChild).toHaveClass("cta-slot");
+    expect(container.querySelector(".ks-exchange__after")?.nextElementSibling).toHaveClass("cta-slot");
+  });
+
+  it("refuses an empty label, so no tab shows its exchange unmarked", () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    expect(() => render(<ExampleConversation {...TABBED} note=" " offer={OFFER} />)).toThrow(/label/);
+    vi.mocked(console.error).mockRestore();
+  });
+
+  it("moves nothing: no reveal and no draw", () => {
+    const { container } = render(<ExampleConversation {...TABBED} offer={OFFER} />);
+    expect(container.querySelector("[data-reveal], [data-draw]")).toBeNull();
+  });
+});
+
 describe("ExampleConversation: its CSS", () => {
   it("lays the exchange out on DS tokens only, Kheelu's lines to the start, the child's to the end", () => {
     expect(CSS).toMatch(/\.ks-exchange__line--kheelu\s*\{[^}]*justify-self:\s*start/);
@@ -113,9 +230,12 @@ describe("ExampleConversation: its CSS", () => {
 });
 
 describe("ExampleConversation: the stories", () => {
-  it("show the product page's own fold (the page's words, read from its content)", () => {
+  it("show the product page's own fold (the page's words, read from its content): three tabbed exchanges, and one alone", () => {
     expect(stories.Product.args).toBeUndefined();
     expect(storiesMeta.args.note).toBe("Illustrative example, not a recording.");
+    expect(storiesMeta.args.tabs?.items.map((item) => item.label)).toEqual(["The moon", "The dosa pan", "Spider legs"]);
     expect(stories.OnBand.args?.band).toBe(true);
+    expect(stories.OneExchange.args?.lines).toHaveLength(3);
+    expect(stories.OneExchange.args?.tabs).toBeUndefined();
   });
 });

@@ -157,3 +157,15 @@ export const Meets: Story = {
     link: { label: "See the full safety facts", href: "/safety", icon: "shield-check" },
   },
 };
+
+/** Product fold 9 (task Q2.10; the D2C plan v2 §3): the safety facts live on /safety, so the product page says where in
+ *  one line, then the built ghost link there (`product-safety-learn`). */
+export const Pointer: Story = {
+  args: {
+    variant: "pointer",
+    id: "safety",
+    band: true,
+    pointer: "When the microphone is on, how Kheelu answers, and what you can read and delete, fact by fact:",
+    link: { label: "See how we built safety in", href: "/safety", cta: "product-safety-learn" },
+  },
+};
