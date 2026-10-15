@@ -2010,7 +2010,7 @@ parallel worktrees; each owns its files so the merges stay mechanical.
 - **Acceptance:** each item done with evidence (screenshots at 360, 390 and 1440 kept local); visual and text parity,
   first-screen, axe, no-sideways and perf-budget green on home and meet-kheelu; draft amendments for V41, V44, V46, V48.
 
-## Quick batch 1 (D062, D063; 2026-10-15)
+## Quick batch 1 (D062, D063; 2026-10-15): held before anything was built; superseded by quick batch 2 (D064)
 
 Quick-changes rules (D062): targeted checks plus `npm run verify` and the production build; one review only for a risky
 change (risk normal); no full Playwright, Lighthouse or CMO review. Each change is still a deviation row (drafted in the
@@ -2113,6 +2113,96 @@ claims guard, design-system/ untouched. The founder looks at the result on beta.
   links and buttons that today use the DS `whatsapp-logo` icon. Record its source and licence in assets.md.
 - **Owns:** the new asset and its generator or file, WhatsAppFloat and the components that draw the WhatsApp icon,
   their tests and stories, assets.md row.
+
+## Quick batch 2 (D062, D064; 2026-10-15)
+
+The founder's changes 1-10 with D064's answers. D062's quick rules: targeted checks plus `npm run verify` and the
+production build per task; one review for risk normal; no full Playwright, Lighthouse or CMO review of the built pages
+(the CMO reviews the new copy of Q2.7 before it is built). Each change drafts its deviation row in the builder's notes.
+Non-negotiables stay. Wave 1 (Q2.1-Q2.6) runs in parallel now; Q2.7 runs after its copy is approved and wave 1 merges.
+
+### Q2.1 Home: the Kabir hero, the films order, the offer picture's alignment (builder; risk normal)
+
+- **Hero (D064 item 4, Home only):** Home's hero picture becomes the photo library's `kabir-02-block-rocket` (16:9),
+  cropped: on laptop as the hero's picture (a crop that keeps Kabir and Kheelu large, through `Photo` lcp or a generated
+  derivative outside design-system/); on phones in 8c.1's place under the trust line, cropped so Kabir and Kheelu are
+  both wholly in view and Kheelu stays on the first screen at 390 × 844 and 412 × 915. Headline, CTA, price sentence and
+  trust line unchanged; the hero stays still (D049). The other pages' heroes unchanged.
+- **Films (item 1):** Home's strip: the 2nd film replaced by the 4th and the 3rd by the 7th (new order 1, 4, 7, 2, 5, 6,
+  3 of today's list); if the order cannot differ by page, apply it everywhere and say so.
+- **Offer (item 5):** "What you get, and what you pay." on Home: the girl's picture top-aligned with the offer card on
+  laptop (today it starts around the "Today, refundable" row).
+- **Owns:** Home's hero block, films order, OfferSection/Home fold 9 CSS, HeroSection only if needed, `first-screen.spec.ts`
+  (Home), the matching rules in `deviations.ts`, assets.md rows.
+
+### Q2.2 Safety on /safety: Home's compact block, the product page's link (builder; risk normal)
+
+- **Home (item 2):** folds 5 ("You see every conversation.") and 6 ("Safety you can check.") merge into one compact
+  block: heading "Safety you can {hand:check.}", four one-line promises "It listens only after someone presses the wake-up
+  button." · "No web browsing." · "You read every conversation in the parent app." · "We don’t sell your data." (DS
+  TrustList icons as today), one app screenshot (the privacy centre, as built, with its alt and caption), and a link
+  "How we keep Kheelu safe" to `/safety`. Words exact (claims-checked by the main session).
+- **Product page:** its parent-app section ("Every conversation, word for word.") and its safety section ("Safety you can
+  check.") leave the page; in their place one line with the link "How Kheelu keeps your child safe" to `/safety`
+  (a DS ghost button or text link, consistent with Home's link).
+- **`/safety`:** gains whatever of those two product-page sections it does not already say (the parent-app screens and
+  any line not on /safety), in its own existing folds, with no duplicate line on the page; report what moved and what
+  was dropped as a duplicate.
+- **Owns:** Home folds 5-6 in `pages/home.ts`, the product page's two folds in `products/kheelu/page.ts`,
+  `pages/safety.ts`, TrustSection/FeatureSplit only if a compact variant is needed (test, story), the matching rules in
+  `deviations.ts`, the route tests.
+
+### Q2.3 The GSTIN off the website; the phone number off every page but /contact and the legal pages (builder; risk normal)
+
+As quick batch 1's Q1.5 (D063 items 2-3, confirmed by D064 item 11), word for word.
+
+### Q2.4 The WhatsApp logo, and the footer's link gaps (builder; risk mechanical)
+
+- As Q1.6 for the logo (D064 item 3).
+- **Footer (item 6):** inspect the footer at 360, 390, 1440 (screenshots kept local) and tighten the gaps between links in
+  each column (DS spacing tokens; keep 44 px tap targets with padding, not margins); before and after in the notes.
+
+### Q2.5 Motion across the site: line drawing and micro-interactions (builder; risk normal)
+
+- **Base (D049, unchanged):** the scroll fade-and-rise once per section below the first screen; the hero still.
+- **Line drawing (D064 item 10):** each section heading's one accent (a `Hand` phrase or a `Mark`, never both, DS
+  10-pages.md:39) animates once as the heading enters the view: a `Hand` phrase writes itself in (a left-to-right reveal
+  over duration-draw, ease-standard), a `Mark` draws its crayon stroke (stroke-dashoffset); the chalk doodles draw
+  themselves as today. Not in the hero (D049 pick 2). No new accent is added anywhere.
+- **Micro-interactions:** the orange button's press and arrow nudge as today; cards with a link lift a little on hover
+  (translateY of a DS spacing step, a DS shadow) and their icon nudges; text links' underline slides in on hover; the
+  FAQ's plus turns as today; chips and tags press. Pointer devices only for hover; keyboard focus shows the same state.
+- **Rules:** one shared implementation (src/motion, the MotionController's observer, `data-reveal`/`data-draw` and new
+  attributes or classes), DS motion tokens only, transform and opacity only, once per element, never looping, nothing
+  under `prefers-reduced-motion` (the final state shows at once), no layout shift, no effect on LCP. The same on every
+  page: Home, product, safety, setup, team, contact, the guide, the journal hub and articles, legal, store (the store's
+  checkout logic and markup contract unchanged; only shared presentational components).
+- **Owns:** `src/motion/**`, `ui/MotionController`, `ui/Heading`/`RichText` (the accent's animation hook), `ui/Card` and
+  link styles, their tests and stories, the motion guard tests, `wiki/engineering/architecture.md` §11 (motion) one
+  paragraph.
+
+### Q2.6 The expert clip without burned-in words (builder; risk mechanical)
+
+- **What (item 8):** re-encode the clip with the local build script (by absolute path, beside the source video, never
+  committed) with the same cut, **no burned-in captions and no burned-in disclosure**; poster unchanged unless it showed
+  them. Update `expert-video.ts` and its tests (the caption pins come off; a frame check shows no burned text); the
+  page's credit and disclosure lines stay. Placement is unchanged here (Q2.7 moves the fold to Home).
+- **Owns:** `public/video/expert/*`, `expert-video.ts` and its test, assets.md row.
+
+### Q2.7 Home's middle: the languages section, "What is Kheelu?" as a sticky scroll, the expert clip after it (builder; risk normal; after its copy is approved and wave 1 merges)
+
+- **Order on Home:** … "Conversation helps a young brain grow." → **languages section** (new) → **"What is Kheelu?"**
+  (redesigned) → **the expert clip** (moved from the product page, which loses its expert fold) → the safety block (Q2.2)
+  → the rest.
+- **Copy:** the CMO-approved copy in `wiki/site/pages/home.md`, section "Quick batch 2 (D064)": the languages section
+  (heading on "Kheelu speaks up to 10 languages", with "at launch"; the language chips from product.ts; the switching
+  line) and "What is Kheelu?" (eyebrow, heading, the answer-first lead kept in the FAQPage, 4-6 points, each with its
+  photo from the DS photo library).
+- **Design:** laptop: the left column sticky (heading, lead, a picture that changes with the active point), the right
+  column the points; a thin progress line fills as the points pass (the sticky-scroll story, D064 item 10). Phones:
+  stacked, each point with its own picture, no sticky. Reduced motion: no fill, no crossfade.
+- **Owns:** Home folds 3-5 in `pages/home.ts` (new order), the sticky-scroll section (new or a ModesSection variant;
+  test, story; components.md row), the product page's expert fold removal, the matching rules in `deviations.ts`.
 
 ## Wave 9: beta deploy and beta QA (after wave 8)
 
