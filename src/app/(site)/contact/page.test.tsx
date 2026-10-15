@@ -209,6 +209,24 @@ describe("/contact: the rendered page against the approved mockup", () => {
     expect(main.querySelector("#close .ks-help")).toBeNull();
   });
 
+  /* The selling update's close (task Q2.12; the D2C plan v2 §9, with build condition C1): as built by tasks Q2.3 and Q2.8,
+     checked here as the plan words it. "Ready when you are.", the button, the short price line in a block of its own
+     after it, the trust line led by the one risk-reversal line, the ghost link; no help line, no GSTIN anywhere. */
+  it("closes as the plan's §9: the button, the price line in a <p> after it, the risk-reversal line first, no help line", async () => {
+    const { main } = await renderPage(buildOffer("token"));
+    const close = main.querySelector("#close")!;
+    expect(close.querySelector("#close-title")?.textContent).toBe("Ready when you are.");
+    const button = close.querySelector(".kh-btn--cta")!;
+    const price = close.querySelector(".ks-price")!;
+    expect(price.tagName).toBe("P");
+    expect(button.contains(price)).toBe(false);
+    expect(button.compareDocumentPosition(price) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(price.textContent).toBe("₹499 today, refundable. ₹4,999 in total.");
+    expect([...close.querySelectorAll(".ks-trust li")].map((li) => li.textContent)).toEqual(["Full refund until dispatch · 7-day returns", "Deliveries start mid-November"]);
+    expect(close.querySelector("a.kh-btn--ghost")?.textContent).toBe("See how Kheelu works");
+    expect(words(visible(main))).not.toMatch(/GSTIN|incl\. GST/);
+  });
+
   it("reveals nothing, as the mockup reveals nothing, and never moves money (SPA 9)", async () => {
     const { doc, main } = await renderPage(buildOffer("token"));
     expect(mockupMain.querySelectorAll("[data-reveal]")).toHaveLength(0);
