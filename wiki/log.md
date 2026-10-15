@@ -1408,3 +1408,15 @@ guide's close trust line on one row; "3‑year‑old" unbroken; `test/e2e/home-l
 two catalogue row pairs) resolved by keeping each side's changed row. Q2.15 also changed Home's offer lead and added a
 "Pre-order" eyebrow to five closes; the founder declined both (D066 item 4), so Q2.17 reverts them along with D066's
 other items.
+
+## [2026-10-16 05:00] build | Q2.17 (D066) merged (`e395a2d1`); rows V65-V68; verify and the build before beta
+`wf_c035e7f1-354` passed review (its own verify: 7027 passed; the build green). Built: Home's phone bubble after the
+hero (hidden and inert until the buy bar first shows; `data-buybar-seen` from StickyBuyBar); the signed share text; a
+Pre-order block after the product page's comparison (`product-compare`, registered after Gate A under D066); the
+pre-launch test line off the product page, `/safety`'s answer and `/terms` §12 (the journal snapshot had no hit); G28's
+two lines on `/safety` and the product page (claims page notes them confirmed); Home's offer lead and the five closes'
+eyebrows back as approved. `/llms.txt` re-dated 2026-10-16 (the Safety tab line left). Ruling: the bubble waits only on
+Home (where `#hero-cta` is the Pre-order button); `/contact` unchanged. Deviation rows V65 (one CTA shape), V66 (offer
+folds and consistency), V67 (layout and chrome), V68 (D066); D050 notes the change. Known for the final pass: the product
+page's visual parity is red at 360/390/1440 (the offer fold's composition changed in Q2.15; re-based on the approved beta,
+D062).

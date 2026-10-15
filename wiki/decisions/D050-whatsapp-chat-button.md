@@ -31,3 +31,8 @@ task Q2.4; [deviations](../qa/deviations.md) V53). The help lines: the phone num
 the legal pages ([D063](D063-quick-batch-1-choices-2026-10-15.md); V52). Place, size, label, tracking and "persistent on
 every page" are unchanged; the selling update keeps the bubble on the first phone screen (main-session ruling, plan §13
 item 7 left for the founder).
+
+**Changed later (2026-10-16).** On Home's phones the bubble waits, hidden and inert, until the phone buy bar first shows
+(once the hero's button leaves the screen), then stays; laptops and every other page unchanged
+([D066](D066-selling-update-founder-answers-2026-10-16.md) item 1; task Q2.17; deviations V68). It overturns the main
+session's overnight ruling above.
