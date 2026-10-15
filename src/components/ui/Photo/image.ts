@@ -31,8 +31,12 @@ export function cssRatio(ref: ImageRef): `${number} / ${number}` {
  * Loading hints. The one LCP image of a page loads eagerly at high priority; everything else is lazy. Never
  * `priority` or `preload`: Next 16 deprecates `priority` and its docs prefer these two attributes in most cases
  * (node_modules/next/dist/docs/01-app/03-api-reference/02-components/image.md, "preload" and "priority"; N12).
+ * `"eager"` is a first-screen image that is the LCP at no width (Home's phone crop, where the H1 is the LCP; CMO m14):
+ * eager with no priority hint, so the browser sets it (Chrome raises an image to high once layout puts it in the
+ * viewport). React's server renderer still preloads it, at no priority either.
  */
-export function loadingFor(lcp: boolean | undefined): { loading: "eager"; fetchPriority: "high" } | { loading: "lazy" } {
+export function loadingFor(lcp: boolean | "eager" | undefined): { loading: "eager"; fetchPriority: "high" } | { loading: "eager" } | { loading: "lazy" } {
+  if (lcp === "eager") return { loading: "eager" };
   return lcp ? { loading: "eager", fetchPriority: "high" } : { loading: "lazy" };
 }
 

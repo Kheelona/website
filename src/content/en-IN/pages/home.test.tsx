@@ -156,15 +156,21 @@ describe("Home fold 1 · hero (plan §2.0 and fold 1; D065 item 1)", () => {
     expect(TOKEN.main.querySelector("#learning-by-asking")?.getAttribute("data-video-id")).toBe("learning-by-asking");
   });
 
-  it("shows the Kabir photo, phone crop first, with the plan's alt (CMO m4), still, one LCP image per width range", () => {
+  it("shows the Kabir photo, phone crop first, with the plan's alt (CMO m4), still", () => {
     const figures = all(hero, "figure");
     expect(figures.map((f) => f.className)).toEqual(["kh-photo kh-photo--xl ks-hero__phone-art", "kh-photo kh-photo--xl ks-hero-photo ks-art--clamp"]);
     const ALT = "A boy in glasses and an olive T-shirt stacking wooden blocks into a tall tower on a patterned rug, with Kheelu, the cream plush rabbit from Kheelona, beside him.";
     expect(alts(hero)).toEqual([ALT, ALT]);
     expect(all(hero, "[data-reveal], [data-draw]")).toEqual([]);
-    const high = all(TOKEN.main, '[fetchpriority="high"]');
-    expect(high).toHaveLength(2);
-    for (const img of high) expect(hero.contains(img)).toBe(true);
+  });
+
+  /* Plan §1.6 and fold 1 (CMO m14): the photo is the LCP on laptops (the 4:5 crop, from 720 px); on phones the H1 is,
+     and the phone crop starts below a 360 x 590 screen, so it loads eagerly with no priority hint. The server's preloads
+     are HeroSection.test.tsx's (the real next/image; this file renders the shared stand-in). */
+  it("gives the high priority to the 4:5 crop alone; the phone crop is eager with none (CMO m14)", () => {
+    const [phone, image] = all(hero, "figure > img");
+    expect(all(TOKEN.main, '[fetchpriority="high"]')).toEqual([image]);
+    expect([phone.getAttribute("loading"), phone.getAttribute("fetchpriority")]).toEqual(["eager", null]);
   });
 });
 

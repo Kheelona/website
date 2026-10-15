@@ -47,6 +47,12 @@ describe("loadingFor", () => {
     expect(loadingFor(true)).toEqual({ loading: "eager", fetchPriority: "high" });
   });
 
+  /* CMO m14 (D2C plan §1.6): a first-screen picture that is the LCP at no width loads eagerly but asks for no priority,
+     so the browser sets it (Chrome raises an image to high once layout puts it in the viewport). */
+  it("a first-screen image that is not the LCP: eager, no priority hint", () => {
+    expect(loadingFor("eager")).toEqual({ loading: "eager" });
+  });
+
   it("everything else: lazy, no priority hint", () => {
     expect(loadingFor(false)).toEqual({ loading: "lazy" });
     expect(loadingFor(undefined)).toEqual({ loading: "lazy" });

@@ -97,6 +97,27 @@ describe("Photo: loading (ADR-010, N12)", () => {
     expect(img(container)).toHaveAttribute("fetchpriority", hint);
   });
 
+  /* CMO m14 (D2C plan §1.6): a first-screen picture that is the LCP at no width (Home's phone crop: the H1 is the LCP at
+     360, 390 and 412 px) loads eagerly with no priority hint. React's server renderer still hoists a preload for it (it
+     preloads every <img> that is neither lazy nor fetchpriority low), but that preload asks for no priority either. */
+  it('lcp="eager", a first-screen image that is not the LCP: eager, with no fetchpriority', () => {
+    const { container } = render(<Photo image={IRA} sizes={SIZES} lcp="eager" />);
+    expect(img(container)).toHaveAttribute("loading", "eager");
+    expect(img(container)).not.toHaveAttribute("fetchpriority");
+  });
+
+  it('lcp="eager" on the server: no fetchpriority on the image or on React\'s preload', () => {
+    const html = renderToStaticMarkup(<Photo image={IRA} sizes={SIZES} lcp="eager" />);
+    expect(html).not.toMatch(/fetchpriority/i);
+    expect(html.match(/<img [^>]*loading="eager"/g)).toHaveLength(1);
+  });
+
+  it('lcp="eager" takes a non-LCP priority hint as given', () => {
+    const { container } = render(<Photo image={IRA} sizes={SIZES} lcp="eager" fetchPriority="low" />);
+    expect(img(container)).toHaveAttribute("loading", "eager");
+    expect(img(container)).toHaveAttribute("fetchpriority", "low");
+  });
+
   it("the LCP image keeps its high priority whatever fetchPriority says", () => {
     const { container } = render(<Photo image={IRA} sizes={SIZES} lcp fetchPriority="low" />);
     expect(img(container)).toHaveAttribute("loading", "eager");

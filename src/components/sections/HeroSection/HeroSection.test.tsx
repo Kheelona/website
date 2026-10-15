@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import type { ArtBoardRef } from "@/content/types";
 import { VISUAL_HIDDEN, hiddenCss } from "../../../../test/e2e/support/deviations";
@@ -282,14 +283,34 @@ describe("HeroSection: the photo (Home since task Q2.1, D064 item 4)", () => {
     expect(split(container).querySelector("figcaption")).toBeNull();
   });
 
-  it("gives each crop one LCP image at its own widths: the phone crop under 720 px, the 4:5 crop from 720 px (480 px wide until the split)", () => {
+  it("asks for each crop at its own widths: the phone crop under 720 px, the 4:5 crop from 720 px (480 px wide until the split)", () => {
     const { container } = render(<HeroSection {...props} cta={CTA} />);
-    const high = [...container.querySelectorAll("img")].filter((img) => img.getAttribute("fetchpriority") === "high");
-    expect(high).toHaveLength(2);
-    expect(high.map((img) => img.getAttribute("src"))).toEqual([expect.stringContaining("kabir-02-block-rocket-16x10"), expect.stringContaining("kabir-02-block-rocket-4x5")]);
-    for (const img of high) expect(img).toHaveAttribute("loading", "eager");
-    expect(high.map((img) => img.getAttribute("sizes"))).toEqual([PHOTO_SIZES.phone, PHOTO_SIZES.image]);
-    expect(container.querySelectorAll("img")).toHaveLength(2);
+    const imgs = [...container.querySelectorAll("img")];
+    expect(imgs).toHaveLength(2);
+    expect(imgs.map((img) => img.getAttribute("src"))).toEqual([expect.stringContaining("kabir-02-block-rocket-16x10"), expect.stringContaining("kabir-02-block-rocket-4x5")]);
+    for (const img of imgs) expect(img).toHaveAttribute("loading", "eager");
+    expect(imgs.map((img) => img.getAttribute("sizes"))).toEqual([PHOTO_SIZES.phone, PHOTO_SIZES.image]);
+  });
+
+  /* CMO m14 (D2C plan §1.6, fold 1): on phones the H1 is the LCP at 360, 390 and 412 px, and at 360 x 590 the phone crop
+     starts below the screen, so it asks for no priority: the browser sets it (Chrome raises an image to high once layout
+     puts it in the viewport, at 390 x 844 and 412 x 915). The 4:5 crop is the LCP from 720 px (laptops: 1366, 1440). */
+  it("gives the high priority to the 4:5 crop alone: the phone crop is eager with no fetchpriority (CMO m14)", () => {
+    const { container } = render(<HeroSection {...props} cta={CTA} />);
+    const [phone, image] = [...container.querySelectorAll("img")];
+    expect(phone).toHaveAttribute("loading", "eager");
+    expect(phone).not.toHaveAttribute("fetchpriority");
+    expect(image).toHaveAttribute("fetchpriority", "high");
+  });
+
+  it("on the server, preloads the 4:5 crop alone at high priority; React's preload of the eager phone crop asks for none (CMO m14)", () => {
+    const preloads = renderToStaticMarkup(<HeroSection {...props} cta={CTA} />).match(/<link rel="preload"[^>]*>/g) ?? [];
+    const high = preloads.filter((link) => link.includes('fetchPriority="high"'));
+    expect(high).toHaveLength(1);
+    expect(high[0]).toContain("kabir-02-block-rocket-4x5");
+    const phone = preloads.filter((link) => link.includes("kabir-02-block-rocket-16x10"));
+    expect(phone).toHaveLength(1);
+    expect(phone[0]).not.toMatch(/fetchpriority/i);
   });
 
   it("keeps the phone crop out of the WhatsApp bubble's column under 720 px (task Q2.9; D050 persistent)", () => {
