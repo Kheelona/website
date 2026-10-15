@@ -1,6 +1,5 @@
 import clsx from "clsx";
-import { ICON_WHATSAPP_LOGO } from "@/assets/icons.generated";
-import { Glyph } from "@/components/ui/Icon/Glyph";
+import { WHATSAPP_LOGO_GROUND, WHATSAPP_LOGO_HANDSET, WHATSAPP_LOGO_RIM, WHATSAPP_LOGO_VIEWBOX } from "@/assets/whatsapp-logo.generated";
 import type { SupportChat, SupportChatContext } from "@/content/types";
 import { StepAsideLink } from "./WhatsAppFloat.client";
 
@@ -49,9 +48,11 @@ export const STEP_ASIDE_FROM: Readonly<Record<SupportChatContext, string>> = {
 /**
  * The persistent WhatsApp chat bubble (D050; architecture §5.3): a real link that opens WhatsApp in a new tab with
  * the context's pre-filled text, never an order number or personal data. The DS large icon button
- * (`kh-iconbtn kh-iconbtn--l`, 56 px) with the DS `whatsapp-logo` icon in white on WhatsApp green (`--ks-wa-green`,
- * the founder's one colour exception, DS gap G-20); its name is the link's `aria-label`, so the laptop label beside it
- * is hidden from screen readers.
+ * (`kh-iconbtn kh-iconbtn--l`, 56 px) filled by the full-colour WhatsApp logo (D064 item 3, task Q2.4: Wikimedia
+ * Commons' WhatsApp.svg, src/assets/whatsapp-logo.svg): the white bubble, its ground in WhatsApp green
+ * (`--ks-wa-green`, the founder's one colour exception, DS gap G-20) and the white handset, coloured by
+ * whatsapp-float.css; its name is the link's `aria-label`, so the logo and the laptop label beside it are hidden from
+ * screen readers.
  *
  * What moves is CSS: the bubble rises by `--ks-buybar-h` less the bottom safe-area inset (the bar's height holds that
  * inset, and the bubble already sits that far above the edge; task 3.6) while `html[data-buybar="shown"]` (both
@@ -75,7 +76,11 @@ export function WhatsAppFloat({ href, chat, context }: WhatsAppFloatProps) {
   } as const;
   const content = (
     <>
-      <Glyph d={ICON_WHATSAPP_LOGO} />
+      <svg className="ks-wa__logo" viewBox={WHATSAPP_LOGO_VIEWBOX} aria-hidden="true" focusable="false">
+        <path className="ks-wa__rim" d={WHATSAPP_LOGO_RIM} />
+        <path className="ks-wa__ground" d={WHATSAPP_LOGO_GROUND} />
+        <path className="ks-wa__handset" d={WHATSAPP_LOGO_HANDSET} />
+      </svg>
       <span className="kh-label-s ks-wa__label" aria-hidden="true">
         {chat.shortLabel}
       </span>

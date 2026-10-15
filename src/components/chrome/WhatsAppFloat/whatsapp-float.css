@@ -12,13 +12,26 @@
   bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
   z-index: var(--z-sticky);
   margin: 0; /* the DS gives icon buttons negative margins for in-flow use (bundle.css .kh-drawer__head .kh-iconbtn) */
-  background: var(--ks-wa-green);
-  color: var(--white);
+  /* The full-colour logo is the bubble (D064 item 3, task Q2.4): it fills the 56 px button edge to edge, so the DS
+     border comes off, over a ground of the logo's own white, so its round edge shows no fringe. */
+  border: 0;
+  background: var(--white);
   box-shadow: var(--shadow-lift);
 }
-/* bundle.css turns an icon button's ground to the band colour on hover; the bubble stays WhatsApp green. */
+/* bundle.css turns an icon button's ground to the band colour on hover; the bubble keeps the logo's white. */
 .ks-wa:hover {
-  background: var(--ks-wa-green);
+  background: var(--white);
+}
+/* The logo (src/assets/whatsapp-logo.svg's path data): the white bubble, the green ground on it, the white handset. */
+.ks-wa__logo {
+  width: 100%;
+  height: 100%;
+}
+.ks-wa__rim, .ks-wa__handset {
+  fill: var(--white);
+}
+.ks-wa__ground {
+  fill: var(--ks-wa-green);
 }
 /* Hidden while the menu drawer or any other modal dialog is open (its top layer and inert page cover it anyway). */
 html:has(dialog[open]) .ks-wa {

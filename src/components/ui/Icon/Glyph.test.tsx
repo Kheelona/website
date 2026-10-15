@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { ICON_ARROW_RIGHT, ICON_PATHS, ICON_SHIELD_CHECK, type IconName } from "@/assets/icons.generated";
+import { WHATSAPP_GLYPH } from "@/assets/whatsapp-logo.generated";
 import { Glyph } from "./Glyph";
 import { Icon } from "./Icon";
 
@@ -40,7 +41,8 @@ describe("Glyph", () => {
 
   it("renders exactly the markup Icon renders, for every DS icon, decorative, labelled and with a class", () => {
     for (const name of Object.keys(ICON_PATHS) as IconName[]) {
-      const d = ICON_PATHS[name];
+      // whatsapp-logo: Icon draws the site's Wikimedia logo (D064 item 3, task Q2.4), through Glyph all the same.
+      const d = name === "whatsapp-logo" ? WHATSAPP_GLYPH : ICON_PATHS[name];
       expect(renderToStaticMarkup(<Glyph d={d} />), name).toBe(renderToStaticMarkup(<Icon name={name} />));
       expect(renderToStaticMarkup(<Glyph d={d} label="Named" className="ks-x" />), name).toBe(
         renderToStaticMarkup(<Icon name={name} label="Named" className="ks-x" />),
@@ -65,7 +67,7 @@ describe("Icon renders through Glyph", () => {
   it("Icon.tsx draws with Glyph (one markup for both)", () => {
     const source = readFileSync("src/components/ui/Icon/Icon.tsx", "utf8");
     expect(source).toMatch(/^import \{ Glyph \} from "\.\/Glyph";$/m);
-    expect(source).toMatch(/<Glyph d=\{ICON_PATHS\[name\]\} label=\{label\} className=\{className\} \/>/);
+    expect(source).toMatch(/<Glyph d=\{SITE_DRAWINGS\[name\] \?\? ICON_PATHS\[name\]\} label=\{label\} className=\{className\} \/>/);
     expect(source).not.toMatch(/<svg\b/);
   });
 });
