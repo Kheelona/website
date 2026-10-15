@@ -975,13 +975,16 @@ test.describe("chrome: WhatsApp bubble beside the prices (task 4.9; D050)", () =
    now steps aside while the block that holds them crosses its band (WhatsAppFloat's STEP_ASIDE_FROM `site`), as Home's
    hero keeps its links out of the bubble's column (task 8c.5). Checked at every phone of the matrix at first paint, on
    those targets only: text and other links passing under the persistent bubble mid-page stay D050's accepted cost. The
-   /thanks payments line is the store context's (WhatsAppFloat.test.tsx). */
+   /thanks payments line is the thanks context's (WhatsAppFloat.test.tsx): on the store's /thanks without a token, at
+   360 x 640, the line holding its chargeback link lies in the bubble's band at first paint, so the bubble is aside there
+   (the last case below). */
 const HERO_TARGETS = ".ks-contact-ways a, .ks-topics a, .ks-404__list a";
 const FIRST_SCREENS: readonly Built[] = [
   { host: "marketing", path: "/contact" },
   { host: "marketing", path: "/stories" },
   { host: "marketing", path: "/kh-e2e-no-such-page" },
 ];
+const THANKS: Built = { host: "store", path: "/thanks" };
 
 test.describe("chrome: WhatsApp bubble beside the first screens' tap targets (task Q2.16; D050)", () => {
   for (const route of FIRST_SCREENS) {
@@ -1000,6 +1003,15 @@ test.describe("chrome: WhatsApp bubble beside the first screens' tap targets (ta
     await expect.poll(() => bubbleAside(page)).toEqual(ASIDE);
     expect(await coveredAtRest(page, HERO_TARGETS)).toEqual([expect.stringMatching(/^<a\.kh-btn\.kh-btn--secondary/)]);
     expect(await coveredByBubble(page, HERO_TARGETS)).toEqual([]);
+  });
+
+  test("on the store's /thanks at 360 x 640 it is aside at first paint, clear of the payments line's chargeback link", async ({ harness }) => {
+    const page = await openBuilt(harness, VIEWPORTS.find((v) => v.width === 360 && v.height === 640)!, {}, THANKS);
+    expect(await page.locator(".ks-store-payments a").count(), "the payments line's chargeback link").toBe(1);
+    await expect.poll(() => bubbleAside(page)).toEqual(ASIDE);
+    // Not vacuous: at rest the bubble would sit over the link.
+    expect(await coveredAtRest(page, ".ks-store-payments a")).toEqual(["<a>"]);
+    expect(await coveredByBubble(page, ".ks-store-payments a")).toEqual([]);
   });
 });
 
