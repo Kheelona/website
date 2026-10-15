@@ -5,7 +5,9 @@ import kheeluSticker from "@ds/assets/Kheelu/kheelu-front-sticker.png";
 import advikWhispering from "@ds/assets/Photo library/advik-02-whispering-to-kheelu-web.webp";
 import eveningWithAmma from "@ds/assets/Photo library/tara-02-evening-with-amma-web.webp";
 import starSun from "@ds/assets/Shapes/star-sun.svg";
+import appActivity from "@/assets/app/app-activity.webp";
 import appPrivacy from "@/assets/app/app-privacy.webp";
+import appTranscript from "@/assets/app/app-transcript.webp";
 import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
 import { faqs } from "../faqs";
 import { DEFAULT_OG } from "../organization";
@@ -22,7 +24,20 @@ import { TRUST_COMPACT, trustItems } from "../trust";
  * mark, standard or date (claims §6; legal requirements BIS-02). Shared words are read, never retyped: the FAQ answers
  * from faqs.ts, the retention line from policies.ts (D020), the trust pair from trust.ts; the price sentence, the CTA
  * label and the help line come from the offer, cta.ts and seller.ts through the page template.
+ * Since task Q2.11 (the selling update: wiki/site/d2c-conversion-plan-2026-10-15.md v2 §4, checked by the guard and the
+ * CMO; D064 item 2, D065 items 5 and 7): a button after the four facts (`safety-facts`, with the short price line and the
+ * trust line, as on Home); G26's deletion line in the third fact; the daily limit among the nevers (the CMO's m6 words);
+ * "Every conversation, word for word." moved here from the product page as fold 4 (its words, screens, alts and caption;
+ * what the page already said stayed behind: the four safety items, the facts line, "See what we keep", the Kheelona+
+ * note); the controls without their caption (now fold 4's) or their link to the product page's app fold, with G26's alt;
+ * and the retention card without the single-chat sentence (not on file since the app changed, plan §14). No line twice.
  */
+
+/** The parent app's real screens (D044, D046) carry the founder-confirmed caption on every page that shows them; here
+ *  once, under the two screens of fold 4. */
+const APP_CAPTION = "The Kheelona app is live on Apple’s App Store and the Google Play Store.";
+/** The CTA blocks' trust line: the risk-reversal line, then the delivery line (task Q2.8; plan v2 §1.1). */
+const COMPACT = TRUST_COMPACT.map((id) => trustItems[id]);
 
 /** The FAQ photo's rendered width: the narrow (5 of 12) column of the fold's grid from 900 px, beside a 48 px gap
  *  (safety.css fold 7), in the container (16 px gutters, 48 from 1024, 1200 px wide from 1296); full width below. */
@@ -56,10 +71,12 @@ export const safetyPage = {
         },
       },
     },
-    /* Fold 2: the four facts in full, in the D020 order; each titled fact is a question of the page's FAQPage. */
+    /* Fold 2: the four facts in full, in the D020 order; each titled fact is a question of the page's FAQPage. Then the
+       button, where a worried parent is most convinced (plan v2 §4 fold 2; before, the next one was five folds away). */
     {
       kind: "trust-section",
       faq: true,
+      cta: { cta: "safety-facts", block: true, trust: COMPACT },
       config: {
         variant: "facts",
         id: "facts",
@@ -81,10 +98,11 @@ export const safetyPage = {
             title: "How does Kheelu understand and answer my child?",
             body: "To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.",
           },
+          /* G26 (D065 item 7): "Delete all chats" now deletes the chats from the servers. */
           {
             icon: "eye",
             title: "Can I read every conversation?",
-            body: "Yes, in the parent app, word for word, a few minutes after each one ends. Delete them all by deleting your account.",
+            body: "Yes, in the parent app, word for word, a few minutes after each one ends. “Delete all chats” in the app deletes them from our servers.",
           },
           {
             icon: "hand-heart",
@@ -108,14 +126,48 @@ export const safetyPage = {
           { icon: "wifi-slash", title: "No web browsing.", body: "It can’t browse or search the web." },
           { icon: "x", title: "No ads.", body: "Not in the toy, and not in the parent app." },
           { icon: "smiley", title: "No secrets.", body: "It never asks your child to keep one from you." },
+          /* G28 (D065 item 5): the daily limit is true and live; the CMO's m6 words (plan v2 §4 fold 3). Nobody is said
+             to set it, and the per-conversation limit stays unsaid (§1.4, §13 item 2). */
+          { icon: "clock", title: "No talking all day.", body: "Each Kheelu has a daily limit on how long it talks." },
         ],
         link: { label: "How to choose an AI toy: five checks", href: "/ai-toys-for-kids-in-india" },
       },
     },
-    /* Fold 4: the parent controls beside the one real privacy screen (D044), never beside a cast photo. The controls are
+    /* Fold 4: every conversation, word for word, moved here from the product page (D064 item 2; plan v2 §4 fold 4): the
+       product page's words, its two real screens side by side with their alts, and the app's caption (D058 item 8;
+       meet-kheelu.md fold 5 as task 8b.1 left it). On the band with the controls that follow: both are the parent app. */
+    {
+      kind: "feature-split",
+      config: {
+        variant: "app-screens",
+        placement: "product",
+        band: true,
+        heading: {
+          id: "app-title",
+          eyebrow: "The parent app",
+          title: "Every conversation, {hand:word for word.}",
+          lead: "Each one appears in the parent app a few minutes after it ends. Search them, read a daily summary, or look back over the week or the month.",
+        },
+        screens: {
+          images: [
+            {
+              src: appTranscript,
+              alt: "A real parent-app screen showing a child’s conversation with Kheelu word for word, in Hindi and English.",
+            },
+            {
+              src: appActivity,
+              alt: "A real parent-app activity screen: a child’s talking time, chats and questions asked today, and each conversation listed by its first words.",
+            },
+          ],
+          caption: APP_CAPTION,
+        },
+      },
+    },
+    /* Fold 5: the parent controls beside the one real privacy screen (D044), never beside a cast photo. The controls are
        the app's as the live team's code check found them (D058 items 1 and 7; safety.md fold 4): no topics or quiet
-       hours; the Save voice recordings switch. The screen's alt leaves out its "delete all chats" button, which hides
-       chats on that phone, as Home's and the product page's alts do (D058 item 1; safety.md fold 4, task 8b.1b). */
+       hours; the Save voice recordings switch. The screen's alt names its "delete all chats" button again, which now
+       deletes from the servers (G26, D065 item 7; plan v2 §4 fold 5). No caption (fold 4's, one line above) and no link:
+       its target, the product page's app fold, is fold 4 now. */
     {
       kind: "feature-split",
       config: {
@@ -145,16 +197,15 @@ export const safetyPage = {
           images: [
             {
               src: appPrivacy,
-              alt: `A real screen from the Kheelu parent app: the privacy centre. Chats are kept for ${RETENTION_MONTHS} months, with a switch to save voice recordings and a button to download your child’s data.`,
+              alt: `A real screen from the Kheelu parent app: the privacy centre. Chats are kept for ${RETENTION_MONTHS} months, with a switch to save voice recordings and buttons to download your child’s data and to delete all chats.`,
             },
           ],
-          caption: "The Kheelona app is live on Apple’s App Store and the Google Play Store.",
         },
-        link: { label: "See what the app shows you", href: "/products/kheelu#app", icon: "eye" },
       },
     },
-    /* Folds 5 and 6: retention (D020's line, then what removing a chat and deleting the account do, D058 item 1; next to
-       the memory claim, D036) and certification (claims §6). */
+    /* Fold 6: retention (D020's line, then what deleting the account does, D058 item 1; next to the memory claim, D036)
+       and certification (claims §6). The single-chat sentence came off with the selling update: what removing one chat
+       does since the app changed is not on file (plan v2 §4 fold 6, §14). */
     {
       kind: "feature-split",
       config: {
@@ -164,7 +215,7 @@ export const safetyPage = {
             heading: { id: "kept-title", eyebrow: "Retention", title: "How long conversations are {hand:kept.}" },
             copy: [
               RETENTION_LINE,
-              "Removing a chat in the app hides it on that phone. Deleting your account deletes your child’s profile, conversations and recordings from our servers.",
+              "Deleting your account deletes your child’s profile, conversations and recordings from our servers.",
               "Kheelu remembers earlier conversations with your child, and you can read every one of them.",
             ],
             link: { label: "Read our privacy policy", href: "/privacy" },
@@ -214,7 +265,8 @@ export const safetyPage = {
         ],
       },
     },
-    /* Fold 8: the one action, the price sentence, delivery and returns beside it, and a person to ask. */
+    /* Fold 8: the close: the button, the short price line, the trust line (the risk-reversal line, then delivery) and a
+       person to ask (task Q2.8; plan v2 §4 fold 8). */
     {
       kind: "close-section",
       config: {
@@ -224,7 +276,7 @@ export const safetyPage = {
           title: "Check it all for yourself, {hand:at home.}",
           lead: "The wake-up button, the light and every conversation in the parent app: you can check each one once it’s home.",
         },
-        cta: { cta: "finale", arrow: true, block: true, trust: TRUST_COMPACT.map((id) => trustItems[id]), helpLine: true },
+        cta: { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true },
         art: {
           tone: "blue",
           label: "A laughing girl in a peach kurta beside Kheelu, the cream plush rabbit.",
