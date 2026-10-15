@@ -190,19 +190,22 @@ dialog.kh-drawer[open]::backdrop {
 /* ---------- D064 item 10. Micro-interactions: feedback the visitor starts ----------
    Hover only on pointer devices (a phone's tap leaves no hover behind); keyboard focus shows the same state; presses
    (DS README "Motion": presses and hovers take --duration-fast) on every device. Transform only, so nothing shifts
-   layout; under reduced motion nothing moves (the block at the end). The look of each state (the card's shadow, the
+   layout; under reduced motion nothing moves (the transition is set only when motion is allowed; the block at the end
+   holds the rest). The look of each state (the card's shadow, the
    underline's place and colour) is its component's own CSS (card.css, nav-bar.css).
    - A card with a link (`kh-card` holding a `kh-card__link`: Home's guides, the hub's guide cards, the contact route
      cards, the founders) lifts one DS step, and its link's arrow nudges as the chilli button's does.
    - A ghost link's end arrow ("See all questions", "Read the guide") nudges the same way.
    - The nav link's underline slides in from the left: its ::after (nav-bar.css) grows to its full width.
    - A tag or chip that is a link or a button (the hub's topics) presses half a DS step. */
-.kh-card:has(.kh-card__link),
-.kh-card__link .kh-icon,
-.kh-btn--ghost > span + .kh-icon,
-.kh-nav__link::after,
-:is(a, button):is(.kh-tag, .kh-chip) {
-  transition: transform var(--duration-fast) var(--ease-standard);
+@media (prefers-reduced-motion: no-preference) {
+  .kh-card:has(.kh-card__link),
+  .kh-card__link .kh-icon,
+  .kh-btn--ghost > span + .kh-icon,
+  .kh-nav__link::after,
+  :is(a, button):is(.kh-tag, .kh-chip) {
+    transition: transform var(--duration-fast) var(--ease-standard);
+  }
 }
 @media (hover: hover) and (pointer: fine) {
   .kh-card:has(.kh-card__link):hover {
@@ -370,13 +373,6 @@ html[data-buybar="shown"] .ks-wa.is-hidden {
   html.js-motion :is(h2, h3) .kh-mark.is-in::after {
     transform: none;
     animation: none;
-  }
-  .kh-card:has(.kh-card__link),
-  .kh-card__link .kh-icon,
-  .kh-btn--ghost > span + .kh-icon,
-  .kh-nav__link::after,
-  :is(a, button):is(.kh-tag, .kh-chip) {
-    transition: none;
   }
   .kh-btn--cta:focus-visible .ks-btn__arrow,
   .kh-card:has(.kh-card__link):hover,
