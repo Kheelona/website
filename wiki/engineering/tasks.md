@@ -2177,9 +2177,30 @@ As quick batch 1's Q1.5 (D063 items 2-3, confirmed by D064 item 11), word for wo
   under `prefers-reduced-motion` (the final state shows at once), no layout shift, no effect on LCP. The same on every
   page: Home, product, safety, setup, team, contact, the guide, the journal hub and articles, legal, store (the store's
   checkout logic and markup contract unchanged; only shared presentational components).
+- **A buy button on laptops (main-session ruling 2 of the selling update):** the NavBar sticks to the top from 900 px
+  with its "Pre-order Kheelu" button (`navbar` cta value unchanged), closing today's 900-1023 px gap where neither the
+  bar nor the nav button shows; the DS `--z-sticky` token; no layout shift.
 - **Owns:** `src/motion/**`, `ui/MotionController`, `ui/Heading`/`RichText` (the accent's animation hook), `ui/Card` and
-  link styles, their tests and stories, the motion guard tests, `wiki/engineering/architecture.md` §11 (motion) one
+  link styles, `chrome/NavBar` (sticky from 900 px), their tests and stories, the motion guard tests, `wiki/engineering/architecture.md` §11 (motion) one
   paragraph.
+
+### Q2.8 The short price line and one risk-reversal line, site-wide (builder; risk normal)
+
+- **What (D065 item 3, main-session ruling 3 of the selling update):** every "Pre-order Kheelu" button on the selling
+  pages (heroes, CTA blocks, closes, the nav drawer's note) carries the short price line in token mode
+  "{price:token} today, refundable. {price:headline} in total." (full mode "{price:full} in total, paid in full when you
+  order."); the phone buy bar's small line reads "refundable · {price:headline} in total"; the one risk-reversal line,
+  in the same words everywhere it shows (the heroes' trust line and under the buttons inside pages):
+  "Full refund until dispatch · {returnDays}-day returns" built from the refund and policy values (never typed). No
+  "incl. GST" and no ₹4,500 balance on the selling pages, except the offer cards' two split rows (today / before
+  delivery), which stay without "incl. GST". The store and `/thanks` keep their full sentence and breakdown (checkout
+  logic unchanged; only the store's top marketing line may take the risk-reversal line).
+- **Owns:** `src/content/en-IN/offer.ts` (sentences, bar line), `PriceSentence`, `CtaBlock`, `StickyBuyBar` (words only),
+  `TrustLine` data where the risk-reversal line replaces items, `OfferCard` ("incl. GST" off), the machine-file pins if
+  `/llms.txt` or `/pricing.md` read a changed string (they may keep "incl. GST": machine files are not selling pages),
+  the matching tests and `deviations.ts` rules.
+- **Acceptance:** no "incl. GST" on any selling page's rendered HTML except none (grep the build), the store's
+  checkout unchanged (contract fixtures green), `findBanned` green, verify green.
 
 ### Q2.6 The expert clip without burned-in words (builder; risk mechanical)
 
