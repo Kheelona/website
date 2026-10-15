@@ -7,6 +7,8 @@ import { buildOffer } from "@/lib/offer/offer";
 import {
   CLAIM_FIXES,
   type ClaimFixesSlug,
+  CLOSES_ALIKE,
+  type ClosesAlikeSlug,
   COPY_FIXES,
   type CopyFixesSlug,
   editsBeforeClaimFixes,
@@ -151,7 +153,9 @@ function approvedItems(slug: string): Element[] {
     ...(Object.hasOwn(SELLING_CLOSES, slug) ? SELLING_CLOSES[slug as SellingClosesSlug].edits : []),
     ...(Object.hasOwn(SELLING_UPDATE, slug) ? SELLING_UPDATE[slug as keyof typeof SELLING_UPDATE].edits : []),
   ].filter((e) => /faq/.test(e.at));
-  return Array.from(withFacts(withFacts(withFacts(withFacts(main, fixes), claims), later), selling).querySelectorAll(".kh-faq__item"));
+  // Then the consistency review's, inside the questions (task Q2.15: /safety's first question's hyphens, QAP-6).
+  const alike = (Object.hasOwn(CLOSES_ALIKE, slug) ? CLOSES_ALIKE[slug as ClosesAlikeSlug].edits : []).filter((e) => /faq/.test(e.at));
+  return Array.from(withFacts(withFacts(withFacts(withFacts(withFacts(main, fixes), claims), later), selling), alike).querySelectorAll(".kh-faq__item"));
 }
 
 /** The pages whose FAQ is still the approved mockup's: Home's left it with the selling update (task Q2.9), compared with
@@ -178,6 +182,21 @@ describe.each(MOCKUP_PAGES)("mockup %s, token mode, word for word", (slug, ids) 
       return;
     }
     expect(rendered).toEqual(paragraphs);
+  });
+});
+
+/* Task Q2.15 (the consistency review's QAP-6): /safety's first question, open by default, broke at its hyphen on phones
+   ("Is Kheelu OK for a 3-year-" over "old?"), where the product page's never does: the age in a question is written
+   with non-breaking hyphens (U+2011), so it stays whole on its line. */
+describe("task Q2.15: an age in a question never breaks at its hyphens (QAP-6)", () => {
+  it("writes /safety's first question with non-breaking hyphens, as the product page's", () => {
+    expect(faqs["age-three"].question).toBe("Is Kheelu OK for a 3\u2011year\u2011old?");
+    expect(faqs["right-for-a-three-year-old"].question).toBe("Is Kheelu right for a 3\u2011year\u2011old?");
+  });
+
+  it("leaves no breaking hyphen in an age in any question", () => {
+    const ages = Object.values(faqs).map((item) => plain(item.question, token)).filter((q) => /\d-year-old/.test(q));
+    expect(ages).toEqual([]);
   });
 });
 

@@ -10,11 +10,13 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { parseRichText, type RichNode } from "@/lib/content/rich-text";
 import { formatDate } from "@/lib/format/date";
 import { buildOffer } from "@/lib/offer/offer";
+import { CLOSES_ALIKE } from "../../../../../test/e2e/support/deviations";
 import { ROOT } from "../../../../../test/e2e/support/repo";
 import { approvedArticle } from "../../../../../test/fixtures/journal/approved";
 import { type CopyFold, copyFold, copyLines, glanceRow, readCopyPage } from "../../../../../test/support/copy-page";
 import { withSellerFacts } from "../../../../../test/e2e/support/seller-facts";
 import { mockupFold, portClass, skeleton, words } from "../../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../../test/support/mockup-facts";
 import { TEAM_BYLINE } from "../../organization";
 import type { ArticleSlug } from "../../routes";
 import { articles } from "./index";
@@ -437,11 +439,11 @@ describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) =
     const built = document.createElement("div");
     built.append(...[main.querySelector(".ks-related")!, main.querySelector("#close")!].map((n) => n.cloneNode(true)));
     const reference = document.createElement("div");
-    /* The close's help line without the call (D063 item 2; task Q2.3; seller-facts.ts). */
+    /* The close's help line without the call (D063 item 2; task Q2.3; seller-facts.ts); the close labelled "Pre-order" and
+       its ghost link "See how Kheelu works", as the learning-toys article's (task Q2.15, CON-6 and CON-7; CLOSES_ALIKE). */
+    const learning = "story-learning-toys-for-a-three-year-old";
     reference.append(
-      ...[mockupFold("story-learning-toys-for-a-three-year-old", ".mk-related"), mockupFold("story-learning-toys-for-a-three-year-old", "#close")].map((n) =>
-        withSellerFacts(n),
-      ),
+      ...[mockupFold(learning, ".mk-related"), withFacts(mockupFold(learning, "#close"), CLOSES_ALIKE[learning].edits)].map((n) => withSellerFacts(n)),
     );
     /* The article's own: its three guides, by their card titles and pages; the mockup's store page is the store host. */
     reference.querySelectorAll(".mk-related a.kh-listitem").forEach((row, i) => {

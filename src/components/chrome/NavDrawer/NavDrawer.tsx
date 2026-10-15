@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import { ICON_X } from "@/assets/icons.generated";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { IconButton } from "@/components/ui/IconButton/IconButton";
@@ -25,8 +25,9 @@ export interface NavDrawerProps {
   ctaLabel: string;
   /** The live offer: the first note is its price sentence (D028), in the current mode. */
   offer: Offer;
-  /** The second note: when deliveries start and the returns promise. */
-  note: ReactNode;
+  /** The second note's lines, each on a line of its own (task Q2.15; the consistency review's CON-8): the risk-reversal
+   *  line, then when deliveries start, as the trust line beside every button reads them. */
+  note: readonly ReactNode[];
 }
 
 /**
@@ -55,7 +56,14 @@ export function NavDrawer({ id, label, navLabel, logo, closeLabel, links, ctaLab
         <div className="kh-drawer__cta">
           <PreorderButton cta="navbar-mobile" label={ctaLabel} size="l" block />
           <PriceSentence offer={offer} variant="drawer" />
-          <p className="kh-drawer__note">{note}</p>
+          <p className="kh-drawer__note">
+            {note.map((line, i) => (
+              <Fragment key={i}>
+                {i > 0 && <br />}
+                {line}
+              </Fragment>
+            ))}
+          </p>
         </div>
       </div>
     </NavDrawerDialog>

@@ -8,7 +8,7 @@ import { ICON_PATHS } from "@/assets/icons.generated";
 import { cta } from "@/content/en-IN/cta";
 import { PLUS_NOTE } from "@/content/en-IN/offer";
 import { seller } from "@/content/en-IN/seller";
-import { TRUST_OFFER, trustItems } from "@/content/en-IN/trust";
+import { TRUST_COMPACT, TRUST_OFFER_THIRD, trustItems } from "@/content/en-IN/trust";
 import type { ArtBoardRef, ImageRef, Offer } from "@/content/types";
 import { buildOffer } from "@/lib/offer/offer";
 import type { SellingContext } from "../CtaBlock/cta-block.types";
@@ -58,9 +58,10 @@ const PRODUCT: OfferSectionConfig = {
   variant: "photo",
   heading: { eyebrow: "What you get", title: "Everything that {hand:comes with it.}" },
   cta: "product-offer",
-  /* Both cards' row since task Q2.8's review: the trust line, then the card's third row (the D2C plan v2 §1.1; the
-     harness reads the mockup's rows so, test/support/mockup-compare.ts withPriceLine). */
-  trust: TRUST_OFFER.map((id) => trustItems[id]),
+  /* Both cards' rows since task Q2.8's review: the trust line, then the card's third row (the D2C plan v2 §1.1; the
+     harness reads the mockup's rows so, test/support/mockup-compare.ts withPriceLine), two lists since task Q2.15. */
+  trust: TRUST_COMPACT.map((id) => trustItems[id]),
+  third: TRUST_OFFER_THIRD.map((id) => trustItems[id]),
   /* The Kheelona+ note in the card since task Q2.13 (the D2C plan v2 §3 fold 3: "the same note under the perks"). */
   note: PLUS_NOTE,
   photo: PHOTO,
@@ -68,11 +69,12 @@ const PRODUCT: OfferSectionConfig = {
 /** Home's offer since task Q2.9 (the selling update; the D2C plan v2 §2 fold 7): moved up to fold 7, so not the close. */
 const HOME_OFFER: OfferSectionConfig = {
   variant: "home",
-  heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}", lead: "There every day at home, with no screen to switch off." },
+  heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}", lead: "Kheelu is there every day at home, with no screen to switch off." },
   cta: "home-offer",
   cardLabel: "Kheelu offer",
   note: PLUS_NOTE,
-  trust: TRUST_OFFER.map((id) => trustItems[id]),
+  trust: TRUST_COMPACT.map((id) => trustItems[id]),
+  third: TRUST_OFFER_THIRD.map((id) => trustItems[id]),
   art: HOME_ART,
 };
 
@@ -123,7 +125,7 @@ describe("OfferSection: variants", () => {
 
   it("home: the art board beside the card, named, below the first screen (its doodle draws, nothing loads eagerly)", () => {
     const board = renderedElement(<OfferSection {...HOME_OFFER} {...context()} />).querySelector(".kh-art")!;
-    expect(board.getAttribute("class")).toBe("kh-art kh-tone-sun");
+    expect(board.getAttribute("class")).toBe("kh-art kh-tone-sun ks-offer-art");
     expect(board).toHaveAttribute("role", "img");
     expect(board).toHaveAttribute("aria-label", HOME_ART.label);
     expect(board.children).toHaveLength(4);
@@ -132,23 +134,38 @@ describe("OfferSection: variants", () => {
   });
 
   /* Task Q2.1 (D064 item 5): on laptops Home's board (the girl in the mustard frock beside Kheelu) starts level with the
-     card's top. The DS split centres its two columns (bundle.css:1136), so beside the taller column the board started
-     around the card's "Today, refundable" row. One rule from 900 px, where the split begins, on the board beside an offer
-     card; the column and the markup are as approved. Its effect is measured in a browser (the task report). */
-  it("home: the board top-aligned with the card from 900 px, where the split begins, by one rule on the board beside a card", () => {
+     card's top; the DS split centres its two columns (bundle.css:1136). Since task Q2.15 (the consistency review's CON-3,
+     QAL-2, CMO-2) both offer folds share one composition from 900 px, where the split begins: the offer split's columns
+     (5:6), the column against its picture with the card, the two rows and the share link one width (432 px), and the
+     picture, Home's board or the product photo, starting at the column's edge, at most 512 px and top-aligned with the
+     card. Its effect is measured in a browser (the task report). */
+  it("one composition from 900 px: the column one width against its picture, the picture top-aligned, on both pages", () => {
     const css = readFileSync(join(process.cwd(), "src/components/sections/OfferSection/offer-section.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
     const media = [...css.matchAll(/@media \(min-width: 900px\) \{([\s\S]*?)\n\}/g)].map((m) => m[1]);
-    const rules = media.flatMap((block) => [...block.matchAll(/([^{}]+)\{([^}]*)\}/g)].map(([, selector, body]) => ({ selector: selector.trim(), body })));
-    const aligned = rules.filter((r) => /align-self:\s*start;/.test(r.body));
-    expect(aligned.map((r) => r.selector)).toEqual([".kh-split:has(> :first-child > .kh-offer) > .kh-art"]);
-    expect(css.split(aligned[0].selector)).toHaveLength(2);
-    // It reaches Home's board, and neither the product page's photo nor any other block of either fold.
-    const home = renderedElement(<OfferSection {...HOME_OFFER} {...context()} />);
-    const product = renderedElement(<OfferSection {...PRODUCT} {...context()} />);
-    const split = home.querySelector(".kh-split")!;
-    expect(split.firstElementChild?.firstElementChild).toHaveClass("kh-offer");
-    expect(split.lastElementChild).toHaveClass("kh-art");
-    expect(product.querySelectorAll(".kh-split > .kh-art")).toHaveLength(0);
+    const rules = media.flatMap((block) => [...block.matchAll(/([^{}]+)\{([^}]*)\}/g)].map(([, selector, body]) => ({ selector: selector.replace(/\s+/g, " ").trim(), body })));
+    const where = (declaration: RegExp) => rules.filter((r) => declaration.test(r.body)).map((r) => r.selector);
+    expect(where(/align-self:\s*start;/)).toEqual([".ks-offer-split > .ks-offer-photo, .ks-offer-split > .ks-offer-art"]);
+    expect(where(/justify-self:\s*start;/)).toEqual([".ks-offer-photo, .ks-offer-art"]);
+    // The board has no width of its own (its layers are placed absolutely): started at the column's edge it takes the
+    // column's width, up to 512 px, or it would shrink to nothing beside the card (the task's screenshots at 1440).
+    expect(rules.find((r) => r.selector === ".ks-offer-photo, .ks-offer-art")?.body).toMatch(/width:\s*100%;/);
+    expect(where(/grid-template-columns:\s*minmax\(0, 5fr\) minmax\(0, 6fr\);/)).toEqual([".ks-offer-split"]);
+    expect(where(/justify-items:\s*end;/)).toEqual([".ks-offer-col"]);
+    expect(where(/max-width:\s*calc\(var\(--space-10\) \* 3 \+ var\(--space-7\)\);/)).toEqual([".ks-offer-col > .kh-offer, .ks-offer-col > .kh-trustline, .ks-offer-col > .ks-offer-share"]);
+    // The :has() rule that top-aligned Home's board alone (Q2.1) left with the one composition.
+    expect(css).not.toContain(":has(");
+    // The board stays full width on phones: no rule outside the 900 px block names it.
+    const outside = css.replace(/@media \(min-width: 900px\) \{[\s\S]*?\n\}/g, "");
+    expect(outside).not.toContain("ks-offer-art");
+    // Each page's picture is the one those rules reach, in the split's second column.
+    for (const [config, picture] of [
+      [HOME_OFFER, "ks-offer-art"],
+      [PRODUCT, "ks-offer-photo"],
+    ] as const) {
+      const split = renderedElement(<OfferSection {...config} {...context()} />).querySelector(".ks-offer-split")!;
+      expect(split.lastElementChild).toHaveClass(picture);
+      expect(split.firstElementChild).toHaveClass("ks-offer-col");
+    }
   });
 
   it("photo: the section id offer (the page's #offer fragment), a plain card, the square photo beside it", () => {
@@ -194,11 +211,12 @@ describe("OfferSection: variants", () => {
       expect(el.textContent).not.toContain(offer.mode === "token" ? "today, refundable." : "paid in full when you order.");
     });
 
-    it("puts only the trust line, with the card's third row, and the share link under the card: no help line", () => {
+    it("puts only the trust line, then the card's third row, and the share link under the card: no help line", () => {
       const el = renderedElement(<OfferSection {...config} {...context()} />);
       const column = el.querySelector(".kh-offer")!.parentElement!;
-      expect([...column.children].map((c) => [...c.classList].find((k) => /^(?:kh-offer|ks-trust|ks-offer-share)$/.test(k)))).toEqual([
+      expect([...column.children].map((c) => [...c.classList].find((k) => /^(?:kh-offer|ks-offer-third|ks-trust|ks-offer-share)$/.test(k)))).toEqual([
         "kh-offer",
+        "ks-trust",
         "ks-trust",
         "ks-offer-share",
       ]);
@@ -210,6 +228,33 @@ describe("OfferSection: variants", () => {
       ]);
       expect(el.querySelector(".ks-help")).toBeNull();
       expect(el.textContent).not.toContain("Questions?");
+    });
+
+    /* Task Q2.15 (the consistency review's CON-3, QAL-2, CMO-2): the plan's rows built as rows (§1.1 "Offer cards only, a
+       third row"), not one list that wraps by its column's width: the trust line, then the card's third row, each a list
+       of its own, so both cards group them alike at every width. */
+    it("prints the trust line and the card's third row as two lists, in the plan's order", () => {
+      const column = renderedElement(<OfferSection {...config} {...context()} />).querySelector(".kh-offer")!.parentElement!;
+      const rows = [...column.querySelectorAll(":scope > ul.kh-trustline")];
+      expect(rows.map((row) => row.getAttribute("class"))).toEqual(["kh-trustline ks-trust", "kh-trustline ks-trust ks-offer-third"]);
+      expect(rows.map((row) => [...row.querySelectorAll("li")].map((li) => li.textContent))).toEqual([
+        ["Full refund until dispatch · 7-day returns", "Deliveries start mid-November"],
+        ["6-month warranty", "UPI, card or net banking"],
+      ]);
+      expect(rows[1].querySelectorAll("a").length).toBe(2);
+      expect([...rows[1].querySelectorAll("a")].map((a) => a.getAttribute("href"))).toEqual(["/refund#faulty", "/terms#payment"]);
+    });
+
+    /* One composition (CON-3, QAL-2, CMO-2; D064 item 5): the column (card, the two rows, the share link) beside the
+       picture in the offer split, on both pages; only the picture differs (Home's board, the product photo). */
+    it("lays the column beside its picture in the one offer split", () => {
+      const split = renderedElement(<OfferSection {...config} {...context()} />).querySelector(".kh-split")!;
+      expect(split.getAttribute("class")).toBe("kh-split ks-offer-split");
+      expect([...split.children].map((c) => [...c.classList].find((k) => /^ks-offer-(?:col|photo|art)$/.test(k)))).toEqual([
+        "ks-offer-col",
+        config.variant === "home" ? "ks-offer-art" : "ks-offer-photo",
+      ]);
+      expect(split.firstElementChild!.firstElementChild).toHaveClass("kh-offer");
     });
   });
 
@@ -276,7 +321,7 @@ describe("OfferSection: home (Home's offer, moved up; task Q2.9)", () => {
     const region = screen.getByRole("region", { name: "What you get, and what you pay." });
     expect(region).toHaveAttribute("id", "offer");
     expect(region).toHaveAttribute("aria-labelledby", "offer-title");
-    expect(region.querySelector(".kh-heading--center .kh-heading__lead")?.textContent).toBe("There every day at home, with no screen to switch off.");
+    expect(region.querySelector(".kh-heading--center .kh-heading__lead")?.textContent).toBe("Kheelu is there every day at home, with no screen to switch off.");
   });
 
   it("names the card as a region without an id of its own, its button home-offer, and the plan's Kheelona+ note in it", () => {
@@ -303,7 +348,7 @@ describe("OfferSection: home (Home's offer, moved up; task Q2.9)", () => {
   it("puts the trust line with the card's third row under it, no help line, then the share link last in the column", () => {
     const el = section();
     const column = el.querySelector(".kh-offer")!.parentElement!;
-    expect([...column.children].map((c) => c.className)).toEqual(["kh-offer", "kh-trustline ks-trust", "kh-section__actions ks-offer-share"]);
+    expect([...column.children].map((c) => c.className)).toEqual(["kh-offer", "kh-trustline ks-trust", "kh-trustline ks-trust ks-offer-third", "kh-section__actions ks-offer-share"]);
     expect([...column.querySelectorAll(".ks-trust li")].map((li) => li.textContent)).toEqual([
       "Full refund until dispatch · 7-day returns",
       "Deliveries start mid-November",
@@ -416,7 +461,7 @@ describe("OfferSection: the share link under the card", () => {
     const column = section.querySelector(".kh-offer")!.parentElement!;
     expect(row.parentElement).toBe(column);
     expect(column.lastElementChild).toBe(row);
-    expect(row.previousElementSibling?.classList.contains("ks-trust")).toBe(true);
+    expect(row.previousElementSibling?.getAttribute("class")).toBe("kh-trustline ks-trust ks-offer-third");
   });
 
   /* Task Q2.13's screenshots: at 360-412 px and on the product page's 432 px laptop column the link wrapped mid-sentence

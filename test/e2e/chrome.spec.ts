@@ -91,14 +91,15 @@ async function openMockup(harness: Harness, slug: "home" | "store", vp: Viewport
 
 /** Task Q2.8 (D065 item 3; deviations.ts PRICE_LINE): the mockup's drawer notes and the buy bar's small line in the
  *  build's words, as the unit tests read the mockup (test/support/mockup-compare.ts `withPriceLine`): the short price
- *  line for D028's sentence, the risk-reversal line first in the trust note, the bar's line "in total". The words are
- *  held by the shell's unit tests; here the pixels compare the same words, laid out, on both sides. */
+ *  line for D028's sentence, the risk-reversal line first in the trust note, the bar's line "in total". Since task Q2.15
+ *  (the consistency review's CON-8; `withDrawerNoteLines`) the trust note's two items a line each. The words are held by
+ *  the shell's unit tests; here the pixels compare the same words, laid out, on both sides. */
 async function withPriceLineWords(page: Page): Promise<void> {
   await page.evaluate(({ sentence, bar, returns, delivery }) => {
     const words = (el: Element) => (el.textContent ?? "").replace(/\s+/g, " ").trim();
     for (const el of document.querySelectorAll(".kh-drawer__note")) {
       if (words(el) === sentence.mockup) el.textContent = sentence.build;
-      else if (words(el) === `${delivery} · ${returns.mockup}`) el.textContent = `${returns.build} · ${delivery}`;
+      else if (words(el) === `${delivery} · ${returns.mockup}`) el.replaceChildren(returns.build, document.createElement("br"), delivery);
     }
     for (const el of document.querySelectorAll(".kh-buybar__small")) if (words(el) === bar.mockup) el.textContent = bar.build;
   }, PRICE_LINE);

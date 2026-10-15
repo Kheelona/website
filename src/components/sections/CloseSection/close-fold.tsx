@@ -10,10 +10,11 @@ import type { CloseSectionProps } from "./close-section.types";
  * ship with any page that loads CloseSection. The 404 renders only the centred close and sits outside every layout, so
  * whatever it loads is its own chunk: it loads this module, not CloseSection. */
 
-/** The close's section and container: `#close` named by `#close-title` (`#help` on /setup). */
-export function CloseFold({ id = "close", className, children }: { id?: string; className?: string; children: ReactNode }) {
+/** The close's section and container: `#close` named by `#close-title` (`#help` on /setup), on the cream band when its
+ *  config asks (`band`, task Q2.15). */
+export function CloseFold({ id = "close", band, className, children }: { id?: string; band?: boolean; className?: string; children: ReactNode }) {
   return (
-    <Section id={id} labelledBy={`${id}-title`} className={className}>
+    <Section id={id} band={band} labelledBy={`${id}-title`} className={className}>
       <Container>{children}</Container>
     </Section>
   );
@@ -49,7 +50,7 @@ export function CenterClose(props: Extract<CloseSectionProps, { variant: "center
   const { offer, ctaLabel, help } = props;
   const context: SellingContext = { offer, ctaLabel, help };
   return (
-    <CloseFold>
+    <CloseFold band={props.band}>
       <CloseHeading heading={props.heading} context={context} center />
       <CtaBlock {...props.cta} align="center" {...context} />
     </CloseFold>

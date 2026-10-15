@@ -46,7 +46,8 @@ export const notFoundPage = {
       kind: "close-section",
       config: {
         variant: "center",
-        heading: { title: "Looking for {hand:Kheelu?}" },
+        /* "Pre-order", as every selling close is labelled (task Q2.15; the consistency review's CON-6). */
+        heading: { eyebrow: "Pre-order", title: "Looking for {hand:Kheelu?}" },
         cta: { cta: "finale", trust: TRUST_COMPACT.map((id) => trustItems[id]), helpLine: true },
       },
     },

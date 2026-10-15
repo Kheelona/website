@@ -43,7 +43,7 @@ import { sentences } from "../../../../../test/e2e/support/parity";
 import { ROOT } from "../../../../../test/e2e/support/repo";
 import { mockupRoute as mockupPageRoute } from "../../../../../test/e2e/support/routes";
 import { withSellerFacts } from "../../../../../test/e2e/support/seller-facts";
-import { mockupLinks, mockupPage, STORE, words } from "../../../../../test/support/mockup-compare";
+import { mockupLinks, mockupPage, STORE, withOneCtaShape, words } from "../../../../../test/support/mockup-compare";
 import { blockSentences, factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../../test/support/mockup-facts";
 import { cta } from "../../cta";
 import { faqs, filmLink } from "../../faqs";
@@ -116,6 +116,9 @@ const SELLING = SELLING_UPDATE["meet-kheelu"];
 /** Then task Q2.10's selling update (SELLING_UPDATE) in a pass of its own, and D063 item 2: the help lines without the
  *  call (task Q2.3; seller-facts.ts; the consumer care declaration keeps it, task Q2.10): what the build must say. */
 const MOCKUP = withSellerFacts(withFacts(BEFORE_SELLING, SELLING.edits));
+/* And the one CTA block shape (task Q2.15, the consistency review's R2): every CTA block's button full width on phones
+   with the arrow (test/support/mockup-compare.ts `withOneCtaShape`). */
+withOneCtaShape(MOCKUP);
 /** The folds: `main`'s sections, in order (React's image preload links and the JSON-LD script left out). */
 const folds = (main: Element) => [...main.children].filter((el) => el.tagName === "SECTION");
 const name = (el: Element) => el.getAttribute("aria-labelledby");
@@ -299,15 +302,17 @@ describe("the product page as rendered (token mode)", () => {
   });
 
   /* Task Q2.8 (D065 item 3; the D2C plan v2 §1.1, product folds 3 and 12): the one risk-reversal line under every button,
-     first, the delivery line second; the offer card's row adds the card's third row; the close carries the trust line. */
+     first, the delivery line second; the offer card adds the card's third row (its own list since task Q2.15, the
+     consistency review's CON-3); the close carries the trust line. */
   it("leads every trust line beside a button with the risk-reversal line, the delivery line second", () => {
     const row = (el: Element) => [...el.querySelectorAll("li")].map((li) => text(li));
     const LINE = ["Full refund until dispatch · 7-day returns", "Deliveries start mid-November"];
-    // The linked trust lines (`ks-trust`; the safety facts line is not linked).
-    const rows = [...RENDERED.main.querySelectorAll(".ks-trust")].map(row);
+    // The linked trust lines (`ks-trust`; the safety facts line is not linked), the offer card's third row aside.
+    const rows = [...RENDERED.main.querySelectorAll(".ks-trust:not(.ks-offer-third)")].map(row);
     expect(rows.length).toBeGreaterThanOrEqual(3);
-    for (const r of rows) expect(r.slice(0, 2)).toEqual(LINE);
-    expect(row(BUILT.main.querySelector("#offer .ks-trust")!)).toEqual([...LINE, "6-month warranty", "UPI, card or net banking"]);
+    for (const r of rows) expect(r).toEqual(LINE);
+    expect([...BUILT.main.querySelectorAll("#offer .ks-trust")].map(row)).toEqual([LINE, ["6-month warranty", "UPI, card or net banking"]]);
+    expect(BUILT.main.querySelector("#offer .ks-trust + .ks-trust")?.getAttribute("class")).toBe("kh-trustline ks-trust ks-offer-third");
     expect(row(BUILT.main.querySelector("#close .ks-trust")!)).toEqual(LINE);
     expect(rows.flat()).not.toContain("7-day returns, no questions asked");
     // Each item keeps its one icon from trust.ts: the returns arrow, then the truck.
@@ -455,6 +460,8 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
     const faq = FAQ_FIXES["meet-kheelu"];
     const additions = OFFER_ADDITIONS["meet-kheelu"];
     // The hero's phone art (D061 item 1, task 8c.1) is hidden under 720 px only, on both sides: HeroSection's test holds it.
+    // (The offer photo, top-aligned with the card from 900 px since task Q2.15, needs no hide: under the pixels' other
+    // hides the photo is the split's tallest column, where centred and top-aligned are the same place.)
     const phonesOnly = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.media);
     expect(phonesOnly.map((r) => [r.side, r.selector, r.media])).toEqual([
       ["mockup", ".mk-hero .kh-art", "(max-width: 719px)"],
@@ -790,14 +797,18 @@ describe("the product page's selling update (task Q2.10; the D2C plan v2 §3)", 
     expect(text(compare)).not.toMatch(/Alexa|Echo|ChatGPT|Miko|Tonies|YouTube/);
   });
 
-  it("fold 9: says where the safety facts live in one line, then the built ghost link to /safety (product-safety-learn)", () => {
+  /* Task Q2.15 (the consistency review's CMO-3, CON-4): "See how we built safety in" is the DS secondary button with the
+     shield, as on Home and /team (DS 07-selling.md:52 names it a secondary learning action), where it was a ghost link. */
+  it("fold 9: says where the safety facts live in one line, then the built link to /safety as Home's: the secondary button with the shield (product-safety-learn)", () => {
     const line = fold("safety-line");
     expect(line.id).toBe("safety");
     expect(text(line.querySelector("#safety-line"))).toBe(PRODUCT_SAFETY_LINE.line);
     const links = [...line.querySelectorAll("a")];
     expect(links).toHaveLength(1);
     expect(links[0].getAttribute("href")).toBe("/safety");
-    expect(links[0].className).toBe("kh-btn kh-btn--ghost");
+    expect(links[0].className).toBe("kh-btn kh-btn--secondary");
+    expect(links[0].firstElementChild?.querySelector("path")?.getAttribute("d")).toBe(ICON_PATHS["shield-check"]);
+    expect(links[0].querySelectorAll("svg")).toHaveLength(1);
     expect(links[0].getAttribute("data-ph-capture-attribute-cta")).toBe("product-safety-learn");
     expect(text(links[0])).toBe(PRODUCT_SAFETY_LINE.link);
     expect(PRODUCT_SAFETY_LINE.link).toBe(cta.secondary["product-safety-learn"].label);

@@ -1,6 +1,6 @@
 import { films, filmsStrip } from "@/content/en-IN/films";
 import { faqs } from "@/content/en-IN/faqs";
-import { TRUST_COMPACT, trustItems } from "@/content/en-IN/trust";
+import { TRUST_COMPACT, TRUST_OFFER_THIRD, trustItems } from "@/content/en-IN/trust";
 import type { ArtBoardRef, ImageRef } from "@/content/types";
 import { placeholder } from "@/lib/content/placeholder";
 import type { CtaBlockConfig } from "@/components/sections/CtaBlock/cta-block.types";
@@ -20,6 +20,9 @@ export const ART: ArtBoardRef = { tone: "sun", label: "Kheelu by Kheelona", laye
 
 /** The compact trust pair beside a CTA. */
 export const COMPACT = TRUST_COMPACT.map((id) => trustItems[id]);
+
+/** The offer cards' third row under the trust line (task Q2.15). */
+export const OFFER_THIRD = TRUST_OFFER_THIRD.map((id) => trustItems[id]);
 
 /** A CTA block as a page's content writes it. */
 export const CTA_BLOCK: CtaBlockConfig = { cta: "finale", align: "center", trust: COMPACT, helpLine: true };
@@ -93,7 +96,7 @@ export const ENTRY_FIXTURES: { readonly [K in SectionKind]: SectionEntryOf<K> } 
   },
   "offer-section": {
     kind: "offer-section",
-    config: { variant: "photo", heading: { title: "Pre-order {hand:Kheelu}" }, cta: "product-offer", trust: COMPACT, note: "A note in the card.", photo: IMAGE },
+    config: { variant: "photo", heading: { title: "Pre-order {hand:Kheelu}" }, cta: "product-offer", trust: COMPACT, third: OFFER_THIRD, note: "A note in the card.", photo: IMAGE },
   },
   "close-section": {
     kind: "close-section",

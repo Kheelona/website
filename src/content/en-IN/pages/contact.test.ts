@@ -231,6 +231,9 @@ describe("fold 5: the close", () => {
     if (close.config.variant !== "center") throw new Error("not the centred close");
     const { config } = close;
     expect(config.heading.title).toBe("Ready when {hand:you are.}");
+    // Labelled as every selling close (task Q2.15; the consistency review's CON-6), where the mockup's has no eyebrow.
+    expect(config.heading.eyebrow).toBe("Pre-order");
+    expect(headingOf(fold("close-title")).eyebrow).toBeUndefined();
     expect(plain(config.heading.title)).toBe(headingOf(fold("close-title")).title);
     const link = fold("close-title").querySelector("a.kh-btn--ghost")!;
     expect(config.cta).toEqual({

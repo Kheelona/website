@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { COPY_FIXES, STORIES_REMOVED_CARD, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import { CLOSES_ALIKE, COPY_FIXES, STORIES_REMOVED_CARD, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { htmlToText } from "../../../../test/e2e/support/mockup-text";
 import { sentences } from "../../../../test/e2e/support/parity";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
@@ -29,8 +29,11 @@ const contentSentences = (module: unknown) => stringsOf(module).flatMap((s) => s
 const html = readRepoFile("mockup/stories.html");
 const hub = new DOMParser().parseFromString(html, "text/html");
 const mockupMain = sentences(htmlToText(hub.querySelector("main")!.outerHTML));
-/** The card's rules: every stories rule but the topic line's (task 7.1b). */
-const cardRules = (TEXT_DEVIATIONS.stories ?? []).filter((r) => r.approvedBy !== COPY_FIXES.stories.approvedBy);
+/** The later rules on the hub: the topic line's (task 7.1b), then the close's eyebrow and ghost link (task Q2.15, proven in
+ *  src/content/en-IN/pages/parity-deviations.test.ts with the consistency review's other pages). */
+const LATER = new Set<string>([COPY_FIXES.stories.approvedBy, CLOSES_ALIKE.stories.approvedBy]);
+/** The card's rules: every stories rule but the later ones. */
+const cardRules = (TEXT_DEVIATIONS.stories ?? []).filter((r) => !LATER.has(r.approvedBy));
 const excused = (lines: readonly string[]) => lines.filter((l) => cardRules.some((r) => r.mockup.test(l)));
 const accepted = (lines: readonly string[]) => lines.filter((l) => cardRules.some((r) => r.build?.test(l)));
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
@@ -45,8 +48,8 @@ describe("stories parity deviations (V9)", () => {
     expect(norm(rows[0].querySelector(".kh-listitem__sub")?.textContent)).toBe(summary);
   });
 
-  it("are two text rules: the card's, then the topic line's (V9 as amended in task 7.1b)", () => {
-    expect(TEXT_DEVIATIONS.stories?.map((r) => r.approvedBy)).toEqual([cardRules[0].approvedBy, COPY_FIXES.stories.approvedBy]);
+  it("are three text rules: the card's, then the topic line's (V9 as amended in task 7.1b), then the close's (task Q2.15)", () => {
+    expect(TEXT_DEVIATIONS.stories?.map((r) => r.approvedBy)).toEqual([cardRules[0].approvedBy, COPY_FIXES.stories.approvedBy, CLOSES_ALIKE.stories.approvedBy]);
     expect(cardRules).toHaveLength(1);
   });
 
@@ -62,7 +65,7 @@ describe("stories parity deviations (V9)", () => {
   });
 
   it("hide the card's row in the approved hub only, leaving the build's screen-time guides in the build's order", () => {
-    const cardHides = (VISUAL_HIDDEN.stories ?? []).filter((r) => r.approvedBy !== COPY_FIXES.stories.approvedBy);
+    const cardHides = (VISUAL_HIDDEN.stories ?? []).filter((r) => !LATER.has(r.approvedBy));
     expect(cardHides.map((r) => [r.side, r.selector])).toEqual([["mockup", selector]]);
     // Beside it, only the topic line's hide on both sides (task 7.1b; proven with the other copy fixes).
     const lineHides = (VISUAL_HIDDEN.stories ?? []).filter((r) => r.approvedBy === COPY_FIXES.stories.approvedBy);

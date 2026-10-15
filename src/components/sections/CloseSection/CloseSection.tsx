@@ -25,13 +25,13 @@ export function CloseSection(props: CloseSectionProps) {
   switch (props.variant) {
     case "split":
       return (
-        <CloseFold>
+        <CloseFold band={props.band}>
           <BesideArt heading={props.heading} cta={props.cta} context={context} art={props.art} clamp={props.artClamp} />
         </CloseFold>
       );
     case "journal":
       return (
-        <CloseFold className="ks-close-journal">
+        <CloseFold band={props.band} className="ks-close-journal">
           <BesideArt
             heading={props.heading}
             cta={{ ...props.cta, layout: "journal" }}
@@ -43,10 +43,12 @@ export function CloseSection(props: CloseSectionProps) {
         </CloseFold>
       );
     case "guide":
+      /* The words in the DS's wide start column from 900 px (7:5; task Q2.15, the consistency review's CON-11): half the
+         tinted card was too narrow for the trust line's two items on one row, as every other split close keeps them. */
       return (
-        <CloseFold>
+        <CloseFold band={props.band}>
           <Card as="div" variant="tint" tone={props.tone} className="ks-gd-close">
-            <BesideArt heading={props.heading} cta={props.cta} context={context} art={props.art} clamp />
+            <BesideArt heading={props.heading} cta={props.cta} context={context} art={props.art} clamp wide="start" />
           </Card>
         </CloseFold>
       );
@@ -54,7 +56,7 @@ export function CloseSection(props: CloseSectionProps) {
       return <CenterClose {...props} />;
     case "links":
       return (
-        <CloseFold id="help">
+        <CloseFold id="help" band={props.band}>
           <CloseHeading heading={props.heading} context={context} center id="help-title">
             <HelpLine size="body-l" contact={<RichText text={props.contact} offer={offer} />} className="ks-setup-help" />
           </CloseHeading>
@@ -82,12 +84,14 @@ interface BesideArtProps {
   clamp?: boolean;
   ratio?: MediaRatio;
   artClassName?: string;
+  /** The split's wider column from 900 px (the DS's `kh-split--wide-start`); equal columns without it. */
+  wide?: "start";
 }
 
 /** The heading and the CTA block in the first column of a split, the art board in the second. */
-function BesideArt({ heading, cta, context, art, clamp, ratio, artClassName }: BesideArtProps) {
+function BesideArt({ heading, cta, context, art, clamp, ratio, artClassName, wide }: BesideArtProps) {
   return (
-    <Split>
+    <Split wide={wide}>
       <div>
         <CloseHeading heading={heading} context={context} />
         <CtaBlock {...cta} {...context} />

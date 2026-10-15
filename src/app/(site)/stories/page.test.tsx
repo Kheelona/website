@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { COPY_FIXES, STORIES_REMOVED_CARD } from "../../../../test/e2e/support/deviations";
+import { CLOSES_ALIKE, COPY_FIXES, STORIES_REMOVED_CARD } from "../../../../test/e2e/support/deviations";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { addClass, mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
@@ -66,8 +66,9 @@ function builtMain(page: PageContent = sized(hubPage)): HTMLElement {
  * class, as HeroSection.test.tsx reads it.
  */
 function approvedMain(): Element {
-  /* The close's help line without the call (D063 item 2; task Q2.3; seller-facts.ts). */
-  const main = withSellerFacts(withFacts(mockupFold("stories", "main"), COPY_FIXES.stories.edits));
+  /* The close's help line without the call (D063 item 2; task Q2.3; seller-facts.ts); the close labelled "Pre-order" and
+     its ghost link "See how Kheelu works" (task Q2.15, CON-6 and CON-7; CLOSES_ALIKE). */
+  const main = withSellerFacts(withFacts(withFacts(mockupFold("stories", "main"), COPY_FIXES.stories.edits), CLOSES_ALIKE.stories.edits));
   addClass(main, ".mk-journal-intro header.kh-heading--hero", "ks-hero-words");
   main.querySelectorAll(".mk-later").forEach((label) => label.remove());
   main.querySelectorAll(STORIES_REMOVED_CARD.selector).forEach((row) => row.remove());

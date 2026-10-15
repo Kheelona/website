@@ -15,33 +15,36 @@ import { SellingHelpLine, SellingTrustLine } from "./selling-lines";
  *
  * It renders its lines as siblings, with no wrapper of its own, because the mockup puts them straight into the
  * column after the heading (home.html fold 1, the closes); the hero and close sections space them from there.
+ *
+ * One shape for every block (task Q2.15; the consistency review's R2): the chilli button is full width on phones with
+ * the nudging arrow (D049 pick 6, D064 item 10), inline from 720 px (cta-block.css), by default, so a page never sets
+ * it; and every block but a hero's groups its lines beside the button (`ks-beside`; the product close's "full" layout
+ * left, CON-2).
  * Server component; never revealed on arrival (architecture §11.2): it holds the price and a chilli button.
  */
 export function CtaBlock(props: CtaBlockProps) {
-  const { cta, arrow, block, id, priceId, align = "start", layout = "beside", trust, helpLine, secondary, offer, ctaLabel, help } = props;
+  const { cta, arrow = true, block = true, id, priceId, align = "start", layout = "beside", trust, helpLine, secondary, offer, ctaLabel, help } = props;
   const center = align === "center";
-  const full = layout === "full";
   const price = <PriceSentence offer={offer} id={priceId} />;
-  const trustLine = <SellingTrustLine items={trust} offer={offer} center={center} className={full ? "ks-cta__full-trust" : undefined} />;
-  const helpLineEl = helpLine ? <SellingHelpLine help={help} offer={offer} className={full ? "ks-cta__full-help" : undefined} /> : null;
-  const grouped = layout === "beside" || layout === "journal";
+  const trustLine = <SellingTrustLine items={trust} offer={offer} center={center} />;
+  const helpLineEl = helpLine ? <SellingHelpLine help={help} offer={offer} /> : null;
   return (
     <>
       <Actions center={center}>
         <PreorderButton cta={cta} label={ctaLabel} size="l" block={block} id={id} arrow={arrow} className="ks-cta__button" />
       </Actions>
-      {grouped ? (
-        <div className={clsx("ks-beside", center && "ks-beside--center")}>
-          {price}
-          {trustLine}
-          {layout === "beside" && helpLineEl}
-        </div>
-      ) : (
+      {layout === "stack" ? (
         <>
           {price}
           {trustLine}
           {helpLineEl}
         </>
+      ) : (
+        <div className={clsx("ks-beside", center && "ks-beside--center")}>
+          {price}
+          {trustLine}
+          {layout === "beside" && helpLineEl}
+        </div>
       )}
       {layout === "journal" && helpLineEl}
       {secondary && (

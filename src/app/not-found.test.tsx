@@ -9,9 +9,9 @@ import { buildOffer } from "@/lib/offer/offer";
 import { freshBuiltPages } from "../../test/e2e/support/page-checks";
 import { ROOT } from "../../test/e2e/support/repo";
 import { isStillLegacy } from "../../test/guards/legacy-paths";
-import { FOOTER_FIX, groupFooterLinks } from "../../test/e2e/support/deviations";
+import { CLOSES_ALIKE, FOOTER_FIX, groupFooterLinks } from "../../test/e2e/support/deviations";
 import { withSellerFacts } from "../../test/e2e/support/seller-facts";
-import { mockupDiff, mockupPage } from "../../test/support/mockup-compare";
+import { mockupDiff, mockupPage, withOneCtaShape } from "../../test/support/mockup-compare";
 import { withFacts } from "../../test/support/mockup-facts";
 import NotFound, { metadata } from "./not-found";
 
@@ -39,7 +39,7 @@ const mockup = mockupPage("404");
  *  mockup's. */
 const differences = mockupDiff({
   ignore: ["data-open-menu", "src", "width", "inert"],
-  dropClasses: ["ks-cta__button", "ks-trustline--center", "ks-list-reset"],
+  dropClasses: ["ks-cta__button", "ks-btn__arrow", "ks-trustline--center", "ks-list-reset"],
 });
 
 async function page(mode: "token" | "full" = "token") {
@@ -83,8 +83,11 @@ describe("not-found: the page equals the approved mockup (mockup/404.html)", () 
   it("main: fold 1, the empty state, and fold 2, the centred close, in order", async () => {
     const { container } = await page();
     const main = container.querySelector("main#main")!;
-    /* The close's help line without the call (D063 item 2; task Q2.3). */
-    const ref = withSellerFacts(mockup.querySelector("main")!);
+    /* The close's help line without the call (D063 item 2; task Q2.3), its button in the one CTA block shape (task
+       Q2.15, the consistency review's R2: full width on phones with the arrow), its heading labelled "Pre-order" as every
+       selling close (task Q2.15, CON-6; deviations.ts CLOSES_ALIKE). */
+    const ref = withSellerFacts(withFacts(mockup.querySelector("main")!, CLOSES_ALIKE["404"].edits));
+    withOneCtaShape(ref);
     expect(differences(main, ref)).toEqual([]);
   });
 

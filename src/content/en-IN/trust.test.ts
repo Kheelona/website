@@ -8,7 +8,7 @@ import { refundPage } from "./legal/refund";
 import { shippingPage } from "./legal/shipping";
 import { termsPage } from "./legal/terms";
 import { RETURN_DAYS } from "./policies";
-import { SAFETY_FACTS, TRUST_COMPACT, TRUST_FULL, TRUST_OFFER, trustItems, type TrustId } from "./trust";
+import { SAFETY_FACTS, TRUST_COMPACT, TRUST_FULL, TRUST_OFFER_THIRD, trustItems, type TrustId } from "./trust";
 
 /* Trust items (architecture §6.1, strategy §3.2; task 2.1 acceptance 2): each a short promise
  * linked to its terms, once, with the rows the copy pages compose (home.md "CTA block": the
@@ -135,8 +135,11 @@ describe("the risk-reversal line (task Q2.8; D065 item 3)", () => {
   /* The D2C plan v2 §1.1 ("Offer cards only, a third row": "{warrantyMonths}-month warranty · UPI, card or net banking",
      each linked as trust.ts links it) and Home fold 7, product fold 3: under the card's button, the trust line, then the
      card's third row. */
-  it("leads the offer cards' row too: the trust line, then the card's third row, the warranty and the ways to pay", () => {
-    expect(TRUST_OFFER).toEqual([...TRUST_COMPACT, "warranty-6-months", "payment-methods"]);
+  /* Task Q2.15 (the consistency review's CON-3, QAL-2, CMO-2): the card's third row its own list of ids, so both offer
+     cards print the trust line and the third row as two rows and they wrap alike at every width. */
+  it("names the offer cards' third row on its own: the warranty and the ways to pay, under the trust line", () => {
+    expect(TRUST_OFFER_THIRD).toEqual(["warranty-6-months", "payment-methods"]);
+    expect(TRUST_OFFER_THIRD.filter((id) => TRUST_COMPACT.includes(id))).toEqual([]);
   });
 
   it("spells out the offer rows' other words in the price-line deviation (deviations.ts PRICE_LINE, Playwright reads it)", () => {

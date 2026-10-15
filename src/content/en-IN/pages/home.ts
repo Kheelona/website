@@ -23,7 +23,7 @@ import { DEFAULT_OG } from "../organization";
 import { RETENTION_MONTHS } from "../policies";
 import { product } from "../products/kheelu/product";
 import { recognitionLabel } from "../recognition";
-import { TRUST_COMPACT, TRUST_OFFER, trustItems, type TrustId } from "../trust";
+import { TRUST_COMPACT, TRUST_OFFER_THIRD, trustItems, type TrustId } from "../trust";
 
 /**
  * Home, `/`, since the selling update (task Q2.9; D064, D065; the main session's rulings of 2026-10-15): the D2C plan
@@ -102,7 +102,8 @@ const LANGUAGE_CHIPS = product.languages.map(({ name, native, lang }) => (native
 /** Film 6, "Two languages", as the languages fold plays it: its chip with its length, the strip's play words. */
 const TWO_LANGUAGES = filmBy("a-story-in-two-languages");
 
-/** Every CTA block of the page but the hero's: the button, the price line, the trust line, centred, no help line. */
+/** A CTA block under a centred heading or line (folds 3 and 5): the button, the price line, the trust line, centred, no
+ *  help line. The button's shape is every block's (task Q2.15: full width on phones, with the arrow). */
 const centred = (value: CtaBlockConfig["cta"], secondary?: CtaSecondary): CtaBlockConfig => ({ cta: value, align: "center", trust: COMPACT, secondary });
 
 export const homePage = {
@@ -134,7 +135,7 @@ export const homePage = {
           phone: { src: kabirRocketPhone, alt: KABIR_ROCKET_ALT },
         },
       },
-      cta: { cta: "hero", id: "hero-cta", priceId: "hero-price", arrow: true, block: true, layout: "stack", trust: COMPACT, secondary: HERO_FILM },
+      cta: { cta: "hero", id: "hero-cta", priceId: "hero-price", layout: "stack", trust: COMPACT, secondary: HERO_FILM },
     },
 
     /* Fold 2 · The seven films in D064's order (D040), the product page's built heading, two parents' own words (D061
@@ -288,16 +289,19 @@ export const homePage = {
 
     /* Fold 7 · What you get, and what you pay: the offer card moved up (the plan's fold 7). The one perk list (CMO m8),
        the Kheelona+ note under it, the trust line and the card's third row under the button, the share link (D061 item 7,
-       its approved text: the main session's ruling (b)); Myra's board, top-aligned with the card (D064 item 5). */
+       its approved text: the main session's ruling (b)); Myra's board, top-aligned with the card (D064 item 5). The same
+       composition and the same two rows as the product page's offer since task Q2.15 (CON-3, QAL-2, CMO-2). */
     {
       kind: "offer-section",
       config: {
         variant: "home",
-        heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}", lead: "There every day at home, with no screen to switch off." },
+        /* The lead names its subject (task Q2.15; the CMO's built review, CMO-7; the founder signs, D015). */
+        heading: { eyebrow: "Pre-order", title: "What you get, and {hand:what you pay.}", lead: "Kheelu is there every day at home, with no screen to switch off." },
         cta: "home-offer",
         cardLabel: "Kheelu offer",
         note: PLUS_NOTE,
-        trust: trust(TRUST_OFFER),
+        trust: COMPACT,
+        third: trust(TRUST_OFFER_THIRD),
         art: {
           tone: "sun",
           label: "A curious girl in a mustard flowered frock beside Kheelu, the cream plush rabbit",
@@ -338,7 +342,8 @@ export const homePage = {
           caption: APP_CAPTION,
         },
       },
-      cta: centred("safety", { ...cta.secondary["safety-learn"], variant: "secondary" }),
+      /* Start-aligned, as its heading (task Q2.15; DS 10-pages.md:26 centres actions only under centred headings). */
+      cta: { cta: "safety", trust: COMPACT, secondary: { ...cta.secondary["safety-learn"], variant: "secondary" } },
     },
 
     /* Fold 9 · A day with Kheelu (D065 item 5: the limit, never set by a parent; D044: talking time per day; D027: Story

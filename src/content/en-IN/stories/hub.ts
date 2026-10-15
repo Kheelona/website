@@ -172,7 +172,7 @@ export const hubPage = {
       config: {
         variant: "journal",
         heading: close.heading,
-        cta: { cta: close.cta, arrow: true, block: true, trust: close.trust.map((id) => trustItems[id]), helpLine: true, secondary: close.secondary },
+        cta: { cta: close.cta, trust: close.trust.map((id) => trustItems[id]), helpLine: true, secondary: close.secondary },
         art: close.art,
       },
     },

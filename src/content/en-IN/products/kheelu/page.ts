@@ -20,7 +20,7 @@ import { PLUS_NOTE } from "../../offer";
 import { RETURN_DAYS, RETURN_PICKUP_FREE, WARRANTY_MONTHS } from "../../policies";
 import { recognitionLabel } from "../../recognition";
 import { seller } from "../../seller";
-import { TRUST_COMPACT, TRUST_OFFER, trustItems, type TrustId } from "../../trust";
+import { TRUST_COMPACT, TRUST_OFFER_THIRD, trustItems, type TrustId } from "../../trust";
 import { product, type Mode } from "./product";
 
 /**
@@ -71,8 +71,8 @@ const chat = (ask: string, answer: string, reply: string): ExampleConversationLi
   { speaker: "child", who: "Your child", text: reply },
 ];
 
-/** The product-safety-learn link as the safety line's ghost link (the D2C plan v2 §3 fold 9): its built label and
- *  address, without the shield, which would make it a secondary button. */
+/** The product-safety-learn link after the safety line (the D2C plan v2 §3 fold 9): its built label, address and shield,
+ *  the DS secondary button Home's "See how we built safety in" is (task Q2.15; the consistency review's CMO-3, CON-4). */
 const SAFETY_LINK = cta.secondary["product-safety-learn"];
 
 /** A language chip: its own name in its own `lang`, the English name under it (English itself needs neither). */
@@ -128,7 +128,7 @@ export const kheeluPage = {
         ],
       },
       /* No help line beside the hero's button (the D2C plan v2 §1.1: the closes and the store carry it). */
-      cta: { cta: "product-top", arrow: true, block: true, layout: "stack", trust: COMPACT },
+      cta: { cta: "product-top", layout: "stack", trust: COMPACT },
     },
     /* Fold 2 · The seven parent films (D040), every poster lazy (N19). */
     {
@@ -160,8 +160,10 @@ export const kheeluPage = {
         heading: { eyebrow: "What you get", title: "Everything that {hand:comes with it.}" },
         cta: "product-offer",
         /* Under the card's button, the offer cards' row (task Q2.8's review; the D2C plan v2 §1.1, product fold 3): the one
-           risk-reversal line, the delivery line, then the card's third row. No help line (task Q2.13; §3 fold 3, CMO m9). */
-        trust: trust(TRUST_OFFER),
+           risk-reversal line, the delivery line, then the card's third row, two lists since task Q2.15 (CON-3), so they
+           wrap as Home's do. No help line (task Q2.13; §3 fold 3, CMO m9). */
+        trust: COMPACT,
+        third: trust(TRUST_OFFER_THIRD),
         /* In the card, after the perks and before the button: the same note as Home's card (task Q2.13; §3 fold 3). */
         note: PLUS_NOTE,
         /* The page's keyword in the alt, true of the picture (the D2C plan v2 §3 fold 3). */
@@ -345,7 +347,8 @@ export const kheeluPage = {
     },
     /* Safety in one line (task Q2.10; D064 item 2; the D2C plan v2 §3 fold 9, ruling 8): the facts live on /safety, which
        now carries the parent app's every-conversation fold too (task Q2.11). The built link "See how we built safety in"
-       (`product-safety-learn`, approved at Gate A; CMO M3) as a DS ghost link. On the band, the page's `#safety` kept. */
+       (`product-safety-learn`, approved at Gate A; CMO M3) as Home's: the DS secondary button with the shield (task Q2.15,
+       CMO-3, CON-4; DS 07-selling.md:52). On the band, the page's `#safety` kept. */
     {
       kind: "trust-section",
       config: {
@@ -353,7 +356,7 @@ export const kheeluPage = {
         id: "safety",
         band: true,
         pointer: "When the microphone is on, how Kheelu answers, and what you can read and delete, fact by fact:",
-        link: { label: SAFETY_LINK.label, href: SAFETY_LINK.href, cta: SAFETY_LINK.cta },
+        link: { label: SAFETY_LINK.label, href: SAFETY_LINK.href, cta: SAFETY_LINK.cta, icon: SAFETY_LINK.icon },
       },
     },
     /* Fold 7 · The details on tabs (3.5; P1), the declarations beside them. */
@@ -420,8 +423,10 @@ export const kheeluPage = {
           lead: "For your own child, or as a gift for a 3 to 7 year old in the family.",
         },
         /* The trust line, as beside every button (task Q2.8's review; the D2C plan v2 §1.1, product fold 12): in place of
-           meet-kheelu.html's five-item row; the warranty and the ways to pay sit under the offer card's button. */
-        cta: { cta: "product-foot", id: "reserve", layout: "full", trust: COMPACT, helpLine: true },
+           meet-kheelu.html's five-item row; the warranty and the ways to pay sit under the offer card's button. Since task
+           Q2.15 (the consistency review's CON-2) the lines grouped beside the button, as every other close lays them out
+           (the CTA block's default layout; meet-kheelu.html's "full" block left). */
+        cta: { cta: "product-foot", id: "reserve", trust: COMPACT, helpLine: true },
         art: {
           tone: "sun",
           label: "A smiling girl in a peach kurta beside Kheelu, the cream plush rabbit.",

@@ -146,7 +146,7 @@ export const aiToysPage = {
         pointer: "How Kheelu understands and answers your child, and how long conversations are kept, are on our safety page.",
         link: { label: "See the full safety facts", href: "/safety", icon: "shield-check" },
       },
-      cta: { cta: "guide-answers", arrow: true, block: true, trust: TRUST_COMPACT.map((id) => trustItems[id]) },
+      cta: { cta: "guide-answers", trust: TRUST_COMPACT.map((id) => trustItems[id]) },
     },
     /* Fold 4: robot or plush, by kind of toy (no brand); the page's in-text product link. */
     {
@@ -217,7 +217,7 @@ export const aiToysPage = {
           title: "Five checks, answered. Now {hand:meet Kheelu.}",
           lead: "Bring it home and check all five answers for yourself.",
         },
-        cta: { cta: "finale", arrow: true, block: true, trust: TRUST_COMPACT.map((id) => trustItems[id]), helpLine: true },
+        cta: { cta: "finale", trust: TRUST_COMPACT.map((id) => trustItems[id]), helpLine: true },
         art: {
           tone: "sun",
           label: "A boy in glasses and a rust T-shirt beside Kheelu, the cream plush rabbit.",

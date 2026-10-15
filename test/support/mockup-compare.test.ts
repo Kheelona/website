@@ -1,7 +1,7 @@
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { ICON_WHATSAPP_LOGO } from "@/assets/icons.generated";
+import { ICON_ARROW_RIGHT, ICON_WHATSAPP_LOGO } from "@/assets/icons.generated";
 import { WHATSAPP_GLYPH } from "@/assets/whatsapp-logo.generated";
 import {
   addClass,
@@ -19,6 +19,9 @@ import {
   portClass,
   skeleton,
   STORE,
+  withDrawerNoteLines,
+  withLinesBeside,
+  withOneCtaShape,
   withPriceLine,
   without,
   words,
@@ -116,7 +119,11 @@ describe("reading the mockup with task Q2.8's price lines (withPriceLine)", () =
     const home = parseMockup("home");
     const rows = [...home.querySelectorAll("ul.mk-trust")].map(linkWords);
     expect(rows.slice(0, 3)).toEqual([0, 1, 2].map(() => [returns.build, delivery]));
-    expect(text(home.querySelectorAll(".kh-drawer__note")[1])).toBe(`${returns.build} · ${delivery}`);
+    // Task Q2.8's reading alone keeps the drawer's dot; the full reading puts each line on its own (task Q2.15, below).
+    const priced = raw("home");
+    withPriceLine(priced);
+    expect(text(priced.querySelectorAll(".kh-drawer__note")[1])).toBe(`${returns.build} · ${delivery}`);
+    expect(home.querySelectorAll(".kh-drawer__note")[1].innerHTML).toBe(`${returns.build}<br>${delivery}`);
     // The trust link opens the refund page's part that keeps the promise (trust.ts), as the build links it.
     expect(mockupLinks(home.querySelector("ul.mk-trust")!)).toEqual(["/refund#before-dispatch", "/shipping#when"]);
     // Each item keeps its own icon: the returns arrow on the risk-reversal line, the truck on the delivery line.
@@ -211,6 +218,85 @@ describe("reading the mockup with task Q2.8's price lines (withPriceLine)", () =
     );
     const before = el.outerHTML;
     withPriceLine(el);
+    expect(el.outerHTML).toBe(before);
+  });
+});
+
+/* Task Q2.15 (the consistency review's R2): one CTA block shape, full width on phones with the arrow, where the approved
+   mockup drew some blocks narrow and without it. */
+describe("reading the mockup's CTA blocks in the one shape (withOneCtaShape)", () => {
+  const arrows = (el: Element) => [...el.querySelectorAll(".kh-btn--cta > svg path")].map((p) => p.getAttribute("d"));
+
+  it("gives a narrow block's chilli button the block class after its size, and the arrow after its label", () => {
+    const el = html(
+      '<div><div class="kh-section__actions kh-section__actions--center"><a href="store.html" class="kh-btn kh-btn--cta kh-btn--l" data-ph-capture-attribute-cta="finale"><span>Pre-order Kheelu</span></a></div></div>',
+    );
+    withOneCtaShape(el);
+    const button = el.querySelector(".kh-btn--cta")!;
+    expect(button.getAttribute("class")).toBe("kh-btn kh-btn--cta kh-btn--l kh-btn--block");
+    expect([...button.children].map((c) => c.tagName.toLowerCase())).toEqual(["span", "svg"]);
+    expect(button.lastElementChild?.getAttribute("class")).toBe("kh-icon");
+    expect(arrows(el)).toEqual([ICON_ARROW_RIGHT]);
+  });
+
+  it("leaves a block that already has both as it is (the heroes, the safety and journal closes)", () => {
+    const fold = mockupFold("safety", "#close");
+    const copy = fold.cloneNode(true) as Element;
+    withOneCtaShape(copy);
+    expect(copy.outerHTML).toBe(fold.outerHTML);
+  });
+
+  it("reaches every CTA block's button and no other chilli button: the drawer's, the nav's, the bar's and the offer card's stay", () => {
+    const home = parseMockup("home").body;
+    const outside = [...home.querySelectorAll("a.kh-btn--cta")].filter((a) => !a.parentElement?.matches(".kh-section__actions"));
+    expect(outside.length).toBeGreaterThan(0);
+    const before = outside.map((a) => a.outerHTML);
+    withOneCtaShape(home);
+    expect(outside.map((a) => a.outerHTML)).toEqual(before);
+    const blocks = [...home.querySelectorAll(".kh-section__actions > a.kh-btn--cta")];
+    expect(blocks.length).toBeGreaterThan(1);
+    for (const a of blocks) {
+      expect(a.classList.contains("kh-btn--block"), a.outerHTML).toBe(true);
+      expect(a.querySelector(":scope > svg path")?.getAttribute("d")).toBe(ICON_ARROW_RIGHT);
+    }
+  });
+});
+
+describe("reading the product close with its lines beside the button (withLinesBeside, task Q2.15)", () => {
+  it("groups the lines after the button's row, in order, and leaves the fold it reads as it was", () => {
+    const fold = mockupFold("meet-kheelu", "#close");
+    const before = fold.outerHTML;
+    const grouped = withLinesBeside(fold);
+    expect(fold.outerHTML).toBe(before);
+    const row = grouped.querySelector(".kh-section__actions")!;
+    const group = row.nextElementSibling!;
+    expect(group.getAttribute("class")).toBe("mk-beside");
+    expect(group.nextElementSibling).toBeNull();
+    expect([...group.children].map((c) => c.className.split(" ").find((k) => /^mk-(price|trust|help)$/.test(k)))).toEqual(["mk-price", "mk-trust", "mk-help"]);
+  });
+
+  it("fails loudly on a fold without a chilli button's row", () => {
+    expect(() => withLinesBeside(html("<section><p>no button</p></section>"))).toThrow(/no actions row/);
+  });
+});
+
+/* Task Q2.15 (the consistency review's CON-8): the drawer's second note, the risk-reversal line and the delivery line, a
+   line each as the trust line reads them, where the mockup joined them with a dot (and task Q2.8's reading kept it). */
+describe("reading the drawer's second note a line each (withDrawerNoteLines, task Q2.15)", () => {
+  const { returns, delivery } = PRICE_LINE;
+
+  it("reads every built page's drawer so: the risk-reversal line, a break, the delivery line", () => {
+    for (const slug of ["home", "team", "404"]) {
+      const notes = [...mockupPage(slug).querySelectorAll(".kh-drawer__note")];
+      expect(notes, slug).toHaveLength(2);
+      expect(notes[1].innerHTML, slug).toBe(`${returns.build}<br>${delivery}`);
+    }
+  });
+
+  it("changes nothing that does not read as that note (control)", () => {
+    const el = html(`<div><p class="kh-drawer__note">${delivery} · ${returns.mockup}</p><p class="kh-drawer__note">Another note</p></div>`);
+    const before = el.outerHTML;
+    withDrawerNoteLines(el);
     expect(el.outerHTML).toBe(before);
   });
 });

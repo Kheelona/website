@@ -9,7 +9,7 @@ import starSun from "@ds/assets/Shapes/star-sun.svg";
 import { DoodleDefs } from "@/components/ui/Doodle/DoodleDefs";
 import { cta } from "@/content/en-IN/cta";
 import { seller } from "@/content/en-IN/seller";
-import { TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "@/content/en-IN/trust";
+import { TRUST_COMPACT, trustItems, type TrustId } from "@/content/en-IN/trust";
 import { buildOffer } from "@/lib/offer/offer";
 import type { CtaSecondary } from "../CtaBlock/cta-block.types";
 import { CloseSection } from "./CloseSection";
@@ -19,7 +19,8 @@ import { CloseSection } from "./CloseSection";
 
 const trust = (ids: readonly TrustId[]) => ids.map((id) => trustItems[id]);
 const COMPACT = trust(TRUST_COMPACT);
-const seeHow: CtaSecondary = { label: "See how it works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" };
+/* The ghost link under a close, as every close words it since task Q2.15 (the consistency review's CON-7). */
+const seeHow: CtaSecondary = { label: "See how Kheelu works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" };
 
 const meta: Meta<typeof CloseSection> = {
   title: "Sections/CloseSection",
@@ -42,7 +43,7 @@ const meta: Meta<typeof CloseSection> = {
       title: "Check it all for yourself, {hand:at home.}",
       lead: "The wake-up button, the light and every conversation in the parent app: you can check each one once it’s home.",
     },
-    cta: { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true },
+    cta: { cta: "finale", trust: COMPACT, helpLine: true },
     art: {
       tone: "blue",
       label: "A laughing girl in a peach kurta beside Kheelu, the cream plush rabbit.",
@@ -63,7 +64,7 @@ type Story = StoryObj<typeof CloseSection>;
 /** `split`: the safety close (clamped board, block button with the arrow, help line in the group). */
 export const SplitSafety: Story = {};
 
-/** `split` with the CTA block's `full` layout: the product close (meet-kheelu.html fold 9). */
+/** `split`: the product close (meet-kheelu.html fold 9), its lines grouped beside the button as every close (task Q2.15). */
 export const SplitProduct: Story = {
   args: {
     heading: {
@@ -71,7 +72,7 @@ export const SplitProduct: Story = {
       title: "Bring home a toy that {hand:asks back.}",
       lead: "For your own child, or as a gift for a 3 to 7 year old in the family.",
     },
-    cta: { cta: "product-foot", layout: "full", trust: trust(["deliveries-start", ...TRUST_FULL]), helpLine: true },
+    cta: { cta: "product-foot", id: "reserve", trust: COMPACT, helpLine: true },
     art: {
       tone: "sun",
       label: "A smiling girl in a peach kurta beside Kheelu, the cream plush rabbit.",
@@ -105,15 +106,17 @@ export const Guide: Story = {
   },
 };
 
-/** `journal`: the stories hub and article closes; the 4:3 board shows from 900 px. */
+/** `journal`: the stories hub and article closes; the 4:3 board shows from 900 px. Labelled "Pre-order" as every selling
+ *  close since task Q2.15 (CON-6). */
 export const Journal: Story = {
   args: {
     variant: "journal",
     heading: {
+      eyebrow: "Pre-order",
       title: "A toy that {hand:asks back.}",
       lead: "Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It answers your child, then asks a question back.",
     },
-    cta: { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true, secondary: seeHow },
+    cta: { cta: "finale", trust: COMPACT, helpLine: true, secondary: seeHow },
     art: {
       tone: "sun",
       label: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy.",
@@ -126,12 +129,12 @@ export const Journal: Story = {
   },
 };
 
-/** `center`: the team close (centred heading and block, no art). */
+/** `center`: the team close (centred heading and block, no art), labelled "Pre-order" since task Q2.15 (CON-6). */
 export const Center: Story = {
   args: {
     variant: "center",
-    heading: { title: "Bring Kheelu {hand:home.}" },
-    cta: { cta: "finale", trust: COMPACT, helpLine: true, secondary: { ...seeHow, label: "See how Kheelu works" } },
+    heading: { eyebrow: "Pre-order", title: "Bring Kheelu {hand:home.}" },
+    cta: { cta: "finale", trust: COMPACT, helpLine: true, secondary: seeHow },
   },
 };
 
@@ -153,10 +156,12 @@ export const LinksHelpOnly: Story = {
   args: { ...Links.args, meet: undefined },
 };
 
-/** `center` with an eyebrow and a lead: /setup's pre-order close (task Q2.12; the D2C plan v2 §5 fold 8), no help line. */
+/** `center` with an eyebrow and a lead: /setup's pre-order close (task Q2.12; the D2C plan v2 §5 fold 8), no help line; on
+ *  the cream band since task Q2.15 (`band`; QAL-8: the page's bands alternate to the end). */
 export const CenterWithLead: Story = {
   args: {
     variant: "center",
+    band: true,
     heading: {
       eyebrow: "Pre-order",
       title: "Don’t have Kheelu {hand:yet?}",

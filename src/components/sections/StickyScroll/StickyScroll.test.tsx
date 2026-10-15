@@ -186,6 +186,19 @@ describe("StickyScroll: the layout and its motion (sticky-scroll.css)", () => {
     expect(thumb).not.toMatch(/visibility|opacity|display/);
   });
 
+  /* Task Q2.15 (the consistency review's QAL-11): on laptops the points' words spanned the whole 7-column side, about 100
+     characters a line, well past the DS reading measure (--measure, tokens.css). The column keeps to it, points and all,
+     so the centred line and CTA block under the points centre on the words above them; the stage beside it is unchanged. */
+  it("keeps the points' column, its words, example, line and CTA block, to the DS reading measure on laptops", () => {
+    const laptop = [...CSS.matchAll(/@media \(min-width: 900px\) \{([\s\S]*?)\n\}/g)].map((m) => m[1]).join("\n");
+    expect(laptop).toMatch(/\.ks-sticky__main \{\s*max-width: var\(--measure\);\s*\}/);
+    expect(CSS).toMatch(/\.ks-sticky__line \{\s*max-width: var\(--measure\);/);
+    // The point's words, its example, the line and the CTA slot all sit inside that column.
+    const main = render(<StickyScroll {...CONFIG} offer={OFFER} />).container.querySelector(".ks-sticky__main")!;
+    expect(main.querySelectorAll(".ks-sticky__body").length).toBeGreaterThan(1);
+    expect(main.querySelector(".ks-sticky__line")).not.toBeNull();
+  });
+
   it("crossfades and fills only where motion is welcome, on DS tokens, and draws no fill under reduced motion", () => {
     const motion = /@media \(min-width: 900px\) and \(prefers-reduced-motion: no-preference\) \{([\s\S]*?)\n\}/.exec(CSS)?.[1] ?? "";
     expect(motion).toMatch(/\.ks-sticky__pic \{\s*transition: opacity var\(--duration-enter\) var\(--ease-standard\);\s*\}/);

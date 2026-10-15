@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -10,7 +12,7 @@ import type { ArtBoardRef } from "@/content/types";
 import { buildOffer } from "@/lib/offer/offer";
 import type { CtaSecondary, SellingContext } from "../CtaBlock/cta-block.types";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
-import { addClass, builtMarkup, canonical, mockupFold, renderedElement, STORE, without } from "../../../../test/support/mockup-compare";
+import { addClass, builtMarkup, canonical, mockupFold, renderedElement, STORE, withLinesBeside, without, withOneCtaShape } from "../../../../test/support/mockup-compare";
 import { CloseSection } from "./CloseSection";
 import { CLAMPED_SPLIT_COLUMN_SIZES } from "./close-art";
 import { CenterClose } from "./close-fold";
@@ -43,7 +45,7 @@ const JOURNAL_HEADING = {
 const journal: CloseSectionConfig = {
   variant: "journal",
   heading: JOURNAL_HEADING,
-  cta: { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true, secondary: SEE_HOW },
+  cta: { cta: "finale", trust: COMPACT, helpLine: true, secondary: SEE_HOW },
   art: art("sun", "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy."),
 };
 
@@ -60,13 +62,13 @@ const CASES: Case[] = [
         title: "Check it all for yourself, {hand:at home.}",
         lead: "The wake-up button, the light and every conversation in the parent app: you can check each one once it’s home.",
       },
-      cta: { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true },
+      cta: { cta: "finale", trust: COMPACT, helpLine: true },
       art: art("blue", "A laughing girl in a peach kurta beside Kheelu, the cream plush rabbit."),
       artClamp: true,
     },
   ],
   [
-    "product close (split, the full block)",
+    "product close (split, its lines beside the button)",
     "meet-kheelu",
     "#close",
     {
@@ -78,7 +80,7 @@ const CASES: Case[] = [
       },
       // The trust line in place of meet-kheelu.html's five-item row since task Q2.8's review (the D2C plan v2 §1.1; the
       // harness reads the mockup's row so, test/support/mockup-compare.ts withPriceLine).
-      cta: { cta: "product-foot", layout: "full", trust: COMPACT, helpLine: true },
+      cta: { cta: "product-foot", trust: COMPACT, helpLine: true },
       art: art("sun", "A smiling girl in a peach kurta beside Kheelu, the cream plush rabbit."),
     },
   ],
@@ -90,7 +92,7 @@ const CASES: Case[] = [
       variant: "guide",
       tone: "blue",
       heading: { eyebrow: "Pre-order", title: "Five checks, answered. Now {hand:meet Kheelu.}", lead: "Bring it home and check all five answers for yourself." },
-      cta: { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true },
+      cta: { cta: "finale", trust: COMPACT, helpLine: true },
       art: art("sun", "A boy in glasses and a rust T-shirt beside Kheelu, the cream plush rabbit."),
     },
   ],
@@ -128,21 +130,28 @@ const CASES: Case[] = [
 /* The build's documented differences inside a close (besides the harness's, test/support/mockup-compare.ts, and CtaBlock's): the journal
    close's section and board take their own names (mk-close is a stories-page name; in one global stylesheet it
    would read as every close's, mockup-css-mapping §6.2), the guide close's board clamp is ArtBoard's class, and the
-   CtaBlock classes (CtaBlock.test.tsx). */
-const RENAMES = { close: ["ks-close-journal"], "close-art": ["ks-close-journal__art"], "sf-cta": [], "gd-cta": [], "close-cta": [], "close-trust": ["ks-cta__full-trust"] };
-const adjustFor = (config: CloseSectionConfig) => (el: Element) => {
+   CtaBlock classes and its one shape (CtaBlock.test.tsx; task Q2.15, the consistency review's R2: every close's chilli
+   button full width on phones with the arrow). The product close's own row class (mk-close-trust) goes with its "full"
+   block: since task Q2.15 (CON-2) its lines sit grouped beside the button as every other close's (`withLinesBeside`). */
+const RENAMES = { close: ["ks-close-journal"], "close-art": ["ks-close-journal__art"], "sf-cta": [], "gd-cta": [], "close-cta": [], "close-trust": [] };
+const adjust = (el: Element) => {
+  withOneCtaShape(el);
   addClass(el, ".kh-btn--cta", "ks-cta__button");
   addClass(el, ".kh-btn--cta > svg", "ks-btn__arrow");
   addClass(el, ".ks-beside--center .kh-trustline", "ks-trustline--center");
-  if (config.variant === "split" && config.cta.layout === "full") addClass(el, ".kh-split .ks-help", "ks-cta__full-help");
+  // The guide close's words in the DS's wide start column from 900 px (task Q2.15, CON-11), where the mockup's are half.
+  addClass(el, ".ks-gd-close > .kh-split", "kh-split--wide-start");
 };
 /* Every close as D063 items 2-3 rule its mockup (task Q2.3; test/e2e/support/seller-facts.ts): the help and contact
-   lines keep WhatsApp and the email, without the number. */
-const ruledFold = (slug: string, fold: string) => withSellerFacts(mockupFold(slug, fold));
+   lines keep WhatsApp and the email, without the number; the product close with its lines beside the button (Q2.15). */
+const ruledFold = (slug: string, fold: string) => {
+  const ruled = withSellerFacts(mockupFold(slug, fold));
+  return slug === "meet-kheelu" ? withLinesBeside(ruled) : ruled;
+};
 
 describe("CloseSection: every close of the approved mockup, exactly (art aside)", () => {
   it.each(CASES)("%s", (_name, slug, fold, config) => {
-    const expected = builtMarkup([without(ruledFold(slug, fold), ".kh-art")], { renames: RENAMES, adjust: adjustFor(config) });
+    const expected = builtMarkup([without(ruledFold(slug, fold), ".kh-art")], { renames: RENAMES, adjust });
     const actual = canonical(without(renderedElement(<CloseSection {...config} {...context()} />), ".kh-art"));
     expect(actual).toBe(expected);
   });
@@ -247,9 +256,54 @@ describe("CloseSection: the section", () => {
     }
   });
 
-  it("draws the arrow where the mockup does: the guide, safety, stories and article closes", () => {
-    const arrowed = CASES.filter(([, , , c]) => renderedElement(<CloseSection {...c} {...context()} />).querySelector(".ks-btn__arrow")).map(([n]) => n);
-    expect(arrowed).toEqual(["safety close (split, clamped art)", "guide close (tinted card)", "stories hub close (journal)", "article close (journal)"]);
+  /* Task Q2.15 (the consistency review's R2, CMO-1): one button shape on every close, the centred ones too. */
+  it("gives every close with a chilli button the one shape: full width on phones with the arrow", () => {
+    const selling = CASES.filter(([, , , c]) => c.variant !== "links");
+    for (const [name, , , config] of selling) {
+      const button = renderedElement(<CloseSection {...config} {...context()} />).querySelector(".kh-btn--cta")!;
+      expect(button, name).toHaveClass("kh-btn--block", "ks-cta__button");
+      expect(button.querySelectorAll(".ks-btn__arrow"), name).toHaveLength(1);
+    }
+  });
+
+  it("groups the product close's lines beside its button, as the safety close's (CON-2)", () => {
+    const lines = (config: CloseSectionConfig) =>
+      [...renderedElement(<CloseSection {...config} {...context()} />).querySelectorAll(".ks-beside > *")].map((el) => el.className);
+    expect(lines(CASES[1][3])).toEqual(lines(CASES[0][3]));
+    expect(lines(CASES[1][3])).toEqual(["kh-body-s ks-price", "kh-trustline ks-trust", "kh-body-s ks-help"]);
+  });
+
+  /* Task Q2.15 (the consistency review's CON-1, CON-7): the journal closes' rows sat --space-5 under the lead and the help
+     line (stories.css:45), every other close's at the DS's --space-6 (bundle.css .kh-section__actions): the ghost link
+     under /team's and /contact's close and under the hub's and the articles' now sits the same gap below its line. */
+  it("spaces every close's button and link rows as the DS does, the journal's too: no close rule moves an actions row", () => {
+    const css = readFileSync(join(process.cwd(), "src/components/sections/CloseSection/close-section.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(css).not.toMatch(/\.kh-section__actions[^{]*\{/);
+    const actions = renderedElement(<CloseSection {...journal} {...context()} />).querySelectorAll(".kh-section__actions");
+    expect([...actions].map((row) => row.className)).toEqual(["kh-section__actions", "kh-section__actions"]);
+  });
+
+  /* Task Q2.15 (CON-11): in the guide's tinted card the words' column was half the card's, 527 px at 1440, too narrow for
+     the trust line's two items (292 + 24 + 229 px), which wrapped; the DS's 7:5 split from 900 px keeps it one row, as
+     every other split close's. */
+  it("guide: the words take the DS's wide start column beside the board (7:5 from 900 px), so the trust line keeps one row", () => {
+    const card = renderedElement(<CloseSection {...CASES[2][3]} {...context()} />).querySelector(".ks-gd-close")!;
+    expect(card.firstElementChild?.getAttribute("class")).toBe("kh-split kh-split--wide-start");
+    for (const other of [CASES[0][3], CASES[1][3], journal]) {
+      expect(renderedElement(<CloseSection {...other} {...context()} />).querySelector(".kh-split")?.getAttribute("class")).toBe("kh-split");
+    }
+  });
+
+  /* Task Q2.15 (the consistency review's QAL-8, CON-9): a close may sit on the cream band, where its page's rhythm asks
+     (DS 10-pages.md "Alternate the bands": /setup's close after its plain help fold); on the page's surface otherwise. */
+  it("sits on the cream band when its page's rhythm asks (band), on the surface otherwise, in every variant", () => {
+    for (const [name, , , config] of CASES) {
+      expect(renderedElement(<CloseSection {...config} {...context()} />).getAttribute("class"), name).not.toContain("kh-section--band");
+      expect(renderedElement(<CloseSection {...config} band {...context()} />).getAttribute("class"), name).toContain("kh-section--band");
+    }
+    const centre = CASES[5][3];
+    if (centre.variant !== "center") throw new Error("CASES[5] is a centred close");
+    expect(renderedElement(<CenterClose {...centre} band {...context()} />).getAttribute("class")).toBe("kh-section kh-section--band");
   });
 
   it("never moves on arrival: no data-reveal in any close (a chilli button and the price, §11.2)", () => {
@@ -279,7 +333,7 @@ describe("CenterClose (close-fold.tsx)", () => {
 
   it.each(CENTER)("%s: the mockup's centred close, exactly", (_name, slug, fold, config) => {
     if (config.variant !== "center") throw new Error("a centred close");
-    const expected = builtMarkup([ruledFold(slug, fold)], { renames: RENAMES, adjust: adjustFor(config) });
+    const expected = builtMarkup([ruledFold(slug, fold)], { renames: RENAMES, adjust });
     expect(canonical(renderedElement(<CenterClose {...config} {...context()} />))).toBe(expected);
   });
 

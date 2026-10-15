@@ -51,12 +51,14 @@ export const STORE = "https://store.kheelona.com";
 const REDRAWN = Object.entries(SITE_DRAWINGS).map(([name, d]) => [ICON_PATHS[name as IconName], d] as const);
 
 /** A built mockup page, parsed fresh: for a test that changes what it reads (a stand-in in place of a slot). It carries
- *  the site's icon drawings (`REDRAWN`, task Q2.4) and task Q2.8's price lines as the build prints them (`withPriceLine`). */
+ *  the site's icon drawings (`REDRAWN`, task Q2.4), task Q2.8's price lines as the build prints them (`withPriceLine`)
+ *  and the drawer's second note a line each (`withDrawerNoteLines`, task Q2.15). */
 export function parseMockup(slug: string): Document {
   let html = readRepoFile(`mockup/${slug}.html`);
   for (const [mockup, built] of REDRAWN) html = html.replaceAll(`<path d="${mockup}">`, `<path d="${built}">`);
   const doc = new DOMParser().parseFromString(html, "text/html");
   withPriceLine(doc);
+  withDrawerNoteLines(doc);
   return doc;
 }
 
@@ -130,6 +132,61 @@ export function withPriceLine(root: ParentNode): void {
     words.textContent = returns.build;
     list.replaceChildren(...(built as Node[]));
   }
+}
+
+/* ── One CTA block shape (task Q2.15) ───────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * The drawer's second note a line each (task Q2.15; the consistency review's CON-8): the risk-reversal line, then the
+ * delivery line, as the trust line beside every button reads them, where partials/drawer.html joined its two promises with
+ * a dot (and `withPriceLine` keeps the dot, in the build's words). Only a note that reads exactly so changes.
+ */
+export function withDrawerNoteLines(root: ParentNode): void {
+  const { returns, delivery } = PRICE_LINE;
+  for (const el of root.querySelectorAll(".kh-drawer__note")) {
+    if (wordsOf(el) !== `${returns.build} · ${delivery}`) continue;
+    const doc = el.ownerDocument;
+    el.replaceChildren(doc.createTextNode(returns.build), doc.createElement("br"), doc.createTextNode(delivery));
+  }
+}
+
+/**
+ * The one CTA block shape (task Q2.15; the consistency review's R2, CMO-1, QAP-1, QAL-3, CON-1, CON-5): every CTA
+ * block's chilli button is full width on phones (`kh-btn--block`, inline from 720 px through cta-block.css) and ends with
+ * the nudging arrow (D049 pick 6, D064 item 10), where the approved mockup drew some blocks narrow and without it. Read
+ * the mockup's CTA blocks so: each chilli button in an actions row (`.kh-section__actions`, a CTA block's; never the
+ * drawer's, the nav's, the bar's or an offer card's) gains the class and the arrow, as the mockup inlines the icon
+ * (mockup/build.mjs), where it lacks them. A section test applies it in its `adjust`, before the build's own class hooks.
+ */
+export function withOneCtaShape(root: Element): void {
+  const arrow = `<svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="${ICON_PATHS["arrow-right"]}"></path></svg>`;
+  const buttons = [...(root.matches(".kh-section__actions > a.kh-btn--cta") ? [root] : []), ...Array.from(root.querySelectorAll(".kh-section__actions > a.kh-btn--cta"))];
+  for (const button of buttons) {
+    if (!button.classList.contains("kh-btn--block")) {
+      const classes = (button.getAttribute("class") ?? "").split(/\s+/);
+      const after = classes.indexOf("kh-btn--l");
+      classes.splice(after + 1, 0, "kh-btn--block");
+      button.setAttribute("class", classes.join(" "));
+    }
+    if (button.querySelector(":scope > svg") === null) button.insertAdjacentHTML("beforeend", arrow);
+  }
+}
+
+/**
+ * A close whose lines the approved mockup left loose after its button (meet-kheelu.html fold 9, the product close's
+ * "full" block), read with them grouped beside the button as every other close groups them (`mk-beside`,
+ * mockup.css:27): task Q2.15, the consistency review's CON-2. Returns a clone of `fold`; the fold's first actions row
+ * with a chilli button keeps its place, and every element after it in its column moves into the group.
+ */
+export function withLinesBeside(fold: Element): Element {
+  const copy = fold.cloneNode(true) as Element;
+  const row = copy.querySelector(".kh-section__actions > .kh-btn--cta")?.parentElement;
+  if (!row) throw new Error("the fold has no actions row with a chilli button");
+  const group = copy.ownerDocument.createElement("div");
+  group.setAttribute("class", "mk-beside");
+  while (row.nextElementSibling) group.append(row.nextElementSibling);
+  row.after(group);
+  return copy;
 }
 
 const pages = new Map<string, Document>();

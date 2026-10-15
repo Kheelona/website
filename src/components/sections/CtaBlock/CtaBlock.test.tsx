@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { render, screen, within } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -11,7 +11,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { CtaBlock } from "./CtaBlock";
 import type { CtaBlockConfig, CtaSecondary, SellingContext } from "./cta-block.types";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
-import { addClass, builtMarkup, mockupCtaRun, mockupFold, renderedMarkup, STORE } from "../../../../test/support/mockup-compare";
+import { addClass, builtMarkup, mockupCtaRun, mockupFold, renderedMarkup, STORE, withLinesBeside, withOneCtaShape } from "../../../../test/support/mockup-compare";
 
 /* CtaBlock (task 3.2; architecture §5.2 "Compact CTA block"; home.md "CTA block"). Rendered from the real content
    (the offer view model in both modes, content/en-IN/{cta,seller,trust}.ts), so each case proves the content and the
@@ -28,45 +28,47 @@ const SEE_HOW: CtaSecondary = { label: "See how it works", href: "/products/khee
 const SEE_HOW_KHEELU: CtaSecondary = { ...SEE_HOW, label: "See how Kheelu works" };
 
 /* The build's documented differences from the mockup markup in a CTA block (besides the harness's, test/support/mockup-compare.ts):
+   - the one CTA block shape (task Q2.15; the consistency review's R2): every chilli button of a CTA block is full width
+     on phones with the arrow, where the mockup drew some narrow and without it (the harness's `withOneCtaShape`);
    - every chilli button of a CTA block carries ks-cta__button: the four page-only rules that make a phone-width
      button inline from 720 px (mockup.css:85, safety.css:51, ai-toys-for-kids-in-india.css:49, stories.css:130) are
      one rule on that class, so the page names mk-sf-cta, mk-gd-cta and mk-close-cta (no rule of its own) go;
    - the arrow carries the D049 pick 6 hook ks-btn__arrow (Button, task 2.2);
    - a centred trust line carries TrustLine's own centring class (mockup.css:97 ported in trust-line.css, task 2.4);
-   - the product close's full row (mk-close-trust, meet-kheelu.css:104) and help line (#close .mk-help, :105) take the
-     CtaBlock "full" layout's classes. */
-const RENAMES = { "sf-cta": [], "gd-cta": [], "close-cta": [], "close-trust": ["ks-cta__full-trust"] };
-const adjustFor = (layout: CtaBlockConfig["layout"]) => (el: Element) => {
+   - the product close's own row class (mk-close-trust, meet-kheelu.css:104, the reading measure of its five-item row)
+     goes: since task Q2.15 (CON-2) that close groups its lines beside the button as every other close does. */
+const RENAMES = { "sf-cta": [], "gd-cta": [], "close-cta": [], "close-trust": [] };
+const adjust = (el: Element) => {
+  withOneCtaShape(el);
   addClass(el, ".kh-btn--cta", "ks-cta__button");
   addClass(el, ".kh-btn--cta > svg", "ks-btn__arrow");
   addClass(el, ".ks-beside--center .kh-trustline", "ks-trustline--center");
-  if (layout === "full") addClass(el, ".ks-help", "ks-cta__full-help");
 };
 
-type Placement = [name: string, slug: string, fold: string, config: CtaBlockConfig];
+type Placement = [name: string, slug: string, fold: string, config: CtaBlockConfig, read?: (fold: Element) => Element];
 const PLACEMENTS: Placement[] = [
-  ["Home hero (fold 1)", "home", 'section[aria-labelledby="hero-title"]', { cta: "hero", id: "hero-cta", priceId: "hero-price", arrow: true, block: true, layout: "stack", trust: COMPACT, helpLine: true, secondary: secondary("hero-learn", "ghost") }],
+  ["Home hero (fold 1)", "home", 'section[aria-labelledby="hero-title"]', { cta: "hero", id: "hero-cta", priceId: "hero-price", layout: "stack", trust: COMPACT, helpLine: true, secondary: secondary("hero-learn", "ghost") }],
   ["Home films (fold 2)", "home", 'section[aria-labelledby="ask-title"]', { cta: "see-it-ask", align: "center", trust: COMPACT, secondary: secondary("see-it-ask-learn", "ghost") }],
   ["Home safety (fold 6)", "home", 'section[aria-labelledby="safety-title"]', { cta: "safety", align: "center", trust: COMPACT, secondary: secondary("safety-learn", "secondary") }],
-  ["product hero (fold 1)", "meet-kheelu", 'section[aria-labelledby="hero-title"]', { cta: "product-top", arrow: true, block: true, layout: "stack", trust: COMPACT, helpLine: true }],
+  ["product hero (fold 1)", "meet-kheelu", 'section[aria-labelledby="hero-title"]', { cta: "product-top", layout: "stack", trust: COMPACT, helpLine: true }],
   ["product safety (fold 6)", "meet-kheelu", "#safety", { cta: "product-safety", align: "center", trust: COMPACT, secondary: secondary("product-safety-learn", "secondary") }],
   /* The trust line in place of meet-kheelu.html's five-item row since task Q2.8's review (the D2C plan v2 §1.1; the
-     harness reads the mockup's row so, test/support/mockup-compare.ts withPriceLine). */
-  ["product close (fold 9)", "meet-kheelu", "#close", { cta: "product-foot", layout: "full", trust: COMPACT, helpLine: true }],
-  ["safety close", "safety", "#close", { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true }],
-  ["guide close", "ai-toys-for-kids-in-india", "#close", { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true }],
-  ["stories hub close", "stories", "#close", { cta: "finale", arrow: true, block: true, layout: "journal", trust: COMPACT, helpLine: true, secondary: SEE_HOW }],
-  ["article close (learning toys)", "story-learning-toys-for-a-three-year-old", "#close", { cta: "finale", arrow: true, block: true, layout: "journal", trust: COMPACT, helpLine: true, secondary: SEE_HOW }],
-  ["article close (safe AI toy)", "story-what-to-look-for-in-a-safe-ai-toy", "#close", { cta: "finale", arrow: true, block: true, layout: "journal", trust: COMPACT, helpLine: true, secondary: SEE_HOW }],
+     harness reads the mockup's row so, test/support/mockup-compare.ts withPriceLine); its lines grouped since Q2.15. */
+  ["product close (fold 9)", "meet-kheelu", "#close", { cta: "product-foot", trust: COMPACT, helpLine: true }, withLinesBeside],
+  ["safety close", "safety", "#close", { cta: "finale", trust: COMPACT, helpLine: true }],
+  ["guide close", "ai-toys-for-kids-in-india", "#close", { cta: "finale", trust: COMPACT, helpLine: true }],
+  ["stories hub close", "stories", "#close", { cta: "finale", layout: "journal", trust: COMPACT, helpLine: true, secondary: SEE_HOW }],
+  ["article close (learning toys)", "story-learning-toys-for-a-three-year-old", "#close", { cta: "finale", layout: "journal", trust: COMPACT, helpLine: true, secondary: SEE_HOW }],
+  ["article close (safe AI toy)", "story-what-to-look-for-in-a-safe-ai-toy", "#close", { cta: "finale", layout: "journal", trust: COMPACT, helpLine: true, secondary: SEE_HOW }],
   ["team close", "team", "#close", { cta: "finale", align: "center", trust: COMPACT, helpLine: true, secondary: SEE_HOW_KHEELU }],
   ["contact close (no help line)", "contact", "#close", { cta: "finale", align: "center", trust: COMPACT, secondary: SEE_HOW_KHEELU }],
   ["404 close", "404", "#close", { cta: "finale", align: "center", trust: COMPACT, helpLine: true }],
 ];
 
 /* The help lines as D063 item 2 rules them (task Q2.3; test/e2e/support/seller-facts.ts): WhatsApp, the call off. */
-describe("CtaBlock: every placement of the approved mockup, exactly", () => {
-  it.each(PLACEMENTS)("%s", (_name, slug, fold, config) => {
-    const expected = builtMarkup(mockupCtaRun(withSellerFacts(mockupFold(slug, fold))), { renames: RENAMES, adjust: adjustFor(config.layout) });
+describe("CtaBlock: every placement of the approved mockup, in the one shape", () => {
+  it.each(PLACEMENTS)("%s", (_name, slug, fold, config, read = (el) => el) => {
+    const expected = builtMarkup(mockupCtaRun(read(withSellerFacts(mockupFold(slug, fold)))), { renames: RENAMES, adjust });
     expect(renderedMarkup(<CtaBlock {...config} {...context()} />)).toBe(expected);
   });
 
@@ -100,18 +102,40 @@ describe("CtaBlock: the block", () => {
     expect(screen.getAllByRole("link").filter((a) => a.classList.contains("kh-btn--cta"))).toHaveLength(1);
   });
 
-  it("draws the arrow only where the placement asks for it", () => {
-    const arrowed = render(<CtaBlock {...hero} {...context()} />).container;
-    expect(arrowed.querySelectorAll(".kh-btn--cta .ks-btn__arrow")).toHaveLength(1);
-    const plain = render(<CtaBlock {...PLACEMENTS[2][3]} {...context()} />).container;
-    expect(plain.querySelector(".kh-btn--cta svg")).toBeNull();
+  /* Task Q2.15 (the consistency review's R2; CMO-1, QAP-1, QAL-3, CON-1, CON-5): one shape for every CTA block, by
+     default, so no page can drift: full width on phones (inline from 720 px, cta-block.css) with the nudging arrow
+     (D049 pick 6, D064 item 10). The offer card's button, the drawer's, the nav's and the bar's are not CTA blocks. */
+  it.each(PLACEMENTS)("%s: full width on phones with the arrow, without any flag from the page", (_name, _slug, _fold, config) => {
+    const button = render(<CtaBlock {...config} {...context()} />).container.querySelector(".kh-btn--cta")!;
+    expect(button).toHaveClass("kh-btn--block", "ks-cta__button");
+    expect(button.querySelectorAll(":scope > svg.ks-btn__arrow")).toHaveLength(1);
+    expect(button.lastElementChild).toHaveClass("ks-btn__arrow");
   });
 
-  it("is full width on phones only where the mockup says so (block), with the class that makes it inline from 720 px", () => {
-    const block = render(<CtaBlock {...hero} {...context()} />).container.querySelector(".kh-btn--cta");
-    expect(block).toHaveClass("kh-btn--block", "ks-cta__button");
-    const inline = render(<CtaBlock {...PLACEMENTS[2][3]} {...context()} />).container.querySelector(".kh-btn--cta");
-    expect(inline).not.toHaveClass("kh-btn--block");
+  it("keeps the inline rule from 720 px for that full-width button, so laptops gain only the arrow", () => {
+    const css = readFileSync(join(process.cwd(), "src/components/sections/CtaBlock/cta-block.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(css).toMatch(/@media \(min-width: 720px\) \{\s*\.ks-cta__button\.kh-btn--block \{\s*display: inline-flex;\s*width: auto;\s*\}\s*\}/);
+  });
+
+  it("lays out every block but a hero's alike: the price, trust and help lines grouped beside the button (CON-2)", () => {
+    for (const [name, , , config] of PLACEMENTS.filter(([, , , c]) => c.layout !== "stack")) {
+      const { container } = render(<CtaBlock {...config} {...context()} />);
+      const group = container.querySelector(".ks-beside")!;
+      expect(group, name).not.toBeNull();
+      expect(group.querySelector(":scope > .ks-price"), name).not.toBeNull();
+      expect(group.querySelector(":scope > .kh-trustline"), name).not.toBeNull();
+    }
+    const types = readFileSync(join(process.cwd(), "src/components/sections/CtaBlock/cta-block.types.ts"), "utf8");
+    expect(types).toMatch(/export type CtaBlockLayout = "beside" \| "journal" \| "stack";/);
+  });
+
+  /* No content module sets the shape again (the flags left with task Q2.15): a block is the one shape by default. */
+  it("is never given an arrow or block flag by a page's content", () => {
+    const files = readdirSync(join(process.cwd(), "src/content"), { recursive: true, encoding: "utf8" }).filter(
+      (f) => /\.ts$/.test(f) && !/\.test(-d)?\.ts$/.test(f),
+    );
+    const flagged = files.filter((f) => /\b(?:arrow|block): (?:true|false)\b/.test(readFileSync(join(process.cwd(), "src/content", f), "utf8")));
+    expect(flagged).toEqual([]);
   });
 
   it("links every trust item to its terms with an accessible name, and the help line to WhatsApp, never a call (D063)", () => {

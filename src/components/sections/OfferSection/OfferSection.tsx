@@ -35,7 +35,7 @@ const OFFER_PHOTO_SIZES = "(min-width: 1024px) 512px, (min-width: 900px) 480px, 
  * everywhere). Home's close (the `close` variant) left: Home's close is a CloseSection since task Q2.9.
  */
 export function OfferSection(props: OfferSectionProps) {
-  const { variant, heading, cta, trust, note, offer, ctaLabel } = props;
+  const { variant, heading, cta, trust, third, note, offer, ctaLabel } = props;
   const card = (
     <OfferCard
       offer={offer}
@@ -59,33 +59,28 @@ export function OfferSection(props: OfferSectionProps) {
       </Button>
     </Actions>
   );
-  const trustRow = <SellingTrustLine items={trust} offer={offer} />;
   return (
     <Section id="offer" labelledBy="offer-title">
       <Container>
         <SectionHead>
           <Heading align="center" eyebrow={heading.eyebrow} title={heading.title} lead={heading.lead} id="offer-title" offer={offer} />
         </SectionHead>
-        {props.variant === "home" ? (
-          /* Home's offer (task Q2.9; the D2C plan v2 §2 fold 7): the board beside the column, top-aligned from 900 px. */
-          <Split>
-            <div>
-              {card}
-              {trustRow}
-              {share}
-            </div>
-            <CloseArt art={props.art} />
-          </Split>
-        ) : (
-          <Split className="ks-offer-split">
-            <div className="ks-offer-col">
-              {card}
-              {trustRow}
-              {share}
-            </div>
+        {/* One composition for both cards (task Q2.15; the consistency review's CON-3, QAL-2, CMO-2): the column (the card,
+            the trust line, the card's third row, the share link) against its picture, top-aligned from 900 px (D064
+            item 5): Home's board (task Q2.9's offer, the D2C plan v2 §2 fold 7) or the product photo. */}
+        <Split className="ks-offer-split">
+          <div className="ks-offer-col">
+            {card}
+            <SellingTrustLine items={trust} offer={offer} />
+            <SellingTrustLine items={third} offer={offer} className="ks-offer-third" />
+            {share}
+          </div>
+          {props.variant === "home" ? (
+            <CloseArt art={props.art} className="ks-offer-art" />
+          ) : (
             <Photo image={props.photo} sizes={OFFER_PHOTO_SIZES} variant="square" xl className="ks-offer-photo" />
-          </Split>
-        )}
+          )}
+        </Split>
       </Container>
     </Section>
   );
