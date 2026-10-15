@@ -1181,3 +1181,10 @@ is mostly the run's conditions; re-measure on mains power with `/stories`, Gate 
 candidate, and Lighthouse read its size from the width and height attributes although the element has no box. Phones
 get sharp candidates (w=256-384, probed in Chromium at 360, 390 and 412). Fixed with `object-fit: contain` on art-board
 layers (no change on screen: visual parity green on six art-board pages; BP back to 96, the audit passes).
+
+## [2026-10-15 09:31] deploy | `beta` `cf60e8a` deployed (wave 8c); the CMO's built-page review running
+The first push timed out (HTTP 408 on a slow upload with the 3 MB clip); a retry with a larger `http.postBuffer`
+went through (`ee273b5..cf60e8a`). Vercel "Deployment has completed" in 32 s; the product page on beta shows the expert
+fold, "Made in India", the later-price line and the parents' quotes. GitHub's push reply flagged Dependabot alerts on
+the default branch (`main`, the live site: G25 is Aman's). The CMO reviews wave 8c on beta, phone first (workflow
+`wf_cb359084-f20`); a second reviewer checks any blocking finding.
