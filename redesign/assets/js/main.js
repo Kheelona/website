@@ -156,7 +156,7 @@
   /* ---------- 2 · Try it: zoom into the tummy, then the real buttons are clickable ---------- */
   (() => {
     const track = $("#how"); const stage = $(".stage", track); const k = $("[data-try-kheelu]"); const body = $(".kheelu__body", k);
-    const ring = $("[data-ring]", k); const ripples = $$(".kheelu__ripple", k); const steps = $$("[data-steps] li"); const demo = $("[data-demo]"); const say = $("[data-demo-say]");
+    const ripples = $$(".kheelu__ripple", k); const steps = $$("[data-steps] li"); const demo = $("[data-demo]"); const say = $("[data-demo-say]");
     const listen = gsap.timeline({ repeat: -1, paused: true });
     ripples.forEach((r, i) => listen.fromTo(r, { scale: 0.6, opacity: 0.85 }, { scale: 1.9, opacity: 0, duration: 1.6, ease: "power1.out" }, i * 0.5));
     const zoom = () => { const s = phone() ? 2.2 : 2.6; const H = k.offsetHeight; const cy = k.offsetTop + H / 2; const target = phone() ? stage.offsetHeight * 0.36 : stage.offsetHeight * 0.5; const cx = k.offsetLeft + k.offsetWidth / 2; const tx = phone() ? 0 : Math.min(stage.offsetWidth * 0.16, 260 * R()); return { s, y: target - cy - 0.118 * H * s, x: tx + (stage.offsetWidth / 2 - cx) }; };
@@ -171,7 +171,6 @@
       .to("[data-try-copy]", { opacity: 0, y: -30, duration: 0.05 }, 0.18)
       .to(k, { scale: () => zoom().s, y: () => zoom().y, x: () => zoom().x, ease: "power2.inOut", duration: 0.12 }, 0.2)
       .to("[data-steps]", { opacity: 1, duration: 0.04 }, 0.3)
-      .fromTo(ring, { opacity: 0 }, { opacity: 1, duration: 0.05 }, 0.41)
       .to("[data-steps]", { opacity: 0, duration: 0.04 }, 0.55)
       .fromTo(demo, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.05 }, 0.56)
       .to(demo, { opacity: 0, duration: 0.03 }, 0.95)
@@ -180,7 +179,7 @@
     // Each button does what it does on the real Khelu, in Khelu's own voice (assets/audio/voice, tools/voice-lines.json).
     const LINES = {
       hello: "Hello, my friend! I’m so happy to talk with you. What would you like to learn today?",
-      "power-on": "Power on!", bye: "Bye bye!", "hey-riya": "Hey Riya! I’m Khelu. How was your day today?",
+      "power-on": "Power on!", bye: "Bye bye!",
       "story-1": "Once upon a time, a little rabbit named Khelu found a shiny pebble by the river…",
       "story-2": "A tiny cloud wanted to be a rainbow. So it waited for the sun, and, splash! It painted the whole sky.",
       "story-3": "A sleepy moon forgot to go home. The stars giggled, and tucked it in behind the hills.",
@@ -200,14 +199,14 @@
       Sound.unlock(); syncSound(); mark(c);
       if (c === "power") {
         on = !on; talking = telling = false; Sound.stop();
-        gsap.to(ring, { opacity: on ? 1 : 0, duration: 0.3 }); gsap.to($(".kheelu__img", k), { filter: on ? "brightness(1)" : "brightness(0.8)", duration: 0.4 });
+        gsap.to($(".kheelu__img", k), { filter: on ? "brightness(1)" : "brightness(0.8)", duration: 0.4 });
         if (on) { burst(); return voice("power-on"); } return voice("bye");
       }
       if (!on) { Sound.tone([392], 0.16); return say1("I’m switched off. Press Power to wake me."); }
       burst();
       if (c === "wake") {
         talking = !talking; telling = false; Sound.stop();
-        if (talking) { Sound.tone([880]); gsap.delayedCall(0.2, () => voice("hey-riya")); return say1(LINES["hey-riya"]); }
+        if (talking) { Sound.tone([880]); gsap.delayedCall(0.2, () => Sound.play("hello")); return say1(LINES.hello); }
         Sound.tone([659, 523]); return say1("Okay! Press me again when you want to talk.");
       }
       if (c === "play") {
@@ -384,9 +383,9 @@
 
   /* ---------- Video dialog (shared with the static fallback) ---------- */
   function initModal() {
-    const modal = document.getElementById("modal"); const mv = modal.querySelector("video"); const dl = modal.querySelector("[data-dl]");
+    const modal = document.getElementById("modal"); const mv = modal.querySelector("video"); 
     const close = () => { mv.pause(); mv.removeAttribute("src"); mv.load(); modal.close(); };
-    document.querySelectorAll("[data-video]").forEach((b) => b.addEventListener("click", () => { modal.classList.toggle("modal--wide", b.hasAttribute("data-wide")); mv.src = b.dataset.video; dl.href = b.dataset.video; modal.showModal(); mv.play().catch(() => {}); }));
+    document.querySelectorAll("[data-video]").forEach((b) => b.addEventListener("click", () => { modal.classList.toggle("modal--wide", b.hasAttribute("data-wide")); mv.src = b.dataset.video; modal.showModal(); mv.play().catch(() => {}); }));
     modal.querySelector("[data-close]").addEventListener("click", close);
     modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
     modal.addEventListener("close", () => mv.pause());

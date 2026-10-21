@@ -37,7 +37,7 @@ wake-up button, the parent app, the prices and the delivery date. The dialogue l
 - **F-pattern reading:** chapter copy always sits in the same top-left column, and the visual sits beside or below it.
 - **Pre-order dock:** fixed at the bottom on every screen, with "Watch Khelu ask" and "Pre-order Khelu". Its CTA tracks as
   `hero` on the first screen and as `sticky-bar` after it.
-- **Skip:** every pinned demo has a "Skip ↓" button. Films can be downloaded "to watch later" from the player.
+- **Skip:** every pinned demo has a "Skip ↓" button.
 - **Clickable toy:** the real buttons on Khelu (✦ talk, stories and songs, ⏮ ⏭, volume −/+, power) each show what they do and play a small sound.
   The button roles come from the firmware (`iot-firmware/MEDIA-JUKEBOX.md`).
 - **Sky demo:** it's now Khelu talking it through, and the sky turns to sunset when the child answers "Orange!".
