@@ -215,16 +215,46 @@
     });
   })();
 
-  /* ---------- 10 · Privacy: one promise at a time, pointed out on the real app screen ---------- */
+  /* ---------- Privacy: one promise at a time, the way the launch film tells it ---------- */
   (() => {
-    const track = $("#privacy"); const items = $$("[data-plist] li", track); const hl = $("[data-hl]", track); const shackle = $(".lock .shackle", track);
-    // Rows on the privacy-centre screenshot (% from the top): title, keep-chats, voice switch, download + delete, policy links.
-    const ROWS = [[9, 7], [21.6, 6.6], [28.6, 6.6], [35.6, 13.4], [52, 18]];
+    const track = $("#privacy"); if (!track) return;
+    const steps = $$("[data-pv] li", track), dots = $$("[data-pv-dots] i", track), tags = $$("[data-pv-tags] .pv__tag", track), hl = $("[data-pv-hl]", track);
+    // Rows on the privacy-centre screenshot (% from top, height): title, (none), (none), keep-chats + voice switch, download + delete.
+    const ROWS = [[9, 7], null, null, [21.6, 13.6], [35.6, 13.4]];
     let cur = -1;
-    const go = (i) => { if (i === cur) return; cur = i; items.forEach((it, j) => it.classList.toggle("is-on", j === i)); const [top, h] = ROWS[i]; gsap.to(hl, { top: top + "%", height: h + "%", duration: 0.6, ease: "power3.out" }); };
+    const go = (i) => {
+      if (i === cur) return; cur = i;
+      steps.forEach((el, j) => el.classList.toggle("is-on", j === i)); dots.forEach((d, j) => d.classList.toggle("is-on", j === i));
+      tags.forEach((t) => t.classList.toggle("is-on", +t.dataset.step === i));
+      const r = ROWS[i]; hl.classList.toggle("is-red", i === 4);
+      if (r) gsap.to(hl, { top: r[0] + "%", height: r[1] + "%", opacity: 1, duration: 0.6, ease: "power3.out" }); else gsap.to(hl, { opacity: 0, duration: 0.3 });
+    };
     go(0);
-    ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => go(Math.min(items.length - 1, Math.floor(st.progress * items.length * 0.999))) });
-    gsap.fromTo(shackle, { y: -3 }, { y: 0, duration: 0.5, ease: "back.out(3)", scrollTrigger: { trigger: track, start: "top 60%", toggleActions: "play none none reverse" } });
+    ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => go(Math.min(steps.length - 1, Math.floor(st.progress * steps.length * 0.999))) });
+    gsap.from($(".pv__badge", track), { scale: 0.4, rotation: -25, opacity: 0, duration: 0.8, ease: "back.out(2.2)", scrollTrigger: { trigger: track, start: "top 70%", once: true } });
+    gsap.from($(".pv__phone", track), { y: 80, rotation: 4, scrollTrigger: { trigger: track, start: "top bottom", end: "top top", scrub: 0.6 } });
+  })();
+
+  /* ---------- Backed by: cards rise in, one after another ---------- */
+  gsap.from("[data-backed] .backed__card", { y: 40, opacity: 0, stagger: 0.1, duration: 0.8, ease: "power3.out", scrollTrigger: { trigger: "[data-backed]", start: "top 85%", once: true } });
+
+  /* ---------- Real families: scroll moves the reel sideways; the card in the middle grows and plays ---------- */
+  (() => {
+    const track = $("#films"); const reel = $("[data-reel]", track); if (!reel) return;
+    const items = $$(".reel__item", reel); const bar = $("[data-reel-bar]", track);
+    const dist = () => Math.max(0, reel.scrollWidth - innerWidth);
+    let playing = null;
+    const focus = () => {
+      const mid = innerWidth / 2; let best = null, bestD = 1e9;
+      items.forEach((it) => { const r = it.getBoundingClientRect(); const d = Math.abs(r.left + r.width / 2 - mid); const k = Math.max(0, 1 - d / (innerWidth * 0.6));
+        gsap.set(it, { scale: 0.86 + 0.14 * k }); if (d < bestD) { bestD = d; best = it; } });
+      items.forEach((it) => it.classList.toggle("is-center", it === best));
+      const v = best && best.matches(".film") ? $("video", best) : null;
+      if (v !== playing) { if (playing) playing.pause(); playing = v; if (v) { if (!v.src) v.src = v.dataset.loop; v.play().catch(() => {}); } }
+    };
+    gsap.to(reel, { x: () => -dist(), ease: "none", scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6, invalidateOnRefresh: true,
+      onUpdate: (st) => { bar.style.transform = `scaleX(${st.progress})`; focus(); }, onLeave: () => playing && playing.pause(), onLeaveBack: () => playing && playing.pause() } });
+    focus();
   })();
 
   /* ---------- Films: preview on hover (touch: in view) ---------- */
