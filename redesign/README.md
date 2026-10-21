@@ -71,3 +71,11 @@ wake-up button, the parent app, the prices and the delivery date. The dialogue l
   setting), not a fixed 36 months.
 - **Offer:** one compact two-column card that fits a laptop screen.
 - **Highlights:** `.mark` cycles through six soft shades (`.mark--peach/sky/butter/mint/pink/lilac`).
+
+## v9 changes (owner's notes, 2026-10-22)
+- **FAQ:** two columns (heading left, questions right), one answer open at a time (`<details name="faq">`, animated with
+  `::details-content`). It fits one screen: 609px on a laptop and 557–720px on a phone, where it starts closed.
+- **"It asks. They think." removed.** Its Pre-order button (`cta=finale`) moved into the footer.
+- **Footer:** Khelu peeks over a soft card and its eyes follow the cursor; rainbow "ear" lines ripple along the card's top;
+  pastel light drifts behind; links get a rainbow underline on hover; a giant "kheelona" wordmark rises letter by letter,
+  its colours follow the pointer, and each letter lifts on hover.
