@@ -122,3 +122,7 @@ Every page of betawebsite.kheelona.com, rebuilt in the home page's design langua
   camera reaches them, and the eyes blink (eyelids drawn inside each founder's own eye outline, in their skin tone).
   `?t3lid=0.8` holds the eyelids, to check them. A line runs from the founder's shoulder in the scene to their box, which
   shows their portrait, role, what they build, background and LinkedIn.
+- **Seamless bodies (v12.2):** below the chest each founder's body is their own photo carried on to the seat (each column
+  keeps its own shirt pixels, mirrored so knit and stripes run on, tapering to the waist and shading toward the table),
+  so face and body are one surface. No 3D arms or torso blocks: beside a real photo they never read as the same person.
+  Legs under the table use the same flat, soft shading.

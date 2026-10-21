@@ -110,9 +110,9 @@ function start() {
   /* ---------- The founders: a chair in their colour, a body, and their own photo ---------- */
   const deg = (d) => (d * Math.PI) / 180;
   const FOUNDERS = [
-    { key: "apoorva", photo: "/assets/img/team/apoorva-cut.webp", angle: 30, chair: 0xbfe6d2, shirt: 0x19181d, cup: 0xcdeedd },
-    { key: "aman", photo: "/assets/img/team/aman-cut.webp", angle: 90, chair: 0xffd6bd, shirt: 0x413c26, cup: 0xffdcc6 },
-    { key: "kashyap", photo: "/assets/img/team/kashyap-cut.webp", angle: 150, chair: 0xc6dff7, shirt: 0xcbbfae, cup: 0xd4e8fb },
+    { key: "apoorva", photo: "/assets/img/team/apoorva-cut.webp", angle: 30, sleeve: "short", chair: 0xbfe6d2, shirt: 0x19181d, cup: 0xcdeedd },
+    { key: "aman", photo: "/assets/img/team/aman-cut.webp", angle: 90, sleeve: "long", chair: 0xffd6bd, shirt: 0x413c26, cup: 0xffdcc6 },
+    { key: "kashyap", photo: "/assets/img/team/kashyap-cut.webp", angle: 150, sleeve: "short", chair: 0xc6dff7, shirt: 0xcbbfae, cup: 0xd4e8fb },
   ];
   const SEAT = 1.08, PERSON = 0.99, PHOTO = 0.68;
   const trousers = mat(0x353a48, 0.9), skin = mat(0xc89478, 0.7);
@@ -122,13 +122,71 @@ function start() {
      and eyelids drawn from each founder's own eye outline, so they blink. */
   const N = 72, gauss = (u, v, p, s) => Math.exp(-((u - p[0]) ** 2 + (v - p[1]) ** 2) / (2 * s * s));
   const smooth = (e0, e1, x) => { const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); };
-  const makePortrait = (img, lm, mat) => {
-    const geo = new THREE.PlaneGeometry(PHOTO, PHOTO, N, N);
+  /* The body is the photo itself, carried on below the chest: each column keeps its own shirt pixels (mirrored, so
+     stripes and knit run on), the body tapers a little to the waist and darkens toward the seat and the sides. So the
+     torso is one surface with the face: no join. Also returns the founder's skin tone (from the neck) and a swatch of
+     the real shirt fabric, for the arms. */
+  const EXT = 190;
+  const extendBody = (img, lm) => {
+    const W = img.naturalWidth || 480, H = W + EXT;
+    const c = document.createElement("canvas"); c.width = W; c.height = H;
+    const x = c.getContext("2d", { willReadFrequently: true }); x.drawImage(img, 0, 0, W, W);
+    const src = x.getImageData(0, 0, W, W).data, out = x.getImageData(0, 0, W, H), o = out.data;
+    const at = (X, Y) => (Y * W + X) * 4;
+    const row = W - 4; let L = 0, R = W - 1;
+    while (L < W - 1 && src[at(L, row) + 3] < 128) L++;
+    while (R > 0 && src[at(R, row) + 3] < 128) R--;
+    const cx = (L + R) / 2, half = Math.max(10, (R - L) / 2) * 0.93, BAND = 70;
+    for (let y = 0; y < EXT; y++) {
+      const t = y / EXT, k = y % (BAND * 2), sy = W - 1 - (k < BAND ? k : BAND * 2 - 1 - k);
+      const taper = 1 - 0.14 * t, dark = 1 - 0.32 * Math.pow(t, 1.25);
+      for (let X = 0; X < W; X++) {
+        const d = (X - cx) / (half * taper); const ad = Math.abs(d); if (ad > 1.02) continue;
+        let sx = Math.min(W - 1, Math.max(0, Math.round(cx + d * half)));
+        for (let n = 0; n < 60 && src[at(sx, sy) + 3] < 220; n++) sx += sx < cx ? 1 : -1; // no torn edges
+        const side = 1 - 0.2 * Math.pow(ad, 4) * Math.min(1, t * 2.5 + 0.15);
+        const f = dark * side, i = at(sx, sy), j = at(X, W + y);
+        o[j] = src[i] * f; o[j + 1] = src[i + 1] * f; o[j + 2] = src[i + 2] * f;
+        o[j + 3] = 255 * Math.min(1, (1.02 - ad) * 25);
+      }
+    }
+    x.putImageData(out, 0, 0);
+    // Skin tone: the neck, just under the chin. Fabric: a patch of the shirt beside the collar.
+    const ch = [[], [], []];
+    [0.27, 0.73].forEach((fx) => {
+      const sk = x.getImageData(Math.round((lm.box[0] + lm.box[2] * fx) * W) - 4, Math.round((lm.box[1] + lm.box[3] * 0.42) * W) - 4, 8, 8).data;
+      for (let i = 0; i < sk.length; i += 4) if (sk[i + 3] > 200) for (let c3 = 0; c3 < 3; c3++) ch[c3].push(sk[i + c3]);
+    });
+    const med = (a) => a.sort((m, n) => m - n)[a.length >> 1] || 160;
+    const skin = new THREE.Color(`rgb(${med(ch[0])},${med(ch[1])},${med(ch[2])})`);
+    const sw = document.createElement("canvas"); sw.width = sw.height = 96;
+    sw.getContext("2d").drawImage(img, Math.round(L + half * 0.12), W - 118, 96, 96, 0, 0, 96, 96);
+    const fabric = new THREE.CanvasTexture(sw); fabric.colorSpace = THREE.SRGBColorSpace; fabric.wrapS = fabric.wrapT = THREE.MirroredRepeatWrapping;
+    return { canvas: c, W, H, skin, fabric, lm: { ...lm, ...Object.fromEntries(Object.entries(lm).filter(([, v]) => Array.isArray(v) && Array.isArray(v[0])).map(([key, v]) => [key, v.map(([px, py]) => [px, py * W / H])])), box: [lm.box[0], lm.box[1] * W / H, lm.box[2], lm.box[3] * W / H] } };
+  };
+
+  /* Legs under the table: unlit and softly shaded (lighter on top), like the photo bodies above them, so the whole
+     figure reads as one. (Arms come from the photo itself: 3D arms beside a real photo never look like the same person.) */
+  const limb = (a, b, r, color, map) => {
+    const dir = new THREE.Vector3().subVectors(b, a), len = dir.length();
+    const g = new THREE.CapsuleGeometry(r, len, 8, 24);
+    g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize()));
+    g.translate((a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2);
+    const n = g.attributes.normal, cols = new Float32Array(n.count * 3);
+    for (let i = 0; i < n.count; i++) { const k = 0.84 + 0.17 * Math.min(1, Math.max(0, 0.5 + 0.6 * n.getY(i) + 0.2 * n.getZ(i))); cols[i * 3] = cols[i * 3 + 1] = cols[i * 3 + 2] = k; }
+    g.setAttribute("color", new THREE.BufferAttribute(cols, 3));
+    const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color, map: map || null, vertexColors: true, toneMapped: false }));
+    m.castShadow = true; return m;
+  };
+
+  const makePortrait = (img, lm, mat, W, H) => {
+    const PH = PHOTO * H / W;
+    const geo = new THREE.PlaneGeometry(PHOTO, PH, N, Math.round(N * H / W));
     const pos = geo.attributes.position, uv = geo.attributes.uv;
-    const A = 96, ac = document.createElement("canvas"); ac.width = ac.height = A;
-    const ax = ac.getContext("2d", { willReadFrequently: true }); ax.filter = "blur(2px)"; ax.drawImage(img, 0, 0, A, A);
-    const ad = ax.getImageData(0, 0, A, A).data;
-    const alphaAt = (u, v) => ad[(Math.min(A - 1, Math.max(0, Math.round(v * (A - 1)))) * A + Math.min(A - 1, Math.max(0, Math.round(u * (A - 1))))) * 4 + 3] / 255;
+    const A = 96, AH = Math.round(A * H / W), ac = document.createElement("canvas"); ac.width = A; ac.height = AH;
+    const ax = ac.getContext("2d", { willReadFrequently: true }); ax.filter = "blur(2px)"; ax.drawImage(img, 0, 0, A, AH);
+    const ad = ax.getImageData(0, 0, A, AH).data;
+    const alphaAt = (u, v) => ad[(Math.min(AH - 1, Math.max(0, Math.round(v * (AH - 1)))) * A + Math.min(A - 1, Math.max(0, Math.round(u * (A - 1))))) * 4 + 3] / 255;
     const [bx, by, bw, bh] = lm.box;
     const head = { x: bx + bw / 2, y: by + bh * 0.4 }, rx = bw * 0.64, ry = bh * 0.82;
     const chin = Math.max(...lm.contour.map((q) => q[1]));
@@ -144,11 +202,11 @@ function start() {
       z *= Math.min(1, a * 1.6);
       base[i * 3] = pos.getX(i); base[i * 3 + 1] = pos.getY(i); base[i * 3 + 2] = z;
       // How much of this point moves with the head: all of the head, fading to nothing below the chin.
-      weight[i] = smooth(1.35, 0.95, e) * smooth(chin + 0.11, chin + 0.01, v);
+      weight[i] = smooth(1.35, 0.95, e) * smooth(chin + 0.11 * W / H, chin + 0.01, v);
       pos.setZ(i, z);
     }
     pos.needsUpdate = true;
-    const pivot = { x: (head.x - 0.5) * PHOTO, y: (0.5 - (chin + 0.06)) * PHOTO, z: 0.02 };
+    const pivot = { x: (head.x - 0.5) * PHOTO, y: (0.5 - (chin + 0.06 * W / H)) * PH, z: 0.02 };
     const pose = (yaw, pitch, roll) => {
       for (let i = 0; i < pos.count; i++) {
         const w = weight[i]; if (w < 0.001) continue;
@@ -162,14 +220,14 @@ function start() {
       pos.needsUpdate = true;
     };
     // Eyelids: drawn over the photo, inside each eye's own outline, in the skin colour just above the eye.
-    const S = img.naturalWidth || 480, cv = document.createElement("canvas"); cv.width = cv.height = S;
-    const cx2 = cv.getContext("2d", { willReadFrequently: true }); cx2.drawImage(img, 0, 0, S, S);
+    const S = W, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+    const cx2 = cv.getContext("2d", { willReadFrequently: true }); cx2.drawImage(img, 0, 0, W, H);
     const eyes = [lm.leftEye, lm.rightEye].filter((e) => e && e.length).map((pts, k) => {
-      const P = pts.map(([x, y]) => [x * S, y * S]);
+      const P = pts.map(([x, y]) => [x * W, y * H]);
       const xs = P.map((p) => p[0]), ys = P.map((p) => p[1]);
       const box = { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) };
       const brow = (k ? lm.rightBrow : lm.leftBrow) || [];
-      const browY = brow.length ? Math.max(...brow.map((q) => q[1] * S)) : box.y0 - (box.y1 - box.y0);
+      const browY = brow.length ? Math.max(...brow.map((q) => q[1] * H)) : box.y0 - (box.y1 - box.y0);
       const sx = Math.round((box.x0 + box.x1) / 2), sy = Math.round((browY + box.y0) / 2);
       const px = cx2.getImageData(sx - 3, sy - 2, 6, 4).data; let r = 0, g = 0, b = 0, n = 0;
       for (let j = 0; j < px.length; j += 4) { r += px[j]; g += px[j + 1]; b += px[j + 2]; n++; }
@@ -177,7 +235,7 @@ function start() {
     });
     const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
     const lid = (close) => {
-      cx2.clearRect(0, 0, S, S); cx2.drawImage(img, 0, 0, S, S);
+      cx2.clearRect(0, 0, W, H); cx2.drawImage(img, 0, 0, W, H);
       if (close > 0.02) eyes.forEach(({ P, box, skin }) => {
         const cxm = (box.x0 + box.x1) / 2, cym = (box.y0 + box.y1) / 2, padY = (box.y1 - box.y0) * 0.35 + 1.5;
         cx2.save(); cx2.beginPath();
@@ -191,7 +249,7 @@ function start() {
       tex.needsUpdate = true;
     };
     mat.map = tex; mat.needsUpdate = true;
-    return { geo, pose, lid };
+    return { geo, pose, lid, PH };
   };
   const HOLD_LID = +new URLSearchParams(location.search).get("t3lid") || 0; // ?t3lid=0.6 holds the eyelids, to check them
   const people = [];
@@ -206,21 +264,22 @@ function start() {
     [[-0.2, -0.18], [0.2, -0.18], [-0.2, 0.18], [0.2, 0.18]].forEach(([x, z]) => { const l = shadowed(new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.013, 0.45, 12), leg)); l.position.set(x, 0.225, z); chair.add(l); });
     // Lap and legs (mostly under the table), facing the table with the chair.
     [-0.1, 0.1].forEach((x) => {
-      const thigh = shadowed(new THREE.Mesh(new THREE.CapsuleGeometry(0.07, 0.3, 6, 16), trousers)); thigh.rotation.x = Math.PI / 2; thigh.position.set(x, 0.55, 0.1); chair.add(thigh);
-      const shin = shadowed(new THREE.Mesh(new THREE.CapsuleGeometry(0.058, 0.36, 6, 16), trousers)); shin.position.set(x, 0.3, 0.3); chair.add(shin);
-      const shoe = shadowed(new THREE.Mesh(new THREE.CapsuleGeometry(0.045, 0.1, 4, 12), mat(0xf4f1ec, 0.6))); shoe.rotation.x = Math.PI / 2; shoe.position.set(x, 0.05, 0.36); chair.add(shoe);
+      const V = (px, py, pz) => new THREE.Vector3(px, py, pz);
+      chair.add(limb(V(x, 0.46, 0.27), V(x, 0.1, 0.33), 0.06, new THREE.Color(0x2c2e35))); // the lap is hidden behind the body
+      chair.add(limb(V(x, 0.045, 0.3), V(x, 0.045, 0.43), 0.045, new THREE.Color(0x3a3b40)));
     });
     chair.position.set(cx * SEAT, 0, cz * SEAT); chair.lookAt(0, 0, 0); scene.add(chair);
     // Upper body: turns toward the camera (see `face` below); the shirt continues under the photo down to the seat.
     const body = new THREE.Group();
     // Unlit, like the photo above it, so the shirt runs on without a seam.
-    const torso = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.3, 0.14), new THREE.MeshBasicMaterial({ color: f.shirt, toneMapped: false })); torso.castShadow = true; torso.position.set(0, 0.6, -0.08); body.add(torso); // behind the photo, filling down to the seat
     const photoMat = new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.03, toneMapped: false, color: 0xfffaf4, side: THREE.DoubleSide });
     const photo = new THREE.Mesh(new THREE.PlaneGeometry(PHOTO, PHOTO), photoMat); photo.position.set(0, 0.69 + PHOTO / 2, 0.02); body.add(photo);
     const person = { body, photo, portrait: null, blinkAt: 1.5 + i * 1.3 + Math.random() * 2, nod: 0, yawNow: 0 };
     const img = new Image(); img.decoding = "async"; img.src = f.photo;
     Promise.all([img.decode(), LANDMARKS]).then(([, lm]) => {
-      person.portrait = makePortrait(img, lm[f.key], photoMat); photo.geometry.dispose(); photo.geometry = person.portrait.geo;
+      const ext = extendBody(img, lm[f.key]);
+      person.portrait = makePortrait(ext.canvas, ext.lm, photoMat, ext.W, ext.H); photo.geometry.dispose(); photo.geometry = person.portrait.geo;
+      person.bottom = 0.69 - PHOTO * EXT / ext.W; photo.position.y = person.bottom + person.portrait.PH / 2;
       if (++loaded === FOUNDERS.length + 1) ready();
     });
     body.position.set(cx * PERSON, 0, cz * PERSON); scene.add(body);
@@ -317,7 +376,7 @@ function start() {
       const toCam = Math.atan2(camera.position.x - p.body.position.x, camera.position.z - p.body.position.z);
       let d = toCam - p.base; d = Math.atan2(Math.sin(d), Math.cos(d));
       p.body.rotation.y = p.base + d * 0.88;
-      p.photo.scale.y = 1 + Math.sin(t * 1.5 + i * 1.7) * 0.006; p.photo.position.y = 0.69 + (PHOTO / 2) * p.photo.scale.y;
+      p.photo.scale.y = 1 + Math.sin(t * 1.5 + i * 1.7) * 0.004; if (p.portrait) p.photo.position.y = p.bottom + (p.portrait.PH / 2) * p.photo.scale.y;
       if (p.portrait) {
         // Idle: small, slow head turns and tilts. In focus: the founder turns to you and gives a small nod.
         const focus = i === active ? 1 : 0; p.yawNow += ((focus ? -d * 0.12 : 0) - p.yawNow) * 0.05;
@@ -332,7 +391,7 @@ function start() {
     khelu.position.y = TOP + 0.153 + Math.abs(Math.sin(t * 1.6)) * 0.006;
     steams.forEach(({ s, phase }) => { const k = (t * 0.35 + phase) % 1; s.position.y = 0.09 + k * 0.22; s.position.x = Math.sin(t + phase * 6) * 0.012; s.material.opacity = Math.sin(k * Math.PI) * 0.22; s.scale.setScalar(0.025 + k * 0.045); });
     renderer.render(scene, camera);
-    if (link) { if (active >= 0) linkTo(people[active]); else link.style.setProperty("--dot", "0"); }
+    if (link) { if (active >= 0) linkTo(people[active]); else { link.style.setProperty("--dot", "0"); link.style.setProperty("--draw", "1"); } }
   };
   const anchor = new THREE.Vector3(), sr = { w: 0, h: 0 };
   const linkTo = (p) => {
