@@ -44,3 +44,13 @@ wake-up button, the parent app, the prices and the delivery date. The dialogue l
 - **Privacy:** a new pinned chapter built from the launch film's sequence: only you; never sold or used for ads; never kept; delete anytime.
 - **Safety:** a bento of six facts that animate in.
 - **Big screens and TVs:** all sizing is in rem and the root size steps up at 1800, 2300 and 3000px. Layout re-measures on resize.
+
+## v7 changes (owner's notes, 2026-10-22)
+- **Khelu's speech is pastel:** every Khelu bubble uses a light pastel from its ears (`--p-*` tokens, `.bub--*`) with ink text.
+- **Why is the sky blue (`#asks`):** Khelu sits on a hill inside the sky and each line pops out of the toy with tummy ripples.
+  The sky shows each step (white light fans into colours → blue bounces off the air → the sky fills blue). A clickable step
+  list jumps between steps, air particles drift from the pointer, and at "Your turn" the visitor taps an answer: the sun
+  sets and Khelu explains sunset.
+- **Buttons demo:** the zoom back out is eased over a longer stretch of scroll.
+- **Films:** no PLAY cursor over videos. Three quote cards (one in Kannada with an English line) are **sample quotes** marked
+  `data-sample` in `index.html`: replace them with real, consented parent quotes before this page goes live (brief §9.8).

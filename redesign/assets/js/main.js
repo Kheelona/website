@@ -164,7 +164,7 @@
     const setLive = (on) => { if (on === live) return; live = on; if (on) greet(); demo.classList.toggle("is-live", on); stage.classList.toggle("demo-on", on); $$(".ctrl", k).forEach((c) => (c.tabIndex = on ? 0 : -1)); };
     end(gsap.timeline({ scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6, invalidateOnRefresh: true, onUpdate: (st) => {
       const p = st.progress; steps.forEach((s, j) => s.classList.toggle("is-on", p > [0.33, 0.41, 0.49][j]));
-      p > 0.49 && p < 0.97 ? listen.play() : listen.pause(); setLive(p > 0.56 && p < 0.96);
+      p > 0.49 && p < 0.9 ? listen.play() : listen.pause(); setLive(p > 0.56 && p < 0.86);
     } } })
       .fromTo("[data-nochips] span", { opacity: 0, y: 20 }, { opacity: 1, y: 0, stagger: 0.03, duration: 0.07 }, 0.02)
       .to("[data-nochips] span", { opacity: 0, y: -16, stagger: 0.02, duration: 0.05 }, 0.15)
@@ -173,8 +173,8 @@
       .to("[data-steps]", { opacity: 1, duration: 0.04 }, 0.3)
       .to("[data-steps]", { opacity: 0, duration: 0.04 }, 0.55)
       .fromTo(demo, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.05 }, 0.56)
-      .to(demo, { opacity: 0, duration: 0.03 }, 0.95)
-      .to(k, { scale: 1, y: 0, x: 0, ease: "power2.inOut", duration: 0.04 }, 0.95));
+      .to(demo, { opacity: 0, y: -16, duration: 0.06, ease: "power1.in" }, 0.84)
+      .to(k, { scale: 1, y: 0, x: 0, ease: "sine.inOut", duration: 0.15 }, 0.85));
 
     // Each button does what it does on the real Khelu, in Khelu's own voice (assets/audio/voice, tools/voice-lines.json).
     const LINES = {
@@ -226,21 +226,83 @@
     $$("[data-ctrl]", track).forEach((b) => b.addEventListener("click", () => act(b.dataset.ctrl)));
   })();
 
-  /* ---------- 3 · A real conversation: Khelu explains as the sky draws itself ---------- */
+  /* ---------- 3 · Why is the sky blue: Khelu sits in the sky and talks it through, step by step; then your child answers ---------- */
   (() => {
-    const track = $("#asks"); const rays = $$("[data-rays] path", track); const scatter = $("[data-scatter]", track); const bub = $$("[data-thread] .bubble", track); const ask = $(".thread .ask", track);
-    rays.forEach((r) => { const L = r.getTotalLength(); r.style.strokeDasharray = L; r.style.strokeDashoffset = L; });
-    const dots = []; for (let i = 0; i < 46; i++) { const c = document.createElementNS("http://www.w3.org/2000/svg", "circle"); const t = Math.random(); c.setAttribute("cx", 120 + t * 400); c.setAttribute("cy", 120 + t * 230 + (Math.random() - 0.5) * 30); c.setAttribute("r", 3 + Math.random() * 3); c.style.opacity = 0; scatter.appendChild(c); dots.push(c); }
-    const pop = (el, at) => tl.fromTo(el, { opacity: 0, y: 16, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.06, ease: "back.out(1.8)" }, at);
-    const tl = gsap.timeline({ scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6 } });
-    pop(bub[0], 0.04);
-    tl.to(rays, { strokeDashoffset: 0, stagger: 0.015, duration: 0.14, ease: "none" }, 0.12); pop(bub[1], 0.16);
-    tl.to(dots, { opacity: 0.9, duration: 0.04, stagger: 0.002 }, 0.32).to(dots, { x: () => (Math.random() - 0.5) * 260, y: () => -Math.random() * 220, duration: 0.2, stagger: 0.002, ease: "power2.out" }, 0.34)
-      .to(rays.filter((_, i) => i !== 4), { opacity: 0.12, duration: 0.08 }, 0.36); pop(bub[2], 0.36);
-    tl.to("[data-qmark]", { opacity: 0, duration: 0.06 }, 0.5).to(".sky", { background: "linear-gradient(#7fbff3, #cfe6fb 70%, #e7f3e6)", duration: 0.1 }, 0.5); pop(bub[3], 0.52);
-    tl.to("[data-sunset]", { opacity: 0.5, duration: 0.12 }, 0.68); pop(bub[4], 0.68);
-    tl.fromTo([ask, ".thread .note"], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.06 }, 0.82);
-    end(tl);
+    const track = $("#asks"); const stage = $(".stage", track); const sky = $("[data-sky]", track); const k = $(".kheelu", sky); const ripples = $$(".kheelu__ripple", k);
+    const say = $("[data-say]", track), sayText = $("[data-say-text]", track), sayLabel = $("[data-say-label]", track);
+    const child = $("[data-child]", track), childText = $("[data-child-text]", track), childLabel = $("[data-child-label]", track);
+    const steps = $$("[data-talk-steps] li", track), done = $("[data-talk-done]", track);
+    const beam = $("[data-beam]", sky), bands = $$("[data-bands] path", sky), zig = $("[data-zig]", sky), clouds = $$("[data-clouds] path", sky), air = $("[data-air]", sky);
+    const sun = $("[data-sun]", sky), sunCore = $("[data-sun-core]", sky), sunset = $("[data-sunset]", sky);
+    // Step 0: your child asks. 1–3: Khelu explains. 4: Khelu asks back, and your child answers with a tap.
+    const LINES = [
+      null,
+      { label: "Khelu", text: "Sunlight looks white, but it’s every colour mixed together.", bub: "--p-butter" },
+      { label: "Khelu", text: "When it hits the air, the blue light bounces around the most.", bub: "--p-sky" },
+      { label: "Khelu", text: "So everywhere you look, you see blue!", bub: "--p-mint" },
+      { label: "Khelu asks back", text: "What colour do you think the sky turns at sunset?", bub: "--p-lilac" },
+    ];
+    const AT = [0.04, 0.15, 0.36, 0.56, 0.74];
+    // Tiny air particles for the blue light to bounce off; they drift away from the pointer.
+    const dots = [];
+    for (let i = 0; i < 26; i++) { const c = document.createElementNS("http://www.w3.org/2000/svg", "circle"); const x = 290 + ((i * 53) % 330), y = 60 + ((i * 97) % 250); c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", 4 + (i % 4) * 1.6); c.setAttribute("fill", "#ffffff"); c.setAttribute("stroke", "#bcd6ee"); c.setAttribute("stroke-width", "1.5"); air.appendChild(c); dots.push({ c, x, y, qx: gsap.quickTo(c, "x", { duration: 0.6, ease: "power3" }), qy: gsap.quickTo(c, "y", { duration: 0.6, ease: "power3" }) }); }
+    [beam, ...bands, zig].forEach((p) => { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; });
+    gsap.set(dots.map((d) => d.c), { opacity: 0, scale: 0, transformOrigin: "50% 50%" }); gsap.set(clouds, { opacity: 0, x: 90 });
+
+    // The scene itself is scrubbed by the scroll.
+    end(gsap.timeline({ scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6 } })
+      .fromTo(sky, { scale: 0.94, opacity: 0.6 }, { scale: 1, opacity: 1, duration: 0.06, ease: "power2.out" }, 0)
+      .to(beam, { strokeDashoffset: 0, duration: 0.05, ease: "none" }, 0.15)
+      .to(bands, { strokeDashoffset: 0, duration: 0.12, stagger: 0.012, ease: "power1.out" }, 0.19)
+      .to(dots.map((d) => d.c), { opacity: 1, scale: 1, duration: 0.05, stagger: 0.002, ease: "back.out(2)" }, 0.36)
+      .to(bands.filter((b) => !b.hasAttribute("data-blue")), { opacity: 0.12, duration: 0.06 }, 0.38)
+      .to(zig, { strokeDashoffset: 0, duration: 0.12, ease: "none" }, 0.4)
+      .to(dots.map((d) => d.c), { attr: { fill: "#cfe6fb", stroke: "#7fbcef" }, duration: 0.08, stagger: 0.002 }, 0.42)
+      .to("[data-bluesky]", { opacity: 1, duration: 0.1 }, 0.56)
+      .to([zig, beam, ...bands], { opacity: 0, duration: 0.08 }, 0.58)
+      .to(dots.map((d) => d.c), { opacity: 0.35, duration: 0.08 }, 0.6)
+      .to(clouds, { opacity: 0.95, x: 0, duration: 0.12, stagger: 0.03, ease: "power2.out" }, 0.58));
+
+    // Khelu's lines pop out of Khelu (not scrubbed: each line arrives with a bounce and sound ripples from the tummy).
+    let step = -2, answered = false;
+    const speak = () => { gsap.fromTo(ripples, { scale: 0.6, opacity: 0.9 }, { scale: 2, opacity: 0, duration: 1.1, stagger: 0.18, ease: "power1.out" }); gsap.fromTo(k, { y: 0 }, { y: -10, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out" }); };
+    const line = (label, text, bub) => {
+      sayLabel.textContent = label; say.style.setProperty("--bub", `var(${bub})`);
+      if (text) sayText.textContent = text; else sayText.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>';
+      gsap.fromTo(say, { opacity: 0, y: 14, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.8)", overwrite: true });
+      if (text) speak();
+    };
+    const toSunset = (on) => { gsap.to(sunset, { opacity: on ? 1 : 0, duration: on ? 1.8 : 0.6, ease: "sine.inOut" }); gsap.to(sun, { y: on ? 250 : 0, x: on ? (phone() ? 90 : 200) : 0, duration: on ? 2.2 : 0.6, ease: "sine.inOut" }); gsap.to(sunCore, { attr: { fill: on ? "#ff8a4c" : "#ffc861" }, duration: 1.6 }); gsap.to(clouds, { fill: on ? "#ffd9d0" : "#ffffff", duration: 1.6 }); };
+    const ask = () => { answered = false; child.classList.remove("is-answered"); child.classList.add("is-asking"); childLabel.textContent = "Your turn"; childText.textContent = "Tap an answer for your child:"; done.classList.remove("is-on"); toSunset(false); };
+    const answer = (c) => {
+      answered = true; child.classList.remove("is-asking"); child.classList.add("is-answered"); childLabel.textContent = "Your child"; childText.textContent = `${c}!`;
+      gsap.fromTo(child, { scale: 0.94 }, { scale: 1, duration: 0.4, ease: "back.out(2)" });
+      toSunset(true); done.classList.add("is-on");
+      if (c === "Orange") return gsap.delayedCall(0.5, () => line("Khelu", "Yes! At sunset, light travels through lots more air. The blue bounces away, so the oranges and reds reach your eyes.", "--p-peach"));
+      gsap.delayedCall(0.5, () => line("Khelu", `${c}? Ooh, good guess! Let’s watch the sun go down and see…`, "--p-pink"));
+      gsap.delayedCall(3.2, () => { if (answered && step === 4) line("Khelu", "Look, it turns orange! At sunset, the blue bounces away, so the oranges and reds reach your eyes.", "--p-peach"); });
+    };
+    const go = (n) => {
+      if (n === step) return; const prev = step; step = n;
+      steps.forEach((li, i) => { li.classList.toggle("is-on", i + 1 === n); li.classList.toggle("is-done", i + 1 < n); });
+      if (n < 0) { gsap.to([child, say], { opacity: 0, y: 10, duration: 0.3, overwrite: true }); return; }
+      if (prev < 0) gsap.fromTo(child, { opacity: 0, y: 14, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.8)", overwrite: true });
+      if (n < 4) { answered = false; child.classList.remove("is-asking", "is-answered"); childLabel.textContent = "Your child"; childText.textContent = "Why is the sky blue?"; done.classList.remove("is-on"); if (prev === 4) toSunset(false); }
+      if (n === 0) return line("Khelu", "", "--p-sky"); // thinking…
+      const L = LINES[n]; line(L.label, L.text, L.bub);
+      if (n === 4) ask();
+    };
+    ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => { let n = -1; AT.forEach((t, i) => { if (st.progress >= t) n = i; }); go(n); }, onLeaveBack: () => go(-1) });
+    $$("[data-answer]", child).forEach((b) => b.addEventListener("click", () => answer(b.dataset.answer)));
+    $("[data-again]", child).addEventListener("click", () => { ask(); line(LINES[4].label, LINES[4].text, LINES[4].bub); });
+    // The step list jumps to that point of the conversation.
+    $$("[data-goto]", track).forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.goto; scrollToY(track.offsetTop + (track.offsetHeight - stage.offsetHeight) * (AT[i] + 0.03)); }));
+    if (fine) sky.addEventListener("pointermove", (e) => {
+      const r = sky.getBoundingClientRect(); const s = Math.max(640 / r.width, 480 / r.height); // viewBox units per pixel (slice)
+      const px = (e.clientX - r.left) * s, py = 480 - (r.bottom - e.clientY) * s; // xMinYMax slice
+      dots.forEach((d) => { const dx = d.x - px, dy = d.y - py, dist = Math.hypot(dx, dy) || 1, f = Math.max(0, 1 - dist / 120) * 34; d.qx((dx / dist) * f); d.qy((dy / dist) * f); });
+    });
+    sky.addEventListener("pointerleave", () => dots.forEach((d) => { d.qx(0); d.qy(0); }));
   })();
 
   /* ---------- 4 · A day at home: rooms change around Khelu as it speaks ---------- */
@@ -370,8 +432,8 @@
   if (fine) {
     const cur = $("#cursor"); const cx = gsap.quickTo(cur, "x", { duration: 0.25, ease: "power3" }), cy = gsap.quickTo(cur, "y", { duration: 0.25, ease: "power3" });
     addEventListener("pointermove", (e) => { cur.classList.add("is-live"); cx(e.clientX); cy(e.clientY); });
-    document.addEventListener("pointerover", (e) => { const t = e.target.closest("a, button, summary, .chip, .mode, [data-drag], .film__play, .expert__video"); cur.className = "cursor is-live"; cur.textContent = ""; if (!t) return;
-      if (t.matches(".film__play, .expert__video")) { cur.classList.add("is-play"); cur.textContent = "PLAY"; } else if (t.matches("[data-drag]")) { cur.classList.add("is-drag"); cur.textContent = "DRAG"; } else cur.classList.add("is-link"); });
+    document.addEventListener("pointerover", (e) => { const t = e.target.closest("a, button, summary, .chip, .mode, [data-drag]"); cur.className = "cursor is-live"; cur.textContent = ""; if (!t) return;
+      if (t.matches("[data-drag]")) { cur.classList.add("is-drag"); cur.textContent = "DRAG"; } else cur.classList.add("is-link"); });
     $$("[data-magnetic]").forEach((b) => { b.addEventListener("pointermove", (e) => { const r = b.getBoundingClientRect(); b.style.setProperty("--mx", (e.clientX - r.left - r.width / 2) * 0.25 + "px"); b.style.setProperty("--my", (e.clientY - r.top - r.height / 2) * 0.35 + "px"); }); b.addEventListener("pointerleave", () => { b.style.setProperty("--mx", "0rem"); b.style.setProperty("--my", "0rem"); }); });
     $$("[data-tilt]").forEach((w) => { const k = $(".kheelu", w); const rx = gsap.quickTo(k, "rotationY", { duration: 0.8, ease: "power3" }), ry = gsap.quickTo(k, "rotationX", { duration: 0.8, ease: "power3" });
       w.addEventListener("pointermove", (e) => { const r = w.getBoundingClientRect(); rx(((e.clientX - r.left) / r.width - 0.5) * 18); ry(-((e.clientY - r.top) / r.height - 0.5) * 10); }); w.addEventListener("pointerleave", () => { rx(0); ry(0); }); });
