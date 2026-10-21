@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <linearGradient id="w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f8fbf5"/><stop offset="1" stop-color="#ecf3e7"/></linearGradient>
+    <pattern id="tile" width="80" height="80" patternUnits="userSpaceOnUse"><rect width="80" height="80" fill="none" stroke="#dfe9d8" stroke-width="2"/></pattern>
+    <linearGradient id="top" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbf8f2"/><stop offset="1" stop-color="#efe8dc"/></linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#w)"/>
+  <rect x="0" y="420" width="1600" height="400" fill="url(#tile)"/>
+  <!-- upper cabinets -->
+  <rect x="120" y="90" width="520" height="220" rx="24" fill="#e2ecda"/><rect x="380" y="110" width="4" height="180" fill="#cfdcc4"/>
+  <circle cx="356" cy="200" r="7" fill="#b9c9ad"/><circle cx="408" cy="200" r="7" fill="#b9c9ad"/>
+  <!-- window with plant -->
+  <rect x="1020" y="120" width="420" height="300" rx="26" fill="#fff"/><rect x="1040" y="140" width="380" height="260" rx="16" fill="#e4f2fb"/>
+  <path d="M1080 400 q20-120 60-140 q10 70-20 140z M1130 400 q40-90 90-96 q-20 60-60 96z" fill="#9fd08f"/>
+  <rect x="1090" y="396" width="90" height="44" rx="12" fill="#f2b38f"/>
+  <!-- utensil rail -->
+  <rect x="520" y="440" width="440" height="10" rx="5" fill="#cbb79e"/>
+  <path d="M580 450 v120 m0 0 q-26 30 0 50 q26-20 0-50" fill="none" stroke="#b9a58c" stroke-width="10" stroke-linecap="round"/>
+  <path d="M700 450 v160" stroke="#b9a58c" stroke-width="10" stroke-linecap="round"/><ellipse cx="700" cy="626" rx="24" ry="30" fill="#b9a58c"/>
+  <path d="M820 450 v130 m-22 0 h44 v40 q-22 20-44 0z" fill="#b9a58c" stroke="#b9a58c" stroke-width="10" stroke-linejoin="round"/>
+  <!-- counter -->
+  <rect x="0" y="820" width="1600" height="30" fill="url(#top)"/>
+  <rect x="0" y="850" width="1600" height="150" fill="#dfe9d6"/>
+  <rect x="80" y="880" width="420" height="120" rx="16" fill="#d3e0c7"/><rect x="560" y="880" width="420" height="120" rx="16" fill="#d3e0c7"/><rect x="1040" y="880" width="480" height="120" rx="16" fill="#d3e0c7"/>
+  <!-- pot + steam -->
+  <rect x="300" y="720" width="200" height="100" rx="26" fill="#f3a586"/><rect x="284" y="708" width="232" height="24" rx="12" fill="#e08f70"/><rect x="380" y="690" width="40" height="22" rx="10" fill="#e08f70"/>
+  <path class="steam" d="M350 680 q-16-30 0-60 t0-60" fill="none" stroke="#dde7d6" stroke-width="8" stroke-linecap="round"/>
+  <path class="steam" d="M450 680 q16-30 0-60 t0-60" fill="none" stroke="#dde7d6" stroke-width="8" stroke-linecap="round"/>
+  <!-- spoons on the counter for counting -->
+  <g fill="#c9b8a0"><ellipse cx="1120" cy="812" rx="22" ry="9"/><rect x="1138" y="808" width="70" height="8" rx="4"/><ellipse cx="1260" cy="812" rx="22" ry="9"/><rect x="1278" y="808" width="70" height="8" rx="4"/><ellipse cx="1400" cy="812" rx="22" ry="9"/><rect x="1418" y="808" width="70" height="8" rx="4"/></g>
+</svg>
