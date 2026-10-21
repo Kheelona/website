@@ -100,8 +100,13 @@
   }
   const scrollToY = (y) => (lenis ? lenis.scrollTo(y, { duration: 1.2 }) : scrollTo({ top: y, behavior: "smooth" }));
   $$('a[href^="#"]').forEach((a) => a.addEventListener("click", (e) => { const t = $(a.getAttribute("href")); if (!t) return; e.preventDefault(); scrollToY(t.getBoundingClientRect().top + scrollY - 90 * R()); }));
-  // Every demo can be skipped: jump to the end of its track.
-  $$("[data-skip]").forEach((b) => b.addEventListener("click", () => { const t = $(b.dataset.skip); scrollToY(t.offsetTop + t.offsetHeight - innerHeight * 0.4); }));
+  // One Skip button for the whole page: it jumps past whichever section you're in (hidden in the footer).
+  (() => {
+    const btn = $("#skip"); const secs = $$("main > section"); let cur = null;
+    const pick = () => { const mid = innerHeight * 0.45; cur = secs.find((x) => { const r = x.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; }) || null; btn.classList.toggle("is-on", !!cur && cur.getBoundingClientRect().bottom > innerHeight * 0.9); };
+    ScrollTrigger.create({ start: 0, end: "max", onUpdate: pick }); addEventListener("resize", pick); pick();
+    btn.addEventListener("click", () => { if (!cur) return; const next = cur.nextElementSibling; scrollToY(next ? next.getBoundingClientRect().top + scrollY : cur.offsetTop + cur.offsetHeight); });
+  })();
 
   /* ---------- Living Khelu ---------- */
   $$("[data-kheelu]").forEach((k) => {

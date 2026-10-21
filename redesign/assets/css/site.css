@@ -78,8 +78,10 @@ button { font: inherit; color: inherit; }
 .price-line { font: 500 0.9375rem/1.4 var(--text); margin: 0.875rem 0 0; }
 .trust { display: flex; flex-wrap: wrap; gap: 0.5rem 1.125rem; list-style: none; padding: 0; margin: 0.75rem 0 0; font-size: 0.875rem; color: var(--ink-2); }
 .trust li::before { content: "✓"; color: var(--green); margin-right: 0.375rem; font-weight: 700; }
-.skipdemo { position: absolute; z-index: 8; right: var(--gutter); top: 5.5rem; min-height: 2.5rem; padding: 0 1rem; border-radius: 999px; border: 0; background: rgba(255, 255, 255, 0.9); box-shadow: 0 0 0 1px var(--line); font: 600 0.8125rem/1 var(--text); color: var(--ink-2); cursor: pointer; display: inline-flex; align-items: center; gap: 0.375rem; }
+.skipdemo { position: fixed; z-index: 46; right: var(--gutter); top: 5.25rem; min-height: 2.5rem; padding: 0 1rem; border-radius: 999px; border: 0; background: rgba(255, 255, 255, 0.9); -webkit-backdrop-filter: blur(0.75rem); backdrop-filter: blur(0.75rem); box-shadow: 0 0 0 1px var(--line), 0 0.75rem 1.5rem -1rem rgba(0, 0, 0, 0.3); font: 600 0.8125rem/1 var(--text); color: var(--ink-2); cursor: pointer; display: inline-flex; align-items: center; gap: 0.375rem; opacity: 0; visibility: hidden; transform: translateY(-0.5rem); transition: opacity 0.35s var(--ease-out), transform 0.35s var(--ease-out), visibility 0.35s, color 0.2s; }
+.skipdemo.is-on { opacity: 1; visibility: visible; transform: none; }
 .skipdemo:hover { color: var(--ink); }
+.skipdemo .arrow { transition: transform 0.35s var(--ease-out); } .skipdemo:hover .arrow { transform: translateY(0.125rem); }
 
 /* ---------- Nav: a plain bar (not a capsule), white once you scroll ---------- */
 .nav { position: fixed; inset: 0 0 auto; z-index: 50; transition: transform 0.45s var(--ease-out), background-color 0.3s, box-shadow 0.3s; }
@@ -140,7 +142,7 @@ button { font: inherit; color: inherit; }
 .reduced .stage, .no-js .stage { position: relative; min-height: calc(100svh - var(--bar)); height: auto; }
 /* Chapter copy sits top-left (F-pattern), centred on phones. */
 .chapter-copy { position: absolute; z-index: 5; left: max(var(--gutter), calc((100% - var(--max)) / 2)); top: clamp(5.5rem, 12vh, 7.5rem); width: min(100% - 2 * var(--gutter), 34rem); }
-@media (max-width: 699px) { .chapter-copy { text-align: center; left: 50%; transform: translateX(-50%); } .chapter-copy .lead { margin-inline: auto; } .skipdemo { top: auto; bottom: 0.75rem; right: 50%; transform: translateX(50%); } }
+@media (max-width: 699px) { .chapter-copy { text-align: center; left: 50%; transform: translateX(-50%); } .chapter-copy .lead { margin-inline: auto; } .skipdemo { top: auto; bottom: calc(var(--bar) + 0.75rem); right: auto; left: var(--gutter); } }
 
 /* ---------- 1 · Hero ---------- */
 .hero { display: grid; place-items: center; text-align: center; background: radial-gradient(60% 50% at 50% 70%, #fff3e3 0%, #ffffff 72%); }
@@ -153,7 +155,8 @@ button { font: inherit; color: inherit; }
 .motion .hero__meet { opacity: 0; }
 .hero__stage { position: absolute; inset: auto 0 1.5rem; z-index: 2; display: grid; place-items: end center; perspective: 75rem; }
 .hero__stage .kheelu { --kw: min(64vw, calc((100svh - var(--bar) - 21rem) * 0.82), 27rem); }
-.hero__q { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.hero__q { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.hero__stage .kheelu { z-index: 2; } /* the question marks stay behind Khelu */
 .qmark { position: absolute; font: 700 clamp(1.25rem, 2.4vw, 2.1rem)/1 var(--display); color: var(--c, #f2a65a); }
 .motion .qmark { opacity: 0; }
 .hero__caption { position: absolute; z-index: 4; left: 50%; top: clamp(6.25rem, 15vh, 8.5rem); transform: translateX(-50%); width: min(92vw, 50rem); text-align: center; font: 650 clamp(1.9rem, 4vw, 3.5rem)/1.05 var(--display); letter-spacing: -0.03em; margin: 0; }

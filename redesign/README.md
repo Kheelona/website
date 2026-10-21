@@ -37,7 +37,7 @@ wake-up button, the parent app, the prices and the delivery date. The dialogue l
 - **F-pattern reading:** chapter copy always sits in the same top-left column, and the visual sits beside or below it.
 - **Pre-order dock:** fixed at the bottom on every screen, with "Watch Khelu ask" and "Pre-order Khelu". Its CTA tracks as
   `hero` on the first screen and as `sticky-bar` after it.
-- **Skip:** every pinned demo has a "Skip ↓" button.
+- **Skip:** one fixed "Skip section ↓" button (see v10).
 - **Clickable toy:** the real buttons on Khelu (✦ talk, stories and songs, ⏮ ⏭, volume −/+, power) each show what they do and play a small sound.
   The button roles come from the firmware (`iot-firmware/MEDIA-JUKEBOX.md`).
 - **Sky demo:** it's now Khelu talking it through, and the sky turns to sunset when the child answers "Orange!".
@@ -79,3 +79,8 @@ wake-up button, the parent app, the prices and the delivery date. The dialogue l
 - **Footer:** Khelu peeks over a soft card and its eyes follow the cursor; rainbow "ear" lines ripple along the card's top;
   pastel light drifts behind; links get a rainbow underline on hover; a giant "kheelona" wordmark rises letter by letter,
   its colours follow the pointer, and each letter lifts on hover.
+
+## v10 changes (owner's notes, 2026-10-22)
+- **Hero:** the question marks sit behind Khelu, never over it.
+- **One Skip button:** a single fixed "Skip section ↓" (`#skip`) replaces the per-chapter buttons. It skips whichever
+  section is in the middle of the screen, jumping to the start of the next one, and hides in the footer.
