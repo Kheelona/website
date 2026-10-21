@@ -22,10 +22,10 @@
     const ready = () => !!ctx && !muted;
     const unlock = () => {
       if (ctx) return; const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
-      ctx = new AC(); an = ctx.createAnalyser(); an.fftSize = 256; data = new Uint8Array(an.frequencyBinCount); out = ctx.createGain(); out.connect(an); an.connect(ctx.destination);
+      ctx = new AC(); an = ctx.createAnalyser(); an.fftSize = 256; data = new Uint8Array(an.frequencyBinCount); out = ctx.createGain(); out.gain.value = 0.8; out.connect(an); an.connect(ctx.destination);
       document.dispatchEvent(new CustomEvent("khelu:sound"));
     };
-    const load = (n) => cache[n] || (cache[n] = fetch(`assets/audio/toy/${n}.m4a`).then((r) => (r.ok ? r.arrayBuffer() : Promise.reject())).then((b) => ctx.decodeAudioData(b)));
+    const load = (n) => cache[n] || (cache[n] = fetch(`assets/audio/voice/${n}.m4a`).then((r) => (r.ok ? r.arrayBuffer() : Promise.reject())).then((b) => ctx.decodeAudioData(b)));
     const stop = () => { try { cur && cur.stop(); } catch (e) {} cur = null; };
     const play = async (n) => { if (!ready()) return 0; try { const buf = await load(n); stop(); const src = ctx.createBufferSource(); src.buffer = buf; src.connect(out); src.start(); cur = src; src.onended = () => { if (cur === src) cur = null; }; return buf.duration; } catch (e) { return 0; } };
     const sfx = async (file, rate = 1) => { if (!ready()) return; try { const buf = await (cache[file] || (cache[file] = fetch(`assets/audio/${file}.m4a`).then((r) => r.arrayBuffer()).then((b) => ctx.decodeAudioData(b)))); const src = ctx.createBufferSource(); src.buffer = buf; src.playbackRate.value = rate; src.connect(out); src.start(); } catch (e) {} };
@@ -33,35 +33,42 @@
     const tone = (freqs, len = 0.12) => { if (!ready()) return; let t = ctx.currentTime; freqs.forEach((f) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = "sine"; o.frequency.value = f; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.25, t + 0.01); g.gain.exponentialRampToValueAtTime(0.001, t + len); o.connect(g); g.connect(out); o.start(t); o.stop(t + len + 0.02); t += len * 0.85; }); };
     const level = () => { if (!an || !cur) return 0; an.getByteTimeDomainData(data); let m = 0; for (let i = 0; i < data.length; i++) m = Math.max(m, Math.abs(data[i] - 128)); return m / 128; };
     const setMuted = (m) => { muted = m; if (m) stop(); };
+    let vol = 0.8; const nudge = (d) => { vol = Math.max(0.45, Math.min(1, +(vol + d).toFixed(2))); if (out) out.gain.setTargetAtTime(vol, ctx.currentTime, 0.05); return vol; };
+    const playing = () => !!cur;
     // Browsers only allow sound after a tap or key press, so the first one anywhere switches Khelu's voice on.
     const first = (e) => { if (e.target && e.target.closest && e.target.closest("[data-sound]")) return; ["pointerdown", "keydown"].forEach((ev) => removeEventListener(ev, first)); unlock(); };
     ["pointerdown", "keydown"].forEach((ev) => addEventListener(ev, first, { passive: true }));
-    return { unlock, play, sfx, tone, level, stop, setMuted, get on() { return ready(); }, get started() { return !!ctx; }, get muted() { return muted; } };
+    return { unlock, play, sfx, tone, level, stop, setMuted, nudge, playing, get on() { return ready(); }, get started() { return !!ctx; }, get muted() { return muted; } };
   })();
 
-  /* ---------- Voice waves: the "vocal rays" from Khelu's speaker. They bend away from the pointer. ---------- */
-  const makeWaves = (canvas, khelu, getLevel) => {
-    const host = canvas.parentElement, c2 = canvas.getContext("2d"); let W = 0, H = 0, dpr = 1, raf = 0, t = 0, amp = 0.4;
-    const m = { x: -1e4, y: -1e4, sx: -1e4, sy: -1e4 };
-    const size = () => { dpr = Math.min(2, devicePixelRatio || 1); const r = canvas.getBoundingClientRect(); W = r.width; H = r.height; canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); };
-    const COLS = [[255, 170, 60], [90, 169, 238], [157, 134, 238], [95, 191, 166]];
+  /* ---------- Voice waves: the launch film's "vocal rays", out of the speaker in Khelu's tummy (hero only).
+     Centred on the light ring from the layout box (not the tilted/breathing transform), slow, and they bend
+     softly away from the pointer with eased-in strength, so nothing snaps. ---------- */
+  const makeWaves = (canvas, khelu) => {
+    const c2 = canvas.getContext("2d"); let W = 0, H = 0, dpr = 1, raf = 0, t = 0, pull = 0;
+    const m = { x: 0, y: 0, tx: 0, ty: 0, in: false };
+    const size = () => { dpr = Math.min(2, devicePixelRatio || 1); W = canvas.clientWidth; H = canvas.clientHeight; canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); };
+    const COLS = ["255,170,60", "90,169,238", "157,134,238", "95,191,166"];
     const frame = () => {
-      t += 1 / 60; amp += ((0.38 + Math.min(1, getLevel() * 2.2)) - amp) * 0.12; m.sx += (m.x - m.sx) * 0.18; m.sy += (m.y - m.sy) * 0.18;
+      t += 1 / 60;
+      pull += ((m.in ? 1 : 0) - pull) * 0.04;            // strength eases in and out
+      m.x += (m.tx - m.x) * 0.07; m.y += (m.ty - m.y) * 0.07; // the bend follows the pointer slowly
       c2.setTransform(dpr, 0, 0, dpr, 0, 0); c2.clearRect(0, 0, W, H);
-      const kr = khelu.getBoundingClientRect(), cr = canvas.getBoundingClientRect(); if (!kr.width) { raf = requestAnimationFrame(frame); return; }
-      const cx = kr.left - cr.left + kr.width * 0.513, cy = kr.top - cr.top + kr.height * 0.6, inner = kr.width * 0.2, reach = Math.min(Math.max(W * 0.46, kr.width), kr.width * 1.9), unit = kr.width / 400, R = 150 * Math.max(0.8, unit);
+      const kw = khelu.offsetWidth, kh = khelu.offsetHeight; if (!kw) { raf = requestAnimationFrame(frame); return; }
+      const cx = khelu.offsetLeft + kw * 0.513, cy = khelu.offsetTop + kh * 0.618;   // the light ring's centre
+      const inner = kw * 0.17, reach = Math.min(cx - 8, W - cx - 8, kw * 1.9), unit = Math.max(0.8, kw / 400);
+      const sigma = 90 * unit;
       c2.lineCap = "round"; c2.lineJoin = "round";
       COLS.forEach((col, i) => {
-        const a = (16 + i * 9) * amp * Math.max(0.75, unit), f = (0.016 + i * 0.005) / Math.max(0.6, unit), sp = 2 + i * 0.7;
+        const a = (13 + i * 6) * unit, f = (0.014 + i * 0.004) / unit, sp = 0.9 + i * 0.22;
         [-1, 1].forEach((side) => {
           const g = c2.createLinearGradient(cx + side * inner, 0, cx + side * reach, 0);
-          g.addColorStop(0, `rgba(${col},0)`); g.addColorStop(0.2, `rgba(${col},0.9)`); g.addColorStop(0.75, `rgba(${col},0.55)`); g.addColorStop(1, `rgba(${col},0)`);
-          c2.strokeStyle = g; c2.lineWidth = (2.6 - i * 0.3) * Math.max(0.85, unit); c2.beginPath();
+          g.addColorStop(0, `rgba(${col},0)`); g.addColorStop(0.18, `rgba(${col},0.85)`); g.addColorStop(0.7, `rgba(${col},0.5)`); g.addColorStop(1, `rgba(${col},0)`);
+          c2.strokeStyle = g; c2.lineWidth = (2.4 - i * 0.3) * unit; c2.beginPath();
           for (let d = inner; d <= reach; d += 3) {
-            const k = (d - inner) / (reach - inner), env = Math.sin(Math.PI * Math.min(1, k * 1.15));
-            const x = cx + side * d; let y = cy + env * a * Math.sin(d * f - t * sp + i * 1.3) + (i - 1.5) * 2 * unit;
-            const dx = x - m.sx, dy = y - m.sy, dist = Math.hypot(dx, dy);
-            if (dist < R) { const p = 1 - dist / R; y += (dy >= 0 ? 1 : -1) * p * p * 72 * Math.max(0.8, unit) + Math.sin(dist * 0.08 - t * 10) * p * 12 * Math.max(0.8, unit); }
+            const k = (d - inner) / (reach - inner), env = Math.sin(Math.PI * Math.min(1, k * 1.1));
+            const x = cx + side * d; let y = cy + env * a * Math.sin(d * f - t * sp + i * 1.3) + (i - 1.5) * 2.5 * unit;
+            if (pull > 0.001) { const dx = x - m.x, dy = y - m.y; const p = Math.exp(-(dx * dx) / (2 * sigma * sigma) - (dy * dy) / (2 * (sigma * 0.8) ** 2)) * pull; y += dy * p * 0.9 + Math.sin(dx * 0.025 - t * 1.6) * p * 5 * unit; }
             d === inner ? c2.moveTo(x, y) : c2.lineTo(x, y);
           }
           c2.stroke();
@@ -70,15 +77,14 @@
       raf = requestAnimationFrame(frame);
     };
     size(); addEventListener("resize", size);
-    new IntersectionObserver((es) => es.forEach((e) => { cancelAnimationFrame(raf); if (e.isIntersecting) { size(); raf = requestAnimationFrame(frame); } })).observe(host);
+    new IntersectionObserver((es) => es.forEach((e) => { cancelAnimationFrame(raf); if (e.isIntersecting) { size(); raf = requestAnimationFrame(frame); } })).observe(canvas);
     if (fine) {
-      const track = canvas.closest(".stage") || host;
-      track.addEventListener("pointermove", (e) => { const r = canvas.getBoundingClientRect(); m.x = e.clientX - r.left; m.y = e.clientY - r.top; if (m.sx < -1e3) { m.sx = m.x; m.sy = m.y; } });
-      track.addEventListener("pointerleave", () => { m.x = m.y = -1e4; m.sx = m.sy = -1e4; });
+      const zone = canvas.closest(".stage");
+      zone.addEventListener("pointermove", (e) => { const r = canvas.getBoundingClientRect(); const sx = canvas.clientWidth / r.width || 1; m.tx = (e.clientX - r.left) * sx; m.ty = (e.clientY - r.top) * sx; if (!m.in) { m.x = m.tx; m.y = m.ty; } m.in = true; });
+      zone.addEventListener("pointerleave", () => { m.in = false; });
     }
   };
-  const heroWaves = $('[data-waves="hero"]'); if (heroWaves) makeWaves(heroWaves, $("#hero [data-kheelu] .kheelu__img"), () => 0);
-  const tryWaves = $('[data-waves="try"]'); if (tryWaves) makeWaves(tryWaves, $("[data-try-kheelu] .kheelu__img"), () => Sound.level());
+  const heroWaves = $('[data-waves="hero"]'); if (heroWaves) makeWaves(heroWaves, $("#hero [data-kheelu]"));
 
   const end = (tl) => tl.to({}, { duration: 0.001 }, 0.999); // every chapter timeline spans exactly 0→1
 
@@ -124,6 +130,7 @@
     const Q = qs.map((q) => q.outer);
     end(gsap.timeline({ scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6 } })
       .to(A, { y: -50, opacity: 0, duration: 0.14 }, 0.1)
+      .to('[data-waves="hero"]', { opacity: 0, duration: 0.14 }, 0.1)
       .fromTo(B, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.14 }, 0.2)
       .to(stage, { scale: 1.06, duration: 0.3, ease: "power1.inOut" }, 0.15)
       .to(B, { y: -40, opacity: 0, duration: 0.12 }, 0.5)
@@ -170,29 +177,52 @@
       .to(demo, { opacity: 0, duration: 0.03 }, 0.95)
       .to(k, { scale: 1, y: 0, x: 0, ease: "power2.inOut", duration: 0.04 }, 0.95));
 
-    // Each real button does what it does on Khelu, in its real voice (firmware cue lines) and its own tones.
-    let on = true, talking = false, story = 0, greeted = false;
-    const stories = ["the moon who said hello", "the rabbit who counted stars", "the kite that wanted to fly"];
-    const speak = (text, cue) => { say.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; gsap.delayedCall(0.35, () => { say.textContent = text; }); if (cue) Sound.play(cue); };
-    const burst = () => { gsap.fromTo(ripples, { scale: 0.6, opacity: 0.9 }, { scale: 2, opacity: 0, duration: 1.1, stagger: 0.18, ease: "power1.out" }); gsap.fromTo(body, { scale: 1 }, { scale: 1.02, yoyo: true, repeat: 1, duration: 0.15 }); };
-    const act = (c) => {
-      Sound.unlock(); syncSound();
-      $$(".demo__list button").forEach((b) => b.classList.toggle("is-on", b.dataset.ctrl === c));
-      if (c === "power") { on = !on; talking = false; gsap.to(ring, { opacity: on ? 1 : 0, duration: 0.3 }); gsap.to($(".kheelu__img", k), { filter: on ? "brightness(1)" : "brightness(0.82)", duration: 0.4 }); return on ? speak("I’m awake! Let’s play!", "wake_ack") : speak("Taking a little nap… Tap me to wake me up!", "sleep"); }
-      if (!on) { Sound.tone([392], 0.18); return speak("Taking a little nap… Tap me to wake me up!", "sleep"); }
-      burst();
-      if (c === "wake") { talking = !talking; if (talking) { Sound.tone([880]); gsap.delayedCall(0.25, () => Sound.play("pa-hello")); return speak("Hello, my friend! I’m so happy to talk with you. What would you like to learn today?"); } Sound.tone([659, 523]); return speak("I’ll be right here, when you want to play.", "idle_stop"); }
-      Sound.sfx("tick", c === "up" ? 1.25 : c === "down" ? 0.8 : 1);
-      if (c === "play") { Sound.sfx("musicbox"); return speak(`Story time! Once upon a time, there was ${stories[story]}…`); }
-      if (c === "next") { story = (story + 1) % stories.length; return speak(`Next story: ${stories[story]}.`); }
-      if (c === "prev") { story = (story + stories.length - 1) % stories.length; return speak(`Going back: ${stories[story]}.`); }
-      if (c === "up" || c === "down") return speak(c === "up" ? "A little louder!" : "A little quieter.");
+    // Each button does what it does on the real Khelu, in Khelu's own voice (assets/audio/voice, tools/voice-lines.json).
+    const LINES = {
+      hello: "Hi! I’m Khelu. Press a button on my tummy, and let’s play!",
+      "power-on": "Power on!", bye: "Bye bye!", "hey-riya": "Hey Riya! I’m Khelu. How was your day today?",
+      "story-1": "Once upon a time, a little rabbit named Khelu found a shiny pebble by the river…",
+      "story-2": "A tiny cloud wanted to be a rainbow. So it waited for the sun, and, splash! It painted the whole sky.",
+      "story-3": "A sleepy moon forgot to go home. The stars giggled, and tucked it in behind the hills.",
+      "story-4": "A little seed was scared of the dark soil. Then the rain whispered, “Grow!”, and up it popped, saying hello to the sun.",
     };
-    // When the buttons come alive, Khelu greets you out loud, the way it does when it's ready.
-    greet = () => { if (greeted || !on) return; greeted = true; burst(); speak("Yay! I’m ready to play!", "server_connected"); };
+    const SHORT = ["story-2", "story-3", "story-4"];
+    let on = true, talking = false, telling = false, idx = -1, greeted = false;
+    const say1 = (text) => { say.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; gsap.delayedCall(0.3, () => { say.textContent = text; }); };
+    const voice = (id) => { say1(LINES[id]); Sound.play(id); };
+    const burst = () => { gsap.fromTo(ripples, { scale: 0.6, opacity: 0.9 }, { scale: 2, opacity: 0, duration: 1.1, stagger: 0.18, ease: "power1.out" }); gsap.fromTo(body, { scale: 1 }, { scale: 1.015, yoyo: true, repeat: 1, duration: 0.15 }); };
+    // Whatever is pressed, on Khelu or in the list, lights up in both places.
+    const mark = (c) => {
+      $$(".demo__list button").forEach((b) => b.classList.toggle("is-on", b.dataset.ctrl === c));
+      $$(".ctrl", k).forEach((b) => { b.classList.toggle("is-on", b.dataset.ctrl === c); if (b.dataset.ctrl === c) { b.classList.remove("is-press"); void b.offsetWidth; b.classList.add("is-press"); } });
+    };
+    const act = (c) => {
+      Sound.unlock(); syncSound(); mark(c);
+      if (c === "power") {
+        on = !on; talking = telling = false; Sound.stop();
+        gsap.to(ring, { opacity: on ? 1 : 0, duration: 0.3 }); gsap.to($(".kheelu__img", k), { filter: on ? "brightness(1)" : "brightness(0.8)", duration: 0.4 });
+        if (on) { burst(); return voice("power-on"); } return voice("bye");
+      }
+      if (!on) { Sound.tone([392], 0.16); return say1("I’m switched off. Press Power to wake me."); }
+      burst();
+      if (c === "wake") {
+        talking = !talking; telling = false; Sound.stop();
+        if (talking) { Sound.tone([880]); gsap.delayedCall(0.2, () => voice("hey-riya")); return say1(LINES["hey-riya"]); }
+        Sound.tone([659, 523]); return say1("Okay! Press me again when you want to talk.");
+      }
+      if (c === "play") {
+        talking = false; Sound.stop();
+        if (telling) { telling = false; return say1("Story paused. Press the story button to hear it again."); }
+        telling = true; return voice("story-1");
+      }
+      if (c === "next" || c === "prev") { talking = false; telling = true; idx = (idx + (c === "next" ? 1 : SHORT.length - 1)) % SHORT.length; Sound.stop(); return voice(SHORT[idx]); }
+      if (c === "up" || c === "down") { const v = Sound.nudge(c === "up" ? 0.1 : -0.1); Sound.sfx("tick", 1); return say1(`${c === "up" ? "A little louder" : "A little quieter"}. Volume ${Math.round(v * 100)}%.`); }
+    };
+    // When the buttons come alive (with sound on), Khelu says hello in its own voice.
+    greet = () => { if (greeted || !on || !Sound.on) return; greeted = true; burst(); voice("hello"); };
     const soundBtn = $("[data-sound]"), soundLabel = $("[data-sound-label]");
     const syncSound = () => { if (!soundBtn) return; soundBtn.setAttribute("aria-pressed", String(Sound.on)); soundLabel.textContent = Sound.on ? "Sound on" : "Tap for sound"; };
-    soundBtn && soundBtn.addEventListener("click", () => { if (!Sound.started) { Sound.setMuted(false); Sound.unlock(); } else Sound.setMuted(!Sound.muted); syncSound(); if (Sound.on && live) { greeted = false; greet(); } });
+    soundBtn && soundBtn.addEventListener("click", () => { if (!Sound.started) { Sound.setMuted(false); Sound.unlock(); } else Sound.setMuted(!Sound.muted); syncSound(); if (Sound.on && live) greet(); });
     document.addEventListener("khelu:sound", () => { syncSound(); if (live) greet(); });
     $$("[data-ctrl]", track).forEach((b) => b.addEventListener("click", () => act(b.dataset.ctrl)));
   })();
@@ -325,7 +355,7 @@
     };
     gsap.to(reel, { x: () => -dist(), ease: "none", scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6, invalidateOnRefresh: true,
       onUpdate: (st) => { bar.style.transform = `scaleX(${st.progress})`; focus(); }, onLeave: () => playing && playing.pause(), onLeaveBack: () => playing && playing.pause() } });
-    focus();
+    focus(); addEventListener("resize", () => requestAnimationFrame(focus)); ScrollTrigger.addEventListener("refresh", focus);
   })();
 
   /* ---------- Films: preview on hover (touch: in view) ---------- */

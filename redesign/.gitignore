@@ -3,4 +3,6 @@ assets/video/
 assets/img/*.webp
 assets/img/*.png
 assets/img/kheelona-logo.svg
-assets/audio/
+assets/audio/*
+# Khelu's generated voice lines are kept: they are not rebuildable without enabling the TTS API.
+!assets/audio/voice/
