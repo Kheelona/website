@@ -102,7 +102,7 @@
   $$('a[href^="#"]').forEach((a) => a.addEventListener("click", (e) => { const t = $(a.getAttribute("href")); if (!t) return; e.preventDefault(); scrollToY(t.getBoundingClientRect().top + scrollY - 90 * R()); }));
   // One Skip button for the whole page: it jumps past whichever section you're in (hidden in the footer).
   (() => {
-    const btn = $("#skip"); const secs = $$("main > section"); let cur = null;
+    const btn = $("#skip"); if (!btn) return; const secs = $$("main > section"); let cur = null;
     const pick = () => { const mid = innerHeight * 0.45; cur = secs.find((x) => { const r = x.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; }) || null; btn.classList.toggle("is-on", !!cur && cur.getBoundingClientRect().bottom > innerHeight * 0.9); };
     ScrollTrigger.create({ start: 0, end: "max", onUpdate: pick }); addEventListener("resize", pick); pick();
     btn.addEventListener("click", () => { if (!cur) return; const next = cur.nextElementSibling; scrollToY(next ? next.getBoundingClientRect().top + scrollY : cur.offsetTop + cur.offsetHeight); });
@@ -124,6 +124,22 @@
   /* ---------- Reveals ---------- */
   ScrollTrigger.batch(".reveal", { start: "top 88%", once: true, onEnter: (els) => gsap.to(els, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out", stagger: 0.08 }) });
 
+  /* ---------- Footer: Khelu peeks over the card, the rainbow ears ripple along its top, the wordmark rises and follows the pointer ---------- */
+  (() => {
+    const foot = $("[data-footer]"); if (!foot) return;
+    const peek = $(".footer__peek .kheelu", foot), wave = $$("[data-footer-wave] path", foot), letters = $$("[data-footer-word] span", foot), word = $("[data-footer-word]", foot);
+    gsap.fromTo(peek, { yPercent: 70 }, { yPercent: 0, ease: "power2.out", scrollTrigger: { trigger: foot, start: "top bottom", end: "top 55%", scrub: 0.8 } });
+    gsap.fromTo(letters, { yPercent: 70, opacity: 0 }, { yPercent: 0, opacity: 1, stagger: 0.05, ease: "power3.out", scrollTrigger: { trigger: word, start: "top bottom", end: "bottom bottom", scrub: 0.8 } });
+    let t = 0, on = false;
+    const draw = () => { if (!on) return; t += 0.012; wave.forEach((p, i) => { let d = ""; for (let x = 0; x <= 1440; x += 40) { const y = 14 + i * 6 + Math.sin(x / 170 + t + i * 0.35) * 5 + Math.sin(x / 61 - t * 1.3) * 1.5; d += (x ? " L" : "M") + x + " " + y.toFixed(1); } p.setAttribute("d", d); }); };
+    ScrollTrigger.create({ trigger: foot, start: "top bottom", end: "bottom top", onToggle: (st) => { on = st.isActive; } });
+    gsap.ticker.add(draw); on = true; draw(); on = false;
+    if (fine) foot.addEventListener("pointermove", (e) => word.style.setProperty("--wx", (e.clientX / innerWidth) * 100 + "%"));
+  })();
+
+  /* ---------- Home only: the chapters below exist on index.html; the other pages share everything else ---------- */
+  const HOME = !!$("#hero");
+  if (HOME) {
   /* ---------- 1 · Hero: headline → "Meet Khelu" → hundreds of questions ---------- */
   (() => {
     const track = $("#hero"); const A = $("[data-hero-a]"), B = $("[data-hero-b]"), C = $("[data-hero-caption]"); const stage = $(".hero__stage", track); const field = $("[data-qfield]");
@@ -439,18 +455,6 @@
     gsap.from($(".pv__card", track), { y: 80, rotation: 3, scrollTrigger: { trigger: track, start: "top bottom", end: "top top", scrub: 0.6 } });
   })();
 
-  /* ---------- Footer: Khelu peeks over the card, the rainbow ears ripple along its top, the wordmark rises and follows the pointer ---------- */
-  (() => {
-    const foot = $("[data-footer]"); if (!foot) return;
-    const peek = $(".footer__peek .kheelu", foot), wave = $$("[data-footer-wave] path", foot), letters = $$("[data-footer-word] span", foot), word = $("[data-footer-word]", foot);
-    gsap.fromTo(peek, { yPercent: 70 }, { yPercent: 0, ease: "power2.out", scrollTrigger: { trigger: foot, start: "top bottom", end: "top 55%", scrub: 0.8 } });
-    gsap.fromTo(letters, { yPercent: 70, opacity: 0 }, { yPercent: 0, opacity: 1, stagger: 0.05, ease: "power3.out", scrollTrigger: { trigger: word, start: "top bottom", end: "bottom bottom", scrub: 0.8 } });
-    let t = 0, on = false;
-    const draw = () => { if (!on) return; t += 0.012; wave.forEach((p, i) => { let d = ""; for (let x = 0; x <= 1440; x += 40) { const y = 14 + i * 6 + Math.sin(x / 170 + t + i * 0.35) * 5 + Math.sin(x / 61 - t * 1.3) * 1.5; d += (x ? " L" : "M") + x + " " + y.toFixed(1); } p.setAttribute("d", d); }); };
-    ScrollTrigger.create({ trigger: foot, start: "top bottom", end: "bottom top", onToggle: (st) => { on = st.isActive; } });
-    gsap.ticker.add(draw); on = true; draw(); on = false;
-    if (fine) foot.addEventListener("pointermove", (e) => word.style.setProperty("--wx", (e.clientX / innerWidth) * 100 + "%"));
-  })();
 
   /* ---------- Backed by: cards rise in, one after another ---------- */
   gsap.from("[data-backed] .backed__card", { y: 40, opacity: 0, stagger: 0.1, duration: 0.8, ease: "power3.out", scrollTrigger: { trigger: "[data-backed]", start: "top 85%", once: true } });
@@ -479,9 +483,12 @@
   if (fine) $$(".film__play").forEach((f) => { const v = $("video", f); f.addEventListener("pointerenter", () => startLoop(v)); f.addEventListener("pointerleave", () => v.pause()); });
   else { const io = new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? startLoop(e.target) : e.target.pause())), { threshold: 0.6 }); $$(".film__play video").forEach((v) => io.observe(v)); }
 
+  }
+
   /* ---------- CTA bar + WhatsApp: the bar's button reports "hero" in the hero, "sticky-bar" after ---------- */
   const heroCta = $("#hero-cta"), wa = $("#wa");
-  ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%", onEnter: () => { heroCta.dataset.phCaptureAttributeCta = "sticky-bar"; wa.classList.add("is-on"); }, onLeaveBack: () => { heroCta.dataset.phCaptureAttributeCta = "hero"; wa.classList.remove("is-on"); } });
+  if (HOME) ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%", onEnter: () => { heroCta.dataset.phCaptureAttributeCta = "sticky-bar"; wa.classList.add("is-on"); }, onLeaveBack: () => { heroCta.dataset.phCaptureAttributeCta = "hero"; wa.classList.remove("is-on"); } });
+  else { if (heroCta) heroCta.dataset.phCaptureAttributeCta = "sticky-bar"; if (wa) wa.classList.add("is-on"); }
 
   /* ---------- Pointer layer ---------- */
   if (fine) {

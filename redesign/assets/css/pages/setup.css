@@ -1,0 +1,96 @@
+/* /setup — day one, step by step: a checklist before you start, the four connect steps on the drawing rainbow line
+   (.flow), then three short chapters (age, the wake-up button, the first talk) with the app's screens, help, close. */
+
+.page-sec--soft + .page-sec:not(.page-sec--soft) { padding-top: clamp(3.5rem, 8vw, 6rem); }
+
+/* ---------- Hero ---------- */
+.su-hero { padding-bottom: clamp(2.5rem, 6vw, 4rem); }
+.su-hero__visual { min-height: 22rem; }
+.su-hero__visual .kheelu { --kw: min(46vw, 17.5rem); z-index: 1; }
+.su-wifi { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.su-wifi i { position: absolute; width: min(66vw, 24rem); aspect-ratio: 1; border-radius: 50%; border: 2px solid rgba(142, 197, 240, 0.4); }
+.su-wifi i:nth-child(2) { border-color: rgba(185, 166, 245, 0.35); } .su-wifi i:nth-child(3) { border-color: rgba(245, 154, 184, 0.3); }
+.motion .su-wifi i { opacity: 0; animation: su-wave 5.4s ease-out infinite; }
+.motion .su-wifi i:nth-child(2) { animation-delay: -1.8s; } .motion .su-wifi i:nth-child(3) { animation-delay: -3.6s; }
+@keyframes su-wave { 0% { opacity: 0; transform: scale(0.5); } 30% { opacity: 1; } 100% { opacity: 0; transform: scale(1.2); } }
+.su-ring { opacity: 0.55; }
+.motion .su-ring { animation: su-listen 2.8s ease-in-out infinite; }
+@keyframes su-listen { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.8; } }
+.su-phone { position: absolute; z-index: 2; right: 2%; bottom: 0; width: clamp(6.5rem, 12vw, 9.5rem); border-radius: 1.125rem; overflow: hidden; background: #f2f2f7; box-shadow: 0 0 0 0.3125rem #fff, 0 0 0 calc(0.3125rem + 1px) var(--line), 0 1.75rem 3rem -1.5rem rgba(30, 30, 60, 0.5); transform: rotate(6deg); }
+.su-phone img { width: 100%; height: auto; }
+.motion .su-phone { animation: su-bob 6s ease-in-out infinite alternate; }
+@keyframes su-bob { from { transform: rotate(6deg) translateY(-0.375rem); } to { transform: rotate(4deg) translateY(0.375rem); } }
+
+/* ---------- Before you start: a checklist ---------- */
+.su-before__grid { display: grid; gap: 1.75rem; }
+@media (min-width: 900px) { .su-before__grid { grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr); gap: 4rem; align-items: start; } .su-before__head { position: sticky; top: 7rem; } }
+.su-check { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+.su-check li { position: relative; display: flex; gap: 1rem; align-items: center; padding: 1rem 3.75rem 1rem 1rem; border-radius: 1.375rem; background: linear-gradient(110deg, var(--tint), #fff 70%); box-shadow: 0 0 0 1px var(--line); }
+.su-check .ico { background: #fff; box-shadow: 0 0 0 1px var(--line); }
+.su-check p { margin: 0; font-size: 1.0625rem; line-height: 1.45; color: var(--ink); }
+.su-check a { color: #0a5bb5; font-weight: 600; text-underline-offset: 0.2em; }
+.su-tick { position: absolute; right: 1rem; top: 50%; width: 1.75rem; height: 1.75rem; margin-top: -0.875rem; border-radius: 50%; display: grid; place-items: center; background: var(--green); }
+.su-tick svg { width: 1rem; height: 1rem; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.su-note { display: flex; gap: 0.875rem; align-items: flex-start; margin-top: 1rem; }
+.su-note__ico { flex: none; width: 2.25rem; height: 2.25rem; border-radius: 0.75rem; display: grid; place-items: center; background: rgba(255, 255, 255, 0.75); }
+.su-note__ico svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: var(--ink); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.su-note p { align-self: center; font-weight: 500; line-height: 1.5; }
+
+/* ---------- Connect: the flow ---------- */
+.su-connect__grid { display: grid; gap: 2rem; }
+@media (min-width: 900px) { .su-connect__grid { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 4rem; align-items: start; } .su-connect__head { position: sticky; top: 7rem; } }
+.su-flow { gap: 1.25rem; }
+.su-flow > li::before { font-size: 1.25rem; }
+.su-flow .flow__body { display: flex; gap: 1rem; align-items: flex-start; padding: 1.375rem 1.5rem; box-shadow: 0 0 0 1px var(--line), 0 1.5rem 3rem -2.5rem rgba(0, 0, 0, 0.3); }
+.su-flow .ico { background: var(--tint); }
+.su-flow h3 { margin-top: 0.125rem; font-size: clamp(1.125rem, 1.6vw, 1.3125rem); }
+.su-flow p { font-size: 1rem; }
+.su-press { transform-origin: 12px 12px; transform-box: view-box; fill: var(--ink); fill-opacity: 0.12; }
+.motion .su-press { animation: su-press 2.4s ease-in-out infinite; }
+@keyframes su-press { 0%, 60%, 100% { transform: scale(1); } 30% { transform: scale(0.7); } }
+
+/* ---------- Chapters: copy beside a screen ---------- */
+.su-split { display: grid; gap: 2.25rem; align-items: center; }
+@media (min-width: 900px) { .su-split { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 4.5rem; } .su-split--flip .su-split__visual { order: -1; } }
+.su-split__copy p:not(.eyebrow) { margin: 1rem 0 0; font-size: clamp(1.0625rem, 1.3vw, 1.1875rem); line-height: 1.6; color: var(--ink-2); max-width: 36rem; }
+.su-split__copy .h2 { margin-bottom: 0.5rem; }
+.su-split__copy .callout { max-width: 36rem; margin-top: 1.25rem; }
+.su-split__copy .callout p { margin: 0; color: var(--ink); font-size: 1rem; }
+.su-split__visual { position: relative; display: grid; justify-items: center; margin: 0; perspective: 62rem; }
+.su-blob { position: absolute; top: 8%; width: 82%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(closest-side, var(--tint), transparent); }
+.screen { position: relative; width: min(100%, 22rem); border-radius: 1.75rem; overflow: hidden; background: #f2f2f7; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 2.5rem 5rem -2.5rem rgba(40, 30, 60, 0.45); }
+.screen img { width: 100%; height: auto; }
+.su-split__visual figcaption { position: relative; margin-top: 1rem; max-width: 22rem; text-align: center; }
+.su-tummy { padding: clamp(1.5rem, 4vw, 2.5rem); border-radius: var(--radius-lg); background: radial-gradient(circle at 50% 45%, #fff 0%, #eef3fa 75%); box-shadow: 0 0 0 1px var(--line); }
+.su-tummy img { position: relative; width: min(100%, 20rem); height: auto; border-radius: 1.5rem; }
+.su-tummy__glow { position: absolute; left: 50%; top: 47%; width: min(56%, 16rem); aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 3rem 1rem rgba(142, 197, 240, 0.55); }
+.motion .su-tummy__glow { animation: su-glow 3.2s ease-in-out infinite; }
+@keyframes su-glow { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+
+/* ---------- Help ---------- */
+.su-help__card { display: grid; gap: 1.5rem; align-items: center; padding: clamp(1.5rem, 4vw, 3rem); border-radius: var(--radius-lg); background: linear-gradient(120deg, var(--p-mint), #fff 70%); box-shadow: 0 0 0 1px var(--line); }
+@media (min-width: 800px) { .su-help__card { grid-template-columns: auto minmax(0, 1fr); gap: 2.5rem; } }
+.su-help__ico { width: 5rem; height: 5rem; border-radius: 1.75rem; display: grid; place-items: center; background: #25d366; box-shadow: 0 1.25rem 2.5rem -1.25rem rgba(37, 211, 102, 0.8); }
+.su-help__ico svg { width: 2.5rem; height: 2.5rem; fill: none; stroke: #fff; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.su-help .h2 { font-size: clamp(2rem, 3.6vw, 3rem); }
+.su-help .lead { margin-top: 0.875rem; max-width: 44rem; color: var(--ink-2); }
+.su-help .lead a { color: #0a5bb5; font-weight: 600; text-underline-offset: 0.2em; }
+.su-help__btn { margin-top: 1.25rem; }
+.su-help + .closer { padding-top: 0; }
+.trust a { color: inherit; text-underline-offset: 0.2em; }
+
+@media (max-width: 599px) {
+  .su-hero__visual { min-height: 17rem; }
+  .su-hero__visual .kheelu { --kw: min(44vw, 11rem); }
+  .su-phone { width: 5.75rem; right: 6%; }
+  .su-check li { padding: 0.875rem 3.25rem 0.875rem 0.875rem; gap: 0.75rem; }
+  .su-check p { font-size: 0.9875rem; }
+  .su-flow .flow__body { flex-direction: column; gap: 0.625rem; padding: 1.125rem; }
+  .su-flow .ico { width: 2.5rem; height: 2.5rem; }
+  .screen { width: min(76vw, 18rem); }
+  .su-tummy img { width: min(56vw, 13rem); }
+  .su-help__ico { width: 3.75rem; height: 3.75rem; border-radius: 1.25rem; }
+  .su-help__ico svg { width: 1.875rem; height: 1.875rem; }
+  .closer__art { min-height: 11rem; }
+  .closer__art .kheelu { --kw: min(40vw, 9.5rem); }
+}

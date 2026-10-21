@@ -84,3 +84,18 @@ wake-up button, the parent app, the prices and the delivery date. The dialogue l
 - **Hero:** the question marks sit behind Khelu, never over it.
 - **One Skip button:** a single fixed "Skip section ↓" (`#skip`) replaces the per-chapter buttons. It skips whichever
   section is in the middle of the screen, jumping to the start of the next one, and hides in the footer.
+
+## v11: the whole site (2026-10-22)
+Every page of betawebsite.kheelona.com, rebuilt in the home page's design language, word for word (Kheelu → Khelu):
+`/products/kheelu`, `/safety`, `/setup`, `/ai-toys-for-kids-in-india`, `/stories` + 20 guides, `/team`, `/contact`,
+`/privacy`, `/terms`, `/refund`, `/shipping`.
+- **How pages are made:** sources in `pages/` (see `pages/README.md`), wrapped in the shared shell (`pages/_shell/`: nav,
+  footer, pre-order bar) by `python3 tools/build-pages.py` → `<route>/index.html`. Shared subpage components:
+  `assets/css/pages.css` + `assets/js/pages.js`; each page's own CSS/JS in `assets/css/pages/`, `assets/js/pages/`.
+- **Importers** keep long text exact: `tools/import-stories.py` (hub + 20 guides) and `tools/import-legal.py` (privacy,
+  terms, refund, shipping) read the beta HTML; re-run them instead of hand-editing those page sources.
+- `main.js` is shared: home-only chapters run only when `#hero` exists. The footer (with the company address) is the
+  same on every page; its pre-order button is untagged off the home page so each page reports one `finale`.
+- **Team:** the founders orbit a living Khelu, their cards turn over to show each background, and a Khelu map shows
+  who builds which part (from the founders' own lines). Phones: the cards are a swipeable row.
+- `tools/phone-preview.html?page=/team` previews any page at 390px.
