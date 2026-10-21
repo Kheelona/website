@@ -54,3 +54,20 @@ wake-up button, the parent app, the prices and the delivery date. The dialogue l
 - **Buttons demo:** the zoom back out is eased over a longer stretch of scroll.
 - **Films:** no PLAY cursor over videos. Three quote cards (one in Kannada with an English line) are **sample quotes** marked
   `data-sample` in `index.html`: replace them with real, consented parent quotes before this page goes live (brief §9.8).
+
+## v8 changes (owner's notes, 2026-10-22)
+- **Typing dots:** one short pass (~0.5 s) before each Khelu line, never a long or looping wait.
+- **A day at home:** the copy sits on a frosted card so it never blends into the room; light motes rise, and the room
+  breathes slowly and leans away from the pointer.
+- **Languages:** no speech bubble. The greeting itself is the hero, large and in its own script, above Khelu, and the
+  colour changes for each language. A clickable list of the 8 languages follows the scroll.
+- **Memory:** a paper rocket (a paper plane) flies along the dotted path from yesterday's question to today's card.
+- **Bedtime:** a night window (crescent moon, stars, notes floating up, "No Wi‑Fi · still playing"). Khelu has no light
+  ring here. The three modes have small looping icon motions, and Story mode is the highlighted card.
+- **Parent app:** the v1.0.5 screens (`app-home`, `app-curiosity`, `app-offline`, cropped from `code/UI Images_ mobile
+  app` by `tools/build-assets.sh`) are shown as a deck of cards, learning first; learning chips pop out on the first card.
+- **Privacy:** the v1.0.5 privacy centre (`app-privacy-centre.webp`). Every promise is in one list and the active one
+  opens; the highlight moves to the matching rows. "Your choice" now says you choose how long chats are kept (the app's
+  setting), not a fixed 36 months.
+- **Offer:** one compact two-column card that fits a laptop screen.
+- **Highlights:** `.mark` cycles through six soft shades (`.mark--peach/sky/butter/mint/pink/lilac`).

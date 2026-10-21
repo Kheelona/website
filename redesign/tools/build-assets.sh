@@ -23,8 +23,18 @@ cwebp -quiet -q 82 -alpha_q 90 "$TMP/k240.png" -o "$IMG/kheelu-240.webp"
 # 2) Logo.
 cp "$CODE/Kheelona_Logo.svg" "$IMG/kheelona-logo.svg"
 
-# 3) Parent-app screens (already WebP in the site).
-for s in transcript activity privacy; do cp "$SITE/src/assets/app/app-$s.webp" "$IMG/app-$s.webp"; done
+# 3) Parent-app screens: the v1.0.5 App Store frames (code/UI Images_ mobile app), cropped to the app card only.
+APPSRC="$CODE/UI Images_ mobile app"
+while IFS="|" read -r id name y0 y1; do
+  ffmpeg -v error -y -i "$APPSRC/v1.0.5 · App Store — $name.png" -vf "crop=1070:$((y1 - y0 + 1)):68:$y0,scale=720:-1:flags=lanczos" "$TMP/app-$id.png"
+  cwebp -quiet -q 84 -m 6 "$TMP/app-$id.png" -o "$IMG/app-$id.webp"
+done <<'LIST'
+home|01 — Home|246|1792
+curiosity|02 — Activity|334|1703
+offline|03 — Play offline|240|1797
+privacy-centre|04 — Privacy|308|1730
+profile|05 — Profile|288|1750
+LIST
 
 # 4) Lifestyle photos (illustrative), 960w WebP.
 for p in myra-01-breakfast-why kabir-03-homework-desk ira-03-festive-evening-song myra-03-bedtime-cuddle tara-02-evening-with-amma advik-02-whispering-to-kheelu; do

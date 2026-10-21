@@ -187,7 +187,7 @@
     };
     const SHORT = ["story-2", "story-3", "story-4"];
     let on = true, talking = false, telling = false, idx = -1, greeted = false;
-    const say1 = (text) => { say.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; gsap.delayedCall(0.3, () => { say.textContent = text; }); };
+    const say1 = (text) => { say.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; gsap.delayedCall(0.5, () => { say.textContent = text; }); };
     const voice = (id) => { say1(LINES[id]); Sound.play(id); };
     const burst = () => { gsap.fromTo(ripples, { scale: 0.6, opacity: 0.9 }, { scale: 2, opacity: 0, duration: 1.1, stagger: 0.18, ease: "power1.out" }); gsap.fromTo(body, { scale: 1 }, { scale: 1.015, yoyo: true, repeat: 1, duration: 0.15 }); };
     // Whatever is pressed, on Khelu or in the list, lights up in both places.
@@ -264,13 +264,13 @@
       .to(clouds, { opacity: 0.95, x: 0, duration: 0.12, stagger: 0.03, ease: "power2.out" }, 0.58));
 
     // Khelu's lines pop out of Khelu (not scrubbed: each line arrives with a bounce and sound ripples from the tummy).
-    let step = -2, answered = false;
+    let step = -2, answered = false, said = 0;
     const speak = () => { gsap.fromTo(ripples, { scale: 0.6, opacity: 0.9 }, { scale: 2, opacity: 0, duration: 1.1, stagger: 0.18, ease: "power1.out" }); gsap.fromTo(k, { y: 0 }, { y: -10, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out" }); };
     const line = (label, text, bub) => {
       sayLabel.textContent = label; say.style.setProperty("--bub", `var(${bub})`);
-      if (text) sayText.textContent = text; else sayText.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>';
-      gsap.fromTo(say, { opacity: 0, y: 14, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.8)", overwrite: true });
-      if (text) speak();
+      sayText.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; const id = ++said;
+      gsap.fromTo(say, { opacity: 0, y: 14, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.8)", overwrite: true });
+      gsap.delayedCall(0.5, () => { if (id === said) { sayText.textContent = text; speak(); } });
     };
     const toSunset = (on) => { gsap.to(sunset, { opacity: on ? 1 : 0, duration: on ? 1.8 : 0.6, ease: "sine.inOut" }); gsap.to(sun, { y: on ? 250 : 0, x: on ? (phone() ? 90 : 200) : 0, duration: on ? 2.2 : 0.6, ease: "sine.inOut" }); gsap.to(sunCore, { attr: { fill: on ? "#ff8a4c" : "#ffc861" }, duration: 1.6 }); gsap.to(clouds, { fill: on ? "#ffd9d0" : "#ffffff", duration: 1.6 }); };
     const ask = () => { answered = false; child.classList.remove("is-answered"); child.classList.add("is-asking"); childLabel.textContent = "Your turn"; childText.textContent = "Tap an answer for your child:"; done.classList.remove("is-on"); toSunset(false); };
@@ -288,7 +288,7 @@
       if (n < 0) { gsap.to([child, say], { opacity: 0, y: 10, duration: 0.3, overwrite: true }); return; }
       if (prev < 0) gsap.fromTo(child, { opacity: 0, y: 14, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.8)", overwrite: true });
       if (n < 4) { answered = false; child.classList.remove("is-asking", "is-answered"); childLabel.textContent = "Your child"; childText.textContent = "Why is the sky blue?"; done.classList.remove("is-on"); if (prev === 4) toSunset(false); }
-      if (n === 0) return line("Khelu", "", "--p-sky"); // thinking…
+      if (n === 0) { said++; gsap.to(say, { opacity: 0, y: 10, duration: 0.25, overwrite: true }); return; } // Khelu listens while your child asks
       const L = LINES[n]; line(L.label, L.text, L.bub);
       if (n === 4) ask();
     };
@@ -311,13 +311,20 @@
     const time = $("[data-home-time]"), line = $("[data-home-line]"), mode = $("[data-home-mode]"), say = $("[data-home-say]"), bubble = $("[data-home-bubble]");
     const k = $("[data-home-kheelu]"); const ripples = $$(".kheelu__ripple", k); gsap.set($("[data-ring]", k), { opacity: 1 });
     const DAY = [
-      ["7:40 am · Breakfast", "The first <span class=mark>why</span> of the day.", "AI mode · on home Wi‑Fi", "What do you think makes toast crunchy?"],
-      ["4:15 pm · After school", "It remembers <span class=mark>yesterday.</span>", "Picks up where you stopped", "Shall we find out how rockets land?"],
-      ["6:30 pm · While you cook", "Something to think about. <span class=mark>Not a cartoon.</span>", "AI mode · on home Wi‑Fi", "How many spoons can you count?"],
-      ["Sunday · At Nani’s", "Stories and jingles. <span class=mark>No Wi‑Fi.</span>", "Story mode · works offline", "Once upon a time, a little rabbit asked the moon a question…"],
-      ["8:30 pm · Bedtime", "One last story. <span class=mark>Lights low.</span>", "Story mode · works offline", "Goodnight! What shall we dream about?"],
+      ["7:40 am · Breakfast", "The first <span class=\"mark mark--butter\">why</span> of the day.", "AI mode · on home Wi‑Fi", "What do you think makes toast crunchy?"],
+      ["4:15 pm · After school", "It remembers <span class=\"mark mark--sky\">yesterday.</span>", "Picks up where you stopped", "Shall we find out how rockets land?"],
+      ["6:30 pm · While you cook", "Something to think about. <span class=\"mark mark--mint\">Not a cartoon.</span>", "AI mode · on home Wi‑Fi", "How many spoons can you count?"],
+      ["Sunday · At Nani’s", "Stories and jingles. <span class=\"mark mark--pink\">No Wi‑Fi.</span>", "Story mode · works offline", "Once upon a time, a little rabbit asked the moon a question…"],
+      ["8:30 pm · Bedtime", "One last story. <span class=\"mark mark--lilac\">Lights low.</span>", "Story mode · works offline", "Goodnight! What shall we dream about?"],
     ];
     const talk = gsap.timeline({ repeat: -1 }); ripples.forEach((r, i) => talk.fromTo(r, { scale: 0.6, opacity: 0.8 }, { scale: 1.8, opacity: 0, duration: 1.4, ease: "power1.out" }, i * 0.7));
+    // The room is never still: soft light motes rise, the scene breathes slowly and leans away from the pointer.
+    const motes = $("[data-motes]", track); const MC = ["#ffffff", "#fff1c4", "#ffe6d3", "#dcedfc", "#ebe4fd"];
+    for (let i = 0; i < 16; i++) { const m = document.createElement("i"); m.className = "mote"; m.style.left = 4 + ((i * 37) % 92) + "%"; m.style.setProperty("--s", 0.375 + (i % 4) * 0.25 + "rem"); m.style.setProperty("--c", MC[i % 5]); m.style.setProperty("--d", 8 + (i % 5) * 2 + "s"); m.style.setProperty("--delay", -i * 0.9 + "s"); m.style.setProperty("--dx", ((i % 3) - 1) * 3 + "rem"); motes.appendChild(m); }
+    const room = $(".home__scenes", track);
+    const drift = gsap.to(room, { scale: 1.05, duration: 9, ease: "sine.inOut", yoyo: true, repeat: -1, paused: true });
+    if (fine) { const px = gsap.quickTo(room, "x", { duration: 1.2, ease: "power3" }), py = gsap.quickTo(room, "y", { duration: 1.2, ease: "power3" });
+      track.addEventListener("pointermove", (e) => { px(-(e.clientX / innerWidth - 0.5) * 24); py(-(e.clientY / innerHeight - 0.5) * 14); }); }
     let cur = 0;
     const show = (i) => {
       if (i === cur) return; const dir = i > cur ? 1 : -1; const prev = cur; cur = i;
@@ -329,43 +336,70 @@
       gsap.timeline().to(bubble, { opacity: 0, scale: 0.85, duration: 0.18, transformOrigin: "10% 100%" }).add(() => { say.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; }).to(bubble, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }).add(() => { say.textContent = s; }, "+=0.5");
       dots.forEach((d, j) => d.classList.toggle("is-on", j === i));
     };
-    ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => show(Math.min(DAY.length - 1, Math.floor(st.progress * DAY.length * 0.999))), onToggle: (st) => (st.isActive ? talk.play() : talk.pause()) });
+    ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => show(Math.min(DAY.length - 1, Math.floor(st.progress * DAY.length * 0.999))), onToggle: (st) => { st.isActive ? talk.play() : talk.pause(); st.isActive ? drift.play() : drift.pause(); } });
   })();
 
-  /* ---------- 5 · Languages: greetings orbit Khelu; the sentence switches language ---------- */
+  /* ---------- 5 · Languages: one greeting at a time, big, in its own script; the list follows the scroll ---------- */
   (() => {
-    const track = $("#languages"); const holder = $("[data-chips]", track); const chips = $$(".chip", holder); const [en, hi] = $$("[data-swap]", track);
-    const grid = phone(); if (grid) { holder.classList.add("chips--grid"); $(".chapter-copy", track).appendChild(holder); }
-    const k = $(".langs__orbit .kheelu", track);
-    const place = (rot) => { if (grid) return; const kr = k.getBoundingClientRect(), sr = $(".stage", track).getBoundingClientRect(); const cx = kr.left - sr.left + kr.width / 2, cy = kr.top - sr.top + kr.height / 2; const rx = Math.min(innerWidth * 0.3, 420 * R()), ry = Math.min(innerHeight * 0.3, 230 * R());
-      chips.forEach((c, i) => { const a = (i / chips.length) * Math.PI * 2 + rot; c.style.left = cx + Math.cos(a) * rx + "px"; c.style.top = cy + Math.sin(a) * ry + "px"; c.style.zIndex = Math.sin(a) > 0 ? 6 : 1; }); };
-    requestAnimationFrame(() => place(0));
-    gsap.fromTo(chips, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, stagger: 0.05, ease: "back.out(2)", scrollTrigger: { trigger: track, start: "top 70%", end: "top top", scrub: 0.6 } });
-    ScrollTrigger.create({ trigger: track, start: "top bottom", end: "bottom top", onUpdate: (st) => place(st.progress * Math.PI * 0.8) });
-    gsap.timeline({ scrollTrigger: { trigger: track, start: "35% bottom", end: "65% bottom", scrub: 0.6 } }).to(en, { opacity: 0, y: -10 }).fromTo(hi, { opacity: 0, y: 10 }, { opacity: 1, y: 0 }, "<0.3");
-    addEventListener("resize", () => place(0));
+    const track = $("#languages"); const stage = $(".stage", track); const words = $$(".lg__word", track); const items = $$(".lg__list li", track); const list = $(".lg__list", track);
+    const cap = $("[data-lg-caption]", track); const k = $(".lg__khelu .kheelu", track); const ripples = $$(".kheelu__ripple", k);
+    const L = [["Hello", "English", "#ffe6d3", "#e5793d"], ["Namaste", "Hindi", "#fff1c4", "#c98e0c"], ["Nomoskar", "Bengali", "#d8f2e7", "#1f9d6b"], ["Namaskaram", "Telugu", "#dcedfc", "#3b8fd9"],
+      ["Vanakkam", "Tamil", "#fde4ee", "#d9578a"], ["Namaskara", "Kannada", "#ebe4fd", "#7c62e0"], ["Hola", "Spanish", "#ffe6d3", "#e0663a"], ["Bonjour", "French", "#dcedfc", "#4f7fd9"]];
+    let cur = -1;
+    const show = (i) => {
+      if (i === cur) return; const prev = cur; cur = i; const [say, name, glow, ink] = L[i];
+      stage.style.setProperty("--lgc", glow); stage.style.setProperty("--lgw", ink);
+      items.forEach((li, j) => li.classList.toggle("is-on", j === i));
+      if (prev >= 0) gsap.to(words[prev], { opacity: 0, y: -28, filter: "blur(6px)", duration: 0.35, ease: "power2.in", overwrite: true });
+      gsap.fromTo(words[i], { opacity: 0, y: 36, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.6, delay: prev >= 0 ? 0.15 : 0, ease: "power3.out", overwrite: true });
+      cap.textContent = `${say} · ${name}`;
+      gsap.fromTo(ripples, { scale: 0.6, opacity: 0.85 }, { scale: 1.9, opacity: 0, duration: 1.1, stagger: 0.16, ease: "power1.out" });
+      gsap.fromTo(k, { y: 0 }, { y: -12, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out" });
+      if (phone()) { const b = items[i]; list.scrollTo({ left: b.offsetLeft - list.clientWidth / 2 + b.offsetWidth / 2, behavior: "smooth" }); }
+    };
+    gsap.set(words, { opacity: 0 }); show(0);
+    ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => show(Math.min(L.length - 1, Math.floor(st.progress * L.length * 0.999))) });
+    $$("[data-lg]", track).forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.lg; show(i); scrollToY(track.offsetTop + (track.offsetHeight - stage.offsetHeight) * ((i + 0.5) / L.length)); }));
   })();
 
-  /* ---------- 6 · Memory: the path draws itself ---------- */
+  /* ---------- 6 · Memory: a paper rocket carries yesterday's question to today's card ---------- */
   (() => {
-    const board = $("[data-memory]"); const path = $("[data-mem-path]", board); const svg = path.ownerSVGElement; const ns = "http://www.w3.org/2000/svg";
+    const board = $("[data-memory]"); const path = $("[data-mem-path]", board); const svg = path.ownerSVGElement; const ns = "http://www.w3.org/2000/svg"; const rocket = $("[data-rocket]", board);
     const defs = document.createElementNS(ns, "defs"), cp = document.createElementNS(ns, "clipPath"), rect = document.createElementNS(ns, "rect"); cp.id = "memclip";
     rect.setAttribute("x", 0); rect.setAttribute("y", -50); rect.setAttribute("height", 500); rect.setAttribute("width", 0); cp.appendChild(rect); defs.appendChild(cp); svg.prepend(defs); path.setAttribute("clip-path", "url(#memclip)");
-    const [y, t] = $$(".mem-card", board);
-    gsap.timeline({ scrollTrigger: { trigger: board, start: "top 85%", end: "bottom 55%", scrub: 0.6 } }).from(y, { opacity: 0, y: 30, duration: 0.2 }).to(rect, { attr: { width: 660 }, duration: 0.6, ease: "none" }).from(t, { opacity: 0, y: 30, scale: 0.94, duration: 0.25 }, ">-0.1");
+    const [y, t] = $$(".mem-card", board); const len = path.getTotalLength(); const fly = { p: 0 };
+    const place = () => {
+      const W = board.clientWidth / 640, H = board.clientHeight / 360; const at = path.getPointAtLength(fly.p * len), ahead = path.getPointAtLength(Math.min(len, fly.p * len + 2));
+      const ang = Math.atan2((ahead.y - at.y) * H, (ahead.x - at.x) * W) * 180 / Math.PI;
+      rect.setAttribute("width", at.x); const rw = rocket.getBoundingClientRect().width;
+      gsap.set(rocket, { x: at.x * W - rw / 2, y: at.y * H - rw * 0.35, rotation: ang + 13, opacity: fly.p > 0.005 && fly.p < 0.985 ? 1 : 0, transformOrigin: "50% 50%" });
+    };
+    gsap.timeline({ scrollTrigger: { trigger: board, start: "top 85%", end: "bottom 45%", scrub: 0.8 } })
+      .from(y, { opacity: 0, y: 30, duration: 0.2 })
+      .to(fly, { p: 1, duration: 0.6, ease: "sine.inOut", onUpdate: place }, ">")
+      .from(t, { opacity: 0, y: 30, scale: 0.94, duration: 0.2 }, ">-0.08")
+      .fromTo(t, { rotation: -2 }, { rotation: 0, duration: 0.1, ease: "back.out(3)" }, ">-0.05");
+    addEventListener("resize", place); place();
   })();
 
   /* ---------- 7 · Bedtime stars ---------- */
-  const sky = $("[data-stars]"); for (let i = 0; i < 42; i++) { const s = document.createElement("i"); s.className = "star"; s.style.left = Math.random() * 100 + "%"; s.style.top = Math.random() * 70 + "%"; s.style.animationDelay = Math.random() * 3 + "s"; sky.appendChild(s); }
+  const sky = $("[data-stars]"); for (let i = 0; i < 34; i++) { const s = document.createElement("i"); s.className = "star"; s.style.left = Math.random() * 100 + "%"; s.style.top = Math.random() * 100 + "%"; s.style.animationDelay = Math.random() * 3 + "s"; sky.appendChild(s); }
+  const notes = $("[data-notes]"); ["♪", "✦", "♫", "☾", "♪", "✦"].forEach((g, i) => { const n = document.createElement("i"); n.className = "note-float"; n.textContent = g; n.style.left = 40 + ((i * 7) % 22) + "%"; n.style.animationDelay = i * 0.85 + "s"; n.style.setProperty("--dx", (i % 2 ? 1 : -1) * (1 + (i % 3)) + "rem"); notes.appendChild(n); });
 
-  /* ---------- 8 · Parent app ---------- */
+  /* ---------- 8 · Parent app: the v1.0.5 screens as a deck; the first one's learning stats pop out ---------- */
   (() => {
-    const track = $("#app"); const items = $$("[data-app-list] li", track); const shots = $$("[data-app-screens] img", track); let cur = 0;
-    ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => {
-      const i = Math.min(items.length - 1, Math.floor(st.progress * items.length * 0.999)); if (i === cur) return;
-      gsap.to(shots[cur], { opacity: 0, y: -24, duration: 0.5 }); gsap.fromTo(shots[i], { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" });
-      items.forEach((it, j) => it.classList.toggle("is-on", j === i)); cur = i;
-    } });
+    const track = $("#app"); const stage = $(".stage", track); const items = $$("[data-app-list] li", track); const cards = $$(".appcard", track); const chips = $$("[data-app-chips] span", track); const blob = $("[data-app-blob]", track);
+    const BLOB = ["#ffe6d3", "#dcedfc", "#ebe4fd"]; let cur = -1;
+    const go = (i) => {
+      if (i === cur) return; cur = i;
+      items.forEach((it, j) => it.classList.toggle("is-on", j === i)); blob.style.background = BLOB[i];
+      cards.forEach((c, j) => { const d = (j - i + cards.length) % cards.length; // 0 = front, then behind
+        gsap.to(c, { x: d * 1.25 * 16 * R(), y: -d * 1.1 * 16 * R(), rotation: d === 0 ? 0 : d === 1 ? 4 : -4, scale: 1 - d * 0.06, opacity: d === 0 ? 1 : 0.55 - d * 0.15, zIndex: 10 - d, duration: 0.7, ease: "power3.out" }); });
+      gsap.to(chips, i === 0 ? { opacity: 1, y: 0, scale: 1, stagger: 0.08, duration: 0.5, delay: 0.25, ease: "back.out(2)" } : { opacity: 0, y: 10, scale: 0.9, duration: 0.25 });
+    };
+    gsap.set(chips, { y: 14, scale: 0.9 }); go(0);
+    ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => go(Math.min(items.length - 1, Math.floor(st.progress * items.length * 0.999))) });
+    $$("[data-app]", track).forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.app; go(i); scrollToY(track.offsetTop + (track.offsetHeight - stage.offsetHeight) * ((i + 0.5) / items.length)); }));
   })();
 
   /* ---------- 9 · Safety: cards stack; the one underneath settles back ---------- */
@@ -377,24 +411,25 @@
     });
   })();
 
-  /* ---------- Privacy: one promise at a time, the way the launch film tells it ---------- */
+  /* ---------- Privacy: every promise in one list; the active one opens and is shown on the privacy centre ---------- */
   (() => {
-    const track = $("#privacy"); if (!track) return;
-    const steps = $$("[data-pv] li", track), dots = $$("[data-pv-dots] i", track), tags = $$("[data-pv-tags] .pv__tag", track), hl = $("[data-pv-hl]", track);
-    // Rows on the privacy-centre screenshot (% from top, height): title, (none), (none), keep-chats + voice switch, download + delete.
-    const ROWS = [[9, 7], null, null, [21.6, 13.6], [35.6, 13.4]];
+    const track = $("#privacy"); if (!track) return; const stage = $(".stage", track);
+    const items = $$("[data-pv] li", track), tags = $$("[data-pv-tags] .pv__tag", track), hl = $("[data-pv-hl]", track);
+    // Rows on app-privacy-centre.webp (% from top, height): banner, banner, (tags instead), keep-chats + voice, download + delete.
+    const ROWS = [[20, 15.7], [20, 15.7], null, [45.4, 23.6], [68.9, 21.6]];
     let cur = -1;
     const go = (i) => {
       if (i === cur) return; cur = i;
-      steps.forEach((el, j) => el.classList.toggle("is-on", j === i)); dots.forEach((d, j) => d.classList.toggle("is-on", j === i));
+      items.forEach((el, j) => el.classList.toggle("is-on", j === i));
       tags.forEach((t) => t.classList.toggle("is-on", +t.dataset.step === i));
       const r = ROWS[i]; hl.classList.toggle("is-red", i === 4);
       if (r) gsap.to(hl, { top: r[0] + "%", height: r[1] + "%", opacity: 1, duration: 0.6, ease: "power3.out" }); else gsap.to(hl, { opacity: 0, duration: 0.3 });
     };
     go(0);
-    ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => go(Math.min(steps.length - 1, Math.floor(st.progress * steps.length * 0.999))) });
+    ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => go(Math.min(items.length - 1, Math.floor(st.progress * items.length * 0.999))) });
+    $$("[data-pv-go]", track).forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.pvGo; go(i); scrollToY(track.offsetTop + (track.offsetHeight - stage.offsetHeight) * ((i + 0.5) / items.length)); }));
     gsap.from($(".pv__badge", track), { scale: 0.4, rotation: -25, opacity: 0, duration: 0.8, ease: "back.out(2.2)", scrollTrigger: { trigger: track, start: "top 70%", once: true } });
-    gsap.from($(".pv__phone", track), { y: 80, rotation: 4, scrollTrigger: { trigger: track, start: "top bottom", end: "top top", scrub: 0.6 } });
+    gsap.from($(".pv__card", track), { y: 80, rotation: 3, scrollTrigger: { trigger: track, start: "top bottom", end: "top top", scrub: 0.6 } });
   })();
 
   /* ---------- Backed by: cards rise in, one after another ---------- */
