@@ -92,10 +92,28 @@ Every page of betawebsite.kheelona.com, rebuilt in the home page's design langua
 - **How pages are made:** sources in `pages/` (see `pages/README.md`), wrapped in the shared shell (`pages/_shell/`: nav,
   footer, pre-order bar) by `python3 tools/build-pages.py` → `<route>/index.html`. Shared subpage components:
   `assets/css/pages.css` + `assets/js/pages.js`; each page's own CSS/JS in `assets/css/pages/`, `assets/js/pages/`.
-- **Importers** keep long text exact: `tools/import-stories.py` (hub + 20 guides) and `tools/import-legal.py` (privacy,
+- **Stories come from the admin dashboard** (admin.kheelona.com → Blog), as on the live site: `bash tools/publish-stories.sh`
+  syncs the posts, generates `/stories` and one page per published post, then builds every page (details in
+  `pages/README.md`, "Stories: published from the dashboard").
+- **Importer** keeps long text exact: `tools/import-legal.py` (privacy,
   terms, refund, shipping) read the beta HTML; re-run them instead of hand-editing those page sources.
 - `main.js` is shared: home-only chapters run only when `#hero` exists. The footer (with the company address) is the
   same on every page; its pre-order button is untagged off the home page so each page reports one `finale`.
 - **Team:** the founders orbit a living Khelu, their cards turn over to show each background, and a Khelu map shows
   who builds which part (from the founders' own lines). Phones: the cards are a swipeable row.
 - `tools/phone-preview.html?page=/team` previews any page at 390px.
+
+## v12 changes (owner's answers, 2026-10-22)
+- **Owner-confirmed facts** live in `pages/_shell/facts.json`, applied by `tools/build-pages.py` to every page so the
+  importers/generator can't bring old wording back: chats are kept **until you delete them** (no 36-month deletion),
+  Khelu speaks **10 languages**, the legal pages' draft notice is gone.
+- **Only the current toy is shown:** the previous toy's close-ups and packshot are replaced by crops of
+  `code/Khelu_By_Kheelona.png` (`assets/img/product/khelu-tummy-*.webp`, `khelu-studio-*.webp`, made by
+  `tools/build-assets.sh`).
+- **Stories follow the dashboard:** `bash tools/publish-stories.sh` (sync with the live rule → generate → build); see
+  `pages/README.md`.
+- **Team, fold 1 is a real-time 3D scene** (`assets/js/pages/team3d.js`, Three.js 0.170 vendored): the three founders at
+  a round table with Khelu, cups, a pendant lamp and plants. Their faces are their own photos, cut out on this Mac with
+  Apple Vision (`tools/cutout/cutout.swift` → `assets/img/team/*-cut.webp`), set on gently curved cards that turn toward
+  the camera, with bodies in their shirt colours. Scrolling rolls the camera from a wide shot to each founder (their
+  card opens) and back out; the dots jump to a founder. No WebGL or reduced motion → the founder cards show instead.

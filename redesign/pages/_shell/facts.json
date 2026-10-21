@@ -1,0 +1,64 @@
+{
+  "_about": "Owner-confirmed facts (2026-10-22) that override the beta wording on every built page, so re-running tools/import-stories.py or tools/import-legal.py can't bring the old words back. Applied by tools/build-pages.py, in order. Images of the previous toy are replaced by crops of the current toy photo (Khelu_By_Kheelona.png).",
+  "replace": [
+    [
+      "Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically.",
+      "Your child’s conversations stay in your parent app until you delete them."
+    ],
+    [
+      "Conversations stay in your parent app for 36 months, then they’re deleted automatically.",
+      "Conversations stay in your parent app until you delete them."
+    ],
+    [
+      "We delete transcripts automatically after 36 months.",
+      "Transcripts stay until you delete them, or your account."
+    ],
+    [
+      "<strong>Conversation transcripts:</strong> 36 months, then deleted automatically, unless you delete your account sooner.",
+      "<strong>Conversation transcripts:</strong> kept until you delete them, or your account."
+    ],
+    [
+      "<strong>Voice recordings:</strong> 36 months, the same as transcripts.",
+      "<strong>Voice recordings:</strong> kept until you delete them, the same as transcripts."
+    ],
+    [
+      "If you delete your account in the parent app, we delete them sooner, with the voice recordings.",
+      "If you delete your account in the parent app, we delete them, with the voice recordings."
+    ],
+    [
+      "Conversations are deleted automatically after 36 months.",
+      "Conversations stay until you delete them."
+    ],
+    [
+      "every tool we use, 36 months for conversations, and how to opt out or delete.",
+      "every tool we use, how long conversations are kept, and how to opt out or delete."
+    ],
+    [
+      "<b data-count=\"36\">36</b> months",
+      "<b>Until</b> you delete"
+    ],
+    [
+      "English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French; up to 10 at launch",
+      "10 languages, including English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French"
+    ],
+    [
+      "Khelu speaks up to 10 languages at launch, including",
+      "Khelu speaks 10 languages, including"
+    ],
+    [
+      "Eight today: English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French, with up to 10 at launch.",
+      "Ten, including English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French."
+    ],
+    [
+      "src=\"/assets/img/stories/kheelu-belly-module.webp\" width=\"389\" height=\"397\"",
+      "src=\"/assets/img/product/khelu-tummy-800.webp\" srcset=\"/assets/img/product/khelu-tummy-480.webp 480w, /assets/img/product/khelu-tummy-800.webp 800w\" sizes=\"(max-width: 699px) 80vw, 24rem\" width=\"800\" height=\"800\""
+    ],
+    [
+      "until you delete them. Delete them all sooner by deleting your account.",
+      "until you delete them. Delete them all at once by deleting your account."
+    ]
+  ],
+  "remove_regex": [
+    "<p class=\"legal-draft[^\"]*\">.*?</p>\\s*"
+  ]
+}

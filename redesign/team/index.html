@@ -54,31 +54,42 @@
 </header>
 
 <main id="main">
-<!-- ============ 1 · Hero: the founders circle Khelu ============ -->
-<section class="ph th-hero" aria-labelledby="hero-title">
-  <div class="ph__glow" aria-hidden="true"><i></i><i></i><i></i></div>
-  <div class="wrap ph__grid">
-    <div class="ph__copy">
+<!-- ============ 1 · Three founders at one table: a 3D scene; scrolling moves the camera to each of them ============ -->
+<section class="t3" id="table" aria-labelledby="hero-title" data-t3>
+  <div class="t3__stage">
+    <canvas class="t3__canvas" aria-hidden="true"></canvas>
+    <div class="t3__veil" aria-hidden="true"></div>
+    <div class="wrap t3__intro" data-t3-intro>
       <p class="eyebrow">Team</p>
       <h1 class="display" id="hero-title" data-split>The parents building <span class="mark mark--peach">Khelu.</span></h1>
-      <p class="lead reveal">Kheelona’s founders are parents in Bengaluru, building Khelu: a screen-free plush toy that talks, for children aged 3 to 7. You’re trusting us near your child, so here is who we are.</p>
-      <div class="ph__actions reveal"><a class="btn btn--ghost" data-magnetic href="#founders">Meet the founders <span class="arrow" aria-hidden="true">↓</span></a></div>
+      <p class="lead">Kheelona’s founders are parents in Bengaluru, building Khelu: a screen-free plush toy that talks, for children aged 3 to 7. You’re trusting us near your child, so here is who we are.</p>
+      <p class="t3__hint" aria-hidden="true"><span class="t3__mouse"></span>Scroll to pull up a chair</p>
     </div>
-    <div class="th-orbit" data-orbit data-tilt aria-hidden="true">
-      <span class="th-orbit__ring"></span><span class="th-orbit__ring th-orbit__ring--2"></span>
-      <div class="kheelu" data-kheelu>
-        <div class="kheelu__shadow"></div>
-        <div class="kheelu__body">
-          <img class="kheelu__img" src="/assets/img/kheelu-800.webp" srcset="/assets/img/kheelu-480.webp 480w, /assets/img/kheelu-800.webp 800w" sizes="(max-width: 600px) 46vw, 16rem" width="800" height="976" alt="" fetchpriority="high">
-          <span class="kheelu__eye kheelu__eye--l"><i class="kheelu__glint"></i><i class="kheelu__lid"></i></span>
-          <span class="kheelu__eye kheelu__eye--r"><i class="kheelu__glint"></i><i class="kheelu__lid"></i></span>
-        </div>
-      </div>
-      <a class="th-face tint-mint" href="#apoorva-sahu" tabindex="-1" data-face><img src="/assets/img/team/apoorva.webp" alt="" width="560" height="560"><span>Apoorva</span></a>
-      <a class="th-face tint-peach" href="#aman-soni" tabindex="-1" data-face><img src="/assets/img/team/aman.webp" alt="" width="560" height="560"><span>Aman</span></a>
-      <a class="th-face tint-sky" href="#kashyap-c-r" tabindex="-1" data-face><img src="/assets/img/team/kashyap.webp" alt="" width="560" height="560"><span>Kashyap</span></a>
-      <svg class="th-heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.3 4.3 2.6.7-1.3 2.1-2.6 4.3-2.6 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>
+    <div class="t3__cards">
+      <article class="t3card tint-mint" data-t3-card="0" aria-labelledby="t3-name-apoorva">
+        <div class="t3card__top"><img src="/assets/img/team/apoorva.webp" alt="" width="560" height="560"><div><p class="t3card__part">The promise</p><h2 class="t3card__name" id="t3-name-apoorva">Apoorva Sahu</h2><p class="t3card__role">Co-Founder and CEO</p></div></div>
+        <p class="t3card__body">Apoorva leads Kheelona and owns the promise we make to your family.</p>
+        <p class="t3card__label">Background</p>
+        <p class="t3card__bio">He is a Chartered Accountant with 15 years in finance and company-building. He was the first student at his family’s pre-school, in 1994.</p>
+        <a class="t3card__in" href="https://www.linkedin.com/in/sahu-apoorva/" rel="noopener">Apoorva on LinkedIn <span aria-hidden="true">↗</span></a>
+      </article>
+      <article class="t3card tint-peach" data-t3-card="1" aria-labelledby="t3-name-aman">
+        <div class="t3card__top"><img src="/assets/img/team/aman.webp" alt="" width="560" height="560"><div><p class="t3card__part">The voice and the AI</p><h2 class="t3card__name" id="t3-name-aman">Aman Soni</h2><p class="t3card__role">Co-Founder and CTO</p></div></div>
+        <p class="t3card__body">Aman builds the part your child talks to: how Khelu listens and replies, and the child-safety rules its AI is given. He is also our grievance officer.</p>
+        <p class="t3card__label">Background</p>
+        <p class="t3card__bio">He studied AI, shipped machine learning in production, and holds 14 patents filed in his own name.</p>
+        <a class="t3card__in" href="https://www.linkedin.com/in/aman-soni-6b17b6223/" rel="noopener">Aman on LinkedIn <span aria-hidden="true">↗</span></a>
+      </article>
+      <article class="t3card tint-sky" data-t3-card="2" aria-labelledby="t3-name-kashyap">
+        <div class="t3card__top"><img src="/assets/img/team/kashyap.webp" alt="" width="560" height="560"><div><p class="t3card__part">The toy itself</p><h2 class="t3card__name" id="t3-name-kashyap">Kashyap C.R</h2><p class="t3card__role">Co-Founder and Chief Hardware Officer</p></div></div>
+        <p class="t3card__body">Kashyap builds the toy itself: the hardware inside the plush, and how it is powered and charged.</p>
+        <p class="t3card__label">Background</p>
+        <p class="t3card__bio">Over a decade in hardware, including years at Intel leading Thunderbolt 4 and 5 compliance, he took products from a blank page to certification.</p>
+        <a class="t3card__in" href="https://www.linkedin.com/in/kashyap-c-r-7ba18177/" rel="noopener">Kashyap on LinkedIn <span aria-hidden="true">↗</span></a>
+      </article>
     </div>
+    <nav class="t3__dots" aria-label="Go to a founder"><button type="button" class="tint-mint" data-t3-go="0"><img src="/assets/img/team/apoorva.webp" alt="" width="560" height="560"><span>Apoorva</span></button><button type="button" class="tint-peach" data-t3-go="1"><img src="/assets/img/team/aman.webp" alt="" width="560" height="560"><span>Aman</span></button><button type="button" class="tint-sky" data-t3-go="2"><img src="/assets/img/team/kashyap.webp" alt="" width="560" height="560"><span>Kashyap</span></button></nav>
+    <p class="t3__loading" aria-hidden="true" data-t3-loading><i></i><i></i><i></i></p>
   </div>
 </section>
 
@@ -93,7 +104,7 @@
 </section>
 
 <!-- ============ 3 · The founders: cards that turn over ============ -->
-<section class="page-sec th-founders" id="founders" aria-labelledby="founders-title">
+<section class="page-sec th-founders" id="founders" data-t3-fallback aria-labelledby="founders-title">
   <div class="wrap">
     <div class="shead">
       <h2 class="h2 reveal" id="founders-title">The Kheelona <span class="mark mark--butter">founders.</span></h2>
@@ -310,5 +321,6 @@
 <script src="/assets/js/main.min.js" defer></script>
 <script src="/assets/js/pages.js" defer></script>
 <script src="/assets/js/pages/team.js" defer></script>
+<script type="module" src="/assets/js/pages/team3d.js"></script>
 </body>
 </html>

@@ -20,6 +20,13 @@ done
 ffmpeg -v error -y -i "$TMP/kheelu.png" -vf "scale=240:-1:flags=lanczos" -pix_fmt rgba "$TMP/k240.png"
 cwebp -quiet -q 82 -alpha_q 90 "$TMP/k240.png" -o "$IMG/kheelu-240.webp"
 
+# Close-up of the tummy unit and a studio packshot, both from the current toy photo (never the previous toy's photos).
+mkdir -p "$IMG/product"
+ffmpeg -v error -y -i "$CODE/Khelu_By_Kheelona.png" -vf "crop=900:900:461:973" "$TMP/tummy.png"
+for w in 800 480; do ffmpeg -v error -y -i "$TMP/tummy.png" -vf "scale=$w:-1:flags=lanczos" "$TMP/t$w.png"; cwebp -quiet -q 82 "$TMP/t$w.png" -o "$IMG/product/khelu-tummy-$w.webp"; done
+ffmpeg -v error -y -f lavfi -i "color=c=0xF7F1EA:s=1200x1200" -i "$TMP/kheelu.png" -filter_complex "[1]scale=-1:1040:flags=lanczos[k];[0][k]overlay=(W-w)/2:H-h-60:format=auto" -frames:v 1 "$TMP/studio.png"
+for w in 1200 720; do ffmpeg -v error -y -i "$TMP/studio.png" -vf "scale=$w:-1:flags=lanczos" "$TMP/s$w.png"; cwebp -quiet -q 80 "$TMP/s$w.png" -o "$IMG/product/khelu-studio-$w.webp"; done
+
 # 2) Logo.
 cp "$CODE/Kheelona_Logo.svg" "$IMG/kheelona-logo.svg"
 

@@ -139,13 +139,16 @@
 .prose ul.checks li { position: relative; margin: 0; padding: 0.875rem 1rem 0.875rem 3.25rem; border-radius: 1.125rem; background: #fff; box-shadow: 0 0 0 1px var(--line); color: var(--ink); }
 .prose ul.checks li::before { content: ""; position: absolute; left: 1rem; top: 0.95rem; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--p-mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231d1d1f' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center / 0.875rem no-repeat; }
 
-/* Tips: a tinted card, each tip with a soft dot */
+/* Tips: a tinted card, each tip with its DS icon */
 .prose ul.tips { list-style: none; padding: clamp(1.25rem, 3vw, 1.75rem); border-radius: var(--radius); background: var(--p-sky); display: grid; gap: 0.75rem; }
-.prose ul.tips li { position: relative; margin: 0; padding-left: 1.75rem; color: var(--ink); }
-.prose ul.tips li::before { content: ""; position: absolute; left: 0.25rem; top: 0.6em; width: 0.625rem; height: 0.625rem; border-radius: 50%; background: #8ec5f0; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7); }
+.prose ul.tips li { display: grid; grid-template-columns: 1.75rem minmax(0, 1fr); gap: 0.75rem; align-items: start; margin: 0; color: var(--ink); }
+.tips__ico { display: grid; place-items: center; width: 1.75rem; height: 1.75rem; margin-top: 0.125rem; border-radius: 50%; background: rgba(255, 255, 255, 0.85); }
+.prose .li-ico { display: inline-block; width: 1em; height: 1em; vertical-align: -0.125em; fill: currentColor; }
+.ico-svg { width: 1rem; height: 1rem; fill: var(--ink); }
 
 /* "Try this": a butter card */
-.prose .try { padding: 1.125rem 1.375rem; border-radius: 1.25rem; background: var(--p-butter); }
+.prose .try { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 0.875rem; align-items: start; padding: 1.125rem 1.375rem; border-radius: 1.25rem; background: var(--p-butter); }
+.try__ico { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: rgba(255, 255, 255, 0.8); }
 .prose .try p { color: var(--ink); }
 
 /* Pull line ("If your gut says ask, ask.") */
@@ -175,6 +178,21 @@
 /* Photos inside the guide */
 .prose .fig { margin-inline: 0; }
 .prose .fig img { display: block; width: 100%; height: auto; border-radius: var(--radius); }
+
+/* Captions and videos (a dashboard post may add either) */
+.prose figure figcaption { margin-top: 0.625rem; font-size: 0.875rem; line-height: 1.5; color: var(--ink-3); }
+.prose .video { margin-inline: 0; }
+.video__play { position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 16 / 9; padding: 0; border: 0; border-radius: var(--radius); overflow: hidden; background: var(--p-lilac); cursor: pointer; color: var(--ink); }
+.video__play img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s var(--ease-out); }
+.video__play:hover img { transform: scale(1.04); }
+.video__btn { position: relative; display: grid; place-items: center; width: 4rem; height: 4rem; border-radius: 50%; background: #fff; box-shadow: 0 1rem 2rem -1rem rgba(0, 0, 0, 0.5); transition: transform 0.4s var(--ease-out); }
+.video__play:hover .video__btn { transform: scale(1.08); }
+.video__btn .ico-svg { width: 1.375rem; height: 1.375rem; margin-left: 0.2rem; }
+.video__title { position: absolute; left: 1rem; right: 1rem; bottom: 0.875rem; text-align: left; font: 600 0.9375rem/1.3 var(--text); color: #fff; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5); }
+.video iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: var(--radius); }
+.storycard__img--none { display: grid !important; place-items: center; }
+.storycard__img--none img { width: 40% !important; height: auto !important; object-fit: contain !important; }
+.story-hero__grid--solo { grid-template-columns: minmax(0, 1fr) !important; }
 
 /* Sources */
 .prose .sources { padding-top: 1.75rem; border-top: 1px solid var(--line); }

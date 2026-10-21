@@ -43,23 +43,6 @@
   // Until someone taps, the map walks through the three founders while it's on screen.
   ScrollTrigger.create({ trigger: ".th-map", start: "top 60%", end: "bottom 30%", onToggle: (st) => { clearInterval(auto); if (st.isActive && !touched) auto = setInterval(() => pick((part + 1) % 3), 3600); } });
 
-  /* ---------- Hero: the founders circle Khelu; the circle leans with the pointer ---------- */
-  const orbit = $("[data-orbit]"), faces = $$("[data-face]", orbit);
-  let a = 0, mx = 0, my = 0, on = true;
-  const spin = () => {
-    if (!on) return; a += 0.0035;
-    const w = orbit.clientWidth, rx = w * 0.4, ry = w * 0.36;
-    faces.forEach((f, i) => {
-      const t = a + (i / faces.length) * Math.PI * 2, s = Math.sin(t);
-      const depth = (s + 1) / 2; // 0 = behind Khelu, 1 = in front
-      gsap.set(f, { x: Math.cos(t) * rx + mx * (0.5 + depth), y: s * ry * 0.55 + my * (0.5 + depth) - w * 0.04, scale: 0.78 + depth * 0.3, zIndex: depth > 0.45 ? 3 : 1, opacity: 0.75 + depth * 0.25 });
-    });
-  };
-  gsap.from(faces, { scale: 0, opacity: 0, duration: 0.9, stagger: 0.12, ease: "back.out(1.8)", delay: 0.4 });
-  gsap.ticker.add(spin);
-  ScrollTrigger.create({ trigger: orbit, start: "top bottom", end: "bottom top", onToggle: (st) => (on = st.isActive) });
-  if (fine) orbit.closest(".th-hero").addEventListener("pointermove", (e) => { mx = (e.clientX / innerWidth - 0.5) * 30; my = (e.clientY / innerHeight - 0.5) * 20; });
-
   /* ---------- Why: the red lines strike through screen, camera and browsing ---------- */
   ScrollTrigger.create({ trigger: ".th-nos", start: "top 85%", once: true, onEnter: () => $(".th-nos").classList.add("is-in") });
 

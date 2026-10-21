@@ -22,6 +22,16 @@ SHELL = os.path.join(SRC, "_shell")
 read = lambda p: open(p, encoding="utf-8").read()
 
 NAV, FOOTER, AFTER = (read(os.path.join(SHELL, f)) for f in ("nav.html", "footer.html", "after.html"))
+FACTS = json.loads(read(os.path.join(SHELL, "facts.json")))
+
+
+def apply_facts(text):
+    """Owner-confirmed facts win over the beta wording (pages/_shell/facts.json)."""
+    for old, new in FACTS["replace"]:
+        text = text.replace(old, new)
+    for pattern in FACTS.get("remove_regex", []):
+        text = re.sub(pattern, "", text, flags=re.S)
+    return text
 OG_IMAGE = "https://kheelona.com/og/kheelu.jpg"
 OG_ALT = "Khelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy."
 
@@ -42,6 +52,7 @@ def page(meta, head_extra, body):
     alt = html.escape(meta.get("ogImageAlt", OG_ALT))
     css = "".join(f'\n<link rel="stylesheet" href="/assets/css/pages/{c}.css">' for c in meta.get("css", []))
     js = "".join(f'\n<script src="/assets/js/pages/{j}.js" defer></script>' for j in meta.get("js", []))
+    js += "".join(f'\n<script type="module" src="/assets/js/pages/{m}.js"></script>' for m in meta.get("modules", []))
     return f"""<!doctype html>
 <html lang="en-IN" class="no-js">
 <head>
@@ -109,7 +120,8 @@ def build(src):
         head, s = h.group(1), s[: h.start()] + s[h.end():]
     out_dir = os.path.join(ROOT, meta["path"].strip("/"))
     os.makedirs(out_dir, exist_ok=True)
-    open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8").write(page(meta, head, s))
+    meta = json.loads(apply_facts(json.dumps(meta, ensure_ascii=False)))
+    open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8").write(page(meta, apply_facts(head), apply_facts(s)))
     return meta["path"]
 
 

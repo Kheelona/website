@@ -41,6 +41,14 @@
     spy();
   }
 
+  // ---- Guide: a video plays only when pressed (nothing loads from YouTube or Vimeo before that).
+  $$(".video__play[data-video-src]").forEach((b) => b.addEventListener("click", () => {
+    const f = document.createElement("iframe");
+    f.src = b.dataset.videoSrc; f.title = b.getAttribute("aria-label") || "";
+    f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen"; f.allowFullscreen = true;
+    b.replaceWith(f);
+  }));
+
   // ---- Hub: topic filter
   const pills = document.querySelector(".filter__pills");
   const topics = $$("[data-topic]");
