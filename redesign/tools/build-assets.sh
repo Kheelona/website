@@ -56,5 +56,14 @@ for pair in listen:0 tap:0 tick:0 toggle:0 delete:0 pop:0 musicbox:4; do
   ffmpeg -v error -y -i "$SFX/$id.wav" $T -ac 1 -c:a aac -b:a 64k "$AUD/$id.m4a"
 done
 
+# 8) Khelu's real voice: the firmware's recorded cue lines (the exact clips the toy plays), as small AAC files.
+#    Source of truth: iot-firmware/esp32s3_voice_assistant_idf/assets/cues/manifest.json ("_says" = the words).
+CUES="$CODE/iot-firmware/esp32s3_voice_assistant_idf/assets/cues"; mkdir -p "$AUD/toy"
+for c in wake_ack server_connected sleep idle_stop daily_limit; do
+  ffmpeg -v error -y -i "$CUES/$c.wav" -ac 1 -ar 24000 -c:a aac -b:a 64k "$AUD/toy/$c.m4a"
+done
+# Pipeline A (Gemini Live, voice "Kore") clips, when present: drop WAVs into assets/audio/pipeline-a-src/ and they are encoded too.
+if [ -d "$AUD/pipeline-a-src" ]; then for f in "$AUD"/pipeline-a-src/*.wav; do [ -e "$f" ] || continue; n=$(basename "$f" .wav); ffmpeg -v error -y -i "$f" -ac 1 -ar 24000 -c:a aac -b:a 64k "$AUD/toy/pa-$n.m4a"; done; fi
+
 rm -rf "$TMP"
 echo "assets built:"; du -sh "$IMG" "$VID" "$AUD"

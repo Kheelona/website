@@ -516,3 +516,45 @@ button { font: inherit; color: inherit; }
   .pv__tag:nth-child(1), .pv__tag:nth-child(3), .pv__tag:nth-child(5) { left: -8%; }
   .pv__tag:nth-child(2), .pv__tag:nth-child(4) { right: -8%; }
 }
+
+
+/* ===================== v5 — owner's laptop audit ===================== */
+/* 1 · Pre-order: back to a small pill, centred at the bottom */
+:root { --bar: 5.5rem; }
+.ctabar { left: 50%; right: auto; bottom: max(0.875rem, env(safe-area-inset-bottom)); transform: translateX(-50%); width: max-content; max-width: calc(100vw - 1.5rem); padding: 0.375rem 0.375rem 0.375rem 0.5rem; border-radius: 999px; background: rgba(255, 255, 255, 0.82); box-shadow: 0 0 0 1px var(--line), 0 1.25rem 2.5rem -1.25rem rgba(0, 0, 0, 0.35); }
+.ctabar__in { width: auto; gap: 0.75rem; }
+.ctabar__thumb { width: 2.5rem; height: 2.5rem; border-radius: 50%; object-fit: contain; background: var(--bg-soft); padding: 0.125rem; }
+.ctabar__price { font-size: 0.75rem; white-space: nowrap; }
+.ctabar__price b { font-size: 0.875rem; }
+.ctabar__btns { gap: 0.375rem; }
+.ctabar__btns .btn { min-height: 2.75rem; padding: 0 1.125rem; font-size: 0.9375rem; }
+.ctabar__btns .btn--ghost .label-long { display: none; }
+.ctabar__btns .btn--ghost .label-short { display: inline; }
+@media (max-width: 599px) { .ctabar__thumb { display: none; } .ctabar__btns { width: auto; } .ctabar__btns .btn { flex: none; } }
+
+/* 3 · Cursor in Kheelona orange */
+.cursor { background: var(--chilli, #ef762f); }
+.cursor.is-link { background: rgba(239, 118, 47, 0.18); }
+.cursor.is-play { background: var(--chilli, #ef762f); color: #fff; }
+.cursor.is-drag { background: var(--chilli, #ef762f); color: #fff; }
+
+/* 4 · Voice waves from Khelu's speaker (canvas, above the plush, never catches clicks) */
+.waves { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+.try__stage .waves { z-index: 3; }
+
+/* 7 · Sound toggle for Khelu's real voice */
+.soundon { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.75rem; margin-top: 0.75rem; padding: 0 1rem 0 0.75rem; border-radius: 999px; border: 0; background: var(--ink); color: #fff; font: 600 0.875rem/1 var(--text); cursor: pointer; transition: transform 0.3s var(--ease-out), background-color 0.3s; }
+.soundon:hover { transform: translateY(-2px); }
+.soundon svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.soundon[aria-pressed="true"] { background: var(--chilli, #ef762f); }
+.soundon[aria-pressed="true"] .w1, .soundon[aria-pressed="true"] .w2 { animation: soundw 1s ease-in-out infinite; }
+.soundon[aria-pressed="true"] .w2 { animation-delay: 0.2s; }
+@keyframes soundw { 50% { opacity: 0.25; } }
+
+/* 9 · Backed by: real colours, small and compact, a gentle highlight on hover */
+.backed__row { gap: 0.625rem; max-width: 52rem; }
+.backed__card { min-height: 4.75rem; padding: 0.875rem 1.125rem; border-radius: 1.125rem; background: #fff; box-shadow: 0 0 0 1px var(--line); }
+.backed__card img { height: 2.125rem; filter: none; opacity: 1; }
+.backed__card span { font-size: 0.875rem; }
+.backed__word { font-size: 1.125rem !important; }
+.backed__card:hover { transform: translateY(-0.25rem) scale(1.03); background: #fff; box-shadow: 0 0 0 2px rgba(239, 118, 47, 0.55), 0 1.25rem 2rem -1.5rem rgba(239, 118, 47, 0.55); }

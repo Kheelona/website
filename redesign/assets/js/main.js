@@ -15,6 +15,71 @@
   if (reduced || !window.gsap) { root.classList.add("reduced"); initStatic(); return; }
   root.classList.add("motion");
   gsap.registerPlugin(ScrollTrigger);
+
+  /* ---------- Khelu's real voice: the firmware's recorded cue lines + the device's own earcon tones ---------- */
+  const Sound = (() => {
+    let ctx = null, out = null, an = null, data = null, cur = null, muted = false; const cache = {};
+    const ready = () => !!ctx && !muted;
+    const unlock = () => {
+      if (ctx) return; const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+      ctx = new AC(); an = ctx.createAnalyser(); an.fftSize = 256; data = new Uint8Array(an.frequencyBinCount); out = ctx.createGain(); out.connect(an); an.connect(ctx.destination);
+      document.dispatchEvent(new CustomEvent("khelu:sound"));
+    };
+    const load = (n) => cache[n] || (cache[n] = fetch(`assets/audio/toy/${n}.m4a`).then((r) => (r.ok ? r.arrayBuffer() : Promise.reject())).then((b) => ctx.decodeAudioData(b)));
+    const stop = () => { try { cur && cur.stop(); } catch (e) {} cur = null; };
+    const play = async (n) => { if (!ready()) return 0; try { const buf = await load(n); stop(); const src = ctx.createBufferSource(); src.buffer = buf; src.connect(out); src.start(); cur = src; src.onended = () => { if (cur === src) cur = null; }; return buf.duration; } catch (e) { return 0; } };
+    const sfx = async (file, rate = 1) => { if (!ready()) return; try { const buf = await (cache[file] || (cache[file] = fetch(`assets/audio/${file}.m4a`).then((r) => r.arrayBuffer()).then((b) => ctx.decodeAudioData(b)))); const src = ctx.createBufferSource(); src.buffer = buf; src.playbackRate.value = rate; src.connect(out); src.start(); } catch (e) {} };
+    // The toy's procedural earcons (firmware cue_tones): conversation start = a short A5 blip; end = E5 → C5.
+    const tone = (freqs, len = 0.12) => { if (!ready()) return; let t = ctx.currentTime; freqs.forEach((f) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = "sine"; o.frequency.value = f; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.25, t + 0.01); g.gain.exponentialRampToValueAtTime(0.001, t + len); o.connect(g); g.connect(out); o.start(t); o.stop(t + len + 0.02); t += len * 0.85; }); };
+    const level = () => { if (!an || !cur) return 0; an.getByteTimeDomainData(data); let m = 0; for (let i = 0; i < data.length; i++) m = Math.max(m, Math.abs(data[i] - 128)); return m / 128; };
+    const setMuted = (m) => { muted = m; if (m) stop(); };
+    // Browsers only allow sound after a tap or key press, so the first one anywhere switches Khelu's voice on.
+    const first = (e) => { if (e.target && e.target.closest && e.target.closest("[data-sound]")) return; ["pointerdown", "keydown"].forEach((ev) => removeEventListener(ev, first)); unlock(); };
+    ["pointerdown", "keydown"].forEach((ev) => addEventListener(ev, first, { passive: true }));
+    return { unlock, play, sfx, tone, level, stop, setMuted, get on() { return ready(); }, get started() { return !!ctx; }, get muted() { return muted; } };
+  })();
+
+  /* ---------- Voice waves: the "vocal rays" from Khelu's speaker. They bend away from the pointer. ---------- */
+  const makeWaves = (canvas, khelu, getLevel) => {
+    const host = canvas.parentElement, c2 = canvas.getContext("2d"); let W = 0, H = 0, dpr = 1, raf = 0, t = 0, amp = 0.4;
+    const m = { x: -1e4, y: -1e4, sx: -1e4, sy: -1e4 };
+    const size = () => { dpr = Math.min(2, devicePixelRatio || 1); const r = canvas.getBoundingClientRect(); W = r.width; H = r.height; canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); };
+    const COLS = [[255, 170, 60], [90, 169, 238], [157, 134, 238], [95, 191, 166]];
+    const frame = () => {
+      t += 1 / 60; amp += ((0.38 + Math.min(1, getLevel() * 2.2)) - amp) * 0.12; m.sx += (m.x - m.sx) * 0.18; m.sy += (m.y - m.sy) * 0.18;
+      c2.setTransform(dpr, 0, 0, dpr, 0, 0); c2.clearRect(0, 0, W, H);
+      const kr = khelu.getBoundingClientRect(), cr = canvas.getBoundingClientRect(); if (!kr.width) { raf = requestAnimationFrame(frame); return; }
+      const cx = kr.left - cr.left + kr.width * 0.513, cy = kr.top - cr.top + kr.height * 0.6, inner = kr.width * 0.2, reach = Math.min(Math.max(W * 0.46, kr.width), kr.width * 1.9), unit = kr.width / 400, R = 150 * Math.max(0.8, unit);
+      c2.lineCap = "round"; c2.lineJoin = "round";
+      COLS.forEach((col, i) => {
+        const a = (16 + i * 9) * amp * Math.max(0.75, unit), f = (0.016 + i * 0.005) / Math.max(0.6, unit), sp = 2 + i * 0.7;
+        [-1, 1].forEach((side) => {
+          const g = c2.createLinearGradient(cx + side * inner, 0, cx + side * reach, 0);
+          g.addColorStop(0, `rgba(${col},0)`); g.addColorStop(0.2, `rgba(${col},0.9)`); g.addColorStop(0.75, `rgba(${col},0.55)`); g.addColorStop(1, `rgba(${col},0)`);
+          c2.strokeStyle = g; c2.lineWidth = (2.6 - i * 0.3) * Math.max(0.85, unit); c2.beginPath();
+          for (let d = inner; d <= reach; d += 3) {
+            const k = (d - inner) / (reach - inner), env = Math.sin(Math.PI * Math.min(1, k * 1.15));
+            const x = cx + side * d; let y = cy + env * a * Math.sin(d * f - t * sp + i * 1.3) + (i - 1.5) * 2 * unit;
+            const dx = x - m.sx, dy = y - m.sy, dist = Math.hypot(dx, dy);
+            if (dist < R) { const p = 1 - dist / R; y += (dy >= 0 ? 1 : -1) * p * p * 72 * Math.max(0.8, unit) + Math.sin(dist * 0.08 - t * 10) * p * 12 * Math.max(0.8, unit); }
+            d === inner ? c2.moveTo(x, y) : c2.lineTo(x, y);
+          }
+          c2.stroke();
+        });
+      });
+      raf = requestAnimationFrame(frame);
+    };
+    size(); addEventListener("resize", size);
+    new IntersectionObserver((es) => es.forEach((e) => { cancelAnimationFrame(raf); if (e.isIntersecting) { size(); raf = requestAnimationFrame(frame); } })).observe(host);
+    if (fine) {
+      const track = canvas.closest(".stage") || host;
+      track.addEventListener("pointermove", (e) => { const r = canvas.getBoundingClientRect(); m.x = e.clientX - r.left; m.y = e.clientY - r.top; if (m.sx < -1e3) { m.sx = m.x; m.sy = m.y; } });
+      track.addEventListener("pointerleave", () => { m.x = m.y = -1e4; m.sx = m.sy = -1e4; });
+    }
+  };
+  const heroWaves = $('[data-waves="hero"]'); if (heroWaves) makeWaves(heroWaves, $("#hero [data-kheelu] .kheelu__img"), () => 0);
+  const tryWaves = $('[data-waves="try"]'); if (tryWaves) makeWaves(tryWaves, $("[data-try-kheelu] .kheelu__img"), () => Sound.level());
+
   const end = (tl) => tl.to({}, { duration: 0.001 }, 0.999); // every chapter timeline spans exactly 0→1
 
   /* ---------- Smooth scroll (desktop) ---------- */
@@ -30,7 +95,7 @@
   // Every demo can be skipped: jump to the end of its track.
   $$("[data-skip]").forEach((b) => b.addEventListener("click", () => { const t = $(b.dataset.skip); scrollToY(t.offsetTop + t.offsetHeight - innerHeight * 0.4); }));
 
-  /* ---------- Living Kheelu ---------- */
+  /* ---------- Living Khelu ---------- */
   $$("[data-kheelu]").forEach((k) => {
     const body = $(".kheelu__body", k); const lids = $$(".kheelu__lid", k);
     const idle = gsap.timeline({ repeat: -1, yoyo: true, paused: true }).to(body, { scaleY: 1.014, scaleX: 0.996, y: -4, rotation: 0.8, duration: 2.2, ease: "sine.inOut" });
@@ -46,7 +111,7 @@
   /* ---------- Reveals ---------- */
   ScrollTrigger.batch(".reveal", { start: "top 88%", once: true, onEnter: (els) => gsap.to(els, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out", stagger: 0.08 }) });
 
-  /* ---------- 1 · Hero: headline → "Meet Kheelu" → hundreds of questions ---------- */
+  /* ---------- 1 · Hero: headline → "Meet Khelu" → hundreds of questions ---------- */
   (() => {
     const track = $("#hero"); const A = $("[data-hero-a]"), B = $("[data-hero-b]"), C = $("[data-hero-caption]"); const stage = $(".hero__stage", track); const field = $("[data-qfield]");
     const colors = ["#f59ab8", "#f2a65a", "#e9b84a", "#5fbfa6", "#5aa9ee", "#9d86ee"]; const qs = [];
@@ -84,12 +149,12 @@
   /* ---------- 2 · Try it: zoom into the tummy, then the real buttons are clickable ---------- */
   (() => {
     const track = $("#how"); const stage = $(".stage", track); const k = $("[data-try-kheelu]"); const body = $(".kheelu__body", k);
-    const ring = $("[data-ring]", k); const ripples = $$(".kheelu__ripple", k); const steps = $$("[data-steps] li"); const demo = $("[data-demo]"); const say = $("[data-demo-say]"); const vol = $$("[data-vol] i");
+    const ring = $("[data-ring]", k); const ripples = $$(".kheelu__ripple", k); const steps = $$("[data-steps] li"); const demo = $("[data-demo]"); const say = $("[data-demo-say]");
     const listen = gsap.timeline({ repeat: -1, paused: true });
     ripples.forEach((r, i) => listen.fromTo(r, { scale: 0.6, opacity: 0.85 }, { scale: 1.9, opacity: 0, duration: 1.6, ease: "power1.out" }, i * 0.5));
     const zoom = () => { const s = phone() ? 2.2 : 2.6; const H = k.offsetHeight; const cy = k.offsetTop + H / 2; const target = phone() ? stage.offsetHeight * 0.36 : stage.offsetHeight * 0.5; const cx = k.offsetLeft + k.offsetWidth / 2; const tx = phone() ? 0 : Math.min(stage.offsetWidth * 0.16, 260 * R()); return { s, y: target - cy - 0.118 * H * s, x: tx + (stage.offsetWidth / 2 - cx) }; };
-    let live = false;
-    const setLive = (on) => { if (on === live) return; live = on; demo.classList.toggle("is-live", on); stage.classList.toggle("demo-on", on); $$(".ctrl", k).forEach((c) => (c.tabIndex = on ? 0 : -1)); };
+    let live = false, greet = () => {};
+    const setLive = (on) => { if (on === live) return; live = on; if (on) greet(); demo.classList.toggle("is-live", on); stage.classList.toggle("demo-on", on); $$(".ctrl", k).forEach((c) => (c.tabIndex = on ? 0 : -1)); };
     end(gsap.timeline({ scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6, invalidateOnRefresh: true, onUpdate: (st) => {
       const p = st.progress; steps.forEach((s, j) => s.classList.toggle("is-on", p > [0.33, 0.41, 0.49][j]));
       p > 0.49 && p < 0.97 ? listen.play() : listen.pause(); setLive(p > 0.56 && p < 0.96);
@@ -105,28 +170,34 @@
       .to(demo, { opacity: 0, duration: 0.03 }, 0.95)
       .to(k, { scale: 1, y: 0, x: 0, ease: "power2.inOut", duration: 0.04 }, 0.95));
 
-    // The demo: each real button does what it does on Kheelu.
-    let level = 3, on = true, story = 0;
+    // Each real button does what it does on Khelu, in its real voice (firmware cue lines) and its own tones.
+    let on = true, talking = false, story = 0, greeted = false;
     const stories = ["the moon who said hello", "the rabbit who counted stars", "the kite that wanted to fly"];
-    const speak = (text) => { say.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; gsap.delayedCall(0.45, () => { say.textContent = text; }); };
+    const speak = (text, cue) => { say.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; gsap.delayedCall(0.35, () => { say.textContent = text; }); if (cue) Sound.play(cue); };
     const burst = () => { gsap.fromTo(ripples, { scale: 0.6, opacity: 0.9 }, { scale: 2, opacity: 0, duration: 1.1, stagger: 0.18, ease: "power1.out" }); gsap.fromTo(body, { scale: 1 }, { scale: 1.02, yoyo: true, repeat: 1, duration: 0.15 }); };
-    const showVol = () => vol.forEach((v, i) => v.classList.toggle("is-on", i < level));
-    showVol();
     const act = (c) => {
+      Sound.unlock(); syncSound();
       $$(".demo__list button").forEach((b) => b.classList.toggle("is-on", b.dataset.ctrl === c));
-      if (c === "power") { on = !on; gsap.to(ring, { opacity: on ? 1 : 0, duration: 0.3 }); gsap.to($(".kheelu__img", k), { filter: on ? "brightness(1)" : "brightness(0.82)", duration: 0.4 }); return speak(on ? "Hello again! Press the wake-up button to talk." : "Bye for now! (Kheelu is off.)"); }
-      if (!on) return speak("I’m off. Press power to wake me.");
+      if (c === "power") { on = !on; talking = false; gsap.to(ring, { opacity: on ? 1 : 0, duration: 0.3 }); gsap.to($(".kheelu__img", k), { filter: on ? "brightness(1)" : "brightness(0.82)", duration: 0.4 }); return on ? speak("I’m awake! Let’s play!", "wake_ack") : speak("Taking a little nap… Tap me to wake me up!", "sleep"); }
+      if (!on) { Sound.tone([392], 0.18); return speak("Taking a little nap… Tap me to wake me up!", "sleep"); }
       burst();
-      if (c === "wake") speak("Hi! I’m listening. What would you like to know?");
-      if (c === "play") speak(`Story time! Once upon a time, there was ${stories[story]}…`);
-      if (c === "next") { story = (story + 1) % stories.length; speak(`Next story: ${stories[story]}.`); }
-      if (c === "prev") { story = (story + stories.length - 1) % stories.length; speak(`Going back: ${stories[story]}.`); }
-      if (c === "up" || c === "down") { level = Math.max(1, Math.min(6, level + (c === "up" ? 1 : -1))); showVol(); speak(c === "up" ? "A little louder!" : "A little quieter."); }
+      if (c === "wake") { talking = !talking; if (talking) { Sound.tone([880]); return speak("I’m listening. Ask me anything!"); } Sound.tone([659, 523]); return speak("I’ll be right here, when you want to play.", "idle_stop"); }
+      Sound.sfx("tick", c === "up" ? 1.25 : c === "down" ? 0.8 : 1);
+      if (c === "play") { Sound.sfx("musicbox"); return speak(`Story time! Once upon a time, there was ${stories[story]}…`); }
+      if (c === "next") { story = (story + 1) % stories.length; return speak(`Next story: ${stories[story]}.`); }
+      if (c === "prev") { story = (story + stories.length - 1) % stories.length; return speak(`Going back: ${stories[story]}.`); }
+      if (c === "up" || c === "down") return speak(c === "up" ? "A little louder!" : "A little quieter.");
     };
+    // When the buttons come alive, Khelu greets you out loud, the way it does when it's ready.
+    greet = () => { if (greeted || !on) return; greeted = true; burst(); speak("Yay! I’m ready to play!", "server_connected"); };
+    const soundBtn = $("[data-sound]"), soundLabel = $("[data-sound-label]");
+    const syncSound = () => { if (!soundBtn) return; soundBtn.setAttribute("aria-pressed", String(Sound.on)); soundLabel.textContent = Sound.on ? "Sound on" : "Tap for sound"; };
+    soundBtn && soundBtn.addEventListener("click", () => { if (!Sound.started) { Sound.setMuted(false); Sound.unlock(); } else Sound.setMuted(!Sound.muted); syncSound(); if (Sound.on && live) { greeted = false; greet(); } });
+    document.addEventListener("khelu:sound", () => { syncSound(); if (live) greet(); });
     $$("[data-ctrl]", track).forEach((b) => b.addEventListener("click", () => act(b.dataset.ctrl)));
   })();
 
-  /* ---------- 3 · A real conversation: Kheelu explains as the sky draws itself ---------- */
+  /* ---------- 3 · A real conversation: Khelu explains as the sky draws itself ---------- */
   (() => {
     const track = $("#asks"); const rays = $$("[data-rays] path", track); const scatter = $("[data-scatter]", track); const bub = $$("[data-thread] .bubble", track); const ask = $(".thread .ask", track);
     rays.forEach((r) => { const L = r.getTotalLength(); r.style.strokeDasharray = L; r.style.strokeDashoffset = L; });
@@ -143,7 +214,7 @@
     end(tl);
   })();
 
-  /* ---------- 4 · A day at home: rooms change around Kheelu as it speaks ---------- */
+  /* ---------- 4 · A day at home: rooms change around Khelu as it speaks ---------- */
   (() => {
     const track = $("#day"); const scenes = $$(".scene", track); const dots = $$("[data-home-progress] i", track);
     const time = $("[data-home-time]"), line = $("[data-home-line]"), mode = $("[data-home-mode]"), say = $("[data-home-say]"), bubble = $("[data-home-bubble]");
@@ -170,7 +241,7 @@
     ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => show(Math.min(DAY.length - 1, Math.floor(st.progress * DAY.length * 0.999))), onToggle: (st) => (st.isActive ? talk.play() : talk.pause()) });
   })();
 
-  /* ---------- 5 · Languages: greetings orbit Kheelu; the sentence switches language ---------- */
+  /* ---------- 5 · Languages: greetings orbit Khelu; the sentence switches language ---------- */
   (() => {
     const track = $("#languages"); const holder = $("[data-chips]", track); const chips = $$(".chip", holder); const [en, hi] = $$("[data-swap]", track);
     const grid = phone(); if (grid) { holder.classList.add("chips--grid"); $(".chapter-copy", track).appendChild(holder); }
