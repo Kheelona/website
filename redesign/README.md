@@ -1,4 +1,4 @@
-# Kheelona redesign: scroll-driven home page prototype
+# Kheelona redesign: scroll-driven home page prototype (v2, after UX research)
 
 A white, product-first home page that plays like the launch film as you scroll. Kheelu stays on stage while the story
 moves around it: the questions arrive, we zoom into the tummy, the sky-blue answer draws itself, the rooms of a home
@@ -29,3 +29,18 @@ python3 -m http.server 5173 --bind 127.0.0.1
 ## Content
 The copy is rewritten for clarity and every fact comes from the current site: ages 3–7, the three modes, 8 languages, the
 wake-up button, the parent app, the prices and the delivery date. The dialogue lines are marked illustrative.
+
+## v2 changes (UX researcher notes, 2026-10-21)
+- The name is **Khelu** everywhere it's visible. URLs stay `/products/kheelu`.
+- Copy is short and simple, and "screen" appears only where it matters. Chapters are numbered 01–13 so the headings tell one story.
+  Small connecting lines between chapters act as page breaks.
+- **F-pattern reading:** chapter copy always sits in the same top-left column, and the visual sits beside or below it.
+- **Pre-order dock:** fixed at the bottom on every screen, with "Watch Khelu ask" and "Pre-order Khelu". Its CTA tracks as
+  `hero` on the first screen and as `sticky-bar` after it.
+- **Skip:** every pinned demo has a "Skip ↓" button. Films can be downloaded "to watch later" from the player.
+- **Clickable toy:** the real buttons on Khelu (✦ talk, stories and songs, ⏮ ⏭, volume −/+, power) each show what they do and play a small sound.
+  The button roles come from the firmware (`iot-firmware/MEDIA-JUKEBOX.md`).
+- **Sky demo:** it's now Khelu talking it through, and the sky turns to sunset when the child answers "Orange!".
+- **Privacy:** a new pinned chapter built from the launch film's sequence: only you; never sold or used for ads; never kept; delete anytime.
+- **Safety:** a bento of six facts that animate in.
+- **Big screens and TVs:** all sizing is in rem and the root size steps up at 1800, 2300 and 3000px. Layout re-measures on resize.

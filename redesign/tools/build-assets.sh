@@ -49,5 +49,12 @@ cwebp -quiet -q 75 "$TMP/expert.png" -o "$IMG/poster-expert.webp"
 # 6) Recognition marks.
 for r in nvidia-inception karnataka-seal nasscom; do cp "$SITE/public/recognition/$r.png" "$IMG/$r.png"; done
 
+# 7) Toy-button sounds (from the launch film's SFX), tiny AAC files played only when a visitor taps a button.
+AUD=assets/audio; mkdir -p "$AUD"; SFX="$CODE/kheelu-launch-film/public/kheelu/audio/sfx"
+for pair in listen:0 tap:0 tick:0 toggle:0 delete:0 pop:0 musicbox:4; do
+  id=${pair%%:*}; len=${pair##*:}; T=""; [ "$len" != 0 ] && T="-t $len -af afade=t=out:st=$((len-1)):d=1"
+  ffmpeg -v error -y -i "$SFX/$id.wav" $T -ac 1 -c:a aac -b:a 64k "$AUD/$id.m4a"
+done
+
 rm -rf "$TMP"
-echo "assets built:"; du -sh "$IMG" "$VID"
+echo "assets built:"; du -sh "$IMG" "$VID" "$AUD"
