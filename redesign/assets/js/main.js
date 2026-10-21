@@ -181,7 +181,7 @@
       if (c === "power") { on = !on; talking = false; gsap.to(ring, { opacity: on ? 1 : 0, duration: 0.3 }); gsap.to($(".kheelu__img", k), { filter: on ? "brightness(1)" : "brightness(0.82)", duration: 0.4 }); return on ? speak("I’m awake! Let’s play!", "wake_ack") : speak("Taking a little nap… Tap me to wake me up!", "sleep"); }
       if (!on) { Sound.tone([392], 0.18); return speak("Taking a little nap… Tap me to wake me up!", "sleep"); }
       burst();
-      if (c === "wake") { talking = !talking; if (talking) { Sound.tone([880]); return speak("I’m listening. Ask me anything!"); } Sound.tone([659, 523]); return speak("I’ll be right here, when you want to play.", "idle_stop"); }
+      if (c === "wake") { talking = !talking; if (talking) { Sound.tone([880]); gsap.delayedCall(0.25, () => Sound.play("pa-hello")); return speak("Hello, my friend! I’m so happy to talk with you. What would you like to learn today?"); } Sound.tone([659, 523]); return speak("I’ll be right here, when you want to play.", "idle_stop"); }
       Sound.sfx("tick", c === "up" ? 1.25 : c === "down" ? 0.8 : 1);
       if (c === "play") { Sound.sfx("musicbox"); return speak(`Story time! Once upon a time, there was ${stories[story]}…`); }
       if (c === "next") { story = (story + 1) % stories.length; return speak(`Next story: ${stories[story]}.`); }

@@ -63,6 +63,8 @@ for c in wake_ack server_connected sleep idle_stop daily_limit; do
   ffmpeg -v error -y -i "$CUES/$c.wav" -ac 1 -ar 24000 -c:a aac -b:a 64k "$AUD/toy/$c.m4a"
 done
 # Pipeline A (Gemini Live, voice "Kore") clips, when present: drop WAVs into assets/audio/pipeline-a-src/ and they are encoded too.
+# The fleet's default profile voice is Kore (backend prompts.constant.js). Its sample lives in the media bucket.
+if command -v gsutil >/dev/null 2>&1; then mkdir -p "$AUD/pipeline-a-src"; gsutil -q cp "gs://kheelona/media/voice-samples/gemini/Kore-*.wav" "$AUD/pipeline-a-src/hello.wav" 2>/dev/null || echo "  (Pipeline A sample not fetched: run gcloud auth login)"; fi
 if [ -d "$AUD/pipeline-a-src" ]; then for f in "$AUD"/pipeline-a-src/*.wav; do [ -e "$f" ] || continue; n=$(basename "$f" .wav); ffmpeg -v error -y -i "$f" -ac 1 -ar 24000 -c:a aac -b:a 64k "$AUD/toy/pa-$n.m4a"; done; fi
 
 rm -rf "$TMP"
