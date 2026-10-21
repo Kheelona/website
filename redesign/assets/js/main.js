@@ -179,7 +179,7 @@
 
     // Each button does what it does on the real Khelu, in Khelu's own voice (assets/audio/voice, tools/voice-lines.json).
     const LINES = {
-      hello: "Hi! I’m Khelu. Press a button on my tummy, and let’s play!",
+      hello: "Hello, my friend! I’m so happy to talk with you. What would you like to learn today?",
       "power-on": "Power on!", bye: "Bye bye!", "hey-riya": "Hey Riya! I’m Khelu. How was your day today?",
       "story-1": "Once upon a time, a little rabbit named Khelu found a shiny pebble by the river…",
       "story-2": "A tiny cloud wanted to be a rainbow. So it waited for the sun, and, splash! It painted the whole sky.",
