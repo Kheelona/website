@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Generate Khelu's voice lines (tools/voice-lines.json) in the Pipeline A voice ("Kore") with Google Cloud
+"""Generate Khelu's voice lines (tools/voice-lines.json) in the admin dashboard's Achernar voice with Google Cloud
 Text-to-Speech's Gemini TTS, then encode them to small AAC files in assets/audio/voice/.
 
-Needs: `gcloud auth login`, the Cloud Text-to-Speech API enabled on the project, and ffmpeg.
+Needs: `gcloud auth login`, the Cloud Text-to-Speech and Vertex AI APIs enabled on the project (only while it runs,
+with the owner's OK; disable them after), and ffmpeg.
 Usage: python3 tools/make-voice.py [--project PROJECT_ID] [--only id1,id2]
 """
 import argparse, base64, json, os, subprocess, sys, urllib.request
