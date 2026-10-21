@@ -18,7 +18,17 @@
 .t3card.is-on { opacity: 1; visibility: visible; transform: none; }
 .t3card::before { content: ""; position: absolute; left: 1.5rem; right: 1.5rem; top: 0; height: 0.25rem; border-radius: 0 0 0.25rem 0.25rem; background: var(--tint); }
 .t3card__top { display: flex; align-items: center; gap: 0.875rem; }
-.t3card__top img { flex: none; width: 3.5rem; height: 3.5rem; border-radius: 50%; object-fit: cover; background: var(--tint); }
+.t3card__pic { flex: none; position: relative; width: 6rem; height: 6rem; border-radius: 1.5rem; overflow: hidden; background: radial-gradient(circle at 50% 35%, #fff 0%, var(--tint) 70%); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04); }
+.t3card__pic img { position: absolute; left: 50%; top: -4%; width: 150%; height: auto; max-width: none; translate: -50% 0; transition: transform 0.9s var(--ease-out); }
+.t3card.is-on .t3card__pic img { animation: picIn 0.9s var(--ease-out) both; }
+@keyframes picIn { from { transform: translateY(12%) scale(0.92); opacity: 0; } to { transform: none; opacity: 1; } }
+/* The line from the founder in the scene to their box (team3d.js draws it every frame) */
+.t3__link { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.t3__link path { fill: none; stroke: var(--ink); stroke-width: 1.75; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: var(--draw, 1); opacity: 0.75; }
+.t3__dot { fill: #fff; stroke: var(--ink); stroke-width: 2; opacity: var(--dot, 0); }
+.t3__ring { fill: none; stroke: var(--ink); stroke-width: 1.5; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.t3.has-link .t3__ring { animation: ring 1.8s ease-out infinite; }
+@keyframes ring { 0% { opacity: 0.55; transform: scale(0.5); } 100% { opacity: 0; transform: scale(1.6); } }
 .t3card__part { margin: 0; font: 600 0.75rem/1 var(--text); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
 .t3card__name { margin: 0.3125rem 0 0; font: 650 1.625rem/1.1 var(--display); letter-spacing: -0.02em; }
 .t3card__role { margin: 0.25rem 0 0; font: 600 0.875rem/1.3 var(--text); color: var(--ink-2); }
@@ -42,7 +52,7 @@
   .t3__hint { margin-top: 1rem; }
   .t3__cards { top: auto; bottom: 4.25rem; translate: 0 0; left: var(--gutter); width: calc(100% - 2 * var(--gutter)); }
   .t3card { padding: 1rem 1.125rem 1.125rem; }
-  .t3card__top img { width: 2.75rem; height: 2.75rem; } .t3card__name { font-size: 1.3125rem; }
+  .t3card__pic { width: 4.25rem; height: 4.25rem; border-radius: 1.125rem; } .t3card__name { font-size: 1.3125rem; }
   .t3card__body { font-size: 0.9375rem; margin-top: 0.625rem; } .t3card__label { margin-top: 0.625rem; } .t3card__bio { font-size: 0.875rem; } .t3card__in { margin-top: 0.625rem; }
   .t3__dots button span { display: none; } .t3__dots button { padding: 0.25rem; }
   .t3__dots { top: 4.75rem; bottom: auto; }

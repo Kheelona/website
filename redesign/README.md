@@ -117,3 +117,8 @@ Every page of betawebsite.kheelona.com, rebuilt in the home page's design langua
   Apple Vision (`tools/cutout/cutout.swift` → `assets/img/team/*-cut.webp`), set on gently curved cards that turn toward
   the camera, with bodies in their shirt colours. Scrolling rolls the camera from a wide shot to each founder (their
   card opens) and back out; the dots jump to a founder. No WebGL or reduced motion → the founder cards show instead.
+- **Living faces (v12.1):** each founder's photo sits on a mesh with real relief built from Apple Vision face landmarks
+  (`tools/cutout/landmarks.swift` → `assets/img/team/landmarks.json`): the head turns and tilts from the neck, nods when the
+  camera reaches them, and the eyes blink (eyelids drawn inside each founder's own eye outline, in their skin tone).
+  `?t3lid=0.8` holds the eyelids, to check them. A line runs from the founder's shoulder in the scene to their box, which
+  shows their portrait, role, what they build, background and LinkedIn.

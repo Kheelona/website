@@ -110,17 +110,93 @@ function start() {
   /* ---------- The founders: a chair in their colour, a body, and their own photo ---------- */
   const deg = (d) => (d * Math.PI) / 180;
   const FOUNDERS = [
-    { photo: "/assets/img/team/apoorva-cut.webp", angle: 30, chair: 0xbfe6d2, shirt: 0x19181d, cup: 0xcdeedd },
-    { photo: "/assets/img/team/aman-cut.webp", angle: 90, chair: 0xffd6bd, shirt: 0x413c26, cup: 0xffdcc6 },
-    { photo: "/assets/img/team/kashyap-cut.webp", angle: 150, chair: 0xc6dff7, shirt: 0xcbbfae, cup: 0xd4e8fb },
+    { key: "apoorva", photo: "/assets/img/team/apoorva-cut.webp", angle: 30, chair: 0xbfe6d2, shirt: 0x19181d, cup: 0xcdeedd },
+    { key: "aman", photo: "/assets/img/team/aman-cut.webp", angle: 90, chair: 0xffd6bd, shirt: 0x413c26, cup: 0xffdcc6 },
+    { key: "kashyap", photo: "/assets/img/team/kashyap-cut.webp", angle: 150, chair: 0xc6dff7, shirt: 0xcbbfae, cup: 0xd4e8fb },
   ];
   const SEAT = 1.08, PERSON = 0.99, PHOTO = 0.68;
   const trousers = mat(0x353a48, 0.9), skin = mat(0xc89478, 0.7);
   const loader = new THREE.TextureLoader();
-  // A gently curved card reads as a body with depth as the camera moves, where a flat card would read as paper.
-  const curved = (() => { const g = new THREE.PlaneGeometry(PHOTO, PHOTO, 24, 1); const p = g.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i); p.setZ(i, -1.1 * x * x); } p.needsUpdate = true; g.computeVertexNormals(); return g; })();
+  /* A living portrait: the founder's own photo on a mesh with real relief (head, nose, eye sockets, shoulders, from
+     Apple Vision's face landmarks in landmarks.json), so the head can turn and nod from the neck with true parallax,
+     and eyelids drawn from each founder's own eye outline, so they blink. */
+  const N = 72, gauss = (u, v, p, s) => Math.exp(-((u - p[0]) ** 2 + (v - p[1]) ** 2) / (2 * s * s));
+  const smooth = (e0, e1, x) => { const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); };
+  const makePortrait = (img, lm, mat) => {
+    const geo = new THREE.PlaneGeometry(PHOTO, PHOTO, N, N);
+    const pos = geo.attributes.position, uv = geo.attributes.uv;
+    const A = 96, ac = document.createElement("canvas"); ac.width = ac.height = A;
+    const ax = ac.getContext("2d", { willReadFrequently: true }); ax.filter = "blur(2px)"; ax.drawImage(img, 0, 0, A, A);
+    const ad = ax.getImageData(0, 0, A, A).data;
+    const alphaAt = (u, v) => ad[(Math.min(A - 1, Math.max(0, Math.round(v * (A - 1)))) * A + Math.min(A - 1, Math.max(0, Math.round(u * (A - 1))))) * 4 + 3] / 255;
+    const [bx, by, bw, bh] = lm.box;
+    const head = { x: bx + bw / 2, y: by + bh * 0.4 }, rx = bw * 0.64, ry = bh * 0.82;
+    const chin = Math.max(...lm.contour.map((q) => q[1]));
+    const nose = lm.noseCrest.reduce((m, q) => (q[1] > m[1] ? q : m), lm.noseCrest[0]);
+    const pupils = [lm.leftPupil[0], lm.rightPupil[0]].filter(Boolean);
+    const base = new Float32Array(pos.count * 3), weight = new Float32Array(pos.count);
+    for (let i = 0; i < pos.count; i++) {
+      const u = uv.getX(i), v = 1 - uv.getY(i), a = alphaAt(u, v);
+      const ex = (u - head.x) / rx, ey = (v - head.y) / ry, e = Math.sqrt(ex * ex + ey * ey);
+      let z = 0.04 * a; // shoulders and chest: a soft, rounded body
+      if (e < 1) z = Math.max(z, 0.04 + 0.08 * Math.sqrt(1 - e * e)); // the head
+      z += 0.026 * gauss(u, v, nose, 0.028) - pupils.reduce((t, p) => t + 0.007 * gauss(u, v, p, 0.02), 0);
+      z *= Math.min(1, a * 1.6);
+      base[i * 3] = pos.getX(i); base[i * 3 + 1] = pos.getY(i); base[i * 3 + 2] = z;
+      // How much of this point moves with the head: all of the head, fading to nothing below the chin.
+      weight[i] = smooth(1.35, 0.95, e) * smooth(chin + 0.11, chin + 0.01, v);
+      pos.setZ(i, z);
+    }
+    pos.needsUpdate = true;
+    const pivot = { x: (head.x - 0.5) * PHOTO, y: (0.5 - (chin + 0.06)) * PHOTO, z: 0.02 };
+    const pose = (yaw, pitch, roll) => {
+      for (let i = 0; i < pos.count; i++) {
+        const w = weight[i]; if (w < 0.001) continue;
+        const ay = yaw * w, ap = pitch * w, ar = roll * w;
+        let dx = base[i * 3] - pivot.x, dy = base[i * 3 + 1] - pivot.y, dz = base[i * 3 + 2] - pivot.z;
+        let x1 = dx * Math.cos(ay) + dz * Math.sin(ay), z1 = -dx * Math.sin(ay) + dz * Math.cos(ay);
+        let y2 = dy * Math.cos(ap) - z1 * Math.sin(ap), z2 = dy * Math.sin(ap) + z1 * Math.cos(ap);
+        let x3 = x1 * Math.cos(ar) - y2 * Math.sin(ar), y3 = x1 * Math.sin(ar) + y2 * Math.cos(ar);
+        pos.setXYZ(i, x3 + pivot.x, y3 + pivot.y, z2 + pivot.z);
+      }
+      pos.needsUpdate = true;
+    };
+    // Eyelids: drawn over the photo, inside each eye's own outline, in the skin colour just above the eye.
+    const S = img.naturalWidth || 480, cv = document.createElement("canvas"); cv.width = cv.height = S;
+    const cx2 = cv.getContext("2d", { willReadFrequently: true }); cx2.drawImage(img, 0, 0, S, S);
+    const eyes = [lm.leftEye, lm.rightEye].filter((e) => e && e.length).map((pts, k) => {
+      const P = pts.map(([x, y]) => [x * S, y * S]);
+      const xs = P.map((p) => p[0]), ys = P.map((p) => p[1]);
+      const box = { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) };
+      const brow = (k ? lm.rightBrow : lm.leftBrow) || [];
+      const browY = brow.length ? Math.max(...brow.map((q) => q[1] * S)) : box.y0 - (box.y1 - box.y0);
+      const sx = Math.round((box.x0 + box.x1) / 2), sy = Math.round((browY + box.y0) / 2);
+      const px = cx2.getImageData(sx - 3, sy - 2, 6, 4).data; let r = 0, g = 0, b = 0, n = 0;
+      for (let j = 0; j < px.length; j += 4) { r += px[j]; g += px[j + 1]; b += px[j + 2]; n++; }
+      return { P, box, skin: `rgb(${(r / n) | 0},${(g / n) | 0},${(b / n) | 0})` };
+    });
+    const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    const lid = (close) => {
+      cx2.clearRect(0, 0, S, S); cx2.drawImage(img, 0, 0, S, S);
+      if (close > 0.02) eyes.forEach(({ P, box, skin }) => {
+        const cxm = (box.x0 + box.x1) / 2, cym = (box.y0 + box.y1) / 2, padY = (box.y1 - box.y0) * 0.35 + 1.5;
+        cx2.save(); cx2.beginPath();
+        P.forEach(([x, y], j) => { const X = cxm + (x - cxm) * 1.18, Y = cym + (y - cym) * 1.45; j ? cx2.lineTo(X, Y) : cx2.moveTo(X, Y); });
+        cx2.closePath(); cx2.clip();
+        const top = box.y0 - padY, edge = top + (box.y1 - box.y0 + padY * 2) * close;
+        cx2.fillStyle = skin; cx2.fillRect(box.x0 - 6, top, box.x1 - box.x0 + 12, edge - top);
+        cx2.strokeStyle = "rgba(45,28,22,0.75)"; cx2.lineWidth = 1.6; cx2.beginPath(); cx2.moveTo(box.x0 - 2, edge - 0.5); cx2.quadraticCurveTo(cxm, edge + 1.5 * close, box.x1 + 2, edge - 0.5); cx2.stroke();
+        cx2.restore();
+      });
+      tex.needsUpdate = true;
+    };
+    mat.map = tex; mat.needsUpdate = true;
+    return { geo, pose, lid };
+  };
+  const HOLD_LID = +new URLSearchParams(location.search).get("t3lid") || 0; // ?t3lid=0.6 holds the eyelids, to check them
   const people = [];
   let loaded = 0;
+  const LANDMARKS = fetch("/assets/img/team/landmarks.json").then((r) => r.json());
   FOUNDERS.forEach((f, i) => {
     const a = deg(f.angle), cx = Math.cos(a), cz = Math.sin(a);
     // Chair, facing the table.
@@ -140,11 +216,16 @@ function start() {
     // Unlit, like the photo above it, so the shirt runs on without a seam.
     const torso = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.3, 0.14), new THREE.MeshBasicMaterial({ color: f.shirt, toneMapped: false })); torso.castShadow = true; torso.position.set(0, 0.6, -0.08); body.add(torso); // behind the photo, filling down to the seat
     const photoMat = new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.03, toneMapped: false, color: 0xfffaf4, side: THREE.DoubleSide });
-    const photo = new THREE.Mesh(curved, photoMat); photo.position.set(0, 0.69 + PHOTO / 2, 0.02); body.add(photo);
-    loader.load(f.photo, (t) => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = renderer.capabilities.getMaxAnisotropy(); photoMat.map = t; photoMat.needsUpdate = true; if (++loaded === FOUNDERS.length + 1) ready(); });
+    const photo = new THREE.Mesh(new THREE.PlaneGeometry(PHOTO, PHOTO), photoMat); photo.position.set(0, 0.69 + PHOTO / 2, 0.02); body.add(photo);
+    const person = { body, photo, portrait: null, blinkAt: 1.5 + i * 1.3 + Math.random() * 2, nod: 0, yawNow: 0 };
+    const img = new Image(); img.decoding = "async"; img.src = f.photo;
+    Promise.all([img.decode(), LANDMARKS]).then(([, lm]) => {
+      person.portrait = makePortrait(img, lm[f.key], photoMat); photo.geometry.dispose(); photo.geometry = person.portrait.geo;
+      if (++loaded === FOUNDERS.length + 1) ready();
+    });
     body.position.set(cx * PERSON, 0, cz * PERSON); scene.add(body);
     cup(cx * 0.52 + cz * 0.12, cz * 0.52 - cx * 0.12, f.cup);
-    people.push({ body, photo, head: new THREE.Vector3(cx * PERSON, 1.1, cz * PERSON), base: Math.atan2(-cx, -cz) });
+    Object.assign(person, { head: new THREE.Vector3(cx * PERSON, 1.1, cz * PERSON), base: Math.atan2(-cx, -cz) }); people.push(person);
   });
 
   /* ---------- Khelu, on the table between them ---------- */
@@ -182,8 +263,12 @@ function start() {
   const WINDOWS = holds.map(([a, b]) => [(a - 0.35) / total, (b + 0.2) / total]);
 
   let active = -2;
+  const link = sec.querySelector("[data-t3-link]"), path = sec.querySelector("[data-t3-path]"), dotEl = sec.querySelector("[data-t3-dot]"), ringEl = sec.querySelector("[data-t3-ring]");
+  const draw = { v: 1 };
   const setActive = (i) => {
     if (i === active) return; active = i;
+    if (i >= 0) { people[i].nod = 1; gsap.fromTo(draw, { v: 1 }, { v: 0, duration: 0.9, delay: 0.25, ease: "power2.out" }); } else draw.v = 1;
+    sec.classList.toggle("has-link", i >= 0);
     cards.forEach((c, j) => c.classList.toggle("is-on", j === i));
     dots.forEach((d, j) => d.classList.toggle("is-on", j === i));
   };
@@ -218,7 +303,7 @@ function start() {
   let running = false, raf = 0;
   const frame = () => {
     raf = requestAnimationFrame(frame); size();
-    const t = clock.getElapsedTime();
+    const dt = Math.min(0.05, clock.getDelta()); const t = clock.elapsedTime;
     pointer.sx += (pointer.x - pointer.sx) * 0.05; pointer.sy += (pointer.y - pointer.sy) * 0.05;
     const az = deg(cam.az);
     pos.set(Math.cos(az) * cam.r, cam.h, Math.sin(az) * cam.r);
@@ -233,12 +318,33 @@ function start() {
       let d = toCam - p.base; d = Math.atan2(Math.sin(d), Math.cos(d));
       p.body.rotation.y = p.base + d * 0.88;
       p.photo.scale.y = 1 + Math.sin(t * 1.5 + i * 1.7) * 0.006; p.photo.position.y = 0.69 + (PHOTO / 2) * p.photo.scale.y;
-      p.photo.rotation.z = Math.sin(t * 0.6 + i) * 0.012;
+      if (p.portrait) {
+        // Idle: small, slow head turns and tilts. In focus: the founder turns to you and gives a small nod.
+        const focus = i === active ? 1 : 0; p.yawNow += ((focus ? -d * 0.12 : 0) - p.yawNow) * 0.05;
+        p.nod = Math.max(0, p.nod - dt * 0.9);
+        const nod = Math.sin((1 - p.nod) * Math.PI * 2) * p.nod * 0.16;
+        p.portrait.pose(Math.sin(t * 0.45 + i * 2.1) * 0.07 + Math.sin(t * 1.1 + i) * 0.02 + p.yawNow, Math.sin(t * 0.6 + i * 1.3) * 0.035 + nod, Math.sin(t * 0.38 + i) * 0.03);
+        // Blinks: every 2.5–6 s, about a sixth of a second; sometimes a double blink.
+        if (HOLD_LID) p.portrait.lid(HOLD_LID); else if (t >= p.blinkAt) { const k = (t - p.blinkAt) / 0.17; if (k >= 1) { p.portrait.lid(0); p.blinkAt = t + (Math.random() < 0.18 ? 0.25 : 2.5 + Math.random() * 3.5); } else p.portrait.lid(Math.sin(k * Math.PI)); }
+      }
     });
     khelu.lookAt(camera.position.x, khelu.position.y, camera.position.z);
     khelu.position.y = TOP + 0.153 + Math.abs(Math.sin(t * 1.6)) * 0.006;
     steams.forEach(({ s, phase }) => { const k = (t * 0.35 + phase) % 1; s.position.y = 0.09 + k * 0.22; s.position.x = Math.sin(t + phase * 6) * 0.012; s.material.opacity = Math.sin(k * Math.PI) * 0.22; s.scale.setScalar(0.025 + k * 0.045); });
     renderer.render(scene, camera);
+    if (link) { if (active >= 0) linkTo(people[active]); else link.style.setProperty("--dot", "0"); }
+  };
+  const anchor = new THREE.Vector3(), sr = { w: 0, h: 0 };
+  const linkTo = (p) => {
+    const st = sec.querySelector(".t3__stage").getBoundingClientRect(), card = cards[active].getBoundingClientRect();
+    if (sr.w !== st.width || sr.h !== st.height) { sr.w = st.width; sr.h = st.height; link.setAttribute("viewBox", `0 0 ${sr.w} ${sr.h}`); }
+    anchor.set(portrait() ? 0 : -0.19, 0.69 + PHOTO * (portrait() ? 0.32 : 0.2), 0.06); p.body.localToWorld(anchor); anchor.project(camera);
+    const ax = (anchor.x * 0.5 + 0.5) * sr.w, ay = (-anchor.y * 0.5 + 0.5) * sr.h;
+    let d;
+    if (portrait()) { const ex = card.left - st.left + card.width * 0.5, ey = card.top - st.top - 2; d = `M${ax},${ay} C${ax},${(ay + ey) / 2} ${ex},${(ay + ey) / 2} ${ex},${ey}`; }
+    else { const ex = card.right - st.left + 2, ey = card.top - st.top + 64, mx = (ax + ex) / 2; d = `M${ax},${ay} C${mx},${ay} ${mx},${ey} ${ex},${ey}`; }
+    path.setAttribute("d", d); dotEl.setAttribute("cx", ax); dotEl.setAttribute("cy", ay); ringEl.setAttribute("cx", ax); ringEl.setAttribute("cy", ay);
+    link.style.setProperty("--draw", String(draw.v)); link.style.setProperty("--dot", String(1 - draw.v));
   };
   const run = (on) => { if (on === running) return; running = on; if (on) { clock.start(); frame(); } else cancelAnimationFrame(raf); };
   new IntersectionObserver(([e]) => run(e.isIntersecting), { rootMargin: "100px" }).observe(sec);
