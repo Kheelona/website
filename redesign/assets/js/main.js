@@ -96,7 +96,8 @@
       });
     };
     wrapWords(p);
-    gsap.fromTo($$(".w", p), { opacity: 0.14 }, { opacity: 1, stagger: 0.12, ease: "none", scrollTrigger: { trigger: p, start: "top 78%", end: "bottom 42%", scrub: 0.5 } });
+    // Dimmed words exist only once the paragraph is near (start "top bottom"), so the page never ships low-contrast text at load.
+    gsap.fromTo($$(".w", p), { opacity: 0.18 }, { opacity: 1, stagger: 0.12, ease: "none", immediateRender: false, scrollTrigger: { trigger: p, start: "top bottom", end: "bottom 42%", scrub: 0.5 } });
   });
 
   /* ---------- 3 · Press: zoom into the tummy, press, glow, listen ---------- */
@@ -231,7 +232,9 @@
   })();
 
   /* ---------- 10 · Safety lines light up as they pass the centre ---------- */
-  $$("[data-safety] li").forEach((li) => ScrollTrigger.create({ trigger: li, start: "top 62%", end: "bottom 38%", toggleClass: "is-lit" }));
+  const safety = $("[data-safety]");
+  ScrollTrigger.create({ trigger: safety, start: "top bottom", onEnter: () => safety.classList.add("is-armed") });
+  $$("li", safety).forEach((li) => ScrollTrigger.create({ trigger: li, start: "top 62%", end: "bottom 38%", toggleClass: "is-lit" }));
 
   /* ---------- Films: preview on hover (or in view on touch), full film in a dialog ---------- */
   const modal = $("#modal"); const mv = $("video", modal);

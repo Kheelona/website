@@ -239,15 +239,18 @@ button { font: inherit; color: inherit; }
 .phone__screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; }
 .phone__screen img:first-child { opacity: 1; }
 .app__list { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 4px; }
-.app__item { padding: 18px 20px; border-radius: 20px; opacity: 0.4; transition: opacity 0.4s, background-color 0.4s; }
-.app__item.is-on { opacity: 1; background: #fff; box-shadow: 0 0 0 1px var(--line); }
+.app__item { padding: 18px 20px; border-radius: 20px; color: #6e6e73; transition: color 0.4s, background-color 0.4s; }
+.app__item span { color: #6e6e73; }
+.app__item.is-on { color: var(--ink); background: #fff; box-shadow: 0 0 0 1px var(--line); }
+.app__item.is-on span { color: var(--ink-2); }
 .app__item b { display: block; font: 600 19px/1.25 var(--display); }
 .app__item span { color: var(--ink-2); font-size: 16px; }
 
 /* ---------- 9 · Safety ---------- */
 .safety__lines { list-style: none; margin: 40px 0 0; padding: 0; }
-.safety__lines li { font: 650 clamp(28px, 4.6vw, 64px)/1.08 var(--display); letter-spacing: -0.03em; color: rgba(29, 29, 31, 0.16); padding: 6px 0; }
-.safety__lines li.is-lit { color: var(--ink); }
+.safety__lines li { font: 650 clamp(28px, 4.6vw, 64px)/1.08 var(--display); letter-spacing: -0.03em; color: var(--ink); padding: 6px 0; transition: color 0.5s; }
+.safety__lines.is-armed li { color: rgba(29, 29, 31, 0.16); }
+.safety__lines.is-armed li.is-lit { color: var(--ink); }
 
 /* ---------- 10 · Real families (films) ---------- */
 .films__rail { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 8px var(--gutter) 24px; margin: 40px calc(-1 * var(--gutter)) 0; scrollbar-width: none; }
