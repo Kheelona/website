@@ -6,8 +6,8 @@ import { seller } from "../seller";
 /**
  * The privacy policy, `/privacy` (task 5.11; structure §5 row privacy.html): the approved mockup
  * `mockup/pages/privacy.html` (D046) word for word, in its order, as wiki/site/pages/privacy.md words it, rendered by
- * LegalTemplate's `reference` family. A draft for the founder's approval (D029): the template shows the draft note and
- * the production build refuses the page until `status` is "approved" with the real date.
+ * LegalTemplate's `reference` family. Approved: the founder approved the drafted legal pages as final on 2026-10-22
+ * (D067, after D029), so no draft note shows and the production build accepts the page.
  *
  * - **Every measuring tool in a block of its own, never a count** (privacy.md section 5): the live page had to retire a
  *   count of its tools four times. A tool that is added or removed on the site changes this list in the same commit
@@ -53,8 +53,8 @@ export const privacyPage = {
     description: `How Kheelona handles your data and your child’s: what we collect, every tool we use, ${RETENTION_MONTHS} months for conversations, and how to opt out or delete.`,
     og: DEFAULT_OG,
   },
-  status: "draft",
-  /* "Last updated", the founder's date (D055 item 8). The page stays a draft until he signs it off (D029). */
+  status: "approved",
+  /* "Last updated", the founder's date (D055 item 8). Approved as final on 2026-10-22 (D067). */
   approvedOn: "2026-10-14",
   hero: {
     eyebrow: "Privacy policy",

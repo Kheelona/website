@@ -18,8 +18,8 @@ import { seller } from "../seller";
 /**
  * The pre-order terms, `/terms` (task 5.12; structure §5 row terms.html): the approved mockup `mockup/pages/terms.html`
  * (D046) word for word, in its order, as wiki/site/pages/terms.md words it, rendered by LegalTemplate's `reference`
- * family. A draft for the founder's approval (D029): the template shows the draft note and the production build refuses
- * the page until `status` is "approved" with the real date.
+ * family. Approved: the founder approved the drafted legal pages as final on 2026-10-22 (D067, after D029), so no draft
+ * note shows and the production build accepts the page.
  *
  * - **The offer's two modes** (terms.md "How to read this page"; G9): the mockup shows token mode; the copy page gives
  *   the full-mode words beside the lines that change, and those lines are written `{ token, full }` here, so the page
@@ -62,8 +62,8 @@ export const termsPage = {
     },
     og: DEFAULT_OG,
   },
-  status: "draft",
-  /* "Last updated", the founder's date (D055 item 8). The page stays a draft until he signs it off (D029). */
+  status: "approved",
+  /* "Last updated", the founder's date (D055 item 8). Approved as final on 2026-10-22 (D067). */
   approvedOn: "2026-10-14",
   hero: {
     eyebrow: "Terms",
@@ -353,7 +353,7 @@ export const termsPage = {
           text: "Kheelu uses AI to understand and answer your child. The AI model that writes its replies is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top. It cannot browse or search the web.",
         },
         /* Without the pre-launch test since task Q2.17: the founder ruled it not true (D066 item 6, G29); the rest of the
-           sentence stays (D065 item 8). A draft until the founder signs the legal pages (D029). */
+           sentence stays (D065 item 8). Approved as final with the legal pages (D067). */
         {
           kind: "p",
           text: "When it isn’t sure, it says it doesn’t know rather than guess. Even so, an answer can sometimes be wrong, so treat its replies as conversation, not advice. Kheelu doesn’t replace you: stay close, and read its conversations in the parent app.",

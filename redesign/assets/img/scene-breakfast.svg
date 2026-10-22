@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <linearGradient id="w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf3"/><stop offset="1" stop-color="#fdeee1"/></linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe2bd"/><stop offset="1" stop-color="#fff7ea"/></linearGradient>
+    <radialGradient id="sun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffd27a"/><stop offset=".55" stop-color="#ffd27a" stop-opacity=".55"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3d6" stop-opacity=".9"/><stop offset="1" stop-color="#fff3d6" stop-opacity="0"/></linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ead2b5"/><stop offset="1" stop-color="#dcbd98"/></linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#w)"/>
+  <!-- window -->
+  <rect x="190" y="150" width="420" height="470" rx="28" fill="#fff" />
+  <rect x="210" y="170" width="380" height="430" rx="18" fill="url(#sky)"/>
+  <circle cx="470" cy="330" r="170" fill="url(#sun)"/><circle cx="470" cy="330" r="54" fill="#ffc861"/>
+  <path d="M210 520 q90-60 180-20 t200-10 v110 H210z" fill="#f6dcc0"/>
+  <rect x="396" y="170" width="8" height="430" fill="#fff"/><rect x="210" y="380" width="380" height="8" fill="#fff"/>
+  <path d="M170 140 q40 260 -20 520 h70 q50-260 10-520z" fill="#f5d6c3"/>
+  <path d="M630 140 q-40 260 20 520 h-70 q-50-260-10-520z" fill="#f5d6c3"/>
+  <polygon points="600,200 1100,880 760,880 400,600" fill="url(#beam)" opacity=".55"/>
+  <!-- shelf with jars -->
+  <rect x="1060" y="300" width="380" height="14" rx="7" fill="#e3c7a6"/>
+  <rect x="1090" y="226" width="58" height="74" rx="14" fill="#f7e4cf"/><rect x="1098" y="214" width="42" height="16" rx="6" fill="#e9b98c"/>
+  <rect x="1168" y="246" width="50" height="54" rx="12" fill="#e7efe3"/><rect x="1176" y="236" width="34" height="14" rx="5" fill="#a9c9a0"/>
+  <circle cx="1290" cy="268" r="32" fill="#cfe4f2"/><path d="M1350 300 q10-90 40-100 q30 10 40 100z" fill="#b8d6a8"/>
+  <!-- table -->
+  <rect x="0" y="820" width="1600" height="34" fill="url(#wood)"/>
+  <rect x="0" y="854" width="1600" height="146" fill="#d7b48d"/>
+  <rect x="0" y="854" width="1600" height="10" fill="#c9a37a" opacity=".5"/>
+  <!-- plate + toast -->
+  <ellipse cx="470" cy="822" rx="150" ry="22" fill="#fff"/><ellipse cx="470" cy="818" rx="118" ry="14" fill="#f4efe8"/>
+  <rect x="400" y="752" width="120" height="70" rx="22" fill="#e7b16f"/><rect x="412" y="764" width="96" height="50" rx="16" fill="#f2c98f"/>
+  <!-- cup + steam -->
+  <rect x="1090" y="730" width="100" height="92" rx="20" fill="#fff"/><path d="M1190 752 q44 0 44 30 t-44 30" fill="none" stroke="#fff" stroke-width="14"/>
+  <path class="steam" d="M1120 700 q-16-30 0-60 t0-60" fill="none" stroke="#e9d9c8" stroke-width="7" stroke-linecap="round"/>
+  <path class="steam" d="M1160 700 q16-30 0-60 t0-60" fill="none" stroke="#e9d9c8" stroke-width="7" stroke-linecap="round"/>
+  <!-- fruit bowl -->
+  <path d="M1270 822 h170 q-10 70 -85 70 t-85-70z" fill="#cfe1ef"/>
+  <circle cx="1320" cy="804" r="28" fill="#ff9f7a"/><circle cx="1372" cy="800" r="30" fill="#ffd36e"/><circle cx="1350" cy="776" r="24" fill="#9fd08f"/>
+</svg>

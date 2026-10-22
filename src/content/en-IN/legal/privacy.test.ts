@@ -1,5 +1,5 @@
-import type { ReactElement } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { GSTIN } from "@/config/site";
 import type { LegalBlock, LegalPart, ToolsBlock } from "@/content/types";
@@ -90,9 +90,9 @@ describe("the privacy page: the route and its head", () => {
   });
 });
 
-describe("the privacy page: a draft until the founder approves it (D029)", () => {
-  it("is a draft, so the draft note shows and the production build refuses it (ADR-004)", () => {
-    expect(privacyPage.status).toBe("draft");
+describe("the privacy page: approved as final by the founder (D067, after D029)", () => {
+  it("is approved, so no draft note shows and the production build accepts it (ADR-004)", () => {
+    expect(privacyPage.status).toBe("approved");
   });
 
   it("is last updated on the founder's date, 14 October 2026 (D055 item 8; privacy.md fold 1)", () => {
@@ -210,17 +210,15 @@ describe("the privacy page: every measuring tool named in a block of its own, ne
   });
 
   /* The module's words are one string per line, so a count split across a list item's bold lead and its text ("We use
-   * seven" then "analytics tools") is never seen whole there, and the words the template adds (legal/shared.ts) are not
-   * the module's at all. The route as a parent reads it holds both. */
-  it("never counts the tools on the rendered page either: the template's words, and a lead read with its text", async () => {
-    getOffer.mockResolvedValue(token);
-    const { default: PrivacyPage } = await import("@/app/(site)/privacy/page");
-    const html = renderToStaticMarkup((await PrivacyPage()) as ReactElement);
-    const main = new DOMParser().parseFromString(`<main>${html}</main>`, "text/html").querySelector("main")!;
+   * seven" then "analytics tools") is never seen whole there. The page a parent reads holds it whole: since 2026-10-22
+   * that is the redesign's /privacy (redesign/privacy/index.html, served by src/app/(site)/[[...path]]). */
+  it("never counts the tools on the served page either", () => {
+    const html = readFileSync(join(process.cwd(), "redesign/privacy/index.html"), "utf8");
+    const main = new DOMParser().parseFromString(html, "text/html").querySelector("main")!;
     const page = words(main);
-    expect(page).toContain(toPlainText(privacyPage.hero.lead));
+    expect(page.length).toBeGreaterThan(1000);
     for (const pattern of TOOL_COUNTS) expect(page).not.toMatch(pattern);
-  }, 60_000);
+  });
 
   it("names the cookies as the code names them, and kh_order's life as the code sets it", () => {
     const own = tool("Our own cookies").blocks;

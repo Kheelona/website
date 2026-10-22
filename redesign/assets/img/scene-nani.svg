@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <linearGradient id="w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6ee"/><stop offset="1" stop-color="#fde7d9"/></linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffd27a" stop-opacity=".9"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient>
+    <linearGradient id="sofa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4c6ad"/><stop offset="1" stop-color="#e9b296"/></linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#w)"/>
+  <!-- string lights -->
+  <path d="M0 120 q200 90 400 0 t400 0 t400 0 t400 0" fill="none" stroke="#e7c8b0" stroke-width="3"/>
+  <g class="twinkle" fill="#ffc861"><circle cx="100" cy="150" r="9"/><circle cx="200" cy="165" r="9"/><circle cx="300" cy="150" r="9"/><circle cx="500" cy="150" r="9"/><circle cx="600" cy="165" r="9"/><circle cx="700" cy="150" r="9"/><circle cx="900" cy="150" r="9"/><circle cx="1000" cy="165" r="9"/><circle cx="1100" cy="150" r="9"/><circle cx="1300" cy="150" r="9"/><circle cx="1400" cy="165" r="9"/><circle cx="1500" cy="150" r="9"/></g>
+  <!-- frames -->
+  <rect x="250" y="250" width="170" height="210" rx="16" fill="#fff"/><rect x="266" y="266" width="138" height="178" rx="10" fill="#f7dccb"/><circle cx="335" cy="330" r="34" fill="#efc2a6"/><rect x="290" y="380" width="90" height="50" rx="25" fill="#efc2a6"/>
+  <rect x="450" y="290" width="140" height="140" rx="16" fill="#fff"/><rect x="464" y="304" width="112" height="112" rx="10" fill="#e3effa"/><path d="M470 410 l40-50 30 30 20-20 16 40z" fill="#b8d6a8"/>
+  <!-- sofa behind -->
+  <rect x="140" y="560" width="1320" height="200" rx="80" fill="url(#sofa)"/>
+  <rect x="220" y="610" width="560" height="150" rx="50" fill="#f6d2bd"/><rect x="820" y="610" width="560" height="150" rx="50" fill="#f6d2bd"/>
+  <rect x="300" y="580" width="150" height="110" rx="36" fill="#ffe3a6" transform="rotate(-8 375 635)"/><rect x="1150" y="580" width="150" height="110" rx="36" fill="#cfe4f2" transform="rotate(8 1225 635)"/>
+  <!-- low table + rug -->
+  <ellipse cx="800" cy="960" rx="760" ry="90" fill="#f3d5c2"/>
+  <rect x="460" y="820" width="680" height="34" rx="17" fill="#d9a983"/><rect x="500" y="854" width="20" height="90" fill="#c99671"/><rect x="1080" y="854" width="20" height="90" fill="#c99671"/>
+  <!-- diya -->
+  <circle cx="1040" cy="790" r="60" fill="url(#glow)"/>
+  <path d="M1006 812 q34 22 68 0 q-6 14-34 14 t-34-14z" fill="#e08f55"/><path d="M1040 800 q-12-18 0-36 q12 18 0 36z" fill="#ffbf4a"/>
+  <!-- storybook -->
+  <path d="M560 820 l80-24 80 24 v-6 l-80-24 -80 24z" fill="#fff"/><path d="M560 820 l80-24 80 24" fill="none" stroke="#b6a6ee" stroke-width="5"/>
+</svg>

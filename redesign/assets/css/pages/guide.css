@@ -1,0 +1,114 @@
+/* /ai-toys-for-kids-in-india — the buyer's guide: a long read (.doc + sticky .toc + .prose, .readbar progress),
+   the five checks as designed cards, Khelu's answers as a comparison table, plush or robot, the FAQ, the close. */
+
+/* ---------- Hero ---------- */
+.gd-hero { padding-bottom: clamp(2rem, 5vw, 3.5rem); }
+.gd-hero .display { font-size: clamp(2.375rem, 5.2vw, 4.5rem); }
+.gd-hero__visual { min-height: 22rem; }
+.gd-hero__visual .kheelu { --kw: min(46vw, 17.5rem); z-index: 1; }
+.gd-q { position: absolute; font: 700 clamp(3rem, 7vw, 5.5rem)/1 var(--display); color: var(--ink); opacity: 0.08; pointer-events: none; }
+.gd-q--1 { left: 10%; top: 4%; transform: rotate(-14deg); } .gd-q--2 { right: 8%; top: 18%; transform: rotate(12deg); font-size: clamp(2.25rem, 5vw, 4rem); } .gd-q--3 { left: 18%; bottom: 14%; transform: rotate(8deg); font-size: clamp(2rem, 4vw, 3rem); }
+.motion .gd-q { animation: gd-bob 6s ease-in-out infinite alternate; }
+.motion .gd-q--2 { animation-delay: -2s; } .motion .gd-q--3 { animation-delay: -4s; }
+@keyframes gd-bob { to { translate: 0 -0.75rem; } }
+.gd-ticks { position: absolute; z-index: 2; left: 50%; bottom: -0.5rem; transform: translateX(-50%); display: flex; gap: 0.375rem; list-style: none; margin: 0; padding: 0.375rem; border-radius: 999px; background: rgba(255, 255, 255, 0.85); box-shadow: 0 0 0 1px var(--line), 0 1rem 2rem -1.25rem rgba(0, 0, 0, 0.35); }
+.gd-ticks li { width: 2.25rem; height: 2.25rem; border-radius: 50%; display: grid; place-items: center; background: var(--tint); font: 650 0.9375rem/1 var(--display); color: var(--ink); }
+.motion .gd-ticks li { animation: gd-tick 5s ease-in-out infinite; }
+.motion .gd-ticks li:nth-child(2) { animation-delay: 0.25s; } .motion .gd-ticks li:nth-child(3) { animation-delay: 0.5s; } .motion .gd-ticks li:nth-child(4) { animation-delay: 0.75s; } .motion .gd-ticks li:nth-child(5) { animation-delay: 1s; }
+@keyframes gd-tick { 0%, 30%, 100% { transform: none; } 15% { transform: translateY(-0.375rem) scale(1.08); } }
+.gd-ticks--done { bottom: -1rem; }
+.gd-ticks--done li { color: var(--green); font-size: 1rem; }
+
+/* ---------- The long read ---------- */
+.gd-body { padding-top: clamp(1.5rem, 4vw, 3rem); }
+.gd-prose { max-width: 48rem; }
+.gd-sec + .gd-sec { margin-top: clamp(3.5rem, 7vw, 5.5rem); }
+.gd-sec .eyebrow { margin-bottom: 0.5rem; }
+.prose .gd-sec .eyebrow + h2 { margin-top: 0; }
+.gd-prose h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.12; text-wrap: balance; }
+.gd-prose .link { color: #0066cc; text-decoration: none; }
+.gd-prose .link:hover { text-decoration: underline; }
+
+/* The five checks as cards */
+.prose .gd-checks { list-style: none; padding: 0; margin-top: 1.5rem; display: grid; gap: 0.75rem; counter-reset: chk; }
+.prose .gd-checks li { position: relative; display: flex; gap: 1.125rem; align-items: flex-start; margin: 0; padding: 1.25rem 1.375rem 1.25rem 1.25rem; border-radius: 1.5rem; background: linear-gradient(110deg, var(--tint), #fff 72%); box-shadow: 0 0 0 1px var(--line); counter-increment: chk; transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out); }
+.prose .gd-checks li:hover { transform: translateY(-0.1875rem); box-shadow: 0 0 0 1px var(--line), 0 1.25rem 2.5rem -2rem rgba(0, 0, 0, 0.45); }
+.prose .gd-checks li::after { content: counter(chk); position: absolute; right: 1.25rem; top: 0.875rem; font: 700 2.25rem/1 var(--display); color: var(--ink); opacity: 0.08; }
+.gd-checks__n { flex: none; width: 3rem; height: 3rem; border-radius: 1rem; display: grid; place-items: center; background: #fff; box-shadow: 0 0 0 1px var(--line); }
+.gd-checks__n svg { width: 1.5rem; height: 1.5rem; fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.prose .gd-checks h3 { margin: 0.125rem 2rem 0 0; font-size: 1.1875rem; color: var(--ink); }
+.prose .gd-checks p { margin: 0.375rem 0 0; font-size: 1rem; line-height: 1.55; }
+
+/* Khelu's answers as a comparison table */
+.gd-table { margin-top: 1.5rem; background: #fff; }
+.gd-table table { min-width: 34rem; }
+.gd-table thead th { padding: 0.875rem 1.125rem; font: 600 0.8125rem/1.2 var(--text); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+.gd-table tbody th { width: 34%; padding: 1rem 1.125rem; background: #fff; font: 600 1rem/1.35 var(--display); color: var(--ink); }
+.gd-table td { padding: 1rem 1.125rem; color: var(--ink-2); line-height: 1.55; }
+.gd-table tbody tr:last-child > * { border-bottom: 0; }
+.gd-table tbody tr { transition: background-color 0.3s; }
+.gd-table tbody tr:hover { background: #fbfbfd; }
+.gd-dot { display: inline-grid; place-items: center; width: 1.625rem; height: 1.625rem; margin-right: 0.625rem; border-radius: 50%; background: var(--tint); font: 650 0.8125rem/1 var(--display); vertical-align: 0.0625rem; }
+
+.gd-buy { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem 1.75rem; margin-top: 1.75rem !important; padding: 1.5rem; border-radius: var(--radius); background: linear-gradient(120deg, #fff7ee, #f3f0fd); box-shadow: 0 0 0 1px var(--line); }
+.gd-buy__art { flex: none; width: 4.5rem; }
+.gd-buy__art img { width: 100%; height: auto; filter: drop-shadow(0 1rem 1rem rgba(60, 40, 20, 0.18)); }
+.prose .gd-buy .price-line { margin: 0.75rem 0 0; color: var(--ink); }
+.prose .gd-buy .trust { padding: 0; margin-top: 0.375rem; }
+.prose .gd-buy .trust li { margin: 0; color: var(--ink-2); font-size: 0.875rem; }
+.trust a { color: inherit; text-underline-offset: 0.2em; }
+
+/* Plush or robot */
+.gd-plush__grid { display: grid; gap: 1.5rem; align-items: center; }
+@media (min-width: 700px) { .gd-plush__grid { grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr); gap: 2rem; } }
+.gd-plush__grid > div > * + * { margin-top: 1rem; }
+.gd-plush__art { position: relative; margin: 0 !important; display: grid; place-items: center; min-height: 15rem; perspective: 62rem; }
+.gd-plush__art .kheelu { --kw: min(44vw, 11.5rem); }
+.gd-plush__sun { position: absolute; width: min(56vw, 13rem); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(closest-side, var(--p-butter), rgba(255, 241, 196, 0)); }
+.motion .gd-plush__sun { animation: gd-sun 5s ease-in-out infinite alternate; }
+@keyframes gd-sun { to { transform: scale(1.12); } }
+
+/* Questions */
+.gd-photo { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: 50% 45%; border-radius: var(--radius); margin-top: 1.5rem !important; box-shadow: 0 2rem 4rem -3rem rgba(60, 40, 20, 0.55); }
+.gd-faq { margin-top: 1.25rem !important; }
+.prose .gd-faq summary { font-size: 1.0625rem; }
+.prose .gd-faq details p { font-size: 1rem; line-height: 1.6; }
+.gd-faq a { color: #0a5bb5; }
+.gd-faq sup { line-height: 0; }
+.gd-faq sup a { text-decoration: none; font-weight: 600; padding: 0 0.0625rem; }
+.gd-sources { padding: 1rem 1.25rem; border-radius: 1.25rem; background: var(--bg-soft); font-size: 0.8125rem; line-height: 1.5; }
+.prose .gd-sources__label { margin: 0 0 0.375rem; font-weight: 600; color: var(--ink); }
+.prose .gd-sources ol { margin: 0; padding-left: 1.25rem; }
+.prose .gd-sources li { margin: 0; }
+.prose .gd-sources li + li { margin-top: 0.375rem; }
+.gd-sources li:target { background: var(--p-butter); border-radius: 0.375rem; }
+
+@media (max-width: 999px) {
+  .gd-body .toc { padding: 0.75rem; }
+  .gd-body .toc ol { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+  .gd-body .toc a { background: #fff; box-shadow: 0 0 0 1px var(--line); border-radius: 999px; padding: 0.5rem 0.875rem; }
+}
+@media (max-width: 599px) {
+  .gd-hero__visual { min-height: 17rem; }
+  .gd-hero__visual .kheelu { --kw: min(44vw, 11rem); }
+  .gd-ticks li { width: 1.875rem; height: 1.875rem; font-size: 0.8125rem; }
+  .prose .gd-checks li { padding: 1rem; gap: 0.875rem; }
+  .gd-checks__n { width: 2.5rem; height: 2.5rem; border-radius: 0.875rem; }
+  .gd-table table { min-width: 0; }
+  .gd-table thead { display: none; }
+  .gd-table tr, .gd-table tbody th, .gd-table td { display: block; width: auto; }
+  .gd-table tbody th { padding: 1rem 1rem 0.25rem; border-bottom: 0; }
+  .gd-table td { padding: 0 1rem 1rem 3.25rem; }
+  .gd-table tbody tr + tr { border-top: 1px solid var(--line); }
+  .gd-table tbody tr > * { border-bottom: 0; }
+  .gd-buy { padding: 1.125rem; }
+  .gd-buy__art { display: none; }
+  .gd-buy .btn { width: 100%; }
+  .closer__art { min-height: 13rem; }
+  .closer__art .kheelu { --kw: min(40vw, 9.5rem); }
+}
+
+/* Buttons inside the long read keep their own colours; sections are the scrollspy targets */
+.prose .btn { text-decoration: none; }
+.prose .btn--primary { color: #fff; }
+.gd-sec { scroll-margin-top: 6rem; }

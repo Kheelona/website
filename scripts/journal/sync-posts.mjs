@@ -67,8 +67,11 @@ export const REGISTRY = "src/content/en-IN/stories/journal.ts";
 /** What the gate needs from the rest of the repo (src/lib/journal/validate.ts imports nothing). */
 export const RULES = Object.freeze({ themes: topics.map((t) => t.title), imagesBase: JOURNAL_IMAGES, findBanned });
 
-/** A post's page, by URL path in the prerendered output (scripts/prerendered.mjs: either of Next's layouts). */
+/** A post's page, by URL path in the prerendered output (scripts/prerendered.mjs: either of Next's layouts): a
+ *  prerendered page (.html), or, since the redesign is served by a route handler (2026-10-22,
+ *  src/app/(site)/[[...path]]), a prerendered route body (.body). */
 const pagePath = (slug) => `stories/${slug}.html`;
+const pageBodyPath = (slug) => `stories/${slug}.body`;
 const ROUTES_MANIFEST = join(".next", "routes-manifest.json");
 const USAGE = "usage: node scripts/journal/sync-posts.mjs [--check | --split <dir> | --pages] [--root <dir>]";
 
@@ -292,7 +295,7 @@ function checkPages(root, out) {
     } else expected.push(post.slug);
   }
   const missing = expected.filter((slug) => {
-    const page = prerenderedFile(root, pagePath(slug));
+    const page = prerenderedFile(root, pagePath(slug)) ?? prerenderedFile(root, pageBodyPath(slug));
     return !page || statSync(page).size === 0;
   });
   if (missing.length) {

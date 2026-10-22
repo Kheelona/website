@@ -1,0 +1,137 @@
+/* Team page: founders orbit Khelu, cards turn over, a map of who builds which part of Khelu. */
+
+/* ---------- 1 · Three founders at one table (WebGL; team3d.js) ---------- */
+.t3 { position: relative; height: 560vh; background: #f7f2ec; }
+.t3__stage { position: sticky; top: 0; height: calc(100svh - var(--bar)); overflow: hidden; }
+.t3__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 1.2s var(--ease-out); }
+.t3.is-ready .t3__canvas { opacity: 1; }
+/* A still of the scene (tools/bake-team3d.mjs) shows until the 3D has loaded, then the canvas fades in over it. */
+.t3__poster { position: absolute; inset: 0; display: block; }
+.t3__poster img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 50%; }
+.t3__stage:has(.t3__poster) .t3__loading { display: none; }
+.t3__veil { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(247, 242, 236, 0.92) 0%, rgba(247, 242, 236, 0.55) 34%, rgba(247, 242, 236, 0) 60%); opacity: var(--veil, 1); }
+.t3__intro { position: absolute; left: 0; right: 0; top: clamp(5.5rem, 13vh, 8rem); z-index: 3; }
+.t3__intro > * { max-width: 34rem; }
+.t3__intro .lead { margin-top: 1.25rem; }
+.t3__hint { display: inline-flex; align-items: center; gap: 0.625rem; margin-top: 1.75rem; font: 600 0.875rem/1 var(--text); color: var(--ink-2); }
+.t3__mouse { position: relative; width: 1.25rem; height: 1.875rem; border-radius: 0.75rem; border: 2px solid var(--ink-2); }
+.t3__mouse::after { content: ""; position: absolute; left: 50%; top: 0.3125rem; width: 0.1875rem; height: 0.375rem; margin-left: -0.09375rem; border-radius: 0.125rem; background: var(--ink-2); animation: wheel 1.8s ease-in-out infinite; }
+@keyframes wheel { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(0.5rem); } }
+.t3__cards { position: absolute; z-index: 4; left: max(var(--gutter), calc((100% - var(--max)) / 2)); top: 50%; translate: 0 -50%; width: min(26rem, 100% - 2 * var(--gutter)); display: grid; }
+.t3card { grid-area: 1 / 1; padding: 1.375rem 1.5rem 1.5rem; border-radius: var(--radius-lg); background: rgba(255, 255, 255, 0.86); -webkit-backdrop-filter: saturate(160%) blur(1.25rem); backdrop-filter: saturate(160%) blur(1.25rem); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8), 0 2rem 4rem -2.5rem rgba(60, 40, 20, 0.45); opacity: 0; visibility: hidden; transform: translateY(1.5rem) scale(0.97); transition: opacity 0.6s var(--ease-out), transform 0.7s var(--ease-out), visibility 0.6s; }
+.t3card.is-on { opacity: 1; visibility: visible; transform: none; }
+.t3card::before { content: ""; position: absolute; left: 1.5rem; right: 1.5rem; top: 0; height: 0.25rem; border-radius: 0 0 0.25rem 0.25rem; background: var(--tint); }
+.t3card__top { display: flex; align-items: center; gap: 0.875rem; }
+.t3card__pic { flex: none; position: relative; width: 6rem; height: 6rem; border-radius: 1.5rem; overflow: hidden; background: radial-gradient(circle at 50% 35%, #fff 0%, var(--tint) 70%); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04); }
+.t3card__pic img { position: absolute; left: 50%; top: -4%; width: 150%; height: auto; max-width: none; translate: -50% 0; transition: transform 0.9s var(--ease-out); }
+.t3card.is-on .t3card__pic img { animation: picIn 0.9s var(--ease-out) both; }
+@keyframes picIn { from { transform: translateY(12%) scale(0.92); opacity: 0; } to { transform: none; opacity: 1; } }
+/* The line from the founder in the scene to their box (team3d.js draws it every frame) */
+.t3__link { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.t3__link path { fill: none; stroke: var(--ink); stroke-width: 1.75; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: var(--draw, 1); opacity: 0.75; }
+.t3__dot { fill: #fff; stroke: var(--ink); stroke-width: 2; opacity: var(--dot, 0); }
+.t3__ring { fill: none; stroke: var(--ink); stroke-width: 1.5; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.t3.has-link .t3__ring { animation: ring 1.8s ease-out infinite; }
+@keyframes ring { 0% { opacity: 0.55; transform: scale(0.5); } 100% { opacity: 0; transform: scale(1.6); } }
+.t3card__part { margin: 0; font: 600 0.75rem/1 var(--text); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+.t3card__name { margin: 0.3125rem 0 0; font: 650 1.625rem/1.1 var(--display); letter-spacing: -0.007em; }
+.t3card__role { margin: 0.25rem 0 0; font: 600 0.875rem/1.3 var(--text); color: var(--ink-2); }
+.t3card__body { margin: 1rem 0 0; font-size: 1rem; line-height: 1.55; color: var(--ink); }
+.t3card__label { margin: 1rem 0 0; font: 600 0.75rem/1 var(--text); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.t3card__bio { margin: 0.375rem 0 0; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
+.t3card__in { display: inline-flex; gap: 0.375rem; margin-top: 1rem; font-weight: 600; font-size: 0.9375rem; color: #0a5bb5; text-decoration: none; }
+.t3card__in:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+.t3__dots { position: absolute; z-index: 5; left: 50%; bottom: 1rem; translate: -50% 0; display: flex; gap: 0.375rem; padding: 0.375rem; border-radius: 999px; background: rgba(255, 255, 255, 0.85); -webkit-backdrop-filter: blur(0.75rem); backdrop-filter: blur(0.75rem); box-shadow: 0 0 0 1px var(--line), 0 0.75rem 1.5rem -1rem rgba(0, 0, 0, 0.3); }
+.t3__dots button { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.25rem 0.875rem 0.25rem 0.25rem; border: 0; border-radius: 999px; background: transparent; font: 600 0.875rem/1 var(--text); color: var(--ink-2); cursor: pointer; transition: background-color 0.35s, color 0.35s; }
+.t3__dots img { width: 2rem; height: 2rem; border-radius: 50%; object-fit: cover; background: var(--tint); }
+.t3__dots button.is-on { background: var(--tint); color: var(--ink); }
+.t3__loading { position: absolute; left: 50%; top: 50%; translate: -50% -50%; display: flex; gap: 0.375rem; margin: 0; transition: opacity 0.4s; }
+.t3__loading i { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--ink-3); animation: typing 1s infinite; }
+.t3__loading i:nth-child(2) { animation-delay: 0.15s; } .t3__loading i:nth-child(3) { animation-delay: 0.3s; }
+.t3.is-ready .t3__loading { opacity: 0; }
+@media (max-width: 899px) {
+  .t3__veil { background: linear-gradient(rgba(247, 242, 236, 0.94) 0%, rgba(247, 242, 236, 0.6) 38%, rgba(247, 242, 236, 0) 62%); }
+  .t3__intro { top: 4.75rem; text-align: center; } .t3__intro > * { margin-inline: auto; }
+  .t3__intro .display { font-size: 2.375rem; } .t3__intro .lead { font-size: 1rem; margin-top: 0.75rem; }
+  .t3__hint { margin-top: 1rem; }
+  .t3__cards { top: auto; bottom: 4.25rem; translate: 0 0; left: var(--gutter); width: calc(100% - 2 * var(--gutter)); }
+  .t3card { padding: 1rem 1.125rem 1.125rem; }
+  .t3card__pic { width: 4.25rem; height: 4.25rem; border-radius: 1.125rem; } .t3card__name { font-size: 1.3125rem; }
+  .t3card__body { font-size: 0.9375rem; margin-top: 0.625rem; } .t3card__label { margin-top: 0.625rem; } .t3card__bio { font-size: 0.875rem; } .t3card__in { margin-top: 0.625rem; }
+  /* The name stays for screen readers (button-name), only visually hidden. */
+  .t3__dots button span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } .t3__dots button { padding: 0.25rem; }
+  .t3__dots { top: 4.75rem; bottom: auto; }
+  .t3__intro { top: 8rem; }
+  .t3__cards { bottom: 3.75rem; }
+  /* The whole background shows (it was cut at 3 lines: "…from a bla…"); only a very short screen clamps it. */
+  .t3card__bio { font-size: 0.8125rem; line-height: 1.45; }
+}
+@media (max-width: 899px) and (max-height: 599px) { .t3card__bio { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; } }
+/* No WebGL, or reduced motion: the scene folds away and the founder cards below carry the same words. */
+.t3.t3-off { height: auto; }
+.t3.t3-off .t3__stage { position: relative; height: auto; padding: clamp(7rem, 14vh, 9rem) 0 2rem; }
+.t3.t3-off .t3__intro { position: static; }
+.t3.t3-off .t3__canvas, .t3.t3-off .t3__poster, .t3.t3-off .t3__veil, .t3.t3-off .t3__cards, .t3.t3-off .t3__dots, .t3.t3-off .t3__loading, .t3.t3-off .t3__hint { display: none; }
+.t3-live [data-t3-fallback] { display: none; }
+
+/* ---------- Founder cards that turn over ---------- */
+.th-cards { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+.fcard { perspective: 80rem; }
+.fcard__inner { position: relative; display: grid; height: 100%; transform-style: preserve-3d; transition: transform 0.9s cubic-bezier(0.3, 1.25, 0.4, 1); }
+.fcard.is-turned .fcard__inner { transform: rotateY(180deg); }
+.fcard__face { grid-area: 1 / 1; display: flex; flex-direction: column; padding: 1rem 1rem 1.25rem; border-radius: var(--radius-lg); background: #fff; box-shadow: 0 0 0 1px var(--line), 0 1.5rem 3rem -2.25rem rgba(40, 30, 20, 0.5); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+.fcard__back { transform: rotateY(180deg); justify-content: center; padding: 2rem 1.75rem; background: var(--tint); }
+.fcard__photo { position: relative; border-radius: calc(var(--radius-lg) - 0.625rem); overflow: hidden; background: var(--tint); aspect-ratio: 1 / 0.92; }
+.fcard__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; transition: transform 0.9s var(--ease-out); }
+.fcard:hover .fcard__photo img { transform: scale(1.05); }
+.fcard__chip { position: absolute; left: 0.75rem; bottom: 0.75rem; display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.4375rem 0.75rem 0.4375rem 0.5rem; border-radius: 999px; background: rgba(255, 255, 255, 0.92); font: 600 0.8125rem/1 var(--text); box-shadow: 0 0.5rem 1rem -0.75rem rgba(0, 0, 0, 0.4); }
+.fcard__chip svg { width: 1rem; height: 1rem; fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#apoorva-sahu .fcard__chip svg { fill: #f59ab8; stroke: none; }
+.fcard__name { margin: 1.125rem 0.375rem 0; font: 650 1.5rem/1.15 var(--display); letter-spacing: -0.007em; }
+.fcard__role { margin: 0.25rem 0.375rem 0; font: 600 0.875rem/1.3 var(--text); color: var(--ink-3); }
+.fcard__body { margin: 0.75rem 0.375rem 0; font-size: 0.9375rem; line-height: 1.55; color: var(--ink-2); flex: 1; }
+.fcard__turn { align-self: flex-start; display: inline-flex; align-items: center; gap: 0.375rem; margin: 1rem 0.375rem 0; min-height: 2.5rem; padding: 0 1rem; border: 0; border-radius: 999px; background: var(--bg-soft); font: 600 0.875rem/1 var(--text); color: var(--ink); cursor: pointer; transition: background-color 0.3s, transform 0.3s var(--ease-out); }
+.fcard__turn:hover { background: var(--tint); transform: translateY(-0.125rem); }
+.fcard__turn span { display: inline-block; transition: transform 0.6s var(--ease-out); }
+.fcard__turn:hover span { transform: rotate(180deg); }
+.fcard__back .fcard__turn { background: rgba(255, 255, 255, 0.8); margin: 1.5rem 0 0; }
+.fcard__kicker { margin: 0; font: 600 0.75rem/1.2 var(--text); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+.fcard__bio { margin: 0.875rem 0 0; font: 500 clamp(1.125rem, 1.6vw, 1.3125rem)/1.45 var(--display); letter-spacing: -0.003em; color: var(--ink); }
+.fcard__in { display: inline-flex; gap: 0.375rem; margin-top: 1.25rem; font-weight: 600; color: #0a5bb5; text-decoration: none; }
+.fcard__in:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+.reduced .fcard__inner, .no-js .fcard__inner { transition: none; }
+
+/* ---------- Why ---------- */
+/* With the 3D table live, the founders section between them is hidden, so pages.css's ".page-sec + .page-sec" rule
+   would leave "Why" with no top padding against the table: give it the site's section rhythm (as .page-sec). */
+.t3-live .page-sec.th-why:not(.page-sec--soft) { padding-top: clamp(3.5rem, 8vw, 6rem); }
+.th-why__grid { display: grid; gap: 2rem; align-items: center; }
+@media (min-width: 900px) { .th-why__grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 4rem; } }
+.th-why__lines { display: grid; gap: 1rem; margin-top: 1.5rem; max-width: 36rem; }
+.th-why__lines p { margin: 0; font-size: clamp(1.0625rem, 1.4vw, 1.1875rem); line-height: 1.55; color: var(--ink-2); }
+.th-why__lines p:first-child { color: var(--ink); font-weight: 500; }
+.th-nos { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; margin: 1.5rem 0 0; padding: 0; }
+.th-nos li { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.625rem 1rem 0.625rem 0.75rem; border-radius: 999px; background: var(--bg-soft); font: 600 0.9375rem/1 var(--text); }
+.th-nos svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: var(--ink); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.th-nos .x { stroke: #c8322c; stroke-width: 2; stroke-dasharray: 26; stroke-dashoffset: 0; }
+.motion .th-nos .x { stroke-dashoffset: 26; transition: stroke-dashoffset 0.7s var(--ease-out) 0.4s; }
+.motion .th-nos.is-in .x { stroke-dashoffset: 0; }
+.th-quote { justify-self: center; max-width: 30rem; }
+
+/* ---------- Recognised by ---------- */
+.th-rec__row { margin-top: 1.75rem; }
+
+/* Phones: the founder cards become a swipeable row */
+@media (max-width: 699px) {
+  .th-cards { display: flex; gap: 0.875rem; margin: 0 calc(-1 * var(--gutter)); padding: 0.5rem var(--gutter) 1.25rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .th-cards::-webkit-scrollbar { display: none; }
+  .fcard { flex: 0 0 82%; scroll-snap-align: center; }
+  .fcard__photo { aspect-ratio: 1 / 0.8; }
+  .th-map__stage .kheelu { --kw: min(64vw, 16rem); }
+  .th-map__say { min-height: 6rem; }
+}
+
+/* Phones and tablets: no backdrop blur over the live 3D canvas (it would be re-blurred on every frame). */
+@media (hover: none), (pointer: coarse), (max-width: 899px) {
+  .t3card, .t3__dots { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(255, 255, 255, 0.95); }
+}

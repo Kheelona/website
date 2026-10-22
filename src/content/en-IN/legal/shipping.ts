@@ -11,8 +11,8 @@ import { seller } from "../seller";
  * word for word, as wiki/site/pages/shipping.md words it after the legal review; rendered by LegalTemplate's notice
  * family (refund and shipping) from `src/app/(site)/shipping/page.tsx`.
  *
- * - A draft until the founder approves it after the independent review (D029): the draft note shows and the production
- *   build refuses the page (ADR-004). "Last updated" is the founder's date (D055 item 8; task 6.7).
+ * - Approved as final by the founder on 2026-10-22 (D067, after D029): no draft note shows and the production build
+ *   accepts the page (ADR-004). "Last updated" is the founder's date (D055 item 8; task 6.7).
  * - The delivery line is the one delivery value (D023): `{delivery}` in the page, and the meta description's words built
  *   from the same `DELIVERY_TEXT` (shipping.md "Notes for the build"). Never an arrival date, a transit time or the
  *   schema date (D022, D037).
@@ -42,8 +42,8 @@ export const shippingPage = {
     description: `Kheelu delivery and shipping in India: ${deliveryInSentence}, delivery is included anywhere in India, and you get tracking at dispatch.`,
     og: DEFAULT_OG,
   },
-  status: "draft",
-  /* "Last updated", the founder's date (D055 item 8; task 6.7). The page stays a draft until he signs it off (D029). */
+  status: "approved",
+  /* "Last updated", the founder's date (D055 item 8; task 6.7). Approved as final on 2026-10-22 (D067). */
   approvedOn: "2026-10-14",
   /* Fold 0 and 1. Kheelu's note: the live line, founder-approved 2026-08-22; the board shows from 900 px only, so on
    * phones the short version starts in the first screen (legal review, should-fix 6). */

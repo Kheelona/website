@@ -1420,3 +1420,8 @@ Home (where `#hero-cta` is the Pre-order button); `/contact` unchanged. Deviatio
 folds and consistency), V67 (layout and chrome), V68 (D066); D050 notes the change. Known for the final pass: the product
 page's visual parity is red at 360/390/1440 (the offer fold's composition changed in Q2.15; re-based on the approved beta,
 D062).
+
+## [2026-10-22 13:30] decision | D067: the founder approved the drafted legal pages as final
+Privacy, terms, refund and shipping are `status: "approved"` in `src/content/en-IN/legal/` (words unchanged, "Last
+updated" 14 October 2026); the draft notes are gone from the redesign's legal page sources, `tools/import-legal.py` and
+`pages/_shell/facts.json`. The production prebuild's placeholder guard (step 30) no longer stops on the legal pages.

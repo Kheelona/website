@@ -1,12 +1,9 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import type { ReactElement } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { purchasePayload } from "@/lib/store/meta-capi";
 import { replayAllowedOnPath } from "@/config/site";
 import type { PreorderRow } from "@/lib/store/db";
-import { buildOffer } from "@/lib/offer/offer";
 import { words } from "./support/mockup-compare";
 
 /**
@@ -47,29 +44,26 @@ import { words } from "./support/mockup-compare";
 const ROOT = process.cwd();
 const LAYOUT = readFileSync(join(ROOT, "src/app/layout.tsx"), "utf8");
 
-/* The privacy route reads the live offer for its template; the page names no
-   amount, so either mode gives the same words. */
-const getOffer = vi.hoisted(() => vi.fn());
-vi.mock("@/lib/offer/get-offer", () => ({ getOffer }));
-
 /** Typographic apostrophes and quotes as plain ones, so a pattern reads as typed. */
 const plain = (text: string) => text.replace(/[’‘]/g, "'").replace(/[“”]/g, '"');
 
-/** The privacy page as a parent reads it: the route's rendered <main>, as text. */
+/** The privacy page as a parent reads it: the served page's <main>, as text. */
 let PRIVACY = "";
 /** Each measuring tool's block, by the name it is headed with. */
 const TOOLS = new Map<string, string>();
 
-beforeAll(async () => {
-  getOffer.mockResolvedValue(buildOffer("token"));
-  const { default: PrivacyPage } = await import("@/app/(site)/privacy/page");
-  const html = renderToStaticMarkup((await PrivacyPage()) as ReactElement);
-  const main = new DOMParser().parseFromString(`<main>${html}</main>`, "text/html").querySelector("main")!;
+/* RE-PINNED 2026-10-22 TO THE REDESIGN: /privacy is the redesign's page (redesign/privacy/index.html, served by
+   src/app/(site)/[[...path]]), so PRIVACY is its <main> and each tool's block is its `.tool`. The tags themselves load
+   from the redesign's tracking shell (src/lib/site-pages/tracking-shell.ts) on marketing pages and from the root
+   layout on the store; both are checked below. */
+beforeAll(() => {
+  const html = readFileSync(join(ROOT, "redesign/privacy/index.html"), "utf8");
+  const main = new DOMParser().parseFromString(html, "text/html").querySelector("main")!;
   PRIVACY = plain(words(main));
-  for (const block of main.querySelectorAll(".ks-tool")) {
+  for (const block of main.querySelectorAll(".tool")) {
     TOOLS.set(plain(words(block.querySelector("h3")!)), plain(words(block)));
   }
-}, 60_000);
+});
 
 /** One measuring tool's block on /privacy; fails if the tool has none of its own. */
 function tool(name: string): string {
@@ -229,7 +223,8 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
     expect(tool("Meta Pixel")).toMatch(/does follow you to other sites/);
     expect(tool("Meta Pixel")).toMatch(/how you may later see a Kheelona advertisement on Facebook or Instagram/);
     /* Re-pinned 2026-10-12 (5.11) from "advertise on Facebook and Instagram". */
-    expect(PRIVACY).toMatch(/We do advertise Kheelu to parents on Facebook and Instagram, and the Meta tools above are how we measure that/);
+    /* The toy's visible name is Khelu on the redesign (redesign/pages/README.md); either spelling keeps the promise. */
+    expect(PRIVACY).toMatch(/We do advertise Khee?lu to parents on Facebook and Instagram, and the Meta tools above are how we measure that/);
   });
 
   /* The old page promised the opposite of all this in two other sections. If

@@ -75,6 +75,12 @@ const eslintConfig = defineConfig([
     "lighthouse-reports/**",
     "coverage/**",
     "test/e2e/.goldens/**",
+    // The redesign as the marketing site (2026-10-22): its build output and cache, its vendored libraries, and the
+    // copy of the build that prebuild step 40 puts in public/_site/ (minified, never source).
+    "redesign/dist/**",
+    "redesign/.cache/**",
+    "redesign/assets/vendor/**",
+    "public/_site/**",
   ]),
   {
     files: ["src/**/*.{ts,tsx,js,jsx,mjs}"],
@@ -107,6 +113,13 @@ const eslintConfig = defineConfig([
     // folder); the rule returns only if a founder decision lets the gate bodies change.
     files: ["src/components/tracking/GoogleAnalyticsGate.tsx", "src/components/tracking/MetaPixel.tsx"],
     rules: { "react-hooks/set-state-in-effect": "off" },
+  },
+  {
+    // The redesign as the marketing site (2026-10-22): every marketing page is a whole document served by the optional
+    // catch-all route handler src/app/(site)/[[...path]], never a client-routed React page, so <Link> buys nothing; and
+    // the rule reads that catch-all as a page for EVERY internal path, so it would flag each <a href="/…"> in the
+    // store's pages, the components' tests and stories.
+    rules: { "@next/next/no-html-link-for-pages": "off" },
   },
 ]);
 

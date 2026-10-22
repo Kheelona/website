@@ -1,0 +1,622 @@
+{
+ "assets/img/karnataka-seal.webp": {
+  "from": "assets/img/karnataka-seal.png",
+  "sha": "d9dd37963a01793b",
+  "args": "cwebp -q 90 -alpha_q 100 -exact"
+ },
+ "assets/img/kheelona-logo.min.svg": {
+  "from": "assets/img/kheelona-logo.svg",
+  "sha": "8b4aa24ec1686e82",
+  "args": "svgo@3.3.2 multipass preset-default keep-viewBox"
+ },
+ "assets/img/kheelu-1200-320w.webp": {
+  "from": "assets/img/kheelu-1200.webp",
+  "sha": "66d9387bd0bf39e1",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/kheelu-1200-480w.webp": {
+  "from": "assets/img/kheelu-1200.webp",
+  "sha": "66d9387bd0bf39e1",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/kheelu-1200-640w.webp": {
+  "from": "assets/img/kheelu-1200.webp",
+  "sha": "66d9387bd0bf39e1",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 640 0"
+ },
+ "assets/img/kheelu-1200-800w.webp": {
+  "from": "assets/img/kheelu-1200.webp",
+  "sha": "66d9387bd0bf39e1",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 800 0"
+ },
+ "assets/img/kheelu-1200-960w.webp": {
+  "from": "assets/img/kheelu-1200.webp",
+  "sha": "66d9387bd0bf39e1",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 960 0"
+ },
+ "assets/img/kheelu-240-120w.webp": {
+  "from": "assets/img/kheelu-240.webp",
+  "sha": "21757b24b0aade4e",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 120 0"
+ },
+ "assets/img/kheelu-480-240w.webp": {
+  "from": "assets/img/kheelu-480.webp",
+  "sha": "996fabe39fbd0f34",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/kheelu-480-320w.webp": {
+  "from": "assets/img/kheelu-480.webp",
+  "sha": "996fabe39fbd0f34",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/kheelu-800-640w.webp": {
+  "from": "assets/img/kheelu-800.webp",
+  "sha": "22d962e874f1da46",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 640 0"
+ },
+ "assets/img/nasscom.webp": {
+  "from": "assets/img/nasscom.png",
+  "sha": "3391e97de6c49a4e",
+  "args": "cwebp -q 90 -alpha_q 100 -exact"
+ },
+ "assets/img/nvidia-inception.webp": {
+  "from": "assets/img/nvidia-inception.png",
+  "sha": "2346e6422d64c548",
+  "args": "cwebp -q 90 -alpha_q 100 -exact"
+ },
+ "assets/img/poster-a-father-speaks-240w.webp": {
+  "from": "assets/img/poster-a-father-speaks.webp",
+  "sha": "a1be715e30006a9d",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/poster-a-father-speaks-320w.webp": {
+  "from": "assets/img/poster-a-father-speaks.webp",
+  "sha": "a1be715e30006a9d",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/poster-a-mother-joins-in-240w.webp": {
+  "from": "assets/img/poster-a-mother-joins-in.webp",
+  "sha": "8346a11d2f12c34a",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/poster-a-mother-joins-in-320w.webp": {
+  "from": "assets/img/poster-a-mother-joins-in.webp",
+  "sha": "8346a11d2f12c34a",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/poster-a-parent-speaks-240w.webp": {
+  "from": "assets/img/poster-a-parent-speaks.webp",
+  "sha": "19ee799a298a742c",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/poster-a-parent-speaks-320w.webp": {
+  "from": "assets/img/poster-a-parent-speaks.webp",
+  "sha": "19ee799a298a742c",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/poster-a-story-in-two-languages-240w.webp": {
+  "from": "assets/img/poster-a-story-in-two-languages.webp",
+  "sha": "b82d23efda0593de",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/poster-a-story-in-two-languages-320w.webp": {
+  "from": "assets/img/poster-a-story-in-two-languages.webp",
+  "sha": "b82d23efda0593de",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/poster-counting-out-loud-240w.webp": {
+  "from": "assets/img/poster-counting-out-loud.webp",
+  "sha": "55c1c1c23e6e34c7",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/poster-counting-out-loud-320w.webp": {
+  "from": "assets/img/poster-counting-out-loud.webp",
+  "sha": "55c1c1c23e6e34c7",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/poster-first-conversations-240w.webp": {
+  "from": "assets/img/poster-first-conversations.webp",
+  "sha": "740d32eedd727c42",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/poster-first-conversations-320w.webp": {
+  "from": "assets/img/poster-first-conversations.webp",
+  "sha": "740d32eedd727c42",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/poster-learning-by-asking-240w.webp": {
+  "from": "assets/img/poster-learning-by-asking.webp",
+  "sha": "4773bd95cd62d701",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/poster-learning-by-asking-320w.webp": {
+  "from": "assets/img/poster-learning-by-asking.webp",
+  "sha": "4773bd95cd62d701",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/product/khelu-studio-1200-960w.webp": {
+  "from": "assets/img/product/khelu-studio-1200.webp",
+  "sha": "8cc82e89e2212330",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 960 0"
+ },
+ "assets/img/product/khelu-tummy-800-320w.webp": {
+  "from": "assets/img/product/khelu-tummy-800.webp",
+  "sha": "607fe5d02a24da48",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/product/khelu-tummy-800-400w.webp": {
+  "from": "assets/img/product/khelu-tummy-800.webp",
+  "sha": "607fe5d02a24da48",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/product/khelu-tummy-800-640w.webp": {
+  "from": "assets/img/product/khelu-tummy-800.webp",
+  "sha": "607fe5d02a24da48",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 640 0"
+ },
+ "assets/img/scene-bedtime.min.svg": {
+  "from": "assets/img/scene-bedtime.svg",
+  "sha": "534c30778d01188e",
+  "args": "svgo@3.3.2 multipass preset-default keep-viewBox"
+ },
+ "assets/img/scene-breakfast.min.svg": {
+  "from": "assets/img/scene-breakfast.svg",
+  "sha": "074f1b0ad1fef709",
+  "args": "svgo@3.3.2 multipass preset-default keep-viewBox"
+ },
+ "assets/img/scene-kitchen.min.svg": {
+  "from": "assets/img/scene-kitchen.svg",
+  "sha": "89b5b893311251ef",
+  "args": "svgo@3.3.2 multipass preset-default keep-viewBox"
+ },
+ "assets/img/scene-nani.min.svg": {
+  "from": "assets/img/scene-nani.svg",
+  "sha": "42648aae2e8f05eb",
+  "args": "svgo@3.3.2 multipass preset-default keep-viewBox"
+ },
+ "assets/img/scene-study.min.svg": {
+  "from": "assets/img/scene-study.svg",
+  "sha": "1a5717516fd801c9",
+  "args": "svgo@3.3.2 multipass preset-default keep-viewBox"
+ },
+ "assets/img/stories/advik-01-counting-carriages-240w.webp": {
+  "from": "assets/img/stories/advik-01-counting-carriages.webp",
+  "sha": "3fa5d887b6e8f84b",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/stories/advik-01-counting-carriages-320w.webp": {
+  "from": "assets/img/stories/advik-01-counting-carriages.webp",
+  "sha": "3fa5d887b6e8f84b",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/stories/advik-01-counting-carriages-400w.webp": {
+  "from": "assets/img/stories/advik-01-counting-carriages.webp",
+  "sha": "3fa5d887b6e8f84b",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/stories/advik-01-counting-carriages-480w.webp": {
+  "from": "assets/img/stories/advik-01-counting-carriages.webp",
+  "sha": "3fa5d887b6e8f84b",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/stories/advik-01-counting-carriages-880w.webp": {
+  "from": "assets/img/stories/advik-01-counting-carriages.webp",
+  "sha": "3fa5d887b6e8f84b",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 880 0"
+ },
+ "assets/img/stories/advik-04-floor-train-240w.webp": {
+  "from": "assets/img/stories/advik-04-floor-train.webp",
+  "sha": "558616b06b20d610",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/stories/advik-04-floor-train-320w.webp": {
+  "from": "assets/img/stories/advik-04-floor-train.webp",
+  "sha": "558616b06b20d610",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/stories/advik-04-floor-train-400w.webp": {
+  "from": "assets/img/stories/advik-04-floor-train.webp",
+  "sha": "558616b06b20d610",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/stories/advik-04-floor-train-480w.webp": {
+  "from": "assets/img/stories/advik-04-floor-train.webp",
+  "sha": "558616b06b20d610",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/stories/advik-04-floor-train-880w.webp": {
+  "from": "assets/img/stories/advik-04-floor-train.webp",
+  "sha": "558616b06b20d610",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 880 0"
+ },
+ "assets/img/stories/ira-01-story-on-the-bed-240w.webp": {
+  "from": "assets/img/stories/ira-01-story-on-the-bed.webp",
+  "sha": "adc63f490489eb23",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/stories/ira-01-story-on-the-bed-320w.webp": {
+  "from": "assets/img/stories/ira-01-story-on-the-bed.webp",
+  "sha": "adc63f490489eb23",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/stories/ira-01-story-on-the-bed-400w.webp": {
+  "from": "assets/img/stories/ira-01-story-on-the-bed.webp",
+  "sha": "adc63f490489eb23",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/stories/ira-01-story-on-the-bed-480w.webp": {
+  "from": "assets/img/stories/ira-01-story-on-the-bed.webp",
+  "sha": "adc63f490489eb23",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/stories/ira-01-story-on-the-bed-880w.webp": {
+  "from": "assets/img/stories/ira-01-story-on-the-bed.webp",
+  "sha": "adc63f490489eb23",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 880 0"
+ },
+ "assets/img/stories/ira-02-drawing-the-dragon-240w.webp": {
+  "from": "assets/img/stories/ira-02-drawing-the-dragon.webp",
+  "sha": "40a37598bb15eab8",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/stories/ira-02-drawing-the-dragon-320w.webp": {
+  "from": "assets/img/stories/ira-02-drawing-the-dragon.webp",
+  "sha": "40a37598bb15eab8",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/stories/ira-02-drawing-the-dragon-400w.webp": {
+  "from": "assets/img/stories/ira-02-drawing-the-dragon.webp",
+  "sha": "40a37598bb15eab8",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/stories/ira-02-drawing-the-dragon-480w.webp": {
+  "from": "assets/img/stories/ira-02-drawing-the-dragon.webp",
+  "sha": "40a37598bb15eab8",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/stories/ira-02-drawing-the-dragon-880w.webp": {
+  "from": "assets/img/stories/ira-02-drawing-the-dragon.webp",
+  "sha": "40a37598bb15eab8",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 880 0"
+ },
+ "assets/img/stories/ira-04-paper-crown-240w.webp": {
+  "from": "assets/img/stories/ira-04-paper-crown.webp",
+  "sha": "49ed789d59b50e55",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/stories/ira-04-paper-crown-320w.webp": {
+  "from": "assets/img/stories/ira-04-paper-crown.webp",
+  "sha": "49ed789d59b50e55",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/stories/ira-04-paper-crown-400w.webp": {
+  "from": "assets/img/stories/ira-04-paper-crown.webp",
+  "sha": "49ed789d59b50e55",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/stories/ira-04-paper-crown-480w.webp": {
+  "from": "assets/img/stories/ira-04-paper-crown.webp",
+  "sha": "49ed789d59b50e55",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/stories/ira-04-paper-crown-880w.webp": {
+  "from": "assets/img/stories/ira-04-paper-crown.webp",
+  "sha": "49ed789d59b50e55",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 880 0"
+ },
+ "assets/img/stories/kabir-02-block-rocket-240w.webp": {
+  "from": "assets/img/stories/kabir-02-block-rocket.webp",
+  "sha": "5b58c6a5a75e2c6b",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/stories/kabir-02-block-rocket-320w.webp": {
+  "from": "assets/img/stories/kabir-02-block-rocket.webp",
+  "sha": "5b58c6a5a75e2c6b",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/stories/kabir-02-block-rocket-400w.webp": {
+  "from": "assets/img/stories/kabir-02-block-rocket.webp",
+  "sha": "5b58c6a5a75e2c6b",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/stories/kabir-02-block-rocket-480w.webp": {
+  "from": "assets/img/stories/kabir-02-block-rocket.webp",
+  "sha": "5b58c6a5a75e2c6b",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/stories/kabir-02-block-rocket-880w.webp": {
+  "from": "assets/img/stories/kabir-02-block-rocket.webp",
+  "sha": "5b58c6a5a75e2c6b",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 880 0"
+ },
+ "assets/img/stories/kabir-03-homework-desk-240w.webp": {
+  "from": "assets/img/stories/kabir-03-homework-desk.webp",
+  "sha": "02a90cb83e341727",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/stories/kabir-03-homework-desk-320w.webp": {
+  "from": "assets/img/stories/kabir-03-homework-desk.webp",
+  "sha": "02a90cb83e341727",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/stories/kabir-03-homework-desk-400w.webp": {
+  "from": "assets/img/stories/kabir-03-homework-desk.webp",
+  "sha": "02a90cb83e341727",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/stories/kabir-03-homework-desk-480w.webp": {
+  "from": "assets/img/stories/kabir-03-homework-desk.webp",
+  "sha": "02a90cb83e341727",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/stories/kabir-04-planet-book-240w.webp": {
+  "from": "assets/img/stories/kabir-04-planet-book.webp",
+  "sha": "56cfa023dd000897",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/stories/kabir-04-planet-book-320w.webp": {
+  "from": "assets/img/stories/kabir-04-planet-book.webp",
+  "sha": "56cfa023dd000897",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/stories/kabir-04-planet-book-400w.webp": {
+  "from": "assets/img/stories/kabir-04-planet-book.webp",
+  "sha": "56cfa023dd000897",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/stories/kabir-04-planet-book-480w.webp": {
+  "from": "assets/img/stories/kabir-04-planet-book.webp",
+  "sha": "56cfa023dd000897",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/stories/kabir-04-planet-book-880w.webp": {
+  "from": "assets/img/stories/kabir-04-planet-book.webp",
+  "sha": "56cfa023dd000897",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 880 0"
+ },
+ "assets/img/stories/myra-04-drawing-at-home-240w.webp": {
+  "from": "assets/img/stories/myra-04-drawing-at-home.webp",
+  "sha": "49ed264298e0dfd7",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/stories/myra-04-drawing-at-home-320w.webp": {
+  "from": "assets/img/stories/myra-04-drawing-at-home.webp",
+  "sha": "49ed264298e0dfd7",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/stories/myra-04-drawing-at-home-400w.webp": {
+  "from": "assets/img/stories/myra-04-drawing-at-home.webp",
+  "sha": "49ed264298e0dfd7",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/stories/myra-04-drawing-at-home-480w.webp": {
+  "from": "assets/img/stories/myra-04-drawing-at-home.webp",
+  "sha": "49ed264298e0dfd7",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/stories/myra-04-drawing-at-home-880w.webp": {
+  "from": "assets/img/stories/myra-04-drawing-at-home.webp",
+  "sha": "49ed264298e0dfd7",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 880 0"
+ },
+ "assets/img/stories/tara-01-naming-feelings-240w.webp": {
+  "from": "assets/img/stories/tara-01-naming-feelings.webp",
+  "sha": "0293d8519e5945a3",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/stories/tara-01-naming-feelings-320w.webp": {
+  "from": "assets/img/stories/tara-01-naming-feelings.webp",
+  "sha": "0293d8519e5945a3",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/stories/tara-01-naming-feelings-400w.webp": {
+  "from": "assets/img/stories/tara-01-naming-feelings.webp",
+  "sha": "0293d8519e5945a3",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/stories/tara-01-naming-feelings-480w.webp": {
+  "from": "assets/img/stories/tara-01-naming-feelings.webp",
+  "sha": "0293d8519e5945a3",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/stories/tara-01-naming-feelings-880w.webp": {
+  "from": "assets/img/stories/tara-01-naming-feelings.webp",
+  "sha": "0293d8519e5945a3",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 880 0"
+ },
+ "assets/img/stories/tara-02-evening-with-amma-240w.webp": {
+  "from": "assets/img/stories/tara-02-evening-with-amma.webp",
+  "sha": "32a291680ebe1323",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/stories/tara-02-evening-with-amma-320w.webp": {
+  "from": "assets/img/stories/tara-02-evening-with-amma.webp",
+  "sha": "32a291680ebe1323",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/stories/tara-02-evening-with-amma-400w.webp": {
+  "from": "assets/img/stories/tara-02-evening-with-amma.webp",
+  "sha": "32a291680ebe1323",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/stories/tara-02-evening-with-amma-480w.webp": {
+  "from": "assets/img/stories/tara-02-evening-with-amma.webp",
+  "sha": "32a291680ebe1323",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/stories/tara-02-evening-with-amma-880w.webp": {
+  "from": "assets/img/stories/tara-02-evening-with-amma.webp",
+  "sha": "32a291680ebe1323",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 880 0"
+ },
+ "assets/img/stories/tara-03-bedtime-with-baba-240w.webp": {
+  "from": "assets/img/stories/tara-03-bedtime-with-baba.webp",
+  "sha": "279e446c66cb0bb5",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/stories/tara-03-bedtime-with-baba-320w.webp": {
+  "from": "assets/img/stories/tara-03-bedtime-with-baba.webp",
+  "sha": "279e446c66cb0bb5",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/stories/tara-03-bedtime-with-baba-400w.webp": {
+  "from": "assets/img/stories/tara-03-bedtime-with-baba.webp",
+  "sha": "279e446c66cb0bb5",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/stories/tara-03-bedtime-with-baba-480w.webp": {
+  "from": "assets/img/stories/tara-03-bedtime-with-baba.webp",
+  "sha": "279e446c66cb0bb5",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/stories/tara-04-reading-nook-240w.webp": {
+  "from": "assets/img/stories/tara-04-reading-nook.webp",
+  "sha": "467f8d586b30ea5d",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/stories/tara-04-reading-nook-320w.webp": {
+  "from": "assets/img/stories/tara-04-reading-nook.webp",
+  "sha": "467f8d586b30ea5d",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/stories/tara-04-reading-nook-400w.webp": {
+  "from": "assets/img/stories/tara-04-reading-nook.webp",
+  "sha": "467f8d586b30ea5d",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/stories/tara-04-reading-nook-480w.webp": {
+  "from": "assets/img/stories/tara-04-reading-nook.webp",
+  "sha": "467f8d586b30ea5d",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/stories/tara-04-reading-nook-880w.webp": {
+  "from": "assets/img/stories/tara-04-reading-nook.webp",
+  "sha": "467f8d586b30ea5d",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 880 0"
+ },
+ "assets/img/tara-02-evening-with-amma-480w.webp": {
+  "from": "assets/img/tara-02-evening-with-amma.webp",
+  "sha": "caa4e91fcd152b20",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/tara-02-evening-with-amma-720w.webp": {
+  "from": "assets/img/tara-02-evening-with-amma.webp",
+  "sha": "caa4e91fcd152b20",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 720 0"
+ },
+ "assets/img/team/aman-160w.webp": {
+  "from": "assets/img/team/aman.webp",
+  "sha": "879fd28d3b34f0ec",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 160 0"
+ },
+ "assets/img/team/aman-320w.webp": {
+  "from": "assets/img/team/aman.webp",
+  "sha": "879fd28d3b34f0ec",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/team/aman-480w.webp": {
+  "from": "assets/img/team/aman.webp",
+  "sha": "879fd28d3b34f0ec",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/team/aman-96w.webp": {
+  "from": "assets/img/team/aman.webp",
+  "sha": "879fd28d3b34f0ec",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 96 0"
+ },
+ "assets/img/team/aman-cut-160w.webp": {
+  "from": "assets/img/team/aman-cut.webp",
+  "sha": "214c5448eb2017fe",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 160 0"
+ },
+ "assets/img/team/aman-cut-240w.webp": {
+  "from": "assets/img/team/aman-cut.webp",
+  "sha": "214c5448eb2017fe",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/team/aman-cut-320w.webp": {
+  "from": "assets/img/team/aman-cut.webp",
+  "sha": "214c5448eb2017fe",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/team/apoorva-160w.webp": {
+  "from": "assets/img/team/apoorva.webp",
+  "sha": "0ae7955d06f5d5d0",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 160 0"
+ },
+ "assets/img/team/apoorva-320w.webp": {
+  "from": "assets/img/team/apoorva.webp",
+  "sha": "0ae7955d06f5d5d0",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/team/apoorva-480w.webp": {
+  "from": "assets/img/team/apoorva.webp",
+  "sha": "0ae7955d06f5d5d0",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/team/apoorva-96w.webp": {
+  "from": "assets/img/team/apoorva.webp",
+  "sha": "0ae7955d06f5d5d0",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 96 0"
+ },
+ "assets/img/team/apoorva-cut-160w.webp": {
+  "from": "assets/img/team/apoorva-cut.webp",
+  "sha": "8097caa978ff8c0a",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 160 0"
+ },
+ "assets/img/team/apoorva-cut-240w.webp": {
+  "from": "assets/img/team/apoorva-cut.webp",
+  "sha": "8097caa978ff8c0a",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/team/apoorva-cut-320w.webp": {
+  "from": "assets/img/team/apoorva-cut.webp",
+  "sha": "8097caa978ff8c0a",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/team/kashyap-160w.webp": {
+  "from": "assets/img/team/kashyap.webp",
+  "sha": "af768827ff1de0e1",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 160 0"
+ },
+ "assets/img/team/kashyap-320w.webp": {
+  "from": "assets/img/team/kashyap.webp",
+  "sha": "af768827ff1de0e1",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/team/kashyap-480w.webp": {
+  "from": "assets/img/team/kashyap.webp",
+  "sha": "af768827ff1de0e1",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/team/kashyap-96w.webp": {
+  "from": "assets/img/team/kashyap.webp",
+  "sha": "af768827ff1de0e1",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 96 0"
+ },
+ "assets/img/team/kashyap-cut-160w.webp": {
+  "from": "assets/img/team/kashyap-cut.webp",
+  "sha": "b6dcf2b4a1b7e523",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 160 0"
+ },
+ "assets/img/team/kashyap-cut-240w.webp": {
+  "from": "assets/img/team/kashyap-cut.webp",
+  "sha": "b6dcf2b4a1b7e523",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/team/kashyap-cut-320w.webp": {
+  "from": "assets/img/team/kashyap-cut.webp",
+  "sha": "b6dcf2b4a1b7e523",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/team/table-tall-1080-880w.webp": {
+  "from": "assets/img/team/table-tall-1080.webp",
+  "sha": "2068226b8c143a04",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 880 0"
+ },
+ "assets/img/team/table-wide-1600w.webp": {
+  "from": "assets/img/team/table-wide.webp",
+  "sha": "fd273699e285e48c",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 1600 0"
+ }
+}

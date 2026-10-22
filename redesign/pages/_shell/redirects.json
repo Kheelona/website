@@ -1,0 +1,188 @@
+{
+ "_about": "The redirect map the redesign needs, from origin/beta src/config/redirects.ts (main 24 + the reset 9). Every rule is permanent (Next: 308), one hop, query string kept. Also: strip a trailing slash (308, query kept); /store and /store/:path* to https://store.kheelona.com/:path*; www.kheelona.com and http:// to https://kheelona.com in one hop (beta adds a www twin of every rule with an absolute apex destination). Next sources match with an optional trailing slash. /pricing.md and /sitemap.xml are files, not redirects.",
+ "redirects": [
+  {
+   "source": "/stories/why-three-to-six-matters-most",
+   "destination": "/stories/why-three-to-six-are-the-years-that-matter-most",
+   "permanent": true
+  },
+  {
+   "source": "/products/lumi",
+   "destination": "/products/kheelu",
+   "permanent": true
+  },
+  {
+   "source": "/product-page/:slug*",
+   "destination": "/products/kheelu",
+   "permanent": true
+  },
+  {
+   "source": "/product/:slug([^.]+)",
+   "destination": "/products/kheelu",
+   "permanent": true
+  },
+  {
+   "source": "/shop",
+   "destination": "/products/kheelu",
+   "permanent": true
+  },
+  {
+   "source": "/category/all-products",
+   "destination": "/products/kheelu",
+   "permanent": true
+  },
+  {
+   "source": "/category/:slug([^.]+)",
+   "destination": "/products/kheelu",
+   "permanent": true
+  },
+  {
+   "source": "/accessibility-statement",
+   "destination": "/products/kheelu",
+   "permanent": true
+  },
+  {
+   "source": "/post/:slug*",
+   "destination": "/stories",
+   "permanent": true
+  },
+  {
+   "source": "/terms-conditions",
+   "destination": "/terms",
+   "permanent": true
+  },
+  {
+   "source": "/privacy-policy",
+   "destination": "/privacy",
+   "permanent": true
+  },
+  {
+   "source": "/for-the-parents",
+   "destination": "/stories",
+   "permanent": true
+  },
+  {
+   "source": "/lumi",
+   "destination": "/products/kheelu",
+   "permanent": true
+  },
+  {
+   "source": "/faq",
+   "destination": "/products/kheelu#faq",
+   "permanent": true
+  },
+  {
+   "source": "/sitemap",
+   "destination": "/sitemap.xml",
+   "permanent": true
+  },
+  {
+   "source": "/blog",
+   "destination": "/stories",
+   "permanent": true
+  },
+  {
+   "source": "/blog/:slug*",
+   "destination": "/stories",
+   "permanent": true
+  },
+  {
+   "source": "/about",
+   "destination": "/team",
+   "permanent": true
+  },
+  {
+   "source": "/community",
+   "destination": "/stories",
+   "permanent": true
+  },
+  {
+   "source": "/login",
+   "destination": "/",
+   "permanent": true
+  },
+  {
+   "source": "/signup",
+   "destination": "/",
+   "permanent": true
+  },
+  {
+   "source": "/account/:path*",
+   "destination": "/",
+   "permanent": true
+  },
+  {
+   "source": "/cart",
+   "destination": "/products/kheelu",
+   "permanent": true
+  },
+  {
+   "source": "/checkout/:path*",
+   "destination": "/products/kheelu",
+   "permanent": true
+  },
+  {
+   "source": "/playos",
+   "destination": "/products/kheelu",
+   "permanent": true
+  },
+  {
+   "source": "/stories/brain-development-toys-for-a-2-year-old",
+   "destination": "/stories/learning-toys-for-a-three-year-old",
+   "permanent": true
+  },
+  {
+   "source": "/stories/screen-time-rules-parents-swear-by",
+   "destination": "/stories#screen-time",
+   "permanent": true
+  },
+  {
+   "source": "/kheelu",
+   "destination": "/products/kheelu",
+   "permanent": true
+  },
+  {
+   "source": "/products",
+   "destination": "/products/kheelu",
+   "permanent": true
+  },
+  {
+   "source": "/careers",
+   "destination": "/team",
+   "permanent": true
+  },
+  {
+   "source": "/jobs",
+   "destination": "/team",
+   "permanent": true
+  },
+  {
+   "source": "/pricing",
+   "destination": "/products/kheelu#offer",
+   "permanent": true
+  }
+ ],
+ "host": [
+  {
+   "source": "/store/:path*",
+   "destination": "https://store.kheelona.com/:path*",
+   "permanent": true
+  },
+  {
+   "source": "/:path+/",
+   "destination": "/:path+",
+   "permanent": true,
+   "note": "trailing slash strip, query kept"
+  },
+  {
+   "host": "www.kheelona.com",
+   "destination": "https://kheelona.com/:path*",
+   "permanent": true
+  },
+  {
+   "scheme": "http",
+   "destination": "https://kheelona.com/:path*",
+   "permanent": true
+  }
+ ]
+}

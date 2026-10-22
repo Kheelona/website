@@ -58,9 +58,15 @@ const OPTIONS: SkeletonOptions = {
   unwrap: "span[data-src]",
 };
 
+/** The mockup is a draft and shows the draft note; the page is approved as final (D067), so the note is not compared. */
+function withoutDraftNote(main: Element): Element {
+  main.querySelector(".mk-draft")?.remove();
+  return main;
+}
+
 /** The approved page with the founder's page facts applied (task 6.7), then D063 item 3: the seller sentence without the
  *  GSTIN (task Q2.3; seller-facts.ts). */
-const mockupMain = withSellerFacts(withFacts(mockupFold("refund", "main"), PAGE_FACTS.refund.edits));
+const mockupMain = withoutDraftNote(withSellerFacts(withFacts(mockupFold("refund", "main"), PAGE_FACTS.refund.edits)));
 const SOURCE = readRepoFile("src/content/en-IN/legal/refund.ts");
 /** The module's code without its comments. */
 const CODE = SOURCE.replace(/\/\*[\s\S]*?\*\/|(?<!:)\/\/.*$/gm, "");
@@ -71,9 +77,9 @@ const blocks = (): readonly LegalBlock[] => (refundPage as LegalPage).parts.flat
 const plain = (copy: Copy, offer: Offer = TOKEN) => toPlainText(copy, offer);
 
 describe("the refund module: what it is", () => {
-  it("is the /refund notice, a draft (D029: the founder signs it off as legal text), last updated 14 October 2026 (D055 item 8)", () => {
+  it("is the /refund notice, approved as final legal text (D067, after D029), last updated 14 October 2026 (D055 item 8)", () => {
     expect(refundPage.slug).toBe("refund");
-    expect(refundPage.status).toBe("draft");
+    expect(refundPage.status).toBe("approved");
     expect(refundPage.approvedOn).toBe("2026-10-14");
     expect(words(mainOf(refundPage).querySelector(".ks-updated")!)).toBe("Last updated: 14 October 2026");
   });
@@ -126,7 +132,8 @@ describe("the refund module through LegalTemplate (notice) against the approved 
   it("is the markup of the template's parity fixture (test/fixtures/legal/refund.ts) with the founder's facts, character for character", () => {
     // The complaint-reference line is the template's (legal/shared.ts), so the fixture's render already lacks it.
     const documentFacts = PAGE_FACTS.refund.edits.filter((edit) => edit !== GRIEVANCE_NOTE);
-    expect(mainOf(refundPage).outerHTML).toBe(withFacts(mainOf(refundFixture), documentFacts, { built: true }).outerHTML);
+    const approvedFixture = { ...refundFixture, status: "approved" } as LegalPage;
+    expect(mainOf(refundPage).outerHTML).toBe(withFacts(mainOf(approvedFixture), documentFacts, { built: true }).outerHTML);
   });
 
   it("shows no placeholder: the copy page lists none left, each filled or ruled off by the founder (D055; task 6.7)", () => {

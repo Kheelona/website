@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import { stringify } from "node:querystring";
 import { execFileSync } from "node:child_process";
@@ -331,27 +331,12 @@ describe("the tag's 24 redirects are all still there, unchanged", () => {
   });
 });
 
-/** The route file a path is served by, or null. Dynamic segments match a
- *  `[param]` folder, and the slug must be a string the content knows. */
+/** The route file a path is served by, or null. Since 2026-10-22 every marketing page is the redesign's built page
+ *  (redesign/<path>/index.html), served by the one marketing route; the machine files have their own route handlers. */
 function routeFileFor(path: string): string | null {
-  if (path === "/sitemap.xml") return existsSync(join(ROOT, "src/app/sitemap.ts")) ? "src/app/sitemap.ts" : null;
-  let dir = join(ROOT, "src/app/(site)");
-  for (const segment of path.split("/").filter(Boolean)) {
-    if (existsSync(join(dir, segment))) {
-      dir = join(dir, segment);
-      continue;
-    }
-    const dynamic = readdirSync(dir).find((d) => /^\[[^.\]]+\]$/.test(d));
-    if (!dynamic || !slugKnown(segment)) return null;
-    dir = join(dir, dynamic);
-  }
-  const page = join(dir, "page.tsx");
-  return existsSync(page) ? page : null;
-}
-
-function slugKnown(slug: string): boolean {
-  const files = execFileSync("git", ["ls-files", "src/**/*.ts", "src/**/*.tsx"], { encoding: "utf8" })
-    .split("\n")
-    .filter((f) => f && !/\.test\.tsx?$/.test(f) && f !== "src/config/redirects.ts");
-  return files.some((f) => readFileSync(join(ROOT, f), "utf8").includes(`"${slug}"`));
+  const own = join(ROOT, "src/app", path, "route.ts");
+  if (path.includes(".") && existsSync(own)) return own;
+  const route = join(ROOT, "src/app/(site)/[[...path]]/route.ts");
+  const page = join(ROOT, "redesign", path, "index.html");
+  return existsSync(route) && existsSync(page) ? page : null;
 }

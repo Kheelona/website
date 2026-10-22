@@ -1,0 +1,12 @@
+# The redesign's media is COMMITTED: a git-triggered Vercel build has Node + Python only (no ffmpeg, cwebp or the
+# source media), so tools/build-assets.sh (the local asset step) makes everything a deploy build serves, including the
+# responsive variants in assets/gen/, and the deploy build (tools/build-site.sh) only reads them.
+# The full films are never copied here: pages play /video/… from the Next app's public/video (redesign/video links there).
+assets/video/*.mp4
+!assets/video/*-loop.mp4
+# Source recordings for the Pipeline A voice clips (their .m4a in assets/audio/toy/ is what ships).
+assets/audio/pipeline-a-src/
+
+# Deploy build (tools/build-site.sh) and its cache.
+dist/
+.cache/
