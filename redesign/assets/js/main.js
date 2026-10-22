@@ -8,15 +8,22 @@
   const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
-  const R = () => parseFloat(getComputedStyle(root).fontSize) / 16; // rem scale
+  // rem scale, read once per resize (getComputedStyle in a pointer or scroll handler would force a style recalc)
+  let remScale = parseFloat(getComputedStyle(root).fontSize) / 16 || 1;
+  addEventListener("resize", () => { remScale = parseFloat(getComputedStyle(root).fontSize) / 16 || 1; });
+  const R = () => remScale;
+  // One pointer update per frame, however fast the pointer reports (120 Hz+ mice and pens).
+  const perFrame = (fn) => { let ev = null, raf = 0; return (e) => { ev = e; if (!raf) raf = requestAnimationFrame(() => { raf = 0; fn(ev); }); }; };
   const phone = () => innerWidth < 700;
 
   initModal();
+  initBar();
   // Phones: the FAQ starts closed so every question fits on one screen.
   if (phone()) document.querySelectorAll("#faq details[open]").forEach((d) => d.removeAttribute("open"));
   if (reduced || !window.gsap) { root.classList.add("reduced"); initStatic(); return; }
   root.classList.add("motion");
   gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true }); // the phone's address bar showing/hiding never re-measures the page
 
   /* ---------- Khelu's real voice: the firmware's recorded cue lines + the device's own earcon tones ---------- */
   const Sound = (() => {
@@ -27,10 +34,10 @@
       ctx = new AC(); an = ctx.createAnalyser(); an.fftSize = 256; data = new Uint8Array(an.frequencyBinCount); out = ctx.createGain(); out.gain.value = 0.8; out.connect(an); an.connect(ctx.destination);
       document.dispatchEvent(new CustomEvent("khelu:sound"));
     };
-    const load = (n) => cache[n] || (cache[n] = fetch(`assets/audio/voice/${n}.m4a`).then((r) => (r.ok ? r.arrayBuffer() : Promise.reject())).then((b) => ctx.decodeAudioData(b)));
+    const load = (n) => cache[n] || (cache[n] = fetch(`/assets/audio/voice/${n}.m4a`).then((r) => (r.ok ? r.arrayBuffer() : Promise.reject())).then((b) => ctx.decodeAudioData(b)));
     const stop = () => { try { cur && cur.stop(); } catch (e) {} cur = null; };
     const play = async (n) => { if (!ready()) return 0; try { const buf = await load(n); stop(); const src = ctx.createBufferSource(); src.buffer = buf; src.connect(out); src.start(); cur = src; src.onended = () => { if (cur === src) cur = null; }; return buf.duration; } catch (e) { return 0; } };
-    const sfx = async (file, rate = 1) => { if (!ready()) return; try { const buf = await (cache[file] || (cache[file] = fetch(`assets/audio/${file}.m4a`).then((r) => r.arrayBuffer()).then((b) => ctx.decodeAudioData(b)))); const src = ctx.createBufferSource(); src.buffer = buf; src.playbackRate.value = rate; src.connect(out); src.start(); } catch (e) {} };
+    const sfx = async (file, rate = 1) => { if (!ready()) return; try { const buf = await (cache[file] || (cache[file] = fetch(`/assets/audio/${file}.m4a`).then((r) => r.arrayBuffer()).then((b) => ctx.decodeAudioData(b)))); const src = ctx.createBufferSource(); src.buffer = buf; src.playbackRate.value = rate; src.connect(out); src.start(); } catch (e) {} };
     // The toy's procedural earcons (firmware cue_tones): conversation start = a short A5 blip; end = E5 → C5.
     const tone = (freqs, len = 0.12) => { if (!ready()) return; let t = ctx.currentTime; freqs.forEach((f) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = "sine"; o.frequency.value = f; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.25, t + 0.01); g.gain.exponentialRampToValueAtTime(0.001, t + len); o.connect(g); g.connect(out); o.start(t); o.stop(t + len + 0.02); t += len * 0.85; }); };
     const level = () => { if (!an || !cur) return 0; an.getByteTimeDomainData(data); let m = 0; for (let i = 0; i < data.length; i++) m = Math.max(m, Math.abs(data[i] - 128)); return m / 128; };
@@ -47,17 +54,25 @@
      Centred on the light ring from the layout box (not the tilted/breathing transform), slow, and they bend
      softly away from the pointer with eased-in strength, so nothing snaps. ---------- */
   const makeWaves = (canvas, khelu) => {
-    const c2 = canvas.getContext("2d"); let W = 0, H = 0, dpr = 1, raf = 0, t = 0, pull = 0;
+    const c2 = canvas.getContext("2d"); let W = 0, H = 0, dpr = 1, raf = 0, t = 0, pull = 0, last = 0, hidden = false;
     const m = { x: 0, y: 0, tx: 0, ty: 0, in: false };
-    const size = () => { dpr = Math.min(2, devicePixelRatio || 1); W = canvas.clientWidth; H = canvas.clientHeight; canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); };
+    // Khelu's layout box is measured on resize, not read on every frame.
+    const kb = { w: 0, h: 0, l: 0, t: 0 };
+    const measure = () => { kb.w = khelu.offsetWidth; kb.h = khelu.offsetHeight; kb.l = khelu.offsetLeft; kb.t = khelu.offsetTop; };
+    // Pixel budget (~3 MP): a 5K or 4K screen draws the soft lines at a lower resolution instead of 15 MP a frame.
+    const size = () => { W = canvas.clientWidth; H = canvas.clientHeight; dpr = Math.max(0.75, Math.min(fine ? 2 : 1.5, devicePixelRatio || 1, Math.sqrt(3e6 / Math.max(1, W * H)))); canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); measure(); };
     const COLS = ["255,170,60", "90,169,238", "157,134,238", "95,191,166"];
-    const frame = () => {
-      t += 1 / 60;
+    const frame = (now) => {
+      const dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60; last = now;
+      t += dt; // the same speed at 60, 90 or 120 Hz
+      // Once the hero has faded the waves out, stop drawing them (the canvas stays on screen while the hero is pinned).
+      if (gsap.getProperty(canvas, "opacity") < 0.01) { if (!hidden) { c2.clearRect(0, 0, canvas.width, canvas.height); hidden = true; } raf = requestAnimationFrame(frame); return; }
+      hidden = false;
       pull += ((m.in ? 1 : 0) - pull) * 0.04;            // strength eases in and out
       m.x += (m.tx - m.x) * 0.07; m.y += (m.ty - m.y) * 0.07; // the bend follows the pointer slowly
       c2.setTransform(dpr, 0, 0, dpr, 0, 0); c2.clearRect(0, 0, W, H);
-      const kw = khelu.offsetWidth, kh = khelu.offsetHeight; if (!kw) { raf = requestAnimationFrame(frame); return; }
-      const cx = khelu.offsetLeft + kw * 0.513, cy = khelu.offsetTop + kh * 0.618;   // the light ring's centre
+      const kw = kb.w, kh = kb.h; if (!kw) { measure(); raf = requestAnimationFrame(frame); return; }
+      const cx = kb.l + kw * 0.513, cy = kb.t + kh * 0.618;   // the light ring's centre
       const inner = kw * 0.17, reach = Math.min(cx - 8, W - cx - 8, kw * 1.9), unit = Math.max(0.8, kw / 400);
       const sigma = 90 * unit;
       c2.lineCap = "round"; c2.lineJoin = "round";
@@ -78,11 +93,11 @@
       });
       raf = requestAnimationFrame(frame);
     };
-    size(); addEventListener("resize", size);
-    new IntersectionObserver((es) => es.forEach((e) => { cancelAnimationFrame(raf); if (e.isIntersecting) { size(); raf = requestAnimationFrame(frame); } })).observe(canvas);
+    size(); addEventListener("resize", size); document.addEventListener("khelu:refresh", measure);
+    new IntersectionObserver((es) => es.forEach((e) => { cancelAnimationFrame(raf); last = 0; if (e.isIntersecting) { size(); raf = requestAnimationFrame(frame); } })).observe(canvas);
     if (fine) {
       const zone = canvas.closest(".stage");
-      zone.addEventListener("pointermove", (e) => { const r = canvas.getBoundingClientRect(); const sx = canvas.clientWidth / r.width || 1; m.tx = (e.clientX - r.left) * sx; m.ty = (e.clientY - r.top) * sx; if (!m.in) { m.x = m.tx; m.y = m.ty; } m.in = true; });
+      zone.addEventListener("pointermove", perFrame((e) => { const r = canvas.getBoundingClientRect(); const sx = W / r.width || 1; m.tx = (e.clientX - r.left) * sx; m.ty = (e.clientY - r.top) * sx; if (!m.in) { m.x = m.tx; m.y = m.ty; } m.in = true; }), { passive: true });
       zone.addEventListener("pointerleave", () => { m.in = false; });
     }
   };
@@ -102,19 +117,23 @@
   $$('a[href^="#"]').forEach((a) => a.addEventListener("click", (e) => { const t = $(a.getAttribute("href")); if (!t) return; e.preventDefault(); scrollToY(t.getBoundingClientRect().top + scrollY - 90 * R()); }));
   // One Skip button for the whole page: it jumps past whichever section you're in (hidden in the footer).
   (() => {
-    const btn = $("#skip"); if (!btn) return; const secs = $$("main > section"); let cur = null;
-    const pick = () => { const mid = innerHeight * 0.45; cur = secs.find((x) => { const r = x.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; }) || null; btn.classList.toggle("is-on", !!cur && cur.getBoundingClientRect().bottom > innerHeight * 0.9); };
-    ScrollTrigger.create({ start: 0, end: "max", onUpdate: pick }); addEventListener("resize", pick); pick();
+    const btn = $("#skip"); if (!btn) return; const secs = $$("main > section"); let cur = null, box = [];
+    // Section positions are measured when ScrollTrigger re-measures the page, then compared with scrollY (no layout reads while scrolling).
+    const measure = () => { const y = scrollY; box = secs.map((x) => { const r = x.getBoundingClientRect(); return { x, top: r.top + y, bottom: r.bottom + y }; }); };
+    const pick = () => { const y = scrollY, mid = y + innerHeight * 0.45; const b = box.find((s) => s.top <= mid && s.bottom > mid); cur = b ? b.x : null; btn.classList.toggle("is-on", !!b && b.bottom - y > innerHeight * 0.9); };
+    ScrollTrigger.addEventListener("refresh", () => { measure(); pick(); });
+    ScrollTrigger.create({ start: 0, end: "max", onUpdate: pick }); addEventListener("resize", () => { measure(); pick(); }); measure(); pick();
     btn.addEventListener("click", () => { if (!cur) return; const next = cur.nextElementSibling; scrollToY(next ? next.getBoundingClientRect().top + scrollY : cur.offsetTop + cur.offsetHeight); });
   })();
 
   /* ---------- Living Khelu ---------- */
+  const live = new Set(); // the Khelus on screen (their eyes follow the pointer)
   $$("[data-kheelu]").forEach((k) => {
     const body = $(".kheelu__body", k); const lids = $$(".kheelu__lid", k);
     const idle = gsap.timeline({ repeat: -1, yoyo: true, paused: true }).to(body, { scaleY: 1.014, scaleX: 0.996, y: -4, rotation: 0.8, duration: 2.2, ease: "sine.inOut" });
     let timer;
     const blink = () => { gsap.timeline().to(lids, { scaleY: 1, duration: 0.07 }).to(lids, { scaleY: 0, duration: 0.12 }); timer = setTimeout(blink, 2600 + Math.random() * 3200); };
-    ScrollTrigger.create({ trigger: k, start: "top bottom", end: "bottom top", onToggle: (s) => { clearTimeout(timer); if (s.isActive) { idle.play(); timer = setTimeout(blink, 900); } else idle.pause(); } });
+    ScrollTrigger.create({ trigger: k, start: "top bottom", end: "bottom top", onToggle: (s) => { clearTimeout(timer); k.classList.toggle("is-live", s.isActive); if (s.isActive) { live.add(k); idle.play(); timer = setTimeout(blink, 900); } else { live.delete(k); idle.pause(); } } });
   });
 
   /* ---------- Nav: solid once scrolled, hides on the way down ---------- */
@@ -162,7 +181,7 @@
       .to(Q, { y: (i) => (-30 - (i % 5) * 14) * R(), duration: 0.3, ease: "none" }, 0.72));
     if (fine) {
       const movers = qs.map((q) => ({ el: q.inner, x: gsap.quickTo(q.inner, "x", { duration: 0.6, ease: "power3" }), y: gsap.quickTo(q.inner, "y", { duration: 0.6, ease: "power3" }) }));
-      track.addEventListener("pointermove", (e) => { const rad = 160 * R(); movers.forEach((m) => { const r = m.el.getBoundingClientRect(); const dx = r.left + r.width / 2 - e.clientX, dy = r.top + r.height / 2 - e.clientY; const d = Math.hypot(dx, dy); const f = d < rad ? (rad - d) / rad : 0; m.x((dx / (d || 1)) * f * 70 * R()); m.y((dy / (d || 1)) * f * 70 * R()); }); });
+      track.addEventListener("pointermove", perFrame((e) => { const rad = 160 * R(); movers.forEach((m) => { const r = m.el.getBoundingClientRect(); const dx = r.left + r.width / 2 - e.clientX, dy = r.top + r.height / 2 - e.clientY; const d = Math.hypot(dx, dy); const f = d < rad ? (rad - d) / rad : 0; m.x((dx / (d || 1)) * f * 70 * R()); m.y((dy / (d || 1)) * f * 70 * R()); }); }), { passive: true });
     }
   })();
 
@@ -320,11 +339,11 @@
     $("[data-again]", child).addEventListener("click", () => { ask(); line(LINES[4].label, LINES[4].text, LINES[4].bub); });
     // The step list jumps to that point of the conversation.
     $$("[data-goto]", track).forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.goto; scrollToY(track.offsetTop + (track.offsetHeight - stage.offsetHeight) * (AT[i] + 0.03)); }));
-    if (fine) sky.addEventListener("pointermove", (e) => {
+    if (fine) sky.addEventListener("pointermove", perFrame((e) => {
       const r = sky.getBoundingClientRect(); const s = Math.max(640 / r.width, 480 / r.height); // viewBox units per pixel (slice)
       const px = (e.clientX - r.left) * s, py = 480 - (r.bottom - e.clientY) * s; // xMinYMax slice
       dots.forEach((d) => { const dx = d.x - px, dy = d.y - py, dist = Math.hypot(dx, dy) || 1, f = Math.max(0, 1 - dist / 120) * 34; d.qx((dx / dist) * f); d.qy((dy / dist) * f); });
-    });
+    }), { passive: true });
     sky.addEventListener("pointerleave", () => dots.forEach((d) => { d.qx(0); d.qy(0); }));
   })();
 
@@ -347,7 +366,7 @@
     const room = $(".home__scenes", track);
     const drift = gsap.to(room, { scale: 1.05, duration: 9, ease: "sine.inOut", yoyo: true, repeat: -1, paused: true });
     if (fine) { const px = gsap.quickTo(room, "x", { duration: 1.2, ease: "power3" }), py = gsap.quickTo(room, "y", { duration: 1.2, ease: "power3" });
-      track.addEventListener("pointermove", (e) => { px(-(e.clientX / innerWidth - 0.5) * 24); py(-(e.clientY / innerHeight - 0.5) * 14); }); }
+      track.addEventListener("pointermove", perFrame((e) => { px(-(e.clientX / innerWidth - 0.5) * 24); py(-(e.clientY / innerHeight - 0.5) * 14); }), { passive: true }); }
     let cur = 0;
     const show = (i) => {
       if (i === cur) return; const dir = i > cur ? 1 : -1; const prev = cur; cur = i;
@@ -373,8 +392,10 @@
       if (i === cur) return; const prev = cur; cur = i; const [say, name, glow, ink] = L[i];
       stage.style.setProperty("--lgc", glow); stage.style.setProperty("--lgw", ink);
       items.forEach((li, j) => li.classList.toggle("is-on", j === i));
-      if (prev >= 0) gsap.to(words[prev], { opacity: 0, y: -28, filter: "blur(6px)", duration: 0.35, ease: "power2.in", overwrite: true });
-      gsap.fromTo(words[i], { opacity: 0, y: 36, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.6, delay: prev >= 0 ? 0.15 : 0, ease: "power3.out", overwrite: true });
+      // Phones: no blur on the big word (an animated filter on large text is costly on a phone GPU).
+      const blur = (v) => (fine ? { filter: `blur(${v}px)` } : {});
+      if (prev >= 0) gsap.to(words[prev], { opacity: 0, y: -28, ...blur(6), duration: 0.35, ease: "power2.in", overwrite: true });
+      gsap.fromTo(words[i], { opacity: 0, y: 36, ...blur(6) }, { opacity: 1, y: 0, ...blur(0), duration: 0.6, delay: prev >= 0 ? 0.15 : 0, ease: "power3.out", overwrite: true });
       cap.textContent = `${say} · ${name}`;
       gsap.fromTo(ripples, { scale: 0.6, opacity: 0.85 }, { scale: 1.9, opacity: 0, duration: 1.1, stagger: 0.16, ease: "power1.out" });
       gsap.fromTo(k, { y: 0 }, { y: -12, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out" });
@@ -390,11 +411,11 @@
     const board = $("[data-memory]"); const path = $("[data-mem-path]", board); const svg = path.ownerSVGElement; const ns = "http://www.w3.org/2000/svg"; const rocket = $("[data-rocket]", board);
     const defs = document.createElementNS(ns, "defs"), cp = document.createElementNS(ns, "clipPath"), rect = document.createElementNS(ns, "rect"); cp.id = "memclip";
     rect.setAttribute("x", 0); rect.setAttribute("y", -50); rect.setAttribute("height", 500); rect.setAttribute("width", 0); cp.appendChild(rect); defs.appendChild(cp); svg.prepend(defs); path.setAttribute("clip-path", "url(#memclip)");
-    const [y, t] = $$(".mem-card", board); const len = path.getTotalLength(); const fly = { p: 0 };
+    const [y, t] = $$(".mem-card", board); const len = path.getTotalLength(); const fly = { p: 0 }; let rocketW = 0; // measured once per resize
     const place = () => {
       const W = board.clientWidth / 640, H = board.clientHeight / 360; const at = path.getPointAtLength(fly.p * len), ahead = path.getPointAtLength(Math.min(len, fly.p * len + 2));
       const ang = Math.atan2((ahead.y - at.y) * H, (ahead.x - at.x) * W) * 180 / Math.PI;
-      rect.setAttribute("width", at.x); const rw = rocket.getBoundingClientRect().width;
+      rect.setAttribute("width", at.x); const rw = rocketW || (rocketW = rocket.getBoundingClientRect().width);
       gsap.set(rocket, { x: at.x * W - rw / 2, y: at.y * H - rw * 0.35, rotation: ang + 13, opacity: fly.p > 0.005 && fly.p < 0.985 ? 1 : 0, transformOrigin: "50% 50%" });
     };
     gsap.timeline({ scrollTrigger: { trigger: board, start: "top 85%", end: "bottom 45%", scrub: 0.8 } })
@@ -402,7 +423,7 @@
       .to(fly, { p: 1, duration: 0.6, ease: "sine.inOut", onUpdate: place }, ">")
       .from(t, { opacity: 0, y: 30, scale: 0.94, duration: 0.2 }, ">-0.08")
       .fromTo(t, { rotation: -2 }, { rotation: 0, duration: 0.1, ease: "back.out(3)" }, ">-0.05");
-    addEventListener("resize", place); place();
+    addEventListener("resize", () => { rocketW = 0; place(); }); place();
   })();
 
   /* ---------- 7 · Bedtime stars ---------- */
@@ -430,7 +451,8 @@
     const cards = $$("[data-stack] .scard");
     cards.forEach((c, i) => {
       gsap.from($(".scard__ico", c), { scale: 0.4, rotation: -20, opacity: 0, duration: 0.7, ease: "back.out(2)", scrollTrigger: { trigger: c, start: "top 85%", once: true } });
-      if (i < cards.length - 1) gsap.timeline({ scrollTrigger: { trigger: cards[i + 1], start: "top 85%", end: "top 30%", scrub: true } }).to(c, { scale: 0.94, ease: "none" }, 0).to([...c.children], { opacity: 0, ease: "none" }, 0);
+      // The card underneath only settles back (scale): its words stay at full contrast while any of them still shows.
+      if (i < cards.length - 1) gsap.to(c, { scale: 0.95, ease: "none", scrollTrigger: { trigger: cards[i + 1], start: "top 85%", end: "top 30%", scrub: true } });
     });
   })();
 
@@ -438,8 +460,9 @@
   (() => {
     const track = $("#privacy"); if (!track) return; const stage = $(".stage", track);
     const items = $$("[data-pv] li", track), tags = $$("[data-pv-tags] .pv__tag", track), hl = $("[data-pv-hl]", track);
-    // Rows on app-privacy-centre.webp (% from top, height): banner, banner, (tags instead), keep-chats + voice, download + delete.
-    const ROWS = [[20, 15.7], [20, 15.7], null, [45.4, 23.6], [68.9, 21.6]];
+    // Rows on app-privacy-centre.webp (% from top, height; the app's banner is cropped out): keep chats, (none), (tags
+    // instead), keep chats + voice, download + delete.
+    const ROWS = [[31.6, 16], null, null, [31.6, 30], [61.1, 27.4]];
     let cur = -1;
     const go = (i) => {
       if (i === cur) return; cur = i;
@@ -467,8 +490,9 @@
     let playing = null;
     const focus = () => {
       const mid = innerWidth / 2; let best = null, bestD = 1e9;
-      items.forEach((it) => { const r = it.getBoundingClientRect(); const d = Math.abs(r.left + r.width / 2 - mid); const k = Math.max(0, 1 - d / (innerWidth * 0.6));
-        gsap.set(it, { scale: 0.86 + 0.14 * k }); if (d < bestD) { bestD = d; best = it; } });
+      // Read every card's position first, then write the scales (a read after a write would force a layout per card).
+      const ds = items.map((it) => { const r = it.getBoundingClientRect(); return Math.abs(r.left + r.width / 2 - mid); });
+      items.forEach((it, j) => { const d = ds[j], k = Math.max(0, 1 - d / (innerWidth * 0.6)); gsap.set(it, { scale: 0.86 + 0.14 * k }); if (d < bestD) { bestD = d; best = it; } });
       items.forEach((it) => it.classList.toggle("is-center", it === best));
       const v = best && best.matches(".film") ? $("video", best) : null;
       if (v !== playing) { if (playing) playing.pause(); playing = v; if (v) { if (!v.src) v.src = v.dataset.loop; v.play().catch(() => {}); } }
@@ -493,16 +517,20 @@
   /* ---------- Pointer layer ---------- */
   if (fine) {
     const cur = $("#cursor"); const cx = gsap.quickTo(cur, "x", { duration: 0.25, ease: "power3" }), cy = gsap.quickTo(cur, "y", { duration: 0.25, ease: "power3" });
-    addEventListener("pointermove", (e) => { cur.classList.add("is-live"); cx(e.clientX); cy(e.clientY); });
+    addEventListener("pointermove", (e) => { cur.classList.add("is-live"); cx(e.clientX); cy(e.clientY); }, { passive: true });
     document.addEventListener("pointerover", (e) => { const t = e.target.closest("a, button, summary, .chip, .mode, [data-drag]"); cur.className = "cursor is-live"; cur.textContent = ""; if (!t) return;
       if (t.matches("[data-drag]")) { cur.classList.add("is-drag"); cur.textContent = "DRAG"; } else cur.classList.add("is-link"); });
-    $$("[data-magnetic]").forEach((b) => { b.addEventListener("pointermove", (e) => { const r = b.getBoundingClientRect(); b.style.setProperty("--mx", (e.clientX - r.left - r.width / 2) * 0.25 + "px"); b.style.setProperty("--my", (e.clientY - r.top - r.height / 2) * 0.35 + "px"); }); b.addEventListener("pointerleave", () => { b.style.setProperty("--mx", "0rem"); b.style.setProperty("--my", "0rem"); }); });
-    $$("[data-tilt]").forEach((w) => { const k = $(".kheelu", w); const rx = gsap.quickTo(k, "rotationY", { duration: 0.8, ease: "power3" }), ry = gsap.quickTo(k, "rotationX", { duration: 0.8, ease: "power3" });
-      w.addEventListener("pointermove", (e) => { const r = w.getBoundingClientRect(); rx(((e.clientX - r.left) / r.width - 0.5) * 18); ry(-((e.clientY - r.top) / r.height - 0.5) * 10); }); w.addEventListener("pointerleave", () => { rx(0); ry(0); }); });
-    addEventListener("pointermove", (e) => { root.style.setProperty("--gx", (e.clientX / innerWidth - 0.5) * 6 + "px"); root.style.setProperty("--gy", (e.clientY / innerHeight - 0.5) * 6 + "px"); });
+    $$("[data-magnetic]").forEach((b) => { let r = null; b.addEventListener("pointerenter", () => { r = null; }); b.addEventListener("pointermove", perFrame((e) => { if (!r) { b.style.setProperty("--mx", "0rem"); b.style.setProperty("--my", "0rem"); r = b.getBoundingClientRect(); } b.style.setProperty("--mx", (e.clientX - r.left - r.width / 2) * 0.25 + "px"); b.style.setProperty("--my", (e.clientY - r.top - r.height / 2) * 0.35 + "px"); }), { passive: true }); b.addEventListener("pointerleave", () => { r = null; b.style.setProperty("--mx", "0rem"); b.style.setProperty("--my", "0rem"); }); });
+    $$("[data-tilt]").forEach((w) => { const k = $(".kheelu", w); if (!k) return; const rx = gsap.quickTo(k, "rotationY", { duration: 0.8, ease: "power3" }), ry = gsap.quickTo(k, "rotationX", { duration: 0.8, ease: "power3" });
+      w.addEventListener("pointermove", perFrame((e) => { const r = w.getBoundingClientRect(); rx(((e.clientX - r.left) / r.width - 0.5) * 18); ry(-((e.clientY - r.top) / r.height - 0.5) * 10); }), { passive: true }); w.addEventListener("pointerleave", () => { rx(0); ry(0); }); });
+    // Eye glints follow the pointer: set on the Khelus on screen only (a custom property on <html> would restyle the whole page).
+    addEventListener("pointermove", perFrame((e) => { const gx = (e.clientX / innerWidth - 0.5) * 6 + "px", gy = (e.clientY / innerHeight - 0.5) * 6 + "px"; live.forEach((k) => { k.style.setProperty("--gx", gx); k.style.setProperty("--gy", gy); }); }), { passive: true });
     $$("[data-drag]").forEach((r) => { let down = false, sx = 0, sl = 0, moved = false; r.addEventListener("pointerdown", (e) => { down = true; moved = false; sx = e.clientX; sl = r.scrollLeft; }); addEventListener("pointerup", () => (down = false)); r.addEventListener("pointermove", (e) => { if (!down) return; const d = e.clientX - sx; if (Math.abs(d) > 5) moved = true; r.scrollLeft = sl - d; }); r.addEventListener("click", (e) => { if (moved) { e.stopPropagation(); e.preventDefault(); } }, true); });
   }
   addEventListener("load", () => ScrollTrigger.refresh());
+  ScrollTrigger.addEventListener("refresh", () => document.dispatchEvent(new Event("khelu:refresh")));
+  // Infinite CSS loops (stars, motes, mode icons, footer light) pause while their section is off screen.
+  if ("IntersectionObserver" in window) { const io = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle("is-off", !e.isIntersecting)), { rootMargin: "200px 0px" }); $$("main > section, main > header, footer").forEach((x) => io.observe(x)); }
   let rw = innerWidth; addEventListener("resize", () => { if (Math.abs(innerWidth - rw) > 80) { rw = innerWidth; ScrollTrigger.refresh(); } });
 
   /* ---------- Video dialog (shared with the static fallback) ---------- */
@@ -513,6 +541,23 @@
     modal.querySelector("[data-close]").addEventListener("click", close);
     modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
     modal.addEventListener("close", () => mv.pause());
+  }
+  /* ---------- Bottom bar: it steps aside (slides down) while an in-page Pre-order button or the footer is on screen, so
+     one view never shows two Pre-order buttons and the bar never covers the footer; WhatsApp hides in the footer. No
+     layout reads: IntersectionObserver only. Runs with reduced motion too (the slide is then a fade-free jump). ---------- */
+  function initBar() {
+    const bar = document.querySelector(".ctabar"), wa = document.getElementById("wa"), foot = document.querySelector("[data-footer]");
+    if (!bar || !("IntersectionObserver" in window)) return;
+    const targets = [...document.querySelectorAll('main a[href^="https://store.kheelona.com"]')];
+    if (foot) targets.push(foot);
+    const seen = new Set();
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => (e.isIntersecting ? seen.add(e.target) : seen.delete(e.target)));
+      const aside = seen.size > 0;
+      bar.classList.toggle("is-aside", aside); bar.inert = aside;
+      if (wa && foot) wa.classList.toggle("is-foot", seen.has(foot));
+    }, { rootMargin: "0px 0px -6% 0px" });
+    targets.forEach((t) => io.observe(t));
   }
   function initStatic() {
     document.querySelectorAll(".scene").forEach((s, i) => { s.style.opacity = i === 0 ? 1 : 0; });

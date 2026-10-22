@@ -16,6 +16,10 @@ Phone frame: `/tools/phone-preview.html?page=/team`.
 <section class="ph">…</section>
 …
 ```
+Optional search meta: `"updated"` (or the page's date in `_shell/seo.json` "updated"), `"crumb"`, `"ogImage"`,
+`"ogImageAlt"`, `"noindex"`, `"sitemap": false`, `"output"` (e.g. `404.html`). The build adds the breadcrumb, the
+site's JSON-LD and the head tags itself (see the root README, v13); put only a page's own nodes (FAQPage, HowTo,
+ContactPage…) in `<head-extra>`. `python3 tools/check-seo.py` after every build.
 `css` / `js` load `assets/css/pages/<name>.css` and `assets/js/pages/<name>.js` (plain CSS / plain JS, no build step).
 
 ## Design language (same as home)

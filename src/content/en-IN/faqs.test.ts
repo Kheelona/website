@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { llmsText } from "@/app/llms.txt/route";
 import type { Copy, FaqItem, Offer, ProseBlock } from "@/content/types";
 import { isModeVariant } from "@/lib/content/mode";
 import { toPlainText } from "@/lib/content/plain-text";
@@ -130,7 +129,6 @@ describe("ids", () => {
     expect(Object.fromEntries(listed.filter((id) => pagesOf(id).length > 1).map((id) => [id, pagesOf(id)]))).toEqual(SHARED);
     expect(listed.filter((id) => MACHINE_ONLY.includes(id))).toEqual([]);
     expect([...listed, ...MACHINE_ONLY].sort()).toEqual(Object.keys(faqs).sort());
-    expect(readRepoFile("src/app/pricing.md/route.ts")).toContain('faqs["how-much"]');
   });
 
   it("are picked in the order a page lists them", () => {
@@ -304,14 +302,6 @@ describe("task 8c.4: the FAQ wording and the languages answer (D061)", () => {
     expect(plain(faqs["not-right-for-us"].question, full)).toBe(NOT_RIGHT_QUESTION.build);
   });
 
-  it("is the question llms.txt asks, with the same answer, in both offer modes (the machine file restates the page)", () => {
-    for (const offer of [token, full]) {
-      const body = llmsText(offer);
-      expect(body).toContain(`\n### ${NOT_RIGHT_QUESTION.build}\n\n${plain(faqs["not-right-for-us"].answer, offer)}\n`);
-      expect(body).not.toContain(NOT_RIGHT_QUESTION.mockup);
-    }
-  });
-
   it("keeps that question's answer word for word: the approved one, with V18's refund timing", () => {
     expect(plain(faqs["not-right-for-us"].answer, token)).toBe(
       "Return it within 7 days of delivery, no questions asked. Opened is fine: just send back everything that came in the box, undamaged. We arrange the pickup, free. Once it reaches us and qualifies for return, your refund reaches you within 7 working days. Until we dispatch it, everything you’ve paid is refundable in full.",
@@ -373,19 +363,10 @@ describe("task 8c.8: the product page's sixth question and the languages answer'
     expect(RETURNS_QUESTION.build.startsWith(NOT_RIGHT_QUESTION.build.replace(/\?$/, ","))).toBe(true);
   });
 
-  it("is the question /llms.txt asks, with the same answer, never the old one", () => {
-    for (const offer of [token, full]) {
-      const body = llmsText(offer);
-      expect(body).toContain(`\n### ${RETURNS_QUESTION.build}\n\n${plain(faqs["returns-and-warranty"].answer, offer)}\n`);
-      expect(body).not.toContain(RETURNS_QUESTION.mockup);
-    }
-  });
-
   it("links the film's name in the languages answer to that film's tile, the words unchanged", () => {
     expect(faqs.languages.answer).toContain(`[“${filmSix.chip}”](#${filmSix.id})`);
     expect(LANGUAGES_FAQ.film).toEqual({ name: `“${filmSix.chip}”`, href: `#${filmSix.id}` });
     expect(plain(faqs.languages.answer, token)).toBe(LANGUAGES_FAQ.answer);
-    expect(llmsText(token)).toContain(`\n${LANGUAGES_FAQ.answer}\n`);
   });
 });
 

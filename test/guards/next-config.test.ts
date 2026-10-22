@@ -3,6 +3,7 @@ import { join } from "node:path";
 import type { RemotePattern } from "next/dist/shared/lib/image-config";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { securityHeaders } from "@/lib/security-headers";
+import { IMMUTABLE, IMMUTABLE_SOURCES, withSiteImageOrigins } from "@/lib/site-pages/headers";
 
 /**
  * next.config.ts and vercel.json, the two files Vercel builds from (task 1.3;
@@ -80,14 +81,21 @@ describe("headers(): beta is noindex on every response", () => {
     expect(JSON.stringify(await config.headers!())).not.toMatch(/robots/i);
   });
 
+  /* 2026-10-22: the frozen policy plus the redesign's two image origins in img-src (src/lib/site-pages/headers.ts;
+     test/site-pages.test.ts proves it a superset that changes nothing else), and a year's cache on the redesign's
+     content-hashed files. Nothing else. */
   it.each(Object.entries(VERCEL))("keeps the security headers exactly as they were on a %s build", async (_kind, vars) => {
     const config = await loadConfigUnder(vars);
     const rules = await config.headers!();
     expect(rules[0]).toEqual({
       source: "/((?!_next/static|_next/image).*)",
-      headers: securityHeaders(process.env.NODE_ENV === "development"),
+      headers: withSiteImageOrigins(securityHeaders(process.env.NODE_ENV === "development")),
     });
-    expect(rules.filter((r) => r !== rules[0] && JSON.stringify(r) !== JSON.stringify(NOINDEX))).toEqual([]);
+    const cache = IMMUTABLE_SOURCES.map((source) => ({ source, headers: [{ key: "Cache-Control", value: IMMUTABLE }] }));
+    expect(rules.slice(1, 1 + cache.length)).toEqual(cache);
+    expect(
+      rules.filter((r, i) => i > cache.length && JSON.stringify(r) !== JSON.stringify(NOINDEX)),
+    ).toEqual([]);
   });
 
   /* test/security-headers.test.ts reads these three literals as text. */
@@ -189,8 +197,20 @@ describe("the rest of the config", () => {
   it("sets exactly the keys the plan names", async () => {
     const config = await loadConfigUnder(VERCEL.production);
     expect(Object.keys(config).sort()).toEqual(
-      ["env", "headers", "images", "poweredByHeader", "redirects", "rewrites", "skipTrailingSlashRedirect"].sort(),
+      [
+        "env",
+        "headers",
+        "images",
+        "poweredByHeader",
+        "redirects",
+        "rewrites",
+        "skipTrailingSlashRedirect",
+        /* 2026-10-22, the redesign as the marketing site: its 404 outside the root layout, and build/site/ traced. */
+        "experimental",
+        "outputFileTracingIncludes",
+      ].sort(),
     );
+    expect(config.experimental).toEqual({ globalNotFound: true });
     expect(config.poweredByHeader).toBe(false);
     expect(config.skipTrailingSlashRedirect).toBe(true);
   });

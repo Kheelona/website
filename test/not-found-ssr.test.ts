@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { describe, expect, it } from "vitest";
 
@@ -29,9 +29,11 @@ import { describe, expect, it } from "vitest";
 const read = (p: string) => readFileSync(p, "utf8");
 
 describe("a dynamic route with a known param list refuses unknown ones at the router", () => {
-  const stories = "src/app/(site)/stories/[slug]/page.tsx";
+  /* Since 2026-10-22 one route serves every marketing page and story (the redesign's build), and the router answers
+     anything else with the redesign's 404 (src/app/global-not-found.tsx). */
+  const stories = "src/app/(site)/[[...path]]/route.ts";
 
-  it("stories declares dynamicParams = false", () => {
+  it("the marketing route declares dynamicParams = false", () => {
     /* Without it, /stories/<unknown> renders on demand, hits `notFound()` and
        serves the blank shell. With it the slug never matches a route at all,
        and the full marketing 404 is streamed. */
@@ -39,9 +41,14 @@ describe("a dynamic route with a known param list refuses unknown ones at the ro
   });
 
   it("every route that lists its params refuses the ones it did not list", () => {
-    const routes = execFileSync("git", ["ls-files", "src/app/**/page.tsx"], { encoding: "utf8" })
-      .split("\n")
+    const routes = [
+      ...new Set([
+        ...execFileSync("git", ["ls-files", "src/app/**/page.tsx", "src/app/**/route.ts"], { encoding: "utf8" }).split("\n"),
+        stories,
+      ]),
+    ]
       .filter(Boolean)
+      .filter((f) => existsSync(f))
       .filter((f) => /\[[^\]]+\]/.test(f));
     const listed = routes.filter((f) => read(f).includes("generateStaticParams"));
     /* Guard the guard: an empty list would pass this vacuously. */

@@ -27,6 +27,11 @@
 /* Words of a [data-split] heading rise in, one after another (pages.js) */
 .split-w { display: inline-block; }
 .motion [data-split] .split-w { opacity: 0; transform: translateY(0.6em); }
+/* First screen, built by tools/optimize.mjs: hero words and lines rise in with CSS from the first paint, without
+   waiting for JavaScript (the deployed site; in the source preview pages.js and main.js animate them). */
+@keyframes rise-in { from { opacity: 0; transform: translateY(var(--rise, 1.75rem)); } to { opacity: 1; transform: none; } }
+.js .reveal-in { animation: rise-in 0.9s var(--ease-out) var(--d, 0.15s) both; }
+.js [data-split-css] .split-w { --rise: 0.6em; animation: rise-in 0.9s var(--ease-out) calc(0.1s + var(--i, 0) * 0.06s) both; }
 
 /* ---------- Answer-first block (40–60 words, the page's direct answer) ---------- */
 .answer { position: relative; padding: clamp(1.5rem, 3.5vw, 2.75rem); border-radius: var(--radius-lg); background: var(--tint, var(--p-sky)); }

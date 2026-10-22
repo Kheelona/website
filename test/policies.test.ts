@@ -1,7 +1,6 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
-import sitemap from "@/app/sitemap";
 import { GSTIN } from "@/config/site";
 import { REDIRECTS } from "@/config/redirects";
 import { navigation } from "@/content/en-IN/navigation";
@@ -26,7 +25,11 @@ import { isStillLegacy } from "./guards/legacy-paths";
  */
 
 const LEGAL = routes.filter((r) => r.kind === "legal");
-const pageFile = (r: RouteEntry) => `src/app/(site)${r.path}/page.tsx`;
+/* Since 2026-10-22 the marketing pages are the redesign's (src/app/(site)/[[...path]] serves redesign/dist): a policy
+   page is the redesign's built page, and the sitemap is the redesign's own file. */
+const pageFile = (r: RouteEntry) => `redesign${r.path}/index.html`;
+const sitemapUrls = () =>
+  [...readFileSync(join(ROOT, "redesign/sitemap.xml"), "utf8").matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
 const moduleFile = (r: RouteEntry) => `src/content/en-IN/${r.module}.ts`;
 
 /** A legal route's document: the export of its content module that carries `meta` and `parts`. */
@@ -59,11 +62,12 @@ describe("the policy pages a merchant has to publish", () => {
   });
 
   it.each(LEGAL.map((r) => r.path))("%s is in the sitemap", (path) => {
-    expect(sitemap().map((entry) => entry.url)).toContain(absoluteUrl(path));
+    expect(sitemapUrls()).toContain(absoluteUrl(path));
   });
 
   it.each(LEGAL.map((r) => r.path))("%s is linked from the footer of every page and from the store's policy links", (path) => {
     expect(navigation.footer.columns.flatMap((c) => c.links.map((l) => l.href))).toContain(path);
+    expect(readFileSync(join(ROOT, "redesign/pages/_shell/footer.html"), "utf8")).toContain(`href="${path}"`);
     expect(navigation.policies.map((l) => l.href)).toContain(path);
   });
 });

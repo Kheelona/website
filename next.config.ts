@@ -11,6 +11,8 @@ import {
 import { resolveSiteEnv } from "./src/config/env";
 import { JOURNAL_IMAGES, VIDEO_STILLS } from "./src/config/journal";
 import { REDIRECTS } from "./src/config/redirects";
+import { IMMUTABLE, IMMUTABLE_SOURCES, withSiteImageOrigins } from "./src/lib/site-pages/headers";
+import { siteOverrideRewrites } from "./src/lib/site-pages/overrides";
 
 const nextConfig: NextConfig = {
   /* THE ONE SITE ENVIRONMENT (D048, ADR-008, architecture §15.2). Resolved
@@ -37,6 +39,17 @@ const nextConfig: NextConfig = {
   },
   /* Nothing gains from telling the world which framework serves this (F-08). */
   poweredByHeader: false,
+
+  /* THE REDESIGN IS THE MARKETING SITE (2026-10-22). Its 404 is a whole document of its own
+     (src/app/global-not-found.tsx), outside the root layout, which stays the store's. */
+  experimental: { globalNotFound: true },
+  /* The pages, the 404 and the machine files are read from build/site/ (prebuild step 40) when a route renders, and an
+     ISR revalidation renders again inside a Vercel function: every function that reads them carries them. */
+  outputFileTracingIncludes: Object.fromEntries(
+    ["/[[...path]]", "/sitemap.xml", "/robots.txt", "/llms.txt", "/pricing.md", "/_not-found", "/_global-not-found"].map(
+      (route) => [route.replace(/[[\]]/g, "\\$&"), ["./build/site/**/*"]],
+    ),
+  ),
 
   /* 🔴 GLOBAL FLAG, NARROWED BACK IN `src/proxy.ts` (2026-09-20, §8.39).
      PostHog ingests on `/e/`, `/s/` and `/i/`, all WITH a trailing slash — read
@@ -76,7 +89,16 @@ const nextConfig: NextConfig = {
        The other production check is geography: PostHog reads the visitor's
        country from the request IP, which it now sees via `x-forwarded-for`. */
     return {
+      /* THE REDESIGN'S STATIC FILES (2026-10-22). prebuild step 40 copies everything of redesign/dist that is not a
+         page into public/_site/, so no file of it can collide with public/ or an app route. A request for a file
+         (a path with an extension) that neither public/ nor a route answers is looked up there, under its own URL:
+         /assets/css/site.<hash>.css, /og/kheelu.jpg, /icon-192.png. After the filesystem, so public/, the icons and
+         the machine files keep their URLs; before the page routes, which never have an extension. */
+      afterFiles: [{ source: "/:file(.+\\.[A-Za-z0-9]+)", destination: "/_site/:file" }],
       beforeFiles: [
+        /* Where the redesign has its own version of a file the app also serves (/og.png, /og/kheelu.jpg), the
+           redesign's wins: one exact rule per file, listed by prebuild step 40 (src/lib/site-pages/overrides.ts). */
+        ...siteOverrideRewrites(),
         {
           source: `${POSTHOG_ASSET_PROXY_PATH}/:path*`,
           destination: `${POSTHOG_ASSET_HOST}/:path*`,
@@ -99,8 +121,11 @@ const nextConfig: NextConfig = {
         /* Everything except Next's own build output, which is same-origin
            static files that no policy here protects. */
         source: "/((?!_next/static|_next/image).*)",
-        headers: securityHeaders(process.env.NODE_ENV === "development"),
+        /* The frozen policy plus the redesign's image origins in img-src (src/lib/site-pages/headers.ts). */
+        headers: withSiteImageOrigins(securityHeaders(process.env.NODE_ENV === "development")),
       },
+      /* The redesign's content-hashed files, cached for a year (redesign/dist/asset-manifest.json `cache`). */
+      ...IMMUTABLE_SOURCES.map((source) => ({ source, headers: [{ key: "Cache-Control", value: IMMUTABLE }] })),
       /* BETA IS NOINDEX ON EVERY RESPONSE (D048, QA review N1). The proxy
          already says noindex on HTML routes for any host outside
          INDEXABLE_HOSTS, but its matcher skips every path with a dot

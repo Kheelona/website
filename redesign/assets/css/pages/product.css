@@ -91,7 +91,11 @@
 .pdp-steps__grid { display: grid; gap: 2rem; }
 .pdp-steps__list { list-style: none; margin: 2.5rem 0 0; padding: 0; display: grid; gap: 1rem; }
 .pdp-steps__list li { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 1.25rem; align-items: start; padding: 1.5rem 1.625rem; border-radius: var(--radius); background: #fff; box-shadow: 0 0 0 1px var(--line); transition: opacity 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out), transform 0.5s var(--ease-out); }
-.js .pdp-steps__list li:not(.is-on) { opacity: 0.42; }
+/* Steps that aren't playing are dimmed with colour, not opacity, so their text keeps AA contrast (4.5:1 and up). */
+.js .pdp-steps__list li:not(.is-on) { background: #fbfbfc; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05); }
+.js .pdp-steps__list li:not(.is-on) h3 { color: var(--ink-2); }
+.js .pdp-steps__list li:not(.is-on) p, .js .pdp-steps__list li:not(.is-on) .pdp-steps__n { color: var(--ink-3); }
+.pdp-steps__list h3, .pdp-steps__list p { transition: color 0.5s var(--ease-out); }
 .pdp-steps__list li.is-on { box-shadow: 0 0 0 1px var(--line), 0 1.75rem 3rem -2rem rgba(40, 30, 20, 0.45); }
 .pdp-steps__n { display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: 50%; background: var(--bg-soft); font: 650 1.125rem/1 var(--display); transition: background-color 0.5s, color 0.5s; }
 .pdp-steps__list li.is-on .pdp-steps__n { background: var(--ink); color: #fff; }
@@ -257,7 +261,7 @@
 .pdp-safe__ico { display: grid; place-items: center; width: 3.75rem; height: 3.75rem; margin-bottom: 1.5rem; border-radius: 1.25rem; background: var(--green); box-shadow: 0 1.25rem 2.5rem -1.25rem rgba(31, 157, 107, 0.7); }
 .pdp-safe__ico svg { width: 1.875rem; height: 1.875rem; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .pdp-safe__line { margin: 0 0 1.75rem; max-width: 36rem; font: 650 clamp(1.5rem, 2.8vw, 2.375rem)/1.18 var(--display); letter-spacing: -0.025em; text-wrap: balance; }
-.pdp-safe__phone { align-self: end; justify-self: center; width: min(78%, 17.5rem); }
+.pdp-safe__phone { position: relative; align-self: end; justify-self: center; width: min(78%, 17.5rem); }
 .pdp-safe__phone img { width: 100%; height: auto; border-radius: 1.75rem 1.75rem 0 0; background: #f2f2f7; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 2.5rem 4rem -2rem rgba(20, 90, 60, 0.45); }
 @media (max-width: 899px) { .pdp-safe__card { padding-bottom: 0; text-align: center; } .pdp-safe__ico { margin-inline: auto; } .pdp-safe__phone { width: min(64%, 15rem); max-height: 15rem; overflow: hidden; } }
 
@@ -312,3 +316,5 @@
   .pdp-know__belly { width: min(78%, 17rem); }
   .pdp-know { gap: 1.5rem; }
 }
+/* The chat card's pink glow (::before, 1.5rem outside the card) pushed phones 4 px sideways: clip it at the section. */
+.pdp-ask { overflow-x: clip; }

@@ -18,7 +18,7 @@
   if (reduced) return;
 
   // Headings with [data-split]: each word rises in.
-  $$("[data-split]").forEach((h) => {
+  $$("[data-split]:not([data-split-css])").forEach((h) => { // [data-split-css]: split at build time, animated by CSS
     const walk = (n) => [...n.childNodes].forEach((c) => {
       if (c.nodeType === 3) { const f = document.createDocumentFragment(); c.textContent.split(/(\s+)/).forEach((w) => { if (!w) return; if (/^\s+$/.test(w)) f.append(w); else { const s = document.createElement("span"); s.className = "split-w"; s.textContent = w; f.append(s); } }); c.replaceWith(f); }
       else if (c.nodeType === 1 && !c.classList.contains("split-w")) { if (c.classList.contains("mark")) { c.classList.add("split-w"); } else walk(c); }

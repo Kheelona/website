@@ -36,13 +36,14 @@ const BRAND = "Kheelona";
 function pageFileFor(path: string): string | null {
   const visit = (dir: string, rest: readonly string[]): string | null => {
     if (rest.length === 0 && existsSync(join(ROOT, dir, "page.tsx"))) return `${dir}/page.tsx`;
+    if (/\/\[\[\.\.\.[^\]]+\]\]$/.test(dir) && existsSync(join(ROOT, dir, "route.ts"))) return `${dir}/route.ts`;
     const dirs = readdirSync(join(ROOT, dir), { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
     const next = rest.length > 0;
     const tries: (readonly [string, readonly string[]])[] = [
       ...(next ? dirs.filter((d) => d === rest[0]).map((d) => [d, rest.slice(1)] as const) : []),
       ...dirs.filter((d) => /^\(.+\)$/.test(d)).map((d) => [d, rest] as const),
       ...(next ? dirs.filter((d) => /^\[[^.[\]]+\]$/.test(d)).map((d) => [d, rest.slice(1)] as const) : []),
-      ...(next ? dirs.filter((d) => /^\[\[?\.\.\./.test(d)).map((d) => [d, [] as string[]] as const) : []),
+      ...dirs.filter((d) => (next ? /^\[\[?\.\.\./ : /^\[\[\.\.\./).test(d)).map((d) => [d, [] as string[]] as const),
     ];
     for (const [d, r] of tries) {
       const hit = visit(`${dir}/${d}`, r);
@@ -116,8 +117,11 @@ const COPY_PAGE: ReadonlyMap<string, string> = new Map(
 const same = (s: string) => s.replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/‑/g, "-").replace(/ /g, " ");
 
 describe("every route of the URL plan", () => {
+  /* Since 2026-10-22 every marketing page is the redesign's built page, served by src/app/(site)/[[...path]]
+     (test/site-pages.test.ts); a route the redesign does not build answers 404. */
   it("is served by a page file", () => {
-    expect(routes.filter((r) => pageFileFor(r.path) === null).map((r) => r.path)).toEqual([]);
+    expect(pageFileFor("/team")).toBe("src/app/(site)/[[...path]]/route.ts");
+    expect(routes.filter((r) => !existsSync(join(ROOT, "redesign", r.path, "index.html"))).map((r) => r.path)).toEqual([]);
   });
 
   it("has its content module, or prints pending while its legacy page still serves it", () => {

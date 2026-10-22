@@ -4,7 +4,7 @@
  * the prerendered output only when a build newer than src/ is present) and the Playwright specs in
  * `verify:e2e` (every served route; revealOnMoneyInDocument runs in motion.spec.ts).
  */
-import { existsSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { decodeEntities, htmlToText } from "./mockup-text";
 import { ROOT, listFiles } from "./repo";
@@ -108,6 +108,17 @@ export function revealOnMoneyInDocument(root?: Document | Element): string[] {
 export type BuiltPage = { file: string; route: string };
 
 /** Prerendered pages from `next build`, or null when there is no build newer than src/ and content. */
+/** A prerendered route body that is a page: the marketing pages are route handlers since 2026-10-22
+ *  (src/app/(site)/[[...path]]), prerendered as `<route>.body` with their headers in `<route>.meta`. */
+function isHtmlBody(body: string): boolean {
+  try {
+    const meta = JSON.parse(readFileSync(body.replace(/\.body$/, ".meta"), "utf8")) as { headers?: Record<string, string> };
+    return /text\/html/.test(meta.headers?.["content-type"] ?? "");
+  } catch {
+    return false;
+  }
+}
+
 export function freshBuiltPages(): BuiltPage[] | null {
   const app = join(ROOT, ".next", "server", "app");
   const id = join(ROOT, ".next", "BUILD_ID");
@@ -120,8 +131,8 @@ export function freshBuiltPages(): BuiltPage[] | null {
     for (const name of readdirSync(dir)) {
       const p = join(dir, name);
       if (statSync(p).isDirectory()) visit(p);
-      else if (name.endsWith(".html")) {
-        const rel = relative(app, p).replace(/\\/g, "/").replace(/\.html$/, "");
+      else if (name.endsWith(".html") || (name.endsWith(".body") && isHtmlBody(p))) {
+        const rel = relative(app, p).replace(/\\/g, "/").replace(/\.(html|body)$/, "");
         pages.push({ file: p, route: rel === "index" ? "/" : `/${rel.replace(/\/index$/, "")}` });
       }
     }

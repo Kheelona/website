@@ -1,7 +1,8 @@
 #!/bin/bash
-# Builds every web-ready asset for the redesign prototype from the source files.
-# Run from website/redesign: bash tools/build-assets.sh
-# Needs ffmpeg + cwebp (Homebrew). Sources are read, never modified.
+# Builds every web-ready asset for the redesign from the source files, on this Mac (the local asset step).
+# Run from website/redesign: bash tools/build-assets.sh. Its outputs are COMMITTED (redesign/.gitignore): a deploy build
+# (tools/build-site.sh, on Vercel with Node + Python only) never encodes media, it only reads these files.
+# Needs ffmpeg + cwebp (Homebrew) and the source media outside the repo. Sources are read, never modified.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 CODE=../..                                   # kheelona/code
@@ -42,6 +43,10 @@ offline|03 — Play offline|240|1797
 privacy-centre|04 — Privacy|308|1730
 profile|05 — Profile|288|1750
 LIST
+# The privacy centre without its green banner ("…chats are seen only by you. Never sold, never used for ads."): the site
+# may not show that line (D044, D035, D038). Source rows 570-843 are cut out; the rest is stitched together.
+ffmpeg -v error -y -i "$APPSRC/v1.0.5 · App Store — 04 — Privacy.png" -filter_complex "[0]crop=1070:262:68:308[a];[0]crop=1070:888:68:843[b];[a][b]vstack,scale=720:-1:flags=lanczos" "$TMP/app-privacy-centre.png"
+cwebp -quiet -q 84 -m 6 "$TMP/app-privacy-centre.png" -o "$IMG/app-privacy-centre.webp"
 
 # 4) Lifestyle photos (illustrative), 960w WebP.
 for p in myra-01-breakfast-why kabir-03-homework-desk ira-03-festive-evening-song myra-03-bedtime-cuddle tara-02-evening-with-amma advik-02-whispering-to-kheelu; do
@@ -49,18 +54,18 @@ for p in myra-01-breakfast-why kabir-03-homework-desk ira-03-festive-evening-son
   cwebp -quiet -q 78 -m 6 "$TMP/$p.png" -o "$IMG/$p.webp"
 done
 
-# 5) Real-family films: full file (played on tap) + 6s silent preview loop + poster.
+# 5) Real-family films: a 6s silent preview loop + poster each. The full films (played on tap) are NOT copied: pages
+# play the files the Next app already serves, /video/moments/<id>.mp4 and /video/expert/expert-clip.mp4 (public/video,
+# committed once; redesign/video links there for the local server).
 # macOS ships bash 3.2 (no associative arrays): "id:start-second" pairs.
 for pair in learning-by-asking:4 a-mother-joins-in:6 a-father-speaks:8 first-conversations:5 counting-out-loud:6 a-story-in-two-languages:9 a-parent-speaks:10; do
   id=${pair%%:*}; start=${pair##*:}
   src="$SITE/public/video/moments/$id.mp4"
-  cp "$src" "$VID/$id.mp4"
   ffmpeg -v error -y -ss "$start" -t 6 -i "$src" -an -vf "scale=432:-2,fps=24" -c:v libx264 -profile:v main -crf 28 -preset slow -movflags +faststart -pix_fmt yuv420p "$VID/$id-loop.mp4"
   ffmpeg -v error -y -ss "$start" -i "$src" -frames:v 1 -vf "scale=432:-2" "$TMP/$id.png"
   cwebp -quiet -q 72 "$TMP/$id.png" -o "$IMG/poster-$id.webp"
 done
-cp "$SITE/public/video/expert/expert-clip.mp4" "$VID/expert-clip.mp4"
-ffmpeg -v error -y -ss 3 -i "$VID/expert-clip.mp4" -frames:v 1 -vf "scale=960:-2" "$TMP/expert.png"
+ffmpeg -v error -y -ss 3 -i "$SITE/public/video/expert/expert-clip.mp4" -frames:v 1 -vf "scale=960:-2" "$TMP/expert.png"
 cwebp -quiet -q 75 "$TMP/expert.png" -o "$IMG/poster-expert.webp"
 
 # 6) Recognition marks.
@@ -85,4 +90,10 @@ if command -v gsutil >/dev/null 2>&1; then mkdir -p "$AUD/pipeline-a-src"; gsuti
 if [ -d "$AUD/pipeline-a-src" ]; then for f in "$AUD"/pipeline-a-src/*.wav; do [ -e "$f" ] || continue; n=$(basename "$f" .wav); ffmpeg -v error -y -i "$f" -ac 1 -ar 24000 -c:a aac -b:a 64k "$AUD/toy/pa-$n.m4a"; done; fi
 
 rm -rf "$TMP"
-echo "assets built:"; du -sh "$IMG" "$VID" "$AUD"
+
+# 9) The images the deploy build serves but never encodes (a Vercel build has no cwebp): responsive variants, PNG → WebP
+#    and SVGO output, into assets/gen/ (indexed by assets/gen/variants.json). Re-run this line alone after changing a
+#    page's images: node tools/optimize.mjs --make-variants (it builds dist/ too, and removes unused variants).
+python3 tools/build-pages.py >/dev/null
+node tools/optimize.mjs --make-variants
+echo "assets built (commit them: they are the site's media):"; du -sh "$IMG" "$VID" "$AUD" assets/gen

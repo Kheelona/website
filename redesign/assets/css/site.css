@@ -5,6 +5,8 @@
 @font-face { font-family: "Inter Tight"; src: url("../fonts/inter-tight-var-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
 @font-face { font-family: "Inter"; src: url("../fonts/inter-var-latin.woff2") format("woff2"); font-weight: 400 600; font-display: swap; }
 @font-face { font-family: "Tight Fallback"; src: local("Arial"); size-adjust: 96%; ascent-override: 94%; descent-override: 24%; }
+/* Inter's metrics on Arial, so text doesn't move when Inter arrives (no layout shift from the font swap). */
+@font-face { font-family: "Inter Fallback"; src: local("Arial"), local("Helvetica"); size-adjust: 107.07%; ascent-override: 90.49%; descent-override: 22.56%; line-gap-override: 0%; }
 
 html { font-size: 100%; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 @media (min-width: 1600px) { html { font-size: min(calc(100vw / 90), 2.4rem); } }
@@ -21,7 +23,7 @@ html { font-size: 100%; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; 
   --radius: 1.75rem; --radius-lg: 2.5rem;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --display: "Inter Tight", "Tight Fallback", system-ui, -apple-system, sans-serif;
-  --text: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --text: "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
   --max: 74rem; --gutter: clamp(1.25rem, 5vw, 3rem);
   --bar: 5.25rem; /* the bottom CTA bar's footprint */
 }
@@ -33,6 +35,9 @@ img, video, svg { display: block; max-width: 100%; }
 a { color: inherit; }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 0.1875rem solid #0a6ee8; outline-offset: 0.1875rem; border-radius: 0.5rem; }
+/* "Example account": on every parent-app screenshot that shows a child's name (the screens are a demo account). */
+.eg-tag { position: absolute; z-index: 4; left: 0.75rem; bottom: 0.75rem; padding: 0.3125rem 0.625rem; border-radius: 999px; background: rgba(29, 29, 31, 0.78); color: #fff; font: 600 0.6875rem/1.2 var(--text); letter-spacing: 0.01em; white-space: nowrap; pointer-events: none; }
+.eg-tag--xs { left: 0.375rem; bottom: 0.375rem; padding: 0.1875rem 0.375rem; font-size: 0.5625rem; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .skip { position: absolute; left: 0.75rem; top: -4rem; z-index: 100; background: var(--ink); color: #fff; padding: 0.625rem 1rem; border-radius: 999px; }
 .skip:focus { top: 0.75rem; }
@@ -154,7 +159,7 @@ button { font: inherit; color: inherit; }
 .hero__meet .h2 { font-size: clamp(2rem, 4.2vw, 3.75rem); }
 .motion .hero__meet { opacity: 0; }
 .hero__stage { position: absolute; inset: auto 0 1.5rem; z-index: 2; display: grid; place-items: end center; perspective: 75rem; }
-.hero__stage .kheelu { --kw: min(64vw, calc((100svh - var(--bar) - 21rem) * 0.82), 27rem); }
+.hero__stage .kheelu { --kw: min(64vw, calc((100svh - var(--bar) - 23.5rem) * 0.82), 27rem); } /* 23.5rem: room for the copy and its offer line */
 .hero__q { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .hero__stage .kheelu { z-index: 2; } /* the question marks stay behind Khelu */
 .qmark { position: absolute; font: 700 clamp(1.25rem, 2.4vw, 2.1rem)/1 var(--display); color: var(--c, #f2a65a); }
@@ -651,7 +656,7 @@ button { font: inherit; color: inherit; }
 .pv__blob { position: absolute; width: 80%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(closest-side, rgba(143, 211, 193, 0.55), transparent); filter: blur(0.5rem); }
 .pv__card { position: relative; width: min(100%, 25rem); border-radius: 1.75rem; overflow: hidden; background: #f2f2f7; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 2.5rem 5rem -2.5rem rgba(20, 90, 60, 0.45); }
 .pv__card img { width: 100%; height: auto; }
-.pv__hl { position: absolute; left: 1.5%; right: 1.5%; top: 20%; height: 15.7%; border-radius: 1.125rem; border: 0.1875rem solid var(--green); box-shadow: 0 0 0 0.375rem rgba(31, 157, 107, 0.16); opacity: 0; pointer-events: none; }
+.pv__hl { position: absolute; left: 1.5%; right: 1.5%; top: 31.6%; height: 16%; border-radius: 1.125rem; border: 0.1875rem solid var(--green); box-shadow: 0 0 0 0.375rem rgba(31, 157, 107, 0.16); opacity: 0; pointer-events: none; }
 .pv__hl.is-red { border-color: #c8322c; box-shadow: 0 0 0 0.375rem rgba(200, 50, 44, 0.14); }
 .pv__tags { position: absolute; inset: 0; pointer-events: none; }
 .pv__tag { position: absolute; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; border-radius: 1rem; background: #fff; box-shadow: 0 0 0 1px var(--line), 0 1.25rem 2.5rem -1.5rem rgba(0, 0, 0, 0.4); font: 600 0.9375rem/1 var(--text); opacity: 0; transform: translateY(0.75rem) scale(0.92); transition: opacity 0.45s var(--ease-out), transform 0.55s var(--ease-out); }
@@ -662,7 +667,7 @@ button { font: inherit; color: inherit; }
 @media (max-width: 899px) {
   .pv__grid { gap: 0.75rem; padding-top: 4.25rem; justify-items: center; text-align: center; }
   .pv__visual { order: -1; }
-  .pv__card { width: min(64vw, calc((100svh - var(--bar) - 25rem) * 0.75)); border-radius: 1.25rem; }
+  .pv__card { width: min(64vw, calc((100svh - var(--bar) - 25rem) * 0.93)); border-radius: 1.25rem; }
   .pv__badge { display: none; }
   .pv .h2 { font-size: 1.875rem; }
   .pv__list { margin-top: 0.75rem; }
@@ -748,3 +753,69 @@ button { font: inherit; color: inherit; }
 
 /* Memory: the paper rocket that carries yesterday's question to today */
 .memory__board svg.mem-rocket { position: absolute; inset: auto; left: 0; top: 0; z-index: 3; width: 4.5rem; height: auto; filter: drop-shadow(0 0.5rem 0.5rem rgba(0, 0, 0, 0.18)); opacity: 0; pointer-events: none; }
+
+/* ---------- Smoothness (every screen) ----------
+   1. A living Khelu on screen gets its own compositor layer while it breathes, so its soft drop shadow is drawn once
+      and then only moved (main.js adds .is-live while it is in view).
+   2. Infinite CSS loops pause while their section is off screen (main.js adds .is-off).
+   3. Phones and tablets: no backdrop blur on the fixed bars and floating cards; the content scrolling beneath would
+      be re-blurred every frame. A slightly more opaque white reads the same. */
+.kheelu.is-live .kheelu__body { will-change: transform; }
+.is-off, .is-off *, .is-off *::before, .is-off *::after { animation-play-state: paused !important; }
+@media (hover: none), (pointer: coarse), (max-width: 699px) {
+  .nav.is-solid, .ctabar, .skipdemo, .home__copy, .modal::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .nav.is-solid, .ctabar, .skipdemo { background: rgba(255, 255, 255, 0.96); }
+  .home__copy { background: rgba(255, 255, 255, 0.93); }
+  .modal::backdrop { background: rgba(255, 255, 255, 0.96); }
+}
+
+
+/* ===================== v14 — launch fixes (CMO review, 2026-10-22) ===================== */
+/* Nav: a compact Pre-order pill on laptops (cta=navbar); the phone menu ends with one (cta=navbar-mobile). */
+.nav__cta { display: none; }
+@media (min-width: 900px) { .nav__cta { display: inline-flex; min-height: 2.5rem; } }
+.nav__menu .nav__menu-cta { padding: 0.375rem 0 0; }
+.nav__menu .nav__menu-cta a { display: flex; min-height: 2.75rem; padding: 0 1rem; color: #fff; border-radius: 999px; }
+
+/* Hero: the age and the offer under the sub-line. */
+.hero__offer { margin: 0.75rem auto 0; font: 500 0.9375rem/1.45 var(--text); color: var(--ink-2); text-wrap: balance; }
+
+/* Bottom bar: steps aside (slides down) while an in-page Pre-order button or the footer is on screen (main.js). */
+.ctabar { transition: transform 0.5s var(--ease-out), opacity 0.3s; }
+.ctabar.is-aside { transform: translate(-50%, calc(100% + 1.5rem)); opacity: 0; pointer-events: none; }
+.ctabar__sep { display: none; }
+.ctabar__small { white-space: nowrap; }
+/* Phones: the price on one line ("₹4,999 · ₹499 today, refundable"; it breaks after the dot on the narrowest), and
+   Pre-order. No "Watch" here: the bar keeps one job. */
+@media (max-width: 599px) {
+  .ctabar { width: calc(100vw - 1.5rem); padding-left: 1rem; }
+  .ctabar__in { width: 100%; justify-content: space-between; gap: 0.5rem; }
+  .ctabar__price { display: block; min-width: 0; white-space: normal; font-size: 0.75rem; line-height: 1.3; }
+  .ctabar__price b { display: inline; font-size: 0.875rem; }
+  .ctabar__name, .ctabar__watch { display: none; }
+  .ctabar__sep { display: inline; }
+  .ctabar__btns .btn { padding: 0 1rem; font-size: 0.875rem; }
+}
+/* WhatsApp: hidden while the footer (with its own contact links) is on screen. */
+.wa.is-on.is-foot { transform: scale(0); }
+/* Skip: compact on phones, just above the bar, and it never lingers over the footer (main.js hides it there). */
+@media (max-width: 699px) { .skipdemo { min-height: 2.125rem; padding: 0 0.75rem; font-size: 0.75rem; bottom: calc(var(--bar) + 0.375rem); } }
+
+/* Inline Pre-order (home: after the sky-blue conversation, the safety facts and "Talking helps young brains grow"). */
+.incta { margin-top: 2rem; }
+.incta__row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.5rem; }
+.incta .price-line { margin-top: 0.625rem; font-size: 0.875rem; color: var(--ink-2); }
+.incta-sec { padding: 0 0 clamp(2.5rem, 6vw, 4rem); }
+.incta-sec .incta { margin-top: 0; text-align: center; }
+.incta-sec .incta__row { justify-content: center; }
+@media (max-width: 699px) { .incta { text-align: center; } .incta__row { justify-content: center; } }
+.reduced .ctabar { transition: none; }
+
+/* Home on phones: each pinned chapter is at most 2.5 screens tall (laptops keep their lengths). Every timeline is driven
+   by its track's progress, so each one still plays from start to end, just over a shorter scroll. */
+@media (max-width: 699px) {
+  #hero { --len: 160vh !important; }
+  #how, #films, #asks, #day { --len: 250vh !important; }
+  #languages, #privacy { --len: 230vh !important; }
+  #app { --len: 200vh !important; }
+}

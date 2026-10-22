@@ -56,6 +56,14 @@
     [
       "until you delete them. Delete them all sooner by deleting your account.",
       "until you delete them. Delete them all at once by deleting your account."
+    ],
+    [
+      "It speaks English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French, with up to 10 languages at launch.",
+      "It speaks 10 languages, including English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French."
+    ],
+    [
+      "<h3>Up to 10 languages at launch</h3>",
+      "<h3>10 languages</h3>"
     ]
   ],
   "remove_regex": [

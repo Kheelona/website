@@ -114,6 +114,7 @@ const COPY = {
     readGuide: (m) => `Read the guide · ${m} min read`,
   },
   published: "First published",
+  updated: "Updated",
   readTime: (m) => `${m} min read`,
   sources: "Sources",
   related: "Related guides",
@@ -137,20 +138,8 @@ const COPY = {
   },
 };
 
-const ORG_LD = {
-  "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: "Kheelona", legalName: "Kheelona Robotics Private Limited", url: SITE_URL,
-  logo: `${SITE_URL}/brand/logo-mark.png`, image: `${SITE_URL}/og.png`, foundingDate: "2025",
-  founder: [
-    { "@type": "Person", "@id": `${SITE_URL}/team#apoorva-sahu`, name: "Apoorva Sahu", jobTitle: "Co-Founder and CEO", url: `${SITE_URL}/team`, sameAs: ["https://www.linkedin.com/in/sahu-apoorva/"] },
-    { "@type": "Person", "@id": `${SITE_URL}/team#aman-soni`, name: "Aman Soni", jobTitle: "Co-Founder and CTO", url: `${SITE_URL}/team`, sameAs: ["https://www.linkedin.com/in/aman-soni-6b17b6223/"] },
-    { "@type": "Person", "@id": `${SITE_URL}/team#kashyap-c-r`, name: "Kashyap C.R", jobTitle: "Co-Founder and Chief Hardware Officer", url: `${SITE_URL}/team`, sameAs: ["https://www.linkedin.com/in/kashyap-c-r-7ba18177/"] },
-  ],
-  address: { "@type": "PostalAddress", streetAddress: "5th Floor, No 51 (Old Site No 1), Kokarya Business Synergy Center, 5th Main, 5th Block Jayanagar", addressLocality: "Bengaluru", addressRegion: "Karnataka", postalCode: "560041", addressCountry: "IN" },
-  areaServed: { "@type": "Country", name: "India" },
-  sameAs: ["https://www.linkedin.com/company/kheelona/", "https://www.instagram.com/kheelona/", "https://www.facebook.com/kheelona/", "https://play.google.com/store/apps/developer?id=Kheelona.com", "https://kheelona.ai"],
-  contactPoint: { "@type": "ContactPoint", contactType: "customer support", email: "hello@kheelona.com", url: "https://wa.me/919187546483", areaServed: "IN", availableLanguage: ["English", "Hindi"] },
-};
-const WEBSITE_LD = { "@type": "WebSite", "@id": `${SITE_URL}/#website`, url: SITE_URL, name: "Kheelona", inLanguage: "en-IN", publisher: { "@id": `${SITE_URL}/#organization` } };
+/* The Organization, founders, WebSite, BreadcrumbList and the hub's Blog are written by tools/build-pages.py from
+   pages/_shell/seo.json (one source, the same @ids on every page); a guide carries only its BlogPosting. */
 
 /* ── helpers ─────────────────────────────────────────────────────────────────────────────────────────── */
 class Refusal extends Error {}
@@ -338,6 +327,14 @@ function webpSize(path) {
   if (kind === "VP8L") { const n = b.readUInt32LE(21); return [1 + (n & 0x3fff), 1 + ((n >> 14) & 0x3fff)]; }
   throw new Error(`${path} is not a WebP image`);
 }
+/** A story card's image fills its box (object-fit: cover), so a landscape photo in a tall box is drawn wider than the box:
+ *  its box height × its aspect. Boxes measured at 360–1920 px: 108×154–217 px thumbnails on phones, 336×210 on tablets,
+ *  381×238 or 582×364 on laptops (rem sizes grow with the root font past 1600 px, hence the vw there). */
+function cardSizes(img) {
+  return img.width / img.height > 1.2
+    ? "(max-width: 639px) 24rem, (max-width: 1099px) 49vw, (min-width: 1600px) 41vw, 41rem"
+    : "(max-width: 639px) 10rem, (max-width: 1099px) 45vw, (min-width: 1600px) 37vw, 37rem";
+}
 function imgTag(img, sizes, { eager = false, alt } = {}) {
   const set = img.srcset ? ` srcset="${img.srcset}" sizes="${sizes}"` : "";
   const load = eager ? ' fetchpriority="high"' : ' loading="lazy" decoding="async"';
@@ -494,7 +491,7 @@ function closer(heading, ctx) {
 }
 function storycard(a, tint, { tag = false } = {}) {
   const img = a.image
-    ? `<span class="storycard__img">${imgTag(a.image, "(min-width: 1100px) 22rem, (min-width: 640px) 45vw, 100vw", { alt: "" })}</span>`
+    ? `<span class="storycard__img">${imgTag(a.image, cardSizes(a.image), { alt: "" })}</span>`
     : `<span class="storycard__img storycard__img--none" aria-hidden="true"><img src="/assets/img/kheelu-480.webp" width="480" height="586" loading="lazy" decoding="async" alt=""></span>`;
   return `<a class="storycard tint-${tint}" href="/stories/${a.slug}" data-tilt-card>${img}<span class="storycard__body">${tag ? `<span class="storycard__tag">${esc(a.topic.title)}</span>` : ""}`
     + `<h3>${fmt(nowrapAges(a.card.title), a.ctx)}</h3><p>${fmt(nowrapAges(a.card.summary), a.ctx)}</p>`
@@ -526,7 +523,10 @@ function articlePage(a, bySlug) {
     out.push(`<section class="sources" aria-labelledby="${id}"><h2 id="${id}">${COPY.sources}</h2><ol class="notes">${post.sources.map((s, i) =>
       `<li id="src-${i + 1}"><span class="notes__n">[${i + 1}]</span><span>${fmt(s.label, ctx)} <a href="${attr(s.url)}">${esc(s.url)}</a></span></li>`).join("")}</ol></section>`);
   }
-  const byline = [esc(a.person ? a.person.name : TEAM.byline), `<span class="nowrap">${COPY.published} <time datetime="${post.published}">${fmtDate(post.published)}</time></span>`, `<span class="nowrap">${COPY.readTime(a.minutes)}</span>`]
+  /* Both dates are shown (search engines and answer engines read the visible "Updated" against dateModified). */
+  const updated = post.updated && post.updated !== post.published
+    ? [`<span class="nowrap">${COPY.updated} <time datetime="${post.updated}">${fmtDate(post.updated)}</time></span>`] : [];
+  const byline = [esc(a.person ? a.person.name : TEAM.byline), `<span class="nowrap">${COPY.published} <time datetime="${post.published}">${fmtDate(post.published)}</time></span>`, ...updated, `<span class="nowrap">${COPY.readTime(a.minutes)}</span>`]
     .join('<span class="story-meta__sep">&nbsp;· </span>');
   const hero = a.image ? `<figure class="story-hero__fig story-hero__fig--${a.image.shape === "wide" ? "wide" : "tall"} tint-${TINTS[a.n % 6]} reveal">${imgTag(a.image, "(min-width: 900px) 40vw, 100vw", { eager: true })}</figure>` : "";
 
@@ -560,12 +560,16 @@ ${closer(COPY.close.topicHeadings[topic.id] ?? COPY.close.heading, ctx)}`;
       publisher: { "@id": `${SITE_URL}/#organization` },
       citation: post.sources.map((s) => ({ "@type": "CreativeWork", name: khelu(s.label), url: s.url })),
     },
-    { "@type": "BreadcrumbList", itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Stories", item: `${SITE_URL}/stories` },
-      { "@type": "ListItem", position: 2, name: topic.title, item: `${SITE_URL}/stories#${topic.id}` },
-    ] },
-  ]) + "\n" + ldScript([ORG_LD, WEBSITE_LD]);
-  return front({ path: `/stories/${a.slug}`, title: khelu(a.metaTitle), description: khelu(post.description), css: ["stories"], js: ["stories"], ogType: "article", slug: "story" })
+  ]);
+  /* Search meta for tools/build-pages.py: the dates (sitemap lastmod, article:* tags), the byline, the topic (the
+     breadcrumb Home › Stories › topic › guide), the share card (og/<photo>.jpg, 1200×630) and its words. */
+  const card = a.image ? (a.image.card.startsWith(SITE_URL) ? a.image.card.slice(SITE_URL.length) : a.image.card) : undefined;
+  return front({
+    path: `/stories/${a.slug}`, title: khelu(a.metaTitle), description: khelu(post.description), css: ["stories"], js: ["stories"], ogType: "article", slug: "story",
+    published: post.published, updated: post.updated ?? post.published, author: a.person ? a.person.name : TEAM.byline,
+    topic: { id: topic.id, title: topic.title }, crumb: plain(post.title),
+    ...(card && { ogImage: card, ogImageAlt: khelu(a.image.alt ?? COPY.close.art) }),
+  })
     + `<head-extra>\n${ld}\n</head-extra>
 <div class="readbar" aria-hidden="true"></div>
 <article class="story" aria-labelledby="story-title">
@@ -573,7 +577,7 @@ ${closer(COPY.close.topicHeadings[topic.id] ?? COPY.close.heading, ctx)}`;
   <div class="ph__glow" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="wrap ph__grid story-hero__grid${a.image ? "" : " story-hero__grid--solo"}">
     <div>
-      <nav aria-label="Breadcrumb"><ol class="crumbs"><li><a href="/stories">Stories</a></li><li><a href="/stories#${topic.id}">${esc(topic.title)}</a></li></ol></nav>
+      <nav aria-label="Breadcrumb"><ol class="crumbs"><li><a href="/">Home</a></li><li><a href="/stories">Stories</a></li><li><a href="/stories#${topic.id}">${esc(topic.title)}</a></li></ol></nav>
       <h1 class="display story-title" id="story-title" data-split>${fmt(a.h1, ctx)}</h1>
       ${post.lead ? `<p class="lead reveal">${fmt(nowrapAges(post.lead), ctx)}</p>` : ""}
       <p class="story-meta reveal"><a class="story-meta__topic tint-${tint}" href="/stories#${topic.id}">${esc(topic.title)}</a><span class="story-meta__by">${byline}</span></p>
@@ -620,8 +624,9 @@ function hubPage(articles, groups) {
 </section>`;
   });
   const shown = groups.filter((g) => g.featured || g.slugs.length);
-  return front({ path: "/stories", title: H.title, description: H.description, css: ["stories"], js: ["stories"], slug: "stories" })
-    + `<head-extra>\n${ldScript([ORG_LD, WEBSITE_LD])}\n</head-extra>
+  const updated = articles.map((a) => a.post.updated ?? a.post.published).sort().at(-1);
+  return front({ path: "/stories", title: H.title, description: H.description, css: ["stories"], js: ["stories"], slug: "stories", updated })
+    + `<head-extra></head-extra>
 <section class="ph hub-hero" aria-labelledby="stories-title">
   <div class="ph__glow" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="wrap ph__grid">

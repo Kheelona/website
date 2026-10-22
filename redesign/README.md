@@ -6,7 +6,7 @@ change around Kheelu while it speaks, then the languages, memory, bedtime, the p
 
 ## Run it
 ```bash
-bash tools/build-assets.sh            # once: builds product images, posters, video loops (needs ffmpeg + cwebp)
+bash tools/build-assets.sh            # the local asset step (needs ffmpeg + cwebp): its outputs are committed
 python3 -m http.server 5173 --bind 127.0.0.1
 # open http://127.0.0.1:5173/  ·  phone frame: http://127.0.0.1:5173/tools/phone-preview.html
 ```
@@ -23,7 +23,7 @@ python3 -m http.server 5173 --bind 127.0.0.1
   - question marks scatter away from the cursor;
   - film previews play on hover.
 - **Reduced motion:** every animation is skipped and the content shows in its final state.
-- **SEO:** title, description, canonical, OG/Twitter, the FAQPage and Organization JSON-LD (`seo/*.jsonld`), the H1,
+- **SEO:** see "Search (v13)" below. Every page is indexable; the Next app writes `noindex` into `<!--robots-->` on non-production hosts.
   every URL and every `data-ph-capture-attribute-cta` value match the live home page. `robots` is noindex here until it replaces the page.
 
 ## Content
@@ -126,3 +126,65 @@ Every page of betawebsite.kheelona.com, rebuilt in the home page's design langua
   keeps its own shirt pixels, mirrored so knit and stripes run on, tapering to the waist and shading toward the table),
   so face and body are one surface. No 3D arms or torso blocks: beside a real photo they never read as the same person.
   Legs under the table use the same flat, soft shading.
+
+## v13: search (SEO, AEO, GEO), 2026-10-22
+- **One source:** `pages/_shell/seo.json` holds the Organization (with description and support contact), the founders,
+  the WebSite and the Product + Offer (`alternateName` Kheelu and Lumi; `availabilityStarts` 2026-11-15 = mid-November;
+  @id `/products/lumi#product`), the default share card, breadcrumb names, page dates and the robots policy.
+  `tools/build-pages.py` writes them into every page's JSON-LD and into `index.html` (between `<!--seo:jsonld-->` markers;
+  home's FAQPage is read from its visible questions), so every @id is the same everywhere.
+- **Every page:** `<!--robots-->` in `<head>` (no prototype noindex), `<!--tracking-head-->` before `</head>`,
+  `<!--tracking-body-->` before `</body>`, absolute slash-less canonical, OG/Twitter with an image on disk, icons, a
+  visible breadcrumb + BreadcrumbList (not home), a WebPage node. Guides show "Updated" and carry a named author where
+  the post has one; `/stories` carries a Blog of every guide.
+- **Root files** (written by build-pages): `sitemap.xml`, `robots.txt`, `llms.txt` and `pricing.md` (templates in
+  `pages/_shell/`), `404.html` (source `pages/404.html`), `site.webmanifest`, `manifest.json` (routes, files, markers
+  and the redirect map from `pages/_shell/redirects.json`, for the Next app; not to be served).
+- **Images:** `bash tools/build-seo-images.sh` renders the share and product images from the current toy photo only
+  (`og/kheelu.jpg`, `og.png`, `media/kheelu-front.jpg`, `product/lumi.png`), copies beta's story cards (`og/<photo>.jpg`)
+  and the Kheelona mark (`brand/logo-mark.png`, favicon, icons). Each guide's card is also copied to `stories/<slug>.jpg`.
+- **Check:** `python3 tools/check-seo.py` (add `--table` for the per-page table): titles, descriptions, H1s, canonicals,
+  markers, JSON-LD parse and @id consistency, every internal link and anchor, sitemap, machine files, redirect targets.
+
+## Deploy build and performance (2026-10-22)
+- **One command:** `bash tools/build-site.sh` (stories with `BLOG_SYNC` off unless set → `build-pages.py` →
+  `node tools/optimize.mjs`) writes a complete static site to `dist/` (gitignored). Sources are never modified.
+- **Runs on Vercel with Node + Python 3 only** (2026-10-22): no ffmpeg, cwebp or svgo at deploy time, nothing downloaded
+  by npx (esbuild is the website's pinned devDependency; `build-pages.py`/`check-seo.py` run on Python 3.9+). Every
+  media file is **committed**: images, posters, the 6 s film loops (`assets/video/*-loop.mp4`), audio clips, the team
+  bodies and stills, and the generated images in `assets/gen/` (responsive variants, PNG → WebP, SVGO output, indexed by
+  `assets/gen/variants.json` with each source's hash). `optimize.mjs` only reads them and **fails, listing each file,**
+  when one it needs is missing or stale. After changing an image or a page's images, run the local asset step
+  (`bash tools/build-assets.sh`, or just `node tools/optimize.mjs --make-variants`) and commit `assets/gen/`.
+- **Full films are not copied:** pages play `/video/moments/<id>.mp4` and `/video/expert/expert-clip.mp4`, the files the
+  Next app already serves from `public/video` (`redesign/video` is a link there for the local server).
+- **What the optimiser does:** one minified stylesheet per page, inlined (`CSS_MODE=link` links it instead); GSAP +
+  ScrollTrigger + Lenis as one shared vendor file and one app file per page; the team 3D scene code-split with a
+  tree-shaken three.js chunk; responsive variants with measured `sizes`, PNG → WebP, SVGO (all read from `assets/gen/`); hero words split at
+  build time and animated by CSS (no wait for JS); content-hashed asset names; markers `<!--robots-->`,
+  `<!--tracking-head-->`, `<!--tracking-body-->` kept. `dist/asset-manifest.json` lists every mapping and the cache rule:
+  hashed `/assets/**` → `Cache-Control: public, max-age=31536000, immutable`; everything else → revalidate.
+  Khelu's voice clips and root files (`og/`, `media/`, `brand/`, icons, `sitemap.xml`…) keep their own paths.
+- **Team 3D:** `team3d.js` is a 1 KB boot; the scene (`team3d-scene.js` + three.js) loads after the page, when idle, and
+  starts on the first scroll/tap (or after a short idle wait). Until then a still shows (`assets/img/team/table-*.webp`,
+  the `<picture class="t3__poster">` in `pages/team.html`).
+  The founders' photo bodies are baked: re-run `node tools/bake-team3d.mjs` after changing a photo, `landmarks.json`
+  or the scene (it also re-captures the stills). `?t3debug` logs the set-up timings.
+
+## v14: launch fixes (CMO review and owner rulings, 2026-10-22)
+- **Claims:** safety heading "What Khelu does, and what it won't." ("Five facts you can check for yourself."), "It can't
+  browse the internet.", privacy rows "Yours to read.", the narrower "never sold" line, "Delete all chats", "Chats stay until
+  you delete them". The privacy-centre screenshot no longer shows the app's "seen only by you / never used for ads"
+  banner (cropped in `tools/build-assets.sh`). Kept as the owner chose: footer line, home H1, "Children ask hundreds of
+  questions a day.", "Backed by the best.", the app chips, "Never public", the voice greeting, the three `data-sample` quotes.
+- **Facts:** 10 languages everywhere; the ✦ wake-up button is on Khelu's tummy (the current toy photo; firmware's AI button,
+  also held for setup). Every parent-app screenshot carries an "Example account" tag. The support number is only on
+  `/contact` (a ContactPoint there) and the legal pages, never in the site-wide Organization.
+- **Selling on phones:** the hero says "Ages 3 to 7 · Reserve for ₹499 today, refundable · ₹4,999 in total."; the bottom
+  bar shows the price on phones and drops "Watch" there; subpages' bar is price + Pre-order (tagged `sticky-bar` in the
+  HTML), and only the product page adds "Watch", which plays the film in place. The bar slides away while an in-page
+  Pre-order button or the footer is on screen; WhatsApp hides in the footer. The nav has a "Pre-order Khelu" pill
+  (`navbar`; `navbar-mobile` in the menu). Home has inline Pre-order blocks after the sky-blue chapter (`home-asks` +
+  "See how Khelu works" `home-asks-learn`), after the safety facts (`safety` + `safety-learn`) and in `#why` (`home-why`).
+  Every price string here is swapped by the live offer (`src/lib/site-pages/offer-swap.ts`).
+- **Phones:** each pinned home chapter is at most 2.5 screens tall (home ≈ 27 phone screens, was 42).

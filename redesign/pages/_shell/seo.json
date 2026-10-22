@@ -1,0 +1,308 @@
+{
+ "_about": "The one source for the site-wide search facts: tools/build-pages.py writes these nodes into every page's JSON-LD (index.html included, between its <!--seo:jsonld--> markers), and builds sitemap.xml, robots.txt, llms.txt, pricing.md, 404.html, manifest.json and site.webmanifest from it. Product @id stays /products/lumi#product (beta's KHEELU_PRODUCT_ID, never changes). availabilityStarts 2026-11-15 = 'mid-November' (D037). Prices: the Next app fills live prices; keep these in step with the offer.",
+ "origin": "https://kheelona.com",
+ "siteName": "Kheelona",
+ "locale": "en-IN",
+ "themeColor": "#ffffff",
+ "defaultOg": {
+  "image": "/og/kheelu.jpg",
+  "width": 1200,
+  "height": 630,
+  "alt": "Khelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy."
+ },
+ "home": {
+  "path": "/",
+  "title": "Khelu by Kheelona: a screen-free plush toy that talks",
+  "updated": "2026-10-22",
+  "priority": 1.0
+ },
+ "crumbs": {
+  "/products/kheelu": "Meet Khelu",
+  "/safety": "Safety",
+  "/setup": "Setup",
+  "/ai-toys-for-kids-in-india": "Choosing an AI toy",
+  "/stories": "Stories",
+  "/team": "Team",
+  "/contact": "Contact",
+  "/privacy": "Privacy",
+  "/terms": "Terms",
+  "/refund": "Refunds",
+  "/shipping": "Shipping"
+ },
+ "priority": {
+  "/products/kheelu": 0.9,
+  "/safety": 0.8,
+  "/ai-toys-for-kids-in-india": 0.8,
+  "/stories": 0.7,
+  "/team": 0.6,
+  "/setup": 0.5,
+  "/contact": 0.4,
+  "/privacy": 0.3,
+  "/terms": 0.3,
+  "/refund": 0.3,
+  "/shipping": 0.3,
+  "article": 0.6
+ },
+ "organization": {
+  "@type": "Organization",
+  "@id": "https://kheelona.com/#organization",
+  "name": "Kheelona",
+  "legalName": "Kheelona Robotics Private Limited",
+  "url": "https://kheelona.com",
+  "description": "Kheelona Robotics Private Limited, a small company in Bengaluru, makes Khelu, a screen-free plush toy for children aged 3 to 7 that answers your child, then asks a question back. Khelu is designed by parents in Bengaluru and made in India.",
+  "logo": {
+   "@type": "ImageObject",
+   "url": "https://kheelona.com/brand/logo-mark.png",
+   "width": 512,
+   "height": 512
+  },
+  "image": "https://kheelona.com/og.png",
+  "foundingDate": "2025",
+  "founder": [
+   {
+    "@id": "https://kheelona.com/team#apoorva-sahu"
+   },
+   {
+    "@id": "https://kheelona.com/team#aman-soni"
+   },
+   {
+    "@id": "https://kheelona.com/team#kashyap-c-r"
+   }
+  ],
+  "address": {
+   "@type": "PostalAddress",
+   "streetAddress": "5th Floor, No 51 (Old Site No 1), Kokarya Business Synergy Center, 5th Main, 5th Block Jayanagar",
+   "addressLocality": "Bengaluru",
+   "addressRegion": "Karnataka",
+   "postalCode": "560041",
+   "addressCountry": "IN"
+  },
+  "areaServed": {
+   "@type": "Country",
+   "name": "India"
+  },
+  "sameAs": [
+   "https://www.linkedin.com/company/kheelona/",
+   "https://www.instagram.com/kheelona/",
+   "https://www.facebook.com/kheelona/",
+   "https://play.google.com/store/apps/developer?id=Kheelona.com",
+   "https://kheelona.ai"
+  ],
+  "contactPoint": {
+   "@type": "ContactPoint",
+   "contactType": "customer support",
+   "email": "hello@kheelona.com",
+   "url": "https://wa.me/919187546483",
+   "areaServed": "IN",
+   "availableLanguage": [
+    "English",
+    "Hindi"
+   ]
+  }
+ },
+ "people": [
+  {
+   "@type": "Person",
+   "@id": "https://kheelona.com/team#apoorva-sahu",
+   "name": "Apoorva Sahu",
+   "jobTitle": "Co-Founder and CEO",
+   "url": "https://kheelona.com/team#apoorva-sahu",
+   "sameAs": [
+    "https://www.linkedin.com/in/sahu-apoorva/"
+   ],
+   "worksFor": {
+    "@id": "https://kheelona.com/#organization"
+   }
+  },
+  {
+   "@type": "Person",
+   "@id": "https://kheelona.com/team#aman-soni",
+   "name": "Aman Soni",
+   "jobTitle": "Co-Founder and CTO",
+   "url": "https://kheelona.com/team#aman-soni",
+   "sameAs": [
+    "https://www.linkedin.com/in/aman-soni-6b17b6223/"
+   ],
+   "worksFor": {
+    "@id": "https://kheelona.com/#organization"
+   }
+  },
+  {
+   "@type": "Person",
+   "@id": "https://kheelona.com/team#kashyap-c-r",
+   "name": "Kashyap C.R",
+   "jobTitle": "Co-Founder and Chief Hardware Officer",
+   "url": "https://kheelona.com/team#kashyap-c-r",
+   "sameAs": [
+    "https://www.linkedin.com/in/kashyap-c-r-7ba18177/"
+   ],
+   "worksFor": {
+    "@id": "https://kheelona.com/#organization"
+   }
+  }
+ ],
+ "website": {
+  "@type": "WebSite",
+  "@id": "https://kheelona.com/#website",
+  "url": "https://kheelona.com",
+  "name": "Kheelona",
+  "alternateName": "Kheelona.com",
+  "inLanguage": "en-IN",
+  "publisher": {
+   "@id": "https://kheelona.com/#organization"
+  }
+ },
+ "product": {
+  "@type": "Product",
+  "@id": "https://kheelona.com/products/lumi#product",
+  "name": "Khelu by Kheelona",
+  "alternateName": [
+   "Kheelu",
+   "Lumi"
+  ],
+  "brand": {
+   "@type": "Brand",
+   "name": "Kheelona"
+  },
+  "manufacturer": {
+   "@id": "https://kheelona.com/#organization"
+  },
+  "description": "Khelu is a screen-free plush toy for ages 3 to 7 that holds a back-and-forth conversation. It answers your child, then asks a question back, so they do the thinking.",
+  "category": "Screen-free AI toy",
+  "url": "https://kheelona.com/products/kheelu",
+  "image": [
+   "https://kheelona.com/media/kheelu-front.jpg"
+  ],
+  "countryOfOrigin": {
+   "@type": "Country",
+   "name": "India"
+  },
+  "audience": {
+   "@type": "PeopleAudience",
+   "suggestedMinAge": 3,
+   "suggestedMaxAge": 7
+  },
+  "additionalProperty": [
+   {
+    "@type": "PropertyValue",
+    "name": "Ages",
+    "value": "3 to 7"
+   },
+   {
+    "@type": "PropertyValue",
+    "name": "What it is",
+    "value": "A cream plush rabbit with a speaker in its tummy and rainbow-lined ears"
+   },
+   {
+    "@type": "PropertyValue",
+    "name": "Screen",
+    "value": "None"
+   },
+   {
+    "@type": "PropertyValue",
+    "name": "Camera",
+    "value": "None"
+   },
+   {
+    "@type": "PropertyValue",
+    "name": "Microphone",
+    "value": "On only after a press of the wake-up button; off after a couple of minutes of quiet; a light shows while it’s on"
+   },
+   {
+    "@type": "PropertyValue",
+    "name": "Modes",
+    "value": "AI mode (home Wi‑Fi) · Story mode (no Wi‑Fi needed) · Bluetooth mode (a paired phone)"
+   },
+   {
+    "@type": "PropertyValue",
+    "name": "Open internet",
+    "value": "It can’t browse it"
+   },
+   {
+    "@type": "PropertyValue",
+    "name": "Languages",
+    "value": "10 languages, including English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French"
+   },
+   {
+    "@type": "PropertyValue",
+    "name": "Parent app",
+    "value": "Every conversation, word for word, a few minutes after it ends; a daily summary; search; a look back over the week or the month. On iPhone and Android."
+   }
+  ],
+  "offers": {
+   "@type": "Offer",
+   "url": "https://kheelona.com/products/kheelu",
+   "price": 4999,
+   "priceCurrency": "INR",
+   "availability": "https://schema.org/PreOrder",
+   "availabilityStarts": "2026-11-15",
+   "eligibleRegion": {
+    "@type": "Country",
+    "name": "India"
+   },
+   "description": "Khelu is ₹4,999 in total, with delivery anywhere in India included. The ₹499 is a refundable advance that reserves yours; the rest is due before delivery. Pay by UPI, card or net banking, with no payment fees.",
+   "hasMerchantReturnPolicy": {
+    "@type": "MerchantReturnPolicy",
+    "applicableCountry": "IN",
+    "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+    "merchantReturnDays": 7,
+    "returnFees": "https://schema.org/FreeReturn",
+    "refundType": "https://schema.org/FullRefund"
+   },
+   "shippingDetails": {
+    "@type": "OfferShippingDetails",
+    "shippingRate": {
+     "@type": "MonetaryAmount",
+     "value": 0,
+     "currency": "INR"
+    },
+    "shippingDestination": {
+     "@type": "DefinedRegion",
+     "addressCountry": "IN"
+    }
+   },
+   "warranty": {
+    "@type": "WarrantyPromise",
+    "durationOfWarranty": {
+     "@type": "QuantitativeValue",
+     "value": 6,
+     "unitCode": "MON"
+    }
+   },
+   "seller": {
+    "@id": "https://kheelona.com/#organization"
+   }
+  }
+ },
+ "robots": {
+  "allow": [
+   "GPTBot",
+   "OAI-SearchBot",
+   "ChatGPT-User",
+   "PerplexityBot",
+   "Perplexity-User",
+   "ClaudeBot",
+   "Claude-User",
+   "Claude-SearchBot",
+   "Google-Extended",
+   "Applebot-Extended",
+   "CCBot"
+  ],
+  "disallow": [
+   "Bytespider"
+  ]
+ },
+ "updated": {
+  "_about": "The day each hand-written page's words last changed (sitemap lastmod, WebPage dateModified). Bump a page's date when its copy changes; never the build date. Guides take theirs from the dashboard post.",
+  "/products/kheelu": "2026-10-22",
+  "/safety": "2026-10-22",
+  "/setup": "2026-10-22",
+  "/ai-toys-for-kids-in-india": "2026-10-22",
+  "/team": "2026-10-22",
+  "/contact": "2026-10-22",
+  "/privacy": "2026-10-22",
+  "/terms": "2026-10-22",
+  "/refund": "2026-10-22",
+  "/shipping": "2026-10-22"
+ }
+}
