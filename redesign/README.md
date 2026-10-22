@@ -52,8 +52,8 @@ wake-up button, the parent app, the prices and the delivery date. The dialogue l
   list jumps between steps, air particles drift from the pointer, and at "Your turn" the visitor taps an answer: the sun
   sets and Khelu explains sunset.
 - **Buttons demo:** the zoom back out is eased over a longer stretch of scroll.
-- **Films:** no PLAY cursor over videos. Three quote cards (one in Kannada with an English line) are **sample quotes** marked
-  `data-sample` in `index.html`: replace them with real, consented parent quotes before this page goes live (brief §9.8).
+- **Films:** no PLAY cursor over videos. Three parent quote cards (one in Kannada with an English line); the owner
+  confirmed they are real parent quotes (2026-10-22).
 
 ## v8 changes (owner's notes, 2026-10-22)
 - **Typing dots:** one short pass (~0.5 s) before each Khelu line, never a long or looping wait.
@@ -76,7 +76,7 @@ wake-up button, the parent app, the prices and the delivery date. The dialogue l
 - **FAQ:** two columns (heading left, questions right), one answer open at a time (`<details name="faq">`, animated with
   `::details-content`). It fits one screen: 609px on a laptop and 557–720px on a phone, where it starts closed.
 - **"It asks. They think." removed.** Its Pre-order button (`cta=finale`) moved into the footer.
-- **Footer:** Khelu peeks over a soft card and its eyes follow the cursor; rainbow "ear" lines ripple along the card's top;
+- **Footer:** Khelu peeks over a soft card and its eyes follow the cursor (the peek was removed in v15); rainbow "ear" lines ripple along the card's top;
   pastel light drifts behind; links get a rainbow underline on hover; a giant "kheelona" wordmark rises letter by letter,
   its colours follow the pointer, and each letter lifts on hover.
 
@@ -106,7 +106,7 @@ Every page of betawebsite.kheelona.com, rebuilt in the home page's design langua
 ## v12 changes (owner's answers, 2026-10-22)
 - **Owner-confirmed facts** live in `pages/_shell/facts.json`, applied by `tools/build-pages.py` to every page so the
   importers/generator can't bring old wording back: chats are kept **until you delete them** (no 36-month deletion),
-  Khelu speaks **10 languages**, the legal pages' draft notice is gone.
+  Khelu speaks **10 languages**. The legal pages are final (the founder approved the drafts, 2026-10-22, wiki D067): no draft notice.
 - **Only the current toy is shown:** the previous toy's close-ups and packshot are replaced by crops of
   `code/Khelu_By_Kheelona.png` (`assets/img/product/khelu-tummy-*.webp`, `khelu-studio-*.webp`, made by
   `tools/build-assets.sh`).
@@ -176,7 +176,7 @@ Every page of betawebsite.kheelona.com, rebuilt in the home page's design langua
   browse the internet.", privacy rows "Yours to read.", the narrower "never sold" line, "Delete all chats", "Chats stay until
   you delete them". The privacy-centre screenshot no longer shows the app's "seen only by you / never used for ads"
   banner (cropped in `tools/build-assets.sh`). Kept as the owner chose: footer line, home H1, "Children ask hundreds of
-  questions a day.", "Backed by the best.", the app chips, "Never public", the voice greeting, the three `data-sample` quotes.
+  questions a day.", "Backed by the best.", the app chips, "Never public", the voice greeting, the three parent quotes.
 - **Facts:** 10 languages everywhere; the ✦ wake-up button is on Khelu's tummy (the current toy photo; firmware's AI button,
   also held for setup). Every parent-app screenshot carries an "Example account" tag. The support number is only on
   `/contact` (a ContactPoint there) and the legal pages, never in the site-wide Organization.
@@ -188,3 +188,21 @@ Every page of betawebsite.kheelona.com, rebuilt in the home page's design langua
   "See how Khelu works" `home-asks-learn`), after the safety facts (`safety` + `safety-learn`) and in `#why` (`home-why`).
   Every price string here is swapped by the live offer (`src/lib/site-pages/offer-swap.ts`).
 - **Phones:** each pinned home chapter is at most 2.5 screens tall (home ≈ 27 phone screens, was 42).
+
+## v15: owner's changes (2026-10-22)
+- **Fonts:** two on the whole site, **Glory** for headings (primary) and **Instrument Sans** for everything else, replacing
+  Inter Tight / Inter. Latin subsets from Google Fonts, self-hosted in `assets/fonts/` (`glory-var-latin.woff2`, wght
+  100–800, 30 KB; `instrument-sans-var-latin.woff2`, wght 400–700 pinned to its normal width, 29 KB); both are preloaded on
+  every page (`index.html`, `tools/build-pages.py`). Glory's face carries `size-adjust: 108%` (its capitals are 8% shorter
+  than Inter Tight's), so every heading size keeps its designed visual size and line box. The metric-matched fallbacks
+  ("Glory Fallback" on Arial Bold, "Instrument Sans Fallback" on Arial) were re-measured in Chrome so the swap doesn't
+  shift layout. Heading tracking is about a third of the old values (the hero -0.012em, the footer wordmark -0.019em);
+  film card titles are headings in Glory too. Neither face has a ₹ glyph (nor did Inter): it comes from the system font.
+- **Footer:** the peeking Khelu is gone (markup, CSS and the scroll tween); the footer's top padding is now just enough
+  to show the card's rounded top.
+- **Team:** "Why we build Khelu" gets the site's section rhythm above it (`clamp(3.5rem, 8vw, 6rem)`) when the 3D table
+  is live, so it no longer sits against the table.
+- **Home quotes:** the three quote cards are real parent quotes (no sample markers).
+- **Legal pages are final:** the founder approved the drafted privacy, terms, refund and shipping pages (wiki D067);
+  no draft notice anywhere, and the production build's placeholder guard passes.
+

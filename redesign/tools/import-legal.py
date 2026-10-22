@@ -237,7 +237,6 @@ ICONS = {
     "reply": '<circle cx="12" cy="12" r="8.5"/><path d="m8.5 12 2.5 2.5 4.5-5"/>',
 }
 WA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.66 15l-1.3 4.74 4.86-1.27A10 10 0 1 0 12 2zm5.47 13.9c-.23.65-1.35 1.24-1.86 1.3-.48.06-1.08.09-1.75-.11a15.9 15.9 0 0 1-1.58-.59 12.4 12.4 0 0 1-4.74-4.19c-.36-.48-1.2-1.6-1.2-3.05s.76-2.17 1.03-2.46a1.08 1.08 0 0 1 .79-.37h.57c.18 0 .43-.07.67.51l.88 2.12c.07.15.12.32.02.51-.1.2-.15.32-.29.49l-.44.51c-.15.15-.3.3-.13.6.17.29.77 1.27 1.65 2.06 1.13 1.01 2.09 1.32 2.38 1.47.3.15.47.12.64-.07.17-.2.74-.86.94-1.16.2-.29.39-.24.66-.15.27.1 1.72.81 2.01.96.3.15.49.22.56.34.07.12.07.7-.16 1.34z"/></svg>'
-INFO = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.6v.1"/></svg>'
 TINTS = ["peach", "sky", "butter", "mint", "pink", "lilac"]
 
 # Per page: the hero's highlight shade, the eyebrow when the beta shows none, the tint of Khelu's bubble, and one icon
@@ -304,7 +303,7 @@ def build_page(slug, src):
 
     # ---- hero
     hero = main.find(lambda n: n.tag == "section" and n.has("ks-hero"))
-    draft = hero.find(lambda n: n.has("ks-draft"))
+    # The beta's draft note (ks-draft) is not carried over: the founder approved the legal pages as final (2026-10-22).
     eyebrow = hero.find(lambda n: n.has("kh-eyebrow"))
     h1 = hero.find(lambda n: n.tag == "h1")
     lead = hero.find(lambda n: n.has("kh-heading__lead"))
@@ -316,7 +315,6 @@ def build_page(slug, src):
   <div class="ph__glow" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="wrap ph__grid">
     <div>
-      {f'<p class="legal-draft reveal">{INFO}<span>{esc(norm_ws(draft.text()))}</span></p>' if draft else ''}
       <p class="eyebrow">{eb}</p>
       <h1 class="display" data-split>{heading_html(h1, cfg["mark"])}</h1>
       <p class="lead reveal">{inline(lead)}</p>

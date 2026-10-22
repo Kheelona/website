@@ -143,11 +143,10 @@
   /* ---------- Reveals ---------- */
   ScrollTrigger.batch(".reveal", { start: "top 88%", once: true, onEnter: (els) => gsap.to(els, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out", stagger: 0.08 }) });
 
-  /* ---------- Footer: Khelu peeks over the card, the rainbow ears ripple along its top, the wordmark rises and follows the pointer ---------- */
+  /* ---------- Footer: the rainbow ears ripple along the card's top, the wordmark rises and follows the pointer ---------- */
   (() => {
     const foot = $("[data-footer]"); if (!foot) return;
-    const peek = $(".footer__peek .kheelu", foot), wave = $$("[data-footer-wave] path", foot), letters = $$("[data-footer-word] span", foot), word = $("[data-footer-word]", foot);
-    gsap.fromTo(peek, { yPercent: 70 }, { yPercent: 0, ease: "power2.out", scrollTrigger: { trigger: foot, start: "top bottom", end: "top 55%", scrub: 0.8 } });
+    const wave = $$("[data-footer-wave] path", foot), letters = $$("[data-footer-word] span", foot), word = $("[data-footer-word]", foot);
     gsap.fromTo(letters, { yPercent: 70, opacity: 0 }, { yPercent: 0, opacity: 1, stagger: 0.05, ease: "power3.out", scrollTrigger: { trigger: word, start: "top bottom", end: "bottom bottom", scrub: 0.8 } });
     let t = 0, on = false;
     const draw = () => { if (!on) return; t += 0.012; wave.forEach((p, i) => { let d = ""; for (let x = 0; x <= 1440; x += 40) { const y = 14 + i * 6 + Math.sin(x / 170 + t + i * 0.35) * 5 + Math.sin(x / 61 - t * 1.3) * 1.5; d += (x ? " L" : "M") + x + " " + y.toFixed(1); } p.setAttribute("d", d); }); };

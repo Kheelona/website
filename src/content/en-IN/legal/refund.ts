@@ -17,8 +17,8 @@ import { seller } from "../seller";
 /**
  * The refund page, `/refund` (task 5.13): the approved mockup `mockup/pages/refund.html` (D046), word for word, in the
  * shape LegalTemplate renders in its `notice` family (structure §5); meta as wiki/site/pages/refund.md words it, with the
- * legal review of 2026-10-11 applied. A draft until the founder approves it as legal text (D029): the template shows the
- * draft note, and the production build refuses a draft (ADR-004).
+ * legal review of 2026-10-11 applied. Approved as final legal text by the founder on 2026-10-22 (D067, after D029): no
+ * draft note shows, and the production build accepts it (ADR-004).
  *
  * The founder's page facts (D055 items 1-8; task 6.7), each in the place of the placeholder it fills: "Last updated" is
  * his date; a change-of-mind return is refunded in full; after a return the money reaches the parent within 7 working
@@ -67,7 +67,7 @@ export const refundPage = {
     description: `Kheelu refund policy: cancel before dispatch for a full refund, return it within ${RETURN_DAYS} days of delivery, no questions asked, and a ${WARRANTY_MONTHS}-month warranty.`,
     og: DEFAULT_OG,
   },
-  status: "draft",
+  status: "approved",
   /* "Last updated", the founder's date (D055 item 8). */
   approvedOn: "2026-10-14",
   hero: {

@@ -48,7 +48,7 @@
 @media (min-width: 700px) { .sf-facts__list { grid-template-columns: 1fr 1fr; } }
 .sf-fact { display: grid; gap: 1rem; align-content: start; padding: 1.5rem; border-radius: var(--radius); background: linear-gradient(160deg, var(--tint) 0%, #fff 58%); box-shadow: 0 0 0 1px var(--line); }
 .sf-fact .ico { background: #fff; box-shadow: 0 0 0 1px var(--line); }
-.sf-fact h3 { margin: 0; font: 600 1.1875rem/1.25 var(--display); letter-spacing: -0.01em; }
+.sf-fact h3 { margin: 0; font: 600 1.1875rem/1.25 var(--display); letter-spacing: -0.003em; }
 .sf-fact p { margin: 0.5rem 0 0; font-size: 0.9375rem; line-height: 1.55; color: var(--ink-2); }
 .sf-buy { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; margin-top: 1.5rem; padding: 1.25rem 1.5rem; border-radius: var(--radius); background: #fff; box-shadow: 0 0 0 1px var(--line), 0 1.5rem 3rem -2.5rem rgba(0, 0, 0, 0.35); }
 .sf-buy .price-line { margin: 0; }
@@ -61,7 +61,7 @@
 @media (min-width: 960px) { .sf-bento { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .sf-bento .bento__card { background: color-mix(in srgb, var(--tint) 45%, #fff); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05); padding: 1.75rem; min-height: 12.5rem; }
 .sf-bento .bento__card .ico { width: 3.25rem; height: 3.25rem; border-radius: 1rem; background: #fff; box-shadow: 0 0.75rem 1.5rem -1rem rgba(0, 0, 0, 0.35); }
-.sf-bento .bento__card h3 { font-size: clamp(1.25rem, 1.8vw, 1.5rem); letter-spacing: -0.02em; }
+.sf-bento .bento__card h3 { font-size: clamp(1.25rem, 1.8vw, 1.5rem); letter-spacing: -0.007em; }
 .sf-bento .bento__card p { font-size: 1rem; color: var(--ink-2); }
 .ico--no .slash { stroke: #c8322c; }
 .motion .sf-bento .slash { stroke-dasharray: 29; stroke-dashoffset: 29; transition: stroke-dashoffset 0.8s var(--ease-out) 0.5s; }
@@ -109,9 +109,9 @@
 .sf-card__top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
 .sf-card .ico { background: #fff; box-shadow: 0 0 0 1px var(--line); }
 .sf-card__num { margin: 0; font: 600 1rem/1 var(--text); color: var(--ink-2); }
-.sf-card__num b { font: 650 clamp(2.75rem, 5vw, 4rem)/1 var(--display); letter-spacing: -0.04em; color: var(--ink); margin-right: 0.25rem; }
+.sf-card__num b { font: 650 clamp(2.75rem, 5vw, 4rem)/1 var(--display); letter-spacing: -0.014em; color: var(--ink); margin-right: 0.25rem; }
 .sf-card .eyebrow { margin-bottom: 0.5rem; }
-.sf-card .h3 { font-size: clamp(1.5rem, 2.4vw, 2rem); letter-spacing: -0.02em; text-wrap: balance; }
+.sf-card .h3 { font-size: clamp(1.5rem, 2.4vw, 2rem); letter-spacing: -0.007em; text-wrap: balance; }
 .sf-card p:not(.eyebrow):not(.sf-card__num) { margin: 0.875rem 0 0; color: var(--ink-2); max-width: 38rem; }
 .sf-card .link { margin-top: 0.75rem; }
 

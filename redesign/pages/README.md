@@ -23,7 +23,10 @@ ContactPage…) in `<head-extra>`. `python3 tools/check-seo.py` after every buil
 `css` / `js` load `assets/css/pages/<name>.css` and `assets/js/pages/<name>.js` (plain CSS / plain JS, no build step).
 
 ## Design language (same as home)
-- White base, ink `#1d1d1f`; Inter Tight for display (`.display`, `.h2`, `.h3`), Inter for text (`.lead`, `.eyebrow`, `.small`).
+- White base, ink `#1d1d1f`. **Two fonts on the whole site** (owner, 2026-10-22): **Glory** for headings (`--display`:
+  `.display`, `.h2`, `.h3`, every h1–h3 and the big words) and **Instrument Sans** for everything else (`--text`: `.lead`,
+  `.eyebrow`, `.small`, nav, buttons, chips, labels). Self-hosted latin files in `assets/fonts/`, never another family;
+  headings take light tracking (about -0.01em), not the old -0.035em.
 - Highlights: `<span class="mark mark--peach|sky|butter|mint|pink|lilac">`. Vary the shade; never the same twice in a row.
 - Pastel tints for cards and blocks: `--p-pink --p-peach --p-butter --p-mint --p-sky --p-lilac` (or `.tint-*` classes).
 - Khelu's own speech, when shown, is a pastel bubble with ink text: `.bubble .bubble--kheelu .bub--*`.

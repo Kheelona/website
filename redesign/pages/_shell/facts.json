@@ -65,8 +65,5 @@
       "<h3>Up to 10 languages at launch</h3>",
       "<h3>10 languages</h3>"
     ]
-  ],
-  "remove_regex": [
-    "<p class=\"legal-draft[^\"]*\">.*?</p>\\s*"
   ]
 }

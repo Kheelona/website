@@ -171,7 +171,8 @@ function withTermsFacts(doc: LegalPage): LegalPage {
     }
     return p;
   });
-  return { ...doc, status: "draft", approvedOn: "2026-10-14", parts } as LegalPage;
+  /* The fixture is the mockup, a draft; the page is approved as final (D067), so no draft note. */
+  return { ...doc, status: "approved", approvedOn: "2026-10-14", parts } as LegalPage;
 }
 const FACTS_FIXTURE = withTermsFacts(body(termsFixture) as unknown as LegalPage);
 
@@ -314,9 +315,9 @@ describe("the terms page: full mode (terms.md folds 2 and 4, sections 5 and 6)",
   });
 });
 
-describe("the terms page: a draft until the founder approves it (D029)", () => {
-  it("is a draft, so the draft note shows and the production build refuses it (ADR-004)", () => {
-    expect(termsPage.status).toBe("draft");
+describe("the terms page: approved as final by the founder (D067, after D029)", () => {
+  it("is approved, so no draft note shows and the production build accepts it (ADR-004)", () => {
+    expect(termsPage.status).toBe("approved");
   });
 
   it("is last updated on the founder's date, 14 October 2026 (D055 item 8; terms.md fold 1)", () => {

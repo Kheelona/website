@@ -96,9 +96,9 @@ describe("the shipping page: the route and its head", () => {
   });
 });
 
-describe("the shipping page: a draft until the founder approves it (D029)", () => {
-  it("is a draft, so the draft note shows and the production build refuses it (ADR-004)", () => {
-    expect(shippingPage.status).toBe("draft");
+describe("the shipping page: approved as final by the founder (D067, after D029)", () => {
+  it("is approved, so no draft note shows and the production build accepts it (ADR-004)", () => {
+    expect(shippingPage.status).toBe("approved");
   });
 
   it("is last updated on the founder's date, 14 October 2026 (D055 item 8; shipping.md fold 1)", () => {
@@ -269,7 +269,8 @@ describe("the shipping page: parity and boundaries", () => {
             ? Object.fromEntries(Object.entries(value).map(([k, v]) => [k, withFacts(v)]))
             : value;
     expect(JSON.stringify(shippingFixture)).toMatch(LOST_PARCEL);
-    expect(shippingPage).toEqual({ ...(withFacts(shippingFixture) as object), approvedOn: "2026-10-14" });
+    // The fixture is the mockup, a draft; the page is approved as final (D067).
+    expect(shippingPage).toEqual({ ...(withFacts(shippingFixture) as object), status: "approved", approvedOn: "2026-10-14" });
   });
 
   it("is a content module: types from content/types only, values from content, lib and the DS assets (structure §6)", () => {

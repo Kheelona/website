@@ -343,7 +343,8 @@ def render(page, graph):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 {head_meta(meta, page['url'], img, canonical=not meta.get('noindex'))}
-<link rel="preload" href="/assets/fonts/inter-tight-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/glory-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.min.css">
 <link rel="stylesheet" href="/assets/css/pages.css">{css}
 <script>document.documentElement.classList.replace('no-js','js')</script>

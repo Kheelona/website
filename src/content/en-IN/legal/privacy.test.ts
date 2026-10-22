@@ -90,9 +90,9 @@ describe("the privacy page: the route and its head", () => {
   });
 });
 
-describe("the privacy page: a draft until the founder approves it (D029)", () => {
-  it("is a draft, so the draft note shows and the production build refuses it (ADR-004)", () => {
-    expect(privacyPage.status).toBe("draft");
+describe("the privacy page: approved as final by the founder (D067, after D029)", () => {
+  it("is approved, so no draft note shows and the production build accepts it (ADR-004)", () => {
+    expect(privacyPage.status).toBe("approved");
   });
 
   it("is last updated on the founder's date, 14 October 2026 (D055 item 8; privacy.md fold 1)", () => {
