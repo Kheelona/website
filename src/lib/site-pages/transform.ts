@@ -13,7 +13,7 @@ import { applyOffer } from "./offer-swap";
  *    (redesign/manifest.json; beta also sends X-Robots-Tag on every response, and the proxy sends it for any
  *    non-canonical host of a production build). The 404 page always says `noindex`. A prototype robots tag left in the
  *    HTML is removed.
- * 2. The store: every link to https://store.kheelona.com opens this build's store (STORE_ORIGIN: betastore on beta).
+ * 2. The store: links to https://store.kheelona.com stay on the live store in every environment (founder ruling 2026-10-22).
  * 3. CTA values (wiki/site/tracking-inventory.md; src/lib/tracking/cta.ts): the dock's button reports `sticky-bar` in the
  *    server HTML off Home (main.js does the same after load; a crawler or a no-JS check now reads the same value), and
  *    the footer's pre-order button reports `finale` on a page that has no other `finale`, so every pre-order button

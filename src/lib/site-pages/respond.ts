@@ -1,17 +1,18 @@
-import { SITE_ENV, STORE_ORIGIN } from "@/config/env";
+import { SITE_ENV } from "@/config/env";
 import { AHREFS_ANALYTICS_KEY } from "@/config/site";
 import type { Offer } from "@/content/types";
 import { getOffer } from "@/lib/offer/get-offer";
 import { readMachineFile, readNotFoundPage, readSitePage, siteManifest } from "./files";
 import { applyOffer } from "./offer-swap";
-import { renderSitePage, type SitePageContext } from "./transform";
+import { REDESIGN_STORE_ORIGIN, renderSitePage, type SitePageContext } from "./transform";
 
 /** The serving context for this build: its environment and store, the live offer, the tracking shell. */
 export function siteContext(path: string, offer: Offer, notFound = false): SitePageContext {
   return {
     path,
     env: SITE_ENV,
-    storeOrigin: STORE_ORIGIN,
+    // Founder ruling 2026-10-22: every Pre-order button opens the live store (store.kheelona.com), beta included.
+    storeOrigin: REDESIGN_STORE_ORIGIN,
     offer,
     trackingSrc: siteManifest().tracking,
     ahrefsKey: AHREFS_ANALYTICS_KEY,
