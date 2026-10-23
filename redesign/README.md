@@ -206,3 +206,23 @@ Every page of betawebsite.kheelona.com, rebuilt in the home page's design langua
 - **Legal pages are final:** the founder approved the drafted privacy, terms, refund and shipping pages (wiki D067);
   no draft notice anywhere, and the production build's placeholder guard passes.
 
+
+## v16: smooth on phones (2026-10-23)
+Measured on a 390px touch viewport with 4× and 10× CPU throttling (Chrome traces, frame times per section), then fixed:
+- **First swipe:** Khelu's audio context was made on the first `pointerdown`, which on a phone is the touch that starts a
+  scroll (a 170–200 ms stall at 4×, and a suspended context, so no voice). Touch screens now unlock sound on a tap (`click`).
+- **Address bar:** showing or hiding it fires `resize` with only the height changed. On touch screens the waves canvas,
+  rem scale, Skip button, reel and rocket now re-measure on a width change only (`onResize`), and the canvas is
+  reallocated only when its size really changes (it used to blink).
+- **Off-screen chapters skip rendering:** `.motion main > .track { content-visibility: auto }`. Every track has an
+  explicit height, so pinning is unchanged; about 25% fewer slow frames at 10×.
+- **Reel:** card centres are measured once per layout (no `getBoundingClientRect` per card per frame); scales follow the
+  tween's own updates (including the scrub's glide); only the centre film plays, its neighbours preload, and the
+  in-view loop player on touch leaves the reel alone (several videos used to decode at once).
+- **Calm motion on touch:** no overshoot or bounce (`pop()` → `power3.out`), smaller Khelu hops (`hop()`, which also
+  replaces a hop still running), and a fast scroll through *A day at home* no longer stacks room, copy and bubble
+  animations. App deck and privacy highlight tweens overwrite; the privacy highlight lost its fighting CSS transition, and
+  reveals switch off their element's CSS transform transition while GSAP moves them.
+- **Nav** hides or shows only after 24px of scroll in one direction (no flicker from a thumb's wobble).
+- **GPU:** drifting blurred blobs (footer, app deck, subpage hero glow) use a radial mask on touch instead of a blur
+  filter; the invisible tiny blurs (motes, privacy blob) are gone there; no grey tap flash, buttons press in slightly.
