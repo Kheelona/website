@@ -886,3 +886,6 @@ html.reels-open { overflow: hidden; }
 .reels__hint.is-gone { visibility: hidden; }
 @keyframes reels-hint { 0% { opacity: 0; } 10%, 80% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes reels-nudge { 50% { transform: translateY(-0.25rem); } }
+/* Static layout (reduced motion, no JS, or main.js failed): the hero's three headlines share one spot and only the
+   animation moves between them, so only the first shows (the animated version's opening screen). */
+.reduced .hero__meet, .reduced .hero__caption, .no-js .hero__meet, .no-js .hero__caption { display: none; }

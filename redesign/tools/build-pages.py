@@ -347,7 +347,10 @@ def render(page, graph):
 <link rel="preload" href="/assets/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.min.css">
 <link rel="stylesheet" href="/assets/css/pages.css">{css}
-<script>document.documentElement.classList.replace('no-js','js')</script>
+<!-- The animated layout is chosen here, before the first paint, so a phone never shows the hero's three headlines on top
+     of each other while main.js loads. If main.js hasn't taken over by 1.5 s after load (blocked or failed), the static
+     layout (.reduced) takes over and every line shows in its place. -->
+<script>(function(d){{d.classList.replace('no-js','js');if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;d.classList.add('motion');addEventListener('load',function(){{setTimeout(function(){{if(!window.__khMotion)d.classList.replace('motion','reduced')}},1500)}})}})(document.documentElement)</script>
 {head_extra}
 <!--tracking-head-->
 </head>

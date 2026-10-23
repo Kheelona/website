@@ -28,8 +28,10 @@
   initBar();
   // Phones: the FAQ starts closed so every question fits on one screen.
   if (phone()) document.querySelectorAll("#faq details[open]").forEach((d) => d.removeAttribute("open"));
-  if (reduced || !window.gsap) { root.classList.add("reduced"); initStatic(); return; }
-  root.classList.add("motion");
+  // The page's <head> has already switched on .motion (so the first paint matches the animated layout); without GSAP or
+  // with reduced motion, the static layout takes over.
+  if (reduced || !window.gsap) { root.classList.remove("motion"); root.classList.add("reduced"); initStatic(); return; }
+  root.classList.add("motion"); window.__khMotion = true;
   gsap.registerPlugin(ScrollTrigger);
   ScrollTrigger.config({ ignoreMobileResize: true }); // the phone's address bar showing/hiding never re-measures the page
 
