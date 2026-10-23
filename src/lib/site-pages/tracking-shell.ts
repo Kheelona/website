@@ -130,25 +130,91 @@ export function trackViewContent(valuePaise: number): () => void {
   );
 }
 
+/** Resolves soon after PostHog's remote config (`<api_host>/array/<key>/config.js`) has loaded, which is when
+ *  autocapture starts recording clicks (measured 2026-10-23: a click before it is not recorded), or after `capMs` at the
+ *  latest. It watches the browser's own resource timing, so it needs nothing from the SDK's internals. */
+export function remoteConfigLoaded(capMs = 1500, settleMs = 60): Promise<void> {
+  return new Promise((resolve) => {
+    const cap = setTimeout(resolve, capMs);
+    if (typeof PerformanceObserver !== "function") return;
+    const isConfig = (name: string) => name.includes(`${POSTHOG_PROXY_PATH}/array/`) && name.includes("config.js");
+    const po = new PerformanceObserver((list) => {
+      if (!list.getEntries().some((e) => isConfig(e.name))) return;
+      po.disconnect();
+      clearTimeout(cap);
+      setTimeout(resolve, settleMs); // the script runs right after it loads
+    });
+    try { po.observe({ type: "resource", buffered: true }); } catch { /* resource timing unsupported: the cap releases */ }
+  });
+}
+
 export async function loadPostHog(location: Pick<Location, "hostname" | "pathname" | "search">): Promise<void> {
   const { default: posthog } = await import("posthog-js");
+  const configured = remoteConfigLoaded();
   posthog.init(POSTHOG_KEY, postHogOptions(location.hostname));
   registerPostHog(posthog);
   applyInternalFlag(posthog, location.search);
-  phSetReplay(replayAllowedOnPath(location.pathname));
+  // The replay recorder (about 67 KB) starts when the browser is next idle, not in the same task as the SDK.
+  const replay = () => phSetReplay(replayAllowedOnPath(location.pathname));
+  if (typeof requestIdleCallback === "function") requestIdleCallback(replay, { timeout: 2000 });
+  else setTimeout(replay, 0);
+  await configured;
 }
 
-/** Runs every tool this page's host allows. `config` is the shell's own <script data-kh-tracking> element. */
-export function boot(config: HTMLElement | null, location: Location = window.location): void {
+/** Runs every tool this page's host allows. `config` is the shell's own <script data-kh-tracking> element. Resolves
+ *  once PostHog records clicks (at once where PostHog doesn't load). */
+export function boot(config: HTMLElement | null, location: Location = window.location): Promise<void> {
   injectVercelAnalytics({ framework: "next" });
   const host = location.hostname;
   if (shouldLoadGa4(host)) loadGa4();
   if (shouldLoadMetaPixel(host)) loadMetaPixel();
   const paise = Number(config?.dataset.viewContentPaise);
   if (Number.isFinite(paise) && paise > 0) trackViewContent(paise);
-  if (shouldLoadPostHog(host)) void loadPostHog(location);
+  return shouldLoadPostHog(host) ? loadPostHog(location).catch(() => {}) : Promise.resolve();
+}
+
+/** Lighthouse, 2026-10-23 (owner's reports: Total Blocking Time 510-790 ms, mostly the Meta Pixel, gtag and PostHog
+ *  running while the first screen paints): the tools start on the visitor's first interaction (touch, click, key,
+ *  scroll, wheel or mouse movement) or `delayMs` after the page has loaded, whichever comes first. Every event still
+ *  fires, the same IDs and names, a moment later; only a visitor who leaves within those seconds without touching
+ *  anything goes unseen. */
+export const START_EVENTS = ["pointerdown", "touchstart", "keydown", "scroll", "wheel", "mousemove"] as const;
+export function whenEngaged(start: () => void, delayMs = 4000, win: Window = window): void {
+  let done = false, timer = 0;
+  const opts = { passive: true, capture: true } as const;
+  const go = () => {
+    if (done) return;
+    done = true;
+    win.clearTimeout(timer);
+    START_EVENTS.forEach((e) => win.removeEventListener(e, go, opts));
+    start();
+  };
+  START_EVENTS.forEach((e) => win.addEventListener(e, go, opts));
+  const arm = () => { timer = win.setTimeout(go, delayMs); };
+  if (win.document.readyState === "complete") arm();
+  else win.addEventListener("load", arm, { once: true });
+}
+
+/** A tap on a Pre-order link can come before PostHog has loaded (the tap is what starts it). That click is the CTA
+ *  report (`cta` on $autocapture), so it waits for PostHog, at most `maxWaitMs`, and is then clicked again for
+ *  autocapture to see; the store opens a moment later, as it would have. */
+export function holdStoreClicks(ready: () => Promise<void> | null, maxWaitMs = 2000, doc: Document = document): void {
+  let released = false;
+  doc.addEventListener("click", (e) => {
+    if (released || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const link = (e.target as Element | null)?.closest?.<HTMLAnchorElement>('a[href^="https://store.kheelona.com"]');
+    const pending = link ? ready() : null;
+    if (!link || !pending) return;
+    e.preventDefault();
+    const again = () => { released = true; link.click(); };
+    Promise.race([pending, new Promise<void>((r) => setTimeout(r, maxWaitMs))]).then(again, again);
+  }, true);
 }
 
 if (typeof document !== "undefined" && document.querySelector("script[data-kh-tracking]")) {
-  boot(document.querySelector<HTMLElement>("script[data-kh-tracking]"));
+  const config = document.querySelector<HTMLElement>("script[data-kh-tracking]");
+  let started: Promise<void> | null = null, loaded = false;
+  const start = () => (started ??= boot(config).then(() => { loaded = true; }));
+  whenEngaged(start);
+  if (shouldLoadPostHog(window.location.hostname)) holdStoreClicks(() => (loaded ? null : start()));
 }

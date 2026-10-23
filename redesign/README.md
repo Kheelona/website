@@ -226,3 +226,21 @@ Measured on a 390px touch viewport with 4× and 10× CPU throttling (Chrome trac
 - **Nav** hides or shows only after 24px of scroll in one direction (no flicker from a thumb's wobble).
 - **GPU:** drifting blurred blobs (footer, app deck, subpage hero glow) use a radial mask on touch instead of a blur
   filter; the invisible tiny blurs (motes, privacy blob) are gone there; no grey tap flash, buttons press in slightly.
+
+## v17: phones, films and speed (owner's notes and Lighthouse reports, 2026-10-23)
+- **One swipe, one beat (touch phones):** a scroll-snap stop at every beat of each pinned chapter and at each section's
+  top (`.beats`, placed at page coordinates by main.js), hard (`mandatory`, `scroll-snap-stop: always`) only while a
+  chapter is pinned (`html.in-chapter`), so the sections between scroll freely. Phone chapter lengths keep neighbouring
+  beats ~0.6 screen apart (more than a thumb's drag); the beats are `BEATS` in main.js. Chrome still lets a very hard
+  flick cross two stops; it no longer crosses a whole chapter.
+- **Films viewer:** every `[data-video]` opens a full-screen reel at that film, playing with sound; swipe up (or ↓) for
+  the next, which plays as it arrives, and a film that ends moves on; tap pauses; Back, Esc or × closes. One shared
+  `<video>` moves from slide to slide, so the first tap unlocks sound for every film. Markup: `#modal.reels` in
+  `index.html` and `pages/_shell/after.html`.
+- **Tracking starts on engagement** (`src/lib/site-pages/tracking-shell.ts`): GA4, the Meta Pixel, PostHog and Vercel
+  Analytics load on the first touch, click, key, scroll, wheel or mouse move, or 4 s after load. Same IDs and events.
+  A Pre-order tap that comes first waits (≤ 2 s; measured 0.5-1.1 s) until PostHog's remote config has loaded, the
+  moment autocapture starts recording, so its `cta` still reaches PostHog. The replay recorder starts when idle. Ahrefs
+  stays in `<head>` (its install check reads the tag). Lighthouse mobile on the same Mac, trackers loaded but their
+  hits blocked: Total Blocking Time ≈ 250 ms (live) → 17-63 ms.
+- Hero image preloaded before the fonts; the "No Wi-Fi" slash animates transform/opacity (was stroke-dashoffset).

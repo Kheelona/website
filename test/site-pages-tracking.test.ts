@@ -6,12 +6,14 @@ import { shouldLoadMetaPixel as gateMeta } from "@/components/tracking/MetaPixel
 import { BETA_HOSTS } from "@/config/env";
 import { GA4_MEASUREMENT_ID, META_PIXEL_ID, POSTHOG_KEY, shouldLoadPostHog } from "@/config/site";
 import {
+  holdStoreClicks,
   loadGa4,
   loadMetaPixel,
   postHogOptions,
   shouldLoadGa4,
   shouldLoadMetaPixel,
   trackViewContent,
+  whenEngaged,
 } from "@/lib/site-pages/tracking-shell";
 
 /* The redesign's tracking shell (src/lib/site-pages/tracking-shell.ts) against the React gates it stands in for on the
@@ -106,5 +108,59 @@ describe("GA4, Meta and ViewContent", () => {
       { content_name: "Kheelu", content_ids: ["lumi"], content_type: "product", value: 4999, currency: "INR" },
       undefined,
     );
+  });
+});
+
+/* Lighthouse, 2026-10-23: the tools start on the first interaction or a few seconds after load, and a Pre-order tap that
+ * arrives first still reaches PostHog's autocapture (the CTA report) before the store opens. */
+describe("deferred start", () => {
+  afterEach(() => vi.useRealTimers());
+
+  it("starts once, on the first interaction", () => {
+    vi.useFakeTimers();
+    const start = vi.fn();
+    whenEngaged(start, 4000);
+    expect(start).not.toHaveBeenCalled();
+    window.dispatchEvent(new Event("pointerdown"));
+    window.dispatchEvent(new Event("scroll"));
+    vi.advanceTimersByTime(10_000);
+    expect(start).toHaveBeenCalledTimes(1);
+  });
+
+  it("starts after the delay when nobody interacts (the page has loaded)", () => {
+    vi.useFakeTimers();
+    const start = vi.fn();
+    whenEngaged(start, 4000);
+    vi.advanceTimersByTime(3999);
+    expect(start).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(1);
+    expect(start).toHaveBeenCalledTimes(1);
+  });
+
+  it("holds a Pre-order click until PostHog is ready, then clicks it again", async () => {
+    const doc = document.implementation.createHTMLDocument(); // its own listeners, nothing left over between tests
+    doc.body.innerHTML = '<a href="https://store.kheelona.com/" data-ph-capture-attribute-cta="hero">Pre-order</a>';
+    const link = doc.querySelector("a")!;
+    let resolve!: () => void;
+    const ready = new Promise<void>((r) => (resolve = r));
+    holdStoreClicks(() => ready, 1200, doc);
+    const seen: boolean[] = [];
+    doc.addEventListener("click", (e) => { seen.push(e.defaultPrevented); e.preventDefault(); }); // jsdom: no navigation
+    link.click();
+    expect(seen).toEqual([true]); // held
+    resolve();
+    await ready;
+    await Promise.resolve();
+    expect(seen).toEqual([true, false]); // clicked again, for autocapture and the store
+  });
+
+  it("lets every click through once PostHog has loaded", () => {
+    const doc = document.implementation.createHTMLDocument();
+    doc.body.innerHTML = '<a href="https://store.kheelona.com/">Pre-order</a>';
+    holdStoreClicks(() => null, 1200, doc);
+    const seen: boolean[] = [];
+    doc.addEventListener("click", (e) => { seen.push(e.defaultPrevented); e.preventDefault(); });
+    doc.querySelector("a")!.click();
+    expect(seen).toEqual([false]);
   });
 });
