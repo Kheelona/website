@@ -248,7 +248,9 @@ describe("site.css compiled as next build compiles it (NODE_ENV=production)", ()
 
 describe("postcss.config.mjs on Next.js", () => {
   // Next's PostCSS guide asks for plugin names as strings; postcss.config.mjs passes plugin objects (its header says
-  // why). Turbopack 16.3.8 runs them, which a scratch next build showed on 2026-10-11; nothing in Vitest runs
+  // why). Turbopack 16.3.8 runs them, which a scratch next build showed on 2026-10-11 (re-checked on 16.4.2, 2026-10-23:
+  // a scratch page with transition-all duration-700 scroll-smooth z-50 border-2 p-[13px] p-5 grid-cols-2 built to CSS
+  // holding only .p-5 and .grid-cols-2); nothing in Vitest runs
   // Turbopack, so a Next upgrade that stopped running the filter would pass every guard above. This pin makes the
   // upgrade repeat that check.
   it("runs on the Next version its plugin objects were verified on", () => {
@@ -256,7 +258,7 @@ describe("postcss.config.mjs on Next.js", () => {
     expect(
       next,
       "Next changed: import src/styles/site.css in a scratch root layout, run next build, and check that the built CSS's @layer utilities holds no .transition, .duration-, .z-50, .border-2 or \\[ selector while .p-5 is present, and that src/styles/globals.css builds byte for byte as with the plain `\"@tailwindcss/postcss\": {}` config; then update this version",
-    ).toBe("16.3.8");
+    ).toBe("16.4.2");
   });
 });
 

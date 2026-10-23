@@ -3,7 +3,7 @@
 // A deviation from Next's docs, raised with the main session (task 1.2 review, 2026-10-11): the PostCSS guide
 // (node_modules/next/dist/docs/02-pages/02-guides/post-css.md:144) says plugins must be given as strings, never
 // require()d. Both documented forms name a module, and the inline plugins below would need a file of their own, which
-// task 1.2 does not own. So the plugins are plugin objects in an array: Turbopack 16.3.8 runs them (scratch
+// task 1.2 does not own. So the plugins are plugin objects in an array: Turbopack 16.3.8 runs them, and 16.4.2 still does (re-checked 2026-10-23) (scratch
 // next build, 2026-10-11: transition-all, duration-700, scroll-smooth, p-[13px], z-50 and border-2 absent from the
 // built CSS, p-5 and grid-cols-2 present; rerun with tailwindByEntry: the site CSS byte for byte as before, the legacy
 // globals.css byte for byte as the pre-reset `"@tailwindcss/postcss": {}` config built it), and Vite's

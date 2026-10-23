@@ -33,7 +33,7 @@ import { describe, expect, it } from "vitest";
 const FLOORS: { name: string; min: string; why: string }[] = [
   {
     name: "next",
-    min: "16.3.8",
+    min: "16.4.2",
     why:
       "16.2.11 fixed nine advisories in 16.2.x, four of them high: a middleware/proxy " +
       "bypass (GHSA-6gpp-xcg3-4w24), which is the layer this app's whole host split and the " +
@@ -51,11 +51,16 @@ const FLOORS: { name: string; min: string; why: string }[] = [
       "does not use next/og), GHSA-cjq9-62q9-8jv4 HIGH SSRF in Image Optimization, and the ISR/SSG " +
       "cache-poisoning pair GHSA-4jqv-mc3x-m676 and GHSA-mcj8-r9mp-w47p (<16.3.8; the new site " +
       "uses ISR for the offer, ADR-005), plus three moderate or low. 16.3.8 is the first version " +
-      "clear of all of them.",
+      "clear of all of them. " +
+      "RAISED to 16.4.2 on 2026-10-23 (minor, owner-asked before the new site goes live on main): " +
+      "16.0.0-16.4.0 carry GHSA-2464-fhr4-w9xw CRITICAL unauthenticated RCE in the Image Optimization " +
+      "API, GHSA-673q-mjm6-r5xr CRITICAL unauthenticated RCE in `use cache` functions, and " +
+      "GHSA-p3m5-59mp-jv5r HIGH App Router DoS through Server Actions. This app serves images through " +
+      "the optimizer (next.config.ts remotePatterns), so the first one is on a live path.",
   },
   {
     name: "eslint-config-next",
-    min: "16.3.8",
+    min: "16.4.2",
     why:
       "NOT a security floor: a coherence one. This package is exact-pinned to the same string " +
       "as `next` because @next/eslint-plugin-next ships inside it and lints against one " +
@@ -64,14 +69,25 @@ const FLOORS: { name: string; min: string; why: string }[] = [
   },
   {
     name: "@storybook/nextjs-vite",
-    min: "10.6.0",
+    min: "10.6.3",
     why:
       "10.5.x reaches image-size through vite-plugin-storybook-nextjs@3.3.0, and image-size has " +
       "NO patched version at any number (see BANNED below). 10.6.0 absorbed that plugin into the " +
       "Storybook monorepo and swapped image-size for probe-image-size. So this floor is not " +
       "about a fix in Storybook itself: it is the only route by which an unfixable dependency " +
       "leaves the tree, and a reader who finds `^10.6.0` in package.json deserves to find out " +
-      "why here rather than guess. Dev-only; it cannot reach next build.",
+      "why here rather than guess. Dev-only; it cannot reach next build. " +
+      "RAISED to 10.6.3 on 2026-10-23 with `storybook` itself (below).",
+  },
+  {
+    name: "storybook",
+    min: "10.6.3",
+    why:
+      "GHSA-f2ph-cmg5-wxc8 CRITICAL, missing origin validation in the Storybook preview lets another " +
+      "page inject code; GHSA-px85-f4q5-jh77 HIGH, the dev server accepts code injection from the " +
+      "local network (both >=10.0.0 <10.6.2). Dev-only: Storybook runs on a developer's machine and " +
+      "is never deployed, but that machine is exactly what the advisories attack. Every @storybook/* " +
+      "package is exact-pinned to the same string so they move together.",
   },
 ];
 
@@ -138,13 +154,15 @@ const TRANSITIVE_FLOORS: {
        line, and a flat floor is arithmetically impossible: atLeast("1.1.18","5.0.9")
        is false, so flooring at 5.0.9 would fail the legitimate 1.x copy, while
        flooring at 1.1.18 would wave a vulnerable 5.0.7 straight through. */
-    min: { 1: "1.1.18", 5: "5.0.9" },
+    min: { 1: "1.1.21", 5: "5.0.12" },
     why:
       "GHSA-3jxr-9vmj-r5cp HIGH exponential-time expansion of consecutive non-expanding {} " +
       "groups; GHSA-mh99-v99m-4gvg HIGH unbounded expansion length causing OOM; " +
       "GHSA-rgw5-rvv9-x895 HIGH unbounded intermediate arrays bypassing the CVE-2026-14257 " +
       "mitigation. Dev-only: the 1.x copy via minimatch@3 under eslint, the 5.x copy via " +
-      "minimatch@10 under Storybook's docgen plugin and typescript-eslint.",
+      "minimatch@10 under Storybook's docgen plugin and typescript-eslint. " +
+      "RAISED to 1.1.21 / 5.0.12 on 2026-10-23: a later quadratic-expansion and recursion DoS round " +
+      "(Dependabot, 2026-10) was fixed again on both lines.",
   },
   {
     name: "fflate",
@@ -198,6 +216,23 @@ const TRANSITIVE_FLOORS: {
       "updating it also moves caniuse-lite and baseline-browser-mapping, which ARE next's own " +
       "dependencies and set browser targets, so it is the one 'dev-only' fix that can change " +
       "build output.",
+  },
+  {
+    name: "dompurify",
+    min: "3.4.17",
+    why:
+      "GHSA-cg2g-xh64-v4q7 CRITICAL, SAFE_FOR_TEMPLATES bypass; GHSA-mrv2-3pqr-j5jr HIGH and three low " +
+      "IN_PLACE and SMIL sanitizer bypasses (<=3.4.16). RUNTIME: posthog-js brings it to visitors' " +
+      "browsers (session replay and surveys sanitize with it). 3.4.17 is inside posthog-js's own range, " +
+      "so `npm audit fix` moved it with no override.",
+  },
+  {
+    name: "vite",
+    min: "8.1.6",
+    why:
+      "launch-editor advisories inside vite's dev server (escapeCmdArgs omits % escaping, editor CLI " +
+      "flag injection, an fs.existsSync existence oracle; 8.0.0-8.1.5). Dev-only, under Storybook and " +
+      "Vitest; vite is never part of next build.",
   },
 ];
 
@@ -266,8 +301,8 @@ describe("security version floors", () => {
      DEFAULT (save-prefix is ^, and this repo has no .npmrc) — so the pin is one
      forgotten --save-exact away from disappearing. */
   it("keeps the framework pins exact, not caret ranges", () => {
-    expect(pkg.dependencies.next).toBe("16.3.8");
-    expect(pkg.devDependencies["eslint-config-next"]).toBe("16.3.8");
+    expect(pkg.dependencies.next).toBe("16.4.2");
+    expect(pkg.devDependencies["eslint-config-next"]).toBe("16.4.2");
   });
 
   for (const floor of TRANSITIVE_FLOORS) {
