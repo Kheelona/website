@@ -154,9 +154,15 @@
 <a class="wa" id="wa" href="https://wa.me/919187546483?text=Hi%20Kheelona!%20I%20have%20a%20question%20about%20Khelu." data-ph-capture-attribute-cta="whatsapp-float" aria-label="Chat with Kheelona on WhatsApp" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.66 15l-1.3 4.74 4.86-1.27A10 10 0 1 0 12 2zm5.47 13.9c-.23.65-1.35 1.24-1.86 1.3-.48.06-1.08.09-1.75-.11a15.9 15.9 0 0 1-1.58-.59 12.4 12.4 0 0 1-4.74-4.19c-.36-.48-1.2-1.6-1.2-3.05s.76-2.17 1.03-2.46a1.08 1.08 0 0 1 .79-.37h.57c.18 0 .43-.07.67.51l.88 2.12c.07.15.12.32.02.51-.1.2-.15.32-.29.49l-.44.51c-.15.15-.3.3-.13.6.17.29.77 1.27 1.65 2.06 1.13 1.01 2.09 1.32 2.38 1.47.3.15.47.12.64-.07.17-.2.74-.86.94-1.16.2-.29.39-.24.66-.15.27.1 1.72.81 2.01.96.3.15.49.22.56.34.07.12.07.7-.16 1.34z"/></svg></a>
 <button class="skipdemo" type="button" id="skip">Skip section <span class="arrow" aria-hidden="true">↓</span></button>
 <div class="cursor" id="cursor" aria-hidden="true"></div>
-<dialog class="modal" id="modal" aria-label="Video">
-  <video controls playsinline></video>
-  <div class="modal__bar"><button class="modal__close" type="button" aria-label="Close video" data-close>×</button></div>
+<dialog class="reels" id="modal" aria-label="Films">
+  <div class="reels__track" data-reels-track data-lenis-prevent></div>
+  <div class="reels__top">
+    <span class="reels__count" data-reels-count></span>
+    <button class="reels__btn" type="button" data-reels-mute aria-pressed="false" aria-label="Mute"><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none"/></svg><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9.5l5 5m0-5l-5 5" fill="none"/></svg></button>
+    <button class="reels__btn" type="button" aria-label="Close films" data-close><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none"/></svg></button>
+  </div>
+  <div class="reels__nav"><button class="reels__btn" type="button" data-reels-step="-1" aria-label="Previous film"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none"/></svg></button><button class="reels__btn" type="button" data-reels-step="1" aria-label="Next film"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none"/></svg></button></div>
+  <p class="reels__hint" data-reels-hint aria-hidden="true"><span>↑</span> Swipe up for the next film</p>
 </dialog>
 
 

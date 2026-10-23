@@ -583,12 +583,6 @@ button { font: inherit; color: inherit; }
 @media (hover: none), (pointer: coarse) { .cursor { display: none; } }
 
 /* ---------- Video dialog ---------- */
-.modal { border: 0; padding: 0; background: transparent; max-width: min(92vw, 26rem); width: 100%; overflow: visible; }
-.modal::backdrop { background: rgba(255, 255, 255, 0.88); -webkit-backdrop-filter: blur(0.875rem); backdrop-filter: blur(0.875rem); }
-.modal video { width: 100%; max-height: 78vh; border-radius: 1.75rem; background: #000; box-shadow: 0 2.5rem 5rem -1.875rem rgba(0, 0, 0, 0.5); }
-.modal--wide { max-width: min(92vw, 62rem); }
-.modal__bar { display: flex; justify-content: flex-end; align-items: center; gap: 1rem; margin-top: 0.75rem; }
-.modal__close { width: 3rem; height: 3rem; border-radius: 50%; border: 0; background: var(--ink); color: #fff; font-size: 1.375rem; cursor: pointer; }
 
 /* ---------- Reveals ---------- */
 .motion .reveal { opacity: 0; transform: translateY(1.75rem); }
@@ -767,10 +761,9 @@ button { font: inherit; color: inherit; }
 .kheelu.is-live .kheelu__body { will-change: transform; }
 .is-off, .is-off *, .is-off *::before, .is-off *::after { animation-play-state: paused !important; }
 @media (hover: none), (pointer: coarse), (max-width: 699px) {
-  .nav.is-solid, .ctabar, .skipdemo, .home__copy, .modal::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .nav.is-solid, .ctabar, .skipdemo, .home__copy { -webkit-backdrop-filter: none; backdrop-filter: none; }
   .nav.is-solid, .ctabar, .skipdemo { background: rgba(255, 255, 255, 0.96); }
   .home__copy { background: rgba(255, 255, 255, 0.93); }
-  .modal::backdrop { background: rgba(255, 255, 255, 0.96); }
 }
 
 
@@ -824,6 +817,16 @@ button { font: inherit; color: inherit; }
   #languages, #privacy { --len: 230vh !important; }
   #app { --len: 200vh !important; }
 }
+/* Touch phones (2026-10-23, the owner: "a single swipe is switching the sections very fast"): each swipe stops at the
+   next beat (main.js, "One swipe, one beat"), so a chapter is as long as its beats need, about 0.6 of a screen apart. */
+@media (max-width: 699px) and (hover: none) {
+  #hero { --len: 230vh !important; }
+  #how, #languages { --len: 300vh !important; }
+  #films { --len: 420vh !important; }
+  #asks { --len: 430vh !important; }
+  #day, #privacy { --len: 340vh !important; }
+  #app { --len: 220vh !important; }
+}
 
 /* ===================== Phone smoothness (2026-10-23) =====================
    Touch screens draw every frame on a phone GPU, so the costly effects are swapped for ones that look the same:
@@ -847,3 +850,37 @@ html { -webkit-tap-highlight-color: transparent; }
    chapters, even the ones far away. Each track has an explicit height (--len), so skipping one never changes the
    page's length or where ScrollTrigger pins anything. */
 .motion main > .track { content-visibility: auto; }
+/* Phones: one swipe, one beat (main.js places the stops). */
+html.beats-on.in-chapter { scroll-snap-type: y mandatory; }
+.beats { position: absolute; left: 0; top: 0; width: 1px; height: 0; pointer-events: none; }
+.beats i { position: absolute; left: 0; width: 1px; height: 1px; scroll-snap-align: start; scroll-snap-stop: always; }
+
+/* ---------- Films viewer: full screen, one film per screen, swipe up for the next (main.js initModal) ---------- */
+.reels { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #000; color: #fff; overflow: hidden; }
+.reels::backdrop { background: #000; }
+html.reels-open { overflow: hidden; }
+.reels__track { height: 100%; overflow-y: auto; overscroll-behavior: contain; scroll-snap-type: y mandatory; scrollbar-width: none; }
+.reels__track::-webkit-scrollbar { display: none; }
+.reels__slide { position: relative; height: 100%; scroll-snap-align: start; scroll-snap-stop: always; overflow: hidden; cursor: pointer; }
+.reels__poster, .reels__slide video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
+.reels__slide video { z-index: 1; }
+.reels__cap { position: absolute; z-index: 2; left: 0; right: 0; bottom: 0; padding: 4rem max(1.25rem, calc((100% - 40rem) / 2)) calc(1.75rem + env(safe-area-inset-bottom)); background: linear-gradient(transparent, rgba(0, 0, 0, 0.65)); pointer-events: none; }
+.reels__cap h3 { margin: 0; font: 650 1.375rem/1.15 var(--display); letter-spacing: -0.007em; }
+.reels__cap p { margin: 0.375rem 0 0; font-size: 0.9375rem; line-height: 1.4; color: rgba(255, 255, 255, 0.85); }
+.reels__bar { position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; height: 0.1875rem; background: rgba(255, 255, 255, 0.2); }
+.reels__bar b { display: block; height: 100%; background: #fff; transform: scaleX(0); transform-origin: 0 50%; }
+.reels__slide.is-paused::after { content: ""; position: absolute; z-index: 2; left: 50%; top: 50%; width: 4.5rem; height: 4.5rem; margin: -2.25rem 0 0 -2.25rem; border-radius: 50%; background: rgba(0, 0, 0, 0.45) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 12'%3E%3Cpath d='M0 0l10 6-10 6z' fill='white'/%3E%3C/svg%3E") 56% 50% / 1.375rem no-repeat; pointer-events: none; }
+.reels__top { position: absolute; z-index: 4; top: 0; right: 0; left: 0; display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; padding: calc(0.875rem + env(safe-area-inset-top)) 0.875rem 0.875rem; background: linear-gradient(rgba(0, 0, 0, 0.45), transparent); pointer-events: none; }
+.reels__top > * { pointer-events: auto; }
+.reels__count { margin-right: auto; padding-left: 0.375rem; font: 600 0.875rem/1 var(--text); color: rgba(255, 255, 255, 0.85); font-variant-numeric: tabular-nums; }
+.reels__btn { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.16); color: #fff; cursor: pointer; transition: background-color 0.2s; }
+.reels__btn:hover { background: rgba(255, 255, 255, 0.28); }
+.reels__btn svg { width: 1.25rem; height: 1.25rem; fill: currentColor; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.reels__btn[aria-pressed="true"] .i-on, .reels__btn[aria-pressed="false"] .i-off { display: none; }
+.reels__nav { position: absolute; z-index: 4; right: 1.25rem; top: 50%; translate: 0 -50%; display: none; flex-direction: column; gap: 0.75rem; }
+@media (hover: hover) and (pointer: fine) { .reels__nav { display: flex; } }
+.reels__hint { position: absolute; z-index: 4; left: 50%; top: calc(4.5rem + env(safe-area-inset-top)); /* clear of the films' burned-in subtitles */ translate: -50% 0; margin: 0; padding: 0.625rem 1rem; border-radius: 999px; background: rgba(0, 0, 0, 0.5); font: 600 0.875rem/1 var(--text); white-space: nowrap; pointer-events: none; animation: reels-hint 5s ease-out 0.4s both; }
+.reels__hint span { display: inline-block; margin-right: 0.25rem; animation: reels-nudge 1.2s ease-in-out infinite; }
+.reels__hint.is-gone { visibility: hidden; }
+@keyframes reels-hint { 0% { opacity: 0; } 10%, 80% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes reels-nudge { 50% { transform: translateY(-0.25rem); } }
