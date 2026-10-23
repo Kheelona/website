@@ -824,3 +824,26 @@ button { font: inherit; color: inherit; }
   #languages, #privacy { --len: 230vh !important; }
   #app { --len: 200vh !important; }
 }
+
+/* ===================== Phone smoothness (2026-10-23) =====================
+   Touch screens draw every frame on a phone GPU, so the costly effects are swapped for ones that look the same:
+   1. Drifting soft blobs: a radial mask instead of a large blur filter (a moving blur is re-blurred on every frame).
+   2. Tiny blurs nobody can see on a phone (light motes, the privacy blob) are dropped.
+   3. GSAP owns the privacy highlight's position; a CSS transition on the same property made it chase itself.
+   4. Taps: no grey tap flash; buttons press in slightly instead, so a tap feels like a tap.
+   5. Sideways lists keep their swipe to themselves (no rubber-band handoff to the page or a back-swipe). */
+@media (hover: none), (pointer: coarse) {
+  .footer__bubbles i, .appdeck__blob { filter: none; -webkit-mask-image: radial-gradient(closest-side, #000 35%, transparent); mask-image: radial-gradient(closest-side, #000 35%, transparent); }
+  .mote, .pv__blob { filter: none; }
+}
+.motion .phone__hl { transition: none; }
+html { -webkit-tap-highlight-color: transparent; }
+@media (hover: none) {
+  .btn { transition: scale 0.18s var(--ease-out), background-color 0.25s, box-shadow 0.35s var(--ease-out); } /* no magnetic pull on touch */
+  .btn:active { scale: 0.97; }
+}
+.lg__list, .films__rail { overscroll-behavior-x: contain; }
+/* Off-screen chapters skip rendering. The page is long, and every frame used to lay out and paint all eight pinned
+   chapters, even the ones far away. Each track has an explicit height (--len), so skipping one never changes the
+   page's length or where ScrollTrigger pins anything. */
+.motion main > .track { content-visibility: auto; }

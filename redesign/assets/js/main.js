@@ -9,12 +9,20 @@
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   // rem scale, read once per resize (getComputedStyle in a pointer or scroll handler would force a style recalc)
+  // Phones and tablets: the address bar showing or hiding mid-scroll fires "resize" with only the height changed. Nothing
+  // here depends on that height (stages are 100svh), so on touch screens re-measuring waits for a real width change.
+  const onResize = (fn) => { let w = innerWidth; addEventListener("resize", () => { if (!fine && innerWidth === w) return; w = innerWidth; fn(); }); };
   let remScale = parseFloat(getComputedStyle(root).fontSize) / 16 || 1;
-  addEventListener("resize", () => { remScale = parseFloat(getComputedStyle(root).fontSize) / 16 || 1; });
+  onResize(() => { remScale = parseFloat(getComputedStyle(root).fontSize) / 16 || 1; });
   const R = () => remScale;
   // One pointer update per frame, however fast the pointer reports (120 Hz+ mice and pens).
   const perFrame = (fn) => { let ev = null, raf = 0; return (e) => { ev = e; if (!raf) raf = requestAnimationFrame(() => { raf = 0; fn(ev); }); }; };
   const phone = () => innerWidth < 700;
+  // Touch screens get calm motion: things glide and settle (no overshoot or bounce), and Khelu's hops are smaller.
+  const soft = !fine;
+  const pop = (n) => (soft ? "power3.out" : `back.out(${n})`);
+  // Khelu hops when it speaks; a new hop replaces one still running (a fast scroll never stacks them into a shake).
+  const hop = (el, h) => gsap.fromTo(el, { y: 0 }, { y: -h * (soft ? 0.6 : 1) * R(), duration: soft ? 0.3 : 0.18, yoyo: true, repeat: 1, ease: soft ? "sine.inOut" : "power2.out", overwrite: "auto" });
 
   initModal();
   initBar();
@@ -30,7 +38,7 @@
     let ctx = null, out = null, an = null, data = null, cur = null, muted = false; const cache = {};
     const ready = () => !!ctx && !muted;
     const unlock = () => {
-      if (ctx) return; const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+      if (ctx) { if (ctx.state === "suspended") ctx.resume().catch(() => {}); return; } const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
       ctx = new AC(); an = ctx.createAnalyser(); an.fftSize = 256; data = new Uint8Array(an.frequencyBinCount); out = ctx.createGain(); out.gain.value = 0.8; out.connect(an); an.connect(ctx.destination);
       document.dispatchEvent(new CustomEvent("khelu:sound"));
     };
@@ -44,9 +52,12 @@
     const setMuted = (m) => { muted = m; if (m) stop(); };
     let vol = 0.8; const nudge = (d) => { vol = Math.max(0.45, Math.min(1, +(vol + d).toFixed(2))); if (out) out.gain.setTargetAtTime(vol, ctx.currentTime, 0.05); return vol; };
     const playing = () => !!cur;
-    // Browsers only allow sound after a tap or key press, so the first one anywhere switches Khelu's voice on.
-    const first = (e) => { if (e.target && e.target.closest && e.target.closest("[data-sound]")) return; ["pointerdown", "keydown"].forEach((ev) => removeEventListener(ev, first)); unlock(); };
-    ["pointerdown", "keydown"].forEach((ev) => addEventListener(ev, first, { passive: true }));
+    // Browsers only allow sound after a tap or key press, so the first one anywhere switches Khelu's voice on. On touch
+    // screens that's a tap ("click"), never the touch that starts a scroll: making the audio context there stalled the
+    // first swipe, and a scroll doesn't count as a tap, so the voice stayed silent.
+    const firstEvs = fine ? ["pointerdown", "keydown"] : ["click", "keydown"];
+    const first = (e) => { if (e.target && e.target.closest && e.target.closest("[data-sound]")) return; firstEvs.forEach((ev) => removeEventListener(ev, first)); unlock(); };
+    firstEvs.forEach((ev) => addEventListener(ev, first, { passive: true }));
     return { unlock, play, sfx, tone, level, stop, setMuted, nudge, playing, get on() { return ready(); }, get started() { return !!ctx; }, get muted() { return muted; } };
   })();
 
@@ -60,7 +71,9 @@
     const kb = { w: 0, h: 0, l: 0, t: 0 };
     const measure = () => { kb.w = khelu.offsetWidth; kb.h = khelu.offsetHeight; kb.l = khelu.offsetLeft; kb.t = khelu.offsetTop; };
     // Pixel budget (~3 MP): a 5K or 4K screen draws the soft lines at a lower resolution instead of 15 MP a frame.
-    const size = () => { W = canvas.clientWidth; H = canvas.clientHeight; dpr = Math.max(0.75, Math.min(fine ? 2 : 1.5, devicePixelRatio || 1, Math.sqrt(3e6 / Math.max(1, W * H)))); canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); measure(); };
+    // Only a real size change reallocates the canvas (that clears it, so the waves would blink).
+    const size = () => { W = canvas.clientWidth; H = canvas.clientHeight; dpr = Math.max(0.75, Math.min(fine ? 2 : 1.5, devicePixelRatio || 1, Math.sqrt(3e6 / Math.max(1, W * H)))); const cw = Math.round(W * dpr), ch = Math.round(H * dpr); if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; } measure(); };
+    const STEP = fine ? 3 : 5; // touch screens: fewer points per line (the waves are soft, so it reads the same)
     const COLS = ["255,170,60", "90,169,238", "157,134,238", "95,191,166"];
     const frame = (now) => {
       const dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60; last = now;
@@ -82,7 +95,7 @@
           const g = c2.createLinearGradient(cx + side * inner, 0, cx + side * reach, 0);
           g.addColorStop(0, `rgba(${col},0)`); g.addColorStop(0.18, `rgba(${col},0.85)`); g.addColorStop(0.7, `rgba(${col},0.5)`); g.addColorStop(1, `rgba(${col},0)`);
           c2.strokeStyle = g; c2.lineWidth = (2.4 - i * 0.3) * unit; c2.beginPath();
-          for (let d = inner; d <= reach; d += 3) {
+          for (let d = inner; d <= reach; d += STEP) {
             const k = (d - inner) / (reach - inner), env = Math.sin(Math.PI * Math.min(1, k * 1.1));
             const x = cx + side * d; let y = cy + env * a * Math.sin(d * f - t * sp + i * 1.3) + (i - 1.5) * 2.5 * unit;
             if (pull > 0.001) { const dx = x - m.x, dy = y - m.y; const p = Math.exp(-(dx * dx) / (2 * sigma * sigma) - (dy * dy) / (2 * (sigma * 0.8) ** 2)) * pull; y += dy * p * 0.9 + Math.sin(dx * 0.025 - t * 1.6) * p * 5 * unit; }
@@ -93,7 +106,7 @@
       });
       raf = requestAnimationFrame(frame);
     };
-    size(); addEventListener("resize", size); document.addEventListener("khelu:refresh", measure);
+    size(); onResize(size); document.addEventListener("khelu:refresh", measure);
     new IntersectionObserver((es) => es.forEach((e) => { cancelAnimationFrame(raf); last = 0; if (e.isIntersecting) { size(); raf = requestAnimationFrame(frame); } })).observe(canvas);
     if (fine) {
       const zone = canvas.closest(".stage");
@@ -122,7 +135,7 @@
     const measure = () => { const y = scrollY; box = secs.map((x) => { const r = x.getBoundingClientRect(); return { x, top: r.top + y, bottom: r.bottom + y }; }); };
     const pick = () => { const y = scrollY, mid = y + innerHeight * 0.45; const b = box.find((s) => s.top <= mid && s.bottom > mid); cur = b ? b.x : null; btn.classList.toggle("is-on", !!b && b.bottom - y > innerHeight * 0.9); };
     ScrollTrigger.addEventListener("refresh", () => { measure(); pick(); });
-    ScrollTrigger.create({ start: 0, end: "max", onUpdate: pick }); addEventListener("resize", () => { measure(); pick(); }); measure(); pick();
+    ScrollTrigger.create({ start: 0, end: "max", onUpdate: pick }); onResize(() => { measure(); pick(); }); measure(); pick();
     btn.addEventListener("click", () => { if (!cur) return; const next = cur.nextElementSibling; scrollToY(next ? next.getBoundingClientRect().top + scrollY : cur.offsetTop + cur.offsetHeight); });
   })();
 
@@ -136,12 +149,22 @@
     ScrollTrigger.create({ trigger: k, start: "top bottom", end: "bottom top", onToggle: (s) => { clearTimeout(timer); k.classList.toggle("is-live", s.isActive); if (s.isActive) { live.add(k); idle.play(); timer = setTimeout(blink, 900); } else { live.delete(k); idle.pause(); } } });
   });
 
-  /* ---------- Nav: solid once scrolled, hides on the way down ---------- */
-  const nav = $("#nav");
-  ScrollTrigger.create({ start: 0, end: "max", onUpdate: (s) => { const y = s.scroll(); nav.classList.toggle("is-solid", y > 20); nav.classList.toggle("is-hidden", s.direction === 1 && y > 600); } });
+  /* ---------- Nav: solid once scrolled, hides on the way down ----------
+     It changes only after a deliberate run of scroll in one direction (a thumb's small wobble or the end of a fling
+     doesn't make it flicker in and out). */
+  const nav = $("#nav"); let navY = 0, navRun = 0, navHidden = false;
+  ScrollTrigger.create({ start: 0, end: "max", onUpdate: (s) => {
+    const y = s.scroll(), d = y - navY; navY = y; nav.classList.toggle("is-solid", y > 20);
+    navRun = Math.sign(d) === Math.sign(navRun) ? navRun + d : d;
+    const hide = y > 600 && (navHidden ? navRun > -24 * R() : navRun > 24 * R());
+    if (hide !== navHidden) { navHidden = hide; nav.classList.toggle("is-hidden", hide); }
+  } });
 
   /* ---------- Reveals ---------- */
-  ScrollTrigger.batch(".reveal", { start: "top 88%", once: true, onEnter: (els) => gsap.to(els, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out", stagger: 0.08 }) });
+  // Some revealed elements have their own CSS transform transition (hover lifts): it's switched off while GSAP moves
+  // them, or both would chase the same value every frame and the rise would stutter.
+  const glide = (els) => { gsap.set(els, { transition: "none" }); return () => gsap.set(els, { clearProps: "transition" }); };
+  ScrollTrigger.batch(".reveal", { start: "top 88%", once: true, onEnter: (els) => gsap.to(els, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out", stagger: 0.08, onComplete: glide(els) }) });
 
   /* ---------- Footer: the rainbow ears ripple along the card's top, the wordmark rises and follows the pointer ---------- */
   (() => {
@@ -175,7 +198,7 @@
       .fromTo(B, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.14 }, 0.2)
       .to(stage, { scale: 1.06, duration: 0.3, ease: "power1.inOut" }, 0.15)
       .to(B, { y: -40, opacity: 0, duration: 0.12 }, 0.5)
-      .fromTo(Q, { opacity: 0, scale: 0.2, x: (i) => -Math.cos(qs[i].a) * 140 * R(), y: (i) => -Math.sin(qs[i].a) * 140 * R() }, { opacity: 1, scale: 1, x: 0, y: 0, stagger: { each: 0.008, from: "random" }, ease: "back.out(1.6)", duration: 0.2 }, 0.52)
+      .fromTo(Q, { opacity: 0, scale: 0.2, x: (i) => -Math.cos(qs[i].a) * 140 * R(), y: (i) => -Math.sin(qs[i].a) * 140 * R() }, { opacity: 1, scale: 1, x: 0, y: 0, stagger: { each: 0.008, from: "random" }, ease: pop(1.6), duration: 0.2 }, 0.52)
       .fromTo(C, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.12 }, 0.6)
       .to(Q, { y: (i) => (-30 - (i % 5) * 14) * R(), duration: 0.3, ease: "none" }, 0.72));
     if (fine) {
@@ -295,7 +318,7 @@
       .fromTo(sky, { scale: 0.94, opacity: 0.6 }, { scale: 1, opacity: 1, duration: 0.06, ease: "power2.out" }, 0)
       .to(beam, { strokeDashoffset: 0, duration: 0.05, ease: "none" }, 0.15)
       .to(bands, { strokeDashoffset: 0, duration: 0.12, stagger: 0.012, ease: "power1.out" }, 0.19)
-      .to(dots.map((d) => d.c), { opacity: 1, scale: 1, duration: 0.05, stagger: 0.002, ease: "back.out(2)" }, 0.36)
+      .to(dots.map((d) => d.c), { opacity: 1, scale: 1, duration: 0.05, stagger: 0.002, ease: pop(2) }, 0.36)
       .to(bands.filter((b) => !b.hasAttribute("data-blue")), { opacity: 0.12, duration: 0.06 }, 0.38)
       .to(zig, { strokeDashoffset: 0, duration: 0.12, ease: "none" }, 0.4)
       .to(dots.map((d) => d.c), { attr: { fill: "#cfe6fb", stroke: "#7fbcef" }, duration: 0.08, stagger: 0.002 }, 0.42)
@@ -306,18 +329,18 @@
 
     // Khelu's lines pop out of Khelu (not scrubbed: each line arrives with a bounce and sound ripples from the tummy).
     let step = -2, answered = false, said = 0;
-    const speak = () => { gsap.fromTo(ripples, { scale: 0.6, opacity: 0.9 }, { scale: 2, opacity: 0, duration: 1.1, stagger: 0.18, ease: "power1.out" }); gsap.fromTo(k, { y: 0 }, { y: -10, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out" }); };
+    const speak = () => { gsap.fromTo(ripples, { scale: 0.6, opacity: 0.9 }, { scale: 2, opacity: 0, duration: 1.1, stagger: 0.18, ease: "power1.out" }); hop(k, 10); };
     const line = (label, text, bub) => {
       sayLabel.textContent = label; say.style.setProperty("--bub", `var(${bub})`);
       sayText.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; const id = ++said;
-      gsap.fromTo(say, { opacity: 0, y: 14, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.8)", overwrite: true });
+      gsap.fromTo(say, { opacity: 0, y: 14, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: pop(1.8), overwrite: true });
       gsap.delayedCall(0.5, () => { if (id === said) { sayText.textContent = text; speak(); } });
     };
     const toSunset = (on) => { gsap.to(sunset, { opacity: on ? 1 : 0, duration: on ? 1.8 : 0.6, ease: "sine.inOut" }); gsap.to(sun, { y: on ? 250 : 0, x: on ? (phone() ? 90 : 200) : 0, duration: on ? 2.2 : 0.6, ease: "sine.inOut" }); gsap.to(sunCore, { attr: { fill: on ? "#ff8a4c" : "#ffc861" }, duration: 1.6 }); gsap.to(clouds, { fill: on ? "#ffd9d0" : "#ffffff", duration: 1.6 }); };
     const ask = () => { answered = false; child.classList.remove("is-answered"); child.classList.add("is-asking"); childLabel.textContent = "Your turn"; childText.textContent = "Tap an answer for your child:"; done.classList.remove("is-on"); toSunset(false); };
     const answer = (c) => {
       answered = true; child.classList.remove("is-asking"); child.classList.add("is-answered"); childLabel.textContent = "Your child"; childText.textContent = `${c}!`;
-      gsap.fromTo(child, { scale: 0.94 }, { scale: 1, duration: 0.4, ease: "back.out(2)" });
+      gsap.fromTo(child, { scale: 0.94 }, { scale: 1, duration: 0.4, ease: pop(2) });
       toSunset(true); done.classList.add("is-on");
       if (c === "Orange") return gsap.delayedCall(0.5, () => line("Khelu", "Yes! At sunset, light travels through lots more air. The blue bounces away, so the oranges and reds reach your eyes.", "--p-peach"));
       gsap.delayedCall(0.5, () => line("Khelu", `${c}? Ooh, good guess! Let’s watch the sun go down and see…`, "--p-pink"));
@@ -327,7 +350,7 @@
       if (n === step) return; const prev = step; step = n;
       steps.forEach((li, i) => { li.classList.toggle("is-on", i + 1 === n); li.classList.toggle("is-done", i + 1 < n); });
       if (n < 0) { gsap.to([child, say], { opacity: 0, y: 10, duration: 0.3, overwrite: true }); return; }
-      if (prev < 0) gsap.fromTo(child, { opacity: 0, y: 14, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.8)", overwrite: true });
+      if (prev < 0) gsap.fromTo(child, { opacity: 0, y: 14, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: pop(1.8), overwrite: true });
       if (n < 4) { answered = false; child.classList.remove("is-asking", "is-answered"); childLabel.textContent = "Your child"; childText.textContent = "Why is the sky blue?"; done.classList.remove("is-on"); if (prev === 4) toSunset(false); }
       if (n === 0) { said++; gsap.to(say, { opacity: 0, y: 10, duration: 0.25, overwrite: true }); return; } // Khelu listens while your child asks
       const L = LINES[n]; line(L.label, L.text, L.bub);
@@ -366,15 +389,19 @@
     const drift = gsap.to(room, { scale: 1.05, duration: 9, ease: "sine.inOut", yoyo: true, repeat: -1, paused: true });
     if (fine) { const px = gsap.quickTo(room, "x", { duration: 1.2, ease: "power3" }), py = gsap.quickTo(room, "y", { duration: 1.2, ease: "power3" });
       track.addEventListener("pointermove", perFrame((e) => { px(-(e.clientX / innerWidth - 0.5) * 24); py(-(e.clientY / innerHeight - 0.5) * 14); }), { passive: true }); }
-    let cur = 0;
+    let cur = 0, copyTl = null, bubTl = null;
     const show = (i) => {
       if (i === cur) return; const dir = i > cur ? 1 : -1; const prev = cur; cur = i;
-      gsap.to(scenes[prev], { opacity: 0, scale: 1.04, duration: 0.7, ease: "power2.inOut" });
-      gsap.fromTo(scenes[i], { opacity: 0, scale: 1.06, xPercent: 3 * dir }, { opacity: 1, scale: 1, xPercent: 0, duration: 0.9, ease: "power3.out" });
-      gsap.timeline().to(k, { y: -38 * R(), duration: 0.25, ease: "power2.out" }).to(k, { y: 0, duration: 0.45, ease: "bounce.out" });
+      // A fast scroll can pass several rooms at once: every room except the new one fades out, and the copy and bubble
+      // timelines of a room already passed are dropped, so nothing flickers between two lines.
+      scenes.forEach((sc, j) => { if (j !== i && (j === prev || gsap.getProperty(sc, "opacity") > 0)) gsap.to(sc, { opacity: 0, scale: 1.04, xPercent: 0, duration: 0.7, ease: "power2.inOut", overwrite: "auto" }); });
+      gsap.fromTo(scenes[i], { opacity: 0, scale: 1.06, xPercent: (soft ? 1.5 : 3) * dir }, { opacity: 1, scale: 1, xPercent: 0, duration: soft ? 1 : 0.9, ease: "power3.out", overwrite: "auto" });
+      if (soft) hop(k, 22);
+      else gsap.timeline().to(k, { y: -38 * R(), duration: 0.25, ease: "power2.out", overwrite: "auto" }).to(k, { y: 0, duration: 0.45, ease: "bounce.out" });
       const [t, l, m, s] = DAY[i];
-      gsap.timeline().to([time, line, mode], { opacity: 0, y: -12, duration: 0.2, stagger: 0.03 }).add(() => { time.textContent = t; line.innerHTML = l; mode.textContent = m; }).to([time, line, mode], { opacity: 1, y: 0, duration: 0.45, stagger: 0.06, ease: "power3.out" });
-      gsap.timeline().to(bubble, { opacity: 0, scale: 0.85, duration: 0.18, transformOrigin: "10% 100%" }).add(() => { say.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; }).to(bubble, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }).add(() => { say.textContent = s; }, "+=0.5");
+      if (copyTl) copyTl.kill(); if (bubTl) bubTl.kill();
+      copyTl = gsap.timeline().to([time, line, mode], { opacity: 0, y: -12, duration: 0.2, stagger: 0.03 }).add(() => { time.textContent = t; line.innerHTML = l; mode.textContent = m; }).to([time, line, mode], { opacity: 1, y: 0, duration: 0.45, stagger: 0.06, ease: "power3.out" });
+      bubTl = gsap.timeline().to(bubble, { opacity: 0, scale: 0.85, duration: 0.18, transformOrigin: "10% 100%" }).add(() => { say.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; }).to(bubble, { opacity: 1, scale: 1, duration: 0.35, ease: pop(2) }).add(() => { say.textContent = s; }, "+=0.5");
       dots.forEach((d, j) => d.classList.toggle("is-on", j === i));
     };
     ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => show(Math.min(DAY.length - 1, Math.floor(st.progress * DAY.length * 0.999))), onToggle: (st) => { st.isActive ? talk.play() : talk.pause(); st.isActive ? drift.play() : drift.pause(); } });
@@ -397,7 +424,7 @@
       gsap.fromTo(words[i], { opacity: 0, y: 36, ...blur(6) }, { opacity: 1, y: 0, ...blur(0), duration: 0.6, delay: prev >= 0 ? 0.15 : 0, ease: "power3.out", overwrite: true });
       cap.textContent = `${say} · ${name}`;
       gsap.fromTo(ripples, { scale: 0.6, opacity: 0.85 }, { scale: 1.9, opacity: 0, duration: 1.1, stagger: 0.16, ease: "power1.out" });
-      gsap.fromTo(k, { y: 0 }, { y: -12, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out" });
+      hop(k, 12);
       if (phone()) { const b = items[i]; list.scrollTo({ left: b.offsetLeft - list.clientWidth / 2 + b.offsetWidth / 2, behavior: "smooth" }); }
     };
     gsap.set(words, { opacity: 0 }); show(0);
@@ -421,8 +448,8 @@
       .from(y, { opacity: 0, y: 30, duration: 0.2 })
       .to(fly, { p: 1, duration: 0.6, ease: "sine.inOut", onUpdate: place }, ">")
       .from(t, { opacity: 0, y: 30, scale: 0.94, duration: 0.2 }, ">-0.08")
-      .fromTo(t, { rotation: -2 }, { rotation: 0, duration: 0.1, ease: "back.out(3)" }, ">-0.05");
-    addEventListener("resize", () => { rocketW = 0; place(); }); place();
+      .fromTo(t, { rotation: -2 }, { rotation: 0, duration: 0.1, ease: pop(3) }, ">-0.05");
+    onResize(() => { rocketW = 0; place(); }); place();
   })();
 
   /* ---------- 7 · Bedtime stars ---------- */
@@ -437,8 +464,8 @@
       if (i === cur) return; cur = i;
       items.forEach((it, j) => it.classList.toggle("is-on", j === i)); blob.style.background = BLOB[i];
       cards.forEach((c, j) => { const d = (j - i + cards.length) % cards.length; // 0 = front, then behind
-        gsap.to(c, { x: d * 1.25 * 16 * R(), y: -d * 1.1 * 16 * R(), rotation: d === 0 ? 0 : d === 1 ? 4 : -4, scale: 1 - d * 0.06, opacity: d === 0 ? 1 : 0.55 - d * 0.15, zIndex: 10 - d, duration: 0.7, ease: "power3.out" }); });
-      gsap.to(chips, i === 0 ? { opacity: 1, y: 0, scale: 1, stagger: 0.08, duration: 0.5, delay: 0.25, ease: "back.out(2)" } : { opacity: 0, y: 10, scale: 0.9, duration: 0.25 });
+        gsap.to(c, { x: d * 1.25 * 16 * R(), y: -d * 1.1 * 16 * R(), rotation: d === 0 ? 0 : d === 1 ? 4 : -4, scale: 1 - d * 0.06, opacity: d === 0 ? 1 : 0.55 - d * 0.15, zIndex: 10 - d, duration: 0.7, ease: "power3.out", overwrite: "auto" }); });
+      gsap.to(chips, i === 0 ? { opacity: 1, y: 0, scale: 1, stagger: 0.08, duration: 0.5, delay: 0.25, ease: pop(2), overwrite: "auto" } : { opacity: 0, y: 10, scale: 0.9, duration: 0.25, overwrite: "auto" });
     };
     gsap.set(chips, { y: 14, scale: 0.9 }); go(0);
     ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => go(Math.min(items.length - 1, Math.floor(st.progress * items.length * 0.999))) });
@@ -449,7 +476,7 @@
   (() => {
     const cards = $$("[data-stack] .scard");
     cards.forEach((c, i) => {
-      gsap.from($(".scard__ico", c), { scale: 0.4, rotation: -20, opacity: 0, duration: 0.7, ease: "back.out(2)", scrollTrigger: { trigger: c, start: "top 85%", once: true } });
+      gsap.from($(".scard__ico", c), { scale: 0.4, rotation: -20, opacity: 0, duration: 0.7, ease: pop(2), scrollTrigger: { trigger: c, start: "top 85%", once: true } });
       // The card underneath only settles back (scale): its words stay at full contrast while any of them still shows.
       if (i < cards.length - 1) gsap.to(c, { scale: 0.95, ease: "none", scrollTrigger: { trigger: cards[i + 1], start: "top 85%", end: "top 30%", scrub: true } });
     });
@@ -468,43 +495,53 @@
       items.forEach((el, j) => el.classList.toggle("is-on", j === i));
       tags.forEach((t) => t.classList.toggle("is-on", +t.dataset.step === i));
       const r = ROWS[i]; hl.classList.toggle("is-red", i === 4);
-      if (r) gsap.to(hl, { top: r[0] + "%", height: r[1] + "%", opacity: 1, duration: 0.6, ease: "power3.out" }); else gsap.to(hl, { opacity: 0, duration: 0.3 });
+      if (r) gsap.to(hl, { top: r[0] + "%", height: r[1] + "%", opacity: 1, duration: 0.6, ease: "power3.out", overwrite: "auto" }); else gsap.to(hl, { opacity: 0, duration: 0.3, overwrite: "auto" });
     };
     go(0);
     ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => go(Math.min(items.length - 1, Math.floor(st.progress * items.length * 0.999))) });
     $$("[data-pv-go]", track).forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.pvGo; go(i); scrollToY(track.offsetTop + (track.offsetHeight - stage.offsetHeight) * ((i + 0.5) / items.length)); }));
-    gsap.from($(".pv__badge", track), { scale: 0.4, rotation: -25, opacity: 0, duration: 0.8, ease: "back.out(2.2)", scrollTrigger: { trigger: track, start: "top 70%", once: true } });
+    gsap.from($(".pv__badge", track), { scale: 0.4, rotation: -25, opacity: 0, duration: 0.8, ease: pop(2.2), scrollTrigger: { trigger: track, start: "top 70%", once: true } });
     gsap.from($(".pv__card", track), { y: 80, rotation: 3, scrollTrigger: { trigger: track, start: "top bottom", end: "top top", scrub: 0.6 } });
   })();
 
 
   /* ---------- Backed by: cards rise in, one after another ---------- */
-  gsap.from("[data-backed] .backed__card", { y: 40, opacity: 0, stagger: 0.1, duration: 0.8, ease: "power3.out", scrollTrigger: { trigger: "[data-backed]", start: "top 85%", once: true } });
+  (() => { const cards = $$("[data-backed] .backed__card"); if (cards.length) gsap.from(cards, { y: 40, opacity: 0, stagger: 0.1, duration: 0.8, ease: "power3.out", onComplete: glide(cards), scrollTrigger: { trigger: "[data-backed]", start: "top 85%", once: true } }); })();
 
   /* ---------- Real families: scroll moves the reel sideways; the card in the middle grows and plays ---------- */
   (() => {
     const track = $("#films"); const reel = $("[data-reel]", track); if (!reel) return;
     const items = $$(".reel__item", reel); const bar = $("[data-reel-bar]", track);
     const dist = () => Math.max(0, reel.scrollWidth - innerWidth);
-    let playing = null;
+    let playing = null, best = null, centres = [], left0 = 0, st = null;
+    // Each card's centre is measured once per layout, so the reel never reads layout while it moves: the distance to
+    // the middle comes from the reel's own x. (A card's centre doesn't move when it scales, so its current scale is fine.)
+    const measure = () => { const r = reel.getBoundingClientRect(); left0 = r.left - gsap.getProperty(reel, "x"); centres = items.map((it) => { const b = it.getBoundingClientRect(); return b.left + b.width / 2 - r.left; }); };
+    // The loops are small: the card in the middle and its neighbours load ahead, so a film is ready when it arrives.
+    const load = (it) => { const v = it && it.matches(".film") ? $("video", it) : null; if (v && !v.src) { v.preload = "auto"; v.src = v.dataset.loop; } return v; };
+    const play = (v) => { if (v !== playing && playing) playing.pause(); playing = v; if (v) v.play().catch(() => {}); };
     const focus = () => {
-      const mid = innerWidth / 2; let best = null, bestD = 1e9;
-      // Read every card's position first, then write the scales (a read after a write would force a layout per card).
-      const ds = items.map((it) => { const r = it.getBoundingClientRect(); return Math.abs(r.left + r.width / 2 - mid); });
-      items.forEach((it, j) => { const d = ds[j], k = Math.max(0, 1 - d / (innerWidth * 0.6)); gsap.set(it, { scale: 0.86 + 0.14 * k }); if (d < bestD) { bestD = d; best = it; } });
+      const mid = innerWidth / 2, x = gsap.getProperty(reel, "x"); let next = null, bestD = 1e9;
+      items.forEach((it, j) => { const d = Math.abs(left0 + x + centres[j] - mid), k = Math.max(0, 1 - d / (innerWidth * 0.6)); gsap.set(it, { scale: 0.86 + 0.14 * k }); if (d < bestD) { bestD = d; next = it; } });
+      if (next === best) return; best = next;
       items.forEach((it) => it.classList.toggle("is-center", it === best));
-      const v = best && best.matches(".film") ? $("video", best) : null;
-      if (v !== playing) { if (playing) playing.pause(); playing = v; if (v) { if (!v.src) v.src = v.dataset.loop; v.play().catch(() => {}); } }
+      if (!st || !st.isActive) return; // only the reel on screen plays
+      const j = items.indexOf(best); load(items[j - 1]); load(items[j + 1]); load(items[j + 2]);
+      play(load(best));
     };
-    gsap.to(reel, { x: () => -dist(), ease: "none", scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6, invalidateOnRefresh: true,
-      onUpdate: (st) => { bar.style.transform = `scaleX(${st.progress})`; focus(); }, onLeave: () => playing && playing.pause(), onLeaveBack: () => playing && playing.pause() } });
-    focus(); addEventListener("resize", () => requestAnimationFrame(focus)); ScrollTrigger.addEventListener("refresh", focus);
+    // The cards scale and the bar fills on every frame the reel moves, including the scrub's glide after the finger stops.
+    st = gsap.to(reel, { x: () => -dist(), ease: "none", onUpdate() { bar.style.transform = `scaleX(${this.progress()})`; focus(); },
+      scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6, invalidateOnRefresh: true,
+        onToggle: (s) => { if (s.isActive) { best = null; focus(); } else play(null); } } }).scrollTrigger;
+    // The first film starts loading a screen before the reel arrives.
+    ScrollTrigger.create({ trigger: track, start: "top 200%", once: true, onEnter: () => load(items.find((it) => it.matches(".film"))) });
+    measure(); focus(); onResize(() => requestAnimationFrame(() => { measure(); focus(); })); ScrollTrigger.addEventListener("refresh", () => { measure(); best = null; focus(); });
   })();
 
   /* ---------- Films: preview on hover (touch: in view) ---------- */
   const startLoop = (v) => { if (!v.src) v.src = v.dataset.loop; v.play().catch(() => {}); };
   if (fine) $$(".film__play").forEach((f) => { const v = $("video", f); f.addEventListener("pointerenter", () => startLoop(v)); f.addEventListener("pointerleave", () => v.pause()); });
-  else { const io = new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? startLoop(e.target) : e.target.pause())), { threshold: 0.6 }); $$(".film__play video").forEach((v) => io.observe(v)); }
+  else { const io = new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? startLoop(e.target) : e.target.pause())), { threshold: 0.6 }); $$(".film__play video").forEach((v) => { if (!v.closest("[data-reel]")) io.observe(v); }); }
 
   }
 
