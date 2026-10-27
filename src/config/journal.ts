@@ -11,10 +11,10 @@
 
 export type JournalSource = "snapshot" | "api";
 
-/** "snapshot" until the 20 guides are imported into the dashboard after Gate B and
- *  `node scripts/journal/sync-posts.mjs --check` proves the API returns the committed file unchanged (journal-pipeline
- *  §9.1 steps 6-8, D059 item 3). Then one commit, with the founder's OK, flips it to "api". */
-export const JOURNAL_SOURCE: JournalSource = "snapshot";
+/** "api" since the 20 guides were imported into the dashboard and `node scripts/journal/sync-posts.mjs --check`
+ *  proved the API returns the committed file unchanged (journal-pipeline §9.1 steps 6-8, D059 item 3). It was
+ *  "snapshot" until then; this is the one flip commit, made with the founder's OK. */
+export const JOURNAL_SOURCE: JournalSource = "api";
 
 /** The dashboard's API. `BLOG_API_URL` overrides it for one run (main's name, kept). */
 export const JOURNAL_API = "https://api.kheelona.com/v1";

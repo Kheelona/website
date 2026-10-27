@@ -155,8 +155,8 @@ describe.each(["src/config/journal.ts", "src/lib/journal/validate.ts"])("%s stay
 describe("src/config/journal.ts: the source switch", () => {
   /* The flip is one commit, with the founder's OK, after the import is proven (journal-pipeline §9.1 step 8, D059
      item 3); that commit changes this line too. */
-  it('stays "snapshot" until the 20 guides are imported and --check proves them unchanged', () => {
-    expect(JOURNAL_SOURCE).toBe("snapshot");
+  it('is "api": the 20 guides were imported and --check proved them unchanged', () => {
+    expect(JOURNAL_SOURCE).toBe("api");
   });
 
   it("names the API, its posts and image paths, the video stills and the snapshot", () => {
@@ -207,7 +207,7 @@ describe("the mode: where the journal comes from (journal-pipeline §2.1)", () =
   it("makes no request on any build while the committed source is the snapshot (BLOG_SYNC=on aside)", () => {
     for (const [row, env] of ROWS) {
       if (env.BLOG_SYNC === "on") continue;
-      expect(resolveMode(env).mode, row).toBe("snapshot");
+      expect(resolveMode(env, "snapshot").mode, row).toBe("snapshot");
     }
   });
 
@@ -445,7 +445,8 @@ describe("checking the committed snapshot (no request)", () => {
   it("holds the committed file to the same build rules: a refused post fails the build", async () => {
     const bad = posts();
     bad[1].hero = "/stories/fixture-learning-guide.jpg";
-    const { h, code } = check(rootWith(snapshotText(bad)), VERCEL.production);
+    // Production with BLOG_SYNC=off: since the flip, the one production build that reads the committed file.
+    const { h, code } = check(rootWith(snapshotText(bad)), { ...VERCEL.production, BLOG_SYNC: "off" });
     expect(await code).toBe(1);
     expect(h.text()).toMatch(/post "fixture-learning-guide": hero "\/stories\/fixture-learning-guide\.jpg" is a site path.*\(rule 13\)/);
     expect(h.calls).toEqual([]);
@@ -727,12 +728,19 @@ function spawn(script: string, args: string[], vars: Record<string, string> = {}
 describe("prebuild step 15 and postbuild step 20, spawned as `npm run build` runs them", () => {
   const NO_REQUEST_ROWS: [string, Record<string, string>][] = [
     ["a local build, verify:e2e", {}],
-    ["the Gate B dry run", { KH_SITE_ENV: "production" }],
+    ["the Gate B dry run, offline (BLOG_SYNC=off since the flip)", { KH_SITE_ENV: "production", BLOG_SYNC: "off" }],
     ["a beta build", VERCEL.beta],
     ["a preview build", VERCEL.preview],
-    ["production, before the flip", VERCEL.production],
     ["production with BLOG_SYNC=off", { ...VERCEL.production, BLOG_SYNC: "off" }],
   ];
+
+  it("step 15 on production, since the flip, makes exactly one request, to the posts API, and syncs", () => {
+    const root = rootWith(snapshotText(journal(4)));
+    const r = spawn(STEP_SYNC, ["--root", root], VERCEL.production, envelope(posts()));
+    expect(r.code, r.all).toBe(0);
+    expect(r.fetched).toEqual([POSTS_URL]);
+    expect(readSnapshot(root)).toBe(snapshotText(FIXTURE.posts, syncNote(JOURNAL_API)));
+  });
 
   it.each(NO_REQUEST_ROWS)("step 15 on %s: the committed snapshot passes and no request is made", (_row, vars) => {
     const r = spawn(STEP_SYNC, ["--root", rootWith()], vars);
@@ -773,7 +781,7 @@ describe("prebuild step 15 and postbuild step 20, spawned as `npm run build` run
   });
 
   it("the script runs as a CLI too, with the same answer", () => {
-    const r = spawn(SCRIPT, ["--root", rootWith()], VERCEL.production);
+    const r = spawn(SCRIPT, ["--root", rootWith()], { ...VERCEL.production, BLOG_SYNC: "off" });
     expect(r.code, r.all).toBe(0);
     expect(r.fetched).toEqual([]);
   });
