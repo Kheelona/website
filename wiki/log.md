@@ -1425,3 +1425,11 @@ D062).
 Privacy, terms, refund and shipping are `status: "approved"` in `src/content/en-IN/legal/` (words unchanged, "Last
 updated" 14 October 2026); the draft notes are gone from the redesign's legal page sources, `tools/import-legal.py` and
 `pages/_shell/facts.json`. The production prebuild's placeholder guard (step 30) no longer stops on the legal pages.
+
+## [2026-11-10 21:34] decision | D068: deliveries start 15 December 2026
+The founder moved the public delivery date from mid-November to 15 December 2026 (2026-11-10). The line reads exactly
+"Deliveries start 15 December 2026" on every page, the store, `/thanks`, the receipt of a new order, `llms.txt` and
+`pricing.md`, and the Product JSON-LD `availabilityStarts` is `2026-12-15`. D023's other terms stand; the date in D023 and
+D037 is superseded. The retired date is a banned phrase in delivery wording (`delivery-mid-november`, claims §4); the
+frozen mockups keep the old line, which the parity layer reads with the new date applied (deviations V69). The 42 copy
+blocks of `wiki/site/pages` and the facts page follow. Built as action F1.
