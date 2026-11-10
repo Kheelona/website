@@ -117,7 +117,7 @@ a cream panel (`kh-body-l`).
 >    ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST).
 > 2. **Changed your mind before dispatch?** Cancel any time for a full refund, no reason needed. We start it
 >    within 2 working days.
-> 3. **When it comes.** Deliveries start mid-November`{delivery-source}`, anywhere in India. Delivery is
+> 3. **When it comes.** Deliveries start 15 December 2026`{delivery-source}`, anywhere in India. Delivery is
 >    included.
 > 4. **After delivery.** 7-day returns, no questions asked, and a 6-month warranty on manufacturing defects.
 > 5. **Paying.** UPI, card or net banking, through Razorpay. No payment fees. Nothing recurring.
@@ -306,7 +306,7 @@ Notes:
 
 > ## Delivery.
 >
-> Deliveries start mid-November`{delivery-source}`. We deliver anywhere in India and send you a tracking link when
+> Deliveries start 15 December 2026`{delivery-source}`. We deliver anywhere in India and send you a tracking link when
 > your Kheelu ships. You can change your address any time before dispatch.
 >
 > If the delivery date moves, you hear it from us first, your price stays exactly as it is, and you can cancel

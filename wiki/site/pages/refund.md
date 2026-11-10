@@ -168,7 +168,7 @@ whole policy, so it reads as one document.
 >
 > **H3:** If the date moves, or we can’t deliver
 >
-> Deliveries start mid-November`{delivery-source}`. If that date moves, you hear it from us first, and you can cancel for a full refund, even if you were happy to wait before. If we can’t supply your Kheelu for any reason, you get back everything you’ve paid: the money, not a credit or a voucher.
+> Deliveries start 15 December 2026`{delivery-source}`. If that date moves, you hear it from us first, and you can cancel for a full refund, even if you were happy to wait before. If we can’t supply your Kheelu for any reason, you get back everything you’ve paid: the money, not a credit or a voucher.
 
 - "A message or an email is enough: you never have to call." keeps the live page's ease-of-cancellation signal
   ("We never make you call a number to cancel something you did in two taps", which the legal review §3 said to

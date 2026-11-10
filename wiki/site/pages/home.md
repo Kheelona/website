@@ -243,7 +243,7 @@ drift ([strategy §3.2](../strategy.md#32-what-sits-beside-every-cta)).
 >
 > Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST).
 >
-> Deliveries start mid-November`{delivery-source}`.
+> Deliveries start 15 December 2026`{delivery-source}`.
 >
 > 7-day returns, no questions asked · 6-month warranty · UPI, card or net banking · Delivery included anywhere in India
 >
@@ -251,7 +251,7 @@ drift ([strategy §3.2](../strategy.md#32-what-sits-beside-every-cta)).
 
 **Compact block** (hero first screen, fold 2, fold 6): the button, the price sentence, then the micro-line
 
-> Deliveries start mid-November`{delivery-source}` · 7-day returns, no questions asked
+> Deliveries start 15 December 2026`{delivery-source}` · 7-day returns, no questions asked
 
 (8 words; it carries delivery and returns, the two items brief §9.1 puts next to the CTA). In the hero the
 compact block is followed only by the help line; the 6-month warranty, payment and delivery-included items
@@ -303,7 +303,7 @@ today"); the mockup checks the props fit at 360 px beside the full label.
 
   > Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST).
   >
-  > Deliveries start mid-November`{delivery-source}` · 7-day returns, no questions asked
+  > Deliveries start 15 December 2026`{delivery-source}` · 7-day returns, no questions asked
 
   Full mode: the full-mode price sentence, then the same line. The drawer CTA now carries the price beside it
   like every other chilli button (brief §9.1, strategy §3.2; CMO review S4). The laptop nav CTA stays exempt
@@ -335,7 +335,7 @@ Sources: [strategy §4.4](../strategy.md#44-navigation), [§3.3](../strategy.md#
 >
 > Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST).
 >
-> Deliveries start mid-November`{delivery-source}` · 7-day returns, no questions asked
+> Deliveries start 15 December 2026`{delivery-source}` · 7-day returns, no questions asked
 
 **Copy (directly below the first screen):**
 
@@ -806,7 +806,7 @@ Variant (b) leaves Home and is kept for the product-page outline. The CTA and li
 > Return it within 7 days of delivery, no questions asked. Opened is fine: just send back everything that came in the box, undamaged. We arrange the pickup, free. Once it reaches us and qualifies for return, your refund reaches you within 7 working days. Until we dispatch it, everything you've paid is refundable in full.
 >
 > **When will my Kheelu arrive?**
-> Deliveries start mid-November`{delivery-source}`. Pre-orders are served first, in the order they were placed, and you get a tracking link when it leaves us. Delivery is included anywhere in India, with nothing to pay at the door. We don't ship outside India. A reserved Kheelu is sent once the rest of the price is paid.
+> Deliveries start 15 December 2026`{delivery-source}`. Pre-orders are served first, in the order they were placed, and you get a tracking link when it leaves us. Delivery is included anywhere in India, with nothing to pay at the door. We don't ship outside India. A reserved Kheelu is sent once the rest of the price is paid.
 >
 > **Is Kheelu the same as Lumi?**
 > Yes. Kheelu is the toy that was called Lumi until 5 September 2026: the same product from Kheelona, with a new name. You may still see the old name on some older listings. A toy sold as Lumi by any other company is a different product, and Kheelona does not make it.
@@ -821,7 +821,7 @@ the age answer's safety sentence changed in task 8b.1 and it stays at 58, see
 **Full mode**, the price question becomes:
 
 > **How much is Kheelu?**
-> Kheelu is ₹7,999`{price-source}` (incl. GST), paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking, and you get a GST invoice. Deliveries start mid-November`{delivery-source}`. If it isn't right for your family, you can return it within 7 days of delivery, no questions asked. (54 words)
+> Kheelu is ₹7,999`{price-source}` (incl. GST), paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking, and you get a GST invoice. Deliveries start 15 December 2026`{delivery-source}`. If it isn't right for your family, you can return it within 7 days of delivery, no questions asked. (54 words)
 
 - **H2 accent:** `Hand` on "ask".
 - `FAQ` component, all items closed (DS: first item open on safety pages only). These six plus fold 4's
@@ -880,7 +880,7 @@ the age answer's safety sentence changed in task 8b.1 and it stays at 58, see
 > - product: Kheelu
 > - price: ₹4,999`{price-source}` incl. GST
 > - deposit / balance: ₹499`{price-source}` today, refundable · ₹4,500`{price-source}` before delivery
-> - shipDate: Deliveries start mid-November`{delivery-source}`
+> - shipDate: Deliveries start 15 December 2026`{delivery-source}`
 > - perks:
 >   - In the box: Kheelu plush toy, charger and quick-start card
 >   - Delivery anywhere in India, included

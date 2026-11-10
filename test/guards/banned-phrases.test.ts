@@ -1,11 +1,12 @@
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { DELIVERY_TEXT } from "@/content/en-IN/delivery";
 import { ARTICLE_SLUGS } from "@/content/en-IN/routes";
 import { ARTICLE_CLAIM_FIXES, CLAIM_FIXES, editsBeforeClaimFixes } from "../e2e/support/deviations";
 import type { PageFacts } from "../e2e/support/page-facts";
 import { ROOT, isTestOrStory, listFiles, readRepoFile } from "../e2e/support/repo";
-import { approvedMockupText, htmlToText, MOCKUP_SLUGS } from "../e2e/support/mockup-text";
+import { approvedMockupText, htmlToText, MOCKUP_DELIVERY, MOCKUP_SLUGS, withDeliveryDate } from "../e2e/support/mockup-text";
 import { codeWithoutComments, parseSource, sourceStrings } from "../e2e/support/source";
 import { mockupFold, parseMockup } from "../support/mockup-compare";
 import { blockSentences, withFacts } from "../support/mockup-facts";
@@ -19,7 +20,10 @@ import { isStillLegacy } from "./legacy-paths";
  *   2. every entry is red on its planted example;
  *   3. every entry is green on all 18 approved mockup pages (visible text, title and description)
  *      and on every copy block (quoted lines) of wiki/site/pages/*.md, so the guard can never
- *      contradict approved copy. One exception, on the mockups alone (task 8b.1b): a claim D058
+ *      contradict approved copy. The mockups are read with the D068 date fact applied (their delivery
+ *      line reads DELIVERY_TEXT, as D055's page facts apply an approved phrase change to a clone): they
+ *      are frozen (D046) and still print "mid-November", and the D068 entry is proved red on that raw text.
+ *      One exception, on the mockups alone (task 8b.1b): a claim D058
  *      withdrew after Gate A may still be printed by a frozen mockup whose route carries a claim-fix
  *      rule, where the entry names that page (`mockupExempt`); 3b proves every such exemption backed
  *      by the page's rule and needed;
@@ -98,7 +102,7 @@ describe("no pattern carries a RegExp modifier group, so Node 22 loads this file
 
 describe("every entry is green on approved copy", () => {
   it.each(MOCKUP_SLUGS)("mockup %s", (slug) => {
-    const hits = findBannedOnMockup(slug, approvedMockupText(slug));
+    const hits = findBannedOnMockup(slug, withDeliveryDate(approvedMockupText(slug)));
     expect(hits, hits.map((h) => `${h.id}: "${h.match}" in "${h.sentence}"`).join("\n")).toEqual([]);
   });
 
@@ -132,7 +136,7 @@ describe("rule 3's exemption: the withdrawn claims the frozen mockups still prin
   const RULES: Readonly<Record<ClaimFixedMockup, PageFacts>> = { ...CLAIM_FIXES, ...ARTICLE_CLAIM_FIXES };
   const exempted = BANNED_PHRASES.flatMap((entry) => (entry.mockupExempt?.on ?? []).map((slug) => ({ entry, slug })));
   const rowOf = (slug: ClaimFixedMockup) => /\bV\d+\b/.exec(RULES[slug].approvedBy)?.[0];
-  const textOf = (el: Element) => blockSentences(el).join("\n");
+  const textOf = (el: Element) => withDeliveryDate(blockSentences(el).join("\n"));
   const shown = (hits: readonly { id: string; match: string; sentence: string }[]) => hits.map((h) => `${h.id}: "${h.match}" in "${h.sentence}"`).join("\n");
 
   it("names exactly the mockups whose routes carry a claim-fix rule, each an approved page", () => {
@@ -155,7 +159,7 @@ describe("rule 3's exemption: the withdrawn claims the frozen mockups still prin
   });
 
   it("is needed wherever it applies: without the field rule 3 is red on exactly the exempted pages and entries", () => {
-    const red = MOCKUP_SLUGS.flatMap((slug) => [...new Set(findBanned(approvedMockupText(slug)).map((h) => `${h.id} on ${slug}`))]);
+    const red = MOCKUP_SLUGS.flatMap((slug) => [...new Set(findBanned(withDeliveryDate(approvedMockupText(slug))).map((h) => `${h.id} on ${slug}`))]);
     expect(red.sort()).toEqual(exempted.map(({ entry, slug }) => `${entry.id} on ${slug}`).sort());
   });
 
@@ -302,7 +306,7 @@ describe("the D061 entries: the advisor's stale facts, the idea not one phrasing
     /* In capitals or title case too (a badge typed in capitals; the entry is compiled without `i` so COD keeps its case). */
     ["cash-on-delivery", "CASH ON DELIVERY · 15-DAY RETURNS"],
     ["cash-on-delivery", "Pay On Delivery"],
-    /* "Ships 20 Oct" (D023: new orders deliver from mid-November). */
+    /* "Ships 20 Oct" (D023, D068: new orders deliver from 15 December 2026). */
     ["ships-20-october", "Ships 20 Oct"],
     ["ships-20-october", "Ships 20 October 2026"],
     ["ships-20-october", "Only 500 at the founding price. Ships 20 October."],
@@ -376,7 +380,7 @@ describe("the D061 entries: the advisor's stale facts, the idea not one phrasing
     "We don’t offer cash on delivery.",
     "Cash on delivery isn’t available.",
     "Can I pay cash on delivery?",
-    "Deliveries start mid-November.",
+    "Deliveries start 15 December 2026.",
     "Last updated: 14 October 2026",
     "Ships from",
     "Kheelu is made for children aged 3 to 7.",
@@ -563,6 +567,74 @@ describe("the expert-clip entries: never a doctor, an endorsement or the video's
       "biological-trade-off": "It's a biological trade-off.",
       "ultimate-brain-exercise": "Speech is the ultimate brain exercise.",
     });
+  });
+});
+
+/* The D068 entry (the founder's decision of 2026-11-10; F1): deliveries start 15 December 2026, so "mid-November" and its
+ * schema date 2026-11-15 are retired as the delivery date. The entry is scoped to delivery wording, never every
+ * "mid-November": the journal sync runs findBanned over every dashboard post and stops the production build on a hit, so
+ * a post that says "mid-November" about the weather or a festival must pass. The frozen mockups (D046) still print the old
+ * line, so rule 3 reads each with the D068 date fact applied (withDeliveryDate; deviations.md V69), and the entry is proved
+ * red on the raw mockup text, so that reading cannot go vacuous. */
+describe("the D068 entry: the retired delivery date, in delivery wording only (F1)", () => {
+  const ID = "delivery-mid-november";
+
+  it("reads its row from claims.md §4, a row of its own", () => {
+    const md = readRepoFile("wiki/product/claims.md");
+    const table = md.slice(md.indexOf("## 4. Retired or banned wording"), md.indexOf("### 4.1"));
+    const rows = table
+      .split("\n")
+      .filter((l) => l.startsWith("| ") && /\| BANNED 2026-11-10 \(D068\)/.test(l))
+      .map((l) => l.split(" | ")[0].replace(/^\|\s*/, ""));
+    expect(rows).toHaveLength(1);
+    expect(BANNED_PHRASES.filter((e) => rows.some((r) => r.startsWith(e.claimsRow))).map((e) => e.id)).toEqual([ID]);
+    expect(BANNED_PHRASES.find((e) => e.id === ID)?.kind).toBe("offer");
+  });
+
+  const VARIANTS = [
+    "Deliveries start mid-November.",
+    "Kheelu delivery and shipping in India: deliveries start mid-November, delivery is included anywhere in India.",
+    "Delivery from mid-November, anywhere in India.",
+    "Your Kheelu arrives in mid November.",
+    "We ship from mid-Nov.",
+    "Mid-November dispatch for every pre-order.",
+    "Deliveries start mid\u2011November.",
+    '"availabilityStarts": "2026-11-15"',
+    "Pre-orders are delivered from 2026-11-15.",
+  ];
+  it.each(VARIANTS)("is red on “%s”", (line) => {
+    expect(findBanned(line).map((h) => h.id)).toContain(ID);
+  });
+
+  /* Lines that share the entry's words without the delivery date: the new date, a parent's own mid-November (a post the
+   * journal sync would otherwise stop), and llms.txt's correction, which names the old date only to say it is out of date. */
+  const NEAR_MISSES = [
+    "Deliveries start 15 December 2026.",
+    "deliveries start 15 December 2026, delivery is included anywhere in India.",
+    "Our winter break starts in mid-November, so plan the holiday early.",
+    "Diwali falls in mid-November this year, and the children stay up late.",
+    "Screen time creeps up in mid-November, when the evenings darken.",
+    "The weather turns cold in mid-November. Delivering a bedtime story helps.",
+    "**Deliveries start 15 December 2026.** Earlier dates (20 October 2026, mid-November 2026) are out of date. Pre-orders are served first, in the order they were placed.",
+  ];
+  it.each(NEAR_MISSES)("passes “%s”", (line) => {
+    expect(findBanned(line)).toEqual([]);
+  });
+
+  it("is red on the raw frozen mockups, which still print the old line, and green once the date fact is applied", () => {
+    const printing = MOCKUP_SLUGS.filter((slug) => approvedMockupText(slug).includes(MOCKUP_DELIVERY));
+    expect(printing.length).toBeGreaterThan(0);
+    for (const slug of printing) {
+      const raw = approvedMockupText(slug);
+      expect(findBanned(raw).map((h) => h.id), `${slug} (raw)`).toContain(ID);
+      const read = withDeliveryDate(raw);
+      expect(read, slug).toContain(DELIVERY_TEXT);
+      expect(findBannedOnMockup(slug, read).map((h) => h.id), `${slug} (D068 applied)`).not.toContain(ID);
+    }
+  });
+
+  it("leaves no mid-November in any mockup once the date fact is applied", () => {
+    for (const slug of MOCKUP_SLUGS) expect(withDeliveryDate(approvedMockupText(slug)), slug).not.toMatch(/mid[- ]Nov/i);
   });
 });
 

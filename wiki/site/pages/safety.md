@@ -462,7 +462,7 @@ Word counts: 50 · first block 57 (the answer-first part: the C16 sentence and o
 >
 > Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST).
 >
-> Deliveries start mid-November`{delivery-source}` · 7-day returns, no questions asked
+> Deliveries start 15 December 2026`{delivery-source}` · 7-day returns, no questions asked
 >
 > Questions? WhatsApp or call +91 91875 46483
 
