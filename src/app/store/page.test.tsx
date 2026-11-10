@@ -114,7 +114,7 @@ describe("store page: the configured store (token mode)", () => {
   it("the agreement card states the D023 delivery line, never the old ship date", async () => {
     const { main } = await renderPage();
     const card = main.querySelector(".ks-agree")!;
-    expect(card.textContent).toContain("Deliveries start mid-November");
+    expect(card.textContent).toContain("Deliveries start 15 December 2026");
     expect(main.textContent).not.toMatch(/Ships|20 October/);
   });
 

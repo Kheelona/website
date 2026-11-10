@@ -143,7 +143,7 @@ describe("StickyBuyBar: markup (partials/buybar.html)", () => {
     render(<StickyBuyBar offer={buildOffer("full")} label="Pre-order Kheelu" paths={PATHS} />);
     expect(Array.from(document.querySelectorAll(".kh-buybar__price > span")).map((s) => s.textContent)).toEqual([
       "₹7,999 in total",
-      "Paid in full · Deliveries start mid-November",
+      "Paid in full · Deliveries start 15 December 2026",
     ]);
   });
 

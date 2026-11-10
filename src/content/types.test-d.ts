@@ -110,8 +110,8 @@ export const offer = {
   sticky: offerCopy.sticky.token,
   card: { product: "Kheelu", split: offerCopy.card.split, perks: offerCopy.card.perks },
   plus: offerCopy.plus,
-  delivery: "Deliveries start mid-November",
-  availabilityStarts: "2026-11-15",
+  delivery: "Deliveries start 15 December 2026",
+  availabilityStarts: "2026-12-15",
 } satisfies Offer;
 
 /* Full mode: the same perks, no split (G-08). */

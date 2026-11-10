@@ -279,7 +279,7 @@ describe("store page module: sources", () => {
   const source = ["store-page.ts", "preorder-form.ts", "order-summary.ts"].map((file) => readRepoFile(`src/content/en-IN/store/${file}`)).join("\n");
 
   it("types no amount, number, address or delivery date: each comes from its one source", () => {
-    expect(source).not.toMatch(/₹|Rs\.? ?\d|91875|wa\.me|mid-November|20 October/);
+    expect(source).not.toMatch(/₹|Rs\.? ?\d|91875|wa\.me|mid-November|15 December|20 October/);
   });
 
   it("types no unit cap: the agreement card's small print reads config's CAP_UNITS_TEXT, as faqs.ts does (checkout.md)", async () => {

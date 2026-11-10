@@ -63,7 +63,7 @@ describe("the shipping page: the route and its head", () => {
     const description = toPlainText(shippingPage.meta.description);
     expect(title).toBe("Kheelu shipping and delivery in India · Kheelona");
     expect(description).toBe(
-      "Kheelu delivery and shipping in India: deliveries start mid-November, delivery is included anywhere in India, and you get tracking at dispatch.",
+      "Kheelu delivery and shipping in India: deliveries start 15 December 2026, delivery is included anywhere in India, and you get tracking at dispatch.",
     );
     expect(title.length).toBeLessThanOrEqual(60);
     expect(description.length).toBeLessThanOrEqual(155);
@@ -179,7 +179,7 @@ describe("the shipping page: its parts (shipping.md folds 3 and 4)", () => {
     expect(part("when").blocks[0]).toEqual({ kind: "p", text: "{delivery}. Pre-orders are served first, in the order they were placed." });
     const all = strings(shippingPage).join("\n");
     expect(all).not.toMatch(/\b\d+\s*(?:to|-|–)\s*\d+\s*(?:working\s+)?days\b/i);
-    expect(all).not.toMatch(/2026-11-15|15 November/);
+    expect(all).not.toMatch(/2026-1[12]-15|15 (?:November|December)/);
   });
 
   it("reads the payment methods and the two 7-day windows from policies.ts, never retyped (D021, D022, D024)", () => {

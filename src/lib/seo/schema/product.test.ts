@@ -10,8 +10,8 @@ const token = (body: string) => "{" + "ph:" + body + "}";
 
 type SchemaOffer = Pick<Offer, "headlinePaise" | "availabilityStarts" | "prices">;
 const prices = { token: "₹499", balance: "₹4,500", full: "₹7,999", mrp: "₹7,999", launch: "₹4,999" };
-const tokenOffer: SchemaOffer = { headlinePaise: 499_900, availabilityStarts: "2026-11-15", prices: { ...prices, headline: "₹4,999" } };
-const fullOffer: SchemaOffer = { headlinePaise: 799_900, availabilityStarts: "2026-11-15", prices: { ...prices, headline: "₹7,999" } };
+const tokenOffer: SchemaOffer = { headlinePaise: 499_900, availabilityStarts: "2026-12-15", prices: { ...prices, headline: "₹4,999" } };
+const fullOffer: SchemaOffer = { headlinePaise: 799_900, availabilityStarts: "2026-12-15", prices: { ...prices, headline: "₹7,999" } };
 
 /** Fixture facts in the shape the product page hands over from product.ts, policies.ts and the
  *  offer (tasks 2.1 and 5.2 own the real values). */
@@ -60,7 +60,7 @@ describe("productNode", () => {
         price: 4999,
         priceCurrency: "INR",
         availability: "https://schema.org/PreOrder",
-        availabilityStarts: "2026-11-15",
+        availabilityStarts: "2026-12-15",
         eligibleRegion: { "@type": "Country", name: "India" },
         description: "₹4,999 (incl. GST) for the first 500 units. Reserve with a refundable ₹499 today.",
         hasMerchantReturnPolicy: {
@@ -88,7 +88,7 @@ describe("productNode", () => {
     expect(productNode(kheelu, tokenOffer).offers.price).toBe(4999);
     const full = productNode({ ...kheelu, offerDescription: "₹7,999 (incl. GST), paid in full when you order." }, fullOffer);
     expect(full.offers.price).toBe(7999);
-    expect(full.offers.availabilityStarts).toBe("2026-11-15");
+    expect(full.offers.availabilityStarts).toBe("2026-12-15");
   });
 
   /* Architecture §9.2: additionalProperty from announced specs only. An unannounced spec is the

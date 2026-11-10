@@ -183,7 +183,7 @@ describe("the live offer", () => {
 
   it("delivery stays mid-November everywhere", () => {
     for (const { path, html } of PAGES) expect(html, path).not.toMatch(/\b20 October\b|\bOctober 20\b(?!\d)|2026-10-20/);
-    expect(TOKEN.delivery).toBe("Deliveries start mid-November");
+    expect(TOKEN.delivery).toBe("Deliveries start 15 December 2026");
   });
 });
 
@@ -214,7 +214,7 @@ describe("the machine files (redesign/sitemap.xml, robots.txt, llms.txt, pricing
         expect(full.includes(word), `${name} still says "${word}" in full mode`).toBe(false);
       }
       expect(full, name).toContain(FULL.prices.full);
-      expect(full, name).toContain("Deliveries start mid-November");
+      expect(full, name).toContain("Deliveries start 15 December 2026");
     }
   });
 });

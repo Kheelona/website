@@ -12,7 +12,7 @@ export const shippingFixture = {
   slug: "shipping",
   meta: {
     title: "Kheelu shipping and delivery in India · Kheelona",
-    description: "Kheelu delivery and shipping in India: deliveries start mid-November, delivery is included anywhere in India, and you get tracking at dispatch.",
+    description: "Kheelu delivery and shipping in India: deliveries start 15 December 2026, delivery is included anywhere in India, and you get tracking at dispatch.",
     og: DEFAULT_OG,
   },
   status: "draft",

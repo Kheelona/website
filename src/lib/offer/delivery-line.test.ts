@@ -7,7 +7,7 @@ import { DELIVERY_LINE_CUTOFF, deliveryLine, type DeliveryLines } from "./delive
 
 const LINES: DeliveryLines = {
   early: { term: "Ships from", value: "20 October 2026" },
-  current: { term: "Delivery", value: "Deliveries start mid-November" },
+  current: { term: "Delivery", value: "Deliveries start 15 December 2026" },
 };
 
 describe("deliveryLine", () => {

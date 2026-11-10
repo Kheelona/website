@@ -34,7 +34,7 @@ export function profileLinks(links: readonly string[] | undefined, what: string)
   return [...links] as HttpsUrl[];
 }
 
-/** A stored calendar date (`2026-11-15`), checked to exist, never computed. */
+/** A stored calendar date (`2026-12-15`), checked to exist, never computed. */
 export function calendarDate(value: string, what: string): string {
   const date = new Date(`${value}T00:00:00Z`);
   const real = /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(date.getTime()) && date.toISOString().startsWith(value);

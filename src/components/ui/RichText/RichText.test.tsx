@@ -49,8 +49,8 @@ const tokenOffer: Offer = {
   sticky: { big: "", small: "" },
   card: { product: "Kheelu", perks: { home: [], product: [] } },
   plus: "",
-  delivery: "Deliveries start mid-November",
-  availabilityStarts: "2026-11-15",
+  delivery: "Deliveries start 15 December 2026",
+  availabilityStarts: "2026-12-15",
 };
 const fullOffer: Offer = { ...tokenOffer, mode: "full", headlinePaise: 799_900, prices: { ...prices, headline: "₹7,999" } };
 
@@ -179,12 +179,12 @@ describe("RichText: prices and modes come from the offer", () => {
       "<p>Reserve yours for ₹499 today, refundable until dispatch, then pay ₹4,500 before delivery: ₹4,999 in total (incl. GST).</p>",
     );
     expect(renderToString(<RichText text="{delivery} · {hand:asks {price:token} back}" offer={tokenOffer} />)).toBe(
-      'Deliveries start mid-November · <span class="kh-hand">asks ₹499 back</span>',
+      'Deliveries start 15 December 2026 · <span class="kh-hand">asks ₹499 back</span>',
     );
   });
 
   it("renders the delivery line", () => {
-    expect(html(<RichText text="{delivery}" offer={tokenOffer} />)).toBe("Deliveries start mid-November");
+    expect(html(<RichText text="{delivery}" offer={tokenOffer} />)).toBe("Deliveries start 15 December 2026");
   });
 
   it("refuses an amount or a mode variant without the offer, rather than guess a price", () => {

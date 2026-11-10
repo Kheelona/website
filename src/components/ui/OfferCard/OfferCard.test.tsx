@@ -21,8 +21,8 @@ const TOKEN: Offer = {
   sticky: { big: "{price:token} today", small: "refundable · {price:headline} in total" },
   card: { product: "Kheelu", split: SPLIT, perks: { home: [], product: [] } },
   plus: "Every Kheelu comes with 6 months of Kheelona+.",
-  delivery: "Deliveries start mid-November",
-  availabilityStarts: "2026-11-15",
+  delivery: "Deliveries start 15 December 2026",
+  availabilityStarts: "2026-12-15",
 };
 const FULL: Offer = {
   ...TOKEN,
@@ -36,7 +36,7 @@ const FULL: Offer = {
 
 const icon = (name: string) => <svg className="kh-icon" data-icon={name} aria-hidden="true" />;
 const PERKS = [
-  { icon: icon("truck"), text: "Deliveries start mid-November" },
+  { icon: icon("truck"), text: "Deliveries start 15 December 2026" },
   { icon: icon("package"), text: "In the box: Kheelu plush toy, charger and quick-start card" },
 ];
 /* The action slot takes PreorderButton (task 2.2) on the pages; its markup stands in here. */
@@ -77,7 +77,7 @@ describe("OfferCard", () => {
     const items = [...el.querySelectorAll(".kh-offer__list > li")];
     expect(items.map((li) => li.firstElementChild?.getAttribute("data-icon"))).toEqual(["truck", "package"]);
     expect(items.map((li) => li.lastElementChild?.outerHTML)).toEqual([
-      "<span>Deliveries start mid-November</span>",
+      "<span>Deliveries start 15 December 2026</span>",
       "<span>In the box: Kheelu plush toy, charger and quick-start card</span>",
     ]);
   });

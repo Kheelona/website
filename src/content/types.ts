@@ -41,7 +41,7 @@ export type ByMode<T> = T | ModeVariant<T>;
 /** Copy as content modules hold it: one string, or one per offer mode. */
 export type Copy = ByMode<RichTextString>;
 
-/** A calendar date as stored: `2026-11-15`. Formatted by src/lib/format/date.ts. */
+/** A calendar date as stored: `2026-12-15`. Formatted by src/lib/format/date.ts. */
 export type IsoDate = `${number}-${number}-${number}`;
 
 /* ── The offer (ADR-005) ──────────────────────────────────────────────────── */

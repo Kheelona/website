@@ -526,7 +526,7 @@ describe("task Q2.10: the product page's price answer and the Kheelona+ question
 describe("full mode (copy pages)", () => {
   /* Home's full-mode price answer since task Q2.9 (the D2C plan v2 §2 fold 10; D065 item 3: no GST on a selling page). */
   const homeFull =
-    "Kheelu is ₹7,999 in total, paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking. Deliveries start mid-November. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.";
+    "Kheelu is ₹7,999 in total, paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking. Deliveries start 15 December 2026. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.";
 
   it("Home's price question becomes home.md's full-mode answer", () => {
     expect(plain(faqs["price-and-advance"].question, full)).toBe("How much is Kheelu?");
@@ -537,7 +537,7 @@ describe("full mode (copy pages)", () => {
     expect(plain(faqs["cost-and-advance"].question, full)).toBe("What does Kheelu cost?");
     // The D2C plan v2 §3 fold 11 (task Q2.10; D065 items 3-4): the total, no GST and no invoice line on a selling page.
     expect(plain(faqs["cost-and-advance"].answer, full)).toBe(
-      "Kheelu is ₹7,999 in total, paid in full when you order, with delivery anywhere in India included. Pay by UPI, card or net banking, with no payment fees. Deliveries start mid-November.",
+      "Kheelu is ₹7,999 in total, paid in full when you order, with delivery anywhere in India included. Pay by UPI, card or net banking, with no payment fees. Deliveries start 15 December 2026.",
     );
   });
 
@@ -547,7 +547,7 @@ describe("full mode (copy pages)", () => {
   it("/pricing.md's price answer (the guide's until task Q2.12) becomes Home's full-mode answer", () => {
     expect(plain(faqs["how-much"].question, full)).toBe("How much is Kheelu?");
     expect(plain(faqs["how-much"].answer, full)).toBe(
-      "Kheelu is ₹7,999 (incl. GST), paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking, and you get a GST invoice. Deliveries start mid-November. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.",
+      "Kheelu is ₹7,999 (incl. GST), paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking, and you get a GST invoice. Deliveries start 15 December 2026. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.",
     );
     expect(homeFull).toBe(
       plain(faqs["how-much"].answer, full).replace(" (incl. GST)", " in total").replace(", and you get a GST invoice", ""),

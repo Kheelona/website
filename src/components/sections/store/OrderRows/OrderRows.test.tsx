@@ -42,7 +42,7 @@ describe("OrderRows", () => {
     expect(screen.getByRole("heading", { level: 2 }).className).toBe("kh-card__title");
     expect(container.querySelector("dl")!.className).toBe("ks-order__rows");
     expect(terms(container)).toEqual(["Order number", "Paid today", "Due before delivery", "Delivery"]);
-    expect(values(container)).toEqual(["KH-A2B3-C4D5", "₹499", "₹4,500, of the ₹4,999 price (incl. GST)", "Deliveries start mid-November"]);
+    expect(values(container)).toEqual(["KH-A2B3-C4D5", "₹499", "₹4,500, of the ₹4,999 price (incl. GST)", "Deliveries start 15 December 2026"]);
   });
 
   it("tells a full-payment order it owes nothing", () => {

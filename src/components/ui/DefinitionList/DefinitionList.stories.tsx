@@ -37,7 +37,7 @@ export const Order: Story = {
     rows: [
       { term: "Paid today", value: "₹499" },
       { term: "Due before delivery", value: "₹4,500, of the ₹4,999 price (incl. GST)" },
-      { term: "Delivery", value: "Deliveries start mid-November" },
+      { term: "Delivery", value: "Deliveries start 15 December 2026" },
     ],
   },
 };

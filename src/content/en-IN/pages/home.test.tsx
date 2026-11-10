@@ -82,7 +82,7 @@ const LABELS = [
   "close-title",
 ];
 const PRICE_LINE = { token: "₹499 today, refundable. ₹4,999 in total.", full: "₹7,999 in total, paid in full when you order." };
-const TRUST = ["Full refund until dispatch · 7-day returns", "Deliveries start mid-November"];
+const TRUST = ["Full refund until dispatch · 7-day returns", "Deliveries start 15 December 2026"];
 
 describe("Home: the folds, in the plan's order (D2C plan v2 §2)", () => {
   it("lists the eleven folds, each a section named by its heading, the recognition strip right after the films", () => {
@@ -370,7 +370,7 @@ describe("Home fold 7 · what you get, and what you pay (plan fold 7; D065 items
     expect(text(card.querySelector(".kh-offer__split"))).not.toMatch(/GST/);
     expect(text(card.querySelector(".ks-offer__later"))).toBe("₹4,999 for the first 500 units. ₹7,999 once they are gone.");
     expect(all(card, ".kh-offer__list li").map((li) => text(li))).toEqual([
-      "Deliveries start mid-November. Pre-orders go out first, in the order they were placed.",
+      "Deliveries start 15 December 2026. Pre-orders go out first, in the order they were placed.",
       "In the box: Kheelu plush toy, charger and quick-start card",
       "Delivery anywhere in India, included",
       "6 months of Kheelona+ included. Nothing renews without you.",

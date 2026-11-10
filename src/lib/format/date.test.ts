@@ -54,11 +54,11 @@ describe("formatDate and the server's time zone", () => {
   });
 
   /* A stored date is a calendar day, not an instant: a build machine west of
-     Greenwich must not print 14 Nov for the 15 Nov schema date. */
+     Greenwich must not print 14 Dec for the 15 Dec schema date. */
   it("prints the stored day whatever the time zone", () => {
     process.env.TZ = "America/Los_Angeles";
-    expect(formatDate("2026-11-15", "ui")).toBe("15 Nov 2026");
+    expect(formatDate("2026-12-15", "ui")).toBe("15 Dec 2026");
     process.env.TZ = "Pacific/Kiritimati";
-    expect(formatDate("2026-11-15", "long")).toBe("15 November 2026");
+    expect(formatDate("2026-12-15", "long")).toBe("15 December 2026");
   });
 });

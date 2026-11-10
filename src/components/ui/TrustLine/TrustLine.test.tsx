@@ -6,7 +6,7 @@ import { TrustLine } from "./TrustLine";
 const icon = (name: string) => <svg className="kh-icon" data-icon={name} aria-hidden="true" />;
 
 const LINKED = [
-  { icon: icon("truck"), label: "Deliveries start mid-November", href: "/shipping" },
+  { icon: icon("truck"), label: "Deliveries start 15 December 2026", href: "/shipping" },
   { icon: icon("arrow-counter-clockwise"), label: "7-day returns, no questions asked", href: "/refund" },
 ];
 
@@ -18,7 +18,7 @@ describe("TrustLine", () => {
     expect(list.className).toBe("kh-trustline ks-trust");
     const links = within(list).getAllByRole("link");
     expect(links.map((a) => a.getAttribute("href"))).toEqual(["/shipping", "/refund"]);
-    expect(links.map((a) => a.textContent)).toEqual(["Deliveries start mid-November", "7-day returns, no questions asked"]);
+    expect(links.map((a) => a.textContent)).toEqual(["Deliveries start 15 December 2026", "7-day returns, no questions asked"]);
     // the icon comes first inside the link, then the words (mockup order)
     expect(links[0].firstElementChild?.getAttribute("data-icon")).toBe("truck");
     expect(list.querySelectorAll(":scope > li > a").length).toBe(2);
@@ -32,8 +32,8 @@ describe("TrustLine", () => {
   it("opens each link in a new tab on the store and says so to screen readers", () => {
     render(<TrustLine items={LINKED} newTabNote=" (opens in a new tab)" />);
     // jsdom's name computation trims the note's leading space; the text itself is checked below
-    const link = screen.getByRole("link", { name: /^Deliveries start mid-November\s?\(opens in a new tab\)$/ });
-    expect(link.textContent).toBe("Deliveries start mid-November (opens in a new tab)");
+    const link = screen.getByRole("link", { name: /^Deliveries start 15 December 2026\s?\(opens in a new tab\)$/ });
+    expect(link.textContent).toBe("Deliveries start 15 December 2026 (opens in a new tab)");
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", "noopener");
     expect(link.querySelector(".kh-sr")?.textContent).toBe(" (opens in a new tab)");

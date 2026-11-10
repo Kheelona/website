@@ -16,8 +16,8 @@ const offer: Offer = {
   sticky: { big: "{price:token} today", small: "refundable" },
   card: { product: "Kheelu", perks: { home: [], product: [] } },
   plus: "Every Kheelu comes with 6 months of Kheelona+.",
-  delivery: "Deliveries start mid-November",
-  availabilityStarts: "2026-11-15",
+  delivery: "Deliveries start 15 December 2026",
+  availabilityStarts: "2026-12-15",
 };
 
 const text = (value: string) => ({ kind: "text", text: value });
@@ -221,7 +221,7 @@ describe("leafText: the visible text of each leaf", () => {
   });
 
   it("is the offer's delivery line for {delivery}", () => {
-    expect(leafText({ kind: "delivery" }, offer)).toBe("Deliveries start mid-November");
+    expect(leafText({ kind: "delivery" }, offer)).toBe("Deliveries start 15 December 2026");
   });
 
   it("is the bracketed number for a source marker", () => {

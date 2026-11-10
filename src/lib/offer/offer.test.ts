@@ -115,7 +115,7 @@ describe("token mode", () => {
      mockups' two lists are the offer rule's (deviations.ts OFFER_ADDITIONS, ONE_PERK_LIST). */
   it("lists one perk list, the plan's, on both cards, in the plan's order and icons (D2C plan v2 §2 fold 7; CMO m8)", () => {
     const PLAN = [
-      ["truck", "Deliveries start mid-November. Pre-orders go out first, in the order they were placed."],
+      ["truck", "Deliveries start 15 December 2026. Pre-orders go out first, in the order they were placed."],
       ["package", "In the box: Kheelu plush toy, charger and quick-start card"],
       ["map-pin", "Delivery anywhere in India, included"],
       ["star", "6 months of Kheelona+ included. Nothing renews without you."],
@@ -151,9 +151,9 @@ describe("token mode", () => {
   });
 
   it("carries the delivery line and its schema date (D023, D037)", () => {
-    expect(offer.delivery).toBe("Deliveries start mid-November");
+    expect(offer.delivery).toBe("Deliveries start 15 December 2026");
     expect(offer.delivery).toBe(norm(home.querySelector('[data-src="DELIVERY_TEXT"]')?.textContent));
-    expect(offer.availabilityStarts).toBe("2026-11-15");
+    expect(offer.availabilityStarts).toBe("2026-12-15");
   });
 });
 
@@ -177,7 +177,7 @@ describe("full mode", () => {
   /* The D2C plan v2 §1.2 (the copy page decides the full-mode bar, which no mockup shows; SPA 7): the amount "in total". */
   it("renders the full-mode sticky bar without GST, the amount in total (D065 item 3; D2C plan v2 §1.2)", () => {
     expect(text(offer.sticky.big, offer)).toBe("₹7,999 in total");
-    expect(text(offer.sticky.small, offer)).toBe("Paid in full · Deliveries start mid-November");
+    expect(text(offer.sticky.small, offer)).toBe("Paid in full · Deliveries start 15 December 2026");
   });
 
   it("omits the split and keeps the perks (G-08; home.md fold 9), with no note beside the amount", () => {

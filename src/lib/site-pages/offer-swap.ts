@@ -52,7 +52,7 @@ function redesignSwaps(full: Offer): (Swap | readonly [RegExp, string])[] {
   const { token: T, launch: L, balance: B } = TOKEN.prices;
   const F = full.prices.full;
   const priceLine = toPlainText(offerCopy.priceLine, full); // "₹7,999 in total, paid in full when you order."
-  const stickySmall = toPlainText(offerCopy.sticky.full.small, full); // "Paid in full · Deliveries start mid-November"
+  const stickySmall = toPlainText(offerCopy.sticky.full.small, full); // "Paid in full · Deliveries start 15 December 2026"
   return [
     /* The footer's price line, on two lines (pages/_shell/footer.html, index.html). */
     [`${T} today, refundable.<br>${L} in total.`, priceLine.replace(", ", ",<br>")],

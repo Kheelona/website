@@ -12,8 +12,8 @@ const tokenOffer: Offer = {
   sticky: { big: "", small: "" },
   card: { product: "Kheelu", perks: { home: [], product: [] } },
   plus: "",
-  delivery: "Deliveries start mid-November",
-  availabilityStarts: "2026-11-15",
+  delivery: "Deliveries start 15 December 2026",
+  availabilityStarts: "2026-12-15",
 };
 const fullOffer: Offer = { ...tokenOffer, mode: "full", headlinePaise: 799_900, prices: { ...prices, headline: "₹7,999" } };
 

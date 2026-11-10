@@ -314,7 +314,7 @@ describe("the product page as rendered (token mode)", () => {
      consistency review's CON-3); the close carries the trust line. */
   it("leads every trust line beside a button with the risk-reversal line, the delivery line second", () => {
     const row = (el: Element) => [...el.querySelectorAll("li")].map((li) => text(li));
-    const LINE = ["Full refund until dispatch · 7-day returns", "Deliveries start mid-November"];
+    const LINE = ["Full refund until dispatch · 7-day returns", "Deliveries start 15 December 2026"];
     // The linked trust lines (`ks-trust`; the safety facts line is not linked), the offer card's third row aside.
     const rows = [...RENDERED.main.querySelectorAll(".ks-trust:not(.ks-offer-third)")].map(row);
     expect(rows.length).toBeGreaterThanOrEqual(3);
@@ -411,7 +411,7 @@ describe("the product page's structured data (architecture §9.2)", () => {
       price,
       priceCurrency: "INR",
       availability: "https://schema.org/PreOrder",
-      availabilityStarts: "2026-11-15",
+      availabilityStarts: "2026-12-15",
       hasMerchantReturnPolicy: { merchantReturnDays: 7, returnFees: "https://schema.org/FreeReturn", refundType: "https://schema.org/FullRefund" },
       shippingDetails: { shippingRate: { value: 0, currency: "INR" }, shippingDestination: { addressCountry: "IN" } },
       warranty: { durationOfWarranty: { value: 6, unitCode: "MON" } },
@@ -728,7 +728,7 @@ describe("the product page's selling update (task Q2.10; the D2C plan v2 §3)", 
       expect(button.contains(price) || button.closest(".kh-section__actions")!.contains(price)).toBe(false);
       expect(button.compareDocumentPosition(price) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(text(price)).toBe("₹499 today, refundable. ₹4,999 in total.");
-      expect([...hero().querySelectorAll(".ks-trust li")].map(text)).toEqual(["Full refund until dispatch · 7-day returns", "Deliveries start mid-November"]);
+      expect([...hero().querySelectorAll(".ks-trust li")].map(text)).toEqual(["Full refund until dispatch · 7-day returns", "Deliveries start 15 December 2026"]);
       expect(hero().querySelector(".ks-help")).toBeNull();
     });
   });
@@ -774,7 +774,7 @@ describe("the product page's selling update (task Q2.10; the D2C plan v2 §3)", 
       const price = column.querySelector(".ks-price")!;
       expect(price.tagName).toBe("P");
       expect(button.closest(".kh-section__actions")!.contains(price)).toBe(false);
-      expect([...column.querySelectorAll(".ks-trust li")].map(text)).toEqual(["Full refund until dispatch · 7-day returns", "Deliveries start mid-November"]);
+      expect([...column.querySelectorAll(".ks-trust li")].map(text)).toEqual(["Full refund until dispatch · 7-day returns", "Deliveries start 15 December 2026"]);
       expect(column.querySelector(".ks-help")).toBeNull();
       expect(entry.cta).toMatchObject({ cta: "product-ask" });
     });

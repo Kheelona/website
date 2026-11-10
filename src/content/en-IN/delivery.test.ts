@@ -24,7 +24,7 @@ describe("the visible delivery line (D023)", () => {
   });
 
   it("names no arrival date or transit time (D022's guardrail), and never the held production date (D011)", () => {
-    expect(DELIVERY_TEXT).toBe("Deliveries start mid-November");
+    expect(DELIVERY_TEXT).toBe("Deliveries start 15 December 2026");
     expect(DELIVERY_TEXT).not.toMatch(/\d/);
     expect(DELIVERY_TEXT).not.toContain(SHIP_DATE_TEXT);
   });
@@ -32,7 +32,7 @@ describe("the visible delivery line (D023)", () => {
 
 describe("the schema date (D037)", () => {
   it("is 15 November 2026, a real calendar day, used in schema only", () => {
-    expect(DELIVERY_SCHEMA_DATE).toBe("2026-11-15");
+    expect(DELIVERY_SCHEMA_DATE).toBe("2026-12-15");
     expect(formatDate(DELIVERY_SCHEMA_DATE, "long")).toBe("15 November 2026");
   });
 });

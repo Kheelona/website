@@ -11,7 +11,7 @@ import { THANKS_PAID } from "./fixtures/store/thanks-paid";
  *
  * The receipt is sent once, at payment, so after launch every receipt belongs to a new order. An order created before
  * 10 October 2026, 00:00 in India keeps the line it was sold with, "Ships from: 20 October 2026" (SHIP_DATE_TEXT); every
- * later order reads the D023 line, "Delivery: Deliveries start mid-November". A missing or unreadable date reads the
+ * later order reads the D023 line, "Delivery: Deliveries start 15 December 2026". A missing or unreadable date reads the
  * D023 line too (P8): the receipt never promises a date the order's own row does not prove. The rule is the /thanks
  * card's own (src/lib/offer/delivery-line.ts), so the two cannot drift.
  *
