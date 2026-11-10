@@ -1,5 +1,5 @@
 {
- "_about": "The one source for the site-wide search facts: tools/build-pages.py writes these nodes into every page's JSON-LD (index.html included, between its <!--seo:jsonld--> markers), and builds sitemap.xml, robots.txt, llms.txt, pricing.md, 404.html, manifest.json and site.webmanifest from it. Product @id stays /products/lumi#product (beta's KHEELU_PRODUCT_ID, never changes). availabilityStarts 2026-11-15 = 'mid-November' (D037). Prices: the Next app fills live prices; keep these in step with the offer.",
+ "_about": "The one source for the site-wide search facts: tools/build-pages.py writes these nodes into every page's JSON-LD (index.html included, between its <!--seo:jsonld--> markers), and builds sitemap.xml, robots.txt, llms.txt, pricing.md, 404.html, manifest.json and site.webmanifest from it. Product @id stays /products/lumi#product (beta's KHEELU_PRODUCT_ID, never changes). availabilityStarts 2026-12-15 = '15 December 2026' (D037, D068). Prices: the Next app fills live prices; keep these in step with the offer.",
  "origin": "https://kheelona.com",
  "siteName": "Kheelona",
  "locale": "en-IN",
@@ -235,7 +235,7 @@
    "price": 4999,
    "priceCurrency": "INR",
    "availability": "https://schema.org/PreOrder",
-   "availabilityStarts": "2026-11-15",
+   "availabilityStarts": "2026-12-15",
    "eligibleRegion": {
     "@type": "Country",
     "name": "India"

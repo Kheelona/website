@@ -11,7 +11,7 @@ Khelu is ₹4,999 in total (incl. GST) for the first 500 units, with delivery an
 
 ## Included with every Khelu
 
-- Deliveries start mid-November. Pre-orders go out first, in the order they were placed.
+- Deliveries start 15 December 2026. Pre-orders go out first, in the order they were placed.
 - In the box: Khelu plush toy, charger and quick-start card
 - Delivery anywhere in India, included
 - 6 months of Kheelona+ included. Nothing renews without you. Kheelona+ is our paid subscription, on top of the free parent app.

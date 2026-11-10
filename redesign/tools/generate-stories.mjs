@@ -50,7 +50,7 @@ const STORE = "https://store.kheelona.com";
 const SITE_URL = "https://kheelona.com";
 /* The offer's amounts ({price:…}) and the delivery line ({delivery}), as the live checkout and delivery.ts set them. */
 const PRICES = { token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999", launch: "₹4,999" };
-const DELIVERY = "Deliveries start mid-November";
+const DELIVERY = "Deliveries start 15 December 2026";
 const TINTS = ["peach", "sky", "butter", "mint", "pink", "lilac"];
 const TOPIC_TINT = { "screen-time": "peach", talking: "sky", "ai-and-safety": "mint", learning: "lilac" };
 const TOY_CLOSEUP_KEYS = new Set(["kheelu-belly-module"]);

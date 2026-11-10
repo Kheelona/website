@@ -129,7 +129,7 @@ Every page of betawebsite.kheelona.com, rebuilt in the home page's design langua
 
 ## v13: search (SEO, AEO, GEO), 2026-10-22
 - **One source:** `pages/_shell/seo.json` holds the Organization (with description and support contact), the founders,
-  the WebSite and the Product + Offer (`alternateName` Kheelu and Lumi; `availabilityStarts` 2026-11-15 = mid-November;
+  the WebSite and the Product + Offer (`alternateName` Kheelu and Lumi; `availabilityStarts` 2026-12-15 = 15 December 2026;
   @id `/products/lumi#product`), the default share card, breadcrumb names, page dates and the robots policy.
   `tools/build-pages.py` writes them into every page's JSON-LD and into `index.html` (between `<!--seo:jsonld-->` markers;
   home's FAQPage is read from its visible questions), so every @id is the same everywhere.
