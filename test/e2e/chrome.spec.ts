@@ -101,7 +101,7 @@ async function withPriceLineWords(page: Page): Promise<void> {
     const words = (el: Element) => (el.textContent ?? "").replace(/\s+/g, " ").trim();
     for (const el of document.querySelectorAll(".kh-drawer__note")) {
       if (words(el) === sentence.mockup) el.textContent = sentence.build;
-      else if (words(el) === `${delivery} · ${returns.mockup}`) el.replaceChildren(returns.build, document.createElement("br"), delivery);
+      else if (words(el) === `${delivery.mockup} · ${returns.mockup}`) el.replaceChildren(returns.build, document.createElement("br"), delivery.build);
     }
     for (const el of document.querySelectorAll(".kh-buybar__small")) if (words(el) === bar.mockup) el.textContent = bar.build;
   }, PRICE_LINE);
