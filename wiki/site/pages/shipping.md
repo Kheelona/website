@@ -50,7 +50,7 @@ structured data only). Nothing ties the date to any certificate or licence ([D03
 | Real URL | `https://kheelona.com/shipping` (mockup file `shipping.html`) |
 | Primary search cluster | **Kheelu delivery and shipping** (trust); secondaries: when will Kheelu be delivered, delivery in India ([keyword map §4.1](../../research/keyword-map.md#41-marketing-pages-13), line 229) |
 | Title (48 characters) | Kheelu shipping and delivery in India · Kheelona |
-| Meta description (143 characters) | Kheelu delivery and shipping in India: deliveries start mid-November`{delivery-source}`, delivery is included anywhere in India, and you get tracking at dispatch. |
+| Meta description (147 characters) | Kheelu delivery and shipping in India: deliveries start 15 December 2026`{delivery-source}`, delivery is included anywhere in India, and you get tracking at dispatch. |
 | H1 (recommended) | Shipping and delivery, in plain words. (`Hand` on "plain words") |
 | H1 options | (1) Shipping and delivery, in plain words. (2) Shipping, in plain words. (the live H1, `shipping/page.tsx:80`) (3) Shipping anywhere in India, included in the price. |
 | Page meta for the build | `{"title": "Kheelu shipping and delivery in India · Kheelona", "description": "<meta above>", "url": "/shipping", "buybar": false, "active": "", "css": false}` |

@@ -16,6 +16,7 @@ import {
   CLAIM_FIXES,
   editsBeforeClaimFixes,
   KHEELONA_PLUS,
+  PRICE_LINE,
   OFFER_ADDITIONS,
   OFFER_NOTE,
   PRODUCT_OFFER_CARD,
@@ -527,10 +528,11 @@ describe.each(["home", "meet-kheelu"] as const)("%s: the offer additions of task
       "Know a parent who needs this?",
       "Share Kheelu on WhatsApp",
     ]);
+    /* The frozen cards (D046) keep the old delivery perk, which the one perk list replaces with D068's line (V69). */
     expect(additions.mockup).toEqual(
       slug === "home"
-        ? ["Deliveries start 15 December 2026", "A GST invoice with every order"]
-        : [KHEELONA_PLUS.build, "Deliveries start 15 December 2026", "A GST invoice with every order"],
+        ? [PRICE_LINE.delivery.mockup, "A GST invoice with every order"]
+        : [KHEELONA_PLUS.build, PRICE_LINE.delivery.mockup, "A GST invoice with every order"],
     );
   });
 

@@ -87,7 +87,9 @@ describe("reading the mockup", () => {
 /* Task Q2.8 (D065 item 3; deviations.ts PRICE_LINE): every mockup a unit test reads carries the selling pages' price
    lines as the build prints them, and the checkout's as approved. */
 describe("reading the mockup with task Q2.8's price lines (withPriceLine)", () => {
-  const { sentence, cardNote, bar, returns, delivery } = PRICE_LINE;
+  const { sentence, cardNote, bar, returns } = PRICE_LINE;
+  /** The delivery line as the build prints it (D068, V69): the mockups' own words are `PRICE_LINE.delivery.mockup`. */
+  const delivery = PRICE_LINE.delivery.build;
   /** A mockup page as approved, without the harness's rewrites. */
   const raw = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
   const text = (el: Element | null | undefined) => (el?.textContent ?? "").replace(/\s+/g, " ").trim();
@@ -157,8 +159,8 @@ describe("reading the mockup with task Q2.8's price lines (withPriceLine)", () =
     expect(mockupLinks(product.querySelector("ul.mk-close-trust")!)).toEqual(["/refund#before-dispatch", "/shipping#when"]);
     // The delivery line the offer row takes is the page's own, its truck icon and its words.
     const heroDelivery = raw("meet-kheelu").querySelector("ul.mk-trust > li")!;
-    expect(text(heroDelivery)).toBe(delivery);
-    expect(product.querySelectorAll("#offer ul.mk-trust > li")[1].outerHTML).toBe(heroDelivery.outerHTML);
+    expect(text(heroDelivery)).toBe(PRICE_LINE.delivery.mockup);
+    expect(product.querySelectorAll("#offer ul.mk-trust > li")[1].outerHTML).toBe(heroDelivery.outerHTML.replace(PRICE_LINE.delivery.mockup, delivery));
   });
 
   /* What the parity specs make of it, on every approved page: the text pass's shared rule accepts exactly the sentences
@@ -283,7 +285,8 @@ describe("reading the product close with its lines beside the button (withLinesB
 /* Task Q2.15 (the consistency review's CON-8): the drawer's second note, the risk-reversal line and the delivery line, a
    line each as the trust line reads them, where the mockup joined them with a dot (and task Q2.8's reading kept it). */
 describe("reading the drawer's second note a line each (withDrawerNoteLines, task Q2.15)", () => {
-  const { returns, delivery } = PRICE_LINE;
+  const { returns } = PRICE_LINE;
+  const delivery = PRICE_LINE.delivery.build;
 
   it("reads every built page's drawer so: the risk-reversal line, a break, the delivery line", () => {
     for (const slug of ["home", "team", "404"]) {
@@ -294,7 +297,7 @@ describe("reading the drawer's second note a line each (withDrawerNoteLines, tas
   });
 
   it("changes nothing that does not read as that note (control)", () => {
-    const el = html(`<div><p class="kh-drawer__note">${delivery} · ${returns.mockup}</p><p class="kh-drawer__note">Another note</p></div>`);
+    const el = html(`<div><p class="kh-drawer__note">${PRICE_LINE.delivery.mockup} · ${returns.mockup}</p><p class="kh-drawer__note">Another note</p></div>`);
     const before = el.outerHTML;
     withDrawerNoteLines(el);
     expect(el.outerHTML).toBe(before);

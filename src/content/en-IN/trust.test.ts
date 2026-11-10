@@ -37,9 +37,12 @@ function iconOf(svg: Element | null): IconName | undefined {
 }
 
 type Row = { label: string; href: string; icon: IconName | undefined };
+/* The mockups are frozen (D046) and keep the old delivery line; the label is read with D068's date fact applied (V69). */
 const rowOf = (list: Element): Row[] =>
   Array.from(list.querySelectorAll("li a")).map((a) => ({
-    label: norm(a.textContent).replace(/ \(opens in a new tab\)$/, ""),
+    label: norm(a.textContent)
+      .replace(/ \(opens in a new tab\)$/, "")
+      .replace(PRICE_LINE.delivery.mockup, PRICE_LINE.delivery.build),
     href: sitePath(a.getAttribute("href") ?? ""),
     icon: iconOf(a.querySelector("svg")),
   }));
@@ -118,7 +121,7 @@ describe("the risk-reversal line (task Q2.8; D065 item 3)", () => {
       mockup: toPlainText(trustItems["returns-7-days"].label, offer),
       build: toPlainText(item.label, offer),
     });
-    expect(PRICE_LINE.delivery).toBe(toPlainText(trustItems["deliveries-start"].label, offer));
+    expect(PRICE_LINE.delivery.build).toBe(toPlainText(trustItems["deliveries-start"].label, offer));
   });
 
   /* The D2C plan v2 §1.1 ("Trust line, item 1: the one risk-reversal line; item 2: {delivery}"); its measured first

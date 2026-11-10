@@ -27,6 +27,7 @@ import {
   TEXT_DEVIATIONS,
   VISUAL_HIDDEN,
 } from "../../../test/e2e/support/deviations";
+import { withDeliveryDate } from "../../../test/e2e/support/mockup-text";
 import { readRepoFile } from "../../../test/e2e/support/repo";
 import { findBanned } from "../../../test/guards/banned-phrases.data";
 import { mockupFold } from "../../../test/support/mockup-compare";
@@ -179,7 +180,8 @@ describe.each(MOCKUP_PAGES)("mockup %s, token mode, word for word", (slug, ids) 
     const item: FaqItem = faqs[id];
     const shown = items[i];
     expect(plain(item.question, token)).toBe(norm(shown.querySelector(".kh-faq__q span")?.textContent));
-    const paragraphs = Array.from(shown.querySelectorAll(".kh-faq__a > p, .kh-faq__a > ul > li")).map((el) => norm(el.textContent));
+    /* The frozen mockups (D046) keep the old delivery line; the build prints D068's (deviations.md V69). */
+    const paragraphs = Array.from(shown.querySelectorAll(".kh-faq__a > p, .kh-faq__a > ul > li")).map((el) => withDeliveryDate(norm(el.textContent)));
     const rendered = [plain(item.answer, token), ...(item.detail ?? []).flatMap((b) => blockText(b, token))];
     if (id === P15.id) {
       // The approved answer, with P15's one sentence (the replacement is never vacuous: the mockup has the old line).
@@ -612,8 +614,9 @@ describe("answer lengths (architecture §9.5; the answer-length guard skips mode
       .filter(([, n]) => n < 40 || n > 60);
     /* store.md fold 5, "Full mode": "What am I paying today?" is approved at 37 words (the store's
        answers are "each under 60 words"; the store is noindex, so no FAQPage reads it). */
+    /* "cost-and-advance" carries {delivery} in full mode: two words longer since D068 ("Deliveries start 15 December 2026"). */
     expect(out).toEqual([
-      ["cost-and-advance", 31],
+      ["cost-and-advance", 33],
       ["after-six-months", 31],
       ["paying-today", 37],
     ]);

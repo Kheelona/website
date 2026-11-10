@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
+import { withDeliveryDate } from "../../../test/e2e/support/mockup-text";
 import { withSellerFacts } from "../../../test/e2e/support/seller-facts";
 import { mockupFold, skeleton, words, type SkeletonOptions } from "../../../test/support/mockup-compare";
 import { GSTIN } from "@/config/site";
@@ -56,7 +57,8 @@ describe.each(LEGAL_SLUGS)("LegalTemplate: %s, fixture content against the appro
   });
 
   it("says every word the mockup says, prices and the delivery line from the offer", () => {
-    expect(words(mainOf(page(slug)))).toBe(words(mockup));
+    /* The mockup is frozen (D046) and keeps the old delivery line; the build prints D068's (deviations.md V69). */
+    expect(words(mainOf(page(slug)))).toBe(withDeliveryDate(words(mockup)));
   });
 
   it("ships no mockup-only markup and nothing that moves (no mk- class, data-src, reveal or drawing doodle)", () => {

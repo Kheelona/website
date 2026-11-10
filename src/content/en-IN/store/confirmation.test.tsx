@@ -8,6 +8,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { signAddressToken } from "@/lib/store/signing";
 import { formatThanksSession } from "@/lib/store/thanks-session";
 import { fakeClient, fakeEnv } from "../../../../test/helpers/fake-supabase";
+import { withDeliveryDate } from "../../../../test/e2e/support/mockup-text";
 import { readRepoFile, tagText } from "../../../../test/e2e/support/repo";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { skeleton, words } from "../../../../test/support/mockup-compare";
@@ -103,7 +104,8 @@ describe("fold 1, the paid head", () => {
 
 describe("fold 2, the order card", () => {
   const card = fold("order-title");
-  const rows = Array.from(card.querySelectorAll("dl > div")).map((row) => [norm(row.querySelector("dt")?.textContent), norm(row.querySelector("dd")?.textContent)]);
+  /* The frozen mockup (D046) keeps the old delivery line; the build prints D068's (deviations.md V69). */
+  const rows = Array.from(card.querySelectorAll("dl > div")).map((row) => [norm(row.querySelector("dt")?.textContent), withDeliveryDate(norm(row.querySelector("dd")?.textContent))]);
 
   it("has the mockup's heading and four rows, the balance and the price in their slots", () => {
     const { order } = confirmation;
@@ -307,7 +309,7 @@ describe("/thanks, the page", () => {
     const built = column.cloneNode(true) as Element;
     built.querySelectorAll("input[id], select[id]").forEach((field) => field.removeAttribute("id"));
     expect(skeleton(built, SKELETON)).toBe(skeleton(mockupMain(), SKELETON));
-    expect(words(column, { skip: "option" })).toBe(words(mockupMain(), { skip: "option" }));
+    expect(words(column, { skip: "option" })).toBe(withDeliveryDate(words(mockupMain(), { skip: "option" })));
   });
 
   it("renders the /thanks WhatsApp bubble outside the column, carrying ph-no-capture (D050)", async () => {

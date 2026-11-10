@@ -853,7 +853,7 @@ describe("the product page's selling update (task Q2.10; the D2C plan v2 §3)", 
     expect(price.tagName).toBe("P");
     expect(price.textContent).toBe(PRICE_LINE.sentence.build);
     expect(row.contains(price)).toBe(false);
-    expect([...compare.querySelectorAll(".ks-trust li")].map(text)).toEqual([PRICE_LINE.returns.build, PRICE_LINE.delivery]);
+    expect([...compare.querySelectorAll(".ks-trust li")].map(text)).toEqual([PRICE_LINE.returns.build, PRICE_LINE.delivery.build]);
     expect(compare.querySelector(".ks-help")).toBeNull();
     const [config] = section("compare-by-category");
     expect(config.cta).toEqual({ cta: "product-compare", align: "center", trust: TRUST_COMPACT.map((id) => trustItems[id]) });

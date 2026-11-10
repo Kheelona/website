@@ -9,6 +9,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { ORDER_REF_PATTERN } from "@/lib/store/order-ref";
 import { GRIEVANCE_NOTE, PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
+import { withDeliveryDate } from "../../../../test/e2e/support/mockup-text";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { refundFixture } from "../../../../test/fixtures/legal/refund";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
@@ -126,7 +127,8 @@ describe("the refund module through LegalTemplate (notice) against the approved 
   });
 
   it("says every word the mockup says, the amounts and the delivery line from the offer", () => {
-    expect(words(mainOf(refundPage))).toBe(words(mockupMain));
+    /* The mockup is frozen (D046) and keeps the old delivery line; the build prints D068's (deviations.md V69). */
+    expect(words(mainOf(refundPage))).toBe(withDeliveryDate(words(mockupMain)));
   });
 
   it("is the markup of the template's parity fixture (test/fixtures/legal/refund.ts) with the founder's facts, character for character", () => {

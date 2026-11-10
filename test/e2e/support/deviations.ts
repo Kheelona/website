@@ -1380,6 +1380,10 @@ const offerAdditionsHidden = (slug: OfferAdditionsSlug): VisualHide[] =>
    words at Gate B (D015). Full mode, which no mockup shows, is the content's (offer.ts). */
 export const PRICE_LINE_APPROVED =
   "D065 item 3 and the main session's ruling 3 of the selling update (founder, 2026-10-15; task Q2.8; deviations.md row to come)";
+/** The delivery date's approval (D068, deviations.md V69): the founder's decision of 2026-11-10 that deliveries start
+ *  15 December 2026. The frozen mockups (D046) keep "mid-November"; every comparison reads their delivery line as the
+ *  build's (`PRICE_LINE.delivery`, test/support/mockup-compare.ts `readDeliveryAsBuilt`, mockup-text.ts `withDeliveryDate`). */
+export const DELIVERY_DATE_APPROVED = "the founder's decision of 2026-11-10 that deliveries start 15 December 2026 (D068; deviations.md V69; action F1)";
 export const PRICE_LINE = {
   /** Beside every button outside the checkout: D028's sentence, then the short price line. */
   sentence: {
@@ -1392,9 +1396,11 @@ export const PRICE_LINE = {
   bar: { mockup: "refundable · ₹4,999 total (incl. GST)", build: "refundable · ₹4,999 in total" },
   /** The compact trust line's returns promise, the mockup's second item, then the risk-reversal line, the build's first. */
   returns: { mockup: "7-day returns, no questions asked", build: "Full refund until dispatch · 7-day returns" },
-  /** The compact trust line's delivery line, which stays: the mockup's first item, the build's second (in the drawer's
-   *  second note too). */
-  delivery: "Deliveries start mid-November",
+  /** The compact trust line's delivery line: the mockup's first item, the build's second (in the drawer's second note
+   *  too). The words moved with the founder's decision of 2026-11-10 (D068, deviations.md V69): the frozen mockups (D046)
+   *  keep "mid-November", the build prints the content's `DELIVERY_TEXT` (src/content/en-IN/trust.test.ts holds the
+   *  build side to it). */
+  delivery: { mockup: "Deliveries start mid-November", build: "Deliveries start 15 December 2026" },
   /** The full rows' other items: the offer cards' third row (warranty, paying) and the item that leaves them. */
   rows: { warranty: "6-month warranty", payment: "UPI, card or net banking", deliveryIncluded: "Delivery included anywhere in India" },
   reason:
@@ -1605,7 +1611,7 @@ const SAFETY_FACTS_CTA =
   `<div class="kh-section__actions"><a href="store.html" class="kh-btn kh-btn--cta kh-btn--l kh-btn--block" data-ph-capture-attribute-cta="safety-facts"><span>Pre-order Kheelu</span>${icon("arrow-right")}</a></div>` +
   `<div class="mk-beside"><p class="kh-body-s mk-price">${PRICE_LINE.sentence.build}</p><ul class="kh-trustline mk-trust">` +
   `<li><a href="refund.html#before-dispatch">${icon("arrow-counter-clockwise")}${PRICE_LINE.returns.build}</a></li>` +
-  `<li><a href="shipping.html#when">${icon("truck")}<span>${PRICE_LINE.delivery}</span></a></li></ul></div>`;
+  `<li><a href="shipping.html#when">${icon("truck")}<span>${PRICE_LINE.delivery.build}</span></a></li></ul></div>`;
 /** Fold 3 with its sixth item, then the new fold 4. */
 const SAFETY_NEVER_AND_APP =
   `<section class="kh-section" aria-labelledby="never-title"><div class="kh-container"><div class="kh-section__head"><header class="kh-heading"><p class="kh-eyebrow">Never</p><h2 class="kh-heading__title" id="never-title">What you <span class="kh-mark">won’t</span> find in Kheelu.</h2></header></div>` +
@@ -1644,7 +1650,7 @@ export const SAFETY_SELLING: PageFacts = {
     "Pre-order Kheelu",
     ...sentences(PRICE_LINE.sentence.build),
     PRICE_LINE.returns.build,
-    PRICE_LINE.delivery,
+    PRICE_LINE.delivery.build,
     L.dailyLimit.title,
     L.dailyLimit.body,
     L.app.eyebrow,
@@ -1712,7 +1718,7 @@ const SELLING_CLOSES_WHOSE = "task Q2.12's selling closes (D065)";
 /** The one price line, the risk-reversal line and the delivery line beside every button since task Q2.8, as the mockups
  *  read once the comparison harness has applied them (test/support/mockup-compare.ts `withPriceLine`): the lines a new
  *  CTA block prints. */
-const SELLING_LINES = [...sentences(PRICE_LINE.sentence.build), PRICE_LINE.returns.build, PRICE_LINE.delivery] as const;
+const SELLING_LINES = [...sentences(PRICE_LINE.sentence.build), PRICE_LINE.returns.build, PRICE_LINE.delivery.build] as const;
 /** A CTA block as the approved mockups print one (mockup.css:27-28; the team and guide closes), with task Q2.8's lines:
  *  the chilli button, then the price line and the trust line (the risk-reversal line first), grouped. The store's address
  *  is the mockup's `store.html`; the trust links read their parts of /refund and /shipping by their words (the harness's
@@ -1723,7 +1729,7 @@ const ctaBlockMarkup = ({ cta, center = false }: { cta: string; center?: boolean
   `<a href="store.html" class="kh-btn kh-btn--cta kh-btn--l kh-btn--block" data-ph-capture-attribute-cta="${cta}"><span>Pre-order Kheelu</span>${icon("arrow-right")}</a></div>` +
   `<div class="mk-beside${center ? " mk-beside--center" : ""}"><p class="kh-body-s mk-price">${PRICE_LINE.sentence.build}</p>` +
   `<ul class="kh-trustline mk-trust"><li><a href="refund.html">${icon("arrow-counter-clockwise")}${PRICE_LINE.returns.build}</a></li>` +
-  `<li><a href="shipping.html">${icon("truck")}${PRICE_LINE.delivery}</a></li></ul></div>`;
+  `<li><a href="shipping.html">${icon("truck")}${PRICE_LINE.delivery.build}</a></li></ul></div>`;
 
 /** /setup's new close (the plan's §5 fold 8): centred, no picture, no help line (fold 7 is the help). */
 export const SETUP_CLOSE = {
@@ -2491,9 +2497,10 @@ const AFTER_SIX_MONTHS_LINES = {
   no: sentences(AFTER_SIX_MONTHS.answer)[0],
   renews: sentences(AFTER_SIX_MONTHS.answer).at(-1)!,
 } as const;
-/** The delivery question's answer's first sentence (the approved page's), which the offer card's delivery perk prints
- *  too (the one perk list), so the page loses it once. */
-const PRODUCT_DELIVERY_ANSWER_FIRST = "Deliveries start mid-November.";
+/** The delivery question's answer's first sentence, the frozen mockup's (D046), which the page loses with the question:
+ *  the offer card's delivery perk prints the delivery line already (the one perk list), now in D068's words (V69), so
+ *  this old sentence is the mockup's alone. */
+const PRODUCT_DELIVERY_ANSWER_FIRST = `${PRICE_LINE.delivery.mockup}.`;
 /** The safety line and its link (§3 fold 9; the built label, `product-safety-learn`, which the safety fold carried). */
 export const PRODUCT_SAFETY_LINE = {
   line: "When the microphone is on, how Kheelu answers, and what you can read and delete, fact by fact:",
@@ -2509,10 +2516,10 @@ const trustItemMarkup = (href: string, name: IconName, words: string) => `<li><a
  *  trust line, then the card's third row, task Q2.8's review, its items rebuilt with no space between them), then the
  *  build's two lists, the third row named. */
 export const OFFER_ROWS = {
-  was: [PRICE_LINE.returns.build, PRICE_LINE.delivery, PRICE_LINE.rows.warranty, PRICE_LINE.rows.payment].join(""),
+  was: [PRICE_LINE.returns.build, PRICE_LINE.delivery.build, PRICE_LINE.rows.warranty, PRICE_LINE.rows.payment].join(""),
   markup:
     `<ul class="kh-trustline mk-trust">${trustItemMarkup("refund.html", "arrow-counter-clockwise", PRICE_LINE.returns.build)}` +
-    `${trustItemMarkup("shipping.html", "truck", PRICE_LINE.delivery)}</ul>` +
+    `${trustItemMarkup("shipping.html", "truck", PRICE_LINE.delivery.build)}</ul>` +
     `<ul class="kh-trustline mk-trust mk-offer-third">${trustItemMarkup("refund.html", "shield-check", PRICE_LINE.rows.warranty)}` +
     `${trustItemMarkup("terms.html", "currency-inr", PRICE_LINE.rows.payment)}</ul>`,
 } as const;
@@ -2585,18 +2592,16 @@ export const SELLING_UPDATE = {
     /* In order of first appearance on the page (a sentence that goes more than once is listed as often, where it first
        shows): the hero's words; the button, the price line, the risk-reversal line and the delivery line of the safety
        fold's CTA block, the price line twice (the offer card's fine print too, task Q2.13), all first printed by the hero;
-       the help line twice, the hero's and the offer card's (task Q2.13); the delivery question's first sentence, first
-       printed by the card's delivery perk; Good to know's line; the parent-app fold and the safety fold whole (its link,
-       which the build prints again in the safety line); the price answer, then the delivery question. */
+       the help line twice, the hero's and the offer card's (task Q2.13); Good to know's line; the parent-app fold and the safety fold whole (its link,
+       which the build prints again in the safety line); the price answer, then the delivery question and its answer. */
     mockup: [
       PRODUCT_HERO.eyebrow.mockup,
       ...sentences(PRODUCT_HERO.lead.mockup),
       "Pre-order Kheelu",
       ...sentences(PRICE_LINE.sentence.build).flatMap((line) => [line, line]),
       PRICE_LINE.returns.build,
-      PRICE_LINE.delivery,
+      PRICE_LINE.delivery.build,
       ...sentences(PRODUCT_HERO.help).flatMap((line) => [line, line]),
-      PRODUCT_DELIVERY_ANSWER_FIRST,
       sentences(PRODUCT_KNOW.browse.mockup)[1],
       "The parent app",
       "Every conversation, word for word.",
@@ -2628,6 +2633,7 @@ export const SELLING_UPDATE = {
       PRODUCT_SAFETY_LINE.link,
       ...sentences(PRODUCT_PRICE_ANSWER.mockup),
       PRODUCT_DELIVERY_QUESTION,
+      PRODUCT_DELIVERY_ANSWER_FIRST,
       "Orders are sent in the order they were placed, and you get a tracking link when yours leaves us.",
       "Delivery is included anywhere in India, with nothing to pay at the door; we don’t ship outside India.",
       "A reserved Kheelu is sent once the rest of the price is paid.",
@@ -2873,7 +2879,7 @@ export type FounderAnswersSlug = keyof typeof FOUNDER_ANSWERS;
  *  button, the short price line and the trust line, each printed once more. The comparison is task Q2.10's added fold
  *  (SELLING_ADDITIONS), which the approved page lacks and the visual pass hides whole on the build's side, so the block
  *  needs no hide of its own and no edit: a text rule accepts its lines and excuses nothing. */
-export const PRODUCT_COMPARE_CTA = ["Pre-order Kheelu", ...sentences(PRICE_LINE.sentence.build), PRICE_LINE.returns.build, PRICE_LINE.delivery] as const;
+export const PRODUCT_COMPARE_CTA = ["Pre-order Kheelu", ...sentences(PRICE_LINE.sentence.build), PRICE_LINE.returns.build, PRICE_LINE.delivery.build] as const;
 const PRODUCT_COMPARE_CTA_TEXT: TextDeviation = {
   mockup: /(?!)/,
   build: oneOf(PRODUCT_COMPARE_CTA),
@@ -3468,12 +3474,20 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
  *  in their pieces (the pass splits after "incl."), and the compact line's returns promise, go; the short price line's
  *  two sentences and the risk-reversal line come. The store's form and price keep D028's sentence, which the pass then
  *  finds on both sides, so nothing is excused there. The drawer and the buy bar sit outside main (the shell's tests hold
- *  them through the harness). */
+ *  them through the harness). Since D068 (V69) the delivery line changes too, in the trust line (no full stop) and as the
+ *  first sentence of a paragraph or an answer (with one): the mockup's "Deliveries start mid-November" goes, the build's
+ *  "Deliveries start 15 December 2026" comes. */
 export const PRICE_LINE_TEXT: TextDeviation = {
-  mockup: oneOf([...sentences(PRICE_LINE.sentence.mockup), ...sentences(PRICE_LINE.cardNote), PRICE_LINE.returns.mockup]),
-  build: oneOf([...sentences(PRICE_LINE.sentence.build), PRICE_LINE.returns.build]),
-  reason: PRICE_LINE.reason,
-  approvedBy: PRICE_LINE.approvedBy,
+  mockup: oneOf([
+    ...sentences(PRICE_LINE.sentence.mockup),
+    ...sentences(PRICE_LINE.cardNote),
+    PRICE_LINE.returns.mockup,
+    PRICE_LINE.delivery.mockup,
+    `${PRICE_LINE.delivery.mockup}.`,
+  ]),
+  build: oneOf([...sentences(PRICE_LINE.sentence.build), PRICE_LINE.returns.build, PRICE_LINE.delivery.build, `${PRICE_LINE.delivery.build}.`]),
+  reason: `${PRICE_LINE.reason}; and the delivery line's date (the founder moved it to 15 December 2026, which the frozen mockups cannot show)`,
+  approvedBy: `${PRICE_LINE.approvedBy}; the delivery line's date: ${DELIVERY_DATE_APPROVED}`,
 };
 
 /** The offer rows' words (PRICE_LINE, the task's review): under the offer cards' buttons the trust line, then the card's
@@ -3483,7 +3497,7 @@ export const PRICE_LINE_TEXT: TextDeviation = {
  *  keeps (but the last). Only on those two pages (PRICE_LINE_ROWS_SLUGS). */
 export const PRICE_LINE_ROWS_TEXT: TextDeviation = {
   mockup: oneOf([PRICE_LINE.rows.warranty, PRICE_LINE.rows.payment, PRICE_LINE.rows.deliveryIncluded]),
-  build: oneOf([PRICE_LINE.delivery]),
+  build: oneOf([PRICE_LINE.delivery.build]),
   reason:
     "the one risk-reversal line under every button: the offer cards' rows are the trust line, then the card's third row (warranty, the ways to pay), and the product close's the trust line (D2C plan v2 §1.1)",
   approvedBy: PRICE_LINE.approvedBy,

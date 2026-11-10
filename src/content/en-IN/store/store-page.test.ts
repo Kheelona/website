@@ -7,6 +7,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { CLAIM_FIXES, KHEELONA_PLUS, SELLING_CLOSES, STORE_WORDS } from "../../../../test/e2e/support/deviations";
+import { withDeliveryDate } from "../../../../test/e2e/support/mockup-text";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupRoute, parseMockup, trustLinkHref } from "../../../../test/support/mockup-compare";
@@ -188,7 +189,8 @@ describe("store page module: fold 4, what you are agreeing to", () => {
       { icon: orderSummaryCopy.delivery.icon, head: token.delivery, note: orderSummaryCopy.delivery.note },
     ];
     expect(built).toEqual(
-      rows.map((li) => ({ icon: iconOf(li.querySelector("svg")), head: norm(the(".kh-label", li).textContent), note: norm(the(".mk-muted", li).textContent) })),
+      /* The frozen mockup (D046) keeps the old delivery line; the build prints D068's (deviations.md V69). */
+      rows.map((li) => ({ icon: iconOf(li.querySelector("svg")), head: withDeliveryDate(norm(the(".kh-label", li).textContent)), note: norm(the(".mk-muted", li).textContent) })),
     );
   });
 
@@ -224,7 +226,10 @@ describe("store page module: fold 5, questions before you pay", () => {
 
   it("the heading and the four store FAQs from faqs.ts, in the mockup's order and words", () => {
     expect(storePage.questions.heading).toEqual({ title: norm(the("h2", fold).textContent), id: the("h2", fold).id });
-    const items = Array.from(fold.querySelectorAll(".kh-faq__item")).map((d) => ({ q: norm(the(".kh-faq__q", d).textContent), a: norm(the(".kh-faq__a", d).textContent) }));
+    const items = Array.from(fold.querySelectorAll(".kh-faq__item")).map((d) => ({
+      q: norm(the(".kh-faq__q", d).textContent),
+      a: withDeliveryDate(norm(the(".kh-faq__a", d).textContent)),
+    }));
     expect(storePage.questions.items.map((id) => ({ q: plain(faqs[id].question), a: plain(faqs[id].answer) }))).toEqual(items);
   });
 });

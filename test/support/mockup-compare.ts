@@ -7,6 +7,7 @@ import { trustItems } from "@/content/en-IN/trust";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { PRICE_LINE } from "../e2e/support/deviations";
+import { withDeliveryDate } from "../e2e/support/mockup-text";
 import { readRepoFile } from "../e2e/support/repo";
 
 /*
@@ -78,15 +79,27 @@ function trustWords(a: Element): string {
  *  then the card's third row), and the product close's five-item row (the trust line). */
 const PRICE_LINE_ROWS: readonly { mockup: readonly string[]; build: readonly string[] }[] = (() => {
   const { returns, delivery, rows } = PRICE_LINE;
-  const line = [returns.build, delivery];
+  const line = [returns.build, delivery.build];
   const offerRow = [...line, rows.warranty, rows.payment];
   return [
-    { mockup: [delivery, returns.mockup], build: line },
+    { mockup: [delivery.mockup, returns.mockup], build: line },
     { mockup: [returns.mockup, rows.warranty, rows.payment, rows.deliveryIncluded], build: offerRow },
     { mockup: [returns.mockup, rows.warranty, rows.payment], build: offerRow },
-    { mockup: [delivery, returns.mockup, rows.warranty, rows.payment, rows.deliveryIncluded], build: line },
+    { mockup: [delivery.mockup, returns.mockup, rows.warranty, rows.payment, rows.deliveryIncluded], build: line },
   ];
 })();
+
+/** The delivery line read as the build prints it, in place (D068, deviations.md V69): the frozen mockups (D046) keep
+ *  "Deliveries start mid-November", the build prints the content's `DELIVERY_TEXT` since the founder's decision of
+ *  2026-11-10. Every text node that is exactly the mockup's line changes; its markup, icon and link stay the mockup's. */
+export function readDeliveryAsBuilt(root: ParentNode): void {
+  const { mockup, build } = PRICE_LINE.delivery;
+  const doc = (root as Node).ownerDocument ?? (root as Document);
+  const walker = doc.createTreeWalker(root as Node, 4 /* NodeFilter.SHOW_TEXT */);
+  const texts: Node[] = [];
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) texts.push(n);
+  for (const text of texts) if ((text.textContent ?? "").trim() === mockup) text.textContent = (text.textContent ?? "").replace(mockup, build);
+}
 
 /**
  * The selling pages' price lines as the build prints them (task Q2.8; D065 item 3: GST and the payment breakdown only at
@@ -109,12 +122,12 @@ export function withPriceLine(root: ParentNode): void {
   for (const el of root.querySelectorAll(".kh-offer__prices > .kh-body-s")) if (wordsOf(el) === cardNote) el.remove();
   for (const el of root.querySelectorAll(".kh-buybar__small")) if (wordsOf(el) === bar.mockup) el.textContent = bar.build;
   for (const el of root.querySelectorAll(".kh-drawer__note")) {
-    if (wordsOf(el) === `${delivery} · ${returns.mockup}`) el.textContent = `${returns.build} · ${delivery}`;
+    if (wordsOf(el) === `${delivery.mockup} · ${returns.mockup}`) el.textContent = `${returns.build} · ${delivery.build}`;
   }
   /* The page's own delivery line, before any row is rewritten: an offer row takes a copy of it. */
   const deliveryItem = Array.from(root.querySelectorAll("ul.mk-trust > li")).find((li) => {
     const a = li.querySelector(":scope > a");
-    return a !== null && trustWords(a) === delivery;
+    return a !== null && trustWords(a) === delivery.mockup;
   });
   for (const list of root.querySelectorAll("ul.mk-trust")) {
     if (list.closest("form")) continue;
@@ -126,12 +139,17 @@ export function withPriceLine(root: ParentNode): void {
       (n) => n.nodeType === 3 && (n.textContent ?? "").trim() === returns.mockup,
     );
     const builtItem = (w: string) =>
-      w === returns.build ? returnsItem.li : (items.find((item) => item.words === w)?.li ?? (w === delivery ? deliveryItem?.cloneNode(true) : undefined));
+      w === returns.build
+        ? returnsItem.li
+        : (items.find((item) => item.words === (w === delivery.build ? delivery.mockup : w))?.li ?? (w === delivery.build ? deliveryItem?.cloneNode(true) : undefined));
     const built = row.build.map(builtItem);
     if (!words || built.some((li) => li === undefined)) continue;
     words.textContent = returns.build;
     list.replaceChildren(...(built as Node[]));
   }
+  /* The trust lines and the drawer's notes keep the mockup's markup and read the build's delivery words (the offer
+   * cards' perk lists are the one perk list's, edited whole by deviations.ts offerAdditions from the mockup's own words). */
+  for (const el of root.querySelectorAll("ul.mk-trust, .kh-drawer__note")) readDeliveryAsBuilt(el);
 }
 
 /* ── One CTA block shape (task Q2.15) ───────────────────────────────────────────────────────────────────────────── */
@@ -144,9 +162,9 @@ export function withPriceLine(root: ParentNode): void {
 export function withDrawerNoteLines(root: ParentNode): void {
   const { returns, delivery } = PRICE_LINE;
   for (const el of root.querySelectorAll(".kh-drawer__note")) {
-    if (wordsOf(el) !== `${returns.build} · ${delivery}`) continue;
+    if (wordsOf(el) !== `${returns.build} · ${delivery.build}`) continue;
     const doc = el.ownerDocument;
-    el.replaceChildren(doc.createTextNode(returns.build), doc.createElement("br"), doc.createTextNode(delivery));
+    el.replaceChildren(doc.createTextNode(returns.build), doc.createElement("br"), doc.createTextNode(delivery.build));
   }
 }
 
@@ -620,7 +638,8 @@ export function mockupDiff(options: MockupDiffOptions = {}): (built: Element, re
       if (a[name] !== b[name]) out.push(`${path} [${name}]: ${JSON.stringify(a[name])} instead of ${JSON.stringify(b[name])}`);
     }
     const x = children(built);
-    const y = children(ref);
+    /* The mockup is frozen (D046) and keeps the old delivery line; the build prints D068's (deviations.md V69). */
+    const y = children(ref).map((c) => (typeof c === "string" ? withDeliveryDate(c) : c));
     if (x.length !== y.length) return [...out, `${path}: children [${x.map(say).join(", ")}] instead of [${y.map(say).join(", ")}]`];
     x.forEach((c, i) => {
       const r = y[i];

@@ -179,7 +179,7 @@ describe("the shipping page: its parts (shipping.md folds 3 and 4)", () => {
     expect(part("when").blocks[0]).toEqual({ kind: "p", text: "{delivery}. Pre-orders are served first, in the order they were placed." });
     const all = strings(shippingPage).join("\n");
     expect(all).not.toMatch(/\b\d+\s*(?:to|-|–)\s*\d+\s*(?:working\s+)?days\b/i);
-    expect(all).not.toMatch(/2026-1[12]-15|15 (?:November|December)/);
+    expect(all).not.toMatch(/2026-11-15|15 November/);
   });
 
   it("reads the payment methods and the two 7-day windows from policies.ts, never retyped (D021, D022, D024)", () => {

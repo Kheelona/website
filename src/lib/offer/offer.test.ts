@@ -92,7 +92,8 @@ describe("token mode", () => {
     expect(PRICE_LINE.sentence.mockup).toBe(norm(home.querySelector("#hero-price")?.textContent));
     expect(PRICE_LINE.bar).toEqual({ mockup: norm(buybar.querySelector(".kh-buybar__small")?.textContent), build: text(offer.sticky.small, offer) });
     expect(PRICE_LINE.cardNote).toBe(norm(home.querySelector(".kh-offer__prices .kh-body-s")?.textContent));
-    expect(PRICE_LINE.delivery).toBe(offer.delivery);
+    /* The delivery line moved with D068 (V69): the frozen Home keeps its old words, the build prints the content's. */
+    expect(PRICE_LINE.delivery).toEqual({ mockup: norm(home.querySelector('[data-src="DELIVERY_TEXT"]')?.textContent), build: offer.delivery });
   });
 
   it("renders the sticky bar's big line as the buy bar partial, and its small line without GST (D065 item 3)", () => {
@@ -152,7 +153,8 @@ describe("token mode", () => {
 
   it("carries the delivery line and its schema date (D023, D037)", () => {
     expect(offer.delivery).toBe("Deliveries start 15 December 2026");
-    expect(offer.delivery).toBe(norm(home.querySelector('[data-src="DELIVERY_TEXT"]')?.textContent));
+    /* The frozen Home (D046) still prints the old line, which the parity layer reads as the build's (V69). */
+    expect(norm(home.querySelector('[data-src="DELIVERY_TEXT"]')?.textContent)).toBe(PRICE_LINE.delivery.mockup);
     expect(offer.availabilityStarts).toBe("2026-12-15");
   });
 });
