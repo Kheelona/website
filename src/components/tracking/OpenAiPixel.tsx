@@ -22,8 +22,8 @@ function whenIdle(run: () => void): void {
  *  for idle. `page_viewed` is sent once per full page load: the store is effectively one page, so there is no
  *  route-change counterpart to PageViewOnRouteChange.
  *
- *  Renders nothing. What this tool collects is stated on /privacy; that page is a founder-approved legal page and its
- *  wording is proposed in the F6 spec, not changed here (D067). */
+ *  Renders nothing. /privacy must name this tool before it ships (§8.21-c); that page is a founder-approved legal page
+ *  (D067), so its OpenAI wording goes to the founder first and is not changed here (D069). */
 export function OpenAiPixel() {
   useEffect(() => {
     if (!shouldLoadOpenAiPixel(window.location.hostname)) return;
