@@ -1452,3 +1452,11 @@ Meta or OpenAI cookie", the reports our server sends to Meta and OpenAI, an Open
 privacy policy) and the ChatGPT advertising sentence. "Last updated" is the founder's date (D055 item 8, D067), so it moves
 from 14 October to 13 November 2026 on `/privacy` only, with the page's sitemap `lastmod`; terms, refund and shipping keep 14
 October. The earlier entry of 17:00 ("its wording waits for the founder") is superseded by this one. Built as action F6.
+
+## [2026-11-13 18:15] decision | /privacy: one sentence discloses GA4 Google signals, pending the founder's sign-off
+The founder decided to turn on Google signals in the GA4 property after the merge; the setting is his, and agents never touch it.
+The Google Analytics block of `/privacy` gains one sentence for it: "We’ve also turned on Google signals: if you’re signed in to
+Google with ad personalisation on, Google links your visits to your Google account through its cookies and gives us totals such
+as age range, gender and interests, never who you are, and you can turn this off in your Google ad settings." It is in both
+sources of the page and in the quoted block of `wiki/site/pages/privacy.md`, in its own commit so it can be dropped cleanly, and
+it still needs the founder's sign-off on the wording. "Last updated" stays 13 November 2026. Built as action F6.

@@ -629,3 +629,16 @@ describe("OpenAI Ads measurement stays on the narrow path it was approved for (D
     expect(loader).not.toMatch(/oaiq!?\(\s*["']consent["']/);
   });
 });
+
+/* GOOGLE SIGNALS (GA4). The GA4 setting is the founder's, not the code's, so the sentence that tells a parent what it does
+   is pinned here: it sits in the Google Analytics block, after the retention sentence it extends, and the existing Google
+   Analytics assertions above are untouched. The wording is pending the founder's sign-off (wiki/log.md). */
+describe("Google Analytics block discloses Google signals", () => {
+  it("says Google signals are on, what Google then does with a signed-in visitor, what we receive, and where to turn it off", () => {
+    const ga = tool("Google Analytics");
+    expect(ga).toContain(
+      "We've also turned on Google signals: if you're signed in to Google with ad personalisation on, Google links your visits to your Google account through its cookies and gives us totals such as age range, gender and interests, never who you are, and you can turn this off in your Google ad settings.",
+    );
+    expect(ga.indexOf("Google keeps this data for 14 months.")).toBeLessThan(ga.indexOf("We've also turned on Google signals"));
+  });
+});

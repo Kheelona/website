@@ -290,7 +290,7 @@ export const privacyPage = {
               blocks: [
                 {
                   kind: "p",
-                  text: "Counts visits and the steps of a pre-order: starting the form, being asked to correct an answer (which answers, never what you typed), opening and closing the payment window, a payment that fails (with Razorpay’s code for why), paying, and saving your address. It is told your order number and the amount paid. It sets cookies in your browser to tell a returning visit from a new one. Google keeps this data for 14 months.",
+                  text: "Counts visits and the steps of a pre-order: starting the form, being asked to correct an answer (which answers, never what you typed), opening and closing the payment window, a payment that fails (with Razorpay’s code for why), paying, and saving your address. It is told your order number and the amount paid. It sets cookies in your browser to tell a returning visit from a new one. Google keeps this data for 14 months. We’ve also turned on Google signals: if you’re signed in to Google with ad personalisation on, Google links your visits to your Google account through its cookies and gives us totals such as age range, gender and interests, never who you are, and you can turn this off in your Google ad settings.",
                 },
               ],
             },
