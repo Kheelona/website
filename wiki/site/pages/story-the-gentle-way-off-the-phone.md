@@ -325,7 +325,7 @@ head photo (`tara-01`): tantrums `kabir-03`, busy hands `ira-02`, screen-free `i
 >
 > Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST).
 >
-> Deliveries start mid-November`{delivery-source}` · 7-day returns, no questions asked
+> Deliveries start 15 December 2026`{delivery-source}` · 7-day returns, no questions asked
 >
 > Questions? WhatsApp or call +91 91875 46483
 >

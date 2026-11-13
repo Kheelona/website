@@ -55,7 +55,7 @@
   font-weight: 700; /* ds-weight-700 */
   text-underline-offset: 3px; /* ds-underline-offset-3px */
 }
-/* Notice: "Deliveries start / mid-November." never splits at the hyphen; an odd last promise spans both columns
+/* Notice: the delivery line breaks balanced (the mockup's mk-nowrap kept the old date's hyphen whole); an odd last promise spans both columns
    (refund.css:20, 22). */
 .ks-doc-summary--notice .kh-trust__title {
   text-wrap: balance;

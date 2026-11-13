@@ -20,8 +20,8 @@ const tokenOffer: Offer = {
   sticky: { big: "", small: "" },
   card: { product: "Kheelu", perks: { home: [], product: [] } },
   plus: "",
-  delivery: "Deliveries start mid-November",
-  availabilityStarts: "2026-11-15",
+  delivery: "Deliveries start 15 December 2026",
+  availabilityStarts: "2026-12-15",
 };
 const fullOffer: Offer = { ...tokenOffer, mode: "full", headlinePaise: 799_900, prices: { ...prices, headline: "₹7,999" } };
 
@@ -68,7 +68,7 @@ describe("toPlainText", () => {
 
   it("prints the delivery line from the offer", () => {
     expect(toPlainText("{delivery}, anywhere in India.", tokenOffer)).toBe(
-      "Deliveries start mid-November, anywhere in India.",
+      "Deliveries start 15 December 2026, anywhere in India.",
     );
   });
 
@@ -155,7 +155,7 @@ describe("round trip", () => {
     ["back-and-forth talk,[^1] so the best toys[^2]", "back-and-forth talk,[1] so the best toys[2]"],
     [priceSentence.token, "Reserve yours for ₹499 today, refundable until dispatch, then pay ₹4,500 before delivery: ₹4,999 in total (incl. GST)."],
     ["Its MRP is {price:mrp} (incl. of all taxes).", "Its MRP is ₹7,999 (incl. of all taxes)."],
-    ["{delivery}. [Shipping](/shipping)", "Deliveries start mid-November. Shipping"],
+    ["{delivery}. [Shipping](/shipping)", "Deliveries start 15 December 2026. Shipping"],
     [`Battery: ${token("F4 battery life per charge")}`, `Battery: ${OPEN} F4: battery life per charge]`],
     [`Where: ${token("region")}`, `Where: ${OPEN}: region]`],
     // characters that mean something in HTML stay words, never markup

@@ -286,7 +286,7 @@ Word counts: 52 · 58 · 59 · 44 · 58 (Q3 was 58 until task 8b.1).
 **Full mode**, the price question becomes Home's full-mode answer ([home.md](home.md#fold-8--questions-parents-ask)):
 
 > **How much is Kheelu?**
-> Kheelu is ₹7,999`{price-source}` (incl. GST), paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking, and you get a GST invoice. Deliveries start mid-November`{delivery-source}`. If it isn't right for your family, you can return it within 7 days of delivery, no questions asked.
+> Kheelu is ₹7,999`{price-source}` (incl. GST), paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking, and you get a GST invoice. Deliveries start 15 December 2026`{delivery-source}`. If it isn't right for your family, you can return it within 7 days of delivery, no questions asked.
 
 - **H2 accent:** `Hand` on "ask."
 - `FAQ` component, all items closed (DS: first item open on safety pages only). All five, exactly as shown, make
@@ -343,7 +343,7 @@ Word counts: 52 · 58 · 59 · 44 · 58 (Q3 was 58 until task 8b.1).
 >
 > Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST).
 >
-> Deliveries start mid-November`{delivery-source}` · 7-day returns, no questions asked
+> Deliveries start 15 December 2026`{delivery-source}` · 7-day returns, no questions asked
 >
 > Questions? WhatsApp or call +91 91875 46483
 

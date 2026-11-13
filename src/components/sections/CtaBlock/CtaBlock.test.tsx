@@ -141,7 +141,7 @@ describe("CtaBlock: the block", () => {
   it("links every trust item to its terms with an accessible name, and the help line to WhatsApp, never a call (D063)", () => {
     const { container } = render(<CtaBlock {...hero} {...context()} />);
     // Each to the part of its terms page that keeps the promise (task 7.1a, CMO built-page review C, m8).
-    expect(screen.getByRole("link", { name: "Deliveries start mid-November" })).toHaveAttribute("href", "/shipping#when");
+    expect(screen.getByRole("link", { name: "Deliveries start 15 December 2026" })).toHaveAttribute("href", "/shipping#when");
     // The one risk-reversal line (task Q2.8; D065 item 3), to the refund page's part that keeps its first promise.
     expect(screen.getByRole("link", { name: "Full refund until dispatch · 7-day returns" })).toHaveAttribute("href", "/refund#before-dispatch");
     // The help line without the call (D063 item 2, task Q2.3), in the D2C plan v2 §1.1's words (task Q2.14).
@@ -202,7 +202,7 @@ describe("CtaBlock: the short price line and the risk-reversal line (D065 item 3
     expect(container.querySelector(".ks-price")?.textContent).toBe("₹499 today, refundable. ₹4,999 in total.");
     expect([...container.querySelectorAll(".kh-trustline a")].map((a) => a.textContent)).toEqual([
       "Full refund until dispatch · 7-day returns",
-      "Deliveries start mid-November",
+      "Deliveries start 15 December 2026",
     ]);
   });
 });

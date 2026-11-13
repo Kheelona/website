@@ -86,7 +86,7 @@ sources:
 > | Order number | <span class="mk-placeholder">[PLACEHOLDER: order number, KH-XXXX-XXXX]</span> |
 > | Paid today | ₹499`TOKEN_PRICE` |
 > | Due before delivery | ₹4,500`BALANCE_PRICE`, of the ₹4,999`LAUNCH_PRICE` price (incl. GST) |
-> | Delivery | Deliveries start mid-November`DELIVERY_TEXT` |
+> | Delivery | Deliveries start 15 December 2026`DELIVERY_TEXT` |
 
 **Full-mode order:** "Paid today" ₹7,999`FULL_PRICE`; "Due before delivery" reads "Nothing. You have paid in full."
 (live wording, `wt:thanks/page.tsx:149-150`).

@@ -16,6 +16,7 @@ import {
   CLAIM_FIXES,
   editsBeforeClaimFixes,
   KHEELONA_PLUS,
+  PRICE_LINE,
   OFFER_ADDITIONS,
   OFFER_NOTE,
   PRODUCT_OFFER_CARD,
@@ -222,7 +223,7 @@ describe("OfferSection: variants", () => {
       ]);
       expect([...column.querySelectorAll(".ks-trust li")].map((li) => li.textContent)).toEqual([
         "Full refund until dispatch · 7-day returns",
-        "Deliveries start mid-November",
+        "Deliveries start 15 December 2026",
         "6-month warranty",
         "UPI, card or net banking",
       ]);
@@ -238,7 +239,7 @@ describe("OfferSection: variants", () => {
       const rows = [...column.querySelectorAll(":scope > ul.kh-trustline")];
       expect(rows.map((row) => row.getAttribute("class"))).toEqual(["kh-trustline ks-trust", "kh-trustline ks-trust ks-offer-third"]);
       expect(rows.map((row) => [...row.querySelectorAll("li")].map((li) => li.textContent))).toEqual([
-        ["Full refund until dispatch · 7-day returns", "Deliveries start mid-November"],
+        ["Full refund until dispatch · 7-day returns", "Deliveries start 15 December 2026"],
         ["6-month warranty", "UPI, card or net banking"],
       ]);
       expect(rows[1].querySelectorAll("a").length).toBe(2);
@@ -263,7 +264,7 @@ describe("OfferSection: variants", () => {
     const perks = (config: OfferSectionConfig) =>
       [...renderedElement(<OfferSection {...config} {...context()} />).querySelectorAll(".kh-offer__list li")].map((li) => li.textContent);
     const PLAN = [
-      "Deliveries start mid-November. Pre-orders go out first, in the order they were placed.",
+      "Deliveries start 15 December 2026. Pre-orders go out first, in the order they were placed.",
       "In the box: Kheelu plush toy, charger and quick-start card",
       "Delivery anywhere in India, included",
       "6 months of Kheelona+ included. Nothing renews without you.",
@@ -351,7 +352,7 @@ describe("OfferSection: home (Home's offer, moved up; task Q2.9)", () => {
     expect([...column.children].map((c) => c.className)).toEqual(["kh-offer", "kh-trustline ks-trust", "kh-trustline ks-trust ks-offer-third", "kh-section__actions ks-offer-share"]);
     expect([...column.querySelectorAll(".ks-trust li")].map((li) => li.textContent)).toEqual([
       "Full refund until dispatch · 7-day returns",
-      "Deliveries start mid-November",
+      "Deliveries start 15 December 2026",
       "6-month warranty",
       "UPI, card or net banking",
     ]);
@@ -519,7 +520,7 @@ describe.each(["home", "meet-kheelu"] as const)("%s: the offer additions of task
     expect(additions.build).toEqual([
       "₹4,999 for the first 500 units.",
       "₹7,999 once they are gone.",
-      "Deliveries start mid-November.",
+      "Deliveries start 15 December 2026.",
       "Pre-orders go out first, in the order they were placed.",
       "6 months of Kheelona+ included.",
       "Nothing renews without you.",
@@ -527,10 +528,11 @@ describe.each(["home", "meet-kheelu"] as const)("%s: the offer additions of task
       "Know a parent who needs this?",
       "Share Kheelu on WhatsApp",
     ]);
+    /* The frozen cards (D046) keep the old delivery perk, which the one perk list replaces with D068's line (V69). */
     expect(additions.mockup).toEqual(
       slug === "home"
-        ? ["Deliveries start mid-November", "A GST invoice with every order"]
-        : [KHEELONA_PLUS.build, "Deliveries start mid-November", "A GST invoice with every order"],
+        ? [PRICE_LINE.delivery.mockup, "A GST invoice with every order"]
+        : [KHEELONA_PLUS.build, PRICE_LINE.delivery.mockup, "A GST invoice with every order"],
     );
   });
 

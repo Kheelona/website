@@ -4,6 +4,7 @@
  * options, the review pill, the store's review note and the hub's "Rewritten in the build" labels
  * were never copy (architecture §19).
  */
+import { DELIVERY_TEXT } from "@/content/en-IN/delivery";
 import { readRepoFile } from "./repo";
 
 /** The 18 approved pages (D046), by file name in mockup/ (the review index is not a page). */
@@ -78,6 +79,18 @@ export function htmlToText(html: string): string {
     .map((l) => l.replace(/\s+/g, " ").trim())
     .filter(Boolean)
     .join("\n");
+}
+
+/** The delivery line every frozen mockup prints (D046: they are never edited). The build prints `DELIVERY_TEXT` since the
+ *  founder's decision of 2026-11-10 (D068, deviations.md V69), so each mockup comparison reads this line as that one. */
+export const MOCKUP_DELIVERY = "Deliveries start mid-November";
+
+/** D068's date fact applied to a mockup's text, as the page facts of D055 apply an approved phrase change to a clone: the
+ *  mockup's delivery line, in either case ("deliveries start mid-November," in a sentence), reads the build's
+ *  `DELIVERY_TEXT`. For the checks that must stay green on approved copy (the banned-phrases rule 3, the content-integrity
+ *  calibration); the raw mockup text still carries the old line, and the guard stays red on it. */
+export function withDeliveryDate(text: string): string {
+  return text.replace(/\b([Dd])eliveries start mid-November\b/g, (_whole, first: string) => `${first}${DELIVERY_TEXT.slice(1)}`);
 }
 
 /** Title, meta description and visible text of one approved page (built file mockup/<slug>.html). */

@@ -18,8 +18,8 @@ const TOKEN: Offer = {
   sticky: { big: "{price:token} today", small: "refundable · {price:headline} in total" },
   card,
   plus: "Every Kheelu comes with 6 months of Kheelona+.",
-  delivery: "Deliveries start mid-November",
-  availabilityStarts: "2026-11-15",
+  delivery: "Deliveries start 15 December 2026",
+  availabilityStarts: "2026-12-15",
 };
 const FULL: Offer = {
   ...TOKEN,
@@ -96,7 +96,7 @@ describe("PriceSentence", () => {
 
 describe("offerWords", () => {
   it("resolves price and delivery tokens to the offer's own strings", () => {
-    expect(offerWords("{price:token} today · {delivery}", TOKEN, "test")).toBe("₹499 today · Deliveries start mid-November");
+    expect(offerWords("{price:token} today · {delivery}", TOKEN, "test")).toBe("₹499 today · Deliveries start 15 December 2026");
   });
 
   it("names the place that passed it rich text", () => {

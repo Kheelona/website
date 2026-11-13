@@ -1,7 +1,7 @@
 import { findBanned, findBannedOnMockup } from "../guards/banned-phrases.data";
 import { expect, gateRouteGroup, nodeGet, requiresServer, test } from "./support/fixtures";
 import { PARITY_TARGET } from "./support/env";
-import { MOCKUP_SLUGS, approvedMockupText, type MockupSlug } from "./support/mockup-text";
+import { MOCKUP_SLUGS, approvedMockupText, withDeliveryDate, type MockupSlug } from "./support/mockup-text";
 import { jsonLdMismatches } from "./support/page-checks";
 import { mockupRoute, sweepRoutes, type Route } from "./support/routes";
 import { VIEWPORTS } from "./support/viewports";
@@ -141,7 +141,7 @@ test.describe("content integrity: the 500-unit cap detector (D041, D061 item 3)"
 test.describe("content integrity: calibration on the approved mockup", () => {
   for (const slug of MOCKUP_SLUGS) {
     test(slug, () => {
-      const text = approvedMockupText(slug as MockupSlug);
+      const text = withDeliveryDate(approvedMockupText(slug as MockupSlug));
       review(`mockup ${slug}`, text);
       expect(contentProblems(MOCKUP_PATHS[slug] ?? `/${slug}`, text, needsAgeBand(mockupRoute(slug as MockupSlug)), slug as MockupSlug)).toEqual([]);
     });

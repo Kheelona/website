@@ -190,7 +190,7 @@ describe("event page module: source", () => {
   const source = readRepoFile("src/content/en-IN/store/event-page.ts");
 
   it("types no amount, number or address: each comes from its one source", () => {
-    expect(source).not.toMatch(/₹|Rs\.? ?\d|91875|wa\.me|mid-November|20 October/);
+    expect(source).not.toMatch(/₹|Rs\.? ?\d|91875|wa\.me|mid-November|15 December|20 October/);
   });
 
   it("names no banned line (the old age band, \"friend\")", () => {

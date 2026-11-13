@@ -209,7 +209,7 @@ describe("setup parity deviations (V8, the founder's page facts V15, and task 7.
     /* Fold 7's contact line in the plan's words, then the close's own words and its trust line's, which setup.ts carries
        as trust.ts's items; its button and price line come from cta.ts and the offer. */
     const close = SELLING_CLOSES.setup.build.filter((line) => contentSentences(setupPage).includes(line));
-    expect(close).toEqual([sentences(SETUP_CONTACT.build)[0], SETUP_CLOSE.eyebrow, SETUP_CLOSE.lead, PRICE_LINE.returns.build, PRICE_LINE.delivery]);
+    expect(close).toEqual([sentences(SETUP_CONTACT.build)[0], SETUP_CLOSE.eyebrow, SETUP_CLOSE.lead, PRICE_LINE.returns.build, PRICE_LINE.delivery.build]);
     for (const line of [...SETUP_STEP_BUILD, ...FACTS.build, ...COPY_FIXES.setup.build, ...claims]) expect(contentSentences(setupPage)).toContain(line);
     expect(accepted("setup", contentSentences(setupPage))).toEqual([
       FACTS.build[0],

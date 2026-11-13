@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { confirmation } from "@/content/en-IN/store/confirmation";
+import { withDeliveryDate } from "../../../../../test/e2e/support/mockup-text";
 import { mockupFold, skeleton, words } from "../../../../../test/support/mockup-compare";
 import { SAMPLE_ORDER } from "../ConfirmationHead/ConfirmationHead.stories";
 import { OrderRows } from "./OrderRows";
@@ -30,7 +31,8 @@ describe("OrderRows", () => {
     );
     const mockup = mockupFold("store-confirmation", "section[aria-labelledby='order-title']");
     expect(skeleton(container.firstElementChild!, OPTIONS)).toBe(skeleton(mockup, OPTIONS));
-    expect(words(container.firstElementChild!)).toBe(words(mockup));
+    /* The frozen mockup (D046) keeps the old delivery line; the build prints D068's (deviations.md V69). */
+    expect(words(container.firstElementChild!)).toBe(withDeliveryDate(words(mockup)));
   });
 
   it("is a DS card named by its h2, the rows a DefinitionList in the order variant", () => {
@@ -42,7 +44,7 @@ describe("OrderRows", () => {
     expect(screen.getByRole("heading", { level: 2 }).className).toBe("kh-card__title");
     expect(container.querySelector("dl")!.className).toBe("ks-order__rows");
     expect(terms(container)).toEqual(["Order number", "Paid today", "Due before delivery", "Delivery"]);
-    expect(values(container)).toEqual(["KH-A2B3-C4D5", "₹499", "₹4,500, of the ₹4,999 price (incl. GST)", "Deliveries start mid-November"]);
+    expect(values(container)).toEqual(["KH-A2B3-C4D5", "₹499", "₹4,500, of the ₹4,999 price (incl. GST)", "Deliveries start 15 December 2026"]);
   });
 
   it("tells a full-payment order it owes nothing", () => {

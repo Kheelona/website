@@ -32,7 +32,7 @@ const { phone, tel, whatsapp, email } = seller.support;
 /** "message us on WhatsApp at <number>, or email <address>": the help line and customer care say it alike. */
 const reachUs: RichTextString = `[message us on WhatsApp](${whatsapp}) at {nowrap:[${phone}](${tel})}, or email [${email}](mailto:${email})`;
 
-/** The delivery line inside a sentence of the meta description ("…in India: deliveries start mid-November, …"). */
+/** The delivery line inside a sentence of the meta description ("…in India: deliveries start 15 December 2026, …"). */
 const deliveryInSentence = `${DELIVERY_TEXT.charAt(0).toLowerCase()}${DELIVERY_TEXT.slice(1)}`;
 
 export const shippingPage = {

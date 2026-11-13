@@ -68,8 +68,8 @@
 }
 .ks-agree__list .kh-label {
   margin: 0 0 var(--space-1);
-  /* "Deliveries start / mid-November" never splits at the hyphen (the mockup's mk-nowrap on "mid-November"; the
-     delivery line is one content value, D023, so the break is balanced here, as the legal pages do). */
+  /* The delivery line is one content value (D023, D068), so its break is balanced here, as the legal pages do (the
+     mockup's mk-nowrap kept the old date's hyphen from splitting). */
   text-wrap: balance;
 }
 .ks-agree__fine {

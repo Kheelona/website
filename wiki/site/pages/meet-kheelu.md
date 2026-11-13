@@ -93,7 +93,7 @@ the trust line. Every trust item links to its terms: delivery → `shipping.html
 >
 > Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST).
 >
-> Deliveries start mid-November`{delivery-source}` · 7-day returns, no questions asked
+> Deliveries start 15 December 2026`{delivery-source}` · 7-day returns, no questions asked
 
 **Full CTA block** (the close): the compact block, then the full trust row and the help line.
 
@@ -122,7 +122,7 @@ line, inside the first phone screen (360 × 590).
 >
 > Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST).
 >
-> Deliveries start mid-November`{delivery-source}` · 7-day returns, no questions asked
+> Deliveries start 15 December 2026`{delivery-source}` · 7-day returns, no questions asked
 
 **Copy (directly below the first screen):**
 
@@ -253,7 +253,7 @@ Section `id="offer"`.
 >   - In the box: Kheelu plush toy, charger and quick-start card
 >   - Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.
 >   - Delivery anywhere in India, included
->   - Deliveries start mid-November`{delivery-source}`
+>   - Deliveries start 15 December 2026`{delivery-source}`
 >   - A GST invoice with every order
 > - **[Pre-order Kheelu]** (`cta` = `product-offer`, new)
 > - fine: Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST).
@@ -645,7 +645,7 @@ Section `id="faq"` (Home's "See all questions" links here; `/faq` 301s here, [st
 > Kheelu is ₹4,999`{price-source}` (incl. GST) for the first 500 units`{price-source}`, with delivery anywhere in India included. The ₹499`{price-source}` is a refundable advance to reserve yours; the remaining ₹4,500`{price-source}` is due before delivery. After the first 500, it is ₹7,999`{price-source}` (incl. GST), paid in full. Pay by UPI, card or net banking, with no payment fees, and get a GST invoice.
 >
 > **When does delivery start?**
-> Deliveries start mid-November`{delivery-source}`. Orders are sent in the order they were placed, and you get a tracking link when yours leaves us. Delivery is included anywhere in India, with nothing to pay at the door; we don't ship outside India. A reserved Kheelu is sent once the rest of the price is paid.
+> Deliveries start 15 December 2026`{delivery-source}`. Orders are sent in the order they were placed, and you get a tracking link when yours leaves us. Delivery is included anywhere in India, with nothing to pay at the door; we don't ship outside India. A reserved Kheelu is sent once the rest of the price is paid.
 >
 > **What if it isn't right for us, or stops working?**
 > Return it within 7 days of delivery, no questions asked; opened is fine if it comes back undamaged and complete. Pickup is free. Arrived faulty? Tell us within 7 days and we replace it. The 6-month warranty covers manufacturing defects, not drops, water damage or misuse: we repair it, or replace it if the repair doesn't work.
@@ -672,7 +672,7 @@ the wave 8 merge's age-3 sentence; its task 8b.1 safety sentence keeps it at 59.
 **Full mode**, question 4 becomes:
 
 > **What does Kheelu cost?**
-> Kheelu is ₹7,999`{price-source}` (incl. GST), paid in full when you order, with delivery anywhere in India included. Pay by UPI, card or net banking, with no payment fees, and get a GST invoice. Deliveries start mid-November`{delivery-source}`. If it isn't right for your family, return it within 7 days of delivery, no questions asked. (53 words)
+> Kheelu is ₹7,999`{price-source}` (incl. GST), paid in full when you order, with delivery anywhere in India included. Pay by UPI, card or net banking, with no payment fees, and get a GST invoice. Deliveries start 15 December 2026`{delivery-source}`. If it isn't right for your family, return it within 7 days of delivery, no questions asked. (53 words)
 
 - **H2 accent:** `Hand` on "ask." `FAQ` component, all items closed (first-open is for safety pages only).
   These eight make the page's FAQPage JSON-LD, answers exactly as shown.
@@ -751,7 +751,7 @@ Section `id="close"`.
 >
 > Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST).
 >
-> Deliveries start mid-November`{delivery-source}`.
+> Deliveries start 15 December 2026`{delivery-source}`.
 >
 > 7-day returns, no questions asked · 6-month warranty · UPI, card or net banking · Delivery included anywhere in India
 >

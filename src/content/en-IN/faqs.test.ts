@@ -27,6 +27,7 @@ import {
   TEXT_DEVIATIONS,
   VISUAL_HIDDEN,
 } from "../../../test/e2e/support/deviations";
+import { withDeliveryDate } from "../../../test/e2e/support/mockup-text";
 import { readRepoFile } from "../../../test/e2e/support/repo";
 import { findBanned } from "../../../test/guards/banned-phrases.data";
 import { mockupFold } from "../../../test/support/mockup-compare";
@@ -179,7 +180,8 @@ describe.each(MOCKUP_PAGES)("mockup %s, token mode, word for word", (slug, ids) 
     const item: FaqItem = faqs[id];
     const shown = items[i];
     expect(plain(item.question, token)).toBe(norm(shown.querySelector(".kh-faq__q span")?.textContent));
-    const paragraphs = Array.from(shown.querySelectorAll(".kh-faq__a > p, .kh-faq__a > ul > li")).map((el) => norm(el.textContent));
+    /* The frozen mockups (D046) keep the old delivery line; the build prints D068's (deviations.md V69). */
+    const paragraphs = Array.from(shown.querySelectorAll(".kh-faq__a > p, .kh-faq__a > ul > li")).map((el) => withDeliveryDate(norm(el.textContent)));
     const rendered = [plain(item.answer, token), ...(item.detail ?? []).flatMap((b) => blockText(b, token))];
     if (id === P15.id) {
       // The approved answer, with P15's one sentence (the replacement is never vacuous: the mockup has the old line).
@@ -526,7 +528,7 @@ describe("task Q2.10: the product page's price answer and the Kheelona+ question
 describe("full mode (copy pages)", () => {
   /* Home's full-mode price answer since task Q2.9 (the D2C plan v2 §2 fold 10; D065 item 3: no GST on a selling page). */
   const homeFull =
-    "Kheelu is ₹7,999 in total, paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking. Deliveries start mid-November. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.";
+    "Kheelu is ₹7,999 in total, paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking. Deliveries start 15 December 2026. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.";
 
   it("Home's price question becomes home.md's full-mode answer", () => {
     expect(plain(faqs["price-and-advance"].question, full)).toBe("How much is Kheelu?");
@@ -537,7 +539,7 @@ describe("full mode (copy pages)", () => {
     expect(plain(faqs["cost-and-advance"].question, full)).toBe("What does Kheelu cost?");
     // The D2C plan v2 §3 fold 11 (task Q2.10; D065 items 3-4): the total, no GST and no invoice line on a selling page.
     expect(plain(faqs["cost-and-advance"].answer, full)).toBe(
-      "Kheelu is ₹7,999 in total, paid in full when you order, with delivery anywhere in India included. Pay by UPI, card or net banking, with no payment fees. Deliveries start mid-November.",
+      "Kheelu is ₹7,999 in total, paid in full when you order, with delivery anywhere in India included. Pay by UPI, card or net banking, with no payment fees. Deliveries start 15 December 2026.",
     );
   });
 
@@ -547,7 +549,7 @@ describe("full mode (copy pages)", () => {
   it("/pricing.md's price answer (the guide's until task Q2.12) becomes Home's full-mode answer", () => {
     expect(plain(faqs["how-much"].question, full)).toBe("How much is Kheelu?");
     expect(plain(faqs["how-much"].answer, full)).toBe(
-      "Kheelu is ₹7,999 (incl. GST), paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking, and you get a GST invoice. Deliveries start mid-November. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.",
+      "Kheelu is ₹7,999 (incl. GST), paid in full when you order, with delivery anywhere in India included. You can pay by UPI, card or net banking, and you get a GST invoice. Deliveries start 15 December 2026. If it isn’t right for your family, you can return it within 7 days of delivery, no questions asked.",
     );
     expect(homeFull).toBe(
       plain(faqs["how-much"].answer, full).replace(" (incl. GST)", " in total").replace(", and you get a GST invoice", ""),
@@ -612,8 +614,9 @@ describe("answer lengths (architecture §9.5; the answer-length guard skips mode
       .filter(([, n]) => n < 40 || n > 60);
     /* store.md fold 5, "Full mode": "What am I paying today?" is approved at 37 words (the store's
        answers are "each under 60 words"; the store is noindex, so no FAQPage reads it). */
+    /* "cost-and-advance" carries {delivery} in full mode: two words longer since D068 ("Deliveries start 15 December 2026"). */
     expect(out).toEqual([
-      ["cost-and-advance", 31],
+      ["cost-and-advance", 33],
       ["after-six-months", 31],
       ["paying-today", 37],
     ]);

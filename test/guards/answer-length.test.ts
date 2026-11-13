@@ -25,7 +25,7 @@ function countWords(text: string): number {
     .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
     .replace(/\{(?:hand|mark|nowrap):([^}]*)\}/g, "$1")
     .replace(/\{price:[a-z]+\}/g, "₹0")
-    .replace(/\{delivery\}/g, "Deliveries start mid-November")
+    .replace(/\{delivery\}/g, "Deliveries start 15 December 2026")
     .replace(/\{ph:[^}]*\}/g, "[PLACEHOLDER]");
   return plain.split(/\s+/).filter((w) => /[\p{L}\p{N}₹]/u.test(w)).length;
 }

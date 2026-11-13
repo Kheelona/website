@@ -92,7 +92,7 @@ total, and when it comes.
 >
 > Reserve yours for ₹499`TOKEN_PRICE` today, refundable until dispatch, then pay ₹4,500`BALANCE_PRICE` before delivery: ₹4,999`LAUNCH_PRICE` in total (incl. GST).
 >
-> Deliveries start mid-November`DELIVERY_TEXT` · 7-day returns, no questions asked
+> Deliveries start 15 December 2026`DELIVERY_TEXT` · 7-day returns, no questions asked
 
 **Full mode:** the H1 is unchanged; the price sentence becomes "₹7,999`FULL_PRICE` (incl. GST), paid in full when
 you order." The micro-line is unchanged.
@@ -260,7 +260,7 @@ On laptops this card sits beside the form; on phones it follows the pay button.
 > **Refundable in full**
 > Ask any time before we dispatch your Kheelu. No fee, and no reason needed.
 >
-> **Deliveries start mid-November`DELIVERY_TEXT`**
+> **Deliveries start 15 December 2026`DELIVERY_TEXT`**
 > Pre-orders go out first, in the order they were placed.
 >
 > *(small print)* Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. Kheelu's price is ₹4,999`LAUNCH_PRICE` (incl. GST) for the first 500 units, and ₹7,999`FULL_PRICE` (incl. GST) once they are gone. Delivery anywhere in India is included, and every order comes with a GST invoice.
@@ -273,7 +273,7 @@ On laptops this card sits beside the form; on phones it follows the pay button.
 > **Nothing due before delivery**
 > You have paid the whole price. No balance link, and nothing automatic.
 >
-> **Refundable in full** · **Deliveries start mid-November`DELIVERY_TEXT`** *(as token mode)*
+> **Refundable in full** · **Deliveries start 15 December 2026`DELIVERY_TEXT`** *(as token mode)*
 >
 > *(small print)* Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. The first 500 units at ₹4,999`LAUNCH_PRICE` have been reserved, and this order is at the ₹7,999`FULL_PRICE` price (incl. GST). Delivery anywhere in India is included, and every order comes with a GST invoice.
 
@@ -316,7 +316,7 @@ On laptops this card sits beside the form; on phones it follows the pay button.
 > Until we dispatch your Kheelu, message us with your order number and you get all of your money back, with no fee and no reason needed. We start your refund within 2 working days of your request; your bank takes 5-7 working days. After delivery, you can still return it within 7 days, no questions asked. *(56 words)*
 >
 > **When will my Kheelu arrive?**
-> Deliveries start mid-November`DELIVERY_TEXT`. Pre-orders go out first, in the order they were placed, and we send you a tracking link when yours leaves us. Delivery anywhere in India is included, with nothing to pay at the door. We don't ship outside India. A reserved Kheelu is dispatched once the balance is paid. *(52 words)*
+> Deliveries start 15 December 2026`DELIVERY_TEXT`. Pre-orders go out first, in the order they were placed, and we send you a tracking link when yours leaves us. Delivery anywhere in India is included, with nothing to pay at the door. We don't ship outside India. A reserved Kheelu is dispatched once the balance is paid. *(52 words)*
 >
 > **How can I pay?**
 > By UPI, debit or credit card, or net banking, in Razorpay's payment window. There are no payment fees and nothing recurring. Your card number, UPI ID and bank details go to Razorpay, not to us, and every order comes with a GST invoice. *(43 words)*

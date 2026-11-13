@@ -70,7 +70,7 @@ describe("StoreTop", () => {
       [`${MARKETING_ORIGIN}/refund#before-dispatch`, "_blank", "noopener"],
       [`${MARKETING_ORIGIN}/shipping#when`, "_blank", "noopener"],
     ]);
-    expect(links.map((a) => a.textContent)).toEqual([`Full refund until dispatch · 7-day returns${NOTE}`, `Deliveries start mid-November${NOTE}`]);
+    expect(links.map((a) => a.textContent)).toEqual([`Full refund until dispatch · 7-day returns${NOTE}`, `Deliveries start 15 December 2026${NOTE}`]);
   });
 
   it("loads the small Kheelu at once, as the first screen's one image (eager, fetchpriority high), at its rendered widths", () => {

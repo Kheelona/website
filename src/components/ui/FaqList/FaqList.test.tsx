@@ -7,7 +7,7 @@ import { FaqList, faqPlainItems } from "./FaqList";
 const sign = <svg className="kh-icon" data-icon="plus" aria-hidden="true" />;
 const ITEMS = [
   { id: "ages", question: "What ages is Kheelu for?", answer: "Kheelu is made for children aged 3 to 7." },
-  { id: "arrival", question: "When will my Kheelu arrive?", answer: "Deliveries start mid-November." },
+  { id: "arrival", question: "When will my Kheelu arrive?", answer: "Deliveries start 15 December 2026." },
 ];
 const list = (ui: React.ReactElement) => render(ui).container.firstElementChild as HTMLElement;
 
@@ -79,8 +79,8 @@ const OFFER: Offer = {
   sticky: { big: "{price:token} today", small: "refundable" },
   card: { product: "Kheelu", perks: { home: [], product: [] } },
   plus: "Kheelona+",
-  delivery: "Deliveries start mid-November",
-  availabilityStarts: "2026-11-15",
+  delivery: "Deliveries start 15 December 2026",
+  availabilityStarts: "2026-12-15",
 };
 
 describe("faqPlainItems (the FAQPage JSON-LD text)", () => {
@@ -99,7 +99,7 @@ describe("faqPlainItems (the FAQPage JSON-LD text)", () => {
         question: "How much is Kheelu, and how does the advance work?",
         answer: "Kheelu is ₹4,999 (incl. GST). A refundable ₹499 advance reserves yours.[1] See the refund policy.",
       },
-      { id: "arrival", question: "When will my Kheelu arrive?", answer: "Deliveries start mid-November. Pre-orders are served first." },
+      { id: "arrival", question: "When will my Kheelu arrive?", answer: "Deliveries start 15 December 2026. Pre-orders are served first." },
     ]);
   });
 

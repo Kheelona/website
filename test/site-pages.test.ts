@@ -181,9 +181,17 @@ describe("the live offer", () => {
     expect(product).toContain("₹7,999 in total, paid in full when you order.");
   });
 
-  it("delivery stays mid-November everywhere", () => {
-    for (const { path, html } of PAGES) expect(html, path).not.toMatch(/\b20 October\b|\bOctober 20\b(?!\d)|2026-10-20/);
-    expect(TOKEN.delivery).toBe("Deliveries start mid-November");
+  it("delivery starts 15 December 2026 everywhere: no built page prints an older date (D068)", () => {
+    for (const { path, html } of PAGES) {
+      expect(html, path).not.toMatch(/\b20 October\b|\bOctober 20\b(?!\d)|2026-10-20/);
+      expect(html, path).not.toMatch(/mid[- ]November/i);
+      expect(html, path).not.toContain("2026-11-15");
+    }
+    expect(TOKEN.delivery).toBe("Deliveries start 15 December 2026");
+  });
+
+  it("both Product blocks (Home and the product page) carry the schema date 2026-12-15", () => {
+    for (const path of ["/", "/products/kheelu"]) expect(page(path), path).toContain('"availabilityStarts":"2026-12-15"');
   });
 });
 
@@ -214,8 +222,18 @@ describe("the machine files (redesign/sitemap.xml, robots.txt, llms.txt, pricing
         expect(full.includes(word), `${name} still says "${word}" in full mode`).toBe(false);
       }
       expect(full, name).toContain(FULL.prices.full);
-      expect(full, name).toContain("Deliveries start mid-November");
+      expect(full, name).toContain("Deliveries start 15 December 2026");
     }
+  });
+
+  /* D068: llms.txt names the old date once, to say it is out of date; nothing else in the machine files carries it. */
+  it("llms.txt names mid-November only in its correction line, and pricing.md not at all", () => {
+    expect(file("pricing.md")).not.toMatch(/mid[- ]November|2026-11-15/i);
+    const lines = file("llms.txt").split("\n");
+    const old = lines.filter((line) => /mid[- ]November|2026-11-15/i.test(line));
+    expect(old).toEqual([
+      "- **Deliveries start 15 December 2026.** Earlier dates (20 October 2026, mid-November 2026) are out of date. Pre-orders are served first, in the order they were placed.",
+    ]);
   });
 });
 

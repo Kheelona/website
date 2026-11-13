@@ -32,8 +32,8 @@ const token: Offer = {
   },
   /* D058 item 3, as offer.ts prints it (task 8b.1b). */
   plus: "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.",
-  delivery: "Deliveries start mid-November",
-  availabilityStarts: "2026-11-15",
+  delivery: "Deliveries start 15 December 2026",
+  availabilityStarts: "2026-12-15",
 };
 const full: Offer = {
   ...token,
@@ -61,7 +61,7 @@ const meta = {
     label: "Kheelu offer",
     action,
     perks: [
-      { icon: icon("truck"), text: "Deliveries start mid-November" },
+      { icon: icon("truck"), text: "Deliveries start 15 December 2026" },
       { icon: icon("package"), text: "In the box: Kheelu plush toy, charger and quick-start card" },
       { icon: icon("map-pin"), text: "Delivery anywhere in India, included" },
       { icon: icon("check-circle"), text: "A GST invoice with every order" },

@@ -14,7 +14,7 @@ const meta = {
   component: TrustLine,
   args: {
     items: [
-      { icon: icon("truck"), label: "Deliveries start mid-November", href: "/shipping" },
+      { icon: icon("truck"), label: "Deliveries start 15 December 2026", href: "/shipping" },
       { icon: icon("arrow-counter-clockwise"), label: "7-day returns, no questions asked", href: "/refund" },
     ],
   },

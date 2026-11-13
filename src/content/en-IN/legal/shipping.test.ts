@@ -63,7 +63,7 @@ describe("the shipping page: the route and its head", () => {
     const description = toPlainText(shippingPage.meta.description);
     expect(title).toBe("Kheelu shipping and delivery in India · Kheelona");
     expect(description).toBe(
-      "Kheelu delivery and shipping in India: deliveries start mid-November, delivery is included anywhere in India, and you get tracking at dispatch.",
+      "Kheelu delivery and shipping in India: deliveries start 15 December 2026, delivery is included anywhere in India, and you get tracking at dispatch.",
     );
     expect(title.length).toBeLessThanOrEqual(60);
     expect(description.length).toBeLessThanOrEqual(155);
