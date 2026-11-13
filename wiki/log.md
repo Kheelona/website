@@ -1433,3 +1433,13 @@ The founder moved the public delivery date from mid-November to 15 December 2026
 D037 is superseded. The retired date is a banned phrase in delivery wording (`delivery-mid-november`, claims §4); the
 frozen mockups keep the old line, which the parity layer reads with the new date applied (deviations V69). The 42 copy
 blocks of `wiki/site/pages` and the facts page follow. Built as action F1.
+
+## [2026-11-13 17:00] decision | D069: OpenAI's Ads Measurement Pixel and Conversions API measure the ChatGPT advertising
+The founder asked for the ChatGPT advertising to be measured (2026-11-13). OpenAI's pixel (`CtmHigpYxafJN3qgbj3xnv`) loads on the
+three production hosts only, off on a team device, from `src/lib/ads/` (loader, event data, optional server call); `order_created`
+carries the raw order reference as its event id and the amount in paise. OpenAI switches automatic advanced matching on with no
+option to turn it off, so `OPENAI_AAM_POLICY` ("verified-pages" by default, "require-off" as the alternative) keeps the SDK off the
+pages that show the company's contact details. The ad click rides in the existing `fb_attrib` JSONB as `oai_oppref` / `oai_obref`
+(no migration); the server call sends nothing without `OPENAI_ADS_CAPI_KEY`, off production, or for an order with no OpenAI
+reference. The Report-Only CSP admits two exact OpenAI origins. `/privacy` is not changed here: its wording waits for the founder.
+Built as action F6.
