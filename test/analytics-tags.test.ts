@@ -623,6 +623,25 @@ describe("OpenAI Ads measurement stays on the narrow path it was approved for (D
     for (const page of ["terms", "refund", "shipping"]) expect(updated(page), page).toBe("Last updated: 14 October 2026");
   });
 
+  /* The founder's three follow-up fixes (D069, 2026-11-13): the summary card, the retention list's cookie item and its
+     OpenAI item, as a parent reads them on the served page. */
+  it("tells the summary's reader about the Meta Pixel, OpenAI's signed-in recognition and Google's signed-in linking, still linking 'named below'", () => {
+    const html = readFileSync(join(ROOT, "redesign/privacy/index.html"), "utf8");
+    expect(html).toContain(
+      '<h3>This website measures visits.</h3><p>We use analytics and advertising tools, all <a href="#measuring">named below</a>. The Meta Pixel follows visits to other sites. If you’re signed in to ChatGPT in the same browser, OpenAI may be able to recognise you through its pixel, and if you’re signed in to Google with ad personalisation on, Google links your visits to your Google account. There is no cookie banner today.</p>',
+    );
+    expect(PRIVACY).not.toContain("One of them, the Meta Pixel");
+  });
+
+  it("lists kh_oppref among the session cookies and gives OpenAI its own retention item, linked to OpenAI's privacy policy", () => {
+    const html = readFileSync(join(ROOT, "redesign/privacy/index.html"), "utf8");
+    expect(html).toContain(
+      '<li><strong>Meta</strong> keeps what it receives under its own policy.</li>\n  <li><strong>OpenAI</strong> keeps what it receives as described in <a href="https://openai.com/policies/privacy-policy/" rel="noopener">OpenAI’s privacy policy</a>.</li>\n  <li><strong>Our cookies:</strong> kh_utm, kh_fbclid and kh_oppref for as long as your visit lasts; kh_order for 2 hours.</li>',
+    );
+    expect(PRIVACY).toContain("Our cookies: kh_utm, kh_fbclid and kh_oppref for as long as your visit lasts; kh_order for 2 hours.");
+    expect(PRIVACY).not.toContain("kh_utm and kh_fbclid for as long as your visit lasts");
+  });
+
   it("gives the browser pixel no user object: init is called with the pixel ID, the click and debug only", () => {
     const loader = readFileSync(join(ROOT, "src/lib/ads/openai-pixel.ts"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
     expect(loader).not.toMatch(/\buser\s*:/);

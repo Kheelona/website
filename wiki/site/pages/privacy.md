@@ -121,8 +121,10 @@ No item uses "Kheelu thinks on the device" from the DS example (banned, [D036](.
 >    parent app.
 > 5. **You can read every conversation.** Deleting your account in the parent app deletes them all, with the
 >    recordings. We delete transcripts automatically after 36 months.
-> 6. **This website measures visits.** We use analytics and advertising tools, all named below. One of them,
->    the Meta Pixel, follows visits to other sites. There is no cookie banner today.
+> 6. **This website measures visits.** We use analytics and advertising tools, all named below. The Meta Pixel
+>    follows visits to other sites. If you're signed in to ChatGPT in the same browser, OpenAI may be able to
+>    recognise you through its pixel, and if you're signed in to Google with ad personalisation on, Google links
+>    your visits to your Google account. There is no cookie banner today.
 > 7. **Card, UPI and bank details go to Razorpay.** They never reach us.
 > 8. **We acknowledge every complaint within 48 hours.** And we resolve it within one month.
 
@@ -579,7 +581,8 @@ The first paragraph is the answer-first block for "How long are my child's conve
 > - **Google Analytics:** 14 months.
 > - **PostHog:** screen recordings for 30 days.
 > - **Meta** keeps what it receives under its own policy.
-> - **Our cookies:** kh_utm and kh_fbclid for as long as your visit lasts; kh_order for 2 hours.
+> - **OpenAI** keeps what it receives as described in [OpenAI's privacy policy](https://openai.com/policies/privacy-policy/).
+> - **Our cookies:** kh_utm, kh_fbclid and kh_oppref for as long as your visit lasts; kh_order for 2 hours.
 
 Notes:
 - 36 months is [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7, verbatim in its customer form
@@ -1249,6 +1252,9 @@ The quoted blocks above carry the new words: the order paragraph (Section 4), tw
 (Section 5), the "What blocking can't stop" item (Section 6), the OpenAI row of the recipients table (Section 7) and the
 advertising sentence (Section 10). "Last updated" moves from 14 October to **13 November 2026**, the date of that approval
 (the founder's date, [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 8, [D067](../../decisions/D067-legal-pages-approved-final-2026-10-22.md));
-the mentions of 14 October in the tables above are the history of this page's folds and stay as they were. Not changed:
-the short-version card, Section 8's cookie retention line and its "Meta keeps what it receives" item (neither names OpenAI
-yet; proposed to the founder).
+the mentions of 14 October in the tables above are the history of this page's folds and stay as they were. The Google
+Analytics block (Section 5) gains one sentence on Google signals, which the founder approved the same day. After that, the
+founder also had three spots brought in line, and the quoted blocks above carry them: the short-version card "This website
+measures visits." (Fold 2, item 6: the Meta Pixel sentence, then OpenAI's and Google's signed-in sentences), the retention
+list's "Our cookies" item (`kh_oppref` joins `kh_utm` and `kh_fbclid`, all session cookies) and a new retention item
+"OpenAI keeps what it receives as described in OpenAI's privacy policy" (a link; that page gives no fixed period).

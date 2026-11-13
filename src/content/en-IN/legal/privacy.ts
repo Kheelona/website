@@ -95,7 +95,7 @@ export const privacyPage = {
       {
         icon: "chart-line-up",
         title: "This website measures visits.",
-        body: "We use analytics and advertising tools, all [named below](#measuring). One of them, the Meta Pixel, follows visits to other sites. There is no cookie banner today.",
+        body: "We use analytics and advertising tools, all [named below](#measuring). The Meta Pixel follows visits to other sites. If you’re signed in to ChatGPT in the same browser, OpenAI may be able to recognise you through its pixel, and if you’re signed in to Google with ad personalisation on, Google links your visits to your Google account. There is no cookie banner today.",
       },
       {
         icon: "currency-inr",
@@ -466,7 +466,8 @@ export const privacyPage = {
             { lead: "Google Analytics:", text: "14 months." },
             { lead: "PostHog:", text: "screen recordings for 30 days." },
             { lead: "Meta", text: "keeps what it receives under its own policy." },
-            { lead: "Our cookies:", text: "kh_utm and kh_fbclid for as long as your visit lasts; kh_order for 2 hours." },
+            { lead: "OpenAI", text: "keeps what it receives as described in [OpenAI’s privacy policy](https://openai.com/policies/privacy-policy/)." },
+            { lead: "Our cookies:", text: "kh_utm, kh_fbclid and kh_oppref for as long as your visit lasts; kh_order for 2 hours." },
           ],
         },
       ],

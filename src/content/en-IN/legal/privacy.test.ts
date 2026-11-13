@@ -233,7 +233,10 @@ describe("the privacy page: every measuring tool named in a block of its own, ne
     );
     const hours = THANKS_COOKIE_MAX_AGE_SECONDS / 3600;
     expect(strings(own).map((s) => toPlainText(s)).join(" ")).toContain(`lets the confirmation page show your order, for ${hours} hours.`);
-    expect(partText("keep")).toContain(`${CAMPAIGN_COOKIE} and ${CLICK_ID_COOKIE} for as long as your visit lasts; ${THANKS_COOKIE} for ${hours} hours.`);
+    /* Re-pinned 2026-11-13 (D069): kh_oppref is a session cookie too (rememberOppref sets no Max-Age or Expires). */
+    expect(partText("keep")).toContain(
+      `${CAMPAIGN_COOKIE}, ${CLICK_ID_COOKIE} and ${OPENAI_OPPREF_COOKIE} for as long as your visit lasts; ${THANKS_COOKIE} for ${hours} hours.`,
+    );
   });
 });
 
@@ -438,3 +441,27 @@ describe("the privacy page: the founder's page facts (D055)", () => {
     expect(partText("choices")).not.toContain("Two things");
   });
 });
+
+/* D069 (2026-11-13), the founder's three follow-up fixes: the summary card, the retention list's cookie item and its OpenAI
+ * item say what the tool blocks say, so a parent who reads only the summary or only "How long we keep things" is not told
+ * less than the page knows. */
+describe("the privacy page: the summary card and the retention list name OpenAI, Google signals and kh_oppref (D069)", () => {
+  const card = strings(privacyPage.summary).map((s) => toPlainText(s)).join("\n");
+
+  it("says in the 'This website measures visits.' card that the Meta Pixel follows visits, that a signed-in ChatGPT user may be recognised and that Google links a signed-in visitor's visits", () => {
+    expect(card).toContain(
+      "This website measures visits.\nWe use analytics and advertising tools, all named below. The Meta Pixel follows visits to other sites. If you’re signed in to ChatGPT in the same browser, OpenAI may be able to recognise you through its pixel, and if you’re signed in to Google with ad personalisation on, Google links your visits to your Google account. There is no cookie banner today.",
+    );
+    expect(card).not.toContain("One of them, the Meta Pixel");
+    // The "named below" link keeps its target.
+    expect(strings(privacyPage.summary).join("\n")).toContain("all [named below](#measuring).");
+  });
+
+  it("keeps the retention list's OpenAI item after Meta's, linking OpenAI's privacy policy (it gives no fixed period)", () => {
+    const keep = strings(part("keep")).join("\n");
+    expect(keep).toContain(
+      "Meta\nkeeps what it receives under its own policy.\nOpenAI\nkeeps what it receives as described in [OpenAI’s privacy policy](https://openai.com/policies/privacy-policy/).\nOur cookies:",
+    );
+  });
+});
+

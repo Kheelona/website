@@ -1460,3 +1460,13 @@ Google with ad personalisation on, Google links your visits to your Google accou
 as age range, gender and interests, never who you are, and you can turn this off in your Google ad settings." It is in both
 sources of the page and in the quoted block of `wiki/site/pages/privacy.md`, in its own commit so it can be dropped cleanly, and
 it still needs the founder's sign-off on the wording. "Last updated" stays 13 November 2026. Built as action F6.
+
+## [2026-11-13 18:27] decision | /privacy: the summary card, the retention list and kh_oppref brought in line with the tool blocks (D069)
+The founder approved the Google signals sentence (kept as committed) and had three spots on `/privacy` fixed before the merge: the
+summary card "This website measures visits." now says the Meta Pixel follows visits to other sites, that a visitor signed in to
+ChatGPT in the same browser may be recognised by OpenAI's pixel, and that a visitor signed in to Google with ad personalisation on has
+their visits linked to their Google account; the retention list's cookie item reads "kh_utm, kh_fbclid and kh_oppref for as long as your
+visit lasts; kh_order for 2 hours" (`kh_oppref` is a session cookie); and an item "OpenAI keeps what it receives as described in OpenAI's
+privacy policy" (linked; that page gives no fixed period) follows Meta's. Both page sources and the quoted blocks of
+`wiki/site/pages/privacy.md` carry the words; "Last updated" stays 13 November 2026. The register of deviations from the frozen mockups
+has the row for all of `/privacy`'s D069 words (V70). Built as action F6.
