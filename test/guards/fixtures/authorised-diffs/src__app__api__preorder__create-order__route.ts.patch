@@ -1,0 +1,35 @@
+Reviewed diff of src/app/api/preorder/create-order/route.ts against archive/pre-reset-2026-10-10 (checkout-freeze,
+ADR-013 class 1).
+Regenerate with: git diff archive/pre-reset-2026-10-10 -- src/app/api/preorder/create-order/route.ts (keep this header
+above it), or with the neutral-environment recipe in test/guards/tracking-freeze.test.ts (the hunks are the same).
+
+D069 (founder request, 2026-11-13; F6; wiki/decisions/D069-openai-ads-measurement.md): the order remembers which ChatGPT
+ad click brought the buyer. One import and the `fb_attrib:` line: `withOpenAiAttrib(readFbAttrib(request), request)` merges
+`oai_oppref` and `oai_obref`, read from the request's cookies and validated, into the SAME `fb_attrib` JSONB Meta's
+attribution already lives in. There is NO new column and NO migration (a migration is applied by hand, and code that
+inserted a new column ahead of it would answer every pre-order with a 500); Meta's reader picks only its own four keys.
+`fb_attrib` stays null only when both are empty. The amount, the tier, the validation, the order of operations, the rate
+limit, the Razorpay call and every response are unchanged.
+
+diff --git a/src/app/api/preorder/create-order/route.ts b/src/app/api/preorder/create-order/route.ts
+--- a/src/app/api/preorder/create-order/route.ts
++++ b/src/app/api/preorder/create-order/route.ts
+@@ -8,6 +8,7 @@ import { signAddressToken, ADDRESS_TOKEN_TTL_MS } from "@/lib/store/signing";
+ import { rateLimit, clientKey } from "@/lib/store/rate-limit";
+ import { json, str, NOT_CONFIGURED } from "@/lib/store/http";
+ import { readFbAttrib } from "@/lib/store/meta-capi";
++import { withOpenAiAttrib } from "@/lib/ads/openai-capi";
+ import {
+   validateContact,
+   normalisePhone,
+@@ -110,7 +111,9 @@ export async function POST(request: Request) {
+          Razorpay webhook that later reports the purchase server-side is called
+          by Razorpay, so it has none of this. Read entirely from the request the
+          browser already sent, so the client gained no new say in it. */
+-      fb_attrib: readFbAttrib(request),
++      /* OpenAI's ad click and browser reference ride in the same JSONB under `oai_` keys (F6, D069): no new column,
++         so no migration to ship ahead of the code. Meta's reader picks only its own four keys. */
++      fb_attrib: withOpenAiAttrib(readFbAttrib(request), request),
+       /* PostHog's device id, so the SERVER-sent purchase_confirmed event can
+          join this person's funnel (§8.40). Same reasoning as fb_attrib above,
+          from the other direction: the webhook knows the payment is real but has

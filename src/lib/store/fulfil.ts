@@ -6,6 +6,7 @@ import { STORE_URL } from "@/config/site";
 import type { StoreEnv } from "./env";
 import { reportPurchaseToMeta } from "./meta-capi";
 import { reportPurchaseToPostHog } from "./posthog-server";
+import { reportOrderToOpenAi } from "@/lib/ads/openai-capi";
 
 /** Marking a pre-order paid, once (§8.25-p).
  *
@@ -348,6 +349,10 @@ export async function notifyPaid(env: StoreEnv, order: PreorderRow): Promise<voi
          knows a payment is real, and a second call site would mean earning the
          never-throw rule twice and forgetting it once. */
       reportPurchaseToPostHog(order),
+      /* OpenAI Ads Conversions API (F6, D069): `order_created`, from the same exactly-once, never-throw place as the
+         two reports above. No request without OPENAI_ADS_CAPI_KEY, off production, or for an order that carries no
+         OpenAI click or browser reference (src/lib/ads/openai-capi.ts). */
+      reportOrderToOpenAi(order),
     ]);
   } catch (error) {
     /* By here the money has moved and the row says so. Swallowing is correct:

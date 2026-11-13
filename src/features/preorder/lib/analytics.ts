@@ -37,6 +37,8 @@
  *  carries an eventId slot. */
 import { fbTrack, purchaseEventId } from "@/lib/fbq";
 import { phCapture } from "@/lib/posthog";
+import { openAiOrderData } from "@/lib/ads/openai-events";
+import { oaiqMeasure } from "@/lib/ads/openai-pixel";
 
 type Params = Record<string, string | number | undefined>;
 
@@ -76,6 +78,9 @@ export const preorderAnalytics = {
     track("begin_checkout", { currency: "INR", value: valuePaise / 100, tier });
     fbTrack("InitiateCheckout", { currency: "INR", value: valuePaise / 100, content_category: tier });
     phCapture("begin_checkout", { currency: "INR", value: valuePaise / 100, tier });
+    /* OpenAI Ads (F6, D069): after the three tools above, which are unchanged. A no-op where the pixel is not on the
+       page (src/lib/ads/openai-pixel.ts). Amount in paise, as the server quoted it. */
+    oaiqMeasure("checkout_started", openAiOrderData(valuePaise, tier));
   },
   /** Paid, and verified.
    *
@@ -116,6 +121,9 @@ export const preorderAnalytics = {
       value: valuePaise / 100,
       tier,
     });
+    /* OpenAI Ads (F6, D069): `order_created`, de-duplicated by the raw order reference (the same one PostHog's
+       transaction_id carries), which the server's Conversions API call reuses as the event id. */
+    oaiqMeasure("order_created", openAiOrderData(valuePaise, tier), { event_id: orderRef });
   },
   /** The delivery address landed, which is what unblocks dispatch.
    *

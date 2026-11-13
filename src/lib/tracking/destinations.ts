@@ -9,6 +9,7 @@
  */
 import { CAMPAIGN_COOKIE } from "@/lib/campaign";
 import { CLICK_ID_COOKIE } from "@/lib/click-id";
+import { OPENAI_OPPREF_COOKIE, OPENAI_PIXEL_ID } from "@/lib/ads/openai-events";
 import {
   AHREFS_ANALYTICS_KEY,
   GA4_MEASUREMENT_ID,
@@ -35,7 +36,10 @@ export interface Destination<Key extends string = string> {
   readonly kind: DestinationKind;
   /** What decides whether it loads or sends (architecture §8.2 "Gate"). */
   readonly gate: string;
-  readonly status: "existing";
+  /** "existing": production at the freeze tag. "added": a founder decision added it after the tag (`decision`). */
+  readonly status: "existing" | "added";
+  /** The decision that added it, for an "added" destination (its file is in wiki/decisions). */
+  readonly decision?: `D${number}`;
 }
 
 const DESTINATION_LIST = [
@@ -208,6 +212,40 @@ const DESTINATION_LIST = [
     kind: "none",
     gate: "n/a",
     status: "existing",
+  },
+  /* ── Added after the tag: OpenAI Ads measurement (D069, F6) ── */
+  {
+    row: 18,
+    key: "openai-pixel",
+    name: "OpenAI Ads Measurement Pixel (browser)",
+    id: OPENAI_PIXEL_ID,
+    ids: [OPENAI_PIXEL_ID],
+    kind: "browser",
+    gate: "META_PIXEL_HOSTS, not a team device, OPENAI_PIXEL_PAGES",
+    status: "added",
+    decision: "D069",
+  },
+  {
+    row: 19,
+    key: "openai-capi",
+    name: "OpenAI Conversions API (server)",
+    id: "same pixel, bzr.openai.com/v1/events",
+    ids: ["bzr.openai.com/v1/events"],
+    kind: "server",
+    gate: "key present, production only, order has an OpenAI reference",
+    status: "added",
+    decision: "D069",
+  },
+  {
+    row: 20,
+    key: "openai-oppref-cookie",
+    name: "OpenAI ad-click cookie",
+    id: OPENAI_OPPREF_COOKIE,
+    ids: [OPENAI_OPPREF_COOKIE],
+    kind: "cookie",
+    gate: ".kheelona.com, production hosts, not a team device",
+    status: "added",
+    decision: "D069",
   },
 ] as const satisfies readonly Destination[];
 

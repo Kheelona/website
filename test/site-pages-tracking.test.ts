@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { shouldLoadGa4 as gateGa4 } from "@/components/tracking/GoogleAnalyticsGate";
 import { shouldLoadMetaPixel as gateMeta } from "@/components/tracking/MetaPixel";
 import { BETA_HOSTS } from "@/config/env";
+import { shouldLoadOpenAiPixel } from "@/lib/ads/openai-pixel";
 import { GA4_MEASUREMENT_ID, META_PIXEL_ID, POSTHOG_KEY, shouldLoadPostHog } from "@/config/site";
 import {
   holdStoreClicks,
@@ -40,6 +41,28 @@ describe("host gates", () => {
       expect(shouldLoadPostHog(host)).toBe(true);
     }
     expect(shouldLoadPostHog("localhost")).toBe(false);
+  });
+});
+
+/* OpenAI's pixel (D069) is a fourth tool in the shell. It shares the Meta Pixel's host list, so the marketing pages and the
+ * store's React gate (OpenAiPixel, which calls the same predicate) can never disagree about where it loads. */
+describe("OpenAI Ads pixel in the shell", () => {
+  it.each(HOSTS)("%s: loads exactly where the Meta Pixel loads", (host) => {
+    expect(shouldLoadOpenAiPixel(host)).toBe(shouldLoadMetaPixel(host));
+  });
+
+  it("is never on beta", () => {
+    for (const host of BETA_HOSTS) expect(shouldLoadOpenAiPixel(host)).toBe(false);
+  });
+
+  it("remembers the ad click as the shell evaluates, then starts the pixel in boot() after Meta, behind the host gate", () => {
+    const source = readFileSync(join(process.cwd(), "src/lib/site-pages/tracking-shell.ts"), "utf8");
+    const boot = source.slice(source.indexOf("export function boot("), source.indexOf("/** Lighthouse, 2026-10-23"));
+    expect(boot.indexOf("loadMetaPixel()")).toBeGreaterThan(-1);
+    expect(boot.indexOf("if (shouldLoadOpenAiPixel(host)) void loadOpenAiPixel()")).toBeGreaterThan(boot.indexOf("loadMetaPixel()"));
+    const tail = source.slice(source.lastIndexOf("if (typeof document !== "));
+    expect(tail.indexOf("startOpenAiAttribution()")).toBeGreaterThan(-1);
+    expect(tail.indexOf("startOpenAiAttribution()")).toBeLessThan(tail.indexOf("whenEngaged(start)"));
   });
 });
 

@@ -119,6 +119,12 @@ const SOURCES = {
    *  is no reason to admit the rest of the estate. */
   posthogIngest: "https://us.i.posthog.com",
   posthogAssets: "https://us-assets.i.posthog.com",
+  /** OpenAI Ads Measurement Pixel (F6, D069, 2026-11-13). Two exact origins, named by OpenAI's own documentation:
+   *  the SDK (`oaiq.min.js`) and the pixel's configuration JSON come from `bzrcdn.openai.com` (a script, and a
+   *  fetch for the configuration), and its events go to `bzr.openai.com` (a fetch; OpenAI's CSP guidance also lists the
+   *  collector for img-src). No wildcard, no frame, no form target. */
+  openAiScript: "https://bzrcdn.openai.com",
+  openAiCollect: "https://bzr.openai.com",
 } as const;
 
 function directive(name: string, ...values: (string | readonly string[])[]): string {
@@ -161,6 +167,7 @@ export function contentSecurityPolicy(dev = false): string {
       SOURCES.razorpay,
       SOURCES.metaPixelScript,
       SOURCES.posthogAssets,
+      SOURCES.openAiScript,
     ),
     /* next/font emits an inline @font-face block, and React inlines styles. */
     directive("style-src", "'self'", "'unsafe-inline'"),
@@ -176,6 +183,7 @@ export function contentSecurityPolicy(dev = false): string {
       SOURCES.googleTag,
       SOURCES.razorpay,
       SOURCES.metaPixelCollect,
+      SOURCES.openAiCollect,
     ),
     directive("font-src", "'self'", "data:"),
     directive("media-src", "'self'"),
@@ -206,6 +214,8 @@ export function contentSecurityPolicy(dev = false): string {
       SOURCES.metaPixelGateway,
       SOURCES.posthogIngest,
       SOURCES.posthogAssets,
+      SOURCES.openAiScript,
+      SOURCES.openAiCollect,
     ),
     directive("manifest-src", "'self'"),
     /* No upgrade-insecure-requests (D054 item 9, 2026-10-14): a report-only

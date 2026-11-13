@@ -24,8 +24,14 @@ event name or parameter changes, and the phase stays "report" (`CSP_PHASE`), so 
 Content-Security-Policy-Report-Only and nothing that loads today is blocked. The player frame loads only after a reader
 presses play (ui/VideoEmbed); the still is fetched by next/image on the server, so img-src needs no video host.
 
+D069 (founder request, 2026-11-13; F6; wiki/decisions/D069-openai-ads-measurement.md): OpenAI's Ads Measurement Pixel. Two
+exact origins from OpenAI's own documentation join the Report-Only policy, nothing else: `https://bzrcdn.openai.com` (the
+SDK and the pixel's configuration: script-src and connect-src) and `https://bzr.openai.com` (its events: connect-src and
+img-src). No wildcard, no frame-src, no form-action, no phase change (`CSP_PHASE` stays "report", so the header is still
+Content-Security-Policy-Report-Only and nothing that loads today is blocked), and no tracking ID, event name or parameter
+changes. test/security-headers.test.ts pins both origins to exactly those directives.
+
 diff --git a/src/lib/security-headers.ts b/src/lib/security-headers.ts
-index c0eedb7..708586a 100644
 --- a/src/lib/security-headers.ts
 +++ b/src/lib/security-headers.ts
 @@ -58,6 +58,12 @@ const SOURCES = {
@@ -65,7 +71,36 @@ index c0eedb7..708586a 100644
    /** PostHog (2026-09-19). TWO origins, and the split is not cosmetic: events
     *  are ingested at `us.i.posthog.com`, while the lazily-fetched bundles — the
     *  session recorder, error tracking, surveys, the toolbar — are fetched from
-@@ -161,22 +184,33 @@ export function contentSecurityPolicy(dev = false): string {
+@@ -96,6 +119,12 @@ const SOURCES = {
+    *  is no reason to admit the rest of the estate. */
+   posthogIngest: "https://us.i.posthog.com",
+   posthogAssets: "https://us-assets.i.posthog.com",
++  /** OpenAI Ads Measurement Pixel (F6, D069, 2026-11-13). Two exact origins, named by OpenAI's own documentation:
++   *  the SDK (`oaiq.min.js`) and the pixel's configuration JSON come from `bzrcdn.openai.com` (a script, and a
++   *  fetch for the configuration), and its events go to `bzr.openai.com` (a fetch; OpenAI's CSP guidance also lists the
++   *  collector for img-src). No wildcard, no frame, no form target. */
++  openAiScript: "https://bzrcdn.openai.com",
++  openAiCollect: "https://bzr.openai.com",
+ } as const;
+ 
+ function directive(name: string, ...values: (string | readonly string[])[]): string {
+@@ -138,6 +167,7 @@ export function contentSecurityPolicy(dev = false): string {
+       SOURCES.razorpay,
+       SOURCES.metaPixelScript,
+       SOURCES.posthogAssets,
++      SOURCES.openAiScript,
+     ),
+     /* next/font emits an inline @font-face block, and React inlines styles. */
+     directive("style-src", "'self'", "'unsafe-inline'"),
+@@ -153,6 +183,7 @@ export function contentSecurityPolicy(dev = false): string {
+       SOURCES.googleTag,
+       SOURCES.razorpay,
+       SOURCES.metaPixelCollect,
++      SOURCES.openAiCollect,
+     ),
+     directive("font-src", "'self'", "data:"),
+     directive("media-src", "'self'"),
+@@ -161,22 +192,35 @@ export function contentSecurityPolicy(dev = false): string {
         frame for cookie-matching, which production Report-Only was refusing.
         frame-ancestors above still forbids anyone framing US, which is the
         direction that matters for a checkout. */
@@ -92,6 +127,8 @@ index c0eedb7..708586a 100644
 +      SOURCES.metaPixelGateway,
        SOURCES.posthogIngest,
        SOURCES.posthogAssets,
++      SOURCES.openAiScript,
++      SOURCES.openAiCollect,
      ),
      directive("manifest-src", "'self'"),
 -    "upgrade-insecure-requests",

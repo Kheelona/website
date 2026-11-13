@@ -13,6 +13,7 @@ import {
   replayAllowedOnPath,
   shouldLoadPostHog,
 } from "@/config/site";
+import { loadOpenAiPixel, shouldLoadOpenAiPixel, startOpenAiAttribution } from "@/lib/ads/openai-pixel";
 import { fbTrack, whenFbqReady } from "@/lib/fbq";
 import { phSetReplay, registerPostHog } from "@/lib/posthog";
 import { applyInternalFlag } from "@/lib/tracking/internal-flag";
@@ -30,6 +31,10 @@ import { applyInternalFlag } from "@/lib/tracking/internal-flag";
  * - GA4: GA4_HOSTS only; the same two scripts @next/third-parties' GoogleAnalytics writes.
  * - Meta Pixel: META_PIXEL_HOSTS only; Meta's base code, init and one PageView per page load (these pages are separate
  *   documents, so there is no client route change to count). No <noscript> pixel, as MetaPixel.tsx explains.
+ * - OpenAI Ads Measurement Pixel (F6, D069): META_PIXEL_HOSTS only, off on a team device. `startOpenAiAttribution` runs as
+ *   this module evaluates (no network, no SDK): it keeps the ChatGPT ad click (`oppref`) in our own `kh_oppref` cookie so
+ *   the store can attribute the order, or clears the cookies on a team device. `loadOpenAiPixel` then runs in `boot()`,
+ *   under the automatic-advanced-matching guard in src/lib/ads/openai-pixel.ts.
  * - ViewContent: when the page asks for it (`data-view-content-paise`, the live offer's headline, written on the
  *   server), with ViewContentTracker's payload, after fbq is ready.
  * - PostHog: POSTHOG_HOSTS only (production and the two beta hosts, which get the `env: "beta"` stamp through
@@ -168,6 +173,7 @@ export function boot(config: HTMLElement | null, location: Location = window.loc
   const host = location.hostname;
   if (shouldLoadGa4(host)) loadGa4();
   if (shouldLoadMetaPixel(host)) loadMetaPixel();
+  if (shouldLoadOpenAiPixel(host)) void loadOpenAiPixel();
   const paise = Number(config?.dataset.viewContentPaise);
   if (Number.isFinite(paise) && paise > 0) trackViewContent(paise);
   return shouldLoadPostHog(host) ? loadPostHog(location).catch(() => {}) : Promise.resolve();
@@ -215,6 +221,7 @@ if (typeof document !== "undefined" && document.querySelector("script[data-kh-tr
   const config = document.querySelector<HTMLElement>("script[data-kh-tracking]");
   let started: Promise<void> | null = null, loaded = false;
   const start = () => (started ??= boot(config).then(() => { loaded = true; }));
+  startOpenAiAttribution();
   whenEngaged(start);
   if (shouldLoadPostHog(window.location.hostname)) holdStoreClicks(() => (loaded ? null : start()));
 }

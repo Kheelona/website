@@ -4,6 +4,7 @@ import "@/styles/site.css";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalyticsGate } from "@/components/tracking/GoogleAnalyticsGate";
 import { MetaPixel } from "@/components/tracking/MetaPixel";
+import { OpenAiPixel } from "@/components/tracking/OpenAiPixel";
 import { PostHogGate } from "@/components/tracking/PostHogGate";
 import { CANONICAL_ORIGIN, SITE_ENV } from "@/config/env";
 import { AHREFS_ANALYTICS_KEY } from "@/config/site";
@@ -33,6 +34,8 @@ import { FONT_PRELOADS } from "@/styles/generated/fonts.generated";
  *   written into the head by hand comes out twice, once hoisted and once in place).
  * - `body.ks-has-float`: every page carries the WhatsApp bubble (D050), so the last content of every page keeps clear
  *   of it (whatsapp-float.css). `kh-page` and the light theme are the mockup's body.
+ * - OpenAI's Ads Measurement Pixel (F6, D069) sits beside the Meta Pixel: production hosts only, off on a team device,
+ *   loaded at idle, and kept from OpenAI's automatic advanced matching by src/lib/ads/openai-pixel.ts.
  * - The five measurement tools, unchanged (tracking inventory; architecture §8): Ahrefs in the document head and in
  *   the server HTML, because its verifier fetches the page and looks for the tag, async so it never holds up the
  *   first paint; not on beta (D048, D051). Vercel Web Analytics, GA4, the Meta Pixel and PostHog last in the body, so
@@ -60,6 +63,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Analytics />
         <GoogleAnalyticsGate />
         <MetaPixel />
+        <OpenAiPixel />
         <PostHogGate />
       </body>
     </html>

@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 import { purchasePayload } from "@/lib/store/meta-capi";
+import { openAiCapiPayload } from "@/lib/ads/openai-capi";
 import { replayAllowedOnPath } from "@/config/site";
 import type { PreorderRow } from "@/lib/store/db";
 import { words } from "./support/mockup-compare";
@@ -118,6 +119,7 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
       "Ahrefs Web Analytics",
       "Google Analytics",
       "Meta Pixel",
+      "OpenAI Ads Measurement Pixel",
       "PostHog",
     ]) {
       expect(PRIVACY, `${name} is not disclosed on /privacy`).toContain(name);
@@ -126,6 +128,7 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
       tool(name);
     }
     tool("Meta Conversions API");
+    tool("OpenAI Conversions API");
   });
 
   it("still tells the reader which tools set cookies and how to refuse them", () => {
@@ -172,7 +175,9 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
     /* Re-pinned 2026-10-12 (5.11) from "sent by us, not by your browser, so
        blocking cannot prevent it": the approved item sits under the lead
        naming what blocking can't stop (pinned below). */
-    expect(PRIVACY).toMatch(/the report our server sends to Meta when a pre-order is paid comes from us, not from your browser/);
+    /* Re-pinned 2026-11-13 (D069) to the founder's approved sentence, which names both server reports. */
+    expect(PRIVACY).toMatch(/the reports our server sends to Meta and OpenAI when a pre-order is paid come from us, not from your browser/);
+    expect(PRIVACY).not.toMatch(/the report our server sends to Meta when a pre-order is paid comes from us/);
     expect(PRIVACY).not.toContain("your browser can block all four");
     expect(PRIVACY).not.toContain("block the three that only run in your browser");
     /* Nor may the fix be to bump the number: the next tool would falsify it
@@ -383,7 +388,7 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
      email, a delivery address, a payment. If any of them is swapped out, this
      fails until /privacy is edited too. */
   it("names every processor that touches a parent's details", () => {
-    for (const name of ["Razorpay", "Supabase", "Resend", "Vercel"]) {
+    for (const name of ["Razorpay", "Supabase", "Resend", "Vercel", "OpenAI"]) {
       expect(PRIVACY, `${name} is not disclosed on /privacy`).toContain(name);
     }
   });
@@ -506,5 +511,153 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
     expect(PRIVACY).toMatch(/never to us|never see your payment/i);
     // and that Razorpay's own form sets cookies, which ours do not
     expect(PRIVACY).toMatch(/sets its own cookies/);
+  });
+});
+
+/* OPENAI'S ADS MEASUREMENT (D069, F6). A tool and its disclosure ship together (§8.21-c). The founder approved the OpenAI
+   wording on /privacy on 2026-11-13 (D069), and "Last updated" moved with it, so these tests pin both halves: where the
+   tool mounts and exactly what our own server sends it, and what the page tells a parent about it. They are the OpenAI
+   twins of "sends Meta these fields and no others" and "keeps our own server payload narrow" above. */
+describe("OpenAI Ads measurement stays on the narrow path it was approved for (D069)", () => {
+  it("mounts OpenAI's pixel in the root layout, after the Meta Pixel and before PostHog", () => {
+    expect(LAYOUT).toContain("<OpenAiPixel />");
+    expect(LAYOUT).toContain('from "@/components/tracking/OpenAiPixel"');
+    expect(LAYOUT.indexOf("<MetaPixel />")).toBeLessThan(LAYOUT.indexOf("<OpenAiPixel />"));
+    expect(LAYOUT.indexOf("<OpenAiPixel />")).toBeLessThan(LAYOUT.indexOf("<PostHogGate />"));
+  });
+
+  /* A key list and not a value search, for the reason given above the Meta one: every identifier is hashed on the way in,
+     so a mistake would look like correct code, and a search for the raw age or address would sail past a SHA-256. */
+  it("sends OpenAI these fields and no others", () => {
+    const order = {
+      ...SAMPLE_ORDER,
+      fb_attrib: { ...SAMPLE_ORDER.fb_attrib, oai_oppref: "f6_test_ref", oai_obref: "3f2a9c1e-77aa-4b1d-9c10-0123456789ab" },
+    } as PreorderRow;
+    const body = openAiCapiPayload(order);
+    expect(Object.keys(body).sort()).toEqual(["events", "integration_source"]);
+    const event = body.events[0] as unknown as Record<string, unknown>;
+    expect(Object.keys(event).sort()).toEqual([
+      "action_source",
+      "data",
+      "id",
+      "oppref",
+      "source_url",
+      "timestamp_ms",
+      "type",
+      "user",
+    ]);
+    expect(Object.keys(event.user as object).sort()).toEqual([
+      "emails_sha256",
+      "ip_address",
+      "obref",
+      "phone_numbers_sha256",
+      "user_agent",
+    ]);
+    expect(Object.keys(event.data as object).sort()).toEqual(["amount", "contents", "currency", "type"]);
+    expect(Object.keys((event.data as { contents: object[] }).contents[0]).sort()).toEqual([
+      "amount",
+      "currency",
+      "id",
+      "name",
+      "quantity",
+    ]);
+  });
+
+  it("keeps our own OpenAI module narrow: it never reads the child's age, the delivery address or the parent's name", () => {
+    /* A source grep beside the key list, for the same reason as the Meta pair: the list catches a new key, this catches
+       somebody reading the field at all, which is the step before it becomes a key. Comments are stripped, because the
+       module explains in prose what it must never send. `ip_address` is OpenAI's own key and is not an address field. */
+    const capi = readFileSync(join(ROOT, "src/lib/ads/openai-capi.ts"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(capi, "the child's age must never be put in OUR OpenAI payload").not.toMatch(/child_age/);
+    expect(capi, "the delivery address must never be put in OUR OpenAI payload").not.toMatch(/order\.address|\.address\b/);
+    expect(capi, "the parent's name must never be put in OUR OpenAI payload").not.toMatch(/parent_name/);
+  });
+
+  it("tells a parent what the pixel is, where it runs, what it sets and what it sends, in the founder's words", () => {
+    const pixel = tool("OpenAI Ads Measurement Pixel");
+    expect(pixel).toContain("From OpenAI, the company behind ChatGPT.");
+    expect(pixel).toContain("It runs on our home page, our product page and the store's reservation page, and nowhere else.");
+    expect(pixel).toContain("one remembers the ChatGPT advertisement you clicked, for up to 30 days, and the other is a random code for your browser, kept for up to a year");
+    expect(pixel).toContain("It tells OpenAI which of those pages you opened, when you start paying, and whether you reserved and for how much");
+  });
+
+  /* THE TWO SENTENCES A PARENT COULD ACT ON. OpenAI's script reads the form on the reservation page and we cannot switch
+     that off (the loader limits where it runs, src/lib/ads/openai-pixel.ts, but cannot stop it there), and a signed-in
+     ChatGPT user may be recognised. Both are said plainly, so neither can be edited out unseen. */
+  it("says the script reads the email address and phone number typed into the reservation form, that we can't switch it off, and who may be recognised", () => {
+    const pixel = tool("OpenAI Ads Measurement Pixel");
+    expect(pixel).toContain(
+      "On the reservation page, OpenAI's script also reads the email address and phone number you type into the form, turns them into one-way codes in your browser, and sends those codes to OpenAI. We can't switch that part off.",
+    );
+    expect(pixel).toContain(
+      "Some of its reports are sent with OpenAI's own cookies, where your browser allows it, so if you are signed in to ChatGPT in the same browser, OpenAI may be able to recognise you.",
+    );
+  });
+
+  it("says what our server reports to OpenAI, and when", () => {
+    expect(tool("OpenAI Conversions API")).toContain(
+      "When a pre-order is paid and you reached us through a ChatGPT advertisement or OpenAI's pixel, our own server reports it to OpenAI: one-way codes of your email and phone number, together with your network address, your browser, the codes in OpenAI's cookies on your device, the amount and the order number.",
+    );
+  });
+
+  it("names kh_oppref beside our other cookies, reads OpenAI's cookie where it reads Meta's, and says we advertise in ChatGPT", () => {
+    expect(tool("Our own cookies")).toContain("kh_oppref remembers which ChatGPT advertisement click brought you, for as long as your visit lasts.");
+    expect(PRIVACY).toContain("If you have a Meta or OpenAI cookie on your device, we read the identifiers in it.");
+    expect(PRIVACY).not.toContain("If you have a Meta cookie on your device, we read the identifier in it.");
+    expect(PRIVACY).toContain("We also advertise to parents in ChatGPT, and the OpenAI tools above are how we measure that.");
+  });
+
+  it("lists OpenAI among the recipients, linking its own privacy policy for where the data is held", () => {
+    const html = readFileSync(join(ROOT, "redesign/privacy/index.html"), "utf8");
+    expect(html).toContain(
+      '<th scope="row">OpenAI</th><td data-label="What they do for us">OpenAI Ads Measurement Pixel and Conversions API</td><td data-label="Where">as described in <a href="https://openai.com/policies/privacy-policy/" rel="noopener">OpenAI’s privacy policy</a></td>',
+    );
+  });
+
+  /* "Last updated" is the founder's date (D055 item 8, D067). It moved to the day he approved this wording; the other
+     three legal pages keep the date they were approved on. */
+  it("is last updated on 13 November 2026, and the other three legal pages still say 14 October 2026", () => {
+    const updated = (page: string) =>
+      /<p class="updated reveal">([^<]*)<\/p>/.exec(readFileSync(join(ROOT, `redesign/${page}/index.html`), "utf8"))?.[1];
+    expect(updated("privacy")).toBe("Last updated: 13 November 2026");
+    for (const page of ["terms", "refund", "shipping"]) expect(updated(page), page).toBe("Last updated: 14 October 2026");
+  });
+
+  /* The founder's three follow-up fixes (D069, 2026-11-13): the summary card, the retention list's cookie item and its
+     OpenAI item, as a parent reads them on the served page. */
+  it("tells the summary's reader about the Meta Pixel, OpenAI's signed-in recognition and Google's signed-in linking, still linking 'named below'", () => {
+    const html = readFileSync(join(ROOT, "redesign/privacy/index.html"), "utf8");
+    expect(html).toContain(
+      '<h3>This website measures visits.</h3><p>We use analytics and advertising tools, all <a href="#measuring">named below</a>. The Meta Pixel follows visits to other sites. If you’re signed in to ChatGPT in the same browser, OpenAI may be able to recognise you through its pixel, and if you’re signed in to Google with ad personalisation on, Google links your visits to your Google account. There is no cookie banner today.</p>',
+    );
+    expect(PRIVACY).not.toContain("One of them, the Meta Pixel");
+  });
+
+  it("lists kh_oppref among the session cookies and gives OpenAI its own retention item, linked to OpenAI's privacy policy", () => {
+    const html = readFileSync(join(ROOT, "redesign/privacy/index.html"), "utf8");
+    expect(html).toContain(
+      '<li><strong>Meta</strong> keeps what it receives under its own policy.</li>\n  <li><strong>OpenAI</strong> keeps what it receives as described in <a href="https://openai.com/policies/privacy-policy/" rel="noopener">OpenAI’s privacy policy</a>.</li>\n  <li><strong>Our cookies:</strong> kh_utm, kh_fbclid and kh_oppref for as long as your visit lasts; kh_order for 2 hours.</li>',
+    );
+    expect(PRIVACY).toContain("Our cookies: kh_utm, kh_fbclid and kh_oppref for as long as your visit lasts; kh_order for 2 hours.");
+    expect(PRIVACY).not.toContain("kh_utm and kh_fbclid for as long as your visit lasts");
+  });
+
+  it("gives the browser pixel no user object: init is called with the pixel ID, the click and debug only", () => {
+    const loader = readFileSync(join(ROOT, "src/lib/ads/openai-pixel.ts"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(loader).not.toMatch(/\buser\s*:/);
+    expect(loader).not.toMatch(/oaiq!?\(\s*["']consent["']/);
+  });
+});
+
+/* GOOGLE SIGNALS (GA4). The GA4 setting is the founder's, not the code's, so the sentence that tells a parent what it does
+   is pinned here: it sits in the Google Analytics block, after the retention sentence it extends, and the existing Google
+   Analytics assertions above are untouched. The wording is pending the founder's sign-off (wiki/log.md). */
+describe("Google Analytics block discloses Google signals", () => {
+  it("says Google signals are on, what Google then does with a signed-in visitor, what we receive, and where to turn it off", () => {
+    const ga = tool("Google Analytics");
+    expect(ga).toContain(
+      "We've also turned on Google signals: if you're signed in to Google with ad personalisation on, Google links your visits to your Google account through its cookies and gives us totals such as age range, gender and interests, never who you are, and you can turn this off in your Google ad settings.",
+    );
+    expect(ga.indexOf("Google keeps this data for 14 months.")).toBeLessThan(ga.indexOf("We've also turned on Google signals"));
   });
 });

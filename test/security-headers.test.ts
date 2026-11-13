@@ -198,6 +198,36 @@ describe("the content security policy", () => {
     }
   });
 
+  /* F6 (D069, 2026-11-13): OpenAI's Ads Measurement Pixel. The SDK and its configuration come from bzrcdn.openai.com
+     (script-src, connect-src), the events go to bzr.openai.com (connect-src, img-src). Exact origins, and in no other
+     directive: it is not a frame, not a form target, not a font or a worker. The policy stays Report-Only. */
+  it("admits OpenAI's pixel origins, exact, only in these directives (D069)", () => {
+    const cdn = "https://bzrcdn.openai.com";
+    const collect = "https://bzr.openai.com";
+    const where: Record<string, string[]> = { "script-src": [cdn], "connect-src": [cdn, collect], "img-src": [collect] };
+    const names = policy.split("; ").map((part) => part.split(" ")[0]);
+    expect(names).toEqual(expect.arrayContaining(["default-src", "script-src", "img-src", "connect-src", "frame-src", "form-action", "media-src", "worker-src"]));
+    for (const dev of [false, true]) {
+      const text = contentSecurityPolicy(dev);
+      for (const part of text.split("; ")) {
+        const [name, ...values] = part.split(" ");
+        const expected = where[name] ?? [];
+        for (const host of [cdn, collect]) {
+          expect(values.includes(host), `${host} in ${name} (dev: ${dev})`).toBe(expected.includes(host));
+        }
+      }
+      /* Nothing else of OpenAI's estate: no wildcard, no other subdomain. */
+      expect(text.split(/[\s;]+/).filter((source) => /openai/.test(source)).sort(), `OpenAI sources (dev: ${dev})`).toEqual(
+        [cdn, cdn, collect, collect].sort(),
+      );
+    }
+    expect(policy).not.toContain("*.openai.com");
+    for (const host of [cdn, collect]) {
+      expect(directive("connect-src")).toContain(host);
+    }
+    expect(CSP_PHASE, "F6 changes no phase").toBe("report");
+  });
+
   /* D054 item 9: a report-only policy ignores upgrade-insecure-requests, and the browser logs an error for it on every
      page (M1's Lighthouse Best Practices). It goes, and the policy stays Report-Only (the phase test below). */
   it("carries no upgrade-insecure-requests, which a report-only policy ignores (D054 item 9)", () => {

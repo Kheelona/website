@@ -12,7 +12,9 @@
 import { POSTHOG_REPLAY_DENY_PATHS } from "@/config/site";
 import type { DestinationKey } from "./destinations";
 
-export type EventStatus = "existing" | "new";
+/** "existing": sent at the freeze tag. "new": a decision added it and the dispatcher (track.ts) sends it. "added": a
+ *  founder decision added it after the tag and its own code sends it, not the dispatcher (OpenAI, D069). */
+export type EventStatus = "existing" | "new" | "added";
 export type ParamValue = string | number | boolean | readonly string[];
 /** A row of the Gate A open items (wiki/site/gate-a-open-items.md), by its number (B9, B11). */
 export type DecisionRef = `B${number}`;
@@ -57,6 +59,8 @@ export interface TrackedEvent<Name extends string = string> {
   readonly added?: readonly AddedParam[];
   readonly addedPlacements?: readonly AddedPlacement[];
   readonly status: EventStatus;
+  /** The decision that added an "added" event; its file is in wiki/decisions. */
+  readonly decision?: `D${number}`;
   /**
    * The decision whose gate holds a new event back. When task 6.2 opens it, the main session edits
    * architecture §8.2's Status cell in the same commit (tracking-registry.test.ts reads it).
@@ -266,6 +270,74 @@ const EVENT_LIST = [
     when:
       "once per paid order, beside the CAPI Purchase; distinct id is the order's ph_distinct_id, " +
       "else the order reference; timestamp is paid_at",
+  },
+
+  /* ── OpenAI Ads measurement (D069, F6): added after the tag, sent by their own code, never by the dispatcher ── */
+  {
+    name: "page_viewed",
+    destinations: ["openai-pixel"],
+    params: ["type"],
+    fixed: { type: "contents" },
+    status: "added",
+    decision: "D069",
+    firedBy: "loadOpenAiPixel (src/lib/ads/openai-pixel.ts)",
+    when: "once per full load of a page the loader allows, queued with init; never on a team device",
+  },
+  {
+    name: "checkout_started",
+    destinations: ["openai-pixel"],
+    params: ["type", "amount", "currency", "contents"],
+    fixed: { type: "contents", currency: "INR" },
+    status: "added",
+    decision: "D069",
+    firedBy: funnel("beginCheckout"),
+    when: "beside begin_checkout; amount is what was collected, in paise",
+  },
+  {
+    name: "order_created",
+    destinations: ["openai-pixel"],
+    params: ["type", "amount", "currency", "contents"],
+    fixed: { type: "contents", currency: "INR" },
+    eventId: "<order ref>",
+    status: "added",
+    decision: "D069",
+    firedBy: funnel("purchase"),
+    when: "beside purchase; the event id is the raw order reference, which the server call reuses",
+  },
+  {
+    name: "order_created",
+    destinations: ["openai-capi"],
+    params: [
+      "id",
+      "type",
+      "timestamp_ms",
+      "source_url",
+      "action_source",
+      "oppref",
+      "user.emails_sha256",
+      "user.phone_numbers_sha256",
+      "user.obref",
+      "user.ip_address",
+      "user.user_agent",
+      "data.type",
+      "data.amount",
+      "data.currency",
+      "data.contents",
+    ],
+    fixed: {
+      type: "order_created",
+      source_url: "https://store.kheelona.com",
+      action_source: "web",
+      "data.type": "contents",
+      "data.currency": "INR",
+    },
+    eventId: "<order ref>",
+    status: "added",
+    decision: "D069",
+    firedBy: "reportOrderToOpenAi (src/lib/ads/openai-capi.ts), from notifyPaid",
+    when:
+      "once per paid order, beside the Meta and PostHog reports; email and phone are SHA-256 hashed; " +
+      "skipped without a key, off production, for an order with no OpenAI reference, and after 7 days",
   },
 
   /* ── PostHog SDK events ──────────────────────────────────────────────── */

@@ -1433,3 +1433,40 @@ The founder moved the public delivery date from mid-November to 15 December 2026
 D037 is superseded. The retired date is a banned phrase in delivery wording (`delivery-mid-november`, claims §4); the
 frozen mockups keep the old line, which the parity layer reads with the new date applied (deviations V69). The 42 copy
 blocks of `wiki/site/pages` and the facts page follow. Built as action F1.
+
+## [2026-11-13 17:00] decision | D069: OpenAI's Ads Measurement Pixel and Conversions API measure the ChatGPT advertising
+The founder asked for the ChatGPT advertising to be measured (2026-11-13). OpenAI's pixel (`CtmHigpYxafJN3qgbj3xnv`) loads on the
+three production hosts only, off on a team device, from `src/lib/ads/` (loader, event data, optional server call); `order_created`
+carries the raw order reference as its event id and the amount in paise. OpenAI switches automatic advanced matching on with no
+option to turn it off, so `OPENAI_AAM_POLICY` ("verified-pages" by default, "require-off" as the alternative) keeps the SDK off the
+pages that show the company's contact details. The ad click rides in the existing `fb_attrib` JSONB as `oai_oppref` / `oai_obref`
+(no migration); the server call sends nothing without `OPENAI_ADS_CAPI_KEY`, off production, or for an order with no OpenAI
+reference. The Report-Only CSP admits two exact OpenAI origins. `/privacy` is not changed here: its wording waits for the founder.
+Built as action F6.
+
+## [2026-11-13 18:05] decision | D069: /privacy names OpenAI's tools; its "Last updated" is 13 November 2026
+The founder approved the OpenAI wording for `/privacy` on 2026-11-13. It is in both sources of the page (the redesign's
+`pages/privacy.html` and its built `privacy/index.html`, and `src/content/en-IN/legal/privacy.ts`) and in the quoted copy
+blocks of `wiki/site/pages/privacy.md`: the OpenAI Ads Measurement Pixel and OpenAI Conversions API blocks, `kh_oppref`, "a
+Meta or OpenAI cookie", the reports our server sends to Meta and OpenAI, an OpenAI row in the recipients table (linking OpenAI's
+privacy policy) and the ChatGPT advertising sentence. "Last updated" is the founder's date (D055 item 8, D067), so it moves
+from 14 October to 13 November 2026 on `/privacy` only, with the page's sitemap `lastmod`; terms, refund and shipping keep 14
+October. The earlier entry of 17:00 ("its wording waits for the founder") is superseded by this one. Built as action F6.
+
+## [2026-11-13 18:15] decision | /privacy: one sentence discloses GA4 Google signals, pending the founder's sign-off
+The founder decided to turn on Google signals in the GA4 property after the merge; the setting is his, and agents never touch it.
+The Google Analytics block of `/privacy` gains one sentence for it: "We’ve also turned on Google signals: if you’re signed in to
+Google with ad personalisation on, Google links your visits to your Google account through its cookies and gives us totals such
+as age range, gender and interests, never who you are, and you can turn this off in your Google ad settings." It is in both
+sources of the page and in the quoted block of `wiki/site/pages/privacy.md`, in its own commit so it can be dropped cleanly, and
+it still needs the founder's sign-off on the wording. "Last updated" stays 13 November 2026. Built as action F6.
+
+## [2026-11-13 18:27] decision | /privacy: the summary card, the retention list and kh_oppref brought in line with the tool blocks (D069)
+The founder approved the Google signals sentence (kept as committed) and had three spots on `/privacy` fixed before the merge: the
+summary card "This website measures visits." now says the Meta Pixel follows visits to other sites, that a visitor signed in to
+ChatGPT in the same browser may be recognised by OpenAI's pixel, and that a visitor signed in to Google with ad personalisation on has
+their visits linked to their Google account; the retention list's cookie item reads "kh_utm, kh_fbclid and kh_oppref for as long as your
+visit lasts; kh_order for 2 hours" (`kh_oppref` is a session cookie); and an item "OpenAI keeps what it receives as described in OpenAI's
+privacy policy" (linked; that page gives no fixed period) follows Meta's. Both page sources and the quoted blocks of
+`wiki/site/pages/privacy.md` carry the words; "Last updated" stays 13 November 2026. The register of deviations from the frozen mockups
+has the row for all of `/privacy`'s D069 words (V70). Built as action F6.

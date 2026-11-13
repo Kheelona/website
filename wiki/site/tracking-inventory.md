@@ -86,11 +86,17 @@ references below are to that commit. Anything that exists only on the unreleased
 | 15 | Meta domain verification | DNS TXT token | DNS TXT | n/a | TXT present 2026-10-11 |
 | 16 | Merchant Center, product feeds, Google Ads, other pixels | **none found** | n/a | n/a | n/a |
 | 17 | `/.well-known/*` and verification files | **none exist** | n/a | n/a | All 404 on both hosts, 2026-10-11 |
+| 18 | OpenAI Ads Measurement Pixel (browser) | `CtmHigpYxafJN3qgbj3xnv` | `src/lib/ads/openai-pixel.ts`, `src/components/tracking/OpenAiPixel.tsx`, `src/lib/site-pages/tracking-shell.ts` | Yes, `META_PIXEL_HOSTS`, not a team device, `OPENAI_PIXEL_PAGES` | **Added after the tag (D069, F6)**; check it with the post-deploy steps in §16 |
+| 19 | OpenAI Conversions API (server) | same pixel, `bzr.openai.com/v1/events` | `src/lib/ads/openai-capi.ts`, called from `src/lib/store/fulfil.ts` | Server only; key present, production only, order has an OpenAI reference | **Added after the tag (D069, F6)**; not verifiable here (Vercel logs) |
+| 20 | OpenAI ad-click cookie | `kh_oppref` | `src/lib/ads/openai-pixel.ts` (`rememberOppref`), read by `src/lib/ads/openai-capi.ts` | `.kheelona.com`, production hosts, not a team device | **Added after the tag (D069, F6)** |
 
 Host list shared by GA4, the Meta Pixel and PostHog: `["kheelona.com", "www.kheelona.com",
 "store.kheelona.com"]` (`src/config/site.ts:266`, `:300`, `:413`). `www` 308s to the apex at Vercel,
 so in practice the tags run on the apex and the store host. Localhost, `*.vercel.app` previews and
 any other host load none of the three.
+
+Rows 18 to 20 were added after the tag by [D069](../decisions/D069-openai-ads-measurement.md), so row 16's
+"none found" is true as of the tag. The OpenAI pixel uses the same host list; §16 is its section.
 
 ---
 
@@ -367,10 +373,12 @@ through first-party cookies on `.kheelona.com`, read server-side when the order 
 | `kh_fbclid` | edge, `src/proxy.ts:127-145` | raw `{id, ts}` of the landing `fbclid`, never a built `fbc` (`src/lib/click-id.ts:27`, `:52-55`) | same as above; first touch wins | `readFbAttrib` builds `fbc` = `fb.1.<ts>.<fbclid>` **only if Meta's `_fbc` is absent** (`meta-capi.ts:112-129`, `click-id.ts:64-69`) |
 | `_fbp`, `_fbc` | Meta Pixel | Meta's own ids, on `.kheelona.com` (measured, §8.41-f) | Meta's | `readFbAttrib` (`meta-capi.ts:89-138`) |
 | PostHog cookie | PostHog SDK | anonymous device id | `.kheelona.com` (`src/lib/campaign.ts:11-13`) | browser, sent as `phDistinctId` |
+| `kh_oppref` | browser, `rememberOppref` (`src/lib/ads/openai-pixel.ts`), D069 | the ChatGPT ad click's `oppref` from the landing URL, only when it is a valid token (`^[A-Za-z0-9._~-]{1,512}$`) | `.kheelona.com`, Secure, SameSite=Lax, session; **latest click wins**; never written on a team device (§16) | `create-order`, stored as `oai_oppref` in `fb_attrib`; the store pixel's `init` |
 | `kh_order` | edge, claim step | order session for /thanks, 2 h | path `/thanks`, HttpOnly | /thanks page (`src/lib/store/thanks-session.ts:24-31`) |
 
 - **Stored on the order row** by `create-order`: `utm` (`:107`), `fb_attrib` = `{fbp, fbc, ip, ua}`
-  (`:113`), `ph_distinct_id` (`:119`). Migrations `0003_fb_attrib.sql` and `0004_ph_distinct_id.sql`
+  (`:113`; since D069 also `oai_oppref` and `oai_obref` when the request carries OpenAI's references, §16),
+  `ph_distinct_id` (`:119`). Migrations `0003_fb_attrib.sql` and `0004_ph_distinct_id.sql`
   are applied by hand in Supabase (§8.40-i). The internal alert email prints `Source` from `utm`
   (`src/lib/email/templates.ts:204`).
 - **Live check, 2026-10-11:** a tagged GET of `/products/kheelu` returned both `Set-Cookie: kh_utm=…`
@@ -519,6 +527,59 @@ neither an ID, event or parameter change:
 - The brief keeps consent behaviour exactly as it is; any compliance concern goes to Gate A, not into
   code ([brief §9.4](../raw/brief/kickoff-brief.md)). The Gate A item is
   [open questions](../open-questions.md) G6.
+
+## 16. OpenAI Ads Measurement Pixel and Conversions API (added by D069, after the tag)
+
+Not in production at the tag. [D069](../decisions/D069-openai-ads-measurement.md) (the founder's request of
+2026-11-13) adds OpenAI's measurement for the ChatGPT advertising. Nothing in sections 1 to 15 changes.
+
+- **ID:** pixel `CtmHigpYxafJN3qgbj3xnv` (public; OpenAI's snippet publishes it in the page). SDK
+  `https://bzrcdn.openai.com/sdk/oaiq.min.js`, loaded asynchronously: on the marketing pages inside the tracking
+  shell's `boot()` (first interaction or 4 s), on the store by `OpenAiPixel` at browser idle (2 s at most).
+- **Host gating:** `META_PIXEL_HOSTS` (`shouldLoadOpenAiPixel`, `src/lib/ads/openai-pixel.ts`); nothing loads on beta
+  hosts, `*.vercel.app` previews or localhost. **Team devices** (`?internal=1`, or PostHog's stored `internal: true`;
+  `?internal=0` wins over storage) install no stub and no script and have `kh_oppref`, `__oppref` and `__obref` deleted.
+- **Automatic advanced matching:** switched on for this pixel by OpenAI, with no SDK option and no Ads Manager switch
+  (read from SDK 0.1.104 and the Edit pixel dialog, 2026-11-13), so the loader enforces `OPENAI_AAM_POLICY`:
+  `"verified-pages"` (default) loads the SDK only on `OPENAI_PIXEL_PAGES` (marketing `/` and `/products/kheelu`, store
+  `/`) and installs nothing on any other page; `"require-off"` loads it only when OpenAI's pixel configuration
+  (`bzrcdn.openai.com/pixel-config/v1/<pixel>.json`) reports matching off. `init` never receives a `user` object.
+- **Cookies:** OpenAI's SDK writes `__oppref` (the ad click, 30 days) and `__obref` (a random browser reference, 365
+  days) on `Domain=.kheelona.com` (probed, SDK 0.1.104); ours is `kh_oppref` (§9).
+- **Consent:** none gates it, as for the other tools (§15).
+
+| Event | Parameters | eventID | Fired at | When |
+|---|---|---|---|---|
+| `page_viewed` | `type: "contents"` | none | `loadOpenAiPixel` (`src/lib/ads/openai-pixel.ts`) | once per full load of an allowed page, queued with `init` |
+| `checkout_started` | `type: "contents"`, `amount` (paise), `currency: "INR"`, `contents` | none | `analytics.ts` `beginCheckout` | beside GA4 `begin_checkout` |
+| `order_created` | `type: "contents"`, `amount` (paise), `currency: "INR"`, `contents` | `<order ref>` | `analytics.ts` `purchase` | Razorpay `onPaid` |
+
+- **Amounts** are what was collected, integers in paise (₹499 = 49900), not rupees; OpenAI's documentation lists no
+  currencies and gives `amount` in the minor unit. `contents` is one line `{id, name, quantity: 1, amount, currency}`:
+  `khelu-reservation` for the `launch` tier, `khelu-full-payment` for `full`, `khelu-<tier>` otherwise.
+- **Server Conversions API:** `POST https://bzr.openai.com/v1/events?pid=CtmHigpYxafJN3qgbj3xnv`, `Authorization: Bearer`
+  with the secret `OPENAI_ADS_CAPI_KEY` (name only; read from `process.env` inside the function; absent or empty means
+  no request at all), 5 s timeout, called from `notifyPaid` beside the Meta and PostHog reports, so once per paid order
+  and never throwing. It is skipped (one log line) off production, for an order with neither `oai_oppref` nor
+  `oai_obref`, and for an order paid more than 7 days ago.
+- **Event:** one name only, `order_created` (`src/lib/ads/openai-capi.ts`). Body `{integration_source: "kheelona-store",
+  events: [event]}`; the event (`openAiCapiPayload`):
+  - `id: <order ref>` (the raw order reference, the browser's event id; OpenAI keeps the first of pixel, event name and id)
+  - `type: "order_created"`, `timestamp_ms`: `paid_at`; `action_source: "web"`; `source_url: "https://store.kheelona.com"`
+  - `oppref`, the stored click, unmodified, only when present
+  - `user`: SHA-256 of `emails_sha256` (email, trimmed and lowercased) and `phone_numbers_sha256` (digits only, country
+    code kept, no plus, 8 to 15 digits); plus `obref`, `ip_address` and `user_agent` as captured at order time
+  - `data`: `type: "contents"`, `amount` (paise), `currency: "INR"`, `contents`
+  - no name, no address, no child's age, no free text; empty optional fields are omitted
+- **Logging:** `[openai-capi] SENT|SKIPPED|REJECTED|FAILED <order ref>`; never the key and never a hash.
+- **Order attribution:** `create-order` merges `oai_oppref` and `oai_obref` into the existing `fb_attrib` JSONB (no new
+  column, no migration); Meta's reader picks only its own four keys, so Meta's payload is unchanged.
+- **Not reported:** refunds (OpenAI's API has no refund event). `/privacy` names these tools since 2026-11-13 (D069): a block each for the
+  pixel and the Conversions API, `kh_oppref` among our own cookies, an OpenAI row in the recipients table.
+- **Check after deploy (read-only, in a real browser, never typing into the store form):** `oaiq.min.js` loads only on
+  `/`, `/products/kheelu` and the store's `/`; no `bzr.openai.com` request body carries a hash of the support email or phone
+  shown on the site; `page_viewed` is sent once per load; `kh_oppref`, `__oppref` and `__obref` are readable on
+  `store.kheelona.com`; then Ads Manager → Conversions → Web Pixel → Test on each origin.
 
 ## Live snapshot: PostHog, last 30 days
 

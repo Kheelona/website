@@ -8,6 +8,8 @@ import { ViewContentTracker } from "@/components/tracking/ViewContentTracker";
 import { BETA_HOSTS } from "@/config/env";
 import { FULL_AMOUNT_PAISE, LAUNCH_AMOUNT_PAISE, shouldLoadPostHog } from "@/config/site";
 import { preorderAnalytics } from "@/features/preorder/lib/analytics";
+import { OPENAI_PIXEL_ID } from "@/lib/ads/openai-events";
+import { loadOpenAiPixel } from "@/lib/ads/openai-pixel";
 import { purchaseEventId } from "@/lib/fbq";
 import { registerPostHog, resetPostHogForTests } from "@/lib/posthog";
 import type { DestinationKey } from "@/lib/tracking/destinations";
@@ -27,6 +29,9 @@ import { isStillLegacy } from "./legacy-paths";
  * - every preorderAnalytics call (the frozen funnel) emits exactly the registry's names,
  *   destinations and parameters, in order, with values in rupees and the Purchase eventID
  *   purchase_<ref>; every funnel call the registry names exists and no other does;
+ * - the OpenAI pixel (D069, status "added") is spied like the others: `oaiq("measure", …)` calls are recorded, the funnel's
+ *   `checkout_started` and `order_created` match the registry (amount in paise, the raw order reference as event id),
+ *   and the loader queues exactly the registry's `page_viewed` and an `init` with no `user`;
  * - ViewContentTracker emits exactly the registry's ViewContent payload, its value from the page;
  * - track() sends each new event only to the registry's destinations, never to Meta, with exactly
  *   the registry's parameters, and its parameter types are the registry's (compile-time checks);
@@ -38,7 +43,11 @@ import { isStillLegacy } from "./legacy-paths";
 type Emission = { destination: DestinationKey; name: string; params: Record<string, unknown>; eventId?: string };
 
 let emitted: Emission[] = [];
-const win = window as unknown as { gtag?: (...a: unknown[]) => void; fbq?: (...a: unknown[]) => void };
+const win = window as unknown as {
+  gtag?: (...a: unknown[]) => void;
+  fbq?: (...a: unknown[]) => void;
+  oaiq?: (...a: unknown[]) => void;
+};
 
 beforeEach(() => {
   emitted = [];
@@ -59,6 +68,22 @@ beforeEach(() => {
       ...(opts?.eventID ? { eventId: opts.eventID } : {}),
     });
   };
+  /* OpenAI's `oaiq`: every `measure` is recorded under its event name with its data and its event_id; any other command
+     (consent, a stray init) is recorded under "<command>:<name>", a name no registry row has, and fails the comparison. */
+  win.oaiq = (...a: unknown[]) => {
+    const command = String(a[0]);
+    const options = a[3] as { event_id?: string } | undefined;
+    emitted.push(
+      command === "measure"
+        ? {
+            destination: "openai-pixel",
+            name: String(a[1]),
+            params: (a[2] ?? {}) as Record<string, unknown>,
+            ...(options?.event_id ? { eventId: options.event_id } : {}),
+          }
+        : { destination: "openai-pixel", name: `${command}:${String(a[1] ?? "")}`, params: {} },
+    );
+  };
   registerPostHog({
     capture: (name, params) => emitted.push({ destination: "posthog-browser", name, params: params ?? {} }),
     startSessionRecording: () => {},
@@ -70,11 +95,24 @@ beforeEach(() => {
 afterEach(() => {
   delete win.gtag;
   delete win.fbq;
+  delete win.oaiq;
   resetPostHogForTests();
 });
 
 /* The spies must see every way a tool can be reached, or a guard built on them is blind. */
 describe("tracking-parity instruments", () => {
+  it("records every oaiq command, not only measure: a consent or init call is a send to OpenAI", () => {
+    win.oaiq?.("measure", "order_created", { type: "contents" }, { event_id: "KH-X" });
+    win.oaiq?.("consent", false);
+    win.oaiq?.("init", { pixelId: OPENAI_PIXEL_ID });
+    expect(emitted.map((e) => pair(e.destination, e.name))).toEqual([
+      "openai-pixel order_created",
+      "openai-pixel consent:false",
+      "openai-pixel init:[object Object]",
+    ]);
+    expect(emitted[0].eventId).toBe("KH-X");
+  });
+
   it("records every fbq command, not only track: a custom or single-pixel send is a send to Meta", () => {
     win.fbq?.("track", "PageView");
     win.fbq?.("trackCustom", "preorder_form_rejected", { tier: "launch" });
@@ -91,7 +129,7 @@ describe("tracking-parity instruments", () => {
 
 /* ── Comparing what was sent with the registry ────────────────────────────────────────────── */
 
-const BROWSER: readonly DestinationKey[] = ["ga4", "meta-pixel", "posthog-browser"];
+const BROWSER: readonly DestinationKey[] = ["ga4", "meta-pixel", "posthog-browser", "openai-pixel"];
 const pair = (destination: string, name: string) => `${destination} ${name}`;
 
 /** Every (destination, name) the registry rows send to a browser tool. */
@@ -149,8 +187,16 @@ describe("tracking-parity: every preorderAnalytics call emits exactly the regist
 
     for (const e of emitted) {
       const row = rowFor(e);
-      expect(row.status, `${pair(e.destination, e.name)} is an existing event`).toBe("existing");
+      /* The tag's three tools send existing events; OpenAI's are the ones a founder decision added (D069). */
+      expect(row.status, `${pair(e.destination, e.name)} status`).toBe(e.destination === "openai-pixel" ? "added" : "existing");
       expectParamsOf(e, row);
+      // OpenAI takes the amount in paise, as an integer, on the order and on its one line item (inventory §16).
+      if (e.destination === "openai-pixel") {
+        expect(e.params.amount).toBe(PAISE);
+        expect(e.params.contents).toEqual([
+          { id: "khelu-reservation", name: "Khelu reservation", quantity: 1, amount: PAISE, currency: "INR" },
+        ]);
+      }
       // Every amount leaves in rupees (paise / 100), never paise (parity row 7).
       if ("value" in e.params) expect(e.params.value).toBe(PAISE / 100);
       if ("tier" in e.params) expect(e.params.tier).toBe(TIER);
@@ -158,7 +204,11 @@ describe("tracking-parity: every preorderAnalytics call emits exactly the regist
       if ("transaction_id" in e.params) expect(e.params.transaction_id).toBe(ORDER_REF);
       if ("order_id" in e.params) expect(e.params.order_id).toBe(ORDER_REF);
       // The dedup key: exactly where the registry has one, shaped as the registry says (parity row 8).
-      if (row.eventId) {
+      if (row.eventId && e.destination === "openai-pixel") {
+        // OpenAI's key is the raw order reference (the server call reuses it), not Meta's purchase_<ref>.
+        expect(e.eventId).toBe(ORDER_REF);
+        expect(e.eventId).toBe(row.eventId.replace("<order ref>", ORDER_REF));
+      } else if (row.eventId) {
         expect(e.eventId).toBe(purchaseEventId(ORDER_REF));
         expect(e.eventId).toBe(row.eventId.replace("<order ref>", ORDER_REF));
       } else {
@@ -172,6 +222,39 @@ describe("tracking-parity: every preorderAnalytics call emits exactly the regist
     const strip = (d: DestinationKey) =>
       emitted.filter((e) => e.destination === d).map((e) => JSON.stringify([e.name, e.params]));
     expect(strip("posthog-browser")).toEqual(strip("ga4"));
+  });
+});
+
+/* ── The OpenAI loader: page_viewed, and an init with no user ─────────────────────────────── */
+
+describe("tracking-parity: loadOpenAiPixel queues exactly the registry's page_viewed, and no user", () => {
+  it("queues init and one page_viewed, with the registry's parameters, then the SDK follows", async () => {
+    const fake = {
+      location: { hostname: "kheelona.com", pathname: "/", search: "" },
+      document,
+      localStorage: { getItem: () => null },
+    } as unknown as Window & { oaiq?: { q?: ArrayLike<unknown>[] } };
+    await expect(loadOpenAiPixel({ window: fake, policy: "verified-pages" })).resolves.toBe("loaded");
+    document.querySelectorAll('script[src*="oaiq.min.js"]').forEach((el) => el.remove());
+
+    const calls = (fake.oaiq?.q ?? []).map((entry) => Array.from(entry));
+    expect(calls.map((c) => c[0])).toEqual(["init", "measure"]);
+    const [, init] = calls[0] as [string, Record<string, unknown>];
+    expect(Object.keys(init)).toEqual(["pixelId"]); // no user, no consent call
+    expect(init.pixelId).toBe(OPENAI_PIXEL_ID);
+
+    const row = EVENTS.find((r) => r.name === "page_viewed")!;
+    expect(row.destinations).toEqual(["openai-pixel"]);
+    const [, name, params] = calls[1] as [string, string, Record<string, unknown>];
+    expect(name).toBe(row.name);
+    expect(Object.keys(params)).toEqual([...row.params]);
+    for (const [key, value] of Object.entries(row.fixed ?? {})) expect(params[key], key).toEqual(value);
+    expect(calls[1]).toHaveLength(3); // no event id on a page view
+  });
+
+  it("is not a dispatcher event: track() refuses every added name", () => {
+    for (const r of EVENTS.filter((e) => e.status === "added")) track(r.name as never, { tier: TIER } as never);
+    expect(emitted).toEqual([]);
   });
 });
 

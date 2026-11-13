@@ -57,7 +57,8 @@ describe("privacy parity deviations (V10)", () => {
       ["mockup", ".mk-tools > .mk-tool:nth-child(3) > p"],
       ["mockup", ".mk-tools > .mk-tool:nth-child(6) > p:first-of-type"],
       ["build", ".ks-tools > .ks-tool:nth-child(3) > p"],
-      ["build", ".ks-tools > .ks-tool:nth-child(6) > p:first-of-type"],
+      /* The build lists OpenAI's two tools (D069) before PostHog, so PostHog is its eighth block; the mockup's is the sixth. */
+      ["build", ".ks-tools > .ks-tool:nth-child(8) > p:first-of-type"],
     ]);
     const heading = (selector: string) => MOCKUP.querySelector(selector)?.closest(".mk-tool")?.querySelector("h3")?.textContent;
     expect(MOCKUP.querySelectorAll(".mk-tools > .mk-tool:nth-child(3) > p")).toHaveLength(1);
@@ -74,7 +75,12 @@ describe("privacy parity deviations (V10)", () => {
       return undefined;
     };
     const names = toolsBlock(privacyPage)!.tools.map((t) => t.name);
-    expect([names[2], names[5]]).toEqual(["Google Analytics", "PostHog"]);
+    expect([names[2], names[5], names[6], names[7]]).toEqual([
+      "Google Analytics",
+      "OpenAI Ads Measurement Pixel",
+      "OpenAI Conversions API",
+      "PostHog",
+    ]);
   });
 });
 

@@ -462,6 +462,12 @@ registry test fails if a row is missing, N2):
 | 15 | Meta domain verification | DNS TXT | dns | n/a | none |
 | 16 | Merchant Center, feeds, Google Ads, other pixels | none found | none | n/a | none |
 | 17 | `/.well-known/*` and verification files | none exist | none | n/a | none |
+| 18 | OpenAI Ads Measurement Pixel | `CtmHigpYxafJN3qgbj3xnv` | browser | `META_PIXEL_HOSTS`, not a team device, `OPENAI_PIXEL_PAGES` | `page_viewed`, `checkout_started`, `order_created` |
+| 19 | OpenAI Conversions API | same pixel, `bzr.openai.com/v1/events` | server | key present, production only, order has an OpenAI reference | `order_created` |
+| 20 | OpenAI ad-click cookie | `kh_oppref` | cookie | `.kheelona.com`, production hosts, not a team device | none (set by `rememberOppref`) |
+
+Rows 18 to 20 and the three OpenAI event rows below were added after the freeze by D069 (the founder's request of
+2026-11-13); they are the only registry entries with status "Added".
 
 **Events:**
 
@@ -483,6 +489,10 @@ registry test fails if a row is missing, N2):
 | `preorder_payment_window_opened` | GA4, PostHog | `tier` | right after `checkout.open()` in `checkout.ts` (line 97 at the tag) | **New (B11), task 6.2** |
 | `preorder_payment_failed` | GA4, PostHog | `tier`, `reason_code`, `reason` (Razorpay `error.code`, `error.reason`; no free text) | `checkout.on("payment.failed", …)` before `open()` | **New (B11), task 6.2** |
 | `preorder_form_rejected` | GA4, PostHog | `tier`, `fields` (comma-joined field names, no values) | `PreorderForm` submit when validation fails | **New (B11), task 6.2** |
+| `page_viewed` | OpenAI | `type` | `loadOpenAiPixel`, once per full load of an allowed page | **Added (D069)** |
+| `checkout_started` | OpenAI | `type`, `amount` (paise), `currency`, `contents` | `analytics.ts`, beside `begin_checkout` | **Added (D069)**, frozen file under a reviewed patch |
+| `order_created` | OpenAI (eventID `<order ref>`) | `type`, `amount` (paise), `currency`, `contents` | `analytics.ts`, beside `purchase` | **Added (D069)**, frozen file under a reviewed patch |
+| `order_created` (CAPI) | OpenAI server | as inventory §16 | `openai-capi.ts` via `notifyPaid` | **Added (D069)**; off without `OPENAI_ADS_CAPI_KEY` and off production |
 
 No event fires Meta for the three new names: Meta receives only its fixed conversion events.
 
