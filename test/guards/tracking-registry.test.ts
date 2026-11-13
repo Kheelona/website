@@ -10,6 +10,9 @@ import {
   POSTHOG_PROXY_PATH,
 } from "@/config/site";
 import { CAMPAIGN_KEYS } from "@/lib/campaign";
+import { openAiCapiPayload } from "@/lib/ads/openai-capi";
+import { OPENAI_PIXEL_ID } from "@/lib/ads/openai-events";
+import { OPENAI_AAM_POLICY, OPENAI_PIXEL_PAGES } from "@/lib/ads/openai-pixel";
 import type { PreorderRow } from "@/lib/store/db";
 import { purchasePayload } from "@/lib/store/meta-capi";
 import { purchaseConfirmedEvent } from "@/lib/store/posthog-server";
@@ -37,6 +40,9 @@ import { NEW_EVENTS } from "@/lib/tracking/new-events";
  *   inventory states the server payloads in prose: the registry must list exactly the
  *   parameters those builders send.
  * - The approved mockups: where each cta value sits.
+ *
+ * Rows and events a founder decision added AFTER the tag (OpenAI Ads measurement, D069: destinations 18 to 20, status
+ * "added", and inventory §16) are held to the same two-way proof, separately from the tag's own, which are untouched.
  *
  * So it fails when a name, an ID or a parameter is edited, or a row goes missing, on either
  * side. When the inventory changes for a real reason (a founder decision), change the
@@ -169,10 +175,29 @@ const ARCH_DESTINATIONS = table(section(ARCHITECTURE, "### 8.2 "), [
   "Events in this registry",
 ]);
 
+/** Rows a founder decision added after the freeze tag: the Live evidence cell says "Added after the tag (D0nn, …)". */
+const ADDED_GLANCE = GLANCE.filter((r) => /^Added after the tag \(D\d{3}\b/.test(plain(r[5])));
+const addedDecision = (row: string[]) => /\bD\d{3}\b/.exec(plain(row[5]))?.[0] ?? "";
+const decisionFiles = () => readdirSync(join(ROOT, "wiki/decisions"));
+
 describe("destinations.ts: the inventory's At a glance table, row for row (N2)", () => {
-  it("has the 17 inventory rows, in the inventory's order, and no other", () => {
-    expect(GLANCE).toHaveLength(17);
+  it("has the 17 inventory rows of the tag, in the inventory's order, then the rows a decision added, and no other", () => {
+    expect(GLANCE).toHaveLength(17 + ADDED_GLANCE.length);
+    /* The added rows are pinned by number, so one cannot appear (or one of the tag's go) without this list changing. */
+    expect(ADDED_GLANCE.map((r) => Number(r[0]))).toEqual([18, 19, 20]);
+    expect(GLANCE.slice(0, 17).map((r) => Number(r[0]))).toEqual(Array.from({ length: 17 }, (_, i) => i + 1));
+    expect(GLANCE.slice(0, 17).filter((r) => ADDED_GLANCE.includes(r))).toEqual([]);
     expect(DESTINATIONS.map((d) => d.row)).toEqual(GLANCE.map((r) => Number(r[0])));
+  });
+
+  it("holds the tag's 17 rows as existing and the added rows as added, each with its decision on file", () => {
+    for (const d of DESTINATIONS.slice(0, 17)) expect(d.status, `row ${d.row}`).toBe("existing");
+    for (const row of ADDED_GLANCE) {
+      const d = destination(Number(row[0]));
+      expect(d?.status, `row ${row[0]}`).toBe("added");
+      expect(d?.decision, `row ${row[0]} decision`).toBe(addedDecision(row));
+      expect(decisionFiles().some((f) => f.startsWith(`${d?.decision}-`)), `${d?.decision} has no file in wiki/decisions`).toBe(true);
+    }
   });
 
   it("uses unique keys", () => {
@@ -184,7 +209,7 @@ describe("destinations.ts: the inventory's At a glance table, row for row (N2)",
     expect(d, `inventory row ${n} (${plain(name)}) is missing from destinations.ts`).toBeDefined();
     expect(d?.name).toBe(plain(name));
     expect(d?.ids, `IDs of row ${n} differ from the inventory`).toEqual([...code(name), ...code(publicId)]);
-    expect(d?.status).toBe("existing");
+    expect(d?.status).toBe(Number(n) > 17 ? "added" : "existing");
   });
 
   it.each(ARCH_DESTINATIONS)("row %s: ID, kind and gate as architecture §8.2", (n, _name, id, kind, gate) => {
@@ -212,6 +237,7 @@ describe("destinations.ts: the inventory's At a glance table, row for row (N2)",
     expect(ids("meta-pixel")).toEqual([META_PIXEL_ID]);
     expect(ids("posthog-browser")).toContain(POSTHOG_KEY);
     expect(ids("posthog-proxy")).toEqual([POSTHOG_PROXY_PATH, POSTHOG_ASSET_PROXY_PATH]);
+    expect(ids("openai-pixel")).toEqual([OPENAI_PIXEL_ID]);
   });
 });
 
@@ -398,7 +424,9 @@ describe("events.ts: existing events equal the inventory", () => {
       ...META_TABLE.filter(([, , eventId]) => plain(eventId) !== "none").map(([e]) => `meta-pixel:${code(e)[0]}`),
       `meta-capi:${code(CAPI_EVENT)[0]}`,
     ];
-    const registered = EVENTS.filter((e) => e.eventId).map((e) => `${e.destinations.join("+")}:${e.name}`);
+    const registered = EVENTS.filter((e) => e.eventId && e.status === "existing").map(
+      (e) => `${e.destinations.join("+")}:${e.name}`,
+    );
     expect(sorted(registered)).toEqual(sorted(withId));
     expect(sorted(registered)).toEqual(["meta-capi:Purchase", "meta-pixel:Purchase"]);
   });
@@ -568,6 +596,88 @@ describe("events.ts: server events", () => {
   });
 });
 
+/* ── 3b. OpenAI Ads measurement (D069): added after the tag, held to inventory §16 ─────────── */
+
+const OPENAI_SECTION = section(INVENTORY, "## 16. ");
+const OPENAI_TABLE = table(OPENAI_SECTION, ["Event", "Parameters", "eventID", "Fired at", "When"]);
+const OPENAI_EVENT = bullet(OPENAI_SECTION, "Event:");
+/** A fully populated order, so the allow-list sees every field the OpenAI payload can carry. */
+const openAiOrder = (): PreorderRow => ({
+  ...order(),
+  fb_attrib: {
+    fbp: "fb.1.1.1",
+    fbc: "fb.1.1.test",
+    ip: "203.0.113.9",
+    ua: "Mozilla/5.0",
+    oai_oppref: "f6_test_ref",
+    oai_obref: "3f2a9c1e-77aa-4b1d-9c10-0123456789ab",
+  },
+});
+
+describe("events.ts: OpenAI Ads measurement, added by D069, equals inventory §16", () => {
+  const pixel = () => eventsTo("openai-pixel");
+  const capi = () => only(eventsTo("openai-capi"), "order_created");
+
+  it("registers exactly the added events: §16's three browser events and its one server event, each with its decision on file", () => {
+    expect(sorted(pixel().map((e) => e.name))).toEqual(sorted(OPENAI_TABLE.map(([e]) => code(e)[0])));
+    expect(sorted(pixel().map((e) => e.name))).toEqual(["checkout_started", "order_created", "page_viewed"]);
+    expect(eventsTo("openai-capi").map((e) => [e.name, e.status])).toEqual([["order_created", "added"]]);
+    expect(code(OPENAI_EVENT)).toContain("order_created");
+    const added = EVENTS.filter((e) => e.status === "added");
+    expect(sorted(added.flatMap((e) => e.destinations.map((d) => `${d}:${e.name}`)))).toEqual([
+      "openai-capi:order_created",
+      "openai-pixel:checkout_started",
+      "openai-pixel:order_created",
+      "openai-pixel:page_viewed",
+    ]);
+    for (const e of added) {
+      expect(e.decision, `${e.name} decision`).toBe("D069");
+      expect(decisionFiles().some((f) => f.startsWith(`${e.decision}-`)), `${e.decision} has no file in wiki/decisions`).toBe(true);
+    }
+  });
+
+  it("browser events: the parameters in §16's order, its literals as fixed values, its dedup key", () => {
+    for (const [event, ps, eventId] of OPENAI_TABLE) {
+      const e = only(pixel(), code(event)[0]);
+      expect([...e.params], `${e.name} parameters`).toEqual(paramsOf(ps).map((p) => p.name));
+      expect(e.fixed ?? {}, `${e.name} fixed values`).toEqual(literalsOf(paramsOf(ps)));
+      expect(e.eventId ?? "none", `${e.name} eventID`).toBe(plain(eventId) === "none" ? "none" : code(eventId)[0]);
+    }
+  });
+
+  it("server order_created: the parameters are exactly what openAiCapiPayload sends", () => {
+    const [event] = openAiCapiPayload(openAiOrder()).events;
+    expect(sorted(capi().params)).toEqual(sorted(leaves(event as unknown as Record<string, unknown>)));
+  });
+
+  it("server order_created: every parameter and fixed value is named in §16, and the dedup key is the order reference", () => {
+    const [event] = openAiCapiPayload(openAiOrder()).events;
+    const named = new Set(code(OPENAI_EVENT).map((t) => param(t).name));
+    for (const p of capi().params) expect(named.has(leafName(p)), `${p} is not in inventory §16`).toBe(true);
+    const fixed = capi().fixed ?? {};
+    for (const [path, value] of Object.entries(fixed)) {
+      expect(at(event as unknown as Record<string, unknown>, path), path).toEqual(value);
+      expect(code(OPENAI_EVENT), `${path} literal in §16`).toContain(`${leafName(path)}: ${JSON.stringify(value)}`);
+    }
+    expect(capi().eventId?.replace("<order ref>", REF)).toBe(event.id);
+    expect(only(pixel(), "order_created").eventId).toBe(capi().eventId);
+  });
+
+  it("§16 states the loader's policy and pages as the code holds them", () => {
+    const text = plain(OPENAI_SECTION);
+    expect(text).toContain(`"${OPENAI_AAM_POLICY}" (default)`);
+    for (const page of [...OPENAI_PIXEL_PAGES.marketing, ...OPENAI_PIXEL_PAGES.store]) expect(text, page).toContain(page);
+    expect(text).toContain("OPENAI_PIXEL_PAGES");
+    expect(text).toContain(OPENAI_PIXEL_ID);
+    expect(text).toContain("OPENAI_ADS_CAPI_KEY");
+  });
+
+  it("the registry's cookie row names kh_oppref, and §9 lists it as a carrier", () => {
+    expect(destination(20)?.ids).toEqual(["kh_oppref"]);
+    expect(CARRIERS.map(([carrier]) => code(carrier)[0])).toContain("kh_oppref");
+  });
+});
+
 /* ── 4. Events: the plan's rows, the new events and the stamps ───────────── */
 
 const ARCH_EVENTS = table(section(ARCHITECTURE, "### 8.2 "), [
@@ -585,12 +695,14 @@ const DESTINATION_LABELS: Record<string, DestinationKey> = {
   "Meta server": "meta-capi",
   PostHog: "posthog-browser",
   "PostHog server": "posthog-server",
+  OpenAI: "openai-pixel",
+  "OpenAI server": "openai-capi",
 };
 
 type Pair = {
   name: string;
   destination: DestinationKey;
-  status: "existing" | "new";
+  status: "existing" | "new" | "added";
   params: string[];
   /** The decision gating a new row ("New (B11), task 6.2, gated"). */
   gated?: string;
@@ -618,7 +730,7 @@ function archPairs([event, destinations, params, firedBy, status]: string[]): Pa
   if (names.length !== groups.length && groups.length !== 1) {
     throw new Error(`Cannot pair names and destinations in: ${event} | ${destinations}`);
   }
-  const state = plain(status).startsWith("New") ? "new" : "existing";
+  const state = plain(status).startsWith("New") ? "new" : plain(status).startsWith("Added") ? "added" : "existing";
   const gated = /\bgated\b/.test(plain(status)) ? /\((B\d+)\)/.exec(plain(status))?.[1] : undefined;
   if (/\bgated\b/.test(plain(status)) && !gated) throw new Error(`No decision named in gated status: ${status}`);
   const addedPlacements = [...firedBy.replace(/\*\*/g, "").matchAll(/also `([^`]+)` \((B\d+), new placement/g)].map(
@@ -725,7 +837,6 @@ const AFTER_GATE_A: ReadonlyMap<string, string> = new Map(
     /\bD\d{3}\b/.exec(decision)?.[0] ?? "",
   ]),
 );
-const decisionFiles = () => readdirSync(join(ROOT, "wiki/decisions"));
 
 /** The Pages cell of architecture §8.3 as registry placements. */
 function placements(cell: string): string[] {

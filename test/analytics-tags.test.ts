@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 import { purchasePayload } from "@/lib/store/meta-capi";
+import { openAiCapiPayload } from "@/lib/ads/openai-capi";
 import { replayAllowedOnPath } from "@/config/site";
 import type { PreorderRow } from "@/lib/store/db";
 import { words } from "./support/mockup-compare";
@@ -506,5 +507,71 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
     expect(PRIVACY).toMatch(/never to us|never see your payment/i);
     // and that Razorpay's own form sets cookies, which ours do not
     expect(PRIVACY).toMatch(/sets its own cookies/);
+  });
+});
+
+/* OPENAI'S ADS MEASUREMENT (D069, F6). A tool and its disclosure ship together (§8.21-c), and /privacy is a founder-approved
+   legal page (D067) whose OpenAI wording waits for the founder's decision, so these tests pin the half this change owns:
+   where the tool mounts and exactly what our own server sends it. They are the OpenAI twins of "sends Meta these fields
+   and no others" and "keeps our own server payload narrow" above. */
+describe("OpenAI Ads measurement stays on the narrow path it was approved for (D069)", () => {
+  it("mounts OpenAI's pixel in the root layout, after the Meta Pixel and before PostHog", () => {
+    expect(LAYOUT).toContain("<OpenAiPixel />");
+    expect(LAYOUT).toContain('from "@/components/tracking/OpenAiPixel"');
+    expect(LAYOUT.indexOf("<MetaPixel />")).toBeLessThan(LAYOUT.indexOf("<OpenAiPixel />"));
+    expect(LAYOUT.indexOf("<OpenAiPixel />")).toBeLessThan(LAYOUT.indexOf("<PostHogGate />"));
+  });
+
+  /* A key list and not a value search, for the reason given above the Meta one: every identifier is hashed on the way in,
+     so a mistake would look like correct code, and a search for the raw age or address would sail past a SHA-256. */
+  it("sends OpenAI these fields and no others", () => {
+    const order = {
+      ...SAMPLE_ORDER,
+      fb_attrib: { ...SAMPLE_ORDER.fb_attrib, oai_oppref: "f6_test_ref", oai_obref: "3f2a9c1e-77aa-4b1d-9c10-0123456789ab" },
+    } as PreorderRow;
+    const body = openAiCapiPayload(order);
+    expect(Object.keys(body).sort()).toEqual(["events", "integration_source"]);
+    const event = body.events[0] as unknown as Record<string, unknown>;
+    expect(Object.keys(event).sort()).toEqual([
+      "action_source",
+      "data",
+      "id",
+      "oppref",
+      "source_url",
+      "timestamp_ms",
+      "type",
+      "user",
+    ]);
+    expect(Object.keys(event.user as object).sort()).toEqual([
+      "emails_sha256",
+      "ip_address",
+      "obref",
+      "phone_numbers_sha256",
+      "user_agent",
+    ]);
+    expect(Object.keys(event.data as object).sort()).toEqual(["amount", "contents", "currency", "type"]);
+    expect(Object.keys((event.data as { contents: object[] }).contents[0]).sort()).toEqual([
+      "amount",
+      "currency",
+      "id",
+      "name",
+      "quantity",
+    ]);
+  });
+
+  it("keeps our own OpenAI module narrow: it never reads the child's age, the delivery address or the parent's name", () => {
+    /* A source grep beside the key list, for the same reason as the Meta pair: the list catches a new key, this catches
+       somebody reading the field at all, which is the step before it becomes a key. Comments are stripped, because the
+       module explains in prose what it must never send. `ip_address` is OpenAI's own key and is not an address field. */
+    const capi = readFileSync(join(ROOT, "src/lib/ads/openai-capi.ts"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(capi, "the child's age must never be put in OUR OpenAI payload").not.toMatch(/child_age/);
+    expect(capi, "the delivery address must never be put in OUR OpenAI payload").not.toMatch(/order\.address|\.address\b/);
+    expect(capi, "the parent's name must never be put in OUR OpenAI payload").not.toMatch(/parent_name/);
+  });
+
+  it("gives the browser pixel no user object: init is called with the pixel ID, the click and debug only", () => {
+    const loader = readFileSync(join(ROOT, "src/lib/ads/openai-pixel.ts"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(loader).not.toMatch(/\buser\s*:/);
+    expect(loader).not.toMatch(/oaiq!?\(\s*["']consent["']/);
   });
 });

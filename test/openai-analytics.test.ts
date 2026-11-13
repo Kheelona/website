@@ -31,6 +31,7 @@ beforeEach(() => {
     capture: (e, p) => phCalls.push([e, p]),
     startSessionRecording: () => {},
     stopSessionRecording: () => {},
+    get_distinct_id: () => "d",
   });
 });
 
