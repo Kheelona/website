@@ -3072,7 +3072,9 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   privacy: [
     ...(["mockup", "build"] as const).flatMap((side) => {
       const tool = side === "mockup" ? "mk-tool" : "ks-tool";
-      return [`.${tool}s > .${tool}:nth-child(3) > p`, `.${tool}s > .${tool}:nth-child(6) > p:first-of-type`].map((selector) => ({
+      /* PostHog is the mockup's sixth block and the build's eighth: the build names OpenAI's two tools before it (D069). */
+      const posthog = side === "mockup" ? 6 : 8;
+      return [`.${tool}s > .${tool}:nth-child(3) > p`, `.${tool}s > .${tool}:nth-child(${posthog}) > p:first-of-type`].map((selector) => ({
         side,
         selector,
         reason: "the Google Analytics and PostHog paragraphs name the B11 events (D054 item 10), compared by the text pass; hidden on both sides so the blocks below line up",

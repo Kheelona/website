@@ -54,8 +54,9 @@ export const privacyPage = {
     og: DEFAULT_OG,
   },
   status: "approved",
-  /* "Last updated", the founder's date (D055 item 8). Approved as final on 2026-10-22 (D067). */
-  approvedOn: "2026-10-14",
+  /* "Last updated", the founder's date (D055 item 8). Approved as final on 2026-10-22 (D067); moved from 14 October to
+   * 13 November 2026 when the founder approved the OpenAI wording (D069). */
+  approvedOn: "2026-11-13",
   hero: {
     eyebrow: "Privacy policy",
     title: "Privacy, in {hand:plain words.}",
@@ -253,7 +254,7 @@ export const privacyPage = {
         },
         {
           kind: "p",
-          text: "Your browser also tells us a few things: the page or advertisement that brought you, your device and browser, and your network address (IP address). If you have a Meta cookie on your device, we read the identifier in it. We keep these with your order, so we can tell which of our pages and advertisements work.",
+          text: "Your browser also tells us a few things: the page or advertisement that brought you, your device and browser, and your network address (IP address). If you have a Meta or OpenAI cookie on your device, we read the identifiers in it. We keep these with your order, so we can tell which of our pages and advertisements work.",
         },
         { kind: "h3", text: "Paying." },
         {
@@ -312,6 +313,24 @@ export const privacyPage = {
               ],
             },
             {
+              name: "OpenAI Ads Measurement Pixel",
+              blocks: [
+                {
+                  kind: "p",
+                  text: "From OpenAI, the company behind ChatGPT. It runs on our home page, our product page and the store’s reservation page, and nowhere else. It sets two cookies on our own address: one remembers the ChatGPT advertisement you clicked, for up to 30 days, and the other is a random code for your browser, kept for up to a year. It tells OpenAI which of those pages you opened, when you start paying, and whether you reserved and for how much, so we know whether an advertisement in ChatGPT brought you here. On the reservation page, OpenAI’s script also reads the email address and phone number you type into the form, turns them into one-way codes in your browser, and sends those codes to OpenAI. We can’t switch that part off. Some of its reports are sent with OpenAI’s own cookies, where your browser allows it, so if you are signed in to ChatGPT in the same browser, OpenAI may be able to recognise you.",
+                },
+              ],
+            },
+            {
+              name: "OpenAI Conversions API",
+              blocks: [
+                {
+                  kind: "p",
+                  text: "When a pre-order is paid and you reached us through a ChatGPT advertisement or OpenAI’s pixel, our own server reports it to OpenAI: one-way codes of your email and phone number, together with your network address, your browser, the codes in OpenAI’s cookies on your device, the amount and the order number.",
+                },
+              ],
+            },
+            {
               name: "PostHog",
               blocks: [
                 {
@@ -335,6 +354,7 @@ export const privacyPage = {
                       lead: "kh_fbclid",
                       text: "remembers which advertisement click brought you, for as long as your visit lasts. Meta can match that click back to your account, which is how an advertisement gets credited with a sale. We cannot, and we never learn who you are on Meta.",
                     },
+                    { lead: "kh_oppref", text: "remembers which ChatGPT advertisement click brought you, for as long as your visit lasts." },
                     { lead: "kh_order", text: "lets the confirmation page show your order, for 2 hours." },
                   ],
                 },
@@ -363,7 +383,7 @@ export const privacyPage = {
             },
             {
               lead: "What blocking can’t stop.",
-              text: "PostHog reports through our own address, so an ad blocker usually can’t tell it apart from the site itself. And the report our server sends to Meta when a pre-order is paid comes from us, not from your browser.",
+              text: "PostHog reports through our own address, so an ad blocker usually can’t tell it apart from the site itself. And the reports our server sends to Meta and OpenAI when a pre-order is paid come from us, not from your browser.",
             },
             { lead: "You can turn off personalised advertising", text: "in your own Facebook or Instagram settings." },
             { lead: "You can ask us to delete your details", text: "at any time (see [Deleting, and your other rights](#rights))." },
@@ -406,6 +426,11 @@ export const privacyPage = {
               who: "Meta",
               what: "Meta Pixel and Conversions API; WhatsApp, when you message or call us",
               where: "The United States and other countries",
+            },
+            {
+              who: "OpenAI",
+              what: "OpenAI Ads Measurement Pixel and Conversions API",
+              where: "as described in [OpenAI’s privacy policy](https://openai.com/policies/privacy-policy/)",
             },
             { who: "PostHog", what: "Taps, screen replays and errors on this site", where: "United States" },
             { who: "Ahrefs", what: "Counts page views", where: "United States" },
@@ -514,7 +539,7 @@ export const privacyPage = {
         },
         {
           kind: "p",
-          text: "We do advertise Kheelu to parents on Facebook and Instagram, and the Meta tools above are how we measure that.",
+          text: "We do advertise Kheelu to parents on Facebook and Instagram, and the Meta tools above are how we measure that. We also advertise to parents in ChatGPT, and the OpenAI tools above are how we measure that.",
         },
       ],
     },

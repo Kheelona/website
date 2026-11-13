@@ -574,8 +574,8 @@ Not in production at the tag. [D069](../decisions/D069-openai-ads-measurement.md
 - **Logging:** `[openai-capi] SENT|SKIPPED|REJECTED|FAILED <order ref>`; never the key and never a hash.
 - **Order attribution:** `create-order` merges `oai_oppref` and `oai_obref` into the existing `fb_attrib` JSONB (no new
   column, no migration); Meta's reader picks only its own four keys, so Meta's payload is unchanged.
-- **Not reported:** refunds (OpenAI's API has no refund event). `/privacy` does not yet name these tools: its wording
-  waits for the founder (D069, D067).
+- **Not reported:** refunds (OpenAI's API has no refund event). `/privacy` names these tools since 2026-11-13 (D069): a block each for the
+  pixel and the Conversions API, `kh_oppref` among our own cookies, an OpenAI row in the recipients table.
 - **Check after deploy (read-only, in a real browser, never typing into the store form):** `oaiq.min.js` loads only on
   `/`, `/products/kheelu` and the store's `/`; no `bzr.openai.com` request body carries a hash of the support email or phone
   shown on the site; `page_viewed` is sent once per load; `kh_oppref`, `__oppref` and `__obref` are readable on

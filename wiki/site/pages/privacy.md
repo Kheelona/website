@@ -1,7 +1,7 @@
 ---
 title: "Privacy (/privacy): page copy, Gate A draft"
 type: page-copy
-updated: 2026-10-14
+updated: 2026-11-13
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - ../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md (items 7, 8 and 12-24: the page facts that fill or rule off every placeholder, task 6.7)
@@ -98,7 +98,7 @@ Quiet, small type, above the H1. Not an `Alert` with an icon: a plain `kh-body-s
 > What we collect on kheelona.com, in our store, through Kheelu and in its parent app; why; who else
 > handles it; and what you can do about it.
 >
-> Last updated: 14 October 2026
+> Last updated: 13 November 2026
 
 ## Fold 2 · The short version
 
@@ -353,8 +353,8 @@ Notes:
 > We keep them until you ask us to delete them.
 >
 > Your browser also tells us a few things: the page or advertisement that brought you, your device and
-> browser, and your network address (IP address). If you have a Meta cookie on your device, we read the
-> identifier in it. We keep these with your order, so we can tell which of our pages and advertisements work.
+> browser, and your network address (IP address). If you have a Meta or OpenAI cookie on your device, we read the
+> identifiers in it. We keep these with your order, so we can tell which of our pages and advertisements work.
 >
 > ### Paying.
 >
@@ -410,6 +410,22 @@ keeps all of them on the new site.
 > device, the amount and the order number. A one-way code lets Meta check whether you match an account it
 > already knows; it is not your details themselves.
 >
+> ### OpenAI Ads Measurement Pixel
+> From OpenAI, the company behind ChatGPT. It runs on our home page, our product page and the store's
+> reservation page, and nowhere else. It sets two cookies on our own address: one remembers the ChatGPT
+> advertisement you clicked, for up to 30 days, and the other is a random code for your browser, kept for up to
+> a year. It tells OpenAI which of those pages you opened, when you start paying, and whether you reserved and
+> for how much, so we know whether an advertisement in ChatGPT brought you here. On the reservation page,
+> OpenAI's script also reads the email address and phone number you type into the form, turns them into
+> one-way codes in your browser, and sends those codes to OpenAI. We can't switch that part off. Some of its
+> reports are sent with OpenAI's own cookies, where your browser allows it, so if you are signed in to ChatGPT
+> in the same browser, OpenAI may be able to recognise you.
+>
+> ### OpenAI Conversions API
+> When a pre-order is paid and you reached us through a ChatGPT advertisement or OpenAI's pixel, our own server
+> reports it to OpenAI: one-way codes of your email and phone number, together with your network address, your
+> browser, the codes in OpenAI's cookies on your device, the amount and the order number.
+>
 > ### PostHog
 > Records which buttons and links you tap, and a replay of your screen as you move through the site, so we can
 > find the places where the pre-order form confuses people. It is told the same steps of a pre-order as Google
@@ -429,6 +445,7 @@ keeps all of them on the new site.
 > - **kh_fbclid** remembers which advertisement click brought you, for as long as your visit lasts. Meta can
 >   match that click back to your account, which is how an advertisement gets credited with a sale. We cannot,
 >   and we never learn who you are on Meta.
+> - **kh_oppref** remembers which ChatGPT advertisement click brought you, for as long as your visit lasts.
 > - **kh_order** lets the confirmation page show your order, for 2 hours.
 
 Notes:
@@ -461,7 +478,7 @@ Notes:
 >   Pixel. Private browsing, an ad blocker or turning off third-party cookies all help, and none of them stop
 >   the site or the store from working.
 > - **What blocking can't stop.** PostHog reports through our own address, so an ad blocker usually can't
->   tell it apart from the site itself. And the report our server sends to Meta when a pre-order is paid comes
+>   tell it apart from the site itself. And the reports our server sends to Meta and OpenAI when a pre-order is paid come
 >   from us, not from your browser.
 > - **You can turn off personalised advertising** in your own Facebook or Instagram settings.
 > - **You can ask us to delete your details** at any time (see [Deleting, and your other rights](#section-9--deleting-and-your-other-rights-rights)).
@@ -494,6 +511,7 @@ On phones, one stacked row per recipient (name in bold, then "What" and "Where" 
 > | Vercel | Hosts this website and the store, and runs the store's server code; Vercel Web Analytics | India (Mumbai) for the store's server code |
 > | Google | Google Analytics | Google data centres around the world |
 > | Meta | Meta Pixel and Conversions API; WhatsApp, when you message or call us | The United States and other countries |
+> | OpenAI | OpenAI Ads Measurement Pixel and Conversions API | as described in [OpenAI's privacy policy](https://openai.com/policies/privacy-policy/) |
 > | PostHog | Taps, screen replays and errors on this site | United States |
 > | Ahrefs | Counts page views | United States |
 >
@@ -677,6 +695,7 @@ Notes:
 > - Kheelu cannot browse the internet, and it has no camera.
 >
 > We do advertise Kheelu to parents on Facebook and Instagram, and the Meta tools above are how we measure that.
+> We also advertise to parents in ChatGPT, and the OpenAI tools above are how we measure that.
 
 ## Section 11 · Keeping data safe (`#security`)
 
@@ -1219,3 +1238,14 @@ rules that pin the old lines change with them (`test/e2e/support/page-facts.ts` 
 "Kheelona, on Google Cloud" and the account-closure line; `test/fixtures/legal/privacy.ts` holds the Gate A text).
 The approved mockup `privacy.html` keeps its Gate A text; each changed line is a deviation row the main session
 writes, and the founder signs them at Gate B with D029's legal sign-off (D058, "What it changes in the build").
+
+## Changes after approval (F6, D069, 2026-11-13)
+
+The founder approved OpenAI's tools being named on this page on 2026-11-13 ([D069](../../decisions/D069-openai-ads-measurement.md)).
+The quoted blocks above carry the new words: the order paragraph (Section 4), two new tool blocks and the `kh_oppref` cookie
+(Section 5), the "What blocking can't stop" item (Section 6), the OpenAI row of the recipients table (Section 7) and the
+advertising sentence (Section 10). "Last updated" moves from 14 October to **13 November 2026**, the date of that approval
+(the founder's date, [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 8, [D067](../../decisions/D067-legal-pages-approved-final-2026-10-22.md));
+the mentions of 14 October in the tables above are the history of this page's folds and stay as they were. Not changed:
+the short-version card, Section 8's cookie retention line and its "Meta keeps what it receives" item (neither names OpenAI
+yet; proposed to the founder).

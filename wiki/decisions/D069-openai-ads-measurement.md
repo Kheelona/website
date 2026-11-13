@@ -2,7 +2,7 @@
 title: "D069: Measure the ChatGPT advertising with OpenAI's Ads Measurement Pixel"
 type: decision
 updated: 2026-11-13
-sources: ["the founder's request of 2026-11-13", ../site/tracking-inventory.md, ../engineering/architecture.md, D054-founder-answers-open-questions-2026-10-14.md, D067-legal-pages-approved-final-2026-10-22.md]
+sources: ["the founder's request and approval of the /privacy wording, 2026-11-13", ../site/tracking-inventory.md, ../engineering/architecture.md, D054-founder-answers-open-questions-2026-10-14.md, D067-legal-pages-approved-final-2026-10-22.md]
 ---
 
 # D069: OpenAI's Ads Measurement Pixel and Conversions API measure the ChatGPT advertising
@@ -56,10 +56,19 @@ Neither mode sends a `user` object from the browser, and the pixel is never moun
 **Content security policy.** Report-Only, phase unchanged: `script-src` gains `https://bzrcdn.openai.com`, `connect-src`
 gains it and `https://bzr.openai.com`, `img-src` gains `https://bzr.openai.com`. Exact origins, no wildcard.
 
-**Pending, and a gate for the merge.** `/privacy` is a legal page approved as final ([D067](D067-legal-pages-approved-final-2026-10-22.md))
-and names every measurement tool; repo rule §8.21-c says a tool and its sentence ship together. This change does not edit
-it: the wording is proposed to the founder, and the pull request is not merged until the founder has decided. The tracking
-inventory records the OpenAI rows as "added after the tag (D069)".
+**The privacy page (approved 2026-11-13).** `/privacy` is a legal page approved as final ([D067](D067-legal-pages-approved-final-2026-10-22.md))
+and names every measurement tool; repo rule §8.21-c says a tool and its sentence ship together. The founder approved the
+OpenAI wording on 2026-11-13, and it ships in the same pull request, in both sources of the page
+(`redesign/pages/privacy.html` with its built `redesign/privacy/index.html`, and `src/content/en-IN/legal/privacy.ts`):
+two tool blocks, "OpenAI Ads Measurement Pixel" and "OpenAI Conversions API"; `kh_oppref` in "Our own cookies"; "a Meta or
+OpenAI cookie" in the order paragraph; "the reports our server sends to Meta and OpenAI" under "What blocking can't stop";
+an OpenAI row in the recipients table, linking OpenAI's own privacy policy for where the data is held; and one sentence that
+we also advertise to parents in ChatGPT. The page makes no claim that a visitor can opt out of OpenAI's tools, and says
+plainly that on the reservation page OpenAI's script reads the email address and phone number typed into the form and
+that we cannot switch that off. **"Last updated" is the founder's date** ([D055](D055-page-facts-legal-setup-product-2026-10-14.md) item 8,
+D067): it moves from 14 October to **13 November 2026** on `/privacy` only (`approvedOn: "2026-11-13"`, the page's sitemap
+`lastmod` and WebPage `dateModified` with it); terms, refund and shipping keep 14 October. The tracking inventory records the
+OpenAI rows as "added after the tag (D069)".
 
 **Not in scope.** Refunds are not reported to OpenAI (its API has no refund event). The parent app, the Meta, GA4 and
 PostHog IDs, events and payloads, the store's checkout, `proxy.ts` and the attribution cookies `kh_utm` / `kh_fbclid` are

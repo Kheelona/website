@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { GSTIN } from "@/config/site";
 import type { LegalBlock, LegalPart, ToolsBlock } from "@/content/types";
+import { OPENAI_OPPREF_COOKIE } from "@/lib/ads/openai-events";
 import { CAMPAIGN_COOKIE } from "@/lib/campaign";
 import { CLICK_ID_COOKIE } from "@/lib/click-id";
 import { toPlainText } from "@/lib/content/plain-text";
@@ -95,8 +96,10 @@ describe("the privacy page: approved as final by the founder (D067, after D029)"
     expect(privacyPage.status).toBe("approved");
   });
 
-  it("is last updated on the founder's date, 14 October 2026 (D055 item 8; privacy.md fold 1)", () => {
-    expect(privacyPage.approvedOn).toBe("2026-10-14");
+  /* Moved from 14 October 2026 when the founder approved the OpenAI wording on 13 November 2026 (D069); the other three
+     legal pages keep 14 October (D055 item 8), each in its own test. */
+  it("is last updated on the founder's date, 13 November 2026, the day he approved the OpenAI wording (D069; D055 item 8, D067)", () => {
+    expect(privacyPage.approvedOn).toBe("2026-11-13");
   });
 });
 
@@ -158,6 +161,8 @@ describe("the privacy page: every measuring tool named in a block of its own, ne
       "Google Analytics",
       "Meta Pixel",
       "Meta Conversions API",
+      "OpenAI Ads Measurement Pixel",
+      "OpenAI Conversions API",
       "PostHog",
       "Our own cookies",
     ]);
@@ -222,7 +227,10 @@ describe("the privacy page: every measuring tool named in a block of its own, ne
 
   it("names the cookies as the code names them, and kh_order's life as the code sets it", () => {
     const own = tool("Our own cookies").blocks;
-    expect(leadsOf(own)).toEqual([CAMPAIGN_COOKIE, CLICK_ID_COOKIE, THANKS_COOKIE]);
+    expect(leadsOf(own)).toEqual([CAMPAIGN_COOKIE, CLICK_ID_COOKIE, OPENAI_OPPREF_COOKIE, THANKS_COOKIE]);
+    expect(strings(own).map((s) => toPlainText(s)).join(" ")).toContain(
+      `${OPENAI_OPPREF_COOKIE} remembers which ChatGPT advertisement click brought you, for as long as your visit lasts.`,
+    );
     const hours = THANKS_COOKIE_MAX_AGE_SECONDS / 3600;
     expect(strings(own).map((s) => toPlainText(s)).join(" ")).toContain(`lets the confirmation page show your order, for ${hours} hours.`);
     expect(partText("keep")).toContain(`${CAMPAIGN_COOKIE} and ${CLICK_ID_COOKIE} for as long as your visit lasts; ${THANKS_COOKIE} for ${hours} hours.`);
@@ -363,8 +371,22 @@ describe("the privacy page: the founder's page facts (D055)", () => {
       ["Vercel", "India (Mumbai) for the store’s server code"],
       ["Google", "Google data centres around the world"],
       ["Meta", "The United States and other countries"],
+      ["OpenAI", "as described in OpenAI’s privacy policy"],
       ["PostHog", "United States"],
       ["Ahrefs", "United States"],
+    ]);
+  });
+
+  /* D069 (2026-11-13): the OpenAI row names OpenAI's own privacy policy as the place, and links to it. */
+  it("names OpenAI's processing of the pixel and the Conversions API, and links its privacy policy", () => {
+    const recipients = part("who-else").blocks.find((b) => b.kind === "recipients");
+    const rows = recipients?.kind === "recipients" ? recipients.rows : [];
+    expect(rows.filter((r) => r.who === "OpenAI")).toEqual([
+      {
+        who: "OpenAI",
+        what: "OpenAI Ads Measurement Pixel and Conversions API",
+        where: "as described in [OpenAI’s privacy policy](https://openai.com/policies/privacy-policy/)",
+      },
     ]);
   });
 

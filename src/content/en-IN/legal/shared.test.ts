@@ -16,13 +16,16 @@ import { legalTemplateCopy } from "./shared";
  * reference close's help line is seller.help itself, never retyped. */
 
 const PAGES = ["privacy", "terms", "refund", "shipping"] as const;
+/** The founder's "Last updated" date per page (D055 item 8): 14 October 2026 on three, and 13 November 2026 on /privacy,
+ *  the day he approved the OpenAI wording (D069). */
+const UPDATED_ON = { privacy: "13 November 2026", terms: "14 October 2026", refund: "14 October 2026", shipping: "14 October 2026" } as const;
 const text = (el: Element) => (el.textContent ?? "").replace(/\s+/g, " ").trim();
 
 describe("the legal template's shared words", () => {
   it.each(PAGES)("are the words %s.html prints around its document, with the founder's page facts applied", (slug) => {
     const main = withFacts(mockupFold(slug, "main"), PAGE_FACTS[slug].edits);
     expect(toPlainText(legalTemplateCopy.draftNote)).toBe(text(main.querySelector(".mk-draft")!));
-    expect(text(main.querySelector(".mk-updated")!)).toBe(`${toPlainText(legalTemplateCopy.updated)} 14 October 2026`);
+    expect(text(main.querySelector(".mk-updated")!)).toBe(`${toPlainText(legalTemplateCopy.updated)} ${UPDATED_ON[slug]}`);
     expect(toPlainText(legalTemplateCopy.contents)).toBe(text(main.querySelector("#toc-title")!));
     const grievance = [...main.querySelectorAll(".kh-card")].find((card) => text(card).startsWith("Grievance Officer:"));
     expect(grievance, `${slug}: the grievance card`).toBeDefined();

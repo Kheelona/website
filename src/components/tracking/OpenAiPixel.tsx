@@ -22,8 +22,9 @@ function whenIdle(run: () => void): void {
  *  for idle. `page_viewed` is sent once per full page load: the store is effectively one page, so there is no
  *  route-change counterpart to PageViewOnRouteChange.
  *
- *  Renders nothing. /privacy must name this tool before it ships (§8.21-c); that page is a founder-approved legal page
- *  (D067), so its OpenAI wording goes to the founder first and is not changed here (D069). */
+ *  Renders nothing. What this tool collects is stated on /privacy, in the same change that added it (§8.21-c,
+ *  test/analytics-tags.test.ts): the pixel, the Conversions API and the `kh_oppref` cookie, in the founder's words,
+ *  approved on 2026-11-13 (D069). */
 export function OpenAiPixel() {
   useEffect(() => {
     if (!shouldLoadOpenAiPixel(window.location.hostname)) return;

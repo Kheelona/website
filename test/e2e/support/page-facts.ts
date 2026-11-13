@@ -65,8 +65,10 @@ const cut = (at: string, was: string): FactEdit => ({ at, was, now: null });
 
 const F4 = (note: string) => `[PLACEHOLDER F4: ${note}]`;
 
-/** "Last updated" on the four legal pages (D055 item 8). */
+/** "Last updated" on terms, refund and shipping (D055 item 8). */
 const UPDATED = "14 October 2026";
+/** "Last updated" on /privacy: the day the founder approved the OpenAI wording (D069), 13 November 2026. */
+const UPDATED_PRIVACY = "13 November 2026";
 /** The complaint-reference line under every legal page's grievance card comes off until a system issues one (D055
  *  item 7), its paragraph with it: the card is its D032 line alone. It is the template's one shared value (legal/shared.ts
  *  holds no note), not the page's document, so a legal fixture rendered through the template already lacks it (its
@@ -188,7 +190,7 @@ export const PAGE_FACTS = {
   },
   privacy: {
     edits: [
-      fill("[PLACEHOLDER: the date the founder approves this text]", UPDATED),
+      fill("[PLACEHOLDER: the date the founder approves this text]", UPDATED_PRIVACY),
       /* The short version, item 4 (item 12). */
       fill("[PLACEHOLDER: how a parent turns it off]", "You can turn it off with a switch in the parent app."),
       /* Section 2 (items 13-16; B34, final by D054 item 23: no alerts in v1). */
@@ -299,7 +301,7 @@ export const PAGE_FACTS = {
       "[PLACEHOLDER: how you get a complaint reference to track your complaint; not set up yet]",
     ],
     build: [
-      "Last updated: 14 October 2026",
+      "Last updated: 13 November 2026",
       "You can turn it off with a switch in the parent app.",
       "Besides Kheelu’s reply and that training, we use them for nothing else.",
       "Your child’s first name: the parent app asks for it.",

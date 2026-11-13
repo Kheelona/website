@@ -1443,3 +1443,12 @@ pages that show the company's contact details. The ad click rides in the existin
 (no migration); the server call sends nothing without `OPENAI_ADS_CAPI_KEY`, off production, or for an order with no OpenAI
 reference. The Report-Only CSP admits two exact OpenAI origins. `/privacy` is not changed here: its wording waits for the founder.
 Built as action F6.
+
+## [2026-11-13 18:05] decision | D069: /privacy names OpenAI's tools; its "Last updated" is 13 November 2026
+The founder approved the OpenAI wording for `/privacy` on 2026-11-13. It is in both sources of the page (the redesign's
+`pages/privacy.html` and its built `privacy/index.html`, and `src/content/en-IN/legal/privacy.ts`) and in the quoted copy
+blocks of `wiki/site/pages/privacy.md`: the OpenAI Ads Measurement Pixel and OpenAI Conversions API blocks, `kh_oppref`, "a
+Meta or OpenAI cookie", the reports our server sends to Meta and OpenAI, an OpenAI row in the recipients table (linking OpenAI's
+privacy policy) and the ChatGPT advertising sentence. "Last updated" is the founder's date (D055 item 8, D067), so it moves
+from 14 October to 13 November 2026 on `/privacy` only, with the page's sitemap `lastmod`; terms, refund and shipping keep 14
+October. The earlier entry of 17:00 ("its wording waits for the founder") is superseded by this one. Built as action F6.
