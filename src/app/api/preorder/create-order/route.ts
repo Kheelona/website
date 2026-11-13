@@ -8,6 +8,7 @@ import { signAddressToken, ADDRESS_TOKEN_TTL_MS } from "@/lib/store/signing";
 import { rateLimit, clientKey } from "@/lib/store/rate-limit";
 import { json, str, NOT_CONFIGURED } from "@/lib/store/http";
 import { readFbAttrib } from "@/lib/store/meta-capi";
+import { withOpenAiAttrib } from "@/lib/ads/openai-capi";
 import {
   validateContact,
   normalisePhone,
@@ -110,7 +111,9 @@ export async function POST(request: Request) {
          Razorpay webhook that later reports the purchase server-side is called
          by Razorpay, so it has none of this. Read entirely from the request the
          browser already sent, so the client gained no new say in it. */
-      fb_attrib: readFbAttrib(request),
+      /* OpenAI's ad click and browser reference ride in the same JSONB under `oai_` keys (F6, D069): no new column,
+         so no migration to ship ahead of the code. Meta's reader picks only its own four keys. */
+      fb_attrib: withOpenAiAttrib(readFbAttrib(request), request),
       /* PostHog's device id, so the SERVER-sent purchase_confirmed event can
          join this person's funnel (§8.40). Same reasoning as fb_attrib above,
          from the other direction: the webhook knows the payment is real but has

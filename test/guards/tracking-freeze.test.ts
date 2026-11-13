@@ -16,7 +16,12 @@ import { isStillLegacy } from "./legacy-paths";
  * Brief §9.4 makes tracking parity a launch blocker, so the measurement code is frozen against
  * the tag archive/pre-reset-2026-10-10 (production before the reset) and every change is proven:
  *
- * 1. The proven funnel (architecture §8.1 "Frozen, byte-identical") equals the tag byte for byte.
+ * 1. The proven funnel (architecture §8.1 "Frozen, byte-identical") equals the tag byte for byte. One exception
+ *    class, D069 (F6, 2026-11-13, OpenAI Ads measurement): `analytics.ts` and `fulfil.ts` alone may differ from the tag
+ *    by exactly one reviewed patch each, stored in test/guards/fixtures/authorised-diffs/ (the same patch
+ *    checkout-freeze applies), whose review header names D069; the diff between the tag's file and today's must EQUAL
+ *    the stored patch, hunk for hunk, the same strict rule the moved gates below are held to. A funnel file with no
+ *    patch is still byte-identical, and a patch for any other funnel file is a failure.
  * 2. The gates and ViewContentTracker moved to src/components/tracking/. GoogleAnalyticsGate and
  *    MetaPixel are byte-identical to their tag files. PostHogGate and ViewContentTracker differ
  *    from theirs by exactly one reviewed patch each, stored in
@@ -54,6 +59,14 @@ const FUNNEL = [
   "src/lib/store/meta-capi.ts",
   "src/lib/store/fulfil.ts",
 ];
+
+/** D069 (F6): the only funnel files that may carry a reviewed patch, and the decision its header must name. The
+ *  patches are the checkout-freeze ones (test/guards/fixtures/authorised-diffs/<path with "/" as "__">.patch). */
+const FUNNEL_PATCHED: Readonly<Record<string, string>> = {
+  "src/features/preorder/lib/analytics.ts": "D069",
+  "src/lib/store/fulfil.ts": "D069",
+};
+const FUNNEL_PATCH_DIR = "test/guards/fixtures/authorised-diffs";
 
 type Moved = { now: string; then: string; review?: readonly string[] };
 
@@ -430,14 +443,37 @@ describe("tracking-freeze instruments", () => {
 
 /* ── 1. The funnel ────────────────────────────────────────────────────────────────────────── */
 
-describe(`tracking-freeze: the proven funnel equals ${FREEZE_TAG} byte for byte`, () => {
+describe(`tracking-freeze: the proven funnel equals ${FREEZE_TAG} byte for byte (D069: two reviewed patches)`, () => {
+  const patchPathOf = (path: string) => `${FUNNEL_PATCH_DIR}/${fixtureName(path)}.patch`;
+  const storedPatch = (path: string) => (existsSync(join(ROOT, patchPathOf(path))) ? readRepoFile(patchPathOf(path)) : "");
+
   it.each(FUNNEL)("%s", (path) => {
     expect(existsSync(join(ROOT, path)), `${path} was deleted`).toBe(true);
     const then = tagBytes(path);
     expect(then, `${path} is not in ${FREEZE_TAG}`).not.toBeNull();
-    expect(readRepoBytes(path).equals(then!), `${path} differs from ${FREEZE_TAG}: the funnel is frozen (ADR-006)`).toBe(
-      true,
-    );
+    const stored = storedPatch(path);
+    if (!stored) {
+      expect(readRepoBytes(path).equals(then!), `${path} differs from ${FREEZE_TAG}: the funnel is frozen (ADR-006)`).toBe(
+        true,
+      );
+      return;
+    }
+    const decision = FUNNEL_PATCHED[path];
+    expect(decision, `${path} takes no patch: the funnel is frozen (ADR-006); only ${Object.keys(FUNNEL_PATCHED).join(", ")} may carry one`).toBeDefined();
+    expect(reviewHeader(stored), `${patchPathOf(path)} must name ${decision} in its review header`).toContain(decision);
+    expect(
+      hunks(then!.toString("utf8"), path),
+      `${path} differs from ${FREEZE_TAG} by something other than its reviewed patch ${patchPathOf(path)}`,
+    ).toBe(fromFirstHunk(stored));
+  });
+
+  it("allows a patch for no other funnel file", () => {
+    const stray = FUNNEL.filter((p) => !(p in FUNNEL_PATCHED) && storedPatch(p) !== "");
+    expect(stray, `reviewed patches for funnel files outside ${Object.keys(FUNNEL_PATCHED).join(", ")}: ${stray.join(", ")}`).toEqual([]);
+  });
+
+  it("names a funnel file in every patch it allows", () => {
+    for (const path of Object.keys(FUNNEL_PATCHED)) expect(FUNNEL, path).toContain(path);
   });
 });
 

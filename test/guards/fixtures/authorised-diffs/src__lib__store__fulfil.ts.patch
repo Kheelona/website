@@ -1,0 +1,35 @@
+Reviewed diff of src/lib/store/fulfil.ts against archive/pre-reset-2026-10-10 (checkout-freeze, ADR-013 class 1;
+tracking-freeze, the funnel, ADR-006). tracking-freeze applies it as its one accepted difference for this file.
+Regenerate with: git diff archive/pre-reset-2026-10-10 -- src/lib/store/fulfil.ts (keep this header above it), or with
+the neutral-environment recipe in test/guards/tracking-freeze.test.ts (the hunks are the same).
+
+D069 (founder request, 2026-11-13; F6; wiki/decisions/D069-openai-ads-measurement.md): a paid order is reported to OpenAI
+Ads (`order_created`) from the server as well as the browser. One import and one line in `notifyPaid`'s existing
+`Promise.allSettled`: `reportOrderToOpenAi(order)` (src/lib/ads/openai-capi.ts, deliberately outside src/lib/store/). It
+inherits the two guarantees the Meta and PostHog reports beside it rely on: it runs once per paid order, behind
+`markPaid`'s atomic UPDATE, and it never throws. It makes no request without OPENAI_ADS_CAPI_KEY (a Vercel production
+secret, read inside the function), off production, or for an order that carries no OpenAI click or browser reference.
+`markPaid`, the refund, failure and not-payable paths, the emails and every other line of this file are unchanged.
+
+diff --git a/src/lib/store/fulfil.ts b/src/lib/store/fulfil.ts
+--- a/src/lib/store/fulfil.ts
++++ b/src/lib/store/fulfil.ts
+@@ -6,6 +6,7 @@ import { STORE_URL } from "@/config/site";
+ import type { StoreEnv } from "./env";
+ import { reportPurchaseToMeta } from "./meta-capi";
+ import { reportPurchaseToPostHog } from "./posthog-server";
++import { reportOrderToOpenAi } from "@/lib/ads/openai-capi";
+ 
+ /** Marking a pre-order paid, once (§8.25-p).
+  *
+@@ -348,6 +349,10 @@ export async function notifyPaid(env: StoreEnv, order: PreorderRow): Promise<voi
+          knows a payment is real, and a second call site would mean earning the
+          never-throw rule twice and forgetting it once. */
+       reportPurchaseToPostHog(order),
++      /* OpenAI Ads Conversions API (F6, D069): `order_created`, from the same exactly-once, never-throw place as the
++         two reports above. No request without OPENAI_ADS_CAPI_KEY, off production, or for an order that carries no
++         OpenAI click or browser reference (src/lib/ads/openai-capi.ts). */
++      reportOrderToOpenAi(order),
+     ]);
+   } catch (error) {
+     /* By here the money has moved and the row says so. Swallowing is correct:

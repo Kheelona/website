@@ -1,0 +1,45 @@
+Reviewed diff of src/features/preorder/lib/analytics.ts against archive/pre-reset-2026-10-10 (checkout-freeze, ADR-013
+class 1; tracking-freeze, the funnel, ADR-006). tracking-freeze applies it as its one accepted difference for this file.
+Regenerate with: git diff archive/pre-reset-2026-10-10 -- src/features/preorder/lib/analytics.ts (keep this header above
+it), or with the neutral-environment recipe in test/guards/tracking-freeze.test.ts (the hunks are the same).
+
+D069 (founder request, 2026-11-13; F6; wiki/decisions/D069-openai-ads-measurement.md): the ChatGPT advertising is
+measured with OpenAI's Ads Measurement Pixel. Two imports (src/lib/ads/openai-events.ts, src/lib/ads/openai-pixel.ts) and
+one call each, placed AFTER the existing calls: `beginCheckout` sends `checkout_started`, and `purchase` sends
+`order_created` with the raw order reference as its event id, both through `oaiqMeasure`, which does nothing where the
+OpenAI pixel is not on the page (off the production hosts, on a team device, on a page the loader does not allow).
+Nothing else changes: every GA4, Meta and PostHog call keeps its name, parameters and place, so tracking parity holds,
+and no tracking ID, event name or parameter of the existing tools changes. The amount is the one the server quoted.
+
+diff --git a/src/features/preorder/lib/analytics.ts b/src/features/preorder/lib/analytics.ts
+--- a/src/features/preorder/lib/analytics.ts
++++ b/src/features/preorder/lib/analytics.ts
+@@ -37,6 +37,8 @@
+  *  carries an eventId slot. */
+ import { fbTrack, purchaseEventId } from "@/lib/fbq";
+ import { phCapture } from "@/lib/posthog";
++import { openAiOrderData } from "@/lib/ads/openai-events";
++import { oaiqMeasure } from "@/lib/ads/openai-pixel";
+ 
+ type Params = Record<string, string | number | undefined>;
+ 
+@@ -76,6 +78,9 @@ export const preorderAnalytics = {
+     track("begin_checkout", { currency: "INR", value: valuePaise / 100, tier });
+     fbTrack("InitiateCheckout", { currency: "INR", value: valuePaise / 100, content_category: tier });
+     phCapture("begin_checkout", { currency: "INR", value: valuePaise / 100, tier });
++    /* OpenAI Ads (F6, D069): after the three tools above, which are unchanged. A no-op where the pixel is not on the
++       page (src/lib/ads/openai-pixel.ts). Amount in paise, as the server quoted it. */
++    oaiqMeasure("checkout_started", openAiOrderData(valuePaise, tier));
+   },
+   /** Paid, and verified.
+    *
+@@ -116,6 +121,9 @@ export const preorderAnalytics = {
+       value: valuePaise / 100,
+       tier,
+     });
++    /* OpenAI Ads (F6, D069): `order_created`, de-duplicated by the raw order reference (the same one PostHog's
++       transaction_id carries), which the server's Conversions API call reuses as the event id. */
++    oaiqMeasure("order_created", openAiOrderData(valuePaise, tier), { event_id: orderRef });
+   },
+   /** The delivery address landed, which is what unblocks dispatch.
+    *
