@@ -18,8 +18,15 @@ Description: >-
 # The console will ask you to acknowledge that this stack creates IAM resources
 # with custom names (CAPABILITY_NAMED_IAM). That is expected.
 #
-# Blocks marked [Q3], [Q4] or [Q5] wait on a founder answer. Each marker sits
-# directly above the block, so a "no" removes exactly that block.
+# Blocks marked [Q5] wait on a founder answer; the marker sits directly above
+# the block, so a "no" removes exactly that block. [Q3] (SST's own names) and
+# [Q4] (CloudFront parts that cannot carry a name or tag) were approved by the
+# founder on 17 Nov 2026.
+#
+# Size: IAM allows 6,144 characters per managed policy (whitespace excluded).
+# To stay under it, some statements below join two services; an action only
+# ever applies to resources of its own service, so joining two services in one
+# statement grants nothing extra.
 
 Rules:
   # The deploy roles and the topic belong in ap-south-1, next to the website.
@@ -163,7 +170,10 @@ Resources:
   # It is BOTH the ceiling on every website role AND the permission list of the
   # two deploy roles (one source of truth). A role can do only what is allowed
   # here, and nothing that is denied here, whatever its own policies say.
-  # AWS limit: 6,144 characters, whitespace excluded. Keep it under.
+  # AWS limit: 6,144 characters, whitespace excluded. Keep it under. To fit,
+  # ARNs outside IAM use * for the account: a role's own policy can reach
+  # another account's resource only if that account grants it, so naming
+  # this account would add characters, not protection. IAM ARNs keep it.
   # ---------------------------------------------------------------------------
   BoundaryPolicy:
     Type: AWS::IAM::ManagedPolicy
@@ -192,15 +202,15 @@ Resources:
               - wafv2:*
             Resource:
               - arn:aws:s3:::kheelona-website-*
-              - !Sub "arn:aws:lambda:*:${AWS::AccountId}:function:kheelona-website-*"
-              - !Sub "arn:aws:sqs:*:${AWS::AccountId}:kheelona-website-*"
-              - !Sub "arn:aws:dynamodb:*:${AWS::AccountId}:table/kheelona-website-*"
-              - !Sub "arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/lambda/kheelona-website-*"
-              - !Sub "arn:aws:events:*:${AWS::AccountId}:rule/kheelona-website-*"
-              - !Sub "arn:aws:scheduler:*:${AWS::AccountId}:schedule/*/kheelona-website-*"
-              - !Sub "arn:aws:cloudwatch:*:${AWS::AccountId}:alarm:kheelona-website-*"
-              - !Sub "arn:aws:wafv2:us-east-1:${AWS::AccountId}:global/*/kheelona-website-*/*"
-              - !Sub "arn:aws:wafv2:us-east-1:${AWS::AccountId}:global/managedruleset/*/*"
+              - "arn:aws:lambda:*:*:function:kheelona-website-*"
+              - "arn:aws:sqs:*:*:kheelona-website-*"
+              - "arn:aws:dynamodb:*:*:table/kheelona-website-*"
+              - "arn:aws:logs:*:*:log-group:/aws/lambda/kheelona-website-*"
+              - "arn:aws:events:*:*:rule/kheelona-website-*"
+              - "arn:aws:scheduler:*:*:schedule/*/kheelona-website-*"
+              - "arn:aws:cloudwatch:*:*:alarm:kheelona-website-*"
+              - "arn:aws:wafv2:us-east-1:*:global/*/kheelona-website-*/*"
+              - "arn:aws:wafv2:us-east-1:*:global/managedruleset/*/*"
 
           # WebsiteTagged. ALLOW: the same services on resources TAGGED
           # project=website, even when the name does not start kheelona-website-
@@ -252,10 +262,18 @@ Resources:
               StringEquals:
                 "aws:RequestTag/project": website
 
-          # ReadsWithoutResource. ALLOW: read-only lookups that AWS does not let
-          # you limit to one resource. Deliberately NOT lambda:ListFunctions: it
-          # returns every function's environment variables, the backend's
-          # included.
+          # ReadsWithoutResource + CloudFrontConfig. ALLOW, account-wide:
+          # (1) read-only lookups that AWS does not let you limit to one
+          # resource (log group list, WAF managed rule groups, certificates).
+          # Deliberately NOT lambda:ListFunctions: it returns every function's
+          # environment variables, the backend's included.
+          # (2) [Q4, approved 17 Nov] CloudFront cache, origin-request and
+          # response-header policies, origin access controls, functions and
+          # key-value stores. AWS gives these no name in the ARN and no tags,
+          # so neither fence can apply; without them the site cannot be built.
+          # Accepted risk: a compromised deploy could change the admin site's
+          # own custom CloudFront policies (CloudTrail records it).
+          # Distributions themselves stay fenced by the project=website tag.
           - Effect: Allow
             Action:
               - logs:DescribeLogGroups
@@ -268,18 +286,6 @@ Resources:
               - acm:ListCertificates
               - acm:GetCertificate
               - acm:ListTagsForCertificate
-            Resource: "*"
-
-          # [Q4] pending the founder's answer
-          # CloudFrontConfig. ALLOW: CloudFront cache, origin-request and
-          # response-header policies, origin access controls, functions and
-          # key-value stores, account-wide. Why: AWS gives these no name in the
-          # ARN and no tags, so neither fence can apply to them. Without this
-          # the site cannot be created. The risk is that a compromised deploy
-          # could change the admin site's own custom CloudFront policies
-          # (CloudTrail would record it).
-          - Effect: Allow
-            Action:
               - cloudfront:*CachePolic*
               - cloudfront:*OriginRequestPolic*
               - cloudfront:*ResponseHeadersPolic*
@@ -289,11 +295,14 @@ Resources:
               - cloudfront-keyvaluestore:*
             Resource: "*"
 
-          # [Q3] pending the founder's answer
+          # The next four statements are [Q3, approved 17 Nov]: SST's own
+          # account-wide names, limited to the website's entries. The backend
+          # does not use SST, so these are the website's own SST state.
+          #
           # SstBootstrapBuckets. ALLOW: create and configure SST's two
-          # account-wide bootstrap buckets (sst-state-* holds deploy state,
-          # sst-asset-* holds build uploads). SST makes them the first time it
-          # runs in a region.
+          # bootstrap buckets (sst-state-* holds deploy state, sst-asset-*
+          # holds build uploads). SST makes them the first time it runs in a
+          # region.
           - Effect: Allow
             Action:
               - s3:CreateBucket
@@ -307,63 +316,49 @@ Resources:
               - arn:aws:s3:::sst-state-*
               - arn:aws:s3:::sst-asset-*
 
-          # [Q3] pending the founder's answer
-          # SstStateObjects. ALLOW: read and write objects in the SST state
-          # bucket, but only under the website's own app name
-          # (kheelona-website), never another app's state.
+          # SstWebsiteState. ALLOW: (s3) read and write objects in the SST
+          # state bucket, only under the website's own app name
+          # (kheelona-website), never another app's state; (ssm) read, write
+          # and delete the website's own SST passphrase (one per stage).
           - Effect: Allow
             Action:
               - s3:GetObject
               - s3:PutObject
               - s3:DeleteObject
               - s3:DeleteObjectVersion
-            Resource: arn:aws:s3:::sst-state-*/*/kheelona-website/*
+              - ssm:GetParameter
+              - ssm:PutParameter
+              - ssm:DeleteParameter
+            Resource:
+              - arn:aws:s3:::sst-state-*/*/kheelona-website/*
+              - "arn:aws:ssm:*:*:parameter/sst/passphrase/kheelona-website/*"
 
-          # [Q3] pending the founder's answer
-          # SstAssetObjects. ALLOW: read and write build uploads in the SST
+          # SstAssets. ALLOW: (s3) read and write build uploads in the SST
           # asset bucket (SST keys these by content hash, not by app, so they
-          # cannot be narrowed).
+          # cannot be narrowed); (ssm) read SST's bootstrap asset record.
           - Effect: Allow
             Action:
               - s3:GetObject
               - s3:PutObject
               - s3:DeleteObject
-            Resource: arn:aws:s3:::sst-asset-*/*
+              - ssm:GetParameter
+            Resource:
+              - arn:aws:s3:::sst-asset-*/*
+              - "arn:aws:ssm:*:*:parameter/sst/bootstrap/asset"
 
-          # [Q3] pending the founder's answer
-          # SstBootstrapRepo. ALLOW: create and look up SST's shared
-          # container-image repository (named sst-asset) on its first run.
+          # SstBootstrapRecord. ALLOW: (ecr) create and look up SST's
+          # container-image repository (named sst-asset) on its first run;
+          # (ssm) read and write SST's bootstrap record /sst/bootstrap.
           - Effect: Allow
             Action:
               - ecr:CreateRepository
               - ecr:DescribeRepositories
-            Resource: !Sub "arn:aws:ecr:*:${AWS::AccountId}:repository/sst-asset"
-
-          # [Q3] pending the founder's answer
-          # SstParameters. ALLOW: the few SSM parameters SST itself uses: its
-          # bootstrap record (read and write), the bootstrap asset record (read
-          # only) and the website's own encryption passphrase (read, write,
-          # delete).
-          - Effect: Allow
-            Action:
               - ssm:GetParameter
               - ssm:GetParameters
               - ssm:PutParameter
-            Resource: !Sub "arn:aws:ssm:*:${AWS::AccountId}:parameter/sst/bootstrap"
-          # [Q3] pending the founder's answer
-          # SstParameters (continued). ALLOW: read the bootstrap asset record.
-          - Effect: Allow
-            Action: ssm:GetParameter
-            Resource: !Sub "arn:aws:ssm:*:${AWS::AccountId}:parameter/sst/bootstrap/asset"
-          # [Q3] pending the founder's answer
-          # SstParameters (continued). ALLOW: read, write and delete the
-          # website's own SST passphrase (one per stage, under its own folder).
-          - Effect: Allow
-            Action:
-              - ssm:GetParameter
-              - ssm:PutParameter
-              - ssm:DeleteParameter
-            Resource: !Sub "arn:aws:ssm:*:${AWS::AccountId}:parameter/sst/passphrase/kheelona-website/*"
+            Resource:
+              - "arn:aws:ecr:*:*:repository/sst-asset"
+              - "arn:aws:ssm:*:*:parameter/sst/bootstrap"
 
           # WebsiteParameters. ALLOW: read the website's own secrets under
           # /kheelona-website/ in Parameter Store.
@@ -372,7 +367,7 @@ Resources:
               - ssm:GetParameter
               - ssm:GetParameters
               - ssm:GetParametersByPath
-            Resource: !Sub "arn:aws:ssm:*:${AWS::AccountId}:parameter/kheelona-website/*"
+            Resource: "arn:aws:ssm:*:*:parameter/kheelona-website/*"
           # WebsiteParameters (continued). ALLOW: use the AWS-managed key that
           # decrypts those secrets. The condition makes it work only when the
           # call comes through SSM, so it is not a general key permission.
@@ -526,13 +521,13 @@ Resources:
           - Effect: Deny
             Action: ssm:GetParameter*
             NotResource:
-              - !Sub "arn:aws:ssm:*:${AWS::AccountId}:parameter/kheelona-website/*"
-              # [Q3] pending the founder's answer
-              - !Sub "arn:aws:ssm:*:${AWS::AccountId}:parameter/sst/bootstrap"
-              # [Q3] pending the founder's answer
-              - !Sub "arn:aws:ssm:*:${AWS::AccountId}:parameter/sst/bootstrap/asset"
-              # [Q3] pending the founder's answer
-              - !Sub "arn:aws:ssm:*:${AWS::AccountId}:parameter/sst/passphrase/kheelona-website/*"
+              - "arn:aws:ssm:*:*:parameter/kheelona-website/*"
+              # [Q3, approved 17 Nov]
+              - "arn:aws:ssm:*:*:parameter/sst/bootstrap"
+              # [Q3, approved 17 Nov]
+              - "arn:aws:ssm:*:*:parameter/sst/bootstrap/asset"
+              # [Q3, approved 17 Nov]
+              - "arn:aws:ssm:*:*:parameter/sst/passphrase/kheelona-website/*"
 
           # DenyAccountAndBilling. DENY (no condition, no exception): (1)
           # removing the boundary from any role; (2) billing, cost, tax,
