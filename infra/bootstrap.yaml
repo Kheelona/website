@@ -1,0 +1,866 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: >-
+  Kheelona website: GitHub deploy roles, permissions boundary, alerts topic and
+  (optionally) a CloudTrail trail. Deploy in ap-south-1.
+
+# Stack name: kheelona-website-bootstrap. Deployed by hand by the founder from
+# the AWS console (no agent, no workflow). Nothing here changes live traffic.
+#
+# What it creates:
+#   - the managed policy kheelona-website-boundary: the fence around everything
+#     the website's deploys can do in this shared AWS account;
+#   - two roles that GitHub Actions can assume with no stored keys
+#     (kheelona-website-deploy-prod and kheelona-website-deploy-preview);
+#   - the SNS topic kheelona-website-alerts and one email subscription;
+#   - only if you say so: the GitHub OIDC provider and a CloudTrail trail.
+#
+# The console will ask you to acknowledge that this stack creates IAM resources
+# with custom names (CAPABILITY_NAMED_IAM). That is expected.
+#
+# Founder decisions of 17 Nov 2026 marked in this file: [Q3] SST's own names,
+# [Q4] CloudFront parts that cannot carry a name or tag, [Q5] the preview role
+# is denied everything production. Parameter defaults are the founder's
+# answers on environment names and the trail.
+#
+# Size: IAM allows 6,144 characters per managed policy (whitespace excluded).
+# To stay under it, some statements below join two services; an action only
+# ever applies to resources of its own service, so joining two services in one
+# statement grants nothing extra.
+
+Rules:
+  # The deploy roles and the topic belong in ap-south-1, next to the website.
+  RegionIsApSouth1:
+    Assertions:
+      - Assert: !Equals [!Ref "AWS::Region", ap-south-1]
+        AssertDescription: Deploy this stack in ap-south-1 (Mumbai).
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: GitHub
+        Parameters:
+          - GitHubOrg
+          - GitHubRepo
+          - ProductionEnvironmentName
+          - PreviewEnvironmentName
+          - GitHubOidcProvider
+      - Label:
+          default: Alerts
+        Parameters:
+          - AlertEmail
+      - Label:
+          default: CloudTrail (only if the account has no trail yet)
+        Parameters:
+          - CreateTrail
+          - TrailName
+          - TrailBucketName
+          - TrailMultiRegion
+          - TrailLogRetentionDays
+    ParameterLabels:
+      GitHubOrg:
+        default: GitHub organisation that owns the website repository
+      GitHubRepo:
+        default: GitHub repository name
+      ProductionEnvironmentName:
+        default: GitHub environment that may assume the production role
+      PreviewEnvironmentName:
+        default: GitHub environment that may assume the preview role
+      GitHubOidcProvider:
+        default: "GitHub OIDC provider: existing (reuse) or create"
+      AlertEmail:
+        default: Email address that receives the alerts
+      CreateTrail:
+        default: "Create a CloudTrail trail: yes or no"
+      TrailName:
+        default: Trail name (ignored when no trail is created)
+      TrailBucketName:
+        default: Log bucket name (ignored when no trail is created)
+      TrailMultiRegion:
+        default: "Record every region: true or false (ignored when no trail is created)"
+      TrailLogRetentionDays:
+        default: Days to keep log files (ignored when no trail is created)
+
+Parameters:
+  GitHubOrg:
+    Type: String
+    Default: Kheelona
+    Description: GitHub organisation (or user) that owns the website repository.
+  GitHubRepo:
+    Type: String
+    Default: website
+    Description: GitHub repository name.
+  # Defaults = the founder's answer (17 Nov): aws-production and aws-preview.
+  # (Vercel already owns GitHub's Production/Preview environments, and GitHub
+  # environment names ignore case.) A role can only be assumed by a workflow
+  # job that runs in exactly this environment.
+  ProductionEnvironmentName:
+    Type: String
+    Default: aws-production
+    AllowedPattern: '^[A-Za-z0-9._-]+$'
+    ConstraintDescription: Letters, digits, dot, underscore and dash only.
+    Description: Name of the GitHub environment (Settings > Environments) allowed to assume the production role.
+  PreviewEnvironmentName:
+    Type: String
+    Default: aws-preview
+    AllowedPattern: '^[A-Za-z0-9._-]+$'
+    ConstraintDescription: Letters, digits, dot, underscore and dash only.
+    Description: Name of the GitHub environment allowed to assume the preview role. Use a different name from the production one.
+  GitHubOidcProvider:
+    Type: String
+    Default: existing
+    AllowedValues:
+      - existing
+      - create
+    Description: "existing = the account already has the GitHub OIDC provider (it does, so keep this). create = make it here."
+  AlertEmail:
+    Type: String
+    AllowedPattern: '^[^@\s]+@[^@\s]+\.[^@\s]+$'
+    ConstraintDescription: Enter a valid email address.
+    Description: Email for the alerts topic. AWS sends a confirmation link; alerts are not delivered until it is clicked.
+  # The next five matter only when CreateTrail is "yes". Defaults = the
+  # founder's answer (17 Nov): trail kheelona-cloudtrail, every region,
+  # management events only, logs kept 365 days. The bucket name has no default:
+  # S3 names are global, so the founder types a unique one.
+  CreateTrail:
+    Type: String
+    Default: "yes"
+    AllowedValues:
+      - "yes"
+      - "no"
+    Description: "yes = create a CloudTrail trail and its log bucket. Choose no if the account already has a trail."
+  TrailName:
+    Type: String
+    Default: kheelona-cloudtrail
+    AllowedPattern: '^[A-Za-z0-9][A-Za-z0-9._-]{1,126}[A-Za-z0-9]$'
+    ConstraintDescription: 3 to 128 letters, digits, dot, underscore or dash, starting and ending with a letter or digit.
+    Description: Name of the trail.
+  TrailBucketName:
+    Type: String
+    AllowedPattern: '^(?!kheelona-website-)[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$'
+    ConstraintDescription: A valid S3 bucket name that does not start with kheelona-website-.
+    Description: Globally unique S3 bucket name for the logs. It must NOT start with kheelona-website-, so the deploy roles can never touch the logs.
+  TrailMultiRegion:
+    Type: String
+    Default: "true"
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: "true = record events from every region (needed to see IAM and CloudFront activity, which AWS records in us-east-1)."
+  TrailLogRetentionDays:
+    Type: Number
+    Default: 365
+    MinValue: 1
+    Description: Log files are deleted this many days after they are written.
+
+Conditions:
+  CreateOidcProvider: !Equals [!Ref GitHubOidcProvider, create]
+  CreateTrailResources: !Equals [!Ref CreateTrail, "yes"]
+
+Resources:
+  # ---------------------------------------------------------------------------
+  # GitHub OIDC provider: lets GitHub Actions prove who it is to AWS.
+  # Skipped by default: the account already has one and the roles below reuse it.
+  # ---------------------------------------------------------------------------
+  GitHubOidcProviderResource:
+    Type: AWS::IAM::OIDCProvider
+    Condition: CreateOidcProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      Tags:
+        - Key: project
+          Value: website
+
+  # ---------------------------------------------------------------------------
+  # Permissions boundary kheelona-website-boundary.
+  # It is BOTH the ceiling on every website role AND the permission list of the
+  # two deploy roles (one source of truth). A role can do only what is allowed
+  # here, and nothing that is denied here, whatever its own policies say.
+  # AWS limit: 6,144 characters, whitespace excluded. Keep it under. To fit,
+  # ARNs outside IAM use * for the account: a role's own policy can reach
+  # another account's resource only if that account grants it, so naming
+  # this account would add characters, not protection. IAM ARNs keep it.
+  # ---------------------------------------------------------------------------
+  BoundaryPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: kheelona-website-boundary
+      Description: Kheelona website fence. Allow list and hard denies for the website deploy roles and every role they create.
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # WebsiteNamed. ALLOW: everything on resources whose NAME starts
+          # kheelona-website- (buckets, functions, queues, tables, log groups,
+          # rules, schedules, alarms, firewalls). Names are how the website's
+          # own resources are told apart from the backend's in this shared
+          # account. (In an ARN pattern a star also matches the slash, so the
+          # bucket line covers the objects in the buckets too.)
+          - Effect: Allow
+            Action:
+              - s3:*
+              - lambda:*
+              - sqs:*
+              - dynamodb:*
+              - logs:*
+              - events:*
+              - scheduler:*
+              - cloudwatch:*
+              - wafv2:*
+            Resource:
+              - arn:aws:s3:::kheelona-website-*
+              - "arn:aws:lambda:*:*:function:kheelona-website-*"
+              - "arn:aws:sqs:*:*:kheelona-website-*"
+              - "arn:aws:dynamodb:*:*:table/kheelona-website-*"
+              - "arn:aws:logs:*:*:log-group:/aws/lambda/kheelona-website-*"
+              - "arn:aws:events:*:*:rule/kheelona-website-*"
+              - "arn:aws:scheduler:*:*:schedule/*/kheelona-website-*"
+              - "arn:aws:cloudwatch:*:*:alarm:kheelona-website-*"
+              - "arn:aws:wafv2:us-east-1:*:global/*/kheelona-website-*/*"
+              - "arn:aws:wafv2:us-east-1:*:global/managedruleset/*/*"
+
+          # WebsiteTagged. ALLOW: the same services on resources TAGGED
+          # project=website, even when the name does not start kheelona-website-
+          # (SST sometimes shortens names). Includes CloudFront distributions.
+          # S3 is left out on purpose: buckets are allowed by name only, so a
+          # bucket that merely carries the tag (such as the CloudTrail log
+          # bucket) stays out of reach.
+          - Effect: Allow
+            Action:
+              - lambda:*
+              - sqs:*
+              - dynamodb:*
+              - logs:*
+              - events:*
+              - cloudwatch:*
+              - wafv2:*
+              - cloudfront:*
+            Resource: "*"
+            Condition:
+              StringEquals:
+                "aws:ResourceTag/project": website
+
+          # CreateWithProjectTag. ALLOW: creating those resources, but only when
+          # the create request itself carries the tag project=website (a new
+          # resource has no tag yet, so the tag on the request is what gets
+          # checked).
+          - Effect: Allow
+            Action:
+              - lambda:CreateFunction
+              - lambda:TagResource
+              - lambda:CreateEventSourceMapping
+              - sqs:CreateQueue
+              - sqs:TagQueue
+              - dynamodb:CreateTable
+              - dynamodb:TagResource
+              - logs:CreateLogGroup
+              - logs:TagResource
+              - logs:TagLogGroup
+              - events:PutRule
+              - events:TagResource
+              - cloudwatch:PutMetricAlarm
+              - cloudwatch:TagResource
+              - wafv2:CreateWebACL
+              - wafv2:TagResource
+              - cloudfront:CreateDistribution
+              - cloudfront:TagResource
+            Resource: "*"
+            Condition:
+              StringEquals:
+                "aws:RequestTag/project": website
+
+          # ReadsWithoutResource + CloudFrontConfig. ALLOW, account-wide:
+          # (1) read-only lookups that AWS does not let you limit to one
+          # resource (log group list, WAF managed rule groups, certificates).
+          # Deliberately NOT lambda:ListFunctions: it returns every function's
+          # environment variables, the backend's included.
+          # (2) [Q4, approved 17 Nov] CloudFront cache, origin-request and
+          # response-header policies, origin access controls, functions and
+          # key-value stores. AWS gives these no name in the ARN and no tags,
+          # so neither fence can apply; without them the site cannot be built.
+          # Accepted risk: a compromised deploy could change the admin site's
+          # own custom CloudFront policies (CloudTrail records it).
+          # Distributions themselves stay fenced by the project=website tag.
+          - Effect: Allow
+            Action:
+              - logs:DescribeLogGroups
+              - wafv2:ListWebACLs
+              - wafv2:ListAvailableManagedRuleGroups
+              - wafv2:ListAvailableManagedRuleGroupVersions
+              - wafv2:DescribeManagedRuleGroup
+              - wafv2:CheckCapacity
+              - acm:DescribeCertificate
+              - acm:ListCertificates
+              - acm:GetCertificate
+              - acm:ListTagsForCertificate
+              - cloudfront:*CachePolic*
+              - cloudfront:*OriginRequestPolic*
+              - cloudfront:*ResponseHeadersPolic*
+              - cloudfront:*OriginAccessControl*
+              - cloudfront:*Function*
+              - cloudfront:*KeyValueStore*
+              - cloudfront-keyvaluestore:*
+            Resource: "*"
+
+          # The next four statements are [Q3, approved 17 Nov]: SST's own
+          # account-wide names, limited to the website's entries. The backend
+          # does not use SST, so these are the website's own SST state.
+          #
+          # SstBootstrapBuckets. ALLOW: create and configure SST's two
+          # bootstrap buckets (sst-state-* holds deploy state, sst-asset-*
+          # holds build uploads). SST makes them the first time it runs in a
+          # region.
+          - Effect: Allow
+            Action:
+              - s3:CreateBucket
+              - s3:PutBucketVersioning
+              - s3:PutBucketNotification
+              - s3:PutBucketPolicy
+              - s3:GetBucketLocation
+              - s3:ListBucket
+              - s3:ListBucketVersions
+            Resource:
+              - arn:aws:s3:::sst-state-*
+              - arn:aws:s3:::sst-asset-*
+
+          # SstWebsiteState. ALLOW: (s3) read and write objects in the SST
+          # state bucket, only under the website's own app name
+          # (kheelona-website), never another app's state; (ssm) read, write
+          # and delete the website's own SST passphrase (one per stage).
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:PutObject
+              - s3:DeleteObject
+              - s3:DeleteObjectVersion
+              - ssm:GetParameter
+              - ssm:PutParameter
+              - ssm:DeleteParameter
+            Resource:
+              - arn:aws:s3:::sst-state-*/*/kheelona-website/*
+              - "arn:aws:ssm:*:*:parameter/sst/passphrase/kheelona-website/*"
+
+          # SstAssets. ALLOW: (s3) read and write build uploads in the SST
+          # asset bucket (SST keys these by content hash, not by app, so they
+          # cannot be narrowed); (ssm) read SST's bootstrap asset record.
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:PutObject
+              - s3:DeleteObject
+              - ssm:GetParameter
+            Resource:
+              - arn:aws:s3:::sst-asset-*/*
+              - "arn:aws:ssm:*:*:parameter/sst/bootstrap/asset"
+
+          # SstBootstrapRecord. ALLOW: (ecr) create and look up SST's
+          # container-image repository (named sst-asset) on its first run;
+          # (ssm) read and write SST's bootstrap record /sst/bootstrap.
+          - Effect: Allow
+            Action:
+              - ecr:CreateRepository
+              - ecr:DescribeRepositories
+              - ssm:GetParameter
+              - ssm:GetParameters
+              - ssm:PutParameter
+            Resource:
+              - "arn:aws:ecr:*:*:repository/sst-asset"
+              - "arn:aws:ssm:*:*:parameter/sst/bootstrap"
+
+          # WebsiteParameters. ALLOW: read the website's own secrets under
+          # /kheelona-website/ in Parameter Store.
+          - Effect: Allow
+            Action:
+              - ssm:GetParameter
+              - ssm:GetParameters
+              - ssm:GetParametersByPath
+            Resource: "arn:aws:ssm:*:*:parameter/kheelona-website/*"
+          # WebsiteParameters (continued). ALLOW: use the AWS-managed key that
+          # decrypts those secrets. The condition makes it work only when the
+          # call comes through SSM, so it is not a general key permission.
+          - Effect: Allow
+            Action:
+              - kms:Decrypt
+              - kms:Encrypt
+              - kms:GenerateDataKey
+            Resource: "*"
+            Condition:
+              StringLike:
+                "kms:ViaService": ssm.*.amazonaws.com
+
+          # WebsiteRolesWithBoundary. ALLOW: create and change IAM roles named
+          # kheelona-website-*, but ONLY when the role carries this boundary
+          # policy. So any role the website makes (for example a Lambda
+          # execution role) is fenced by this same policy and can never be given
+          # more power than the deploy roles have.
+          - Effect: Allow
+            Action:
+              - iam:CreateRole
+              - iam:PutRolePolicy
+              - iam:DeleteRolePolicy
+              - iam:AttachRolePolicy
+              - iam:DetachRolePolicy
+              - iam:PutRolePermissionsBoundary
+              - iam:UpdateAssumeRolePolicy
+            Resource: !Sub "arn:aws:iam::${AWS::AccountId}:role/kheelona-website-*"
+            Condition:
+              StringEquals:
+                "iam:PermissionsBoundary": !Sub "arn:aws:iam::${AWS::AccountId}:policy/kheelona-website-boundary"
+
+          # WebsiteRolesManage. ALLOW: look at, tag, edit the description of,
+          # and delete the same kheelona-website-* roles (no permission change,
+          # so no boundary test).
+          - Effect: Allow
+            Action:
+              - iam:GetRole
+              - iam:GetRolePolicy
+              - iam:ListRolePolicies
+              - iam:ListAttachedRolePolicies
+              - iam:ListRoleTags
+              - iam:ListInstanceProfilesForRole
+              - iam:TagRole
+              - iam:UntagRole
+              - iam:UpdateRole
+              - iam:UpdateRoleDescription
+              - iam:DeleteRole
+            Resource: !Sub "arn:aws:iam::${AWS::AccountId}:role/kheelona-website-*"
+
+          # PassWebsiteRoles. ALLOW: hand a kheelona-website-* role to Lambda or
+          # EventBridge Scheduler (so a function can run as its role), and to
+          # nothing else.
+          - Effect: Allow
+            Action: iam:PassRole
+            Resource: !Sub "arn:aws:iam::${AWS::AccountId}:role/kheelona-website-*"
+            Condition:
+              StringEquals:
+                "iam:PassedToService":
+                  - lambda.amazonaws.com
+                  - scheduler.amazonaws.com
+
+          # DenyOtherRegions. DENY: any request outside Mumbai (ap-south-1) and
+          # N. Virginia (us-east-1). Overrides every allow. Global services such
+          # as CloudFront and IAM count as us-east-1.
+          - Effect: Deny
+            Action: "*"
+            Resource: "*"
+            Condition:
+              StringNotEquals:
+                "aws:RequestedRegion":
+                  - ap-south-1
+                  - us-east-1
+
+          # DenyOtherProjects. DENY: touching any resource that is tagged
+          # project=<something else>. This protects the backend's tagged
+          # resources. It fires only when the tag exists with a different value,
+          # so untagged and website resources are not affected by this rule.
+          - Effect: Deny
+            Action: "*"
+            Resource: "*"
+            Condition:
+              StringNotEquals:
+                "aws:ResourceTag/project": website
+              "Null":
+                "aws:ResourceTag/project": "false"
+
+          # DenyRelabel. DENY: setting the project tag to anything but website
+          # on a request (stops relabelling a backend resource, or a website
+          # one, to another project). Fires only when the request carries a
+          # project tag.
+          - Effect: Deny
+            Action: "*"
+            Resource: "*"
+            Condition:
+              StringNotEquals:
+                "aws:RequestTag/project": website
+              "Null":
+                "aws:RequestTag/project": "false"
+
+          # DenyCreateWithoutProjectTag. DENY: creating a function, role, queue,
+          # table, log group, distribution or firewall without the tag
+          # project=website on the create request. A missing tag counts as "not
+          # website", so an untagged create is refused.
+          - Effect: Deny
+            Action:
+              - lambda:CreateFunction
+              - iam:CreateRole
+              - sqs:CreateQueue
+              - dynamodb:CreateTable
+              - logs:CreateLogGroup
+              - cloudfront:CreateDistribution
+              - wafv2:CreateWebACL
+            Resource: "*"
+            Condition:
+              StringNotEquals:
+                "aws:RequestTag/project": website
+
+          # DenyRoleWithoutBoundary. DENY: creating a role, or changing a role's
+          # boundary, to anything other than this boundary policy. A missing
+          # boundary counts as "not this one", so a role without it cannot be
+          # created.
+          - Effect: Deny
+            Action:
+              - iam:CreateRole
+              - iam:PutRolePermissionsBoundary
+            Resource: "*"
+            Condition:
+              StringNotEquals:
+                "iam:PermissionsBoundary": !Sub "arn:aws:iam::${AWS::AccountId}:policy/kheelona-website-boundary"
+
+          # DenyProtectedIam. DENY: everything except reading on the two deploy
+          # roles, this boundary policy and the GitHub OIDC provider. The deploy
+          # roles cannot edit, widen or delete their own fence or the way in to
+          # the account.
+          - Effect: Deny
+            NotAction:
+              - iam:Get*
+              - iam:List*
+            Resource:
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/kheelona-website-deploy-*"
+              - !Sub "arn:aws:iam::${AWS::AccountId}:policy/kheelona-website-boundary"
+              - !Sub "arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com"
+
+          # DenyOtherParameters. DENY: reading any Parameter Store entry that is
+          # NOT in the list below (ssm:GetParameter* = GetParameter,
+          # GetParameters, GetParametersByPath and GetParameterHistory).
+          # NotResource means the deny applies to every parameter except those
+          # listed. So the website can read only its own secrets, never the
+          # backend's.
+          - Effect: Deny
+            Action: ssm:GetParameter*
+            NotResource:
+              - "arn:aws:ssm:*:*:parameter/kheelona-website/*"
+              # [Q3, approved 17 Nov]
+              - "arn:aws:ssm:*:*:parameter/sst/bootstrap"
+              # [Q3, approved 17 Nov]
+              - "arn:aws:ssm:*:*:parameter/sst/bootstrap/asset"
+              # [Q3, approved 17 Nov]
+              - "arn:aws:ssm:*:*:parameter/sst/passphrase/kheelona-website/*"
+
+          # DenyAccountAndBilling. DENY (no condition, no exception): (1)
+          # removing the boundary from any role; (2) billing, cost, tax,
+          # payments, Organizations and account-wide settings (account alias,
+          # password policy, STS settings). The website never needs them, and
+          # the founder sets budgets by hand.
+          - Effect: Deny
+            Action:
+              - iam:DeleteRolePermissionsBoundary
+              - aws-portal:*
+              - billing:*
+              - budgets:*
+              - ce:*
+              - cur:*
+              - bcm-data-exports:*
+              - payments:*
+              - tax:*
+              - invoicing:*
+              - freetier:*
+              - purchase-orders:*
+              - consolidatedbilling:*
+              - account:*
+              - organizations:*
+              - iam:*AccountAlias
+              - iam:*AccountPasswordPolicy
+              - iam:SetSecurityTokenServicePreferences
+            Resource: "*"
+
+  # ---------------------------------------------------------------------------
+  # The two deploy roles. GitHub Actions assumes one of them (no stored keys),
+  # and only from the named GitHub environment of this one repository.
+  # Each role carries the boundary twice, on purpose: as its ceiling and as its
+  # list of permissions (one source of truth). Sessions last the IAM default
+  # of 1 hour.
+  # ---------------------------------------------------------------------------
+  DeployProdRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: kheelona-website-deploy-prod
+      Description: GitHub Actions deploy role for the website production stage.
+      PermissionsBoundary: !Ref BoundaryPolicy
+      ManagedPolicyArns:
+        - !Ref BoundaryPolicy
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # TRUST: only GitHub's OIDC provider may assume this role, only for the
+          # AWS audience, and only when the token's subject is the production
+          # environment of the website repository. Any other repo, branch or
+          # environment is refused.
+          - Effect: Allow
+            Principal:
+              Federated: !If
+                - CreateOidcProvider
+                - !Ref GitHubOidcProviderResource
+                - !Sub "arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com"
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                "token.actions.githubusercontent.com:aud": sts.amazonaws.com
+                "token.actions.githubusercontent.com:sub": !Sub "repo:${GitHubOrg}/${GitHubRepo}:environment:${ProductionEnvironmentName}"
+      Tags:
+        - Key: project
+          Value: website
+
+  DeployPreviewRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: kheelona-website-deploy-preview
+      Description: GitHub Actions deploy role for website preview and spike stages. Cannot read production secrets.
+      PermissionsBoundary: !Ref BoundaryPolicy
+      ManagedPolicyArns:
+        - !Ref BoundaryPolicy
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # TRUST: same as the production role, but for the preview environment.
+          - Effect: Allow
+            Principal:
+              Federated: !If
+                - CreateOidcProvider
+                - !Ref GitHubOidcProviderResource
+                - !Sub "arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com"
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                "token.actions.githubusercontent.com:aud": sts.amazonaws.com
+                "token.actions.githubusercontent.com:sub": !Sub "repo:${GitHubOrg}/${GitHubRepo}:environment:${PreviewEnvironmentName}"
+      Policies:
+        # Extra limits, on top of the boundary, only for the preview role.
+        - PolicyName: preview-limits
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              # DENY: reading anything under /kheelona-website/production, so a
+              # preview deploy (which runs code from pull requests) can never read
+              # the production secrets.
+              - Sid: DenyProductionSecrets
+                Effect: Deny
+                Action: ssm:GetParameter*
+                Resource: !Sub "arn:aws:ssm:*:${AWS::AccountId}:parameter/kheelona-website/production*"
+
+              # [Q5, approved 17 Nov]
+              # DENY: every action on anything that belongs to the production
+              # stage (names starting kheelona-website-production-, SST's
+              # production state and passphrase). A preview deploy could otherwise
+              # read production secrets from the production Lambda's settings or
+              # from SST's state.
+              - Sid: DenyProductionStageByName
+                Effect: Deny
+                Action: "*"
+                Resource:
+                  - !Sub "arn:aws:lambda:*:${AWS::AccountId}:function:kheelona-website-production-*"
+                  - arn:aws:s3:::kheelona-website-production-*
+                  - arn:aws:s3:::kheelona-website-production-*/*
+                  - !Sub "arn:aws:sqs:*:${AWS::AccountId}:kheelona-website-production-*"
+                  - !Sub "arn:aws:dynamodb:*:${AWS::AccountId}:table/kheelona-website-production-*"
+                  - !Sub "arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/lambda/kheelona-website-production-*"
+                  - !Sub "arn:aws:iam::${AWS::AccountId}:role/kheelona-website-production-*"
+                  - !Sub "arn:aws:events:*:${AWS::AccountId}:rule/kheelona-website-production-*"
+                  - !Sub "arn:aws:scheduler:*:${AWS::AccountId}:schedule/*/kheelona-website-production-*"
+                  - !Sub "arn:aws:cloudwatch:*:${AWS::AccountId}:alarm:kheelona-website-production-*"
+                  - !Sub "arn:aws:wafv2:us-east-1:${AWS::AccountId}:global/*/kheelona-website-production-*/*"
+                  - arn:aws:s3:::sst-state-*/*/kheelona-website/production*
+                  - !Sub "arn:aws:ssm:*:${AWS::AccountId}:parameter/sst/passphrase/kheelona-website/production"
+
+              # [Q5, approved 17 Nov]
+              # DENY: every action on any resource tagged stage=production (this
+              # catches production resources whose name was shortened by SST).
+              - Sid: DenyProductionStageByTag
+                Effect: Deny
+                Action: "*"
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    "aws:ResourceTag/stage": production
+
+              # [Q5, approved 17 Nov]
+              # DENY: creating or tagging anything as stage=production.
+              - Sid: DenyProductionStageTagging
+                Effect: Deny
+                Action: "*"
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    "aws:RequestTag/stage": production
+      Tags:
+        - Key: project
+          Value: website
+
+  # ---------------------------------------------------------------------------
+  # Alerts topic (ap-south-1). Alarms and budget alerts publish here; the
+  # founder receives them by email. The CloudFront/WAF alarms use the second
+  # topic in the certificate stack (us-east-1).
+  # ---------------------------------------------------------------------------
+  AlertsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: kheelona-website-alerts
+      Tags:
+        - Key: project
+          Value: website
+
+  AlertsEmailSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref AlertsTopic
+      Protocol: email
+      Endpoint: !Ref AlertEmail
+
+  # No KMS key on the topic on purpose: CloudWatch alarms and Budgets cannot
+  # publish to a topic encrypted with the AWS-managed SNS key.
+  AlertsTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref AlertsTopic
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # ALLOW: this AWS account manages and publishes to its own topic.
+          - Sid: AccountOwnerManagesTopic
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action:
+              - sns:GetTopicAttributes
+              - sns:SetTopicAttributes
+              - sns:AddPermission
+              - sns:RemovePermission
+              - sns:DeleteTopic
+              - sns:Subscribe
+              - sns:ListSubscriptionsByTopic
+              - sns:Publish
+            Resource: !Ref AlertsTopic
+          # ALLOW: CloudWatch alarms publish to the topic, but only alarms from
+          # this account.
+          - Sid: CloudWatchAlarmsPublish
+            Effect: Allow
+            Principal:
+              Service: cloudwatch.amazonaws.com
+            Action: sns:Publish
+            Resource: !Ref AlertsTopic
+            Condition:
+              StringEquals:
+                "aws:SourceAccount": !Ref "AWS::AccountId"
+          # ALLOW: AWS Budgets publishes budget alerts to the topic, but only
+          # for this account (the founder creates the budget by hand and points
+          # it here).
+          - Sid: BudgetsPublish
+            Effect: Allow
+            Principal:
+              Service: budgets.amazonaws.com
+            Action: sns:Publish
+            Resource: !Ref AlertsTopic
+            Condition:
+              StringEquals:
+                "aws:SourceAccount": !Ref "AWS::AccountId"
+
+  # ---------------------------------------------------------------------------
+  # CloudTrail (only when CreateTrail = yes; the account has none today).
+  # Management events only (who changed what), the first copy of which is free.
+  # ---------------------------------------------------------------------------
+  TrailBucket:
+    Type: AWS::S3::Bucket
+    Condition: CreateTrailResources
+    # The logs outlive the stack: deleting the stack keeps the bucket.
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Ref TrailBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - Id: expire-logs
+            Status: Enabled
+            ExpirationInDays: !Ref TrailLogRetentionDays
+      Tags:
+        - Key: project
+          Value: website
+
+  TrailBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Condition: CreateTrailResources
+    Properties:
+      Bucket: !Ref TrailBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # ALLOW: CloudTrail checks the bucket's access settings, but only on
+          # behalf of this one trail.
+          - Sid: AWSCloudTrailAclCheck
+            Effect: Allow
+            Principal:
+              Service: cloudtrail.amazonaws.com
+            Action: s3:GetBucketAcl
+            Resource: !GetAtt TrailBucket.Arn
+            Condition:
+              StringEquals:
+                "aws:SourceArn": !Sub "arn:aws:cloudtrail:${AWS::Region}:${AWS::AccountId}:trail/${TrailName}"
+          # ALLOW: CloudTrail writes log files under this account's folder, only
+          # for this one trail, and only while giving the bucket owner full control.
+          - Sid: AWSCloudTrailWrite
+            Effect: Allow
+            Principal:
+              Service: cloudtrail.amazonaws.com
+            Action: s3:PutObject
+            Resource: !Sub "${TrailBucket.Arn}/AWSLogs/${AWS::AccountId}/*"
+            Condition:
+              StringEquals:
+                "s3:x-amz-acl": bucket-owner-full-control
+                "aws:SourceArn": !Sub "arn:aws:cloudtrail:${AWS::Region}:${AWS::AccountId}:trail/${TrailName}"
+          # DENY: any access to the bucket over plain HTTP (not TLS).
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: "*"
+            Action: s3:*
+            Resource:
+              - !GetAtt TrailBucket.Arn
+              - !Sub "${TrailBucket.Arn}/*"
+            Condition:
+              Bool:
+                "aws:SecureTransport": "false"
+
+  Trail:
+    Type: AWS::CloudTrail::Trail
+    Condition: CreateTrailResources
+    DependsOn: TrailBucketPolicy
+    Properties:
+      TrailName: !Ref TrailName
+      S3BucketName: !Ref TrailBucket
+      IsLogging: true
+      IsMultiRegionTrail: !Ref TrailMultiRegion
+      IncludeGlobalServiceEvents: true
+      EnableLogFileValidation: true
+      Tags:
+        - Key: project
+          Value: website
+
+Outputs:
+  DeployProdRoleArn:
+    Description: Production deploy role. Add to the production GitHub environment.
+    Value: !GetAtt DeployProdRole.Arn
+  DeployPreviewRoleArn:
+    Description: Preview deploy role. Add to the preview GitHub environment.
+    Value: !GetAtt DeployPreviewRole.Arn
+  BoundaryPolicyArn:
+    Description: Permissions boundary for every website role.
+    Value: !Ref BoundaryPolicy
+  AlertsTopicArn:
+    Description: ap-south-1 alerts topic (alarms and budget alerts).
+    Value: !Ref AlertsTopic
+  TrailBucketNameOut:
+    Condition: CreateTrailResources
+    Description: CloudTrail log bucket.
+    Value: !Ref TrailBucket
