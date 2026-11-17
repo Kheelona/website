@@ -35,6 +35,21 @@ the founder is recorded in `wiki/decisions/` and `wiki/log.md`, and the latest l
   never take a `NEXT_PUBLIC_` name.
 - Next.js 16 is not the Next.js in your training data: @AGENTS.md
 
+## Hosting (moving to AWS; Vercel stays live until the switch)
+- Live: Vercel (rule above). Target: AWS, same account as api/admin: CloudFront + Lambda + S3 in ap-south-1
+  via OpenNext/SST, certificate in us-east-1. Switch only when every check passes and the founder says go; DNS last.
+- Agents never hold AWS credentials and never run `aws`, `sst`, `cdk` or anything that calls AWS. The founder
+  (AWS tech owner) deploys `infra/` from the console; later, GitHub Actions via the OIDC roles only (no stored keys).
+- `infra/cert.yaml` = stack `kheelona-website-cert` (us-east-1): ACM certificate for the 3 names, DNS validation in
+  Cloudflare. `infra/bootstrap.yaml` = stack `kheelona-website-bootstrap` (ap-south-1): 2 deploy roles, the boundary
+  policy, SNS alerts topic, optional OIDC provider and CloudTrail trail.
+- Fences: names `kheelona-website-*` and/or tag `project=website` + `stage`; ap-south-1 and us-east-1 only; every
+  website role carries `kheelona-website-boundary`; never read, tag or change a backend resource; no stage name
+  starting `deploy`.
+- Secrets: SSM SecureString `/kheelona-website/production/<NAME>` in ap-south-1, same 12 names as Vercel, entered
+  by the founder only. Budget and anomaly alerts: the founder sets them in the console.
+- Every migration PR updates this section.
+
 ## Wiki
 Karpathy's "LLM Wiki" pattern; opens cleanly in Obsidian. Three layers: `wiki/raw/` (immutable
 sources: read, never edit), the wiki pages (maintained by Claude), and this schema.

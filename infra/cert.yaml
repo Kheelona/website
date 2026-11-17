@@ -1,0 +1,126 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: >-
+  Kheelona website: ACM certificate for CloudFront (kheelona.com, www, store).
+  Deploy in us-east-1. DNS validation records go in Cloudflare.
+
+# Stack name: kheelona-website-cert. Deployed by hand by the founder from the
+# AWS console (no agent, no workflow). The stack stays in CREATE_IN_PROGRESS
+# until the 3 validation CNAME records exist in Cloudflare (DNS only, proxy
+# off). Copy them from the Certificate's detail page in ACM, or from the stack
+# Events tab, while the stack waits. Nothing here changes live traffic.
+
+Rules:
+  # CloudFront only accepts certificates that live in us-east-1.
+  RegionIsUsEast1:
+    Assertions:
+      - Assert: !Equals [!Ref "AWS::Region", us-east-1]
+        AssertDescription: >-
+          Deploy this stack in us-east-1 (N. Virginia). CloudFront only accepts
+          ACM certificates from that region.
+
+# The Metadata and Parameters blocks below exist only for the alerts topic.
+# [Q7] pending the founder's answer
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Alerts
+        Parameters:
+          - AlertEmail
+    ParameterLabels:
+      AlertEmail:
+        default: Email address that receives CloudFront and WAF alarms
+
+# [Q7] pending the founder's answer
+Parameters:
+  # Typed in the console at deploy time, never stored in the repo. AWS emails
+  # a confirmation link to this address; alarms are not delivered until the
+  # link is clicked.
+  AlertEmail:
+    Type: String
+    Description: Email for the us-east-1 alerts topic. Confirm the subscription AWS emails you.
+    AllowedPattern: '^[^@\s]+@[^@\s]+\.[^@\s]+$'
+    ConstraintDescription: Enter a valid email address.
+
+Resources:
+  # One certificate for all three site names. No DomainValidationOptions and
+  # no Route 53: DNS lives in Cloudflare, so the founder adds the CNAMEs by hand.
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: kheelona.com
+      SubjectAlternativeNames:
+        - www.kheelona.com
+        - store.kheelona.com
+      ValidationMethod: DNS
+      Tags:
+        - Key: project
+          Value: website
+
+  # [Q7] pending the founder's answer
+  # Second alerts topic, in us-east-1, because CloudFront and WAF metrics (and
+  # so their alarms) live in us-east-1 and an alarm can only notify a topic in
+  # its own region. The ap-south-1 topic is in the bootstrap stack.
+  AlertsTopicUsEast1:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: kheelona-website-alerts
+      Tags:
+        - Key: project
+          Value: website
+
+  # [Q7] pending the founder's answer
+  AlertsEmailSubscriptionUsEast1:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref AlertsTopicUsEast1
+      Protocol: email
+      Endpoint: !Ref AlertEmail
+
+  # [Q7] pending the founder's answer
+  AlertsTopicPolicyUsEast1:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref AlertsTopicUsEast1
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # Lets this AWS account manage and publish to its own topic. Without
+          # it, the owner of the topic could lock themselves out of it.
+          - Sid: AccountOwnerManagesTopic
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action:
+              - sns:GetTopicAttributes
+              - sns:SetTopicAttributes
+              - sns:AddPermission
+              - sns:RemovePermission
+              - sns:DeleteTopic
+              - sns:Subscribe
+              - sns:ListSubscriptionsByTopic
+              - sns:Publish
+            Resource: !Ref AlertsTopicUsEast1
+          # Lets CloudWatch alarms publish to the topic, but only alarms from
+          # this account (stops other accounts from using the topic).
+          - Sid: CloudWatchAlarmsPublish
+            Effect: Allow
+            Principal:
+              Service: cloudwatch.amazonaws.com
+            Action: sns:Publish
+            Resource: !Ref AlertsTopicUsEast1
+            Condition:
+              StringEquals:
+                "aws:SourceAccount": !Ref "AWS::AccountId"
+
+Outputs:
+  CertificateArn:
+    Description: Certificate for CloudFront. The SST app (PR-2) uses it for the 3 aliases.
+    Value: !Ref Certificate
+
+  # [Q7] pending the founder's answer
+  AlertsTopicArn:
+    Description: us-east-1 alerts topic for CloudFront and WAF alarms.
+    Value: !Ref AlertsTopicUsEast1
