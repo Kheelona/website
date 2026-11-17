@@ -18,10 +18,10 @@ Description: >-
 # The console will ask you to acknowledge that this stack creates IAM resources
 # with custom names (CAPABILITY_NAMED_IAM). That is expected.
 #
-# Blocks marked [Q5] wait on a founder answer; the marker sits directly above
-# the block, so a "no" removes exactly that block. [Q3] (SST's own names) and
-# [Q4] (CloudFront parts that cannot carry a name or tag) were approved by the
-# founder on 17 Nov 2026.
+# Founder decisions of 17 Nov 2026 marked in this file: [Q3] SST's own names,
+# [Q4] CloudFront parts that cannot carry a name or tag, [Q5] the preview role
+# is denied everything production. Parameter defaults are the founder's
+# answers on environment names and the trail.
 #
 # Size: IAM allows 6,144 characters per managed policy (whitespace excluded).
 # To stay under it, some statements below join two services; an action only
@@ -91,15 +91,19 @@ Parameters:
     Type: String
     Default: website
     Description: GitHub repository name.
-  # No default on purpose: the names are the founder's answer to Q1. A role can
-  # only be assumed by a workflow job that runs in exactly this environment.
+  # Defaults = the founder's answer (17 Nov): aws-production and aws-preview.
+  # (Vercel already owns GitHub's Production/Preview environments, and GitHub
+  # environment names ignore case.) A role can only be assumed by a workflow
+  # job that runs in exactly this environment.
   ProductionEnvironmentName:
     Type: String
+    Default: aws-production
     AllowedPattern: '^[A-Za-z0-9._-]+$'
     ConstraintDescription: Letters, digits, dot, underscore and dash only.
     Description: Name of the GitHub environment (Settings > Environments) allowed to assume the production role.
   PreviewEnvironmentName:
     Type: String
+    Default: aws-preview
     AllowedPattern: '^[A-Za-z0-9._-]+$'
     ConstraintDescription: Letters, digits, dot, underscore and dash only.
     Description: Name of the GitHub environment allowed to assume the preview role. Use a different name from the production one.
@@ -115,17 +119,20 @@ Parameters:
     AllowedPattern: '^[^@\s]+@[^@\s]+\.[^@\s]+$'
     ConstraintDescription: Enter a valid email address.
     Description: Email for the alerts topic. AWS sends a confirmation link; alerts are not delivered until it is clicked.
-  # The next five matter only when CreateTrail is "yes". They have no defaults
-  # (they are the founder's answer to Q2), so the console asks for a value for
-  # each; when CreateTrail is "no" any valid value is fine and is ignored.
+  # The next five matter only when CreateTrail is "yes". Defaults = the
+  # founder's answer (17 Nov): trail kheelona-cloudtrail, every region,
+  # management events only, logs kept 365 days. The bucket name has no default:
+  # S3 names are global, so the founder types a unique one.
   CreateTrail:
     Type: String
+    Default: "yes"
     AllowedValues:
       - "yes"
       - "no"
     Description: "yes = create a CloudTrail trail and its log bucket. Choose no if the account already has a trail."
   TrailName:
     Type: String
+    Default: kheelona-cloudtrail
     AllowedPattern: '^[A-Za-z0-9][A-Za-z0-9._-]{1,126}[A-Za-z0-9]$'
     ConstraintDescription: 3 to 128 letters, digits, dot, underscore or dash, starting and ending with a letter or digit.
     Description: Name of the trail.
@@ -136,12 +143,14 @@ Parameters:
     Description: Globally unique S3 bucket name for the logs. It must NOT start with kheelona-website-, so the deploy roles can never touch the logs.
   TrailMultiRegion:
     Type: String
+    Default: "true"
     AllowedValues:
       - "true"
       - "false"
     Description: "true = record events from every region (needed to see IAM and CloudFront activity, which AWS records in us-east-1)."
   TrailLogRetentionDays:
     Type: Number
+    Default: 365
     MinValue: 1
     Description: Log files are deleted this many days after they are written.
 
@@ -630,7 +639,7 @@ Resources:
                 Action: ssm:GetParameter*
                 Resource: !Sub "arn:aws:ssm:*:${AWS::AccountId}:parameter/kheelona-website/production*"
 
-              # [Q5] pending the founder's answer
+              # [Q5, approved 17 Nov]
               # DENY: every action on anything that belongs to the production
               # stage (names starting kheelona-website-production-, SST's
               # production state and passphrase). A preview deploy could otherwise
@@ -654,7 +663,7 @@ Resources:
                   - arn:aws:s3:::sst-state-*/*/kheelona-website/production*
                   - !Sub "arn:aws:ssm:*:${AWS::AccountId}:parameter/sst/passphrase/kheelona-website/production"
 
-              # [Q5] pending the founder's answer
+              # [Q5, approved 17 Nov]
               # DENY: every action on any resource tagged stage=production (this
               # catches production resources whose name was shortened by SST).
               - Sid: DenyProductionStageByTag
@@ -665,7 +674,7 @@ Resources:
                   StringEquals:
                     "aws:ResourceTag/stage": production
 
-              # [Q5] pending the founder's answer
+              # [Q5, approved 17 Nov]
               # DENY: creating or tagging anything as stage=production.
               - Sid: DenyProductionStageTagging
                 Effect: Deny

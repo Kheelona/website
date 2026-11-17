@@ -40,9 +40,12 @@ the founder is recorded in `wiki/decisions/` and `wiki/log.md`, and the latest l
   via OpenNext/SST, certificate in us-east-1. Switch only when every check passes and the founder says go; DNS last.
 - Agents never hold AWS credentials and never run `aws`, `sst`, `cdk` or anything that calls AWS. The founder
   (AWS tech owner) deploys `infra/` from the console; later, GitHub Actions via the OIDC roles only (no stored keys).
-- `infra/cert.yaml` = stack `kheelona-website-cert` (us-east-1): ACM certificate for the 3 names, DNS validation in
-  Cloudflare. `infra/bootstrap.yaml` = stack `kheelona-website-bootstrap` (ap-south-1): 2 deploy roles, the boundary
-  policy, SNS alerts topic, optional OIDC provider and CloudTrail trail.
+- `infra/cert.yaml` = stack `kheelona-website-cert` (us-east-1): ACM certificate for the 3 names (DNS validation in
+  Cloudflare) + alerts topic `kheelona-website-alerts` for CloudFront/WAF alarms. `infra/bootstrap.yaml` = stack
+  `kheelona-website-bootstrap` (ap-south-1): 2 deploy roles, the boundary policy, alerts topic `kheelona-website-alerts`,
+  trail `kheelona-cloudtrail` (reuses the account's GitHub OIDC provider).
+- GitHub environments `aws-production` (branch `main` only) and `aws-preview`, each with variables
+  `AWS_DEPLOY_ROLE_ARN` and `AWS_ACCOUNT_ID`. `Production`/`Preview` belong to Vercel: never touch them.
 - Fences: names `kheelona-website-*` and/or tag `project=website` + `stage`; ap-south-1 and us-east-1 only; every
   website role carries `kheelona-website-boundary`; never read, tag or change a backend resource; no stage name
   starting `deploy`.

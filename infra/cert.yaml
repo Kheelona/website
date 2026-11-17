@@ -20,7 +20,7 @@ Rules:
           ACM certificates from that region.
 
 # The Metadata and Parameters blocks below exist only for the alerts topic.
-# [Q7] pending the founder's answer
+# [Q7, approved 17 Nov]
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -32,7 +32,7 @@ Metadata:
       AlertEmail:
         default: Email address that receives CloudFront and WAF alarms
 
-# [Q7] pending the founder's answer
+# [Q7, approved 17 Nov]
 Parameters:
   # Typed in the console at deploy time, never stored in the repo. AWS emails
   # a confirmation link to this address; alarms are not delivered until the
@@ -58,7 +58,7 @@ Resources:
         - Key: project
           Value: website
 
-  # [Q7] pending the founder's answer
+  # [Q7, approved 17 Nov]
   # Second alerts topic, in us-east-1, because CloudFront and WAF metrics (and
   # so their alarms) live in us-east-1 and an alarm can only notify a topic in
   # its own region. The ap-south-1 topic is in the bootstrap stack.
@@ -70,7 +70,7 @@ Resources:
         - Key: project
           Value: website
 
-  # [Q7] pending the founder's answer
+  # [Q7, approved 17 Nov]
   AlertsEmailSubscriptionUsEast1:
     Type: AWS::SNS::Subscription
     Properties:
@@ -78,7 +78,7 @@ Resources:
       Protocol: email
       Endpoint: !Ref AlertEmail
 
-  # [Q7] pending the founder's answer
+  # [Q7, approved 17 Nov]
   AlertsTopicPolicyUsEast1:
     Type: AWS::SNS::TopicPolicy
     Properties:
@@ -120,7 +120,7 @@ Outputs:
     Description: Certificate for CloudFront. The SST app (PR-2) uses it for the 3 aliases.
     Value: !Ref Certificate
 
-  # [Q7] pending the founder's answer
+  # [Q7, approved 17 Nov]
   AlertsTopicArn:
     Description: us-east-1 alerts topic for CloudFront and WAF alarms.
     Value: !Ref AlertsTopicUsEast1
