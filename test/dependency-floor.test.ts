@@ -33,7 +33,7 @@ import { describe, expect, it } from "vitest";
 const FLOORS: { name: string; min: string; why: string }[] = [
   {
     name: "next",
-    min: "16.4.2",
+    min: "16.4.5",
     why:
       "16.2.11 fixed nine advisories in 16.2.x, four of them high: a middleware/proxy " +
       "bypass (GHSA-6gpp-xcg3-4w24), which is the layer this app's whole host split and the " +
@@ -56,11 +56,17 @@ const FLOORS: { name: string; min: string; why: string }[] = [
       "16.0.0-16.4.0 carry GHSA-2464-fhr4-w9xw CRITICAL unauthenticated RCE in the Image Optimization " +
       "API, GHSA-673q-mjm6-r5xr CRITICAL unauthenticated RCE in `use cache` functions, and " +
       "GHSA-p3m5-59mp-jv5r HIGH App Router DoS through Server Actions. This app serves images through " +
-      "the optimizer (next.config.ts remotePatterns), so the first one is on a live path.",
+      "the optimizer (next.config.ts remotePatterns), so the first one is on a live path. " +
+      "RAISED to 16.4.5 on 2026-11-17 (patch, security release of 3 Nov): seven moderate advisories, " +
+      "GHSA-mfr8-8qww-v76h, GHSA-vc7v-qv4w-wrv8, GHSA-vvgp-ww4w-46vf, GHSA-rhh4-g77r-r9qj (use cache / " +
+      "Cache Components; not used here), GHSA-pc58-hwjq-p385 (self-hosted response forwarding; matters " +
+      "for the planned move off Vercel), GHSA-f3mh-rxg3-f5g2 (Edge routes; none here) and " +
+      "GHSA-7qx7-33qx-rqx2 (SVG rejection bypass in the image optimiser, which serves the store's " +
+      "images: the one live path).",
   },
   {
     name: "eslint-config-next",
-    min: "16.4.2",
+    min: "16.4.5",
     why:
       "NOT a security floor: a coherence one. This package is exact-pinned to the same string " +
       "as `next` because @next/eslint-plugin-next ships inside it and lints against one " +
@@ -301,8 +307,8 @@ describe("security version floors", () => {
      DEFAULT (save-prefix is ^, and this repo has no .npmrc) — so the pin is one
      forgotten --save-exact away from disappearing. */
   it("keeps the framework pins exact, not caret ranges", () => {
-    expect(pkg.dependencies.next).toBe("16.4.2");
-    expect(pkg.devDependencies["eslint-config-next"]).toBe("16.4.2");
+    expect(pkg.dependencies.next).toBe("16.4.5");
+    expect(pkg.devDependencies["eslint-config-next"]).toBe("16.4.5");
   });
 
   for (const floor of TRANSITIVE_FLOORS) {
