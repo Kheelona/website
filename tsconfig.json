@@ -40,6 +40,9 @@
     ".storybook",
     "test",
     "tools",
-    "docs"
+    "docs",
+    "sst.config.ts",
+    ".sst",
+    ".open-next"
   ]
 }

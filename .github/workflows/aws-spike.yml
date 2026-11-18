@@ -1,0 +1,123 @@
+# AWS move, Phase 2 spike (card K-150). Manual dispatch only, never merged. Deploys the stage
+# "spike" with the PREVIEW role (no production access, no store secrets). This repo is public:
+# no secrets in this file; the account ID and role ARN are masked in every log line.
+#
+# Two jobs on purpose:
+#   build  runs third-party code (npm packages, next build). It cannot get an AWS token.
+#   aws    holds the token. It installs with --ignore-scripts and only runs SST on the prebuilt output.
+#
+# Run it with: gh workflow run aws-spike.yml --ref growth/2026-W48/aws-spike -f action=<diff|deploy|remove>
+# (GitHub runs a dispatch only if a file of this name exists on main: the stub there refuses to run.)
+name: aws-spike
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "diff = preview only, deploy = create or update stage spike, remove = delete stage spike"
+        type: choice
+        options:
+          - diff
+          - deploy
+          - remove
+        default: diff
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aws-spike
+  cancel-in-progress: false
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+  SST_TELEMETRY_DISABLED: "1"
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/growth/2026-W48/aws-spike' && inputs.action != 'remove'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      KH_SITE_ENV: production # as Vercel production: live blog fetch at build (Q-S9)
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0 # the guards read a tag from history
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Tool versions
+        run: |
+          node --version
+          npm --version
+          python3 --version
+      - run: npm ci
+      # Runs `npm run build` (prebuild, next build, postbuild guards), then packages for Lambda.
+      - run: npx -y @opennextjs/aws@4.1.16 build
+      # SST reads the three .next files from the site root as well as .open-next/.
+      # Hidden paths are included: .open-next/ and the .next/ folders inside it start with a dot.
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: open-next
+          path: |
+            .open-next
+            .next/BUILD_ID
+            .next/routes-manifest.json
+            .next/prerender-manifest.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+
+  aws:
+    if: always() && github.ref == 'refs/heads/growth/2026-W48/aws-spike' && (needs.build.result == 'success' || inputs.action == 'remove')
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment: aws-preview
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      # First step: blank the account ID and role ARN in every later log line (variables are not
+      # masked by default, unlike secrets).
+      - name: Mask account details
+        env:
+          ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+          ROLE_ARN: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+        run: |
+          if [ -z "$ACCOUNT_ID" ] || [ -z "$ROLE_ARN" ]; then
+            echo "Set AWS_ACCOUNT_ID and AWS_DEPLOY_ROLE_ARN on the aws-preview environment." >&2
+            exit 1
+          fi
+          echo "::add-mask::$ACCOUNT_ID"
+          echo "::add-mask::$ROLE_ARN"
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc # no npm cache here: nothing the build job wrote is restored into this job
+      # No third-party install scripts run in the job that holds the AWS token.
+      - run: npm ci --ignore-scripts
+      - if: inputs.action != 'remove'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: open-next
+          path: .
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          role-session-name: kheelona-website-spike
+          aws-region: ap-south-1
+          mask-aws-account-id: true
+          role-skip-session-tagging: true # the role's trust policy allows only sts:AssumeRoleWithWebIdentity
+      # SST pinned (Q-S2). The stage is fixed here and checked again in sst.config.ts. No --verbose.
+      - name: SST
+        env:
+          SST_ACTION: ${{ inputs.action }}
+        run: npx -y sst@4.17.2 "$SST_ACTION" --stage spike
