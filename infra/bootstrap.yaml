@@ -345,11 +345,18 @@ Resources:
           # SstAssets. ALLOW: (s3) read and write build uploads in the SST
           # asset bucket (SST keys these by content hash, not by app, so they
           # cannot be narrowed); (ssm) read SST's bootstrap asset record.
+          # SST uploads function code and sourcemaps to its asset bucket
+          # through Pulumi, and the provider's default tags (project and
+          # stage) ride on every upload, so S3 needs Put, Get and Delete
+          # ObjectTagging too. Only in SST's own asset bucket, where the roles
+          # can already put and delete objects. Found by the spike's first
+          # deploy, 18 Nov.
           - Effect: Allow
             Action:
               - s3:GetObject
               - s3:PutObject
               - s3:DeleteObject
+              - s3:*ObjectTagging
               - ssm:GetParameter
             Resource:
               - arn:aws:s3:::sst-asset-*/*
@@ -441,9 +448,14 @@ Resources:
 
           # DenyOtherRegions. DENY: any request outside Mumbai (ap-south-1) and
           # N. Virginia (us-east-1). Overrides every allow. Global services such
-          # as CloudFront and IAM count as us-east-1.
+          # as CloudFront and IAM count as us-east-1. One exception: the
+          # CloudFront KeyValueStore data API is global and signed with
+          # SigV4A, and AWS documents no aws:RequestedRegion value for it, so
+          # this deny could block SST writing its routing keys. The allow for
+          # it is already account-wide (Q4) and the service is global, so
+          # exempting it adds no reach.
           - Effect: Deny
-            Action: "*"
+            NotAction: cloudfront-keyvaluestore:*
             Resource: "*"
             Condition:
               StringNotEquals:
