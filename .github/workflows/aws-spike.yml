@@ -1,6 +1,7 @@
 # AWS move, Phase 2 spike (card K-150). Manual dispatch only, never merged. Deploys the stage
 # "spike" with the PREVIEW role (no production access, no store secrets). This repo is public:
-# no secrets in this file; the account ID and role ARN are masked in every log line.
+# no secrets in this file. The account ID and role ARN are GitHub ENVIRONMENT SECRETS (masked from the start of
+# the job). Never pass them as variables: GitHub prints a step's env and expanded run text before add-mask can act.
 #
 # Two jobs on purpose:
 #   build  runs third-party code (npm packages, next build). It cannot get an AWS token.
@@ -83,15 +84,16 @@ jobs:
       contents: read
       id-token: write
     steps:
-      # First step: blank the account ID and role ARN in every later log line (variables are not
-      # masked by default, unlike secrets).
-      - name: Mask account details
+      # Both values are environment SECRETS, so GitHub masks them from the start of the job (the env
+      # header below prints ***). Referencing the account ID here also guarantees it is masked inside
+      # any ARN in a later error message. Never switch these back to vars (18 Nov incident, run 1).
+      - name: Check AWS secrets are set
         env:
-          ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
-          ROLE_ARN: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          ROLE_ARN: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
         run: |
           if [ -z "$ACCOUNT_ID" ] || [ -z "$ROLE_ARN" ]; then
-            echo "Set AWS_ACCOUNT_ID and AWS_DEPLOY_ROLE_ARN on the aws-preview environment." >&2
+            echo "Set the secrets AWS_ACCOUNT_ID and AWS_DEPLOY_ROLE_ARN on the aws-preview environment." >&2
             exit 1
           fi
           echo "::add-mask::$ACCOUNT_ID"
@@ -111,7 +113,7 @@ jobs:
           path: .
       - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
         with:
-          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           role-session-name: kheelona-website-spike
           aws-region: ap-south-1
           mask-aws-account-id: true
