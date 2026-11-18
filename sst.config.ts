@@ -172,6 +172,8 @@ export default $config({
         // Not a `server` prop in SST 4.17.2: reserved concurrency goes through the Function args.
         // Caps cost and the share of the account's Lambda concurrency while the spike URL is public.
         server: { concurrency: { reserved: 10 } },
+        // Founder, 18 Nov (Q-S15): its function URL is public under protection "none", so cap it too.
+        imageOptimizer: { concurrency: { reserved: 5 } },
       },
     });
 
