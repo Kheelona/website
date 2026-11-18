@@ -44,8 +44,9 @@ the founder is recorded in `wiki/decisions/` and `wiki/log.md`, and the latest l
   Cloudflare) + alerts topic `kheelona-website-alerts` for CloudFront/WAF alarms. `infra/bootstrap.yaml` = stack
   `kheelona-website-bootstrap` (ap-south-1): 2 deploy roles, the boundary policy, alerts topic `kheelona-website-alerts`,
   trail `kheelona-cloudtrail` (reuses the account's GitHub OIDC provider).
-- GitHub environments `aws-production` (branch `main` only) and `aws-preview`, each with variables
-  `AWS_DEPLOY_ROLE_ARN` and `AWS_ACCOUNT_ID`. `Production`/`Preview` belong to Vercel: never touch them.
+- GitHub environments `aws-production` (branch `main` only) and `aws-preview`, each with environment **secrets**
+  `AWS_DEPLOY_ROLE_ARN` and `AWS_ACCOUNT_ID` (never variables: GitHub prints a variable's value in the public run log,
+  18 Nov). `Production`/`Preview` belong to Vercel: never touch them.
 - Spike (K-150): `.github/workflows/aws-spike.yml` on `main` is a dispatch-only stub (no permissions, no AWS, stops at
   once). The spike's real workflow lives only on the never-merged branch `growth/2026-W48/aws-spike` (stage `spike`,
   preview role via the `aws-preview` environment, no store secrets, placeholders only). cto-architect dispatches it with
@@ -59,6 +60,8 @@ the founder is recorded in `wiki/decisions/` and `wiki/log.md`, and the latest l
 - Fences: names `kheelona-website-*` and/or tag `project=website` + `stage`; ap-south-1 and us-east-1 only; every
   website role carries `kheelona-website-boundary`; never read, tag or change a backend resource; no stage name
   starting `deploy`.
+- Bootstrap stack update of 18 Nov: the boundary allows object tagging only in SST's own asset bucket (`sst-asset-*`),
+  and exempts the global CloudFront KeyValueStore API from the region deny.
 - Secrets: SSM SecureString `/kheelona-website/production/<NAME>` in ap-south-1, same 12 names as Vercel, entered
   by the founder only. Budget and anomaly alerts: the founder sets them in the console.
 - Every migration PR updates this section.
