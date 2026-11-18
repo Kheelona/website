@@ -1,0 +1,29 @@
+# AWS move, Phase 2 spike (K-150): dispatch-only STUB. It never deploys and cannot reach AWS.
+# GitHub runs workflow_dispatch only for a workflow file that exists on the default branch, so this
+# stub sits on main. Dispatching with --ref growth/2026-W48/aws-spike runs the never-merged spike
+# branch's version of this same file (the real workflow). PR-3 removes this stub. The repo is
+# public: no secrets, account details or ARNs in this file.
+name: aws-spike
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Spike action (only honoured by the spike branch's version of this file)"
+        type: choice
+        options: [diff, deploy, remove]
+        default: diff
+
+permissions: {}
+
+jobs:
+  refuse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Refuse to run from the default branch
+        run: |
+          echo "This stub never deploys. Nothing was run."
+          echo "To run the real spike workflow, dispatch it with the spike branch as the ref:"
+          echo "  gh workflow run aws-spike.yml --ref growth/2026-W48/aws-spike -f action=<diff|deploy|remove>"
+          exit 1

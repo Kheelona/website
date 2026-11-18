@@ -46,6 +46,16 @@ the founder is recorded in `wiki/decisions/` and `wiki/log.md`, and the latest l
   trail `kheelona-cloudtrail` (reuses the account's GitHub OIDC provider).
 - GitHub environments `aws-production` (branch `main` only) and `aws-preview`, each with variables
   `AWS_DEPLOY_ROLE_ARN` and `AWS_ACCOUNT_ID`. `Production`/`Preview` belong to Vercel: never touch them.
+- Spike (K-150): `.github/workflows/aws-spike.yml` on `main` is a dispatch-only stub (no permissions, no AWS, stops at
+  once). The spike's real workflow lives only on the never-merged branch `growth/2026-W48/aws-spike` (stage `spike`,
+  preview role via the `aws-preview` environment, no store secrets, placeholders only). cto-architect dispatches it with
+  `gh workflow run aws-spike.yml --ref growth/2026-W48/aws-spike` (founder decision, 18 Nov); each run is logged.
+  PR-3 removes the stub.
+- Dispatching that GitHub workflow is the only way agents start a deploy. The rule above stands: agents never hold AWS
+  credentials and never run `aws`, `sst`, `cdk` or anything that calls AWS themselves; the runner assumes the OIDC role.
+- Certificate status: stack `kheelona-website-cert` failed on 18 Nov because `www`/`store` are CNAMEs to Vercel, whose
+  CAA excludes Amazon. The spike therefore runs on CloudFront's default `*.cloudfront.net` address with no aliases.
+  The certificate fix is decided before the parallel run.
 - Fences: names `kheelona-website-*` and/or tag `project=website` + `stage`; ap-south-1 and us-east-1 only; every
   website role carries `kheelona-website-boundary`; never read, tag or change a backend resource; no stage name
   starting `deploy`.
