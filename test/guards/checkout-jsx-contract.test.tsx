@@ -161,6 +161,9 @@ function formContract(container: HTMLElement) {
 }
 
 async function preorderState(props: (typeof TIERS)[keyof typeof TIERS], state: "idle" | "working" | "paying" | "failure") {
+  // Each state is a fresh tab (D070 / B3): the form keeps the typed name, phone and email in sessionStorage, and this
+  // loop renders every state in one test, so the previous state's draft would be put back and typed over.
+  sessionStorage.clear();
   const pending = new Promise<Response>(() => {});
   const ok = () =>
     new Response(

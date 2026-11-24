@@ -24,19 +24,39 @@ B4 (D070, the founder's approval of the conversion bug fixes B1-B7, 24 Nov 2026;
   - The logic signature (checkout-signatures/...PreorderForm.tsx.json) gains exactly one line, `keepalive: true,`; nothing in `jsx`.
   - Proof: test/preorder-confirm-keepalive.test.tsx (a new file, because the frozen checkout tests take literal-only patches).
 
+B3 (D070, the founder's approval of the conversion bug fixes B1-B7, 24 Nov 2026; action 2026-W48-B3, card K-171). Checkout code and
+  a parent's details on their device, signed off one by one: per-tab sessionStorage, name/phone/email only, never the child's age,
+  cleared on payment or after 30 minutes, no long-term storage. Three lines here, the rest in a new helper:
+  - `import { clearFormDraft, useFormDraft } from "./form-draft";` and `const draftRef = useFormDraft();` (a ref callback: when the
+    form appears it puts a saved draft back into the EMPTY name, phone and email fields, sets `.value` only, so no event, no
+    `preorder_form_started`, no validation; and it saves each later change to those three fields through native input/change
+    listeners on the form), with `ref={draftRef}` on the `<form>` (a `ref` is not part of the jsx signature).
+  - `clearFormDraft();` in `onPaid`, right after `preorderAnalytics.purchase(...)` and before the confirm request and the move to
+    /thanks. Closing the payment window (`onDismiss`) keeps the draft: "Your details are still here" stays true.
+  - The helper is src/features/preorder/components/form-draft.ts (a new file: `src/features/preorder/lib/` is frozen and takes none).
+    One key, `kh_preorder_draft`, `{ v: 1, savedAt, parentName, phone, email }`; a draft older than 30 minutes is deleted, not
+    restored; every storage access is in a try/catch. It calls no tracker and sends nothing.
+  - The logic signature (checkout-signatures/...PreorderForm.tsx.json) gains exactly three lines (the import, the `useFormDraft`
+    declaration, the `clearFormDraft();` call); nothing in `jsx` changes.
+  - Proof: test/preorder-form-draft.test.ts and test/preorder-form-draft-render.test.tsx (new files, because the frozen checkout
+    tests take literal-only patches). Two test-isolation lines because jsdom's sessionStorage outlives a test: test/setup.ts clears
+    it after every test, and test/guards/checkout-jsx-contract.test.tsx clears it at the start of each state it renders (no
+    assertion, fixture or expectation changed; the frozen PreorderForm.test.tsx is untouched and green).
+
 diff --git a/src/features/preorder/components/PreorderForm.tsx b/src/features/preorder/components/PreorderForm.tsx
-index 987fcc3..2bb1b2a 100644
+index 987fcc3..62759dc 100644
 --- a/src/features/preorder/components/PreorderForm.tsx
 +++ b/src/features/preorder/components/PreorderForm.tsx
-@@ -22,6 +22,7 @@ import { startCheckout } from "../lib/checkout";
+@@ -22,6 +22,8 @@ import { startCheckout } from "../lib/checkout";
  import { preorderAnalytics } from "../lib/analytics";
  import { phDistinctId } from "@/lib/posthog";
  import { CAMPAIGN_KEYS } from "@/lib/campaign";
 +import { track } from "@/lib/tracking/track";
++import { clearFormDraft, useFormDraft } from "./form-draft";
  
  /** The pre-order form (§8.25-s).
   *
-@@ -49,7 +50,9 @@ import { CAMPAIGN_KEYS } from "@/lib/campaign";
+@@ -49,7 +51,9 @@ import { CAMPAIGN_KEYS } from "@/lib/campaign";
   *  the store page hands in the rest (`beside`: the trust row, the payment window
   *  line, a person to reach), which a client island cannot draw itself. Every
   *  handler, field attribute and request below is the tag's
@@ -47,7 +67,18 @@ index 987fcc3..2bb1b2a 100644
  export function PreorderForm({
    tier,
    signature,
-@@ -123,6 +126,10 @@ export function PreorderForm({
+@@ -85,6 +89,10 @@ export function PreorderForm({
+   const [state, setState] = useState<"idle" | "working" | "paying">("idle");
+   const [failure, setFailure] = useState<string | null>(null);
+ 
++  /* The name, phone and email stay in THIS tab (sessionStorage, 30 minutes, never the child's age) so a parent who
++     leaves to pay in a UPI app finds them still filled in (D070 / B3; ./form-draft.ts). */
++  const draftRef = useFormDraft();
++
+   /* Fired once per mount, on the first change to any field (§8.40). A ref
+      rather than state on purpose: this must not re-render the form a parent is
+      typing into, and it must survive StrictMode's double-invoke in development
+@@ -123,6 +131,10 @@ export function PreorderForm({
          behavior: "smooth",
          block: "center",
        });
@@ -58,7 +89,7 @@ index 987fcc3..2bb1b2a 100644
        return;
      }
  
-@@ -163,6 +170,7 @@ export function PreorderForm({
+@@ -163,6 +175,7 @@ export function PreorderForm({
          amountPaise: data.amountPaise!,
          orderRef: data.orderRef!,
          prefill: data.prefill ?? {},
@@ -66,8 +97,12 @@ index 987fcc3..2bb1b2a 100644
          onDismiss: () => {
            preorderAnalytics.dismissed(tier);
            setState("idle");
-@@ -174,9 +182,13 @@ export function PreorderForm({
+@@ -172,11 +185,17 @@ export function PreorderForm({
+         },
+         onPaid: (paid) => {
            preorderAnalytics.purchase(data.orderRef!, data.amountPaise!, tier);
++          /* Paid: the saved name, phone and email have done their job (D070 / B3). */
++          clearFormDraft();
            /* Confirm in the background and move on. The parent should not wait on
               our bookkeeping, and the webhook covers us if this request never
 -             lands. */
@@ -81,3 +116,12 @@ index 987fcc3..2bb1b2a 100644
              headers: { "content-type": "application/json" },
              body: JSON.stringify({
                razorpayOrderId: paid.razorpay_order_id,
+@@ -209,7 +228,7 @@ export function PreorderForm({
+   const busy = state !== "idle";
+ 
+   return (
+-    <form onSubmit={onSubmit} onChange={onFirstChange} noValidate className="ks-form">
++    <form ref={draftRef} onSubmit={onSubmit} onChange={onFirstChange} noValidate className="ks-form">
+       <Field
+         label={copy.labels.parentName}
+         name="parentName"
