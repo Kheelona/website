@@ -46,7 +46,8 @@ import { StoreNotConfigured } from "./_components/StoreNotConfigured";
  *      with the event page since task 7.1c.
  *
  *  Rendered on the server, form and all, so the price a parent reads is in the
- *  HTML rather than assembled by a script that might not run.
+ *  HTML rather than assembled by a script that might not run. Prerendered and
+ *  revalidated every 5 minutes (see `revalidate` below), not rendered per request.
  *
  *  THE APPROVED PAGE (mockup/store.html; wiki/site/pages/store.md). The first
  *  screen says what is paid today, the total and when it comes (StoreTop); the
@@ -64,12 +65,32 @@ import { StoreNotConfigured } from "./_components/StoreNotConfigured";
  *  store's own answers in place (StoreAnswerLinks). The consent line's legal links stay as they are.
  *  The checkout itself is wired here, as at the tag: the live mode decides the
  *  tier, and PreorderForm and OrderSummary take that tier's amount and label. */
-export const dynamic = "force-dynamic";
+
+/** THE STORE'S FIRST SCREEN COMES FROM CACHE (D070 / B5, K-173). It used to be `force-dynamic`: every visit waited for the
+ *  paid-count query before a byte was sent (TTFB 1.0 to 2.2 s on production, `x-vercel-cache: MISS` every time). Now the page
+ *  is prerendered and revalidated every 300 seconds, the ADR-005 offer window (a literal, because Next reads it statically;
+ *  the same number as `OFFER_REVALIDATE_SECONDS`, `getOffer` and the marketing route handler).
+ *
+ *  WHAT THIS COSTS: the price a parent sees (token or full, decided from the live count) can be up to five minutes old across
+ *  a mode flip. THAT IS SAFE because the price on the page is never what is charged: `create-order` re-decides the tier on
+ *  the server for every order, and `resolveTier` (src/lib/store/tiers.ts) refuses a stale page in BOTH directions, a token
+ *  page after the cap is hit (`cap-reached`) and a full page after a refund reopens a unit (`not-yet`), with a plain
+ *  message (`tierRefusalMessage`: refresh, it will show the current price). A parent is never charged a price they did not
+ *  see, and never charged the wrong tier. (The same stale-then-refresh path existed before for a tab left open.)
+ *
+ *  WHY NOTHING ELSE CHANGES: nothing in this page's tree reads `headers()`, `cookies()` or `searchParams` (checked in
+ *  B5: the store layout, the shell, every section and the form read only constants, content and the client's own
+ *  browser APIs), so the page is the same for every visitor and can be shared. The proxy still runs on every request,
+ *  before the cache, so `kh_utm`, `kh_fbclid` and the host rewrite are unaffected. `/store/thanks` (a per-visitor cookie)
+ *  and `/store/e/[event]` (a signed link) stay dynamic. With no store keys the page prerenders StoreNotConfigured, as it
+ *  rendered it before; a build must have the store env to prerender the real page (without it, the not-configured state is
+ *  what the cache holds until its first revalidation). */
+export const revalidate = 300;
 
 /** The store's description, Open Graph and Twitter (pageMeta; the store layout keeps its noindex, so no robots here),
  *  on the production store's address in every environment (config/env.ts: a beta page never canonicalises to itself):
  *  a link shared from the store previews the store, not the marketing home. The mode is the offer's cached read, which
- *  a mode flip reaches within its window (ADR-005); the page itself reads it live. */
+ *  a mode flip reaches within its window (ADR-005); the page itself is revalidated on the same window (above). */
 export async function generateMetadata(): Promise<Metadata> {
   const meta = pageMeta({ ...storePage.meta, path: "/", offer: await getOffer() });
   const url = `https://${HOSTS.production.store}/`;

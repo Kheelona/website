@@ -1,6 +1,8 @@
 /* Kheelona redesign v3: the motion layer.
  * Chapters are CSS sticky "tracks"; ScrollTrigger progress scrubs a timeline per chapter.
  * Transform/opacity only. Reduced motion → everything static. Pointer effects on fine pointers only.
+ * Phones (home page, `flat`): the chapters are not pinned tracks; each shows its complete state in an ordinary one-screen section
+ * (site.css "C3" block), with its own controls working, and anything that was scroll-driven plays by time while it is on screen.
  * Sizes in JS scale with the root font size (rem), so a 4K TV gets the same composition as a laptop. */
 (() => {
   const root = document.documentElement;
@@ -23,6 +25,32 @@
   const pop = (n) => (soft ? "power3.out" : `back.out(${n})`);
   // Khelu hops when it speaks; a new hop replaces one still running (a fast scroll never stacks them into a shake).
   const hop = (el, h) => gsap.fromTo(el, { y: 0 }, { y: -h * (soft ? 0.6 : 1) * R(), duration: soft ? 0.3 : 0.18, yoyo: true, repeat: 1, ease: soft ? "sine.inOut" : "power2.out", overwrite: "auto" });
+  let lenis = null; // desktop smooth scroll (started below); declared here because the films viewer, set up first, uses it
+  // Phone home page (K-178 / C3, D070): chapters are ordinary one-screen sections instead of pinned scroll tracks. Same query and
+  // same marker (the home page's body.page--home) and same query as the "C3" block in site.css, so the layout and this code always
+  // agree. Crossing 700px (a phone turned sideways) reloads once, after the films viewer is closed, so the other layout starts clean.
+  const FLAT_MQ = matchMedia("(max-width: 699px)");
+  const home = document.body.classList.contains("page--home");
+  const flat = home && FLAT_MQ.matches;
+  if (home && FLAT_MQ.addEventListener) FLAT_MQ.addEventListener("change", () => {
+    if (root.classList.contains("reels-open")) document.addEventListener("khelu:reels", (e) => { if (!e.detail) location.reload(); });
+    else location.reload();
+  });
+  // Two lazy images now sit within a few screens of the top (the demo's tummy, the offer's Khelu). Chrome would fetch them during the
+  // first load, ahead of anything the visitor has scrolled to, so site.css keeps them display:none (never fetched) until the visitor
+  // scrolls near: the tummy as soon as the page moves, the offer's Khelu one screen before it. Same first-load requests as before C3.
+  if (flat && "IntersectionObserver" in window) $$("#how .kheelu__img, #offer .kheelu__img").forEach((img) => {
+    const near = new IntersectionObserver((es, o) => es.forEach((e) => { if (e.isIntersecting) { img.classList.add("is-near"); o.disconnect(); } }), { rootMargin: img.closest("#how") ? "0px" : "0px 0px 100% 0px" });
+    near.observe(img.closest(".kheelu"));
+  });
+  // Phone chapters that used to follow the scroll cycle by time instead, only while on screen, and stop for good once the visitor taps one.
+  const cycle = (el, n, ms, set, from = 0) => {
+    let i = from, timer = 0, stopped = false;
+    const stop = () => { clearInterval(timer); timer = 0; };
+    const run = () => { if (!timer && !stopped) timer = setInterval(() => { i = (i + 1) % n; set(i); }, ms); };
+    new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? run() : stop())), { threshold: 0.4 }).observe(el);
+    return { picked: (j) => { i = j; stopped = true; stop(); } };
+  };
 
   initModal();
   initBar();
@@ -121,7 +149,6 @@
   const end = (tl) => tl.to({}, { duration: 0.001 }, 0.999); // every chapter timeline spans exactly 0→1
 
   /* ---------- Smooth scroll (desktop) ---------- */
-  let lenis = null;
   if (fine && window.Lenis) {
     lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 0.8 });
     lenis.on("scroll", ScrollTrigger.update);
@@ -131,8 +158,8 @@
   if (lenis) document.addEventListener("khelu:reels", (e) => (e.detail ? lenis.stop() : lenis.start()));
   const scrollToY = (y) => (lenis ? lenis.scrollTo(y, { duration: 1.2 }) : scrollTo({ top: y, behavior: "smooth" }));
   $$('a[href^="#"]').forEach((a) => a.addEventListener("click", (e) => { const t = $(a.getAttribute("href")); if (!t) return; e.preventDefault(); scrollToY(t.getBoundingClientRect().top + scrollY - 90 * R()); }));
-  // One Skip button for the whole page: it jumps past whichever section you're in (hidden in the footer).
-  (() => {
+  // One Skip button for the whole page: it jumps past whichever section you're in (hidden in the footer; not on phones, where nothing is pinned).
+  if (!flat) (() => {
     const btn = $("#skip"); if (!btn) return; const secs = $$("main > section"); let cur = null, box = [];
     // Section positions are measured when ScrollTrigger re-measures the page, then compared with scrollY (no layout reads while scrolling).
     const measure = () => { const y = scrollY; box = secs.map((x) => { const r = x.getBoundingClientRect(); return { x, top: r.top + y, bottom: r.bottom + y }; }); };
@@ -183,14 +210,10 @@
 
   /* ---------- Home only: the chapters below exist on index.html; the other pages share everything else ---------- */
   const HOME = !!$("#hero");
-  // Each pinned chapter's beats as track progress (0-1), besides its start and end: where a phone's swipe comes to rest
-  // ("One swipe, one beat" below). A beat sits where that step is fully on screen, and the phone track lengths in
-  // site.css keep neighbouring beats about 0.6 of a screen apart, more than a thumb's drag, so a drag never crosses
-  // one before the fling is stopped at it.
-  const BEATS = { hero: [0.42], how: [0.42, 0.7], films: [0.2, 0.4, 0.6, 0.8], asks: [0.21, 0.42, 0.62, 0.8], day: [0.25, 0.5, 0.75], languages: [0.33, 0.66], app: [0.5], privacy: [0.25, 0.5, 0.75] };
   if (HOME) {
   /* ---------- 1 · Hero: headline → "Meet Khelu" → hundreds of questions ---------- */
   (() => {
+    if (flat) return; // phones: the hero is its opening screen (headline, offer, Khelu); the "Meet Khelu" and "hundreds of questions" beats stay hidden
     const track = $("#hero"); const A = $("[data-hero-a]"), B = $("[data-hero-b]"), C = $("[data-hero-caption]"); const stage = $(".hero__stage", track); const field = $("[data-qfield]");
     const colors = ["#f59ab8", "#f2a65a", "#e9b84a", "#5fbfa6", "#5aa9ee", "#9d86ee"]; const qs = [];
     for (let i = 0; i < 24; i++) {
@@ -215,8 +238,8 @@
     }
   })();
 
-  /* ---------- Statement: words fill in as you read (dim state only near the section) ---------- */
-  $$("[data-words]").forEach((p) => {
+  /* ---------- Statement: words fill in as you read (dim state only near the section). Phones (`flat`): no scrub, the heading stays in its complete state ---------- */
+  if (!flat) $$("[data-words]").forEach((p) => {
     const wrap = (node) => [...node.childNodes].forEach((n) => {
       if (n.nodeType === 3) { const f = document.createDocumentFragment(); n.textContent.split(/(\s+)/).forEach((w) => { if (!w.trim()) return f.append(w); const s = document.createElement("span"); s.className = "w"; s.textContent = w; f.append(s); }); n.replaceWith(f); }
       else if (n.nodeType === 1) wrap(n);
@@ -233,8 +256,8 @@
     ripples.forEach((r, i) => listen.fromTo(r, { scale: 0.6, opacity: 0.85 }, { scale: 1.9, opacity: 0, duration: 1.6, ease: "power1.out" }, i * 0.5));
     const zoom = () => { const s = phone() ? 2.2 : 2.6; const H = k.offsetHeight; const cy = k.offsetTop + H / 2; const target = phone() ? stage.offsetHeight * 0.36 : stage.offsetHeight * 0.5; const cx = k.offsetLeft + k.offsetWidth / 2; const tx = phone() ? 0 : Math.min(stage.offsetWidth * 0.16, 260 * R()); return { s, y: target - cy - 0.118 * H * s, x: tx + (stage.offsetWidth / 2 - cx) }; };
     let live = false, greet = () => {};
-    const setLive = (on) => { if (on === live) return; live = on; if (on) greet(); demo.classList.toggle("is-live", on); stage.classList.toggle("demo-on", on); $$(".ctrl", k).forEach((c) => (c.tabIndex = on ? 0 : -1)); };
-    end(gsap.timeline({ scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6, invalidateOnRefresh: true, onUpdate: (st) => {
+    const setLive = (on) => { if (on === live) return; live = on; if (on) greet(); demo.classList.toggle("is-live", on); stage.classList.toggle("demo-on", on); $$(".ctrl", k).forEach((c) => (c.tabIndex = on && !flat ? 0 : -1)); }; // phones (flat): the on-body hotspots stay aria-hidden and out of the tab order; the demo's list has the same buttons with names
+    if (!flat) end(gsap.timeline({ scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6, invalidateOnRefresh: true, onUpdate: (st) => {
       const p = st.progress; steps.forEach((s, j) => s.classList.toggle("is-on", p > [0.33, 0.41, 0.49][j]));
       p > 0.49 && p < 0.9 ? listen.play() : listen.pause(); setLive(p > 0.56 && p < 0.86);
     } } })
@@ -259,7 +282,8 @@
     };
     const SHORT = ["story-2", "story-3", "story-4"];
     let on = true, talking = false, telling = false, idx = -1, greeted = false;
-    const say1 = (text) => { say.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; gsap.delayedCall(0.5, () => { say.textContent = text; }); };
+    // Phones: the card is in the page's flow, so its bubble never gets shorter than it has been (the typing dots would otherwise pull everything below it up for a moment, and iOS has no scroll anchoring to hide that).
+    const say1 = (text) => { if (flat) { const bub = say.parentElement; bub.style.minHeight = Math.max(parseFloat(bub.style.minHeight) || 0, bub.getBoundingClientRect().height) + "px"; } say.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; gsap.delayedCall(0.5, () => { say.textContent = text; }); };
     const voice = (id) => { say1(LINES[id]); Sound.play(id); };
     const burst = () => { gsap.fromTo(ripples, { scale: 0.6, opacity: 0.9 }, { scale: 2, opacity: 0, duration: 1.1, stagger: 0.18, ease: "power1.out" }); gsap.fromTo(body, { scale: 1 }, { scale: 1.015, yoyo: true, repeat: 1, duration: 0.15 }); };
     // Whatever is pressed, on Khelu or in the list, lights up in both places.
@@ -296,6 +320,13 @@
     soundBtn && soundBtn.addEventListener("click", () => { if (!Sound.started) { Sound.setMuted(false); Sound.unlock(); } else Sound.setMuted(!Sound.muted); syncSound(); if (Sound.on && live) greet(); });
     document.addEventListener("khelu:sound", () => { syncSound(); if (live) greet(); });
     $$("[data-ctrl]", track).forEach((b) => b.addEventListener("click", () => act(b.dataset.ctrl)));
+    if (flat) {
+      // Phones: the demo's live moment in an ordinary section: Khelu's tummy zoomed inside a window, the buttons live, the speaker listening.
+      const win = $(".try__stage", track);
+      const place = () => { const z = 1.9, H = k.offsetHeight, cy = k.offsetTop + H / 2; gsap.set(k, { scale: z, x: 0, y: win.offsetHeight * 0.5 - cy - 0.118 * H * z }); };
+      place(); onResize(place); ScrollTrigger.addEventListener("refresh", place);
+      listen.play(); setLive(true);
+    }
   })();
 
   /* ---------- 3 · Why is the sky blue: Khelu sits in the sky and talks it through, step by step; then your child answers ---------- */
@@ -321,8 +352,8 @@
     [beam, ...bands, zig].forEach((p) => { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; });
     gsap.set(dots.map((d) => d.c), { opacity: 0, scale: 0, transformOrigin: "50% 50%" }); gsap.set(clouds, { opacity: 0, x: 90 });
 
-    // The scene itself is scrubbed by the scroll.
-    end(gsap.timeline({ scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6 } })
+    // The scene itself is scrubbed by the scroll (phones: played once, over ~9 s, when the section comes into view).
+    const scene = end(gsap.timeline(flat ? { paused: true } : { scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6 } })
       .fromTo(sky, { scale: 0.94, opacity: 0.6 }, { scale: 1, opacity: 1, duration: 0.06, ease: "power2.out" }, 0)
       .to(beam, { strokeDashoffset: 0, duration: 0.05, ease: "none" }, 0.15)
       .to(bands, { strokeDashoffset: 0, duration: 0.12, stagger: 0.012, ease: "power1.out" }, 0.19)
@@ -364,7 +395,9 @@
       const L = LINES[n]; line(L.label, L.text, L.bub);
       if (n === 4) ask();
     };
-    ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => { let n = -1; AT.forEach((t, i) => { if (st.progress >= t) n = i; }); go(n); }, onLeaveBack: () => go(-1) });
+    const stepAt = (p) => { let n = -1; AT.forEach((t, i) => { if (p >= t) n = i; }); return n; };
+    if (flat) { scene.timeScale(1 / 9).eventCallback("onUpdate", () => go(stepAt(scene.progress()))); ScrollTrigger.create({ trigger: stage, start: "top 70%", once: true, onEnter: () => scene.play() }); }
+    else ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => go(stepAt(st.progress)), onLeaveBack: () => go(-1) });
     $$("[data-answer]", child).forEach((b) => b.addEventListener("click", () => answer(b.dataset.answer)));
     $("[data-again]", child).addEventListener("click", () => { ask(); line(LINES[4].label, LINES[4].text, LINES[4].bub); });
     // The step list jumps to that point of the conversation.
@@ -412,7 +445,9 @@
       bubTl = gsap.timeline().to(bubble, { opacity: 0, scale: 0.85, duration: 0.18, transformOrigin: "10% 100%" }).add(() => { say.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; }).to(bubble, { opacity: 1, scale: 1, duration: 0.35, ease: pop(2) }).add(() => { say.textContent = s; }, "+=0.5");
       dots.forEach((d, j) => d.classList.toggle("is-on", j === i));
     };
-    ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => show(Math.min(DAY.length - 1, Math.floor(st.progress * DAY.length * 0.999))), onToggle: (st) => { st.isActive ? talk.play() : talk.pause(); st.isActive ? drift.play() : drift.pause(); } });
+    const dayOn = (st) => { st.isActive ? talk.play() : talk.pause(); st.isActive ? drift.play() : drift.pause(); };
+    if (flat) { ScrollTrigger.create({ trigger: track, start: "top bottom", end: "bottom top", onToggle: dayOn }); cycle($(".stage", track), DAY.length, 3800, show); } // phones: the five moments take turns while the section is on screen
+    else ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => show(Math.min(DAY.length - 1, Math.floor(st.progress * DAY.length * 0.999))), onToggle: dayOn });
   })();
 
   /* ---------- 5 · Languages: one greeting at a time, big, in its own script; the list follows the scroll ---------- */
@@ -436,8 +471,10 @@
       if (phone()) { const b = items[i]; list.scrollTo({ left: b.offsetLeft - list.clientWidth / 2 + b.offsetWidth / 2, behavior: "smooth" }); }
     };
     gsap.set(words, { opacity: 0 }); show(0);
-    ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => show(Math.min(L.length - 1, Math.floor(st.progress * L.length * 0.999))) });
-    $$("[data-lg]", track).forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.lg; show(i); scrollToY(track.offsetTop + (track.offsetHeight - stage.offsetHeight) * ((i + 0.5) / L.length)); }));
+    const auto = flat ? cycle(stage, L.length, 2600, show) : null; // phones: the greetings take turns while the section is on screen, until one is tapped
+    if (!flat) ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => show(Math.min(L.length - 1, Math.floor(st.progress * L.length * 0.999))) });
+    // (The stage itself also carries a bare data-lg, so on laptops a tap anywhere in it runs this handler for greeting 0; phones listen to the buttons only.)
+    $$(flat ? "button[data-lg]" : "[data-lg]", track).forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.lg; show(i); if (flat) auto.picked(i); else scrollToY(track.offsetTop + (track.offsetHeight - stage.offsetHeight) * ((i + 0.5) / L.length)); }));
   })();
 
   /* ---------- 6 · Memory: a paper rocket carries yesterday's question to today's card ---------- */
@@ -476,8 +513,9 @@
       gsap.to(chips, i === 0 ? { opacity: 1, y: 0, scale: 1, stagger: 0.08, duration: 0.5, delay: 0.25, ease: pop(2), overwrite: "auto" } : { opacity: 0, y: 10, scale: 0.9, duration: 0.25, overwrite: "auto" });
     };
     gsap.set(chips, { y: 14, scale: 0.9 }); go(0);
-    ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => go(Math.min(items.length - 1, Math.floor(st.progress * items.length * 0.999))) });
-    $$("[data-app]", track).forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.app; go(i); scrollToY(track.offsetTop + (track.offsetHeight - stage.offsetHeight) * ((i + 0.5) / items.length)); }));
+    const auto = flat ? cycle(stage, items.length, 4200, go) : null; // phones: the three screens take turns while the section is on screen, until one is tapped
+    if (!flat) ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => go(Math.min(items.length - 1, Math.floor(st.progress * items.length * 0.999))) });
+    $$("[data-app]", track).forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.app; go(i); if (flat) auto.picked(i); else scrollToY(track.offsetTop + (track.offsetHeight - stage.offsetHeight) * ((i + 0.5) / items.length)); }));
   })();
 
   /* ---------- 9 · Safety: cards stack; the one underneath settles back ---------- */
@@ -506,8 +544,9 @@
       if (r) gsap.to(hl, { top: r[0] + "%", height: r[1] + "%", opacity: 1, duration: 0.6, ease: "power3.out", overwrite: "auto" }); else gsap.to(hl, { opacity: 0, duration: 0.3, overwrite: "auto" });
     };
     go(0);
-    ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => go(Math.min(items.length - 1, Math.floor(st.progress * items.length * 0.999))) });
-    $$("[data-pv-go]", track).forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.pvGo; go(i); scrollToY(track.offsetTop + (track.offsetHeight - stage.offsetHeight) * ((i + 0.5) / items.length)); }));
+    const auto = flat ? cycle(stage, items.length, 4200, go) : null; // phones: every promise is shown; the highlight on the privacy centre moves along, until one is tapped
+    if (!flat) ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => go(Math.min(items.length - 1, Math.floor(st.progress * items.length * 0.999))) });
+    $$("[data-pv-go]", track).forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.pvGo; go(i); if (flat) auto.picked(i); else scrollToY(track.offsetTop + (track.offsetHeight - stage.offsetHeight) * ((i + 0.5) / items.length)); }));
     gsap.from($(".pv__badge", track), { scale: 0.4, rotation: -25, opacity: 0, duration: 0.8, ease: pop(2.2), scrollTrigger: { trigger: track, start: "top 70%", once: true } });
     gsap.from($(".pv__card", track), { y: 80, rotation: 3, scrollTrigger: { trigger: track, start: "top bottom", end: "top top", scrub: 0.6 } });
   })();
@@ -524,12 +563,14 @@
     let playing = null, best = null, centres = [], left0 = 0, st = null;
     // Each card's centre is measured once per layout, so the reel never reads layout while it moves: the distance to
     // the middle comes from the reel's own x. (A card's centre doesn't move when it scales, so its current scale is fine.)
-    const measure = () => { const r = reel.getBoundingClientRect(); left0 = r.left - gsap.getProperty(reel, "x"); centres = items.map((it) => { const b = it.getBoundingClientRect(); return b.left + b.width / 2 - r.left; }); };
+    // Phones (`flat`): the reel is an ordinary sideways swipe list (its own scroll), not moved by the page's scroll; x is minus its scrollLeft.
+    const rx = () => (flat ? -reel.scrollLeft : gsap.getProperty(reel, "x"));
+    const measure = () => { const r = reel.getBoundingClientRect(); left0 = r.left - (flat ? 0 : rx()); centres = items.map((it) => { const b = it.getBoundingClientRect(); return b.left + b.width / 2 - r.left + (flat ? reel.scrollLeft : 0); }); };
     // The loops are small: the card in the middle and its neighbours load ahead, so a film is ready when it arrives.
     const load = (it) => { const v = it && it.matches(".film") ? $("video", it) : null; if (v && !v.src) { v.preload = "auto"; v.src = v.dataset.loop; } return v; };
     const play = (v) => { if (v !== playing && playing) playing.pause(); playing = v; if (v) v.play().catch(() => {}); };
     const focus = () => {
-      const mid = innerWidth / 2, x = gsap.getProperty(reel, "x"); let next = null, bestD = 1e9;
+      const mid = innerWidth / 2, x = rx(); let next = null, bestD = 1e9;
       items.forEach((it, j) => { const d = Math.abs(left0 + x + centres[j] - mid), k = Math.max(0, 1 - d / (innerWidth * 0.6)); gsap.set(it, { scale: 0.86 + 0.14 * k }); if (d < bestD) { bestD = d; next = it; } });
       if (next === best) return; best = next;
       items.forEach((it) => it.classList.toggle("is-center", it === best));
@@ -538,37 +579,18 @@
       play(load(best));
     };
     // The cards scale and the bar fills on every frame the reel moves, including the scrub's glide after the finger stops.
+    if (flat) {
+      // Phones: swiping the reel itself moves the bar and the middle card; the page's own scroll only starts and stops the preview while the section is on screen.
+      let raf = 0; const move = () => { raf = 0; const m = reel.scrollWidth - reel.clientWidth; bar.style.transform = `scaleX(${m > 0 ? reel.scrollLeft / m : 0})`; focus(); };
+      reel.addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(move); }, { passive: true });
+      st = ScrollTrigger.create({ trigger: track, start: "top bottom", end: "bottom top", onToggle: (s) => { if (s.isActive) { best = null; focus(); } else play(null); } });
+    } else
     st = gsap.to(reel, { x: () => -dist(), ease: "none", onUpdate() { bar.style.transform = `scaleX(${this.progress()})`; focus(); },
       scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6, invalidateOnRefresh: true,
         onToggle: (s) => { if (s.isActive) { best = null; focus(); } else play(null); } } }).scrollTrigger;
     // The first film starts loading a screen before the reel arrives.
     ScrollTrigger.create({ trigger: track, start: "top 200%", once: true, onEnter: () => load(items.find((it) => it.matches(".film"))) });
     measure(); focus(); onResize(() => requestAnimationFrame(() => { measure(); focus(); })); ScrollTrigger.addEventListener("refresh", () => { measure(); best = null; focus(); });
-  })();
-
-  /* ---------- Phones: one swipe, one beat ----------
-     A thumb's fling travels a screen or two, which used to carry a pinned chapter from its first beat to its last in
-     one swipe. Touch screens get a scroll-snap stop at every beat of every chapter (and at the top of each section),
-     each with `scroll-snap-stop: always`, so a fling halts at the next beat. The stops live in their own layer at page coordinates, outside the chapters, which skip rendering while
-     off screen (content-visibility) and would hide stops inside them. Laptops keep Lenis and free scrolling. */
-  if (!fine) (() => {
-    const layer = document.createElement("div"); layer.className = "beats"; layer.setAttribute("aria-hidden", "true"); document.body.appendChild(layer);
-    const place = () => {
-      const ys = new Set(), vh = innerHeight;
-      $$("main > section").forEach((sec) => {
-        const top = sec.getBoundingClientRect().top + scrollY; ys.add(Math.round(top));
-        const beats = BEATS[sec.id]; if (!beats || !sec.classList.contains("track")) return;
-        const range = sec.offsetHeight - vh; if (range <= 0) return;
-        [0, ...beats, 1].forEach((p) => ys.add(Math.round(top + p * range)));
-      });
-      layer.replaceChildren(...[...ys].sort((a, b) => a - b).map((y) => { const i = document.createElement("i"); i.style.top = y + "px"; return i; }));
-    };
-    ScrollTrigger.addEventListener("refresh", place); place();
-    // The stops are hard (mandatory) only while a chapter is pinned, so the sections between chapters scroll freely; a
-    // fling arriving at a chapter halts at its start, and one leaving it halts at the next section's top.
-    const inside = new Set();
-    $$("main > section.track").forEach((sec) => { if (!BEATS[sec.id]) return; ScrollTrigger.create({ trigger: sec, start: "top top", end: "bottom bottom", onToggle: (st) => { st.isActive ? inside.add(sec) : inside.delete(sec); root.classList.toggle("in-chapter", inside.size > 0); } }); });
-    root.classList.add("beats-on");
   })();
 
   /* ---------- Films: preview on hover (touch: in view) ---------- */
@@ -604,10 +626,13 @@
 
   /* ---------- Films viewer (shared with the static fallback) ----------
      Tapping any film opens it full screen, playing with sound, like a reel: swipe up (or scroll, or press ↓) for the
-     next film, which plays as it arrives; a film that ends moves on to the next by itself. Every [data-video] on the
+     next film, which plays as it arrives; a film that ends waits on its last frame (see below). Every [data-video] on the
      page is in the list, in page order. One <video> element is moved from slide to slide: phones only allow sound on
      an element a tap has started, so the first tap unlocks the voice for every film after it. Tap pauses; Back, Esc
-     or × closes. */
+     or × closes. Opening remembers the page's scroll position and closing puts the page back there (home and product page, any device).
+     Pre-order Khelu stays in reach (K-180 / C5, D070): the page's own bar button sits in a strip of its own under the picture (so it covers no
+     face, subtitle or caption), and when a film ends the viewer holds on it (no silent move to the next film) with that button and the footer's
+     price line beside it. */
   function initModal() {
     const modal = document.getElementById("modal"); if (!modal) return;
     const track = modal.querySelector("[data-reels-track]"), count = modal.querySelector("[data-reels-count]"), hint = modal.querySelector("[data-reels-hint]");
@@ -623,7 +648,7 @@
         seen.set(src, films.length);
         films.push({ src, poster: img ? img.currentSrc || img.src : "", title: title ? title.textContent.trim() : b.getAttribute("aria-label") || "", line: line ? line.textContent.trim() : "" });
       }
-      b.addEventListener("click", () => open(seen.get(src)));
+      b.addEventListener("click", () => open(seen.get(src), b));
     });
     if (!films.length) return;
     const slides = films.map((f, i) => {
@@ -632,37 +657,70 @@
       s.querySelector("h3").textContent = f.title; s.querySelector("p").textContent = f.line;
       track.appendChild(s); return s;
     });
-    let cur = -1, isOpen = false, resume = [], swiped = false;
+    // Pre-order Khelu inside the viewer (the full-screen dialog covers the page's bar): the bar's own button (label, arrow, link) and the footer's
+    // price line, copied from the page so no wording lives here. PostHog reports its taps as cta=film-viewer. The link has its real href from the
+    // moment it exists (a crawler or Lighthouse reads the page with the viewer closed: an <a> without href fails "links are crawlable").
+    const orderSrc = document.querySelector(".ctabar a.btn--primary"), priceSrc = document.querySelector(".footer__cta .price-line");
+    let order = null;
+    if (orderSrc) {
+      const cta = document.createElement("div"); cta.className = "reels__cta";
+      order = document.createElement("a"); order.className = "reels__order"; order.href = orderSrc.href; order.innerHTML = orderSrc.innerHTML; order.dataset.phCaptureAttributeCta = "film-viewer"; cta.appendChild(order);
+      if (priceSrc) { const p = document.createElement("p"); p.className = "reels__price"; p.innerHTML = priceSrc.innerHTML; cta.appendChild(p); }
+      modal.appendChild(cta); modal.classList.add("has-order");
+    }
+    let cur = -1, isOpen = false, resume = [], swiped = false, opener = null, savedY = 0, oldRestore = null, restoreRaf = 0;
     const go = (i) => { if (i < 0 || i >= slides.length) return; track.scrollTo({ top: slides[i].offsetTop, behavior: reduced ? "auto" : "smooth" }); };
     const activate = (i) => {
       if (i === cur || !isOpen) return; if (cur >= 0 && i !== cur) swiped = true; cur = i;
       slides.forEach((s, j) => s.classList.toggle("is-on", j === i)); slides[i].classList.remove("is-paused");
       slides[i].insertBefore(video, slides[i].querySelector(".reels__cap"));
       video.src = films[i].src; video.currentTime = 0; video.play().catch(() => slides[i].classList.add("is-paused"));
-      count.textContent = `${i + 1} / ${films.length}`;
+      count.textContent = `${i + 1} / ${films.length}`; modal.classList.toggle("is-last", i === slides.length - 1);
       if (swiped) hint.classList.add("is-gone");
       const nxt = films[i + 1]; if (nxt) { const l = document.createElement("link"); l.rel = "prefetch"; l.href = nxt.src; l.as = "video"; document.head.appendChild(l); } // the next film starts loading
     };
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) activate(+e.target.dataset.i); }), { root: track, threshold: 0.6 });
     slides.forEach((s) => io.observe(s));
     video.addEventListener("timeupdate", () => { const b = slides[cur] && slides[cur].querySelector(".reels__bar b"); if (b && video.duration) b.style.transform = `scaleX(${video.currentTime / video.duration})`; });
-    video.addEventListener("ended", () => (cur < slides.length - 1 ? go(cur + 1) : (video.currentTime = 0, video.play().catch(() => {}))));
+    // A film that ends is held on its last frame with the button and the price line (CSS .is-end); a swipe or ↓ goes on to the next film, a tap plays it again.
+    video.addEventListener("ended", () => modal.classList.add("is-end"));
+    video.addEventListener("play", () => modal.classList.remove("is-end"));
     track.addEventListener("click", (e) => { const s = e.target.closest(".reels__slide"); if (!s || +s.dataset.i !== cur) return; if (video.paused) { video.play().catch(() => {}); s.classList.remove("is-paused"); } else { video.pause(); s.classList.add("is-paused"); } });
     const syncMute = () => { muteBtn.setAttribute("aria-pressed", String(video.muted)); muteBtn.setAttribute("aria-label", video.muted ? "Sound on" : "Mute"); };
     muteBtn.addEventListener("click", () => { video.muted = !video.muted; syncMute(); });
     modal.querySelectorAll("[data-reels-step]").forEach((b) => b.addEventListener("click", () => go(cur + +b.dataset.reelsStep)));
     modal.addEventListener("keydown", (e) => { if (e.key === "ArrowDown" || e.key === "PageDown") { e.preventDefault(); go(cur + 1); } if (e.key === "ArrowUp" || e.key === "PageUp") { e.preventDefault(); go(cur - 1); } });
-    function open(i) {
+    function open(i, from) {
       if (isOpen) return; isOpen = true; cur = -1; swiped = false; hint.classList.remove("is-gone");
+      // The page keeps its place: remember it, and stop the browser restoring a scroll position of its own when Back closes the films.
+      opener = from; savedY = scrollY; cancelAnimationFrame(restoreRaf);
+      if (order) order.href = orderSrc.href; // the bar's link as it is now
+      if ("scrollRestoration" in history) { if (oldRestore === null) oldRestore = history.scrollRestoration; history.scrollRestoration = "manual"; }
       // Films already playing on the page (the reel's previews) pause underneath and carry on afterwards.
       resume = [...document.querySelectorAll("video")].filter((v) => v !== video && !v.paused); resume.forEach((v) => v.pause());
       root.classList.add("reels-open"); modal.showModal(); document.dispatchEvent(new CustomEvent("khelu:reels", { detail: true }));
       track.scrollTop = slides[i].offsetTop; activate(i); // played inside the tap, so it may play with sound
       history.pushState({ reels: true }, ""); // the phone's Back button closes the films, not the page
     }
-    const shut = () => { if (!isOpen) return; isOpen = false; video.pause(); video.removeAttribute("src"); video.load(); cur = -1; if (modal.open) modal.close(); root.classList.remove("reels-open"); resume.forEach((v) => v.play().catch(() => {})); document.dispatchEvent(new CustomEvent("khelu:reels", { detail: false })); };
+    const shut = () => { if (!isOpen) return; isOpen = false; video.pause(); video.removeAttribute("src"); video.load(); cur = -1; modal.classList.remove("is-end", "is-last"); if (modal.open) modal.close(); root.classList.remove("reels-open"); resume.forEach((v) => v.play().catch(() => {})); document.dispatchEvent(new CustomEvent("khelu:reels", { detail: false }));
+      // Closing never moves the page: back to the remembered place at once (Lenis has just restarted), the film that opened the viewer focused without scrolling, then the browser's own scroll restoration returns.
+      if (lenis) lenis.scrollTo(savedY, { immediate: true }); else scrollTo({ top: savedY, behavior: "instant" });
+      if (opener) opener.focus({ preventScroll: true });
+      if (oldRestore !== null) restoreRaf = requestAnimationFrame(() => { history.scrollRestoration = oldRestore; oldRestore = null; });
+    };
     const close = () => { if (history.state && history.state.reels) history.back(); else shut(); };
     addEventListener("popstate", shut);
+    // Pre-order from inside the viewer: close the viewer first (Back pops its history entry, the page returns to its place), then go to the store, so the store's
+    // Back button returns to this page where the visitor was, not to a top-of-page copy with a dead viewer entry. A click another handler has already taken over
+    // (the tracking shell holds the first tap until PostHog is ready, then clicks again) or one that opens a new tab is left alone.
+    if (order) order.addEventListener("click", (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || !isOpen || !(history.state && history.state.reels)) return;
+      e.preventDefault();
+      const href = order.href, leave = () => { clearTimeout(t); location.assign(href); };
+      const t = setTimeout(leave, 600); // Back never arrived: go anyway
+      addEventListener("popstate", () => requestAnimationFrame(() => requestAnimationFrame(leave)), { once: true });
+      history.back();
+    });
     modal.querySelector("[data-close]").addEventListener("click", close);
     modal.addEventListener("cancel", (e) => { e.preventDefault(); close(); }); // Esc
     syncMute();

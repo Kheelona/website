@@ -31,7 +31,7 @@
     "import { getOffer } from \"@/lib/offer/get-offer\";",
     "import { pageMeta } from \"@/lib/seo/metadata\";",
     "import { StoreNotConfigured } from \"./_components/StoreNotConfigured\";",
-    "export const dynamic = \"force-dynamic\";",
+    "export const revalidate = 300;",
     "export async function generateMetadata(): Promise<Metadata> {",
     "    const meta = pageMeta({ ...storePage.meta, path: \"/\", offer: await getOffer() });",
     "    const url = `https://${HOSTS.production.store}/`;",
