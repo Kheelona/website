@@ -1046,6 +1046,51 @@ non-full count → set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` → restore `
 `/api/health` shows `store: ready` and the same mode → keep the old project paused 30 days. The main session
 then sets `ORDER_DATA_LOCATION` to India in `src/content/en-IN/legal/privacy.ts`.
 
+### 15.7 Test store: `beta` mirrors `main` (D071 (K-182), 2026-11-24)
+
+The Beta row of §15.1 and §15.4 describe the D051 beta (no payments). D071 (K-182) turns the beta into a
+permanent **test store**: betastore.kheelona.com and betawebsite.kheelona.com stay Vercel Preview builds of
+branch `beta`, now in Razorpay **Test Mode** against a separate test Supabase project, so any store change can
+be tested with real phones and no real money. The hosts, the noindex headers, the `env=beta` PostHog stamp and
+`"beta": true` in `vercel.json` (D048) are unchanged and must stay. Source: the founder's answers of 24 Nov
+(D071 (K-182)); the sync is `.github/workflows/test-store-sync.yml`.
+
+**How `beta` stays equal to `main`.** `beta` is a pointer: nobody commits on it. On every push to `main` the
+workflow checks out that commit and runs `git push --force origin HEAD:refs/heads/beta`, so `beta` is the same
+commit as `main` and Vercel builds a Preview for it. It writes only `refs/heads/beta`, with
+`permissions: contents: write` and no secrets. Runs are queued, never cancelled (`concurrency` group
+`test-store-sync`).
+
+**How to test a PR before it merges.** GitHub → Actions → **test-store-sync** → **Run workflow** → `ref` = the
+PR's branch name (or a commit SHA) → Run. `beta` now holds the PR's code and Vercel builds it. The next merge to
+`main` puts `main` back; so does a manual run with `ref` = `main`. A merge made during a PR test therefore moves
+the test store back to `main`. The `ref` input is used only as the checkout's `ref:`, never inside a `run:`
+script, so a branch name cannot inject a command.
+
+**Limits of the sync (GitHub rules, 2026-11-24).**
+- The push uses the default token, so GitHub starts no other workflow for it: `verify.yml` does not run on
+  `beta` after a sync. It already ran on `main` for the same commit, and a PR's own CI runs on the PR.
+- The default token cannot push a change to files under `.github/workflows/`. If a sync is refused for that
+  reason (for example the first one, which brings in workflow files `beta` has never had), `beta` stays where
+  it was and the run fails loudly; someone with write access then sets `beta` by hand
+  (`git push --force origin <commit>:refs/heads/beta`).
+
+**Environment variables, scoped to Preview + branch `beta` (names only, never values).**
+- Set to Test Mode / test values: `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET` (the Test Mode pair),
+  `RAZORPAY_WEBHOOK_SECRET` (the Test Mode webhook's), `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (the test
+  project), `STORE_SIGNING_SECRET` (its own random value, never production's).
+- Not set on `beta`: `RESEND_API_KEY`, `ORDER_ALERT_EMAIL`, `EMAIL_FROM`, `META_CAPI_TOKEN`,
+  `META_CAPI_TEST_CODE`, `OPENAI_ADS_CAPI_KEY`. Other Preview builds (PR previews) get none of the store
+  variables. Production is unchanged.
+
+**Migrations rule.** The test Supabase project is kept in step by hand, as production is. A PR that adds a file
+under `supabase/migrations/` (a frozen folder) says at the top of its body: **"run on the TEST project first,
+test, then on production"**, and the migration is run on the test project before production. The repo has no PR
+template, so the rule lives here.
+
+**Rollback.** Disable or delete `test-store-sync.yml`; `beta` stays at its last commit. Never remove
+`"beta": true` from `vercel.json` while the test store is in use.
+
 ## 16. Checkout restyle boundary
 
 Decision: [ADR-013](adr/ADR-013-checkout-restyle-boundary.md).
