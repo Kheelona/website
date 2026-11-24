@@ -8,6 +8,22 @@
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 
+  /* ---------- Folds (details in full, comparison, modes): plain <details>, closed; the heading block is the summary ----------
+     Native open and close need no script. This only (1) opens a fold when a link or the address points inside it (main.js's
+     smooth-scroll click handler measures its target, so a capture listener opens the fold first), and (2) re-measures the
+     scroll triggers below once a fold has opened or closed, after the paint, so the tap itself never waits for it. */
+  const folds = $$(".pdp-fold");
+  if (folds.length) {
+    const byHash = (h) => { try { return document.getElementById(decodeURIComponent(h.slice(1))); } catch (e) { return null; } };
+    const openFor = (el) => { const d = el && el.closest(".pdp-fold"); if (d && !d.open) { d.open = true; return true; } return false; };
+    document.addEventListener("click", (e) => { const a = e.target.closest && e.target.closest('a[href^="#"]'); if (a && a.hash.length > 1) openFor(byHash(a.hash)); }, true);
+    if (location.hash.length > 1) openFor(byHash(location.hash));
+    addEventListener("hashchange", () => { const t = byHash(location.hash); if (openFor(t)) requestAnimationFrame(() => t.scrollIntoView()); });
+    let pending = 0;
+    const remeasure = () => { if (!window.ScrollTrigger || pending) return; pending = setTimeout(() => (window.requestIdleCallback || setTimeout)(() => { pending = 0; ScrollTrigger.refresh(); }, { timeout: 600 }), 300); };
+    folds.forEach((d) => d.addEventListener("toggle", remeasure));
+  }
+
   /* ---------- Example conversations: three tabs, one chat (roving tabindex, arrow keys) ---------- */
   const tabs = $("[data-tabs]");
   if (tabs) {
