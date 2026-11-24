@@ -70,7 +70,7 @@ export const eventPage = {
   meta: {
     /* The store's title, and the first sentence of its description: no amount, since the link sets its own price. */
     title: storePage.meta.title,
-    description: "Pre-order Kheelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7.",
+    description: "Pre-order Khelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7.",
     og: DEFAULT_OG,
   },
   checkout: {

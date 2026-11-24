@@ -18,7 +18,7 @@ import { StoreShell } from "@/layouts/StoreShell/StoreShell";
  *  This route sits under the root layout, so the fonts, the tokens and the
  *  measurement tools are already in place. Nothing is duplicated here. */
 export const metadata: Metadata = {
-  title: "Pre-order Kheelu",
+  title: "Pre-order Khelu",
   robots: { index: false, follow: false },
 };
 

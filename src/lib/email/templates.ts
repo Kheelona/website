@@ -134,7 +134,7 @@ export function preorderAckEmail(input: AckInput): Email {
 
   const html = layout(
     `<p style="margin:0 0 6px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#b54a0d;font-weight:700">Pre-order confirmed</p>
-     <h1 style="margin:0 0 18px;font-size:26px;line-height:1.2">Your Kheelu is reserved.</h1>
+     <h1 style="margin:0 0 18px;font-size:26px;line-height:1.2">Your Khelu is reserved.</h1>
      ${p(`Thank you, ${esc(firstName)}. We have your ${paid}, and your place in the queue is held from the moment you paid.`)}
      <div style="border:1px solid ${RULE};border-radius:12px;padding:16px;margin:0 0 18px">
        <p style="margin:0 0 8px;font-size:15px"><strong>Order number</strong> ${order.order_ref}</p>
@@ -149,15 +149,15 @@ export function preorderAckEmail(input: AckInput): Email {
              `That was the whole price. There is nothing more to pay and no link to wait for, nothing is charged automatically, and we do not keep your card.`,
            )
          : p(
-             `When your Kheelu is ready to leave for you, we send a payment link for the ${balanceDue} balance on WhatsApp and by email. Nothing is charged automatically, and we do not keep your card.`,
+             `When your Khelu is ready to leave for you, we send a payment link for the ${balanceDue} balance on WhatsApp and by email. Nothing is charged automatically, and we do not keep your card.`,
            )
      }
-     ${p(`Changed your mind? Message us any time before your Kheelu is dispatched and we refund the ${paid} in full. No fee, and no reason needed.`)}
+     ${p(`Changed your mind? Message us any time before your Khelu is dispatched and we refund the ${paid} in full. No fee, and no reason needed.`)}
      ${p(`<span style="color:${MUTED}">${KHEELONA_PLUS_SHORT}</span>`)}`,
   );
 
   const text = [
-    "Your Kheelu is reserved.",
+    "Your Khelu is reserved.",
     "",
     `Thank you, ${firstName}. We have your ${paid}, and your place in the queue is held from the moment you paid.`,
     "",
@@ -174,9 +174,9 @@ export function preorderAckEmail(input: AckInput): Email {
     "",
     paidInFull
       ? "That was the whole price. There is nothing more to pay and no link to wait for, and nothing is charged automatically."
-      : `When your Kheelu is ready to leave for you, we send a payment link for the ${balanceDue} balance on WhatsApp and by email. Nothing is charged automatically.`,
+      : `When your Khelu is ready to leave for you, we send a payment link for the ${balanceDue} balance on WhatsApp and by email. Nothing is charged automatically.`,
     "",
-    `Changed your mind? Message us any time before your Kheelu is dispatched and we refund the ${paid} in full.`,
+    `Changed your mind? Message us any time before your Khelu is dispatched and we refund the ${paid} in full.`,
     "",
     `${LEGAL_ENTITY}, ${REGISTERED_ADDRESS_LINE}. GSTIN ${GSTIN}.`,
     `WhatsApp or call ${SUPPORT_WHATSAPP_DISPLAY}, or write to ${CONTACT_EMAIL}.`,
@@ -184,7 +184,7 @@ export function preorderAckEmail(input: AckInput): Email {
 
   return {
     to: "",
-    subject: `Your Kheelu is reserved (${order.order_ref})`,
+    subject: `Your Khelu is reserved (${order.order_ref})`,
     html,
     text,
     replyTo: CONTACT_EMAIL ?? undefined,

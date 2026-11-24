@@ -29,16 +29,16 @@ export const films = [
   film(
     "learning-by-asking",
     "Learning by asking",
-    "Kheelu asks her to explain carrom, and thanks her for the reminder.",
+    "Khelu asks her to explain carrom, and thanks her for the reminder.",
     "0:30",
-    "A young girl on a playmat holding the cream Kheelu plush.",
+    "A young girl on a playmat holding the cream Khelu plush.",
   ),
   film(
     "first-conversations",
     "Real families",
-    "Children asking Kheelu their own questions, in their own languages.",
+    "Children asking Khelu their own questions, in their own languages.",
     "0:38",
-    "Children talking to the cream Kheelu plush.",
+    "Children talking to the cream Khelu plush.",
   ),
   film(
     "a-parent-speaks",
@@ -50,23 +50,23 @@ export const films = [
   film(
     "a-mother-joins-in",
     "A mother joins in",
-    "Arha’s mother asks the questions, and Kheelu answers her by name.",
+    "Arha’s mother asks the questions, and Khelu answers her by name.",
     "0:28",
-    "A girl and her mother on a sofa with the cream Kheelu plush.",
+    "A girl and her mother on a sofa with the cream Khelu plush.",
   ),
   film(
     "counting-out-loud",
     "Counting out loud",
-    "Three bricks and two more, worked out on the floor with Kheelu.",
+    "Three bricks and two more, worked out on the floor with Khelu.",
     "0:31",
-    "A boy on the floor with Lego bricks and the cream Kheelu plush.",
+    "A boy on the floor with Lego bricks and the cream Khelu plush.",
   ),
   film(
     "a-story-in-two-languages",
     "Two languages",
-    "In AI mode, Arha switches to English, and Kheelu switches with her.",
+    "In AI mode, Arha switches to English, and Khelu switches with her.",
     "0:31",
-    "A girl on a sofa beside the cream Kheelu plush.",
+    "A girl on a sofa beside the cream Khelu plush.",
   ),
   film(
     "a-father-speaks",
@@ -79,7 +79,7 @@ export const films = [
 
 /** The film strip's own labels. A play button reads "Play: {chip}. {caption}" (D040). */
 export const filmsStrip = {
-  listLabel: "Seven films of families with Kheelu",
+  listLabel: "Seven films of families with Khelu",
   previous: "Previous video",
   next: "Next video",
   /** Read before each length by screen readers only. */

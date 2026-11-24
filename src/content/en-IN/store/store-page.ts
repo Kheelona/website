@@ -45,11 +45,11 @@ export interface StorePageContent {
 
 export const storePage = {
   meta: {
-    title: "Pre-order Kheelu · Kheelona",
+    title: "Pre-order Khelu · Kheelona",
     description: {
       token:
-        "Pre-order Kheelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7. {price:headline} (incl. GST); reserve yours today with a refundable {price:token}.",
-      full: "Pre-order Kheelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7. {price:full} (incl. GST), with delivery anywhere in India included.",
+        "Pre-order Khelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7. {price:headline} (incl. GST); reserve yours today with a refundable {price:token}.",
+      full: "Pre-order Khelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7. {price:full} (incl. GST), with delivery anywhere in India included.",
     },
     og: DEFAULT_OG,
   },
@@ -57,9 +57,9 @@ export const storePage = {
     /* The founder's eyebrow (D065 item 1; the D2C plan v2 §10; task Q2.12), the age band kept whole when it wraps beside
        the small Kheelu on a phone. Only the first screen's marketing words change: the checkout is untouched (ADR-013). */
     eyebrow: `Screen-free AI toy · {nowrap:${STORE_AGE_BAND}}`,
-    title: "Pre-order Kheelu.",
+    title: "Pre-order Khelu.",
     titleId: "store-title",
-    image: { src: kheeluFront, alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." },
+    image: { src: kheeluFront, alt: "Khelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." },
     priceId: "store-price",
     trust: TRUST_COMPACT.map((id) => trustItems[id]),
   },
@@ -76,7 +76,7 @@ export const storePage = {
   films: {
     /* D040: claim only what the films show; the live heading is banned, claims §4. Not every film was shot at home, so
        "in real homes" went (D057 item 2; the D2C plan v2 §10; task Q2.12). */
-    heading: { title: "See Kheelu {hand:ask.}", lead: "Real children, real families. Press play on any of them.", id: "ask-title" },
+    heading: { title: "See Khelu {hand:ask.}", lead: "Real children, real families. Press play on any of them.", id: "ask-title" },
     proof: { text: "Kids doing the talking. Parents, in their own words.", size: "body-s" },
     posters: "lazy",
     link: { label: "Back to your details", href: "#details", iconEnd: "caret-up" },
