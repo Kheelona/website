@@ -909,6 +909,7 @@ html.reels-open { overflow: hidden; }
   html.motion body.page--home #how .kheelu__img:not(.is-near), html.motion body.page--home #offer .kheelu__img:not(.is-near) { display: none; }
   body.page--home #how { contain-intrinsic-size: auto calc(100svh - var(--bar) + 8rem); }
   body.page--home #privacy { contain-intrinsic-size: auto calc(100svh - var(--bar) + 13.5rem); }
+  body.page--home #films { contain-intrinsic-size: auto calc(100svh - var(--bar) - 0.2rem); } /* C3b: films now sit above the FAQ, so a skipped films section must be its real height (390x844: 752.9px) or WebKit, which has no scroll anchoring, shifts the page by 3px when it first renders */
   body.page--home .stage { position: relative; }
   body.page--home .skipdemo { display: none; } /* nothing is left to skip on phones */
 
