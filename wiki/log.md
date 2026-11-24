@@ -1470,3 +1470,11 @@ visit lasts; kh_order for 2 hours" (`kh_oppref` is a session cookie); and an ite
 privacy policy" (linked; that page gives no fixed period) follows Meta's. Both page sources and the quoted blocks of
 `wiki/site/pages/privacy.md` carry the words; "Last updated" stays 13 November 2026. The register of deviations from the frozen mockups
 has the row for all of `/privacy`'s D069 words (V70). Built as action F6.
+
+## [2026-11-24 12:00] decision | D070: the conversion bug fixes B1 to B7, one pull request each
+The founder approved the fixes from the 24 November customer-journey review, each by name: the phone scroll snap goes
+and the films viewer keeps the page's place (B1); Razorpay can return through our own server, and the store recovers
+the order a tab started (B2); a per-tab form draft without the child's age (B3); `keepalive` on the confirm call (B4);
+a Pre-order tap that goes at once and a cached store page (B5); approved wording for the rejected lines, a permanent
+redirect for `/products/khelu`, an early store page view and a payment-window-left signal (B7). Each is its own pull
+request with the Lighthouse gate; the founder merges.
