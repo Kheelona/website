@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { focusedTile, INITIAL_VIEW, positionText, stripView } from "./films-view";
+import { filmName, focusedTile, INITIAL_VIEW, playLabel, positionText, stripView } from "./films-view";
 
 /* The films strip's arithmetic (task 3.3; mockup.js section 4; architecture §11.2 row 8): where the strip is, whether
  * a button is at its end (tolerant of half a tile), what the position line reads, and which film is in focus. The
@@ -67,5 +67,14 @@ describe("focusedTile", () => {
 
   it("breaks a tie in the strip's order", () => {
     expect(focusedTile(new Map([["c", 100], ["b", 100]]), ["a", "b", "c"])).toBe("b");
+  });
+});
+
+describe("filmName and playLabel (D070 / C1)", () => {
+  const film = { chip: "Learning by asking", caption: "Khelu asks her to explain carrom, and thanks her for the reminder." };
+
+  it("words a film as the strip's play button does: the chip, a full stop, the caption, after the play word", () => {
+    expect(filmName(film)).toBe("Learning by asking. Khelu asks her to explain carrom, and thanks her for the reminder.");
+    expect(playLabel(film, { play: "Play:" })).toBe("Play: Learning by asking. Khelu asks her to explain carrom, and thanks her for the reminder.");
   });
 });

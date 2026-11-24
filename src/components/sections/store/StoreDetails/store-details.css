@@ -106,3 +106,15 @@
     padding-top: var(--space-7);
   }
 }
+/* The store page's form column keeps its pay button in view while the parent scrolls (D070 / C1, K-176): the form's own
+   button, sticky to the bottom of the screen within the form, resting in its place once the form's end is reached. Below
+   900 px the page's pay bar does this (StorePayBar). `ks-store--pay` is set only where the page hands in the bar, so the
+   event pages' form is unchanged. */
+@media (min-width: 900px) {
+  .ks-store--pay .ks-form > .kh-btn--cta {
+    position: sticky;
+    bottom: var(--space-4);
+    z-index: var(--z-sticky);
+    box-shadow: var(--shadow-lift);
+  }
+}

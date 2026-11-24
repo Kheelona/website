@@ -93,6 +93,37 @@ describe("StoreDetails", () => {
     expect(screen.getByRole("button", { name: "Pay ₹499 and reserve" }).compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
+  // D070 / C1 (K-176): the store page asks for the questions first and hands in its pay bar; an event page asks for neither.
+  describe("the store page's reservation layout (questionsFirst, bar)", () => {
+    const withBar = () => {
+      const base = composed();
+      return <StoreDetails {...base.props} questionsFirst bar={<div className="ks-paybar" data-bar="" />} />;
+    };
+
+    it("puts the questions before the agreement card in the second column, which is the phone order too: form, questions, card", () => {
+      const { container } = render(withBar());
+      const side = container.querySelector(".ks-store__side")!;
+      expect(Array.from(side.children).map((c) => c.className)).toEqual(["ks-faq", "kh-card ks-agree"]);
+      const order = Array.from(container.querySelectorAll("h1, h2")).map((h) => h.textContent);
+      expect(order).toEqual(["Pre-order Khelu.", "Your details", "Questions before you pay", "What you are agreeing to"]);
+    });
+
+    it("holds the bar last in the form's column, after the details section, and marks the layout (the sticky pay button's scope)", () => {
+      const { container } = render(withBar());
+      const main = container.querySelector(".ks-store__main")!;
+      expect(main.lastElementChild!.matches("[data-bar]")).toBe(true);
+      expect(main.lastElementChild!.previousElementSibling!.id).toBe("details");
+      expect(container.firstElementChild!.className).toBe("kh-section ks-store ks-store--pay");
+    });
+
+    it("keeps the mockup's order and its class on the event pages, which pass neither", () => {
+      const { container } = render(composed());
+      expect(container.firstElementChild!.className).toBe("kh-section ks-store");
+      expect(Array.from(container.querySelector(".ks-store__side")!.children).map((c) => c.className)).toEqual(["kh-card ks-agree", "ks-faq"]);
+      expect(container.querySelector("[data-bar]")).toBeNull();
+    });
+  });
+
   it("names the details section by its heading and keeps the #details fragment the films link back to", () => {
     render(composed());
     const details = screen.getByRole("region", { name: "Your details" });

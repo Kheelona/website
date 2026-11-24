@@ -39,6 +39,20 @@ describe("FaqList", () => {
     expect([...first.querySelectorAll("details")].map((d) => d.open)).toEqual([true, false]);
   });
 
+  it("opens the answers it is told to (by item id) and no others, whatever order they sit in (D070 / C1)", () => {
+    const faq = list(<FaqList items={ITEMS} sign={sign} open={["arrival"]} />);
+    expect([...faq.querySelectorAll("details")].map((d) => d.open)).toEqual([false, true]);
+    const both = list(<FaqList items={ITEMS} sign={sign} firstOpen open={["arrival", "no-such-item"]} />);
+    expect([...both.querySelectorAll("details")].map((d) => d.open)).toEqual([true, true]);
+  });
+
+  it("gives each question a fragment only when asked, `<anchor>-<item id>`, so a link can open it in place (D070 / C1)", () => {
+    const plain = list(<FaqList items={ITEMS} sign={sign} />);
+    expect([...plain.querySelectorAll("details")].map((d) => d.hasAttribute("id"))).toEqual([false, false]);
+    const named = list(<FaqList items={ITEMS} sign={sign} anchor="faq" />);
+    expect([...named.querySelectorAll("details")].map((d) => d.id)).toEqual(["faq-ages", "faq-arrival"]);
+  });
+
   it("keeps the extra detail after the answer paragraph, inside the clip", () => {
     const faq = list(<FaqList sign={sign} items={[{ ...ITEMS[0], detail: <ul><li>One more line</li></ul> }]} />);
     expect(faq.querySelector(".ks-faq__clip > .kh-faq__a")?.innerHTML).toBe("<p>Kheelu is made for children aged 3 to 7.</p><ul><li>One more line</li></ul>");

@@ -1,3 +1,4 @@
+import { clsx } from "clsx";
 import type { ReactNode } from "react";
 import { SellingHelpLine } from "@/components/sections/CtaBlock/selling-lines";
 import { storeTrustItems } from "@/components/sections/store/StoreTop/StoreTop";
@@ -27,6 +28,12 @@ export interface StoreDetailsProps {
   readonly summary: ReactNode;
   /** The questions under the card (FaqSection `store`). */
   readonly questions?: ReactNode;
+  /** The store page's pay bar (StorePayBar), last in the form's column: fixed to the bottom of a phone's screen, sticky
+   *  in the column from 900 px (D070 / C1, K-176). The event pages pass none. */
+  readonly bar?: ReactNode;
+  /** The questions before the agreement card, so on a phone they follow the pay block directly and the card follows
+   *  them (D070 / C1, K-176). Without it the card comes first, as the approved mockup has it (the event pages). */
+  readonly questionsFirst?: boolean;
 }
 
 /**
@@ -34,11 +41,13 @@ export interface StoreDetailsProps {
  * the in-app note and the details section holding the form; on the right the agreement card and the questions, sticky
  * from 900 px. On a phone they stack in that order, so the summary follows the pay button and the films come only after
  * every money answer. The checkout's own parts arrive as slots: the page wires PreorderForm and OrderSummary with the
- * tier the server priced, so nothing here can change what is charged. Server component.
+ * tier the server priced, so nothing here can change what is charged. The store page (D070 / C1) also hands in its pay
+ * bar and asks for the questions first, so the answers sit directly under the pay block and the agreement card follows
+ * them; the event pages ask for neither and keep the mockup's order. Server component.
  */
-export function StoreDetails({ content, top, note, form, summary, questions }: StoreDetailsProps) {
+export function StoreDetails({ content, top, note, form, summary, questions, bar, questionsFirst = false }: StoreDetailsProps) {
   return (
-    <div className="kh-section ks-store">
+    <div className={clsx("kh-section ks-store", bar !== undefined && "ks-store--pay")}>
       <div className="kh-container ks-store__grid">
         <div className="ks-store__main">
           {top}
@@ -49,10 +58,20 @@ export function StoreDetails({ content, top, note, form, summary, questions }: S
             </h2>
             {form}
           </section>
+          {bar}
         </div>
         <div className="ks-store__side">
-          {summary}
-          {questions}
+          {questionsFirst ? (
+            <>
+              {questions}
+              {summary}
+            </>
+          ) : (
+            <>
+              {summary}
+              {questions}
+            </>
+          )}
         </div>
       </div>
     </div>

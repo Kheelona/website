@@ -7,6 +7,7 @@ import { storePage } from "@/content/en-IN/store/store-page";
 import { isSitePath } from "@/lib/links";
 import { buildOffer } from "@/lib/offer/offer";
 import { SELLING_CLOSES } from "../../../../../test/e2e/support/deviations";
+import { readRepoFile } from "../../../../../test/e2e/support/repo";
 import { mockupDiff, mockupFold, mockupRoute } from "../../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../../test/support/mockup-facts";
 import { StoreTop } from "./StoreTop";
@@ -85,5 +86,45 @@ describe("StoreTop", () => {
   it("never moves on arrival: no reveal anywhere in the first screen (D049 pick 2)", () => {
     const { container } = render(<StoreTop content={content} offer={token} newTabNote={NOTE} />);
     expect(container.querySelector("[data-reveal], [data-draw]")).toBeNull();
+  });
+
+  // D070 / C1 (K-176): the small Kheelu opens the first film on the store page; the event pages pass no film and keep the plain image.
+  describe("the small Kheelu as a link to a film", () => {
+    const film = { id: "learning-by-asking", label: "Play: Learning by asking. Khelu asks her to explain carrom." };
+
+    it("is a plain image without a film (the mockup's markup: the image is the section's own child)", () => {
+      const { container } = render(<StoreTop content={content} offer={token} newTabNote={NOTE} />);
+      expect(container.querySelector("a.ks-store-top__film")).toBeNull();
+      expect(container.querySelector(".ks-store-top > img.ks-store-top__img")).not.toBeNull();
+    });
+
+    it("wraps the same image in an in-page link to the film's tile, named by the film's own words, keeping the image's alt and loading", () => {
+      const { container } = render(<StoreTop content={content} offer={token} newTabNote={NOTE} film={film} />);
+      const link = container.querySelector<HTMLAnchorElement>(".ks-store-top > a.ks-store-top__film")!;
+      expect(link.getAttribute("href")).toBe("#learning-by-asking");
+      expect(screen.getByRole("link", { name: film.label })).toBe(link);
+      expect(link.hasAttribute("target")).toBe(false);
+      const img = link.querySelector("img")!;
+      expect(img.className).toContain("ks-store-top__img");
+      expect(img).toHaveAttribute("alt", storePage.top.image.alt);
+      expect(img).toHaveAttribute("loading", "eager");
+      expect(img).toHaveAttribute("fetchPriority", "high");
+      expect(link.children).toHaveLength(1);
+    });
+
+    it("changes nothing else on the first screen: the same words, the same two trust links, the same order", () => {
+      const plain = render(<StoreTop content={content} offer={token} newTabNote={NOTE} />).container;
+      const linked = render(<StoreTop content={content} offer={token} newTabNote={NOTE} film={film} />).container;
+      const kinds = (el: Element) => Array.from(el.firstElementChild!.children).map((c) => c.className.split(" ")[0] || c.tagName);
+      expect(linked.textContent).toBe(plain.textContent);
+      expect(kinds(linked)).toEqual(kinds(plain).map((k) => (k === "ks-store-top__img" ? "ks-store-top__film" : k)));
+    });
+
+    it("gives the link the image's size and place in the grid, the image filling it, so the first screen does not move", () => {
+      const css = readRepoFile("src/components/sections/store/StoreTop/store-top.css").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ");
+      expect(css).toContain(".ks-store-top__film { display: block; width: var(--space-9); }");
+      expect(css).toContain(".ks-store-top__film > .ks-store-top__img { width: 100%; }");
+      expect(css).toContain(".ks-store-top__img, .ks-store-top__film { grid-column: 2; grid-row: 1 / span 3; width: var(--space-10); }");
+    });
   });
 });

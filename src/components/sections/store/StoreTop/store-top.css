@@ -18,6 +18,15 @@
   height: auto;
   aspect-ratio: var(--kh-ratio);
 }
+/* The small Kheelu as a link to the first film (StoreTop `film`, D070 / C1): the link takes the image's size and its place
+   in the grid, the image fills it, so the first screen is the same with or without the link. */
+.ks-store-top__film {
+  display: block;
+  width: var(--space-9);
+}
+.ks-store-top__film > .ks-store-top__img {
+  width: 100%;
+}
 .ks-store-top__price {
   margin: var(--space-4) 0 0;
   max-width: var(--measure);
@@ -27,7 +36,8 @@
 }
 
 @media (min-width: 720px) {
-  .ks-store-top__img {
+  .ks-store-top__img,
+  .ks-store-top__film {
     grid-column: 2;
     grid-row: 1 / span 3;
     width: var(--space-10);

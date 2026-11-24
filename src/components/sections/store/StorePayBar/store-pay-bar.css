@@ -1,0 +1,10 @@
+/* StorePayBar (D070 / C1, K-176): the store's pay bar, the DS buy bar (`kh-buybar`: surface, shadow, safe-area foot, slide
+   and fade, 900 px cut-off: bundle.css, sticky-buy-bar.css, motion.css) fixed to the bottom of the screen instead of
+   sticky at the end of the document, because it sits in the form's column. Fixed, so it never takes room in the page and
+   nothing moves when it appears (CLS 0). Its button is the form's pay button, mirrored (StorePayBar.client.tsx). Below 900
+   px only: from 900 px `.kh-buybar` is `display: none` and the form's own pay button is sticky (store-details.css). */
+.ks-paybar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+}

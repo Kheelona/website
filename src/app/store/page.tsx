@@ -8,6 +8,8 @@ import { WhatsAppFloat } from "@/components/chrome/WhatsAppFloat/WhatsAppFloat";
 import { FaqSection } from "@/components/sections/FaqSection/FaqSection";
 import { FilmsStrip } from "@/components/sections/FilmsStrip/FilmsStrip";
 import { PayBeside, StoreDetails } from "@/components/sections/store/StoreDetails/StoreDetails";
+import { StoreAnswerLinks } from "@/components/sections/store/StoreAnswerLinks/StoreAnswerLinks.client";
+import { StorePayBar } from "@/components/sections/store/StorePayBar/StorePayBar.client";
 import { StorePaymentsLine } from "@/components/sections/store/StorePaymentsLine/StorePaymentsLine";
 import { StoreTop } from "@/components/sections/store/StoreTop/StoreTop";
 import { InAppBrowserNote } from "@/components/ui/InAppBrowserNote/InAppBrowserNote";
@@ -15,10 +17,12 @@ import { formatInr } from "@/config/site";
 import { HOSTS, STORE_ORIGIN } from "@/config/env";
 import { pickFaqs } from "@/content/en-IN/faqs";
 import { films, filmsStrip } from "@/content/en-IN/films";
+import { playLabel } from "@/components/sections/FilmsStrip/films-view";
 import { navigation } from "@/content/en-IN/navigation";
 import { seller } from "@/content/en-IN/seller";
 import { inAppNote } from "@/content/en-IN/store/in-app-note";
 import { storePage } from "@/content/en-IN/store/store-page";
+import { trustItems } from "@/content/en-IN/trust";
 import { buildOffer } from "@/lib/offer/offer";
 import { getOffer } from "@/lib/offer/get-offer";
 import { pageMeta } from "@/lib/seo/metadata";
@@ -51,6 +55,13 @@ import { StoreNotConfigured } from "./_components/StoreNotConfigured";
  *  the questions before you pay (StoreDetails: beside the form from 900 px, after
  *  it on a phone); then, below every money answer, the families' films (D040);
  *  and last in <main> the payments line the footer cannot carry (deviations V1).
+ *
+ *  THE RESERVATION LAYOUT (D070 / C1, K-176: Pay always on screen, the answers beside it; UI/UX only, no new words).
+ *  On a phone the order is the first screen, the form, the questions (the three money answers open), then the
+ *  agreement card, then the films: the questions follow the pay block directly (`questionsFirst`), and a pay bar
+ *  (StorePayBar) keeps the form's own button in reach, below 900 px fixed to the bottom of the screen, from 900 px the
+ *  form's button sticky in its column. The small Kheelu opens the first film, and the refund and delivery links open the
+ *  store's own answers in place (StoreAnswerLinks). The consent line's legal links stay as they are.
  *  The checkout itself is wired here, as at the tag: the live mode decides the
  *  tier, and PreorderForm and OrderSummary take that tier's amount and label. */
 export const dynamic = "force-dynamic";
@@ -73,12 +84,19 @@ export default async function StorePage() {
   const tier = mode === "token" ? launchTier() : fullTier();
   const offer = buildOffer(mode);
   const newTabNote = navigation.labels.newTabNote;
+  /* The reservation layout (D070 / C1, K-176): the small Kheelu opens the first film (named by that film's own play
+     label), and the trust links for refund and delivery open the store's own question in place (content: answers). */
+  const { anchor, open, links } = storePage.answers;
+  const film = { id: films[0].id, label: playLabel(films[0], filmsStrip) };
+  const answerRoutes = links.map((link) => ({ href: trustItems[link.trust].href, answer: `${anchor}-${link.faq}` }));
 
   return (
     <>
       <StoreDetails
         content={storePage.details}
-        top={<StoreTop content={storePage.top} offer={offer} newTabNote={newTabNote} />}
+        questionsFirst
+        bar={<StorePayBar />}
+        top={<StoreTop content={storePage.top} offer={offer} newTabNote={newTabNote} film={film} />}
         note={<InAppBrowserNote content={inAppNote} storeUrl={STORE_ORIGIN} />}
         form={
           <PreorderForm
@@ -97,15 +115,23 @@ export default async function StorePage() {
           />
         }
         questions={
-          <FaqSection variant="store" heading={storePage.questions.heading} items={pickFaqs(storePage.questions.items)} offer={offer} />
+          <FaqSection
+            variant="store"
+            heading={storePage.questions.heading}
+            items={pickFaqs(storePage.questions.items)}
+            open={open}
+            anchor={anchor}
+            offer={offer}
+          />
         }
       />
       {/* Real families on film (§8.37, D040), below the whole grid and every money
           answer: on a phone the order stays heading, form, summary, questions,
           films. Nothing here can reach the payment path, and no <video> mounts
           until a visitor asks for one. */}
-      <FilmsStrip {...storePage.films} films={films} labels={filmsStrip} offer={offer} />
+      <FilmsStrip {...storePage.films} films={films} labels={filmsStrip} anchored offer={offer} />
       <StorePaymentsLine content={storePage.payments} newTabNote={newTabNote} />
+      <StoreAnswerLinks routes={answerRoutes} />
       <WhatsAppFloat href={seller.support.whatsapp} chat={seller.chat} context="store" />
     </>
   );
