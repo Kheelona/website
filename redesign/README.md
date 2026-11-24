@@ -249,3 +249,21 @@ Measured on a 390px touch viewport with 4× and 10× CPU throttling (Chrome trac
   stays in `<head>` (its install check reads the tag). Lighthouse mobile on the same Mac, trackers loaded but their
   hits blocked: Total Blocking Time ≈ 250 ms (live) → 17-63 ms.
 - Hero image preloaded before the fonts; the "No Wi-Fi" slash animates transform/opacity (was stroke-dashoffset).
+
+## Phone home page (K-178 / C3, D070, 24 Nov)
+- **Order (phones, `max-width: 699px`, home only):** hero, statement, how (the demo), offer, safety, privacy, faq, then the story
+  in today's order (backed, films, asks, asks-cta, day, languages, remembers, modes, app, why). The HTML is not reordered:
+  `main` is a flex column on phones and `order` in the "C3" block at the end of `site.css` sets the sequence. Laptops keep
+  the DOM order.
+- **No pinned chapters on phones:** `.track` is `height: auto` and `.stage` is `position: relative` (about one screen each).
+  `main.js` calls this `flat` (home, `max-width: 699px` at load, and CSS `:has()` supported; `site.css` wraps the block in
+  `@supports selector(:has(*))`, so both always agree). In `flat` mode nothing is scrubbed by scroll: the hero is its opening
+  screen; the demo (`#how`) is its live state in normal flow; the sky conversation plays once, by time, when it comes into view;
+  day, languages, app and privacy cycle by time while on screen until a tap; the films reel is a sideways swipe list
+  (`scroll-snap-type: x` on the reel only; the page never snaps); "Skip section" is hidden. Crossing 700px (a phone turned
+  sideways) reloads the page once, after the films viewer is closed.
+- **First screen and bar:** the ages and price line (`.hero__offer`) shows on phones again; the bottom bar keeps "Pre-order
+  Khelu" as the main button with "Watch" beside it as a quiet text link (>= 44px).
+- **Lazy images:** the demo's tummy and the offer's Khelu images are `display: none` until the visitor scrolls near them
+  (`.is-near`, set by `main.js`), so the first load still fetches only the hero image (a layout that puts a lazy image within
+  ~3 screens of the top makes Chrome fetch it early and costs LCP; see `memory/engineering/website-gotchas.md`).

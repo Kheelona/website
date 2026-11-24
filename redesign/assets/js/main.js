@@ -36,6 +36,13 @@
     if (root.classList.contains("reels-open")) document.addEventListener("khelu:reels", (e) => { if (!e.detail) location.reload(); });
     else location.reload();
   });
+  // Two lazy images now sit within a few screens of the top (the demo's tummy, the offer's Khelu). Chrome would fetch them during the
+  // first load, ahead of anything the visitor has scrolled to, so site.css keeps them display:none (never fetched) until the visitor
+  // scrolls near: the tummy as soon as the page moves, the offer's Khelu one screen before it. Same first-load requests as before C3.
+  if (flat && "IntersectionObserver" in window) $$("#how .kheelu__img, #offer .kheelu__img").forEach((img) => {
+    const near = new IntersectionObserver((es, o) => es.forEach((e) => { if (e.isIntersecting) { img.classList.add("is-near"); o.disconnect(); } }), { rootMargin: img.closest("#how") ? "0px" : "0px 0px 100% 0px" });
+    near.observe(img.closest(".kheelu"));
+  });
   // Phone chapters that used to follow the scroll cycle by time instead, only while on screen, and stop for good once the visitor taps one.
   const cycle = (el, n, ms, set, from = 0) => {
     let i = from, timer = 0, stopped = false;
@@ -275,7 +282,8 @@
     };
     const SHORT = ["story-2", "story-3", "story-4"];
     let on = true, talking = false, telling = false, idx = -1, greeted = false;
-    const say1 = (text) => { say.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; gsap.delayedCall(0.5, () => { say.textContent = text; }); };
+    // Phones: the card is in the page's flow, so its bubble never gets shorter than it has been (the typing dots would otherwise pull everything below it up for a moment, and iOS has no scroll anchoring to hide that).
+    const say1 = (text) => { if (flat) { const bub = say.parentElement; bub.style.minHeight = Math.max(parseFloat(bub.style.minHeight) || 0, bub.getBoundingClientRect().height) + "px"; } say.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; gsap.delayedCall(0.5, () => { say.textContent = text; }); };
     const voice = (id) => { say1(LINES[id]); Sound.play(id); };
     const burst = () => { gsap.fromTo(ripples, { scale: 0.6, opacity: 0.9 }, { scale: 2, opacity: 0, duration: 1.1, stagger: 0.18, ease: "power1.out" }); gsap.fromTo(body, { scale: 1 }, { scale: 1.015, yoyo: true, repeat: 1, duration: 0.15 }); };
     // Whatever is pressed, on Khelu or in the list, lights up in both places.
@@ -465,7 +473,8 @@
     gsap.set(words, { opacity: 0 }); show(0);
     const auto = flat ? cycle(stage, L.length, 2600, show) : null; // phones: the greetings take turns while the section is on screen, until one is tapped
     if (!flat) ScrollTrigger.create({ trigger: track, start: "top top", end: "bottom bottom", onUpdate: (st) => show(Math.min(L.length - 1, Math.floor(st.progress * L.length * 0.999))) });
-    $$("[data-lg]", track).forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.lg; show(i); if (flat) auto.picked(i); else scrollToY(track.offsetTop + (track.offsetHeight - stage.offsetHeight) * ((i + 0.5) / L.length)); }));
+    // (The stage itself also carries a bare data-lg, so on laptops a tap anywhere in it runs this handler for greeting 0; phones listen to the buttons only.)
+    $$(flat ? "button[data-lg]" : "[data-lg]", track).forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.lg; show(i); if (flat) auto.picked(i); else scrollToY(track.offsetTop + (track.offsetHeight - stage.offsetHeight) * ((i + 0.5) / L.length)); }));
   })();
 
   /* ---------- 6 · Memory: a paper rocket carries yesterday's question to today's card ---------- */

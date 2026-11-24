@@ -904,6 +904,9 @@ html.reels-open { overflow: hidden; }
     /* un-pinned: each track is as tall as its stage; a skipped (off-screen) track keeps a one-screen placeholder so the page never changes length */
     html:has(#hero) .track { height: auto; }
     html:has(#hero) main > .track { contain-intrinsic-size: auto calc(100svh - var(--bar)); }
+    /* The demo's tummy and the offer's Khelu are lazy images that now sit near the top: not fetched in the first load, so the hero image
+       stays the only early request (main.js adds .is-near when the visitor scrolls close; the boxes keep their size from the aspect ratio). */
+    html.motion:has(#hero) #how .kheelu__img:not(.is-near), html.motion:has(#hero) #offer .kheelu__img:not(.is-near) { display: none; }
     html:has(#hero) #how { contain-intrinsic-size: auto calc(100svh - var(--bar) + 8rem); }
     html:has(#hero) #privacy { contain-intrinsic-size: auto calc(100svh - var(--bar) + 13.5rem); }
     html:has(#hero) .stage { position: relative; }
