@@ -83,17 +83,74 @@ async function renderPage() {
 }
 
 describe("store page: the configured store (token mode)", () => {
-  it("composes the first screen, the form, the agreement card and the questions, then the films", async () => {
+  it("composes the first screen, the form, the questions and then the agreement card, then the films (D070 / C1)", async () => {
     const { main } = await renderPage();
     expect(Array.from(main.querySelectorAll("h1, h2")).map((h) => h.textContent)).toEqual([
       "Pre-order Khelu.",
       "Your details",
-      "What you are agreeing to",
       "Questions before you pay",
+      "What you are agreeing to",
       /* The selling update (task Q2.12; D057 item 2; the D2C plan v2 §10). */
       "See Khelu ask.",
     ]);
     expect(main.querySelectorAll("h1")).toHaveLength(1);
+  });
+
+  /* D070 / C1 (K-176), the reservation layout: Pay always on screen, the answers beside it, no new words. */
+  describe("the reservation layout (D070 / C1)", () => {
+    it("puts the questions directly after the pay block and the agreement card after them, the card's words as they were", async () => {
+      const { main } = await renderPage();
+      const form = main.querySelector("#details")!;
+      const questions = main.querySelector(".ks-faq")!;
+      const card = main.querySelector(".ks-agree")!;
+      expect(form.compareDocumentPosition(questions) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(questions.compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(main.querySelector(".ks-store__side")!.children[0]).toBe(questions);
+    });
+
+    it("opens the three money answers (paying today, the refund, the delivery date) and leaves how to pay closed", async () => {
+      const { main } = await renderPage();
+      const rows = Array.from(main.querySelectorAll<HTMLDetailsElement>(".ks-faq details"));
+      expect(rows.map((d) => [d.id, d.hasAttribute("open")])).toEqual([
+        ["faq-paying-today", true],
+        ["faq-change-my-mind", true],
+        ["faq-store-arrival", true],
+        ["faq-how-to-pay", false],
+      ]);
+      expect(rows.map((d) => d.querySelector("summary")!.textContent)).toEqual([
+        "What am I paying today?",
+        "What if I change my mind?",
+        "When will my Khelu arrive?",
+        "How can I pay?",
+      ]);
+    });
+
+    it("makes the small Khelu a link to the first film, named by that film's own play label, and the strip plays it there", async () => {
+      const { main } = await renderPage();
+      const link = main.querySelector<HTMLAnchorElement>(".ks-store-top a.ks-store-top__film")!;
+      expect(link.getAttribute("href")).toBe("#learning-by-asking");
+      expect(link.getAttribute("aria-label")).toBe(
+        "Play: Learning by asking. Khelu asks her to explain carrom, and thanks her for the reminder.",
+      );
+      expect(link.querySelector("img")!.getAttribute("alt")).toBe(storePage.top.image.alt);
+      // The link is a film's play button's name, so the film it names is a tile of the strip, carrying that id.
+      expect(main.querySelector('[aria-labelledby="ask-title"] li#learning-by-asking[data-video-id="learning-by-asking"]')).not.toBeNull();
+      expect(link.querySelector("img")!.getAttribute("loading")).toBe("eager");
+    });
+
+    it("keeps every link's address: the trust links still lead to the marketing site (the no-JavaScript fallback), the consent line's too", async () => {
+      const { main } = await renderPage();
+      const hrefs = (selector: string) => Array.from(main.querySelectorAll<HTMLAnchorElement>(selector)).map((a) => new URL(a.href).pathname + new URL(a.href).hash);
+      expect(hrefs(".ks-store-top .kh-trustline a")).toEqual(["/refund#before-dispatch", "/shipping#when"]);
+      expect(hrefs(".ks-pay-beside .kh-trustline a")).toEqual(["/refund#returns", "/refund#faulty", "/terms#payment", "/shipping#where"]);
+      expect(hrefs(".ks-consent a")).toEqual(["/terms", "/refund"]);
+    });
+
+    it("draws no pay bar in the server HTML (it mounts after hydration: nothing to show, nothing to shift), and the form's own button is the only Pay", async () => {
+      const { main } = await renderPage();
+      expect(main.querySelector(".ks-paybar")).toBeNull();
+      expect(Array.from(main.querySelectorAll("button")).filter((b) => b.textContent?.startsWith("Pay "))).toHaveLength(1);
+    });
   });
 
   it("wires the checkout as before: the launch tier's amount on the pay button, the token sentence beside it", async () => {

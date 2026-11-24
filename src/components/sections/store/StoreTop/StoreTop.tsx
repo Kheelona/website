@@ -19,6 +19,10 @@ export interface StoreTopProps {
   readonly offer: Offer;
   /** Read after each trust link, which opens its terms in a new tab so a half-filled form survives. */
   readonly newTabNote: string;
+  /** The film the small Kheelu opens (D070 / C1, K-176): an in-page link to that film's tile in the page's strip
+   *  (FilmsStrip `anchored`, which plays it there), named by the film's own play label. Without it the image is a plain
+   *  image, as on the event pages and in the approved mockup. */
+  readonly film?: { readonly id: string; readonly label: string };
 }
 
 /**
@@ -38,13 +42,21 @@ export function storeTrustItems(items: readonly TrustItem[], offer: Offer) {
  * The store's first screen (task 5.15; store.md fold 1; mockup/store.html `mk-store-top`): the eyebrow and the page's
  * one h1 beside a small Kheelu (small on purpose, so the form stays high on a phone), then the price sentence and the
  * compact trust line under both; from 720 px Kheelu sits beside the whole block. The first screen never moves on
- * arrival (D049 pick 2), so nothing here takes a reveal. Server component.
+ * arrival (D049 pick 2), so nothing here takes a reveal. On the store page the small Kheelu is a link to the first film
+ * (`film`; visitors already tap it, D070 / C1); the image keeps its size, its place and its loading. Server component.
  */
-export function StoreTop({ content, offer, newTabNote }: StoreTopProps) {
+export function StoreTop({ content, offer, newTabNote, film }: StoreTopProps) {
+  const image = <Photo bare lcp image={content.image} sizes={IMAGE_SIZES} className="ks-store-top__img" />;
   return (
     <section className="ks-store-top" aria-labelledby={content.titleId}>
       <Heading level={1} eyebrow={content.eyebrow} title={content.title} id={content.titleId} offer={offer} className="ks-store-top__head" />
-      <Photo bare lcp image={content.image} sizes={IMAGE_SIZES} className="ks-store-top__img" />
+      {film ? (
+        <a href={`#${film.id}`} className="ks-store-top__film" aria-label={film.label}>
+          {image}
+        </a>
+      ) : (
+        image
+      )}
       <PriceSentence offer={offer} variant="store" id={content.priceId} className="ks-store-top__price" />
       <TrustLine items={storeTrustItems(content.trust, offer)} newTabNote={newTabNote} className="ks-store-top__trust" />
     </section>
