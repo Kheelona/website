@@ -216,11 +216,12 @@ export function whenEngaged(start: () => void, delayMs = 4000, win: Window = win
  *     and `$pathname`; nothing else. Host-gated by `beaconCapture` as PostHog is, off for bots, the team flag carried.
  *  Registered with D070 (events.ts; tracking inventory §17). Never to GA4, Meta or OpenAI. */
 const STORE_LINK = 'a[href^="https://store.kheelona.com"]';
-const CTA_ATTRIBUTE = "data-ph-capture-attribute-cta";
 
-/** The `cta` of a store link: its attribute when it is one of our fixed values' shape, else "unknown". */
-export function ctaOf(link: Element): string {
-  const value = link.getAttribute(CTA_ATTRIBUTE) ?? "";
+/** The `cta` of a store link: its `data-ph-capture-attribute-cta` value (the one PostHog promotes to `cta` on $autocapture;
+ *  tracking inventory §6) when it is the shape of our fixed values, else "unknown". It is READ here, through `dataset`, never
+ *  written: the CTA registry guard (test/guards/cta-registry.test.ts) lets only the Button primitive write the attribute. */
+export function ctaOf(link: HTMLElement): string {
+  const value = link.dataset.phCaptureAttributeCta ?? "";
   return /^[a-z0-9-]{1,40}$/.test(value) ? value : "unknown";
 }
 
@@ -235,7 +236,7 @@ export function reportEarlyStoreTaps(
     "click",
     (e) => {
       if (loaded() || e.defaultPrevented || e.button !== 0) return;
-      const link = (e.target as Element | null)?.closest?.(STORE_LINK);
+      const link = (e.target as Element | null)?.closest?.<HTMLElement>(STORE_LINK);
       if (link) send(STORE_CTA_TAPPED_EARLY, { cta: ctaOf(link) });
     },
     { capture: true, passive: true },
