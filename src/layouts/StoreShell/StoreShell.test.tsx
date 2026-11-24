@@ -4,6 +4,7 @@ import { MARKETING_ORIGIN } from "@/config/env";
 import { isSitePath } from "@/lib/links";
 import { withSellerFacts } from "../../../test/e2e/support/seller-facts";
 import { mockupDiff, mockupPage, mockupRoute } from "../../../test/support/mockup-compare";
+import { storeArrivalScript } from "@/lib/tracking/beacon";
 import { StoreShell } from "./StoreShell";
 
 /* StoreShell (task 3.1; architecture §16.1, structure §3.1): the store host's shell, rendered by src/app/store/layout.tsx:
@@ -68,9 +69,10 @@ describe("StoreShell: the store chrome equals the approved mockup's (mockup/stor
     expect(container.querySelector('a[href*="#chargeback"]')).toBeNull();
   });
 
-  it("keeps the order: skip link, header, main, footer, and adds no bubble and no site navigation", () => {
+  it("keeps the order: the early-arrival script, skip link, header, main, footer, and adds no bubble and no site navigation", () => {
     const { container } = shell();
     expect(Array.from(container.children).map((el) => el.tagName.toLowerCase() + (el.className ? `.${el.className.split(" ")[0]}` : ""))).toEqual([
+      "script",
       "a.kh-btn",
       "header.kh-nav",
       "main",
@@ -78,6 +80,23 @@ describe("StoreShell: the store chrome equals the approved mockup's (mockup/stor
     ]);
     expect(container.querySelector(".ks-wa")).toBeNull();
     expect(screen.queryByRole("navigation", { name: "Main" })).toBeNull();
+  });
+
+  /* D070 / B7c (K-174): the store's early page view is one inline script, first in the shell, so it runs while the HTML is
+     parsed. It is exactly storeArrivalScript() (test/tracking-beacon.test.ts holds what that sends), appears once, has no
+     src (nothing to wait for), prints nothing, and sits before every other element. */
+  it("renders the early-arrival script once, first, inline, and visible to nobody", () => {
+    const { container } = shell();
+    const scripts = container.querySelectorAll("script");
+    expect(scripts).toHaveLength(1);
+    const [script] = Array.from(scripts);
+    expect(script).toBe(container.firstElementChild);
+    expect(script.getAttribute("src")).toBeNull();
+    expect(script.getAttribute("type")).toBeNull();
+    expect(script.getAttribute("async")).toBeNull();
+    expect(script.textContent).toBe(storeArrivalScript());
+    expect(script.textContent).toContain("store_arrived");
+    expect(container.querySelector("main")!.textContent).not.toContain("store_arrived");
   });
 
   it("mounts the motion observer, so the store page's reveals run (D049 pick 1A; store.html's films wrap)", async () => {

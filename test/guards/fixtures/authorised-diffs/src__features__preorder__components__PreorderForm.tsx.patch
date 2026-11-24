@@ -43,20 +43,48 @@ B3 (D070, the founder's approval of the conversion bug fixes B1-B7, 24 Nov 2026;
     it after every test, and test/guards/checkout-jsx-contract.test.tsx clears it at the start of each state it renders (no
     assertion, fixture or expectation changed; the frozen PreorderForm.test.tsx is untouched and green).
 
+B7c (D070, the founder's approval of the conversion bug fixes B1-B7, 24 Nov 2026; action 2026-W48-B7c, card K-174). Measurement, signed
+  off one by one: a signal for the parent who leaves the page with the payment sheet open. A watcher object, a ref and four calls here;
+  the rest is in new files (src/lib/tracking/payment-window.ts, src/lib/tracking/beacon.ts):
+  - `import { watchPaymentWindow, type PaymentWindowWatch } from "@/lib/tracking/payment-window";` and `useEffect` in the react import.
+  - `const sheetWatch = useRef<PaymentWindowWatch | null>(null);` and `useEffect(() => () => sheetWatch.current?.close(), []);` (the
+    listener goes if the form unmounts).
+  - `const sheet = watchPaymentWindow(tier);` and `sheetWatch.current = sheet;` right before `startCheckout`, `if (opened) sheet.opened();`
+    right after it (the sheet is up: from now the first `visibilitychange` to hidden sends `preorder_payment_window_hidden { tier }` once,
+    at once, by beacon, to PostHog only), and `sheet.close();` as the first statement of `onDismiss` and of `onPaid` (stops listening).
+  - Nothing else moves: `onDismiss` still calls `preorderAnalytics.dismissed(tier)` (so `preorder_dismissed` still fires, proved by
+    test/preorder-payment-window.test.tsx), `onPaid` the same funnel call, the confirm request, the draft clear and the navigation, in
+    the same order. No request, state, JSX or attribute changes. Frozen files (`analytics.ts`, `checkout.ts`, `posthog.ts`,
+    `PostHogGate.tsx`, `proxy.ts`) are untouched.
+  - The logic signature (checkout-signatures/...PreorderForm.tsx.json) gains exactly these lines: the react import now with `useEffect`,
+    the `watchPaymentWindow` import, the `sheetWatch` ref and its effect, the `sheet` declaration and assignment, `sheet.close();` twice,
+    and `if (opened) sheet.opened();`; nothing in `jsx`.
+  - Proof: test/preorder-payment-window.test.tsx (a new file, because the frozen checkout tests take literal-only patches) and
+    test/tracking-beacon.test.ts; registry rows in src/lib/tracking/events.ts (status added, D070) held to inventory §17.
+
 diff --git a/src/features/preorder/components/PreorderForm.tsx b/src/features/preorder/components/PreorderForm.tsx
-index 987fcc3..62759dc 100644
+index 987fcc3..0b7ccee 100644
 --- a/src/features/preorder/components/PreorderForm.tsx
 +++ b/src/features/preorder/components/PreorderForm.tsx
-@@ -22,6 +22,8 @@ import { startCheckout } from "../lib/checkout";
+@@ -1,6 +1,6 @@
+ "use client";
+ 
+-import { useRef, useState, type ReactNode } from "react";
++import { useEffect, useRef, useState, type ReactNode } from "react";
+ import Link from "next/link";
+ import { clsx } from "clsx";
+ import { Alert } from "@/components/ui/Alert/Alert";
+@@ -22,6 +22,9 @@ import { startCheckout } from "../lib/checkout";
  import { preorderAnalytics } from "../lib/analytics";
  import { phDistinctId } from "@/lib/posthog";
  import { CAMPAIGN_KEYS } from "@/lib/campaign";
 +import { track } from "@/lib/tracking/track";
++import { watchPaymentWindow, type PaymentWindowWatch } from "@/lib/tracking/payment-window";
 +import { clearFormDraft, useFormDraft } from "./form-draft";
  
  /** The pre-order form (§8.25-s).
   *
-@@ -49,7 +51,9 @@ import { CAMPAIGN_KEYS } from "@/lib/campaign";
+@@ -49,7 +52,9 @@ import { CAMPAIGN_KEYS } from "@/lib/campaign";
   *  the store page hands in the rest (`beside`: the trust row, the payment window
   *  line, a person to reach), which a client island cannot draw itself. Every
   *  handler, field attribute and request below is the tag's
@@ -67,7 +95,7 @@ index 987fcc3..62759dc 100644
  export function PreorderForm({
    tier,
    signature,
-@@ -85,6 +89,10 @@ export function PreorderForm({
+@@ -85,6 +90,16 @@ export function PreorderForm({
    const [state, setState] = useState<"idle" | "working" | "paying">("idle");
    const [failure, setFailure] = useState<string | null>(null);
  
@@ -75,10 +103,16 @@ index 987fcc3..62759dc 100644
 +     leaves to pay in a UPI app finds them still filled in (D070 / B3; ./form-draft.ts). */
 +  const draftRef = useFormDraft();
 +
++  /* A parent who leaves the page with the payment sheet open (a UPI app, a locked phone) is reported once, by beacon,
++     from the moment the sheet is up until it is paid, dismissed or this form goes (D070 / B7c; the explicit close is
++     still `preorder_dismissed`, below, unchanged). */
++  const sheetWatch = useRef<PaymentWindowWatch | null>(null);
++  useEffect(() => () => sheetWatch.current?.close(), []);
++
    /* Fired once per mount, on the first change to any field (§8.40). A ref
       rather than state on purpose: this must not re-render the form a parent is
       typing into, and it must survive StrictMode's double-invoke in development
-@@ -123,6 +131,10 @@ export function PreorderForm({
+@@ -123,6 +138,10 @@ export function PreorderForm({
          behavior: "smooth",
          block: "center",
        });
@@ -89,17 +123,29 @@ index 987fcc3..62759dc 100644
        return;
      }
  
-@@ -163,6 +175,7 @@ export function PreorderForm({
+@@ -157,13 +176,17 @@ export function PreorderForm({
+       setState("paying");
+       preorderAnalytics.beginCheckout(data.amountPaise!, tier);
+ 
++      const sheet = watchPaymentWindow(tier);
++      sheetWatch.current = sheet;
+       const opened = await startCheckout({
+         keyId: data.keyId!,
+         razorpayOrderId: data.razorpayOrderId!,
          amountPaise: data.amountPaise!,
          orderRef: data.orderRef!,
          prefill: data.prefill ?? {},
 +        tier,
          onDismiss: () => {
++          sheet.close();
            preorderAnalytics.dismissed(tier);
            setState("idle");
-@@ -172,11 +185,17 @@ export function PreorderForm({
+           setFailure(
+@@ -171,12 +194,19 @@ export function PreorderForm({
+           );
          },
          onPaid: (paid) => {
++          sheet.close();
            preorderAnalytics.purchase(data.orderRef!, data.amountPaise!, tier);
 +          /* Paid: the saved name, phone and email have done their job (D070 / B3). */
 +          clearFormDraft();
@@ -116,7 +162,15 @@ index 987fcc3..62759dc 100644
              headers: { "content-type": "application/json" },
              body: JSON.stringify({
                razorpayOrderId: paid.razorpay_order_id,
-@@ -209,7 +228,7 @@ export function PreorderForm({
+@@ -192,6 +222,7 @@ export function PreorderForm({
+         },
+       });
+ 
++      if (opened) sheet.opened();
+       if (!opened) {
+         setState("idle");
+         setFailure(
+@@ -209,7 +240,7 @@ export function PreorderForm({
    const busy = state !== "idle";
  
    return (

@@ -98,6 +98,9 @@ any other host load none of the three.
 Rows 18 to 20 were added after the tag by [D069](../decisions/D069-openai-ads-measurement.md), so row 16's
 "none found" is true as of the tag. The OpenAI pixel uses the same host list; §16 is its section.
 
+[D070](../decisions/D070-conversion-bug-fixes-2026-11-24.md) (B7c) adds no destination: two PostHog browser events,
+`store_arrived` and `preorder_payment_window_hidden`, reach row 6's project by beacon through row 8's proxy; §17 is their section.
+
 ---
 
 ## 1. Vercel Web Analytics
@@ -581,6 +584,50 @@ Not in production at the tag. [D069](../decisions/D069-openai-ads-measurement.md
   shown on the site; `page_viewed` is sent once per load; `kh_oppref`, `__oppref` and `__obref` are readable on
   `store.kheelona.com`; then Ads Manager → Conversions → Web Pixel → Test on each origin.
 
+## 17. Early store signals (added by D070, after the tag)
+
+Not in production at the tag. [D070](../decisions/D070-conversion-bug-fixes-2026-11-24.md) (B7c, the founder's approval of
+24 November 2026, signed off one by one) adds two PostHog browser events that leave the page **at once, by
+`navigator.sendBeacon`**, instead of waiting in posthog-js's queue (which flushes every 3 seconds and on `pagehide`, and
+a phone does not fire `pagehide` when the parent switches to a UPI app). Nothing in sections 1 to 16 changes: no new
+destination, no new tool, no new kind of data; the funnel files (`analytics.ts`, `checkout.ts`, `posthog.ts`,
+`PostHogGate.tsx`) are byte-for-byte as before. They are not sent through the dispatcher (`track.ts`), and **never to GA4,
+Meta or OpenAI**.
+
+| Event | Parameters | Fired at | When |
+|---|---|---|---|
+| `store_arrived` | `$current_url`, `$host`, `$pathname`, `$referring_domain`, `$session_id`, `internal`, `env`, `$lib: "kh-early"`, `$process_person_profile: false` | `storeArrivalScript` (`src/lib/tracking/beacon.ts`), the inline script at the top of `StoreShell` | once per full load of a store page, while the HTML is parsed, before hydration |
+| `preorder_payment_window_hidden` | `tier`, `$current_url`, `$host`, `$pathname`, `$session_id`, `internal`, `env`, `$lib: "kh-beacon"`, `$process_person_profile: false` | `watchPaymentWindow` (`src/lib/tracking/payment-window.ts`), from `PreorderForm`, sent by `beaconCapture` | the first time the page is hidden while the Razorpay sheet is open, once per opened sheet |
+
+- **Transport:** the body posthog-js 1.434.2 itself uses with `sendBeacon`: `POST /ingest/e/?compression=base64` (our
+  same-origin proxy, §8), a form body `data=<base64 of {api_key, batch: [{event, properties: {token, distinct_id, …}}], sent_at}>`.
+  `beaconCapture` (`src/lib/tracking/beacon.ts`, also used by B5) falls back to `fetch(…, { keepalive: true })`; the inline
+  script, which has a 1.5 KB budget, does not.
+- **`store_arrived` runs only** on `STORE_ARRIVAL_HOSTS` (`store.kheelona.com`, and `betastore.kheelona.com` stamped
+  `env: "beta"`, the stamp `before_send` gives the SDK's events); never on localhost, a preview, `kheelona.com` or any other
+  host; never on `POSTHOG_REPLAY_DENY_PATHS` (`/thanks` and under it, the page that prints an order); not for a bot or an
+  automated browser (posthog-js drops those too, so the count stays comparable with `$pageview`). Nothing is awaited and
+  nothing is visible; every step is in a try/catch.
+- **`$current_url`** is the origin, the path and **only the campaign keys** of `CAMPAIGN_KEYS` (§9), each capped at 120
+  characters; every other query parameter (an email, a phone, an order reference, a claim token) and the hash are dropped.
+  `$referring_domain` is the referrer's host, or `$direct`. `$host` and `$pathname` are the page's.
+- **Identity:** `distinct_id` is the one in posthog-js's cross-subdomain cookie `ph_<key>_posthog` when it exists (so the event
+  joins the visitor's funnel), else a random UUID (then the event is only a count). `$session_id` comes from the same cookie's
+  `$sesid` while that session is under 30 minutes idle. `internal: true` is carried when this host's PostHog storage
+  (`localStorage` `ph_<key>_posthog`, where `applyInternalFlag` registers it, §6) holds the team flag; a device flagged with
+  `?internal=1` counts from its second load. `$process_person_profile: false`: no person profile is created.
+- **What they never carry:** a name, phone, email, child's age, order reference, address, payment detail, or any free text.
+  `preorder_payment_window_hidden` carries `tier` only.
+- **Reading `preorder_payment_window_hidden`:** it says "the parent left the page with the sheet open", not "abandoned": a UPI
+  payment also hides the page. The analyst reads it as: hidden, and no `purchase_confirmed` for the same session (or
+  `distinct_id`) within N minutes. The explicit close (× or Back) is still `preorder_dismissed` (§3, §6), unchanged.
+- **Check after deploy (read-only, never typing into the store form, never pressing Pay):** `store.kheelona.com/` sends one
+  `POST /ingest/e/` whose decoded body is `store_arrived`, before the SDK's own `$pageview`; `/thanks` sends none; a store URL
+  with `?utm_source=x&foo=y` records `utm_source` only; PostHog shows the event with `$lib = kh-early`.
+- No `/privacy` change is proposed: PostHog already "counts visits and the steps of a pre-order, … opening and closing the payment
+  window", receives the network address, and sets the cookie the early event reads; there is no new tool and no new kind of
+  data.
+
 ## Live snapshot: PostHog, last 30 days
 
 Aggregates only, HogQL over `events`, run 2026-10-11 00:44-00:50 UTC. Counts include internal and
@@ -675,6 +722,7 @@ properties (method of §8.30-i, line 1403). "Production" means after the Gate B 
 | 25 | CSP | every tracking origin still allowed | origin list in section 14 | `security-headers.ts:107-185` | Header string equal to the old one or a reviewed superset; no new `csp-report` entries for tracking origins |
 | 26 | Verification | GSC, Meta domain | DNS TXT unchanged | DNS | `dig TXT kheelona.com` before and after; GSC and Meta Domains screens still "verified" |
 | 27 | Privacy disclosure | `/privacy` matches what is collected | same-commit rule §8.21-c | `privacy/page.tsx` | `analytics-tags.test.ts` green |
+| 28 | PostHog | early store signals (added by D070): `store_arrived`, `preorder_payment_window_hidden` | §17's parameters; no GA4, Meta or OpenAI send; `store_arrived` never on `/thanks`, localhost, a preview or the marketing host | `beacon.ts`, `StoreShell.tsx`, `payment-window.ts` | `test/tracking-beacon.test.ts`, `test/preorder-payment-window.test.tsx`; probe on a mapped store host with every collector aborted: one `store_arrived` body on `/`, none on `/thanks` or `kheelona.com/` |
 
 ## What the new site must not change
 
