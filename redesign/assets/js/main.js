@@ -708,6 +708,17 @@
     };
     const close = () => { if (history.state && history.state.reels) history.back(); else shut(); };
     addEventListener("popstate", shut);
+    // Pre-order from inside the viewer: close the viewer first (Back pops its history entry, the page returns to its place), then go to the store, so the store's
+    // Back button returns to this page where the visitor was, not to a top-of-page copy with a dead viewer entry. A click another handler has already taken over
+    // (the tracking shell holds the first tap until PostHog is ready, then clicks again) or one that opens a new tab is left alone.
+    if (order) order.addEventListener("click", (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || !isOpen || !(history.state && history.state.reels)) return;
+      e.preventDefault();
+      const href = order.href, leave = () => { clearTimeout(t); location.assign(href); };
+      const t = setTimeout(leave, 600); // Back never arrived: go anyway
+      addEventListener("popstate", () => requestAnimationFrame(() => requestAnimationFrame(leave)), { once: true });
+      history.back();
+    });
     modal.querySelector("[data-close]").addEventListener("click", close);
     modal.addEventListener("cancel", (e) => { e.preventDefault(); close(); }); // Esc
     syncMute();

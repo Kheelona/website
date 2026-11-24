@@ -886,6 +886,7 @@ html.reels-open { overflow: hidden; }
 .reels.has-order { --reels-strip: calc(3.875rem + env(safe-area-inset-bottom)); }
 .reels.has-order .reels__poster, .reels.has-order .reels__slide video { height: calc(100% - var(--reels-strip)); } /* replaced elements: an explicit height, not top + bottom */
 .reels.has-order .reels__cap { bottom: var(--reels-strip); padding-bottom: 1.75rem; }
+.reels.has-order .reels__slide.is-paused::after { top: calc((100% - var(--reels-strip)) / 2); } /* the pause mark stays in the middle of the picture */
 .reels__cta { position: absolute; z-index: 4; left: 0; right: 0; bottom: 0; height: var(--reels-strip); display: flex; align-items: flex-start; gap: 0.875rem; padding: 0.5rem max(1.25rem, calc((100% - 40rem) / 2)) 0; pointer-events: none; }
 .reels__order { display: inline-flex; flex: none; align-items: center; gap: 0.5rem; min-height: 2.75rem; padding: 0 1.125rem; border-radius: 999px; background: rgba(255, 255, 255, 0.16); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28); color: #fff; font: 600 0.875rem/1 var(--text); text-decoration: none; white-space: nowrap; pointer-events: auto; transition: background-color 0.3s, color 0.3s, box-shadow 0.3s; }
 .reels__order:hover { background: rgba(255, 255, 255, 0.28); }
