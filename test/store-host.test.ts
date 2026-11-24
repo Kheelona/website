@@ -97,7 +97,7 @@ describe("store host routing", () => {
   });
 
   it("leaves every marketing route alone", () => {
-    for (const path of ["/", "/products/kheelu", "/refund", "/stories/how-children-learn-by-talking"]) {
+    for (const path of ["/", "/products/khelu", "/refund", "/stories/how-children-learn-by-talking"]) {
       expect(routeForHost("kheelona.com", path), path).toEqual({ kind: "pass" });
     }
   });
@@ -106,8 +106,8 @@ describe("store host routing", () => {
      duplicate content, and it would also mean a parent could read the old
      reservation copy on a domain that takes payments. */
   it("does not serve marketing pages on the store host", () => {
-    const route = routeForHost("store.kheelona.com", "/products/kheelu");
-    expect(route).toEqual({ kind: "rewrite", path: "/store/products/kheelu" });
+    const route = routeForHost("store.kheelona.com", "/products/khelu");
+    expect(route).toEqual({ kind: "rewrite", path: "/store/products/khelu" });
     // No such route exists, so it lands on the /store catch-all, which since
     // 2026-09-06 RENDERS the store's not-found rather than throwing one that
     // answers with an empty document.

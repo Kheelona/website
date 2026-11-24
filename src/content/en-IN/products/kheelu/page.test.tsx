@@ -79,7 +79,7 @@ import { product } from "./product";
  * task Q2.11), the price answer with the total and no GST, the delivery question off and the Kheelona+ question on.
  */
 
-const PATH = "/products/kheelu";
+const PATH = "/products/khelu";
 const TOKEN = buildOffer("token");
 const FULL = buildOffer("full");
 
@@ -389,7 +389,7 @@ describe("the product page's structured data (architecture §9.2)", () => {
       name: "Kheelu by Kheelona",
       alternateName: "Lumi",
       brand: { "@type": "Brand", name: "Kheelona" },
-      url: "https://kheelona.com/products/kheelu",
+      url: "https://kheelona.com/products/khelu",
       image: ["https://kheelona.com/media/kheelu-front.jpg"],
       audience: { "@type": "PeopleAudience", suggestedMinAge: 3, suggestedMaxAge: 7 },
     });

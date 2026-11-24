@@ -32,7 +32,7 @@ describe("SectionLinkRow", () => {
   });
 
   it("a ghost link with its arrow after the words, in the DS actions row, tagged with its CTA value", () => {
-    const { container } = render(<SectionLinkRow link={{ label: "See all questions", href: "/products/kheelu#faq", cta: "faq-more" }} />);
+    const { container } = render(<SectionLinkRow link={{ label: "See all questions", href: "/products/khelu#faq", cta: "faq-more" }} />);
     const row = container.firstElementChild!;
     expect(row.className).toBe("kh-section__actions");
     const link = screen.getByRole("link", { name: "See all questions" });

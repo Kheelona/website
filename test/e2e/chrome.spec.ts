@@ -885,7 +885,7 @@ test.describe("chrome: WhatsApp bubble beside the store's prices (task 7.1a; D05
    with the bar lifting the bubble, motion on and reduced; and prove the paid /thanks address step (item 2) on the
    ThanksPaid story (Storybook, which Playwright serves beside the site; `npm run build-storybook` first). */
 
-const PRODUCT: Built = { host: "marketing", path: "/products/kheelu" };
+const PRODUCT: Built = { host: "marketing", path: "/products/khelu" };
 const phone324 = VIEWPORTS.find((v) => v.width === 324)!;
 const THANKS_PAID_STORY = `http://localhost:${STORYBOOK_PORT}/iframe.html?id=layouts-storeshell--thanks-paid&viewMode=story`;
 /** The prices the site's bubble steps aside from: the prices of WhatsAppFloat's STEP_ASIDE_FROM `site`, written here

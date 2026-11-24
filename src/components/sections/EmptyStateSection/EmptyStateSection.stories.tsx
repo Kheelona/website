@@ -16,7 +16,7 @@ export const NOT_FOUND: EmptyStateSectionConfig = {
     label: "Where to go next",
     links: [
       { icon: "house", tone: "sun", title: "Home", sub: "What Kheelu is, on one page.", href: "/" },
-      { icon: "heart", tone: "chilli", title: "Meet Kheelu", sub: "The toy, its three modes and the price.", href: "/products/kheelu" },
+      { icon: "heart", tone: "chilli", title: "Meet Kheelu", sub: "The toy, its three modes and the price.", href: "/products/khelu" },
       { icon: "book-open", tone: "blue", title: "Stories", sub: "Guides for parents of 3 to 7 year olds.", href: "/stories" },
       { icon: "chat-circle-dots", tone: "sun", title: "Contact", sub: "WhatsApp, call or email the team.", href: "/contact" },
     ],

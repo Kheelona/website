@@ -59,12 +59,12 @@ describe("Button: markup ported from the mockup", () => {
 
   it("renders a ghost link with a plain end arrow and a secondary CTA value (home.html:18), markup as the mockup", () => {
     const html = renderToStaticMarkup(
-      <Button variant="ghost" href="/products/kheelu" iconEnd="arrow-right" cta="hero-learn">
+      <Button variant="ghost" href="/products/khelu" iconEnd="arrow-right" cta="hero-learn">
         See how it works
       </Button>,
     );
     expect(html).toBe(
-      '<a href="/products/kheelu" data-next-link="" class="kh-btn kh-btn--ghost" data-ph-capture-attribute-cta="hero-learn">' +
+      '<a href="/products/khelu" data-next-link="" class="kh-btn kh-btn--ghost" data-ph-capture-attribute-cta="hero-learn">' +
         "<span>See how it works</span>" +
         `<svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="${ARROW_PATH}"></path></svg>` +
         "</a>",
@@ -197,7 +197,7 @@ describe("Button: as a button or a link", () => {
         </Button>
         <Button disabled>Off</Button>
         <Button loading>Saving</Button>
-        <Button variant="ghost" href="/products/kheelu">
+        <Button variant="ghost" href="/products/khelu">
           See how it works
         </Button>
       </>,
@@ -262,7 +262,7 @@ describe("Button: CTA tracking value (architecture §8.3)", () => {
   it("refuses a pre-order value on a button that is not chilli", () => {
     expect(() =>
       renderToStaticMarkup(
-        <Button variant="ghost" href="/products/kheelu" cta="hero">
+        <Button variant="ghost" href="/products/khelu" cta="hero">
           See how it works
         </Button>,
       ),

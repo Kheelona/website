@@ -186,7 +186,7 @@ export const teamPage = {
           cta: "finale",
           trust: TRUST_COMPACT.map((id) => trustItems[id]),
           helpLine: true,
-          secondary: { label: "See how Kheelu works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" },
+          secondary: { label: "See how Kheelu works", href: "/products/khelu", variant: "ghost", iconEnd: "arrow-right" },
         },
       },
     },

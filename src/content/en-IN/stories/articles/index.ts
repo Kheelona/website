@@ -110,7 +110,7 @@ export const articlePageCopy = {
     },
     cta: "finale",
     trust: TRUST_COMPACT,
-    secondary: { label: "See how Kheelu works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" },
+    secondary: { label: "See how Kheelu works", href: "/products/khelu", variant: "ghost", iconEnd: "arrow-right" },
     art: {
       tone: "sun",
       label: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy.",

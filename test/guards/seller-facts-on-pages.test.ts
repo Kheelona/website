@@ -25,7 +25,7 @@ const NUMBER_SHOWN = SUPPORT_WHATSAPP_DISPLAY;
 const NUMBER_DIALLED = `+${SUPPORT_WHATSAPP_DISPLAY.replace(/\D/g, "")}`;
 
 /** The one declaration row, by page, that may carry the number outside NUMBER_PAGES (task Q2.10): its term. */
-export const DECLARED_NUMBER: Readonly<Record<string, string>> = { "/products/kheelu": "Consumer care" };
+export const DECLARED_NUMBER: Readonly<Record<string, string>> = { "/products/khelu": "Consumer care" };
 
 const literal = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 /** The number as shown, as dialled, and a call link (a word of its own: "hotel:" is not one), each with how a leak of it
@@ -117,29 +117,29 @@ describe("seller-facts-on-pages detector", () => {
     const product = (body: string, data = payload()) => `${page(`${body}<dl>${row}</dl>`)}${data}`;
 
     it("names the one row and the one page", () => {
-      expect(DECLARED_NUMBER).toEqual({ "/products/kheelu": "Consumer care" });
+      expect(DECLARED_NUMBER).toEqual({ "/products/khelu": "Consumer care" });
     });
 
     it("is green on the product page with the number in its consumer care row and the payload's one mirror of it", () => {
-      expect(sellerFactLeaks("/products/kheelu", product(`<p>Questions? ${whatsapp}</p>`))).toEqual([]);
+      expect(sellerFactLeaks("/products/khelu", product(`<p>Questions? ${whatsapp}</p>`))).toEqual([]);
     });
 
     it("is red on the number anywhere else on that page: a help line, the JSON-LD, a second row", () => {
-      expect(sellerFactLeaks("/products/kheelu", product(`<p>Questions? ${whatsapp} or ${call}</p>`))).toEqual([
-        `/products/kheelu: the number ${NUMBER_SHOWN}`,
-        `/products/kheelu: the number ${NUMBER_DIALLED}`,
-        "/products/kheelu: a call link (tel:)",
+      expect(sellerFactLeaks("/products/khelu", product(`<p>Questions? ${whatsapp} or ${call}</p>`))).toEqual([
+        `/products/khelu: the number ${NUMBER_SHOWN}`,
+        `/products/khelu: the number ${NUMBER_DIALLED}`,
+        "/products/khelu: a call link (tel:)",
       ]);
-      expect(sellerFactLeaks("/products/kheelu", product(`<script type="application/ld+json">{"telephone":"${NUMBER_SHOWN}"}</script>`))).toEqual([
-        `/products/kheelu: the number ${NUMBER_SHOWN}`,
+      expect(sellerFactLeaks("/products/khelu", product(`<script type="application/ld+json">{"telephone":"${NUMBER_SHOWN}"}</script>`))).toEqual([
+        `/products/khelu: the number ${NUMBER_SHOWN}`,
       ]);
-      expect(sellerFactLeaks("/products/kheelu", product(`<dl>${row}</dl>`))).toContain('/products/kheelu: 2 "Consumer care" declaration rows, one allowed');
+      expect(sellerFactLeaks("/products/khelu", product(`<dl>${row}</dl>`))).toContain('/products/khelu: 2 "Consumer care" declaration rows, one allowed');
     });
 
     it("is red on the number in the page's data beyond the row's one mirror", () => {
-      expect(sellerFactLeaks("/products/kheelu", product("", payload(`,\\"tel:+919187546483\\"`)))).toEqual([
-        `/products/kheelu: the number ${NUMBER_DIALLED} in the page's data beyond its "Consumer care" declaration`,
-        `/products/kheelu: a call link (tel:) in the page's data beyond its "Consumer care" declaration`,
+      expect(sellerFactLeaks("/products/khelu", product("", payload(`,\\"tel:+919187546483\\"`)))).toEqual([
+        `/products/khelu: the number ${NUMBER_DIALLED} in the page's data beyond its "Consumer care" declaration`,
+        `/products/khelu: a call link (tel:) in the page's data beyond its "Consumer care" declaration`,
       ]);
     });
 

@@ -46,7 +46,7 @@ export type OpenAiAamPolicy = "require-off" | "verified-pages";
 
 /** The reviewed default: `verified-pages`, set from the AAM probe (spec F6, Test plan; D069). With the live SDK
  *  (0.1.104), automatic advanced matching forced on and every collector answered locally, the events from `/`,
- *  `/products/kheelu`, `/contact`, `/privacy`, `/terms`, `/team`, `/shipping` and the store's `/` carried no hash of
+ *  `/products/kheelu` (the product page's address until D070 / C4 moved it to `/products/khelu`; same page), `/contact`, `/privacy`, `/terms`, `/team`, `/shipping` and the store's `/` carried no hash of
  *  any contact detail those pages show. On the store, once a parent types into the form, AAM adds the hashed email
  *  and phone of what was typed, which is buyer data only. `require-off` stays implemented and tested as the
  *  alternative: switching is this one line. */
@@ -57,7 +57,7 @@ export const OPENAI_AAM_POLICY: OpenAiAamPolicy = "verified-pages";
  *  `checkout_started` and `order_created` are. Every other page (/contact, the legal pages, /team,
  *  /stories/**, the store's /thanks with its address form, 404s) gets no stub and no SDK. */
 export const OPENAI_PIXEL_PAGES = {
-  marketing: ["/", "/products/kheelu"],
+  marketing: ["/", "/products/khelu"],
   store: ["/"],
 } as const;
 
@@ -75,7 +75,7 @@ export function shouldLoadOpenAiPixel(hostname: string): boolean {
   return (META_PIXEL_HOSTS as readonly string[]).includes(hostname.toLowerCase());
 }
 
-/** `"/products/kheelu/"` and `"/products/kheelu"` are the same page. */
+/** `"/products/khelu/"` and `"/products/khelu"` are the same page. */
 function normalisePath(pathname: string): string {
   return pathname.length > 1 ? pathname.replace(/\/+$/, "") || "/" : pathname || "/";
 }

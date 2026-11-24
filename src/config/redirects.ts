@@ -42,7 +42,7 @@ const RULES: readonly RedirectRule[] = [
      pass through untouched, so campaign parameters on any live ad, QR code
      or WhatsApp share still arrive attributed.
 
-     Every legacy redirect below now points STRAIGHT at /products/kheelu
+     Every legacy redirect below now points STRAIGHT at /products/khelu
      rather than chaining through /products/lumi. A two-hop redirect costs a
      round trip, dilutes what it forwards, and is the standard way a rename
      quietly degrades the equity it was supposed to carry.
@@ -50,7 +50,17 @@ const RULES: readonly RedirectRule[] = [
      This line is permanent. There is no date at which removing it is safe:
      printed QR codes, old WhatsApp forwards and two weeks of Ahrefs-recorded
      inbound links all point at the old path. */
-  { source: "/products/lumi", destination: "/products/kheelu", permanent: true },
+  { source: "/products/lumi", destination: "/products/khelu", permanent: true },
+  /* THE PAGE'S ADDRESS MOVED (D070 / C4, human 24 Nov: "Don't drop kheelu.
+     Redirect it."). The toy is shown as "Khelu", so the product page is now
+     served at `/products/khelu` (its canonical, sitemap entry, schema `url` and
+     every internal link), and the address it had until then, `/products/kheelu`,
+     keeps working through this one permanent hop. It replaces the first version
+     of this change (D070 / B7 (b), the other direction: khelu to kheelu).
+     Every rule in this table points straight at `/products/khelu`, never at
+     `/products/kheelu`, so no source costs a second hop. The `www` twin below
+     comes from the map. */
+  { source: "/products/kheelu", destination: "/products/khelu", permanent: true },
 
   /* Legacy Wix-site URLs (2026-07-28). This site replaces the old
      kheelona.com store, whose pages are still in Google's index — including
@@ -58,29 +68,29 @@ const RULES: readonly RedirectRule[] = [
      equity here and stop the old prices competing with the real ones, which
      was the biggest active SEO liability on the list (V3-h). Every source
      below existed on the previous site. */
-  { source: "/product-page/:slug*", destination: "/products/kheelu", permanent: true },
+  { source: "/product-page/:slug*", destination: "/products/khelu", permanent: true },
   /* `[^.]+` instead of `:slug*` on purpose, and it must stay: redirects are
      matched BEFORE public/ files, and our own plush renders live in
      public/product/. A plain `/product/:slug*` 308s lumi-blue-2.png to the
      product page, which makes the image optimizer 400 and blanks the hero
      (caught locally 2026-07-28, before it reached a customer). Legacy Wix
      product slugs never contain a dot; asset filenames always do. */
-  { source: "/product/:slug([^.]+)", destination: "/products/kheelu", permanent: true },
-  { source: "/shop", destination: "/products/kheelu", permanent: true },
+  { source: "/product/:slug([^.]+)", destination: "/products/khelu", permanent: true },
+  { source: "/shop", destination: "/products/khelu", permanent: true },
   /* Wix listing pages. `/category/all-products` was still taking real
      landings; the catch-all covers the sibling category slugs we cannot
      enumerate. Same `[^.]+` guard as `/product/` above — there is no
      public/category/ today, but a future asset folder must not be able to
      disappear behind this line (§8.21-b). */
-  { source: "/category/all-products", destination: "/products/kheelu", permanent: true },
-  { source: "/category/:slug([^.]+)", destination: "/products/kheelu", permanent: true },
+  { source: "/category/all-products", destination: "/products/khelu", permanent: true },
+  { source: "/category/:slug([^.]+)", destination: "/products/khelu", permanent: true },
   /* The Wix theme published an accessibility statement, and two weeks of
      Ahrefs data say people still land on it: 19 entrances, 10.8% of ALL
      site entries, second only to the home page, every one of them hitting a
      404. Founder's call on the destination (2026-08-12): the product page,
      so the traffic lands somewhere that converts. If a real statement is
      ever written, it replaces this line. */
-  { source: "/accessibility-statement", destination: "/products/kheelu", permanent: true },
+  { source: "/accessibility-statement", destination: "/products/khelu", permanent: true },
   /* Three more Wix paths, from Search Console's "Not found (404)" report read on
      2026-09-05 (SEO round, A1): four `/post/<slug>` blog posts, `/terms-conditions`
      and `/for-the-parents`, all last crawled in March and still being re-fetched.
@@ -118,10 +128,10 @@ const RULES: readonly RedirectRule[] = [
      live on the product page. `/sitemap` is what people type when they mean
      the .xml. None is a legacy Wix route; they are all just what humans
      guess, which is why they belong here rather than in the block above. */
-  { source: "/lumi", destination: "/products/kheelu", permanent: true },
+  { source: "/lumi", destination: "/products/khelu", permanent: true },
   /* The product page must keep `id="faq"`, or this line changes in the same
      commit (url-map §4c). */
-  { source: "/faq", destination: "/products/kheelu#faq", permanent: true },
+  { source: "/faq", destination: "/products/khelu#faq", permanent: true },
   { source: "/sitemap", destination: "/sitemap.xml", permanent: true },
   { source: "/blog", destination: "/stories", permanent: true },
   { source: "/blog/:slug*", destination: "/stories", permanent: true },
@@ -137,15 +147,15 @@ const RULES: readonly RedirectRule[] = [
   { source: "/login", destination: "/", permanent: true },
   { source: "/signup", destination: "/", permanent: true },
   { source: "/account/:path*", destination: "/", permanent: true },
-  { source: "/cart", destination: "/products/kheelu", permanent: true },
-  { source: "/checkout/:path*", destination: "/products/kheelu", permanent: true },
+  { source: "/cart", destination: "/products/khelu", permanent: true },
+  { source: "/checkout/:path*", destination: "/products/khelu", permanent: true },
 
   /* ── The reset (2026-10) ─────────────────────────────────────────────── */
 
   /* D041 (Gate A, G8/G5): the PlayOS page is dropped. Redirects run before the
      filesystem, so this wins while the old page folder still exists; task 6.3
      deletes it. */
-  { source: "/playos", destination: "/products/kheelu", permanent: true },
+  { source: "/playos", destination: "/products/khelu", permanent: true },
   /* D041: the two-year-old article is dropped, to the three-year-old one. */
   {
     source: "/stories/brain-development-toys-for-a-2-year-old",
@@ -161,11 +171,11 @@ const RULES: readonly RedirectRule[] = [
      tried (`/jobs` had two landings in PostHog, `/careers` one). `/pricing`
      opens the offer card; `/pricing.md` (the machine file) is a different
      path and is not matched. */
-  { source: "/kheelu", destination: "/products/kheelu", permanent: true },
-  { source: "/products", destination: "/products/kheelu", permanent: true },
+  { source: "/kheelu", destination: "/products/khelu", permanent: true },
+  { source: "/products", destination: "/products/khelu", permanent: true },
   { source: "/careers", destination: "/team", permanent: true },
   { source: "/jobs", destination: "/team", permanent: true },
-  { source: "/pricing", destination: "/products/kheelu#offer", permanent: true },
+  { source: "/pricing", destination: "/products/khelu#offer", permanent: true },
 ];
 
 /** The Wix site lived on `www`, so its old links do too. Today Vercel's domain

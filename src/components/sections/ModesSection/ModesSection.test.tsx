@@ -64,7 +64,7 @@ describe("ModesSection: home (Home fold 4)", () => {
     photo: { image: image("ira-01-story-on-the-bed-web.webp", 1208, 1500, "A laughing girl in a peach kurta.") },
     modes: MODES,
     languages: LANGUAGES,
-    link: { label: "See what each mode does", href: "/products/kheelu" },
+    link: { label: "See what each mode does", href: "/products/khelu" },
   };
 
   it("matches the approved fold: heading beside the photo, three mode cards, the languages, then the link", () => {

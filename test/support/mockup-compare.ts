@@ -9,6 +9,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { PRICE_LINE } from "../e2e/support/deviations";
 import { withDeliveryDate } from "../e2e/support/mockup-text";
 import { readRepoFile } from "../e2e/support/repo";
+import { builtAddress } from "../e2e/support/url-move";
 
 /*
  * The one mockup comparison harness (task 3.6 items 5 and 14; wave-3 close, "One of each helper"). Test support, never
@@ -245,10 +246,11 @@ export function mockupCtaRun(fold: Element): Element[] {
 export function mockupRoute(href: string): string {
   if (href === "store.html") return STORE;
   const match = /^([a-z0-9-]+)\.html(#.*)?$/.exec(href);
-  if (!match) return href;
+  /* The product page's old address, printed in a mockup as a route, is the address it moved to (D070 / C4; url-move.ts). */
+  if (!match) return builtAddress(href);
   const [, page, fragment = ""] = match;
   const path =
-    page === "home" ? "/" : page === "meet-kheelu" ? "/products/kheelu" : page.startsWith("story-") ? `/stories/${page.slice("story-".length)}` : `/${page}`;
+    page === "home" ? "/" : page === "meet-kheelu" ? "/products/khelu" : page.startsWith("story-") ? `/stories/${page.slice("story-".length)}` : `/${page}`;
   return path + fragment;
 }
 

@@ -159,7 +159,7 @@ describe("FeatureSplit: app-screens", () => {
         heading: headingOf(f, "see-title"),
         items: trustItems(f, ["eye", "chart-line-up", "sliders-horizontal", "trash"]),
         screens: { images: [SHOT("transcript"), SHOT("activity")], caption: CAPTION },
-        link: { label: "See what the app shows you", href: "/products/kheelu", icon: "eye" },
+        link: { label: "See what the app shows you", href: "/products/khelu", icon: "eye" },
       },
       f,
     );
@@ -197,7 +197,7 @@ describe("FeatureSplit: app-screens", () => {
         heading: headingOf(f, "controls-title"),
         items: trustItems(f, ["sliders-horizontal", "book-open", "moon", "translate"]),
         screens: { images: [SHOT("privacy")], caption: CAPTION },
-        link: { label: "See what the app shows you", href: "/products/kheelu#app", icon: "eye" },
+        link: { label: "See what the app shows you", href: "/products/khelu#app", icon: "eye" },
       },
       f,
     );
@@ -291,7 +291,7 @@ describe("FeatureSplit: photo", () => {
             ],
           },
         },
-        link: { label: "See what Kheelu does", href: "/products/kheelu" },
+        link: { label: "See what Kheelu does", href: "/products/khelu" },
       },
       f,
     );

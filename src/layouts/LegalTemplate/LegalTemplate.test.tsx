@@ -365,7 +365,7 @@ describe("LegalTemplate: the close", () => {
 
   it("refuses an action whose tracking value is not a registered secondary value", () => {
     const doc = LEGAL_FIXTURES.refund.doc;
-    const bad: LegalPage = { ...doc, close: { ...doc.close!, actions: [{ label: "Meet Kheelu", href: "/products/kheelu", cta: "home-arc" }] } };
+    const bad: LegalPage = { ...doc, close: { ...doc.close!, actions: [{ label: "Meet Kheelu", href: "/products/khelu", cta: "home-arc" }] } };
     expect(() => mainOf(page("refund", { doc: bad }))).toThrow(/home-arc/);
   });
 });

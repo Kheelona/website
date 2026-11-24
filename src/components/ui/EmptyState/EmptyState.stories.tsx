@@ -42,7 +42,7 @@ export const NotFound: Story = {
             chevron={icon("caret-right")}
             items={[
               { title: "Home", sub: "What Kheelu is, on one page.", href: "/", icon: icon("house"), tone: "sun" },
-              { title: "Meet Kheelu", sub: "The toy, its three modes and the price.", href: "/products/kheelu", icon: icon("heart"), tone: "chilli" },
+              { title: "Meet Kheelu", sub: "The toy, its three modes and the price.", href: "/products/khelu", icon: icon("heart"), tone: "chilli" },
             ]}
           />
         </nav>

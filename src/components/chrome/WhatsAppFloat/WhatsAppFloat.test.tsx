@@ -581,7 +581,7 @@ describe("WhatsAppFloat: steps aside from the store's form on a phone (task 4.7)
       const { rerender, link } = sitePage(["home-price"]);
       const home = io();
       document.querySelector("main")!.innerHTML = '<p class="ks-price" id="product-price">₹4,999</p>';
-      nav.pathname = "/products/kheelu";
+      nav.pathname = "/products/khelu";
       rerender(<WhatsAppFloat href={HREF} chat={CHAT} context="site" />);
       expect(home.disconnected).toBe(true);
       expect([...io().watched].map((el) => el.id)).toEqual(["product-price"]);

@@ -977,7 +977,7 @@ describe("cta.ts: the cta values", () => {
       status: "new",
       reserved: false,
       role: "secondary",
-      pages: ["/", "/products/kheelu"],
+      pages: ["/", "/products/khelu"],
     });
     expect(AFTER_GATE_A.get("share-whatsapp")).toBe("D061");
   });
@@ -1028,7 +1028,7 @@ describe("cta.ts: the cta values", () => {
 /** The built mockup pages (partials inlined), by route (structure §5). */
 const MOCKUP_PAGES: { route: string; file: string; marketing: boolean }[] = [
   { route: "/", file: "home", marketing: true },
-  { route: "/products/kheelu", file: "meet-kheelu", marketing: true },
+  { route: "/products/khelu", file: "meet-kheelu", marketing: true },
   { route: "/safety", file: "safety", marketing: true },
   { route: "/ai-toys-for-kids-in-india", file: "ai-toys-for-kids-in-india", marketing: true },
   { route: "/stories", file: "stories", marketing: true },

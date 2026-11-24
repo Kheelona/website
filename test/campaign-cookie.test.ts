@@ -28,7 +28,7 @@ describe("campaignFromUrl", () => {
   });
 
   it("is null when the URL carries no campaign, so nothing is set", () => {
-    expect(campaignFromUrl(new URL("https://kheelona.com/products/kheelu"))).toBeNull();
+    expect(campaignFromUrl(new URL("https://kheelona.com/products/khelu"))).toBeNull();
   });
 
   /* A cookie is written from this, so a hostile query string must not become a

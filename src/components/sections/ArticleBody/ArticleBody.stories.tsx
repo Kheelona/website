@@ -81,7 +81,7 @@ export const LEARNING_TOYS_BODY: Body = [
         "Prefer anything that makes a turn.",
       ],
     },
-    p("[Kheelu](/products/kheelu) is built around that last rule: a screen-free plush toy for ages 3 to 7 that answers your child, then asks a question back. It is not a toy for children under 3, and if your child is 3, keep a grown-up nearby while they play."),
+    p("[Kheelu](/products/khelu) is built around that last rule: a screen-free plush toy for ages 3 to 7 that answers your child, then asks a question back. It is not a toy for children under 3, and if your child is 3, keep a grown-up nearby while they play."),
     p("Choosing any AI toy? Our guide to [AI toys for kids in India](/ai-toys-for-kids-in-india) sets out what to check first."),
   ]),
 ];

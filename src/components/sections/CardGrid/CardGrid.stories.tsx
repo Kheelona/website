@@ -62,7 +62,7 @@ export const Routes: Story = {
         icon: "question",
         title: "Before you order",
         body: "What Kheelu does, what it costs and the questions parents ask are on the Meet Kheelu page.",
-        links: [{ label: "Meet Kheelu", href: "/products/kheelu" }],
+        links: [{ label: "Meet Kheelu", href: "/products/khelu" }],
       },
       {
         tone: "blue",
