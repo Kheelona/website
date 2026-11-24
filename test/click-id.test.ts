@@ -33,7 +33,7 @@ describe("clickIdFromUrl", () => {
   });
 
   it("is null when the landing carries no click id", () => {
-    expect(clickIdFromUrl(new URL("https://kheelona.com/products/kheelu"), 1)).toBeNull();
+    expect(clickIdFromUrl(new URL("https://kheelona.com/products/khelu"), 1)).toBeNull();
   });
 
   /* 🔴 A MISSING fbc IS STRICTLY SAFER THAN A MALFORMED ONE. Meta accepts a

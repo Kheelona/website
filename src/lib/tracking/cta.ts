@@ -37,7 +37,7 @@ export interface CtaSpec {
 }
 
 const HOME = ["/"] as const;
-const PRODUCT = ["/products/kheelu"] as const;
+const PRODUCT = ["/products/khelu"] as const;
 
 const CTA_TABLE = {
   hero: {
@@ -114,7 +114,7 @@ const CTA_TABLE = {
     element: "Phone sticky bar",
     pages: [
       "/",
-      "/products/kheelu",
+      "/products/khelu",
       "/safety",
       "/ai-toys-for-kids-in-india",
       "/stories",
@@ -227,7 +227,7 @@ const CTA_TABLE = {
     reserved: false,
     role: "secondary",
     element: 'The "Share Kheelu on WhatsApp" ghost link under the offer card (D061, task 8c.2)',
-    pages: ["/", "/products/kheelu"],
+    pages: ["/", "/products/khelu"],
     note: "placed after Gate A: no approved mockup carries it (tracking inventory §6)",
   },
   "hero-film": {
@@ -258,7 +258,7 @@ const CTA_TABLE = {
     status: "new",
     reserved: false,
     role: "secondary",
-    element: 'The sticky-scroll section\'s link "See how it works" to /products/kheelu#modes',
+    element: 'The sticky-scroll section\'s link "See how it works" to /products/khelu#modes',
     pages: HOME,
     note: "placed after Gate A (D065, the selling update): no approved mockup carries it (tracking inventory §6)",
   },

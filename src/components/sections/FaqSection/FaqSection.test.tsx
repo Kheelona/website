@@ -85,7 +85,7 @@ const photo = (name: string, width: number, height: number, alt: string) => ({
 describe("FaqSection: default (Home fold 8)", () => {
   const fold = mockup("home").querySelector('[aria-labelledby="faq-title"]')!;
   const items = itemsFrom(fold);
-  const more = { label: "See all questions", href: "/products/kheelu#faq", cta: "faq-more" as const };
+  const more = { label: "See all questions", href: "/products/khelu#faq", cta: "faq-more" as const };
 
   it("matches the approved fold: heading column, then the questions and the more link", () => {
     const { container } = render(<FaqSection heading={heading(fold)} items={items} more={more} offer={offer} />);
@@ -113,7 +113,7 @@ describe("FaqSection: default (Home fold 8)", () => {
   it("tags the more link with its secondary CTA value (architecture §8.3)", () => {
     render(<FaqSection heading={heading(fold)} items={items} more={more} offer={offer} />);
     const link = screen.getByRole("link", { name: "See all questions" });
-    expect(link).toHaveAttribute("href", "/products/kheelu#faq");
+    expect(link).toHaveAttribute("href", "/products/khelu#faq");
     expect(link).toHaveAttribute("data-ph-capture-attribute-cta", "faq-more");
     expect(link).toHaveClass("kh-btn", "kh-btn--ghost");
   });

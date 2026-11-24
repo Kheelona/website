@@ -56,7 +56,7 @@ describe("the builder and the doc cannot drift apart", () => {
         source: "instagram",
         medium: "paid_social",
         campaign: "2026-10-launch",
-        path: "/products/kheelu",
+        path: "/products/khelu",
         content: "rabbit-hero-a",
       }),
     ).toBe(example!.trim());
@@ -140,7 +140,7 @@ describe("the site's own links stay clean", () => {
 
   it("catches a tagged internal link if one is ever added", () => {
     /* Guard the guard: the regex above is the whole test, so prove it fires. */
-    expect(WRITES_A_TAG.test('<a href="/products/kheelu?utm_source=instagram">')).toBe(true);
+    expect(WRITES_A_TAG.test('<a href="/products/khelu?utm_source=instagram">')).toBe(true);
     expect(WRITES_A_TAG.test('url.searchParams.set("utm_campaign", c)')).toBe(true);
     /* and that reading one still passes */
     expect(WRITES_A_TAG.test('for (const key of ["utm_source", "utm_medium"])')).toBe(false);

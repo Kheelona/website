@@ -24,7 +24,7 @@ const trust = (ids: readonly TrustId[]) => ids.map((id) => trustItems[id]);
 const COMPACT = trust(TRUST_COMPACT);
 const secondary = (id: keyof typeof cta.secondary, variant: CtaSecondary["variant"]): CtaSecondary => ({ ...cta.secondary[id], variant });
 /* The untracked ghost links of the closes (the copy names no CTA value for them). */
-const SEE_HOW: CtaSecondary = { label: "See how it works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" };
+const SEE_HOW: CtaSecondary = { label: "See how it works", href: "/products/khelu", variant: "ghost", iconEnd: "arrow-right" };
 const SEE_HOW_KHEELU: CtaSecondary = { ...SEE_HOW, label: "See how Kheelu works" };
 
 /* The build's documented differences from the mockup markup in a CTA block (besides the harness's, test/support/mockup-compare.ts):
@@ -171,7 +171,7 @@ describe("CtaBlock: the block", () => {
     expect(tracked).toHaveAttribute("data-ph-capture-attribute-cta", "hero-learn");
     const untracked = render(<CtaBlock {...PLACEMENTS[11][3]} {...context()} />).container.querySelector(".kh-btn--ghost");
     expect(untracked).not.toHaveAttribute("data-ph-capture-attribute-cta");
-    expect(untracked).toHaveAttribute("href", "/products/kheelu");
+    expect(untracked).toHaveAttribute("href", "/products/khelu");
   });
 
   it("never moves on arrival: nothing in the block carries data-reveal (architecture §11.2)", () => {

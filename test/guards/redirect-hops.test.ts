@@ -120,20 +120,20 @@ afterEach(() => {
 /* Test plan §8: one sample per legacy family, with the url-map target. */
 const LEGACY: [string, string][] = [
   ["/stories/why-three-to-six-matters-most", "/stories/why-three-to-six-are-the-years-that-matter-most"],
-  ["/products/lumi", "/products/kheelu"],
-  ["/product-page/kheelu-plush", "/products/kheelu"],
-  ["/product-page", "/products/kheelu"],
-  ["/product/lumi", "/products/kheelu"],
-  ["/shop", "/products/kheelu"],
-  ["/category/all-products", "/products/kheelu"],
-  ["/category/toys", "/products/kheelu"],
-  ["/accessibility-statement", "/products/kheelu"],
+  ["/products/lumi", "/products/khelu"],
+  ["/product-page/kheelu-plush", "/products/khelu"],
+  ["/product-page", "/products/khelu"],
+  ["/product/lumi", "/products/khelu"],
+  ["/shop", "/products/khelu"],
+  ["/category/all-products", "/products/khelu"],
+  ["/category/toys", "/products/khelu"],
+  ["/accessibility-statement", "/products/khelu"],
   ["/post/a-wix-post", "/stories"],
   ["/terms-conditions", "/terms"],
   ["/privacy-policy", "/privacy"],
   ["/for-the-parents", "/stories"],
-  ["/lumi", "/products/kheelu"],
-  ["/faq", "/products/kheelu#faq"],
+  ["/lumi", "/products/khelu"],
+  ["/faq", "/products/khelu#faq"],
   ["/sitemap", "/sitemap.xml"],
   ["/blog", "/stories"],
   ["/blog/a/b", "/stories"],
@@ -142,20 +142,21 @@ const LEGACY: [string, string][] = [
   ["/login", "/"],
   ["/signup", "/"],
   ["/account/orders/1", "/"],
-  ["/cart", "/products/kheelu"],
-  ["/checkout/step-2", "/products/kheelu"],
+  ["/cart", "/products/khelu"],
+  ["/checkout/step-2", "/products/khelu"],
   /* New in the reset (D041, url-map §4d, strategy §4.2). */
-  ["/playos", "/products/kheelu"],
+  ["/playos", "/products/khelu"],
   ["/stories/brain-development-toys-for-a-2-year-old", "/stories/learning-toys-for-a-three-year-old"],
-  ["/kheelu", "/products/kheelu"],
-  ["/products", "/products/kheelu"],
+  ["/kheelu", "/products/khelu"],
+  ["/products", "/products/khelu"],
   ["/careers", "/team"],
   ["/jobs", "/team"],
-  ["/pricing", "/products/kheelu#offer"],
+  ["/pricing", "/products/khelu#offer"],
   /* D053 (task 6.5): the 3-6-9-12 article leaves the journal, to its hub topic. */
   ["/stories/screen-time-rules-parents-swear-by", "/stories#screen-time"],
-  /* D070 / B7 (b): the toy's visible name as a path, one hop to the page that stays canonical. */
-  ["/products/khelu", "/products/kheelu"],
+  /* D070 / C4 (human, 24 Nov: "Don't drop kheelu. Redirect it."): the product page moved to /products/khelu; the address it
+     had keeps working through one hop. The page itself, /products/khelu, is no rule and is not a row here. */
+  ["/products/kheelu", "/products/khelu"],
 ];
 
 /* Each sample plain, with a trailing slash, and with a campaign query that must
@@ -202,7 +203,7 @@ describe("every legacy family is one hop, on every host that serves the site", (
   it("exercises every rule in the table, so a rule cannot hide from this test", async () => {
     const { chain, rules } = await loadBuild("production");
     const used = new Set<string>();
-    const extra = ["/team", "/team/", "/", "/products/kheelu/", "/store/x", "/store", "/product/lumi.png"];
+    const extra = ["/team", "/team/", "/", "/products/khelu/", "/store/x", "/store", "/product/lumi.png"];
     for (const host of ["kheelona.com", "www.kheelona.com"]) {
       for (const path of [...LEGACY.map(([p]) => p), ...extra]) {
         for (const hop of chain(`https://${host}${path}`).hops) used.add(hop.by);
@@ -212,6 +213,17 @@ describe("every legacy family is one hop, on every host that serves the site", (
       .map((rule, index) => `redirect #${index} ${rule.source}${rule.has ? ` (host ${rule.has[0].value})` : ""}`)
       .filter((label) => !used.has(label));
     expect(unused, "rules no sample reaches").toEqual([]);
+  });
+
+  /* D070 / C4: the product page is /products/khelu and /products/kheelu is a source. Every rule that used to point at the
+     old address points at the new one, so no source is ever a chain; and the page itself is no source. */
+  it("no rule points at another rule's source, so no address costs a second hop (D070 / C4)", async () => {
+    const { rules } = await loadBuild("production");
+    const literal = new Set(rules.filter((r) => !r.has && !/[:*(]/.test(r.source)).map((r) => r.source));
+    const chained = rules.filter((r) => literal.has(new URL(r.destination, "https://kheelona.com").pathname)).map((r) => `${r.source} -> ${r.destination}`);
+    expect(chained).toEqual([]);
+    expect(literal.has("/products/kheelu"), "the old address is a source").toBe(true);
+    expect(literal.has("/products/khelu"), "the product page is no source").toBe(false);
   });
 });
 
@@ -288,11 +300,11 @@ describe("the rest of the URL plan", () => {
 
   /* D041 drops /playos. Redirects run before the filesystem, so the 308 wins
      while the old page file still exists (task 6.3 deletes the folder, B2b). */
-  it("sends /playos to /products/kheelu in one hop, page file or not", async () => {
+  it("sends /playos to /products/khelu in one hop, page file or not", async () => {
     const { chain } = await loadBuild("production");
     const { hops, served } = chain("https://kheelona.com/playos");
     expect(hops.length).toBe(1);
-    expect(served.pathname).toBe("/products/kheelu");
+    expect(served.pathname).toBe("/products/khelu");
     if (existsSync(join(ROOT, "src/app/(site)/playos/page.tsx"))) {
       expect(hops[0].by).toMatch(/^redirect #\d+ \/playos$/);
     }
@@ -322,10 +334,13 @@ describe("the tag's 24 redirects are all still there, unchanged", () => {
 
     const { rules } = await loadBuild("production");
     const apex = rules.filter((r) => !r.has && !r.missing);
+    /* The tag predates D070 / C4: its rules point at /products/kheelu, the product page's address then. The page moved to
+       /products/khelu (human, 24 Nov), so those rules now point there, with the same fragment. Nothing else may differ. */
+    const moved = (destination: string) => destination.replace(/^\/products\/kheelu(?=$|#)/, "/products/khelu");
     const positions = tagRules.map((tagRule) =>
       apex.findIndex(
         (r) =>
-          r.source === tagRule.source && r.destination === tagRule.destination && r.permanent === tagRule.permanent,
+          r.source === tagRule.source && r.destination === moved(tagRule.destination) && r.permanent === tagRule.permanent,
       ),
     );
     expect(positions.filter((p) => p < 0), "missing or changed tag rules").toEqual([]);

@@ -168,7 +168,7 @@ export const aiToysPage = {
             ],
           },
         },
-        link: { label: "See what Kheelu does", href: "/products/kheelu" },
+        link: { label: "See what Kheelu does", href: "/products/khelu" },
       },
     },
     /* Fold 5: the five answers from faqs.ts, all closed (the page's FAQPage), Ira's photo, the two sources inline. The

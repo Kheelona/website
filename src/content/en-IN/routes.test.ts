@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { ROOT, readRepoFile } from "../../../test/e2e/support/repo";
 import { MOCKUP_SLUGS } from "../../../test/e2e/support/mockup-text";
+import { builtAddress } from "../../../test/e2e/support/url-move";
 import { ARTICLE_SLUGS as E2E_ARTICLE_SLUGS } from "../../../test/e2e/support/routes";
 import { navigation, type NavLink } from "./navigation";
 import { ARTICLE_SLUGS, routes, routeFor } from "./routes";
@@ -18,7 +19,7 @@ const paths = routes.map((r) => r.path);
 /** The live sitemap priorities (url-map §1a and §1b), kept for every URL that stays. */
 const PRIORITY: Readonly<Record<string, number>> = {
   "/": 1,
-  "/products/kheelu": 0.9,
+  "/products/khelu": 0.9,
   "/safety": 0.8,
   "/ai-toys-for-kids-in-india": 0.8,
   "/stories": 0.7,
@@ -51,7 +52,7 @@ describe("the routes", () => {
     for (const slug of MOCKUP_SLUGS) {
       const meta = JSON.parse(/^<!--page (\{.*\}) -->/.exec(readRepoFile(`mockup/pages/${slug}.html`))![1]) as { url?: string };
       if (slug === "404" || !meta.url || meta.url.startsWith("https://store.")) continue;
-      expect(paths, slug).toContain(meta.url);
+      expect(paths, slug).toContain(builtAddress(meta.url));
     }
   });
 
@@ -62,7 +63,7 @@ describe("the routes", () => {
   it("name each page's content module by the structure's convention (structure §3.3)", () => {
     const expected = (path: string) => {
       if (path === "/") return "pages/home";
-      if (path === "/products/kheelu") return "products/kheelu/page";
+      if (path === "/products/khelu") return "products/kheelu/page";
       if (path === "/stories") return "stories/hub";
       /* Every article is a journal post, filled by the journal registry (ADR-014; task 8b.2e). */
       if (path.startsWith("/stories/")) return "stories/journal";

@@ -67,7 +67,7 @@ export const contactPage = {
             icon: "question",
             title: "Before you order",
             body: "What Kheelu does, what it costs and the questions parents ask are on the Meet Kheelu page.",
-            links: [{ label: "Meet Kheelu", href: "/products/kheelu" }],
+            links: [{ label: "Meet Kheelu", href: "/products/khelu" }],
           },
           {
             tone: "blue",
@@ -135,7 +135,7 @@ export const contactPage = {
         cta: {
           cta: "finale",
           trust: TRUST_COMPACT.map((id) => trustItems[id]),
-          secondary: { label: "See how Kheelu works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" },
+          secondary: { label: "See how Kheelu works", href: "/products/khelu", variant: "ghost", iconEnd: "arrow-right" },
         },
       },
     },

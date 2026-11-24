@@ -127,7 +127,7 @@ describe("replayAllowedOnPath", () => {
     expect(replayAllowedOnPath("/store/ideabaaz")).toBe(true);
     expect(replayAllowedOnPath("/store/e/some-event")).toBe(true);
     expect(replayAllowedOnPath("/")).toBe(true);
-    expect(replayAllowedOnPath("/products/kheelu")).toBe(true);
+    expect(replayAllowedOnPath("/products/khelu")).toBe(true);
   });
 
   /* A prefix match must not catch a route that merely STARTS with the same

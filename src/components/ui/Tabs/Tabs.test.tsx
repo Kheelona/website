@@ -106,7 +106,7 @@ describe("Tabs: with JavaScript (the island has run)", () => {
     expect(screen.getAllByRole("tabpanel").map((p) => p.id)).toEqual(["panel-b"]);
   });
 
-  /* Task 7.1a (CMO built-page review A, M2): after a client navigation to /products/kheelu#faq, Next scrolls the hash
+  /* Task 7.1a (CMO built-page review A, M2): after a client navigation to /products/khelu#faq, Next scrolls the hash
      target into view in its own layout effect, an ancestor's, which runs after its children's layout effects and before
      any passive effect. The island used to make tabs in a passive effect, after that scroll, so panels 2 and 3 hid above
      the questions once Next had scrolled, and the page landed 464 px (phone) or 394 px (laptop) past the questions'
@@ -128,7 +128,7 @@ describe("Tabs: with JavaScript (the island has run)", () => {
     expect(seen).toEqual([{ tabs: true, hidden: ["panel-b", "panel-c"] }]);
   });
 
-  /* Task 7.1a (CMO built-page review A, M1): on a direct landing at /products/kheelu#faq the browser scrolls to the
+  /* Task 7.1a (CMO built-page review A, M1): on a direct landing at /products/khelu#faq the browser scrolls to the
      questions on the stacked page, before hydration; making tabs then moves them up by the hidden panels' height, and
      the browser's scroll anchoring put them back only sometimes (the landing ended 464 px past the heading). So when the
      address names an element after the box, the island scrolls by what that element moved, at once. */

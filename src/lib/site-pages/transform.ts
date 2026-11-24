@@ -24,7 +24,7 @@ import { applyOffer } from "./offer-swap";
  */
 
 export interface SitePageContext {
-  /** The URL path the page is served at ("/", "/products/kheelu"); "/404" for the not-found page. */
+  /** The URL path the page is served at ("/", "/products/khelu"); "/404" for the not-found page. */
   readonly path: string;
   readonly env: SiteEnv;
   /** STORE_ORIGIN for this build. */
@@ -40,7 +40,7 @@ export interface SitePageContext {
 export const REDESIGN_STORE_ORIGIN = "https://store.kheelona.com";
 
 /** The pages that send a Meta ViewContent (tracking inventory parity row 12; B9: Home too). */
-export const VIEW_CONTENT_PATHS: readonly string[] = ["/", "/products/kheelu"];
+export const VIEW_CONTENT_PATHS: readonly string[] = ["/", "/products/khelu"];
 
 /** Puts `insert` at the marker, or else before `fallback` (the last occurrence), or else appends it. */
 function place(html: string, marker: string, insert: string, fallback: string): string {

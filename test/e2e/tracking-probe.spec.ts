@@ -163,7 +163,7 @@ test.describe("tracking probe (LP): parity rows", () => {
 
   for (const [path, viewContent] of [
     ["/", true],
-    ["/products/kheelu", true],
+    ["/products/khelu", true],
     ["/safety", false],
   ] as const) {
     test(`rows 4, 11, 12, 14 on ${path}`, async () => {

@@ -124,15 +124,15 @@ test.describe("content integrity: the 500-unit cap detector (D041, D061 item 3)"
     expect(contentProblems("/", `${card}\n${faq}\n${faq}`, false)).toEqual([CAP_MORE_THAN_TWICE_ON_HOME]);
   });
   test("every other page and the machine files once; a second time is red", () => {
-    expect(contentProblems("/products/kheelu", card, false)).toEqual([]);
-    expect(contentProblems("/products/kheelu", `${card}\n${faq}`, false)).toEqual([CAP_MORE_THAN_ONCE]);
+    expect(contentProblems("/products/khelu", card, false)).toEqual([]);
+    expect(contentProblems("/products/khelu", `${card}\n${faq}`, false)).toEqual([CAP_MORE_THAN_ONCE]);
     expect(contentProblems("/terms", `${faq}\n${faq}`, false)).toEqual([CAP_MORE_THAN_ONCE]);
     expect(machineProblems("/llms.txt", `Kheelu is for children aged 3 to 7. ${faq}`)).toEqual([]);
     expect(machineProblems("/llms.txt", `Kheelu is for children aged 3 to 7. ${faq}\n${card}`)).toEqual([CAP_MORE_THAN_ONCE]);
   });
   test("Home's allowance is the home page's alone: a path that merely starts with a slash and more counts once", () => {
     expect(capMentionsAllowed("/")).toBe(2);
-    for (const path of ["/products/kheelu", "/home", "/terms", "/llms.txt", "/pricing.md", "/stories/busy-hands-no-screens"]) {
+    for (const path of ["/products/khelu", "/home", "/terms", "/llms.txt", "/pricing.md", "/stories/busy-hands-no-screens"]) {
       expect(capMentionsAllowed(path), path).toBe(1);
     }
   });

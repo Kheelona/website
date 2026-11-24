@@ -296,11 +296,11 @@ Rows 18 to 20 were added after the tag by [D069](../decisions/D069-openai-ads-me
 | New `cta` value | Where | Decision |
 |---|---|---|
 | `whatsapp-float` | The WhatsApp chat bubble, every page (`src/components/chrome/WhatsAppFloat/WhatsAppFloat.tsx`) | [D050](../decisions/D050-whatsapp-chat-button.md) |
-| `share-whatsapp` | The "Know a parent who needs this? Share Kheelu on WhatsApp" link under the offer card on `/` and `/products/kheelu` (`src/components/sections/OfferSection/OfferSection.tsx`, task 8c.2) | [D061](../decisions/D061-advisor-proposal-what-we-take-2026-10-15.md) |
+| `share-whatsapp` | The "Know a parent who needs this? Share Kheelu on WhatsApp" link under the offer card on `/` and `/products/khelu` (`src/components/sections/OfferSection/OfferSection.tsx`, task 8c.2) | [D061](../decisions/D061-advisor-proposal-what-we-take-2026-10-15.md) |
 | `hero-film` | Home hero link "Watch Kheelu ask, in a 30-second film", laptops only (the selling update, task Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
 | `home-why` | Home's "Why it matters" button (Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
 | `home-asks` | Home's sticky-scroll section button (Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
-| `home-asks-learn` | Home's sticky-scroll link "See how it works" to `/products/kheelu#modes` (Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
+| `home-asks-learn` | Home's sticky-scroll link "See how it works" to `/products/khelu#modes` (Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
 | `home-offer` | Home's offer-card button, the offer moved up (Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
 | `product-ask` | The product page's button after "What asking back sounds like." (Q2.10) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
 | `safety-facts` | `/safety`'s button after the four facts (Q2.11) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
@@ -541,7 +541,7 @@ Not in production at the tag. [D069](../decisions/D069-openai-ads-measurement.md
   `?internal=0` wins over storage) install no stub and no script and have `kh_oppref`, `__oppref` and `__obref` deleted.
 - **Automatic advanced matching:** switched on for this pixel by OpenAI, with no SDK option and no Ads Manager switch
   (read from SDK 0.1.104 and the Edit pixel dialog, 2026-11-13), so the loader enforces `OPENAI_AAM_POLICY`:
-  `"verified-pages"` (default) loads the SDK only on `OPENAI_PIXEL_PAGES` (marketing `/` and `/products/kheelu`, store
+  `"verified-pages"` (default) loads the SDK only on `OPENAI_PIXEL_PAGES` (marketing `/` and `/products/khelu`, store
   `/`) and installs nothing on any other page; `"require-off"` loads it only when OpenAI's pixel configuration
   (`bzrcdn.openai.com/pixel-config/v1/<pixel>.json`) reports matching off. `init` never receives a `user` object.
 - **Cookies:** OpenAI's SDK writes `__oppref` (the ad click, 30 days) and `__obref` (a random browser reference, 365
@@ -577,7 +577,7 @@ Not in production at the tag. [D069](../decisions/D069-openai-ads-measurement.md
 - **Not reported:** refunds (OpenAI's API has no refund event). `/privacy` names these tools since 2026-11-13 (D069): a block each for the
   pixel and the Conversions API, `kh_oppref` among our own cookies, an OpenAI row in the recipients table.
 - **Check after deploy (read-only, in a real browser, never typing into the store form):** `oaiq.min.js` loads only on
-  `/`, `/products/kheelu` and the store's `/`; no `bzr.openai.com` request body carries a hash of the support email or phone
+  `/`, `/products/khelu` and the store's `/`; no `bzr.openai.com` request body carries a hash of the support email or phone
   shown on the site; `page_viewed` is sent once per load; `kh_oppref`, `__oppref` and `__obref` are readable on
   `store.kheelona.com`; then Ads Manager → Conversions → Web Pixel → Test on each origin.
 
@@ -658,7 +658,7 @@ properties (method of §8.30-i, line 1403). "Production" means after the Gate B 
 | 9 | GA4 + PostHog | `preorder_address_saved` | `transaction_id` | `analytics.ts:127-128` | Sandbox: save address on /thanks |
 | 10 | GA4 + PostHog | `preorder_dismissed` | `tier` | `analytics.ts:132-133` | Sandbox: close the sheet |
 | 11 | Meta Pixel | init + `PageView` on load, one more per client route change, no double on landing | pixel `1051265191046395` | `MetaPixel.tsx:43`, `:87-88` | Production, real UA: `fbq.getState().pixels[0].eventCount` = 1 on an ordinary page; `HTMLImageElement.prototype.src` hook shows `facebook.com/tr …ev=PageView`; `pushState` adds exactly one |
-| 12 | Meta Pixel | `ViewContent` on `/products/kheelu` (and Home only if the founder confirms, [G10](../open-questions.md)) | `content_name: "Kheelu"`, `content_ids: ["lumi"]`, `content_type: "product"`, `value: 4999`, `currency: "INR"` | `ViewContentTracker.tsx:50-57` | Production: `eventCount` = 2 on the product page; image-beacon hook shows `ev=ViewContent` with these params |
+| 12 | Meta Pixel | `ViewContent` on `/products/khelu` (and Home only if the founder confirms, [G10](../open-questions.md)) | `content_name: "Kheelu"`, `content_ids: ["lumi"]`, `content_type: "product"`, `value: 4999`, `currency: "INR"` | `ViewContentTracker.tsx:50-57` | Production: `eventCount` = 2 on the product page; image-beacon hook shows `ev=ViewContent` with these params |
 | 13 | Meta CAPI | server `Purchase` | `event_id purchase_<ref>`, `action_source website`, `event_source_url https://store.kheelona.com`, hashed `em`/`ph`/`fn`, `fbp`, `fbc`, IP, UA, `custom_data` 4 fields | `meta-capi.ts:158-209` via `fulfil.ts:341` | `meta-capi.test.ts` payload test; never with a test code in production; first real order: Vercel log `[meta-capi] SENT purchase_<ref> events_received=1` |
 | 14 | PostHog | `$pageview` (history change), `$pageleave`, `$autocapture` | campaign props incl. `utm_id`, `placement` | `PostHogGate.tsx:53-148` | Production: requests go to `/ingest/e/` (none to `*.posthog.com` from the page); events in PostHog live view from both hosts |
 | 15 | PostHog | `$autocapture.cta` | the 8 existing values (section 6) on equivalent CTAs, mapped per [G10](../open-questions.md); new values allowed | `Button.tsx:86` | DOM check that every money CTA carries `data-ph-capture-attribute-cta`; HogQL count by `cta` after deploy |

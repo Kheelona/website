@@ -129,7 +129,7 @@ const EVENT_LIST = [
     status: "existing",
     firedBy: "ViewContentTracker (waits for fbq with whenFbqReady)",
     when:
-      "once per load of /products/kheelu, and of / (addedPlacements, B9: same payload); " +
+      "once per load of /products/khelu, and of / (addedPlacements, B9: same payload); " +
       "value is the offer headline in rupees (4999 in token mode)",
   },
 

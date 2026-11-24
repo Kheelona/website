@@ -40,7 +40,7 @@ const PROPS: NavBarProps = {
   label: "Main",
   logo: { alt: "Kheelona, home", href: "/" },
   links: [
-    { label: "Meet Kheelu", href: "/products/kheelu" },
+    { label: "Meet Kheelu", href: "/products/khelu" },
     { label: "Safety", href: "/safety" },
     { label: "Stories", href: "/stories" },
     { label: "Team", href: "/team" },
@@ -102,7 +102,7 @@ describe("NavBar", () => {
 
   it.each([
     ["/", null],
-    ["/products/kheelu", "Meet Kheelu"],
+    ["/products/khelu", "Meet Kheelu"],
     ["/safety", "Safety"],
     ["/stories", "Stories"],
     ["/stories/learning-toys-for-a-three-year-old", "Stories"],

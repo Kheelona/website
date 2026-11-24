@@ -418,7 +418,7 @@ export const termsPage = {
   /* No pre-order button and no tracking value on a policy page (strategy §5 policy row); the help line is the
      template's (seller.help). */
   close: {
-    actions: [{ label: "Meet Kheelu", href: "/products/kheelu" }],
+    actions: [{ label: "Meet Kheelu", href: "/products/khelu" }],
     also: {
       label: "Also read:",
       links: [

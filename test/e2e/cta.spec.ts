@@ -53,7 +53,7 @@ const REGISTERED = new Set([...MOCKUP_VALUES, ...AFTER_GATE_A]);
 const placesOn = (where: readonly string[], route: Pick<Route, "host" | "path">) => route.host === "marketing" && where.includes(route.path);
 
 /** The values placed after Gate A that a built route carries besides its mockup's: the D050 bubble on every page, each
- *  other one where the registry places it on this path (share-whatsapp on / and /products/kheelu; the selling update's
+ *  other one where the registry places it on this path (share-whatsapp on / and /products/khelu; the selling update's
  *  values), and a value's later placements on this path (`added`: finale on /setup, D065). */
 function afterGateA(route: Pick<Route, "host" | "path">): string[] {
   return CTA_VALUES.filter((v) => {

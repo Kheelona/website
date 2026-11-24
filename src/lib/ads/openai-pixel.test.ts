@@ -89,15 +89,15 @@ describe("shouldLoadOpenAiPixel", () => {
 describe("OPENAI_PIXEL_PAGES and isOpenAiPixelPage", () => {
   it("lists exactly the reviewed pages", () => {
     expect({ marketing: [...OPENAI_PIXEL_PAGES.marketing], store: [...OPENAI_PIXEL_PAGES.store] }).toEqual({
-      marketing: ["/", "/products/kheelu"],
+      marketing: ["/", "/products/khelu"],
       store: ["/"],
     });
   });
 
   it("allows the ad's landing page, the product page and the store's form, with or without a trailing slash", () => {
     expect(isOpenAiPixelPage("kheelona.com", "/")).toBe(true);
-    expect(isOpenAiPixelPage("www.kheelona.com", "/products/kheelu")).toBe(true);
-    expect(isOpenAiPixelPage("kheelona.com", "/products/kheelu/")).toBe(true);
+    expect(isOpenAiPixelPage("www.kheelona.com", "/products/khelu")).toBe(true);
+    expect(isOpenAiPixelPage("kheelona.com", "/products/khelu/")).toBe(true);
     expect(isOpenAiPixelPage("store.kheelona.com", "/")).toBe(true);
   });
 
@@ -106,7 +106,7 @@ describe("OPENAI_PIXEL_PAGES and isOpenAiPixelPage", () => {
       expect(isOpenAiPixelPage("kheelona.com", path), path).toBe(false);
     }
     expect(isOpenAiPixelPage("store.kheelona.com", "/thanks")).toBe(false);
-    expect(isOpenAiPixelPage("store.kheelona.com", "/products/kheelu")).toBe(false);
+    expect(isOpenAiPixelPage("store.kheelona.com", "/products/khelu")).toBe(false);
     expect(isOpenAiPixelPage("kheelona.com", "/thanks")).toBe(false);
   });
 });
@@ -354,7 +354,7 @@ describe("loadOpenAiPixel, require-off mode", () => {
 
 describe("loadOpenAiPixel, verified-pages mode", () => {
   it("loads on an allowed page with no configuration request", async () => {
-    const win = fakeWindow({ pathname: "/products/kheelu/" });
+    const win = fakeWindow({ pathname: "/products/khelu/" });
     const fetchImpl = respond({ automatic_advanced_matching_enabled: true });
     await expect(loadOpenAiPixel({ window: win, fetch: fetchImpl, policy: "verified-pages" })).resolves.toBe("loaded");
     expect(sdkScripts()).toHaveLength(1);

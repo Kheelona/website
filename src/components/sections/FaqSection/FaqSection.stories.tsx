@@ -105,7 +105,7 @@ type Story = StoryObj<typeof meta>;
 
 /** Home fold 8: the heading column, the questions and "See all questions" (`faq-more`). */
 export const Home: Story = {
-  args: { more: { label: "See all questions", href: "/products/kheelu#faq", cta: "faq-more" } },
+  args: { more: { label: "See all questions", href: "/products/khelu#faq", cta: "faq-more" } },
 };
 
 /** Home fold 8 once the cap is reached: the price answer in full mode. */
