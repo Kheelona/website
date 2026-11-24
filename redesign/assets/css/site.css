@@ -812,22 +812,13 @@ button { font: inherit; color: inherit; }
 .reduced .ctabar { transition: none; }
 
 /* Home on phones: each pinned chapter is at most 2.5 screens tall (laptops keep their lengths). Every timeline is driven
-   by its track's progress, so each one still plays from start to end, just over a shorter scroll. */
+   by its track's progress, so each one still plays from start to end, just over a shorter scroll. Phones scroll freely:
+   no scroll-snap stops (D070 / B1 removed the 23 Oct "one swipe, one beat" snap, which fought the films viewer). */
 @media (max-width: 699px) {
   #hero { --len: 160vh !important; }
   #how, #films, #asks, #day { --len: 250vh !important; }
   #languages, #privacy { --len: 230vh !important; }
   #app { --len: 200vh !important; }
-}
-/* Touch phones (2026-10-23, the owner: "a single swipe is switching the sections very fast"): each swipe stops at the
-   next beat (main.js, "One swipe, one beat"), so a chapter is as long as its beats need, about 0.6 of a screen apart. */
-@media (max-width: 699px) and (hover: none) {
-  #hero { --len: 230vh !important; }
-  #how, #languages { --len: 300vh !important; }
-  #films { --len: 420vh !important; }
-  #asks { --len: 430vh !important; }
-  #day, #privacy { --len: 340vh !important; }
-  #app { --len: 220vh !important; }
 }
 
 /* ===================== Phone smoothness (2026-10-23) =====================
@@ -852,10 +843,6 @@ html { -webkit-tap-highlight-color: transparent; }
    chapters, even the ones far away. Each track has an explicit height (--len), so skipping one never changes the
    page's length or where ScrollTrigger pins anything. */
 .motion main > .track { content-visibility: auto; }
-/* Phones: one swipe, one beat (main.js places the stops). */
-html.beats-on.in-chapter { scroll-snap-type: y mandatory; }
-.beats { position: absolute; left: 0; top: 0; width: 1px; height: 0; pointer-events: none; }
-.beats i { position: absolute; left: 0; width: 1px; height: 1px; scroll-snap-align: start; scroll-snap-stop: always; }
 
 /* ---------- Films viewer: full screen, one film per screen, swipe up for the next (main.js initModal) ---------- */
 .reels { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #000; color: #fff; overflow: hidden; }

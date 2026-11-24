@@ -228,15 +228,20 @@ Measured on a 390px touch viewport with 4× and 10× CPU throttling (Chrome trac
   filter; the invisible tiny blurs (motes, privacy blob) are gone there; no grey tap flash, buttons press in slightly.
 
 ## v17: phones, films and speed (owner's notes and Lighthouse reports, 2026-10-23)
-- **One swipe, one beat (touch phones):** a scroll-snap stop at every beat of each pinned chapter and at each section's
-  top (`.beats`, placed at page coordinates by main.js), hard (`mandatory`, `scroll-snap-stop: always`) only while a
-  chapter is pinned (`html.in-chapter`), so the sections between scroll freely. Phone chapter lengths keep neighbouring
-  beats ~0.6 screen apart (more than a thumb's drag); the beats are `BEATS` in main.js. Chrome still lets a very hard
-  flick cross two stops; it no longer crosses a whole chapter.
+- **One swipe, one beat (touch phones): REMOVED on 2026-11-24 (D070 / B1).** It put a scroll-snap stop at every beat of
+  each pinned chapter (`.beats`, `html.in-chapter`, `BEATS` in main.js) and made the chapters 230-430vh long on phones.
+  Switching root snap on and off from the scroll position fought the films viewer and made the page jump and bounce
+  after a film was closed, and it forced about 45 stops to reach the price. Phones now scroll freely with the shorter
+  `(max-width: 699px)` chapter lengths (hero 160vh; how, films, asks, day 250vh; languages, privacy 230vh; app 200vh).
+  Never toggle root `scroll-snap-type` from scroll position. "Skip section" stays.
 - **Films viewer:** every `[data-video]` opens a full-screen reel at that film, playing with sound; swipe up (or ↓) for
   the next, which plays as it arrives, and a film that ends moves on; tap pauses; Back, Esc or × closes. One shared
   `<video>` moves from slide to slide, so the first tap unlocks sound for every film. Markup: `#modal.reels` in
   `index.html` and `pages/_shell/after.html`.
+  Since D070 / B1 it also keeps the page's place: opening remembers `scrollY` and sets `history.scrollRestoration =
+  "manual"`; closing (×, Esc or Back) puts the page back at once (`scrollTo(..., "instant")`, or Lenis
+  `scrollTo(y, { immediate: true })` on desktop), refocuses the film that opened it without scrolling, then gives the
+  browser's scroll restoration back on the next frame. Home and the product page share this code.
 - **Tracking starts on engagement** (`src/lib/site-pages/tracking-shell.ts`): GA4, the Meta Pixel, PostHog and Vercel
   Analytics load on the first touch, click, key, scroll, wheel or mouse move, or 4 s after load. Same IDs and events.
   A Pre-order tap that comes first waits (≤ 2 s; measured 0.5-1.1 s) until PostHog's remote config has loaded, the

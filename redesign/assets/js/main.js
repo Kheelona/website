@@ -23,6 +23,7 @@
   const pop = (n) => (soft ? "power3.out" : `back.out(${n})`);
   // Khelu hops when it speaks; a new hop replaces one still running (a fast scroll never stacks them into a shake).
   const hop = (el, h) => gsap.fromTo(el, { y: 0 }, { y: -h * (soft ? 0.6 : 1) * R(), duration: soft ? 0.3 : 0.18, yoyo: true, repeat: 1, ease: soft ? "sine.inOut" : "power2.out", overwrite: "auto" });
+  let lenis = null; // desktop smooth scroll (started below); declared here because the films viewer, set up first, uses it
 
   initModal();
   initBar();
@@ -121,7 +122,6 @@
   const end = (tl) => tl.to({}, { duration: 0.001 }, 0.999); // every chapter timeline spans exactly 0→1
 
   /* ---------- Smooth scroll (desktop) ---------- */
-  let lenis = null;
   if (fine && window.Lenis) {
     lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 0.8 });
     lenis.on("scroll", ScrollTrigger.update);
@@ -183,11 +183,6 @@
 
   /* ---------- Home only: the chapters below exist on index.html; the other pages share everything else ---------- */
   const HOME = !!$("#hero");
-  // Each pinned chapter's beats as track progress (0-1), besides its start and end: where a phone's swipe comes to rest
-  // ("One swipe, one beat" below). A beat sits where that step is fully on screen, and the phone track lengths in
-  // site.css keep neighbouring beats about 0.6 of a screen apart, more than a thumb's drag, so a drag never crosses
-  // one before the fling is stopped at it.
-  const BEATS = { hero: [0.42], how: [0.42, 0.7], films: [0.2, 0.4, 0.6, 0.8], asks: [0.21, 0.42, 0.62, 0.8], day: [0.25, 0.5, 0.75], languages: [0.33, 0.66], app: [0.5], privacy: [0.25, 0.5, 0.75] };
   if (HOME) {
   /* ---------- 1 · Hero: headline → "Meet Khelu" → hundreds of questions ---------- */
   (() => {
@@ -546,31 +541,6 @@
     measure(); focus(); onResize(() => requestAnimationFrame(() => { measure(); focus(); })); ScrollTrigger.addEventListener("refresh", () => { measure(); best = null; focus(); });
   })();
 
-  /* ---------- Phones: one swipe, one beat ----------
-     A thumb's fling travels a screen or two, which used to carry a pinned chapter from its first beat to its last in
-     one swipe. Touch screens get a scroll-snap stop at every beat of every chapter (and at the top of each section),
-     each with `scroll-snap-stop: always`, so a fling halts at the next beat. The stops live in their own layer at page coordinates, outside the chapters, which skip rendering while
-     off screen (content-visibility) and would hide stops inside them. Laptops keep Lenis and free scrolling. */
-  if (!fine) (() => {
-    const layer = document.createElement("div"); layer.className = "beats"; layer.setAttribute("aria-hidden", "true"); document.body.appendChild(layer);
-    const place = () => {
-      const ys = new Set(), vh = innerHeight;
-      $$("main > section").forEach((sec) => {
-        const top = sec.getBoundingClientRect().top + scrollY; ys.add(Math.round(top));
-        const beats = BEATS[sec.id]; if (!beats || !sec.classList.contains("track")) return;
-        const range = sec.offsetHeight - vh; if (range <= 0) return;
-        [0, ...beats, 1].forEach((p) => ys.add(Math.round(top + p * range)));
-      });
-      layer.replaceChildren(...[...ys].sort((a, b) => a - b).map((y) => { const i = document.createElement("i"); i.style.top = y + "px"; return i; }));
-    };
-    ScrollTrigger.addEventListener("refresh", place); place();
-    // The stops are hard (mandatory) only while a chapter is pinned, so the sections between chapters scroll freely; a
-    // fling arriving at a chapter halts at its start, and one leaving it halts at the next section's top.
-    const inside = new Set();
-    $$("main > section.track").forEach((sec) => { if (!BEATS[sec.id]) return; ScrollTrigger.create({ trigger: sec, start: "top top", end: "bottom bottom", onToggle: (st) => { st.isActive ? inside.add(sec) : inside.delete(sec); root.classList.toggle("in-chapter", inside.size > 0); } }); });
-    root.classList.add("beats-on");
-  })();
-
   /* ---------- Films: preview on hover (touch: in view) ---------- */
   const startLoop = (v) => { if (!v.src) v.src = v.dataset.loop; v.play().catch(() => {}); };
   if (fine) $$(".film__play").forEach((f) => { const v = $("video", f); f.addEventListener("pointerenter", () => startLoop(v)); f.addEventListener("pointerleave", () => v.pause()); });
@@ -607,7 +577,7 @@
      next film, which plays as it arrives; a film that ends moves on to the next by itself. Every [data-video] on the
      page is in the list, in page order. One <video> element is moved from slide to slide: phones only allow sound on
      an element a tap has started, so the first tap unlocks the voice for every film after it. Tap pauses; Back, Esc
-     or × closes. */
+     or × closes. Opening remembers the page's scroll position and closing puts the page back there (home and product page, any device). */
   function initModal() {
     const modal = document.getElementById("modal"); if (!modal) return;
     const track = modal.querySelector("[data-reels-track]"), count = modal.querySelector("[data-reels-count]"), hint = modal.querySelector("[data-reels-hint]");
@@ -623,7 +593,7 @@
         seen.set(src, films.length);
         films.push({ src, poster: img ? img.currentSrc || img.src : "", title: title ? title.textContent.trim() : b.getAttribute("aria-label") || "", line: line ? line.textContent.trim() : "" });
       }
-      b.addEventListener("click", () => open(seen.get(src)));
+      b.addEventListener("click", () => open(seen.get(src), b));
     });
     if (!films.length) return;
     const slides = films.map((f, i) => {
@@ -632,7 +602,7 @@
       s.querySelector("h3").textContent = f.title; s.querySelector("p").textContent = f.line;
       track.appendChild(s); return s;
     });
-    let cur = -1, isOpen = false, resume = [], swiped = false;
+    let cur = -1, isOpen = false, resume = [], swiped = false, opener = null, savedY = 0, oldRestore = null, restoreRaf = 0;
     const go = (i) => { if (i < 0 || i >= slides.length) return; track.scrollTo({ top: slides[i].offsetTop, behavior: reduced ? "auto" : "smooth" }); };
     const activate = (i) => {
       if (i === cur || !isOpen) return; if (cur >= 0 && i !== cur) swiped = true; cur = i;
@@ -652,15 +622,23 @@
     muteBtn.addEventListener("click", () => { video.muted = !video.muted; syncMute(); });
     modal.querySelectorAll("[data-reels-step]").forEach((b) => b.addEventListener("click", () => go(cur + +b.dataset.reelsStep)));
     modal.addEventListener("keydown", (e) => { if (e.key === "ArrowDown" || e.key === "PageDown") { e.preventDefault(); go(cur + 1); } if (e.key === "ArrowUp" || e.key === "PageUp") { e.preventDefault(); go(cur - 1); } });
-    function open(i) {
+    function open(i, from) {
       if (isOpen) return; isOpen = true; cur = -1; swiped = false; hint.classList.remove("is-gone");
+      // The page keeps its place: remember it, and stop the browser restoring a scroll position of its own when Back closes the films.
+      opener = from; savedY = scrollY; cancelAnimationFrame(restoreRaf);
+      if ("scrollRestoration" in history) { if (oldRestore === null) oldRestore = history.scrollRestoration; history.scrollRestoration = "manual"; }
       // Films already playing on the page (the reel's previews) pause underneath and carry on afterwards.
       resume = [...document.querySelectorAll("video")].filter((v) => v !== video && !v.paused); resume.forEach((v) => v.pause());
       root.classList.add("reels-open"); modal.showModal(); document.dispatchEvent(new CustomEvent("khelu:reels", { detail: true }));
       track.scrollTop = slides[i].offsetTop; activate(i); // played inside the tap, so it may play with sound
       history.pushState({ reels: true }, ""); // the phone's Back button closes the films, not the page
     }
-    const shut = () => { if (!isOpen) return; isOpen = false; video.pause(); video.removeAttribute("src"); video.load(); cur = -1; if (modal.open) modal.close(); root.classList.remove("reels-open"); resume.forEach((v) => v.play().catch(() => {})); document.dispatchEvent(new CustomEvent("khelu:reels", { detail: false })); };
+    const shut = () => { if (!isOpen) return; isOpen = false; video.pause(); video.removeAttribute("src"); video.load(); cur = -1; if (modal.open) modal.close(); root.classList.remove("reels-open"); resume.forEach((v) => v.play().catch(() => {})); document.dispatchEvent(new CustomEvent("khelu:reels", { detail: false }));
+      // Closing never moves the page: back to the remembered place at once (Lenis has just restarted), the film that opened the viewer focused without scrolling, then the browser's own scroll restoration returns.
+      if (lenis) lenis.scrollTo(savedY, { immediate: true }); else scrollTo({ top: savedY, behavior: "instant" });
+      if (opener) opener.focus({ preventScroll: true });
+      if (oldRestore !== null) restoreRaf = requestAnimationFrame(() => { history.scrollRestoration = oldRestore; oldRestore = null; });
+    };
     const close = () => { if (history.state && history.state.reels) history.back(); else shut(); };
     addEventListener("popstate", shut);
     modal.querySelector("[data-close]").addEventListener("click", close);
