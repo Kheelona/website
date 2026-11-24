@@ -75,7 +75,7 @@ describe("the built pages and llms.txt print no Spanish or French language list,
   });
 
   it("reads the home page, the product page, the pillar page, the 404 page and llms.txt", () => {
-    for (const path of ["redesign/index.html", "redesign/products/kheelu/index.html", "redesign/ai-toys-for-kids-in-india/index.html", "redesign/404.html", "redesign/llms.txt"]) {
+    for (const path of ["redesign/index.html", "redesign/products/khelu/index.html", "redesign/ai-toys-for-kids-in-india/index.html", "redesign/404.html", "redesign/llms.txt"]) {
       expect(BUILT, path).toContain(path);
     }
     expect(BUILT.some(isArticle)).toBe(false);
