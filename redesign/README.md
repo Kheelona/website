@@ -106,7 +106,7 @@ Every page of betawebsite.kheelona.com, rebuilt in the home page's design langua
 ## v12 changes (owner's answers, 2026-10-22)
 - **Owner-confirmed facts** live in `pages/_shell/facts.json`, applied by `tools/build-pages.py` to every page so the
   importers/generator can't bring old wording back: chats are kept **until you delete them** (no 36-month deletion),
-  Khelu speaks **10 languages**. The legal pages are final (the founder approved the drafts, 2026-10-22, wiki D067): no draft notice.
+  Khelu speaks **10 languages** (named since 2026-11-24 as "English, Hindi, Kannada and 7 more Indian languages", B7a below). The legal pages are final (the founder approved the drafts, 2026-10-22, wiki D067): no draft notice.
 - **Only the current toy is shown:** the previous toy's close-ups and packshot are replaced by crops of
   `code/Khelu_By_Kheelona.png` (`assets/img/product/khelu-tummy-*.webp`, `khelu-studio-*.webp`, made by
   `tools/build-assets.sh`).
@@ -177,7 +177,10 @@ Every page of betawebsite.kheelona.com, rebuilt in the home page's design langua
   you delete them". The privacy-centre screenshot no longer shows the app's "seen only by you / never used for ads"
   banner (cropped in `tools/build-assets.sh`). Kept as the owner chose: footer line, home H1, "Children ask hundreds of
   questions a day.", "Backed by the best.", the app chips, "Never public", the voice greeting, the three parent quotes.
-- **Facts:** 10 languages everywhere; the ✦ wake-up button is on Khelu's tummy (the current toy photo; firmware's AI button,
+  **(Superseded 2026-11-24, wiki D070 / B7a: the footer line, the home H1 and "Children ask hundreds of questions a day."
+  were the founder's rejected claims and are replaced; see "B7a" at the end of this file.)**
+- **Facts:** 10 languages everywhere **(since 2026-11-24 the language line is "English, Hindi, Kannada and 7 more Indian
+  languages", D070 / B7a)**; the ✦ wake-up button is on Khelu's tummy (the current toy photo; firmware's AI button,
   also held for setup). Every parent-app screenshot carries an "Example account" tag. The support number is only on
   `/contact` (a ContactPoint there) and the legal pages, never in the site-wide Organization.
 - **Selling on phones:** the hero says "Ages 3 to 7 · Reserve for ₹499 today, refundable · ₹4,999 in total."; the bottom
@@ -244,3 +247,24 @@ Measured on a 390px touch viewport with 4× and 10× CPU throttling (Chrome trac
   stays in `<head>` (its install check reads the tag). Lighthouse mobile on the same Mac, trackers loaded but their
   hits blocked: Total Blocking Time ≈ 250 ms (live) → 17-63 ms.
 - Hero image preloaded before the fonts; the "No Wi-Fi" slash animates transform/opacity (was stroke-dashoffset).
+
+## B7a: approved wording instead of the rejected lines (2026-11-24, wiki D070)
+The founder's rejections of 10 and 17 November are applied, in the marketing team's replacement wording (only the approved
+product line, the ages 3 to 7 and the 10-language line). The founder's one-by-one OK of those words comes before this merges.
+- **Home:** H1 "An AI toy that answers, then asks one back." (the agreed shorter option: the longer "... answers a child’s
+  questions, then asks one back." fits phones but wraps to three lines on desktops about 1440 px wide and up, where
+  Khelu's ears then cover the offer line) with the sub-line "Khelu by Kheelona is a screen-free plush rabbit for children
+  aged 3 to 7."; the opening animation's third caption "Why? Why? Why?"; the chapter
+  above the offer is "Khelu, in one sentence." with the entity sentence and "For children aged 3 to 7." (the Harvard
+  sentence and its source line left with the rejected heading); the languages chapter names English, Hindi and Kannada and
+  "7 more Indian languages" (three greetings in the tappable list and in `main.js`'s `L`).
+- **Footer, every page:** "We make Khelu. It answers, then asks one back." (`pages/_shell/footer.html` and the home's own copy).
+- **Language line elsewhere:** product page (card with a "+ 7 more" chip, spec row, FAQ answer and its FAQPage text), the
+  pillar table, the Product structured data (`pages/_shell/seo.json`), `llms.txt` (three lines) and the blog sentence that
+  `pages/_shell/facts.json` writes. Its four older language rules now write the approved line too, so a re-import can't
+  bring the rejected list back.
+- **Left as it was, on purpose:** titles, meta descriptions, canonical, Open Graph and Twitter tags; "answers every why" in
+  the meta and OG text; "does the thinking"; "switches mid-sentence"; the product FAQ's Harvard source; comments in
+  `main.js` (line 192) and `site.css` (line 804) that quote the old lines.
+- **Guard:** `test/guards/banned-phrases.data.ts` (the rejected lines, scoped so a blog post can't trip the journal sync) and
+  `test/guards/rejected-wording-built.test.ts` (the broad words on the built pages and `llms.txt`).
