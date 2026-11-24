@@ -23,7 +23,7 @@ import { share } from "./share";
  */
 
 /** D058 item 3, verbatim: which features stay free is not decided, so the sentence lists none. */
-const PLUS = "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.";
+const PLUS = "Every Khelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.";
 
 /** The small line under the offer cards' perks since task Q2.9 (the D2C plan v2 §2 fold 7; D058 item 3: a paid
  *  subscription on top of the free parent app, no feature list): the perk itself says "6 months of Kheelona+ included".

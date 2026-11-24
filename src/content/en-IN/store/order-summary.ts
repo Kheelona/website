@@ -19,12 +19,12 @@ export const orderSummaryCopy = {
         head: "{price:balance} before delivery",
         note: "The rest of the price, by a payment link we send on WhatsApp and by email. Never charged automatically.",
       },
-      { icon: "arrow-counter-clockwise", head: "Refundable in full", note: "Ask any time before we dispatch your Kheelu. No fee, and no reason needed." },
+      { icon: "arrow-counter-clockwise", head: "Refundable in full", note: "Ask any time before we dispatch your Khelu. No fee, and no reason needed." },
     ],
     full: [
       { icon: "currency-inr", head: "{price:full} today", note: "The whole price, incl. GST." },
       { icon: "calendar-check", head: "Nothing due before delivery", note: "You have paid the whole price. No balance link, and nothing automatic." },
-      { icon: "arrow-counter-clockwise", head: "Refundable in full", note: "Ask any time before we dispatch your Kheelu. No fee, and no reason needed." },
+      { icon: "arrow-counter-clockwise", head: "Refundable in full", note: "Ask any time before we dispatch your Khelu. No fee, and no reason needed." },
     ],
   },
   delivery: { icon: "truck", note: "Pre-orders go out first, in the order they were placed." },
@@ -32,7 +32,7 @@ export const orderSummaryCopy = {
     /* The cap once on the page, as an offer term, never a count (D041); its words are config's, as in faqs.ts. "Kheelu's
        price" since D058 item 3's Kheelona+ sentence comes first, so the price cannot be read as Kheelona+'s (store.md
        fold 4; CMO review of task 8b.1, m10 (a)). */
-    token: `${offerCopy.plus} Kheelu’s price is {price:headline} (incl. GST) for the ${CAP_UNITS_TEXT}, and {price:full} (incl. GST) once they are gone. Delivery anywhere in India is included, and every order comes with a GST invoice.`,
+    token: `${offerCopy.plus} Khelu’s price is {price:headline} (incl. GST) for the ${CAP_UNITS_TEXT}, and {price:full} (incl. GST) once they are gone. Delivery anywhere in India is included, and every order comes with a GST invoice.`,
     full: `${offerCopy.plus} The ${CAP_UNITS_TEXT} at {price:headline} have been reserved, and this order is at the {price:full} price (incl. GST). Delivery anywhere in India is included, and every order comes with a GST invoice.`,
   },
 } as const satisfies OrderSummaryCopy;

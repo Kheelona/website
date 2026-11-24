@@ -21,7 +21,7 @@ import { inAppNote } from "@/content/en-IN/store/in-app-note";
 import { paymentsLine } from "@/content/en-IN/store/payments-line";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { MOCKUP_SLUGS, type MockupSlug } from "./mockup-text";
+import { MOCKUP_NAME, MOCKUP_SLUGS, STORE_NAME, type MockupSlug } from "./mockup-text";
 import { PAGE_FACTS, type FactEdit, type PageFacts, type PageFactsSlug } from "./page-facts";
 import { sentences } from "./parity";
 import { readRepoFile } from "./repo";
@@ -338,12 +338,21 @@ export const RETENTION = {
   mockup: "Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically. You can delete any of them sooner, in one tap.",
   build: "Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically.",
 } as const;
+/** The toy's name on the store (D070 / C1, K-176; deviations.md V71): the founder's decision of 24 Nov 2026 ("The store name:
+ *  'Kheelu' -> 'Khelu'", decisions 2026-11-13-a2-store-rename-approved and
+ *  2026-11-24-go-5-ui-ux-changes-keep-headline-rename-redirect). The frozen mockups (D046) keep Gate A's "Kheelu"; the build
+ *  prints "Khelu" in every string the store shows (the page, /thanks, the event page, its meta and share card, the films
+ *  and FAQs it reads, the order email, the payment sheet). Every comparison reads the mockup's name as the build's:
+ *  `readNameAsBuilt` (DOM; test/support/mockup-compare.ts, applied by `parseMockup` to the two store mockups), `withStoreName`
+ *  (text; test/e2e/support/mockup-text.ts, for the strings the store shares with other pages) and `withFacts` (which
+ *  matches an edit's raw `was` by the build's name). The raw `was:` strings and the `mockup` sides below stay as printed. */
+export const TOY_NAME = { mockup: MOCKUP_NAME, build: STORE_NAME, approvedBy: "Founder, 24 Nov 2026; D070 / C1 (K-176)" } as const;
 /** Kheelona+ (D058 item 3, verbatim): a paid subscription on top of the free parent app, with no feature list. The
- *  product card's perk took the same sentence (meet-kheelu.md fold 3). */
+ *  product card's perk took the same sentence (meet-kheelu.md fold 3). The build's reads the store's name (V71, `TOY_NAME`). */
 export const KHEELONA_PLUS = {
   mockup: "Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app.",
   perk: "6 months of Kheelona+ included: stories, poems, jingles, languages and the parent app",
-  build: "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.",
+  build: "Every Khelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.",
 } as const;
 /** The footer's promise on every page (navigation.ts; home.md "Footer"; deviations.md V36): the live footer's "No web
  *  browsing." (D058 item 1; Kheelu does use the internet, on home Wi-Fi). Outside <main>, so no text-pass rule, and the
@@ -813,12 +822,12 @@ export const CLAIM_FIXES = {
       rewrite(
         "p.mk-agree__fine",
         `${KHEELONA_PLUS.mockup} The price is ₹4,999 (incl. GST) for the first 500 units, and ₹7,999 (incl. GST) once they are gone. Delivery anywhere in India is included, and every order comes with a GST invoice.`,
-        `${KHEELONA_PLUS.build} Kheelu’s price is <span data-src="LAUNCH_PRICE">₹4,999</span> (incl. GST) for the first 500 units, and <span data-src="FULL_PRICE">₹7,999</span> (incl. GST) once they are gone. Delivery anywhere in India is included, and every order comes with a GST invoice.`,
+        `${KHEELONA_PLUS.build} Khelu’s price is <span data-src="LAUNCH_PRICE">₹4,999</span> (incl. GST) for the first 500 units, and <span data-src="FULL_PRICE">₹7,999</span> (incl. GST) once they are gone. Delivery anywhere in India is included, and every order comes with a GST invoice.`,
       ),
     ],
     /* The text pass splits a sentence after "incl.", so the price sentence's changed part is its first piece. */
     mockup: [KHEELONA_PLUS.mockup, "The price is ₹4,999 (incl."],
-    build: [KHEELONA_PLUS.build, "Kheelu’s price is ₹4,999 (incl."],
+    build: [KHEELONA_PLUS.build, "Khelu’s price is ₹4,999 (incl."],
     /* The small print wraps to another height on a phone. The build names it by its own block class. */
     hidden: { both: [], mockup: [".mk-agree__fine"], build: [".ks-agree__fine"] },
     reason: "the order summary's small print: Kheelona+ as D058 item 3 words it, and Kheelu's price named as Kheelu's (CMO review m10 (a))",
@@ -1123,7 +1132,7 @@ export const CLAIM_FIXES = {
       "Even so, an answer can sometimes be wrong.",
     ],
     build: [
-      "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.",
+      KHEELONA_PLUS.build,
       "The AI model that writes Kheelu’s replies is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top.",
       "You’re responsible for how your child uses Kheelu.",
       "In the app, you can read every conversation word for word, a few minutes after it ends, with a daily summary, search, and a look back over the week or the month.",
@@ -1830,7 +1839,7 @@ export const STORE_WORDS = {
     build: "Screen-free AI toy · Ages 3 to 7",
     markup: 'Screen-free AI toy · <span class="mk-nowrap">Ages 3 to 7</span>',
   },
-  filmsTitle: { mockup: "See Kheelu ask, in real homes.", build: "See Kheelu ask.", markup: 'See Kheelu <span class="kh-hand">ask.</span>' },
+  filmsTitle: { mockup: "See Kheelu ask, in real homes.", build: "See Khelu ask.", markup: 'See Khelu <span class="kh-hand">ask.</span>' },
   filmsLead: { mockup: "Real children in real homes. Press play on any of them.", build: "Real children, real families. Press play on any of them." },
 } as const;
 
@@ -2317,7 +2326,7 @@ export const HOME_SELLING = {
     mockupFolds: [],
     buildFold: "languages-title",
     mockup: [],
-    build: ["Languages", "Kheelu speaks up to 10 languages at launch.", "Eight today: English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French.", "In AI mode, it can switch between them mid-sentence: when your child changes language, Kheelu changes with them.", "Two languages · 0:31", "In AI mode, Arha switches to English, and Kheelu switches with her."],
+    build: ["Languages", "Kheelu speaks up to 10 languages at launch.", "Eight today: English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French.", "In AI mode, it can switch between them mid-sentence: when your child changes language, Kheelu changes with them.", "Two languages · 0:31", "In AI mode, Arha switches to English, and Khelu switches with her."],
     reason: "Fold 4, languages (D064 item 9): the ceiling, the eight languages and the switching line, the chips, and film 6 played in place",
   },
   asks: {
@@ -2479,7 +2488,7 @@ export const PRODUCT_DELIVERY_QUESTION = "When does delivery start?";
 export const AFTER_SIX_MONTHS = {
   question: "Will Kheelona+ charge me after the 6 months?",
   answer:
-    "No, not unless you sign up for it yourself. Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. Nothing renews without you.",
+    "No, not unless you sign up for it yourself. Every Khelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. Nothing renews without you.",
 } as const;
 /** Home's fourth question (faqs.ts `screen-time-in-disguise`, task Q2.9), the product page's fifth since task Q2.13 (the
  *  D2C plan v2 §3 fold 11, question 5: "As Home's question 4"), after the price question, in the delivery question's

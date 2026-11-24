@@ -27,7 +27,7 @@ export const preorderFormCopy = {
     },
     email: "We email your confirmation here.",
     /* The age-band review, row 9: "made for children aged 3 to 7", and an example inside the band. */
-    childAge: "Kheelu is made for children aged 3 to 7. Just the number is fine, like 4.",
+    childAge: "Khelu is made for children aged 3 to 7. Just the number is fine, like 4.",
   },
   consent: {
     lead: "I accept the",
@@ -41,6 +41,6 @@ export const preorderFormCopy = {
     token: offerCopy.sentence.token,
     /* The refund promise stays in the pay button's block in both modes (architecture §16.3, the JSX contract): in full
        mode, in the store FAQ's own full-mode words (store.md fold 5, faqs.ts "paying-today"). */
-    full: `${offerCopy.sentence.full} Until we dispatch your Kheelu, all of it is refundable.`,
+    full: `${offerCopy.sentence.full} Until we dispatch your Khelu, all of it is refundable.`,
   },
 } as const satisfies PreorderFormCopy;

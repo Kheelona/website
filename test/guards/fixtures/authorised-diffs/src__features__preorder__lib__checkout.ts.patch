@@ -26,8 +26,15 @@ D070 / B2 (K-172; output/2026-W48/engineering/B2-spec.md, founder's one-by-one s
   `callback_url?` and `redirect?` on RazorpayOptions. Nothing else changes: amount, notes, theme, key, events, loading.
   Proof: test/preorder-redirect-checkout.test.ts (options with and without the URL).
 
+D070 / C1 (K-176; output/2026-W48/engineering/C1a-rename-spec.md; the founder's approval in chat on 24 Nov 2026 of "The store
+  name: 'Kheelu' -> 'Khelu'", decisions 2026-11-13-a2-store-rename-approved and
+  2026-11-24-go-5-ui-ux-changes-keep-headline-rename-redirect): the Razorpay payment sheet's description reads
+  "Khelu pre-order <order ref>" (was "Kheelu pre-order <order ref>"). One template literal, a like-for-like word swap;
+  nothing else changes: no option, key, amount, note, theme or event. Proof: test/store-rename-khelu.test.tsx (the options
+  startCheckout hands Razorpay).
+
 diff --git a/src/features/preorder/lib/checkout.ts b/src/features/preorder/lib/checkout.ts
-index 4ee5037..14b2793 100644
+index 4ee5037..8fb4c77 100644
 --- a/src/features/preorder/lib/checkout.ts
 +++ b/src/features/preorder/lib/checkout.ts
 @@ -10,6 +10,8 @@
@@ -97,6 +104,15 @@ index 4ee5037..14b2793 100644
  export async function startCheckout(input: StartCheckoutInput): Promise<boolean> {
    const ready = await loadCheckout();
    if (!ready || !window.Razorpay) return false;
+@@ -84,7 +124,7 @@ export async function startCheckout(input: StartCheckoutInput): Promise<boolean>
+     amount: input.amountPaise,
+     currency: "INR",
+     name: "Kheelona",
+-    description: `Kheelu pre-order ${input.orderRef}`,
++    description: `Khelu pre-order ${input.orderRef}`,
+     prefill: input.prefill,
+     notes: { order_ref: input.orderRef },
+     /* Brand orange. The label inside Razorpay's own UI is theirs, so the V4
 @@ -92,8 +132,20 @@ export async function startCheckout(input: StartCheckoutInput): Promise<boolean>
      theme: { color: "#EF762F" },
      handler: input.onPaid,

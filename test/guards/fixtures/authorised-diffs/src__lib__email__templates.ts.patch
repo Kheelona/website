@@ -38,8 +38,16 @@ else is inside a string or template literal.
 Unchanged: amounts and the balance derived from the row, the tier and address branches, the refund promise, the
 balance link on WhatsApp and by email, the seller block, the internal alert, the signature of preorderAckEmail.
 
+D070 / C1 (K-176; output/2026-W48/engineering/C1a-rename-spec.md; the founder's approval in chat on 24 Nov 2026 of "The store
+  name: 'Kheelu' -> 'Khelu'", decisions 2026-11-13-a2-store-rename-approved and
+  2026-11-24-go-5-ui-ux-changes-keep-headline-rename-redirect): the receipt email says "Khelu" where it said "Kheelu": the heading and
+  plain-text line "Your Khelu is reserved.", the subject "Your Khelu is reserved (<order ref>)", the balance-link
+  sentence ("When your Khelu is ready to leave for you...") and the refund sentence ("...before your Khelu is dispatched...").
+  Seven string and template literals (HTML and plain text), a like-for-like word swap: no branch, label, amount, row or
+  link changes. Proof: test/store-rename-khelu.test.tsx (both renderings, every tier and address branch).
+
 diff --git a/src/lib/email/templates.ts b/src/lib/email/templates.ts
-index 5a0c7db..3486303 100644
+index 5a0c7db..f0fad28 100644
 --- a/src/lib/email/templates.ts
 +++ b/src/lib/email/templates.ts
 @@ -14,6 +14,8 @@ import {
@@ -84,8 +92,12 @@ index 5a0c7db..3486303 100644
  
    const addressBlock = needsAddress
      ? p(
-@@ -130,10 +137,10 @@ export function preorderAckEmail(input: AckInput): Email {
-      <h1 style="margin:0 0 18px;font-size:26px;line-height:1.2">Your Kheelu is reserved.</h1>
+@@ -127,13 +134,13 @@ export function preorderAckEmail(input: AckInput): Email {
+ 
+   const html = layout(
+     `<p style="margin:0 0 6px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#b54a0d;font-weight:700">Pre-order confirmed</p>
+-     <h1 style="margin:0 0 18px;font-size:26px;line-height:1.2">Your Kheelu is reserved.</h1>
++     <h1 style="margin:0 0 18px;font-size:26px;line-height:1.2">Your Khelu is reserved.</h1>
       ${p(`Thank you, ${esc(firstName)}. We have your ${paid}, and your place in the queue is held from the moment you paid.`)}
       <div style="border:1px solid ${RULE};border-radius:12px;padding:16px;margin:0 0 18px">
 -       <p style="margin:0 0 8px;font-size:15px"><strong>Order</strong> ${order.order_ref}</p>
@@ -98,7 +110,22 @@ index 5a0c7db..3486303 100644
       </div>
       ${addressBlock}
       ${
-@@ -154,12 +161,12 @@ export function preorderAckEmail(input: AckInput): Email {
+@@ -142,24 +149,24 @@ export function preorderAckEmail(input: AckInput): Email {
+              `That was the whole price. There is nothing more to pay and no link to wait for, nothing is charged automatically, and we do not keep your card.`,
+            )
+          : p(
+-             `When your Kheelu is ready to leave for you, we send a payment link for the ${balanceDue} balance on WhatsApp and by email. Nothing is charged automatically, and we do not keep your card.`,
++             `When your Khelu is ready to leave for you, we send a payment link for the ${balanceDue} balance on WhatsApp and by email. Nothing is charged automatically, and we do not keep your card.`,
+            )
+      }
+-     ${p(`Changed your mind? Message us any time before your Kheelu is dispatched and we refund the ${paid} in full. No fee, and no reason needed.`)}
++     ${p(`Changed your mind? Message us any time before your Khelu is dispatched and we refund the ${paid} in full. No fee, and no reason needed.`)}
+      ${p(`<span style="color:${MUTED}">${KHEELONA_PLUS_SHORT}</span>`)}`,
+   );
+ 
+   const text = [
+-    "Your Kheelu is reserved.",
++    "Your Khelu is reserved.",
      "",
      `Thank you, ${firstName}. We have your ${paid}, and your place in the queue is held from the moment you paid.`,
      "",
@@ -115,8 +142,15 @@ index 5a0c7db..3486303 100644
      "",
      needsAddress
        ? `One thing left: we do not have your delivery address yet. Add it here: ${input.addressUrl}`
-@@ -172,7 +179,7 @@ export function preorderAckEmail(input: AckInput): Email {
-     `Changed your mind? Message us any time before your Kheelu is dispatched and we refund the ${paid} in full.`,
+@@ -167,17 +174,17 @@ export function preorderAckEmail(input: AckInput): Email {
+     "",
+     paidInFull
+       ? "That was the whole price. There is nothing more to pay and no link to wait for, and nothing is charged automatically."
+-      : `When your Kheelu is ready to leave for you, we send a payment link for the ${balanceDue} balance on WhatsApp and by email. Nothing is charged automatically.`,
++      : `When your Khelu is ready to leave for you, we send a payment link for the ${balanceDue} balance on WhatsApp and by email. Nothing is charged automatically.`,
+     "",
+-    `Changed your mind? Message us any time before your Kheelu is dispatched and we refund the ${paid} in full.`,
++    `Changed your mind? Message us any time before your Khelu is dispatched and we refund the ${paid} in full.`,
      "",
      `${LEGAL_ENTITY}, ${REGISTERED_ADDRESS_LINE}. GSTIN ${GSTIN}.`,
 -    `WhatsApp ${SUPPORT_WHATSAPP_DISPLAY} (messages, not calls) or ${CONTACT_EMAIL}.`,
@@ -124,3 +158,9 @@ index 5a0c7db..3486303 100644
    ].join("\n");
  
    return {
+     to: "",
+-    subject: `Your Kheelu is reserved (${order.order_ref})`,
++    subject: `Your Khelu is reserved (${order.order_ref})`,
+     html,
+     text,
+     replyTo: CONTACT_EMAIL ?? undefined,

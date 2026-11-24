@@ -258,11 +258,11 @@ describe("Home fold 4 · languages (plan fold 4; D064 item 9)", () => {
     expect(all(langs, ".kh-lang")).toHaveLength(8);
     const figure = langs.querySelector("figure.ks-langs-film")!;
     const poster = figure.querySelector("img")!;
-    expect(poster.getAttribute("alt")).toBe("A girl on a sofa beside the cream Kheelu plush.");
+    expect(poster.getAttribute("alt")).toBe("A girl on a sofa beside the cream Khelu plush."); /* films.ts: the store prints "Khelu" (V71, D070 / C1) */
     expect(poster.getAttribute("loading")).toBe("lazy");
     expect(text(figure.querySelector(".ks-clip__chip"))).toBe("Two languages · 0:31");
-    expect(figure.querySelector("button")?.getAttribute("aria-label")).toBe("Play: Two languages. In AI mode, Arha switches to English, and Kheelu switches with her.");
-    expect(text(figure.querySelector("figcaption"))).toBe("In AI mode, Arha switches to English, and Kheelu switches with her.");
+    expect(figure.querySelector("button")?.getAttribute("aria-label")).toBe("Play: Two languages. In AI mode, Arha switches to English, and Khelu switches with her.");
+    expect(text(figure.querySelector("figcaption"))).toBe("In AI mode, Arha switches to English, and Khelu switches with her.");
     expect(chilli(langs)).toEqual([]);
     // The film and its poster are film 6's; the video's own poster is that still, never the animated .webp preview.
     const entry = homePage.sections.find((s) => s.kind === "languages-section");
@@ -599,7 +599,7 @@ describe("Home: search and share metadata (plan §2, title, meta)", () => {
     expect(toPlainText(homePage.meta.description, offer)).toBe(description);
     expect(description.length).toBeLessThanOrEqual(155);
     expect(pageMeta({ ...homePage.meta, path: "/", offer }).alternates?.canonical).toBe("/");
-    expect(homePage.meta.og).toEqual({ image: "/og/kheelu.jpg", alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." });
+    expect(homePage.meta.og).toEqual({ image: "/og/kheelu.jpg", alt: "Khelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." }); /* DEFAULT_OG: the store prints "Khelu" (V71, D070 / C1) */
   });
 });
 

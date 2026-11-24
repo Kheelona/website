@@ -60,7 +60,7 @@ describe("the /thanks paid-state story (StoreShell.stories.tsx ThanksPaid)", () 
 
   it("its main is exactly what the route renders for the fixture order", async () => {
     const page = await route();
-    expect(page.querySelector(".ph-no-capture.ph-mask h1")?.textContent).toBe("Your Kheelu is reserved.");
+    expect(page.querySelector(".ph-no-capture.ph-mask h1")?.textContent).toBe("Your Khelu is reserved.");
     const main = story().querySelector("main#main")!;
     expect(html(main)).toBe(html(page));
   });

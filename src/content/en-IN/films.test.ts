@@ -4,13 +4,20 @@ import sharp from "sharp";
 import { describe, expect, it } from "vitest";
 import { ROOT, readRepoFile } from "../../../test/e2e/support/repo";
 import { findBanned } from "../../../test/guards/banned-phrases.data";
+import { readFilmsAsBuilt } from "../../../test/support/mockup-compare";
 import { filmQuotes, films, filmsStrip } from "./films";
 
 /* The seven parent films (D040; architecture §6.1): chip, caption, length, poster and its alt,
  * and the file, exactly as the approved film strip shows them on Home, the product page and the
  * store (film 2's chip "Real families" and film 6's caption are the founder's, home.md round 2). */
 
-const doc = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
+/* The mockups keep Gate A's "Kheelu"; the strip (films.ts) is the store's too, and the store prints "Khelu" (deviations.md V71,
+   D070 / C1), so the strip is read as the build's name. */
+const doc = (slug: string) => {
+  const parsed = new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
+  readFilmsAsBuilt(parsed);
+  return parsed;
+};
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 
 function strip(slug: string) {

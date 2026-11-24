@@ -86,12 +86,12 @@ describe("store page: the configured store (token mode)", () => {
   it("composes the first screen, the form, the agreement card and the questions, then the films", async () => {
     const { main } = await renderPage();
     expect(Array.from(main.querySelectorAll("h1, h2")).map((h) => h.textContent)).toEqual([
-      "Pre-order Kheelu.",
+      "Pre-order Khelu.",
       "Your details",
       "What you are agreeing to",
       "Questions before you pay",
       /* The selling update (task Q2.12; D057 item 2; the D2C plan v2 §10). */
-      "See Kheelu ask.",
+      "See Khelu ask.",
     ]);
     expect(main.querySelectorAll("h1")).toHaveLength(1);
   });
@@ -193,7 +193,7 @@ describe("store page: full mode", () => {
     const { main } = await renderPage();
     expect(main.querySelector('button[type="submit"]')!.textContent).toBe("Pay ₹7,999 and pre-order");
     expect(main.querySelector("form .ks-price")!.textContent).toBe(
-      "₹7,999 (incl. GST), paid in full when you order. Until we dispatch your Kheelu, all of it is refundable.",
+      "₹7,999 (incl. GST), paid in full when you order. Until we dispatch your Khelu, all of it is refundable.",
     );
     expect(main.querySelector(".ks-store-top__price")!.textContent).toBe("₹7,999 (incl. GST), paid in full when you order.");
     expect(main.querySelector(".ks-agree")!.textContent).toContain("Nothing due before delivery");
@@ -247,7 +247,7 @@ describe("store page: metadata", () => {
   it("follows the offer mode", async () => {
     getOffer.mockResolvedValue(buildOffer("full"));
     const { generateMetadata } = await import("./page");
-    expect((await generateMetadata()).description).toMatch(/^Pre-order Kheelu by Kheelona.*₹7,999 \(incl\. GST\), with delivery/);
+    expect((await generateMetadata()).description).toMatch(/^Pre-order Khelu by Kheelona.*₹7,999 \(incl\. GST\), with delivery/);
   });
 });
 

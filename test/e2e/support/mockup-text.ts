@@ -93,6 +93,27 @@ export function withDeliveryDate(text: string): string {
   return text.replace(/\b([Dd])eliveries start mid-November\b/g, (_whole, first: string) => `${first}${DELIVERY_TEXT.slice(1)}`);
 }
 
+/** The toy's name as the frozen mockups print it (D046, Gate A) and as the store prints it since the founder's decision of
+ *  24 Nov 2026 (D070 / C1, K-176; deviations.md V71): "Kheelu" became "Khelu" on the store, in every string a buyer sees
+ *  there (the page, /thanks, the event page, the order email, the payment sheet). The mockups are never edited. */
+export const MOCKUP_NAME = "Kheelu";
+export const STORE_NAME = "Khelu";
+
+/** V71's name fact applied to a mockup's text, as `withDeliveryDate` applies V69's: every "Kheelu" reads "Khelu" ("Kheelona"
+ *  and lower-case file names such as kheelu-front.webp are not the name and never match). For a comparison that reads a
+ *  string the store prints (a store mockup, or a string the store shares with another page: the films, the share card's
+ *  alt, the Kheelona+ sentence). The raw `was:` strings of the page facts stay as the mockup prints them. */
+export function withStoreName(text: string): string {
+  return text.replaceAll(MOCKUP_NAME, STORE_NAME);
+}
+
+/** The reverse of `withStoreName`, for a sentence read from a store mockup that the harness has already read as the build's
+ *  name: the page facts' `mockup` lists and the text rules' `mockup` patterns hold the mockup's own words ("Kheelu"), so
+ *  a mockup sentence is looked up by them in these words. No frozen mockup holds "Khelu" itself. */
+export function withMockupName(text: string): string {
+  return text.replaceAll(STORE_NAME, MOCKUP_NAME);
+}
+
 /** Title, meta description and visible text of one approved page (built file mockup/<slug>.html). */
 export function approvedMockupText(slug: MockupSlug): string {
   const html = readRepoFile(`mockup/${slug}.html`);

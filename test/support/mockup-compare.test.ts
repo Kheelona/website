@@ -22,6 +22,7 @@ import {
   withDrawerNoteLines,
   withLinesBeside,
   withOneCtaShape,
+  readNameForSlug,
   withPriceLine,
   without,
   words,
@@ -92,7 +93,13 @@ describe("reading the mockup with task Q2.8's price lines (withPriceLine)", () =
   /** The delivery line as the build prints it (D068, V69): the mockups' own words are `PRICE_LINE.delivery.mockup`. */
   const delivery = PRICE_LINE.delivery.build;
   /** A mockup page as approved, without the harness's rewrites. */
-  const raw = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
+  /* The page as the file prints it, but read in the build's name as parseMockup reads it (V71): this suite measures the price
+     lines, not the name. */
+  const raw = (slug: string) => {
+    const doc = new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
+    readNameForSlug(doc, slug);
+    return doc;
+  };
   const text = (el: Element | null | undefined) => (el?.textContent ?? "").replace(/\s+/g, " ").trim();
   /** A trust line's link words, without the store's visually hidden new-tab note. */
   const linkWords = (list: Element) =>

@@ -70,7 +70,7 @@ describe("PreorderForm, restyled", () => {
     const phone = screen.getByLabelText("Indian WhatsApp number");
     expect(phone).toHaveAttribute("name", "phone");
     expect(phone).toHaveAccessibleDescription("For messages about your order, including the link to pay the balance before dispatch.");
-    expect(screen.getByLabelText("Your child’s age")).toHaveAccessibleDescription("Kheelu is made for children aged 3 to 7. Just the number is fine, like 4.");
+    expect(screen.getByLabelText("Your child’s age")).toHaveAccessibleDescription("Khelu is made for children aged 3 to 7. Just the number is fine, like 4.");
     expect(screen.getByLabelText("Email")).toHaveAccessibleDescription("We email your confirmation here.");
     expect(screen.getByRole("checkbox", { name: /I accept the pre-order terms/ })).not.toBeChecked();
   });
@@ -99,7 +99,7 @@ describe("PreorderForm, restyled", () => {
   it("full mode: the full-price sentence, then the refund promise, beside the button; the phone hint without the balance", () => {
     const { container } = render(<PreorderForm tier="full" amountLabel="₹7,999" mode="full" />);
     expect(container.querySelector(".ks-price")).toHaveTextContent(
-      "₹7,999 (incl. GST), paid in full when you order. Until we dispatch your Kheelu, all of it is refundable.",
+      "₹7,999 (incl. GST), paid in full when you order. Until we dispatch your Khelu, all of it is refundable.",
     );
     expect(screen.getByRole("button", { name: "Pay ₹7,999 and pre-order" })).toBeInTheDocument();
     expect(screen.getByLabelText("Indian WhatsApp number")).toHaveAccessibleDescription("For messages about your order.");
