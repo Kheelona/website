@@ -108,12 +108,12 @@ describe("StoreDetails", () => {
       expect(order).toEqual(["Pre-order Khelu.", "Your details", "Questions before you pay", "What you are agreeing to"]);
     });
 
-    it("holds the bar last in the form's column, after the details section, and marks the layout (the sticky pay button's scope)", () => {
+    it("holds the bar last in the details section, after the form, so the slot sits at the form's end and takes no room of its own", () => {
       const { container } = render(withBar());
-      const main = container.querySelector(".ks-store__main")!;
-      expect(main.lastElementChild!.matches("[data-bar]")).toBe(true);
-      expect(main.lastElementChild!.previousElementSibling!.id).toBe("details");
-      expect(container.firstElementChild!.className).toBe("kh-section ks-store ks-store--pay");
+      const details = container.querySelector("#details")!;
+      expect(details.lastElementChild!.matches("[data-bar]")).toBe(true);
+      expect(details.lastElementChild!.previousElementSibling!.tagName).toBe("FORM");
+      expect(container.firstElementChild!.className).toBe("kh-section ks-store");
     });
 
     it("keeps the mockup's order and its class on the event pages, which pass neither", () => {

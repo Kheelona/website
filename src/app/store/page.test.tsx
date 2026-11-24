@@ -106,7 +106,6 @@ describe("store page: the configured store (token mode)", () => {
       expect(form.compareDocumentPosition(questions) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(questions.compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(main.querySelector(".ks-store__side")!.children[0]).toBe(questions);
-      expect(main.querySelector(".ks-store")!.classList.contains("ks-store--pay")).toBe(true);
     });
 
     it("opens the three money answers (paying today, the refund, the delivery date) and leaves how to pay closed", async () => {

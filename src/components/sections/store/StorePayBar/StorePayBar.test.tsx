@@ -5,7 +5,7 @@ import { readRepoFile } from "../../../../../test/e2e/support/repo";
 import { StorePayBar } from "./StorePayBar.client";
 
 /* StorePayBar (D070 / C1, K-176; D-top5-changes.md Change 1, items 1 and 9): the form's own pay button as the DS buy bar,
- * fixed to the bottom of a phone's screen. It reads its label and state from the form's button, submits that same form,
+ * fixed to the bottom of a phone's screen and sticky in the form's column from 900 px. It reads its label and state from the form's button, submits that same form,
  * shows from the first scroll, and steps aside for a field's focus, the consent tick, the alerts, B2's notice, the
  * form's own button and the footer. The page is the store's markup in miniature (the real ids and classes); the observer
  * is under test control. */
@@ -245,14 +245,13 @@ describe("StorePayBar: where it shows", () => {
     expect(isHidden()).toBe(false);
   });
 
-  it("is not armed at 900 px and up, where the form's own button is sticky instead: never shown, nothing published", () => {
+  it("is armed from 900 px too, in the form's column, but never lifts the WhatsApp bubble (nothing of it is below the bar)", () => {
     vi.stubGlobal("matchMedia", (query: string) => ({ matches: query.includes("min-width: 900px"), media: query, addEventListener: vi.fn(), removeEventListener: vi.fn() }));
     const p = page();
     mount();
-    expect(FakeIO.all).toHaveLength(0);
-    expect(isHidden()).toBe(true);
-    expect(p.pay).toBeTruthy();
-    expect(html.hasAttribute("data-buybar")).toBe(false);
+    allClear(p);
+    expect(isHidden()).toBe(false);
+    expect(html.dataset.buybar).toBe("hidden");
   });
 });
 
@@ -364,21 +363,25 @@ describe("StorePayBar: a tap", () => {
 
 describe("StorePayBar: its styles", () => {
   const css = (path: string) => readRepoFile(path).replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ").trim();
+  const own = () => css("src/components/sections/store/StorePayBar/store-pay-bar.css");
 
-  it("is fixed to the bottom edge, so it takes no room in the page and nothing moves when it appears (CLS 0)", () => {
-    expect(css("src/components/sections/store/StorePayBar/store-pay-bar.css")).toBe(".ks-paybar { position: fixed; inset-inline: 0; bottom: 0; }");
+  it("is fixed to the bottom edge below 900 px, from a slot with no box, so it takes no room and nothing moves when it mounts (CLS 0)", () => {
+    expect(own()).toContain(".ks-paybar-slot { display: contents; } .ks-paybar { position: fixed; inset-inline: 0; bottom: 0; }");
   });
 
-  it("leaves the DS bar's 900 px cut-off, its safe-area foot, its slide and its colours as they are", () => {
-    const own = css("src/components/sections/store/StorePayBar/store-pay-bar.css");
-    expect(own).not.toMatch(/display|padding|background|transition|transform|z-index|env\(/);
+  it("is, from 900 px, hung from a zero-height sticky slot at the end of the details section: at the bottom of the screen within the form's column", () => {
+    expect(own()).toContain(
+      "@media (min-width: 900px) { .ks-paybar-slot { display: block; position: sticky; bottom: var(--space-4); z-index: var(--z-sticky); height: 0; } " +
+        ".kh-buybar.ks-paybar { display: flex; position: absolute; bottom: 0; border: var(--stroke-hair) solid var(--border); border-radius: var(--radius-l); } }",
+    );
+  });
+
+  it("leaves the DS bar's surface, its safe-area foot, its slide and its colours as they are", () => {
+    expect(own()).not.toMatch(/padding|background|transition|transform|env\(/);
     expect(css("src/components/chrome/StickyBuyBar/sticky-buy-bar.css")).toContain("@media (min-width: 900px) { .kh-buybar { display: none; } }");
   });
 
-  it("makes the form's own pay button sticky in its column from 900 px, only on the store page's layout (the event pages keep theirs)", () => {
-    const details = css("src/components/sections/store/StoreDetails/store-details.css");
-    expect(details).toContain(
-      "@media (min-width: 900px) { .ks-store--pay .ks-form > .kh-btn--cta { position: sticky; bottom: var(--space-4); z-index: var(--z-sticky); box-shadow: var(--shadow-lift); } }",
-    );
+  it("no longer makes the form's own pay button sticky (the bar does it, and never covers the consent tick)", () => {
+    expect(css("src/components/sections/store/StoreDetails/store-details.css")).not.toMatch(/sticky; bottom|\.ks-store--pay/);
   });
 });

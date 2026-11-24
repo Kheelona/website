@@ -1,4 +1,3 @@
-import { clsx } from "clsx";
 import type { ReactNode } from "react";
 import { SellingHelpLine } from "@/components/sections/CtaBlock/selling-lines";
 import { storeTrustItems } from "@/components/sections/store/StoreTop/StoreTop";
@@ -28,8 +27,8 @@ export interface StoreDetailsProps {
   readonly summary: ReactNode;
   /** The questions under the card (FaqSection `store`). */
   readonly questions?: ReactNode;
-  /** The store page's pay bar (StorePayBar), last in the form's column: fixed to the bottom of a phone's screen, sticky
-   *  in the column from 900 px (D070 / C1, K-176). The event pages pass none. */
+  /** The store page's pay bar (StorePayBar), last in the details section: fixed to the bottom of a phone's screen, sticky
+   *  in the form's column from 900 px (D070 / C1, K-176). It takes no room of its own. The event pages pass none. */
   readonly bar?: ReactNode;
   /** The questions before the agreement card, so on a phone they follow the pay block directly and the card follows
    *  them (D070 / C1, K-176). Without it the card comes first, as the approved mockup has it (the event pages). */
@@ -47,7 +46,7 @@ export interface StoreDetailsProps {
  */
 export function StoreDetails({ content, top, note, form, summary, questions, bar, questionsFirst = false }: StoreDetailsProps) {
   return (
-    <div className={clsx("kh-section ks-store", bar !== undefined && "ks-store--pay")}>
+    <div className="kh-section ks-store">
       <div className="kh-container ks-store__grid">
         <div className="ks-store__main">
           {top}
@@ -57,8 +56,8 @@ export function StoreDetails({ content, top, note, form, summary, questions, bar
               {content.title}
             </h2>
             {form}
+            {bar}
           </section>
-          {bar}
         </div>
         <div className="ks-store__side">
           {questionsFirst ? (

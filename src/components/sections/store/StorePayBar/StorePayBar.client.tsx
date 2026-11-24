@@ -5,13 +5,14 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { fadeInPlaceMs } from "@/components/chrome/StickyBuyBar/StickyBuyBar.client";
 import { isFieldIn, LAPTOP_QUERY } from "@/components/chrome/WhatsAppFloat/WhatsAppFloat.client";
 
-/* The store's pay bar (D070 / C1, K-176; D-top5-changes.md Change 1, items 1 and 9): the form's own pay button, always
- * within reach. It is the DS buy bar (`kh-buybar`, the one the marketing pages carry), fixed to the bottom of the screen
- * below 900 px; from 900 px the form's own pay button is sticky in its column instead (store-details.css) and the bar is
- * not drawn or armed. It writes no words of its own: its label, and whether it is
- * busy, are READ from the form's pay button (`MIRROR`, the checkout's own label logic: the mode and the amount the server
- * decided), and a tap submits that same form (`requestSubmit`: the same handler, the same validation, the same request).
- * Where the form is not complete, the first field that needs the parent is scrolled to and focused, the keyboard opens.
+/* The store's pay bar (D070 / C1, K-176; D-top5-changes.md Change 1, items 1, 2 and 9): the form's own pay button, always
+ * within reach. It is the DS buy bar (`kh-buybar`, the one the marketing pages carry): fixed to the bottom of the screen
+ * below 900 px; from 900 px sticky to the bottom of the screen inside the form's column (a zero-height sticky slot at the
+ * end of the details section holds it, so it takes no room and nothing moves when it mounts). It writes no words of its
+ * own: its label, and whether it is busy, are READ from the form's pay button (`MIRROR`, the checkout's own label logic:
+ * the mode and the amount the server decided), and a tap submits that same form (`requestSubmit`: the same handler, the
+ * same validation, the same request). Where the form is not complete, the first field that needs the parent is scrolled to
+ * and focused, and the keyboard opens.
  *
  * Where the bar shows: from the visitor's first scroll (the first screen, what is on screen before they scroll, keeps
  * what it has: nothing sits over it), and never where it would cover the parent's work or be a second Pay button in the
@@ -23,11 +24,11 @@ import { isFieldIn, LAPTOP_QUERY } from "@/components/chrome/WhatsAppFloat/Whats
  * and it stays away for as long as B2's notice is in the form: the parent is offered Continue paying there, and the bar
  * would start a second order. When a payment the bar started fails, the failure alert is brought into view.
  *
- * What it tells the page: while shown on a phone it publishes `html[data-buybar="shown"]` and `--ks-buybar-h`, the same
- * two the marketing buy bar publishes, so the WhatsApp bubble rises above it (motion.css, D050 row). It is rendered by the
- * page's server part, hidden and inert, and mounts after hydration (no label until it can read one: nothing in the HTML, no
- * layout shift: it is fixed). No new tracker; a tap on it is an ordinary autocapture click
- * on `.ks-paybar__btn`. This island never imports Icon or Button (test/guards/client-icons.test.ts). */
+ * What it tells the page: while shown below 900 px it publishes `html[data-buybar="shown"]` and `--ks-buybar-h`, the same
+ * two the marketing buy bar publishes, so the WhatsApp bubble rises above it (motion.css, D050 row). It mounts after
+ * hydration (no label until it can read one: nothing in the server HTML, and no layout shift: the bar is fixed, or hangs
+ * from a slot of no height). No new tracker; a tap on it is an ordinary autocapture click on `.ks-paybar__btn`. This
+ * island never imports Icon or Button (test/guards/client-icons.test.ts). */
 
 /** The store's form (StoreDetails: the details section holds it) and its pay button. */
 const FORM = "#details form";
@@ -96,7 +97,8 @@ function arm(bar: HTMLElement, report: { shown: (shown: boolean) => void; mirror
       shown = next;
       report.shown(next);
     }
-    const lifted = shown && bar.offsetHeight > 0;
+    // Only the phone's bar lifts the bubble: from 900 px the bar sits in the form's column, away from it.
+    const lifted = shown && !window.matchMedia(LAPTOP_QUERY).matches && bar.offsetHeight > 0;
     window.clearTimeout(fading);
     // Stepping down in place (reduced motion: a fade, no slide): the bubble waits for the fade to end, as it does for the marketing bar.
     const fade = !lifted && root.dataset.buybar === "shown" ? fadeInPlaceMs(getComputedStyle(bar)) : 0;
@@ -217,9 +219,9 @@ function arm(bar: HTMLElement, report: { shown: (shown: boolean) => void; mirror
 const noSubscription = () => () => {};
 
 /**
- * The bar: the form's pay button as the DS buy bar. Nothing is rendered until the page has hydrated and the form's button
- * can be read (a bar with no label, or one that cannot submit, is never in the HTML); from then it is in the page, hidden
- * and inert, and `arm` shows it.
+ * The bar: the form's pay button as the DS buy bar, in its slot. Nothing is rendered until the page has hydrated and the
+ * form's button can be read (a bar with no label, or one that cannot submit, is never in the HTML); from then it is in
+ * the page, hidden and inert, and `arm` shows it.
  */
 export function StorePayBar() {
   const ref = useRef<HTMLDivElement>(null);
@@ -227,36 +229,29 @@ export function StorePayBar() {
   const [shown, setShown] = useState(false);
   const [mirror, setMirror] = useState<Mirror>(NOTHING);
 
-  // Armed below 900 px only, and again whenever the window crosses it (the bubble's own cut-off).
   useEffect(() => {
     const bar = ref.current;
+    // A browser that cannot tell the width or watch the screen leaves the form's own button as it is.
     if (!mounted || !bar || typeof window.matchMedia !== "function" || typeof IntersectionObserver === "undefined") return;
-    const laptop = window.matchMedia(LAPTOP_QUERY);
-    let disarm: (() => void) | null = null;
-    const sync = () => {
-      disarm?.();
-      setShown(false);
-      disarm = laptop.matches ? null : arm(bar, { shown: setShown, mirror: setMirror });
-    };
-    sync();
-    laptop.addEventListener("change", sync);
+    const disarm = arm(bar, { shown: setShown, mirror: setMirror });
     return () => {
-      laptop.removeEventListener("change", sync);
-      disarm?.();
+      disarm();
       setShown(false);
     };
   }, [mounted]);
 
   if (!mounted) return null;
   return (
-    <div ref={ref} className={clsx("kh-buybar ks-paybar", !shown && "is-hidden")} inert={!shown}>
-      <button
-        type="button"
-        className={clsx("kh-btn kh-btn--cta kh-btn--l kh-btn--block ks-paybar__btn", mirror.loading && "kh-btn--loading")}
-        disabled={mirror.disabled}
-      >
-        <span>{mirror.label}</span>
-      </button>
+    <div className="ks-paybar-slot">
+      <div ref={ref} className={clsx("kh-buybar ks-paybar", !shown && "is-hidden")} inert={!shown}>
+        <button
+          type="button"
+          className={clsx("kh-btn kh-btn--cta kh-btn--l kh-btn--block ks-paybar__btn", mirror.loading && "kh-btn--loading")}
+          disabled={mirror.disabled}
+        >
+          <span>{mirror.label}</span>
+        </button>
+      </div>
     </div>
   );
 }
