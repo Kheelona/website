@@ -998,6 +998,8 @@ describe("cta.ts: the cta values", () => {
         "safety-facts",
         /* D066 item 3 (task Q2.17): the product page's button after the comparison. */
         "product-compare",
+        /* D070 (K-180 / C5): the films viewer's button, copied from the bar by redesign/assets/js/main.js. */
+        "film-viewer",
       ].sort(),
     );
     for (const [value, decision] of AFTER_GATE_A) {
