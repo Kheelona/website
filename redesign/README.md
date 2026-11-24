@@ -256,8 +256,11 @@ Measured on a 390px touch viewport with 4× and 10× CPU throttling (Chrome trac
   `main` is a flex column on phones and `order` in the "C3" block at the end of `site.css` sets the sequence. Laptops keep
   the DOM order.
 - **No pinned chapters on phones:** `.track` is `height: auto` and `.stage` is `position: relative` (about one screen each).
-  `main.js` calls this `flat` (home, `max-width: 699px` at load, and CSS `:has()` supported; `site.css` wraps the block in
-  `@supports selector(:has(*))`, so both always agree). In `flat` mode nothing is scrubbed by scroll: the hero is its opening
+  `main.js` calls this `flat` (home, `max-width: 699px` at load). Both read the same marker, `<body class="page page--home">`
+  (`site.css` selects `body.page--home …` inside the media query; `main.js` checks the class), so they always agree. No `:has()`
+  anywhere: a `html:has(#hero)` selector made first paint slower (gate round 0). In `flat` mode nothing is scrubbed by scroll
+  (the statement heading is not split into word spans, so it stays fully opaque; the on-body `.ctrl` hotspots stay `aria-hidden`
+  with `tabindex="-1"`, the named list buttons are the keyboard route): the hero is its opening
   screen; the demo (`#how`) is its live state in normal flow; the sky conversation plays once, by time, when it comes into view;
   day, languages, app and privacy cycle by time while on screen until a tap; the films reel is a sideways swipe list
   (`scroll-snap-type: x` on the reel only; the page never snaps); "Skip section" is hidden. Crossing 700px (a phone turned

@@ -27,12 +27,12 @@
   const hop = (el, h) => gsap.fromTo(el, { y: 0 }, { y: -h * (soft ? 0.6 : 1) * R(), duration: soft ? 0.3 : 0.18, yoyo: true, repeat: 1, ease: soft ? "sine.inOut" : "power2.out", overwrite: "auto" });
   let lenis = null; // desktop smooth scroll (started below); declared here because the films viewer, set up first, uses it
   // Phone home page (K-178 / C3, D070): chapters are ordinary one-screen sections instead of pinned scroll tracks. Same query and
-  // same :has() test as the "C3" block in site.css, so the layout and this code always agree. Crossing 700px (a phone turned
-  // sideways) reloads once, after the films viewer is closed, so the other layout starts clean.
+  // same marker (the home page's body.page--home) and same query as the "C3" block in site.css, so the layout and this code always
+  // agree. Crossing 700px (a phone turned sideways) reloads once, after the films viewer is closed, so the other layout starts clean.
   const FLAT_MQ = matchMedia("(max-width: 699px)");
-  const hasSel = !!(window.CSS && CSS.supports && CSS.supports("selector(:has(*))"));
-  const flat = !!$("#hero") && hasSel && FLAT_MQ.matches;
-  if ($("#hero") && hasSel && FLAT_MQ.addEventListener) FLAT_MQ.addEventListener("change", () => {
+  const home = document.body.classList.contains("page--home");
+  const flat = home && FLAT_MQ.matches;
+  if (home && FLAT_MQ.addEventListener) FLAT_MQ.addEventListener("change", () => {
     if (root.classList.contains("reels-open")) document.addEventListener("khelu:reels", (e) => { if (!e.detail) location.reload(); });
     else location.reload();
   });
@@ -238,8 +238,8 @@
     }
   })();
 
-  /* ---------- Statement: words fill in as you read (dim state only near the section) ---------- */
-  $$("[data-words]").forEach((p) => {
+  /* ---------- Statement: words fill in as you read (dim state only near the section). Phones (`flat`): no scrub, the heading stays in its complete state ---------- */
+  if (!flat) $$("[data-words]").forEach((p) => {
     const wrap = (node) => [...node.childNodes].forEach((n) => {
       if (n.nodeType === 3) { const f = document.createDocumentFragment(); n.textContent.split(/(\s+)/).forEach((w) => { if (!w.trim()) return f.append(w); const s = document.createElement("span"); s.className = "w"; s.textContent = w; f.append(s); }); n.replaceWith(f); }
       else if (n.nodeType === 1) wrap(n);
@@ -256,7 +256,7 @@
     ripples.forEach((r, i) => listen.fromTo(r, { scale: 0.6, opacity: 0.85 }, { scale: 1.9, opacity: 0, duration: 1.6, ease: "power1.out" }, i * 0.5));
     const zoom = () => { const s = phone() ? 2.2 : 2.6; const H = k.offsetHeight; const cy = k.offsetTop + H / 2; const target = phone() ? stage.offsetHeight * 0.36 : stage.offsetHeight * 0.5; const cx = k.offsetLeft + k.offsetWidth / 2; const tx = phone() ? 0 : Math.min(stage.offsetWidth * 0.16, 260 * R()); return { s, y: target - cy - 0.118 * H * s, x: tx + (stage.offsetWidth / 2 - cx) }; };
     let live = false, greet = () => {};
-    const setLive = (on) => { if (on === live) return; live = on; if (on) greet(); demo.classList.toggle("is-live", on); stage.classList.toggle("demo-on", on); $$(".ctrl", k).forEach((c) => (c.tabIndex = on ? 0 : -1)); };
+    const setLive = (on) => { if (on === live) return; live = on; if (on) greet(); demo.classList.toggle("is-live", on); stage.classList.toggle("demo-on", on); $$(".ctrl", k).forEach((c) => (c.tabIndex = on && !flat ? 0 : -1)); }; // phones (flat): the on-body hotspots stay aria-hidden and out of the tab order; the demo's list has the same buttons with names
     if (!flat) end(gsap.timeline({ scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6, invalidateOnRefresh: true, onUpdate: (st) => {
       const p = st.progress; steps.forEach((s, j) => s.classList.toggle("is-on", p > [0.33, 0.41, 0.49][j]));
       p > 0.49 && p < 0.9 ? listen.play() : listen.pause(); setLive(p > 0.56 && p < 0.86);
