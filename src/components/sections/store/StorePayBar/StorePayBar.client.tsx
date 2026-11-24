@@ -8,7 +8,8 @@ import { isFieldIn, LAPTOP_QUERY } from "@/components/chrome/WhatsAppFloat/Whats
 /* The store's pay bar (D070 / C1, K-176; D-top5-changes.md Change 1, items 1, 2 and 9): the form's own pay button, always
  * within reach. It is the DS buy bar (`kh-buybar`, the one the marketing pages carry): fixed to the bottom of the screen
  * below 900 px; from 900 px sticky to the bottom of the screen inside the form's column (a zero-height sticky slot at the
- * end of the details section holds it, so it takes no room and nothing moves when it mounts). It writes no words of its
+ * end of the details section holds it, so it takes no room and nothing moves when it mounts; it is only ever shown stuck
+ * to the bottom, never at rest over the form's last lines). It writes no words of its
  * own: its label, and whether it is busy, are READ from the form's pay button (`MIRROR`, the checkout's own label logic:
  * the mode and the amount the server decided), and a tap submits that same form (`requestSubmit`: the same handler, the
  * same validation, the same request). Where the form is not complete, the first field that needs the parent is scrolled to
@@ -40,6 +41,10 @@ const FIRST_SCROLL_PX = 40;
  *  B2's notice) and the pay button itself; outside it, the store footer. */
 const KEEP_CLEAR_IN_FORM = ".ks-consent, .kh-alert";
 const KEEP_CLEAR_OUTSIDE = ".kh-footer";
+/** From 900 px the bar hangs from the end of the details section (store-pay-bar.css), below the form's own button and the
+ *  lines that follow it (the trust row, the payment line, the help line); it steps aside while those are on screen too,
+ *  so at its resting place it never lies over them. */
+const KEEP_CLEAR_BELOW_BUTTON = ".ks-pay-beside";
 /** B2's notice is the one DS alert that is not role="alert" (PayRecoveryNotice, an info Alert): while it is there the
  *  bar stays away altogether. */
 const NOTICE = '.kh-alert[role="status"]';
@@ -102,15 +107,24 @@ function arm(bar: HTMLElement, report: { shown: (shown: boolean) => void; mirror
     window.clearTimeout(fading);
     // Stepping down in place (reduced motion: a fade, no slide): the bubble waits for the fade to end, as it does for the marketing bar.
     const fade = !lifted && root.dataset.buybar === "shown" ? fadeInPlaceMs(getComputedStyle(bar)) : 0;
-    if (fade > 0) fading = window.setTimeout(() => (root.dataset.buybar = "hidden"), fade);
-    else root.dataset.buybar = lifted ? "shown" : "hidden";
+    const tell = (value: "shown" | "hidden") => {
+      if (root.dataset.buybar !== value) root.dataset.buybar = value; // a rewrite of the same value would wake the bubble's observer
+    };
+    if (fade > 0) fading = window.setTimeout(() => tell("hidden"), fade);
+    else tell(lifted ? "shown" : "hidden");
     root.style.setProperty("--ks-buybar-h", `${bar.offsetHeight}px`);
   };
 
   /** Reads what to keep clear of again, and measures the band below the screen the bar will take. */
   const watch = () => {
     io?.disconnect();
-    const keep = [...form.querySelectorAll(KEEP_CLEAR_IN_FORM), pay, ...document.querySelectorAll(KEEP_CLEAR_OUTSIDE)];
+    const laptop = window.matchMedia(LAPTOP_QUERY).matches;
+    const keep = [
+      ...form.querySelectorAll(KEEP_CLEAR_IN_FORM),
+      pay,
+      ...(laptop ? form.querySelectorAll(KEEP_CLEAR_BELOW_BUTTON) : []),
+      ...document.querySelectorAll(KEEP_CLEAR_OUTSIDE),
+    ];
     for (const el of onScreen) if (!keep.includes(el)) onScreen.delete(el);
     io = new IntersectionObserver(
       (entries) => {
@@ -176,8 +190,9 @@ function arm(bar: HTMLElement, report: { shown: (shown: boolean) => void; mirror
   window.addEventListener("resize", onResize);
   window.addEventListener("scroll", onScroll, { passive: true });
 
-  /** A tap on the bar: the form's own submit. */
-  const onTap = () => {
+  /** A tap on the bar's button (not on the bar's padding around it): the form's own submit. */
+  const onTap = (event: MouseEvent) => {
+    if (!(event.target instanceof Element) || event.target.closest("button") === null) return;
     if (pay.disabled) return;
     tapped = true;
     window.clearTimeout(tappedTimer);

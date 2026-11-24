@@ -79,6 +79,7 @@ function page(label = "Pay ₹499 and reserve") {
         <div class="kh-field"><input name="childAge" /></div>
         <div class="kh-check ks-consent"><input type="checkbox" name="accepted" /></div>
         <button type="submit" class="kh-btn kh-btn--cta kh-btn--l kh-btn--block"><span>${label}</span></button>
+        <div class="ks-beside ks-pay-beside"><ul class="kh-trustline"></ul></div>
       </form></section>
     </main>
     <footer class="kh-footer"></footer>`;
@@ -90,6 +91,7 @@ function page(label = "Pay ₹499 and reserve") {
     submitted,
     pay: form.querySelector<HTMLButtonElement>('button[type="submit"]')!,
     consent: form.querySelector(".ks-consent")!,
+    beside: form.querySelector(".ks-pay-beside")!,
     footer: document.querySelector(".kh-footer")!,
     name: form.querySelector<HTMLInputElement>('input[name="parentName"]')!,
     phone: form.querySelector<HTMLInputElement>('input[name="phone"]')!,
@@ -158,6 +160,17 @@ describe("StorePayBar: where it shows", () => {
     mount();
     expect(io().options?.rootMargin).toBe("0px 0px 72px 0px");
     expect([...io().watched]).toEqual([p.consent, p.pay, p.footer]);
+  });
+
+  it("keeps clear of the lines after the form's button too, but only from 900 px, where the bar hangs from the form's end", () => {
+    vi.stubGlobal("matchMedia", (query: string) => ({ matches: query.includes("min-width: 900px"), media: query, addEventListener: vi.fn(), removeEventListener: vi.fn() }));
+    const p = page();
+    mount();
+    expect([...io().watched]).toEqual([p.consent, p.pay, p.beside, p.footer]);
+    allClear(p);
+    expect(isHidden()).toBe(false);
+    io().report([[p.beside, true]]);
+    expect(isHidden()).toBe(true);
   });
 
   it("stays hidden on the first screen, what is on screen before the visitor scrolls, and shows from the first scroll", () => {
@@ -319,6 +332,16 @@ describe("StorePayBar: a tap", () => {
     expect(scrolled).toHaveBeenCalledWith({ block: "center", behavior: "auto" });
   });
 
+  it("ignores a tap on the bar's padding around the button: only the button pays", () => {
+    const p = page();
+    mount();
+    allClear(p);
+    act(() => bar().click());
+    expect(p.submitted).not.toHaveBeenCalled();
+    act(() => bar().querySelector("span")!.click());
+    expect(p.submitted).toHaveBeenCalledTimes(1);
+  });
+
   it("does nothing while the form's button is busy (a payment is being set up)", () => {
     const p = page();
     mount();
@@ -369,10 +392,10 @@ describe("StorePayBar: its styles", () => {
     expect(own()).toContain(".ks-paybar-slot { display: contents; } .ks-paybar { position: fixed; inset-inline: 0; bottom: 0; }");
   });
 
-  it("is, from 900 px, hung from a zero-height sticky slot at the end of the details section: at the bottom of the screen within the form's column", () => {
+  it("is, from 900 px, hung downward from a zero-height sticky slot at the end of the details section, stuck one bar-height and a gap above the screen's foot", () => {
     expect(own()).toContain(
-      "@media (min-width: 900px) { .ks-paybar-slot { display: block; position: sticky; bottom: var(--space-4); z-index: var(--z-sticky); height: 0; } " +
-        ".kh-buybar.ks-paybar { display: flex; position: absolute; bottom: 0; border: var(--stroke-hair) solid var(--border); border-radius: var(--radius-l); } }",
+      "@media (min-width: 900px) { .ks-paybar-slot { display: block; position: sticky; bottom: calc(var(--space-4) + var(--ks-buybar-h, 0px)); z-index: var(--z-sticky); height: 0; } " +
+        ".kh-buybar.ks-paybar { display: flex; position: absolute; top: 0; bottom: auto; border: var(--stroke-hair) solid var(--border); border-radius: var(--radius-l); } }",
     );
   });
 

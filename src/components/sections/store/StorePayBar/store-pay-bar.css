@@ -4,11 +4,12 @@
    (CLS 0), and that has no box at all below 900 px.
    Below 900 px the bar is fixed to the bottom edge of the screen (the DS bar is sticky at the end of the document, where
    this page's bar is not).
-   From 900 px the slot is a zero-height sticky block at the end of the details section, with its own bottom offset, and
-   the bar hangs from it upward: it stays at the bottom of the screen while the form is on the page, within the form's
-   column and the card's content width, and rests at the form's end. It takes the DS bar's surface with a rounded frame
-   (the store's cards, `--radius-l`); `.kh-buybar`'s 900 px cut-off (sticky-buy-bar.css, `display: none`) does not apply
-   to it, hence the two-class selector. */
+   From 900 px the slot is a zero-height sticky block at the end of the details section, whose bottom offset is the bar's
+   height (`--ks-buybar-h`, published by the island) and a gap, and the bar hangs from it downward: it is stuck to the
+   bottom of the screen while the form's end is below the fold, inside the form's column and the card's content width, and
+   goes with the section once the form has gone by. At its resting place, below the form, the island keeps it hidden. It
+   takes the DS bar's surface with a rounded frame (the store's cards, `--radius-l`); `.kh-buybar`'s 900 px cut-off
+   (sticky-buy-bar.css, `display: none`) does not apply to it, hence the two-class selector. */
 .ks-paybar-slot {
   display: contents;
 }
@@ -21,14 +22,15 @@
   .ks-paybar-slot {
     display: block;
     position: sticky;
-    bottom: var(--space-4);
+    bottom: calc(var(--space-4) + var(--ks-buybar-h, 0px));
     z-index: var(--z-sticky);
     height: 0;
   }
   .kh-buybar.ks-paybar {
     display: flex;
     position: absolute;
-    bottom: 0;
+    top: 0;
+    bottom: auto;
     border: var(--stroke-hair) solid var(--border);
     border-radius: var(--radius-l);
   }
