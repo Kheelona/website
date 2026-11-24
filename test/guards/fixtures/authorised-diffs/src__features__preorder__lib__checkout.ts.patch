@@ -18,8 +18,16 @@ B11 (task 6.2; wiki/site/gate-a-open-items.md §3 working default "three new eve
   - `RazorpayInstance.on` is typed for the one event used; still optional, still called with `?.`.
   Nothing else changes: the script URL, loading, the amount (from create-order), the key, notes, theme #EF762F.
 
+D070 / B2 (K-172; output/2026-W48/engineering/B2-spec.md, founder's one-by-one sign-off 24 Nov 2026): an optional
+  `callbackUrl` on StartCheckoutInput. Given, the Razorpay options gain `callback_url: callbackUrl` and `redirect: true`
+  (Razorpay's redirect flow for WebView / in-app browsers, where the in-page `handler` is not supported); absent, the
+  options object is exactly what it was (the spread adds no key), so regular browsers keep the modal and the handler.
+  The caller passes it only for in-app/WebView user agents (PreorderForm.tsx, `prefersRedirectCheckout`). Types:
+  `callback_url?` and `redirect?` on RazorpayOptions. Nothing else changes: amount, notes, theme, key, events, loading.
+  Proof: test/preorder-redirect-checkout.test.ts (options with and without the URL).
+
 diff --git a/src/features/preorder/lib/checkout.ts b/src/features/preorder/lib/checkout.ts
-index 4ee5037..3bfbcee 100644
+index 4ee5037..14b2793 100644
 --- a/src/features/preorder/lib/checkout.ts
 +++ b/src/features/preorder/lib/checkout.ts
 @@ -10,6 +10,8 @@
@@ -31,8 +39,13 @@ index 4ee5037..3bfbcee 100644
  const SCRIPT_SRC = "https://checkout.razorpay.com/v1/checkout.js";
  
  type RazorpayHandlerResponse = {
-@@ -32,7 +34,13 @@ type RazorpayOptions = {
+@@ -30,9 +32,18 @@ type RazorpayOptions = {
+   theme?: { color?: string };
+   handler: (response: RazorpayHandlerResponse) => void;
    modal?: { ondismiss?: () => void };
++  /** Redirect flow (D070 / B2): Razorpay posts the result to this address instead of calling `handler`. */
++  callback_url?: string;
++  redirect?: boolean;
  };
  
 -type RazorpayInstance = { open: () => void; on?: (event: string, cb: () => void) => void };
@@ -46,12 +59,15 @@ index 4ee5037..3bfbcee 100644
  
  declare global {
    interface Window {
-@@ -72,8 +80,34 @@ export type StartCheckoutInput = {
+@@ -72,8 +83,37 @@ export type StartCheckoutInput = {
    prefill: { name?: string; email?: string; contact?: string | null };
    onPaid: (response: RazorpayHandlerResponse) => void;
    onDismiss: () => void;
 +  /** For the two payment-window events only (B11); never sent to Razorpay. */
 +  tier: string;
++  /** Only for in-app browsers (D070 / B2): where Razorpay posts the result. Given, the options also carry
++   *  `redirect: true`; absent, the options are exactly what they were. */
++  callbackUrl?: string;
  };
  
 +/* B11 (task 6.2; architecture §8.2): two moments of the payment window, to GA4 and
@@ -81,8 +97,11 @@ index 4ee5037..3bfbcee 100644
  export async function startCheckout(input: StartCheckoutInput): Promise<boolean> {
    const ready = await loadCheckout();
    if (!ready || !window.Razorpay) return false;
-@@ -94,6 +128,17 @@ export async function startCheckout(input: StartCheckoutInput): Promise<boolean>
+@@ -92,8 +132,20 @@ export async function startCheckout(input: StartCheckoutInput): Promise<boolean>
+     theme: { color: "#EF762F" },
+     handler: input.onPaid,
      modal: { ondismiss: input.onDismiss },
++    ...(input.callbackUrl ? { callback_url: input.callbackUrl, redirect: true } : {}),
    });
  
 +  checkout.on?.("payment.failed", (response) =>

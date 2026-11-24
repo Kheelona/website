@@ -20,7 +20,7 @@ import { CloseSection } from "./CloseSection";
 const trust = (ids: readonly TrustId[]) => ids.map((id) => trustItems[id]);
 const COMPACT = trust(TRUST_COMPACT);
 /* The ghost link under a close, as every close words it since task Q2.15 (the consistency review's CON-7). */
-const seeHow: CtaSecondary = { label: "See how Kheelu works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" };
+const seeHow: CtaSecondary = { label: "See how Kheelu works", href: "/products/khelu", variant: "ghost", iconEnd: "arrow-right" };
 
 const meta: Meta<typeof CloseSection> = {
   title: "Sections/CloseSection",
@@ -145,7 +145,7 @@ export const Links: Story = {
     contact:
       "[WhatsApp](https://wa.me/919187546483) or email [hello@kheelona.com](mailto:hello@kheelona.com). Tell us your order number, and what you see on Kheelu and in the app.",
     action: { label: "All the ways to reach us", href: "/contact", variant: "secondary", icon: "chat-circle-dots" },
-    meet: { lead: "Don’t have Kheelu yet?", link: "[Meet Kheelu](/products/kheelu)" },
+    meet: { lead: "Don’t have Kheelu yet?", link: "[Meet Kheelu](/products/khelu)" },
   },
 };
 

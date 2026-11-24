@@ -98,6 +98,10 @@ any other host load none of the three.
 Rows 18 to 20 were added after the tag by [D069](../decisions/D069-openai-ads-measurement.md), so row 16's
 "none found" is true as of the tag. The OpenAI pixel uses the same host list; §16 is its section.
 
+[D070](../decisions/D070-conversion-bug-fixes-2026-11-24.md) (B7c, B5) adds no destination: three PostHog browser events,
+`store_arrived`, `preorder_payment_window_hidden` and `store_cta_tapped_early`, reach row 6's project by beacon through row 8's
+proxy; §17 is their section.
+
 ---
 
 ## 1. Vercel Web Analytics
@@ -296,11 +300,11 @@ Rows 18 to 20 were added after the tag by [D069](../decisions/D069-openai-ads-me
 | New `cta` value | Where | Decision |
 |---|---|---|
 | `whatsapp-float` | The WhatsApp chat bubble, every page (`src/components/chrome/WhatsAppFloat/WhatsAppFloat.tsx`) | [D050](../decisions/D050-whatsapp-chat-button.md) |
-| `share-whatsapp` | The "Know a parent who needs this? Share Kheelu on WhatsApp" link under the offer card on `/` and `/products/kheelu` (`src/components/sections/OfferSection/OfferSection.tsx`, task 8c.2) | [D061](../decisions/D061-advisor-proposal-what-we-take-2026-10-15.md) |
+| `share-whatsapp` | The "Know a parent who needs this? Share Kheelu on WhatsApp" link under the offer card on `/` and `/products/khelu` (`src/components/sections/OfferSection/OfferSection.tsx`, task 8c.2) | [D061](../decisions/D061-advisor-proposal-what-we-take-2026-10-15.md) |
 | `hero-film` | Home hero link "Watch Kheelu ask, in a 30-second film", laptops only (the selling update, task Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
 | `home-why` | Home's "Why it matters" button (Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
 | `home-asks` | Home's sticky-scroll section button (Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
-| `home-asks-learn` | Home's sticky-scroll link "See how it works" to `/products/kheelu#modes` (Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
+| `home-asks-learn` | Home's sticky-scroll link "See how it works" to `/products/khelu#modes` (Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
 | `home-offer` | Home's offer-card button, the offer moved up (Q2.9) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
 | `product-ask` | The product page's button after "What asking back sounds like." (Q2.10) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
 | `safety-facts` | `/safety`'s button after the four facts (Q2.11) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
@@ -542,7 +546,7 @@ Not in production at the tag. [D069](../decisions/D069-openai-ads-measurement.md
   `?internal=0` wins over storage) install no stub and no script and have `kh_oppref`, `__oppref` and `__obref` deleted.
 - **Automatic advanced matching:** switched on for this pixel by OpenAI, with no SDK option and no Ads Manager switch
   (read from SDK 0.1.104 and the Edit pixel dialog, 2026-11-13), so the loader enforces `OPENAI_AAM_POLICY`:
-  `"verified-pages"` (default) loads the SDK only on `OPENAI_PIXEL_PAGES` (marketing `/` and `/products/kheelu`, store
+  `"verified-pages"` (default) loads the SDK only on `OPENAI_PIXEL_PAGES` (marketing `/` and `/products/khelu`, store
   `/`) and installs nothing on any other page; `"require-off"` loads it only when OpenAI's pixel configuration
   (`bzrcdn.openai.com/pixel-config/v1/<pixel>.json`) reports matching off. `init` never receives a `user` object.
 - **Cookies:** OpenAI's SDK writes `__oppref` (the ad click, 30 days) and `__obref` (a random browser reference, 365
@@ -578,9 +582,67 @@ Not in production at the tag. [D069](../decisions/D069-openai-ads-measurement.md
 - **Not reported:** refunds (OpenAI's API has no refund event). `/privacy` names these tools since 2026-11-13 (D069): a block each for the
   pixel and the Conversions API, `kh_oppref` among our own cookies, an OpenAI row in the recipients table.
 - **Check after deploy (read-only, in a real browser, never typing into the store form):** `oaiq.min.js` loads only on
-  `/`, `/products/kheelu` and the store's `/`; no `bzr.openai.com` request body carries a hash of the support email or phone
+  `/`, `/products/khelu` and the store's `/`; no `bzr.openai.com` request body carries a hash of the support email or phone
   shown on the site; `page_viewed` is sent once per load; `kh_oppref`, `__oppref` and `__obref` are readable on
   `store.kheelona.com`; then Ads Manager → Conversions → Web Pixel → Test on each origin.
+
+## 17. Early store signals (added by D070, after the tag)
+
+Not in production at the tag. [D070](../decisions/D070-conversion-bug-fixes-2026-11-24.md) (B7c, the founder's approval of
+24 November 2026, signed off one by one) adds three PostHog browser events that leave the page **at once, by
+`navigator.sendBeacon`**, instead of waiting in posthog-js's queue (which flushes every 3 seconds and on `pagehide`, and
+a phone does not fire `pagehide` when the parent switches to a UPI app). Nothing in sections 1 to 16 changes: no new
+destination, no new tool, no new kind of data; the funnel files (`analytics.ts`, `checkout.ts`, `posthog.ts`,
+`PostHogGate.tsx`) are byte-for-byte as before. They are not sent through the dispatcher (`track.ts`), and **never to GA4,
+Meta or OpenAI**.
+
+| Event | Parameters | Fired at | When |
+|---|---|---|---|
+| `store_arrived` | `$current_url`, `$host`, `$pathname`, `$referring_domain`, `$session_id`, `internal`, `env`, `$lib: "kh-early"`, `$process_person_profile: false` | `storeArrivalScript` (`src/lib/tracking/beacon.ts`), the inline script at the top of `StoreShell` | once per full load of a store page, while the HTML is parsed, before hydration |
+| `preorder_payment_window_hidden` | `tier`, `$current_url`, `$host`, `$pathname`, `$session_id`, `internal`, `env`, `$lib: "kh-beacon"`, `$process_person_profile: false` | `watchPaymentWindow` (`src/lib/tracking/payment-window.ts`), from `PreorderForm`, sent by `beaconCapture` | the first time the page is hidden while the Razorpay sheet is open, once per opened sheet |
+| `store_cta_tapped_early` | `cta`, `$current_url`, `$host`, `$pathname`, `$session_id`, `internal`, `env`, `$lib: "kh-beacon"`, `$process_person_profile: false` | `reportEarlyStoreTaps` (`src/lib/site-pages/tracking-shell.ts`), the marketing pages' tracking shell, sent by `beaconCapture` | a primary click on a link to the store that comes before PostHog has loaded on the page (D070 / B5); never held |
+
+- **Transport:** the body posthog-js 1.434.2 itself uses with `sendBeacon`: `POST /ingest/e/?compression=base64` (our
+  same-origin proxy, §8), a form body `data=<base64 of {api_key, batch: [{event, properties: {token, distinct_id, …}}], sent_at}>`.
+  `beaconCapture` (`src/lib/tracking/beacon.ts`, also used by B5) falls back to `fetch(…, { keepalive: true })`; the inline
+  script, which has a 1.5 KB budget, does not.
+- **`store_arrived` runs only** on `STORE_ARRIVAL_HOSTS` (`store.kheelona.com`, and `betastore.kheelona.com` stamped
+  `env: "beta"`, the stamp `before_send` gives the SDK's events); never on localhost, a preview, `kheelona.com` or any other
+  host; never on `POSTHOG_REPLAY_DENY_PATHS` (`/thanks` and under it, the page that prints an order); not for a bot or an
+  automated browser (posthog-js drops those too, so the count stays comparable with `$pageview`). Nothing is awaited and
+  nothing is visible; every step is in a try/catch.
+- **`$current_url`** is the origin, the path and **only the campaign keys** of `CAMPAIGN_KEYS` (§9), each capped at 120
+  characters; every other query parameter (an email, a phone, an order reference, a claim token) and the hash are dropped.
+  `$referring_domain` is the referrer's host, or `$direct`. `$host` and `$pathname` are the page's.
+- **Identity:** `distinct_id` is the one in posthog-js's cross-subdomain cookie `ph_<key>_posthog` when it exists (so the event
+  joins the visitor's funnel), else a random UUID (then the event is only a count). `$session_id` comes from the same cookie's
+  `$sesid` while that session is under 30 minutes idle. `internal: true` is carried when this host's PostHog storage
+  (`localStorage` `ph_<key>_posthog`, where `applyInternalFlag` registers it, §6) holds the team flag; a device flagged with
+  `?internal=1` counts from its second load. `$process_person_profile: false`: no person profile is created.
+- **What they never carry:** a name, phone, email, child's age, order reference, address, payment detail, or any free text.
+  `preorder_payment_window_hidden` carries `tier` only.
+- **`store_cta_tapped_early` (B5, K-173):** the marketing pages used to *hold* a first tap on a Pre-order link for up to 2
+  seconds while PostHog loaded, so autocapture could record the click's `cta` before the store opened; a parent on a slow
+  phone saw nothing happen. The hold is gone: no code of ours calls `preventDefault` on a store link, and the browser opens the
+  store at once. If PostHog has **already loaded** (autocapture is recording), nothing is added: autocapture queues the click
+  (`$autocapture`, with the same `cta`) and posthog-js 1.434.2 flushes its queue by sendBeacon on `pagehide`, which the
+  navigation to the store fires. If PostHog has **not** loaded yet, the shell sends `store_cta_tapped_early` by beacon, with
+  `cta` (the link's `data-ph-capture-attribute-cta`, else `unknown`; §6) and the page's `$current_url` (campaign keys only),
+  `$host` and `$pathname`, on the PostHog hosts only (the same gate as PostHog, `shouldLoadPostHog`), never for a bot. A tap is
+  therefore reported once, by one or the other (a click in the ~60 ms between PostHog's config arriving and the shell
+  noticing can be seen by both). The analyst counts Pre-order taps as `$autocapture` with `cta` set **plus**
+  `store_cta_tapped_early`, by `cta`.
+- **Reading `preorder_payment_window_hidden`:** it says "the parent left the page with the sheet open", not "abandoned": a UPI
+  payment also hides the page. The analyst reads it as: hidden, and no `purchase_confirmed` for the same session (or
+  `distinct_id`) within N minutes. The explicit close (× or Back) is still `preorder_dismissed` (§3, §6), unchanged.
+- **Check after deploy (read-only, never typing into the store form, never pressing Pay):** `store.kheelona.com/` sends one
+  `POST /ingest/e/` whose decoded body is `store_arrived`, before the SDK's own `$pageview`; `/thanks` sends none; a store URL
+  with `?utm_source=x&foo=y` records `utm_source` only; PostHog shows the event with `$lib = kh-early`. On a marketing page, a
+  Pre-order tap before anything else has been touched navigates at once (the click is not `defaultPrevented`) and sends one
+  `store_cta_tapped_early` with the link's `cta`; a tap after PostHog has loaded sends none (autocapture reports it).
+- No `/privacy` change is proposed: PostHog already "counts visits and the steps of a pre-order, … opening and closing the payment
+  window", receives the network address, and sets the cookie the early event reads; there is no new tool and no new kind of
+  data.
 
 ## Live snapshot: PostHog, last 30 days
 
@@ -659,7 +721,7 @@ properties (method of §8.30-i, line 1403). "Production" means after the Gate B 
 | 9 | GA4 + PostHog | `preorder_address_saved` | `transaction_id` | `analytics.ts:127-128` | Sandbox: save address on /thanks |
 | 10 | GA4 + PostHog | `preorder_dismissed` | `tier` | `analytics.ts:132-133` | Sandbox: close the sheet |
 | 11 | Meta Pixel | init + `PageView` on load, one more per client route change, no double on landing | pixel `1051265191046395` | `MetaPixel.tsx:43`, `:87-88` | Production, real UA: `fbq.getState().pixels[0].eventCount` = 1 on an ordinary page; `HTMLImageElement.prototype.src` hook shows `facebook.com/tr …ev=PageView`; `pushState` adds exactly one |
-| 12 | Meta Pixel | `ViewContent` on `/products/kheelu` (and Home only if the founder confirms, [G10](../open-questions.md)) | `content_name: "Kheelu"`, `content_ids: ["lumi"]`, `content_type: "product"`, `value: 4999`, `currency: "INR"` | `ViewContentTracker.tsx:50-57` | Production: `eventCount` = 2 on the product page; image-beacon hook shows `ev=ViewContent` with these params |
+| 12 | Meta Pixel | `ViewContent` on `/products/khelu` (and Home only if the founder confirms, [G10](../open-questions.md)) | `content_name: "Kheelu"`, `content_ids: ["lumi"]`, `content_type: "product"`, `value: 4999`, `currency: "INR"` | `ViewContentTracker.tsx:50-57` | Production: `eventCount` = 2 on the product page; image-beacon hook shows `ev=ViewContent` with these params |
 | 13 | Meta CAPI | server `Purchase` | `event_id purchase_<ref>`, `action_source website`, `event_source_url https://store.kheelona.com`, hashed `em`/`ph`/`fn`, `fbp`, `fbc`, IP, UA, `custom_data` 4 fields | `meta-capi.ts:158-209` via `fulfil.ts:341` | `meta-capi.test.ts` payload test; never with a test code in production; first real order: Vercel log `[meta-capi] SENT purchase_<ref> events_received=1` |
 | 14 | PostHog | `$pageview` (history change), `$pageleave`, `$autocapture` | campaign props incl. `utm_id`, `placement` | `PostHogGate.tsx:53-148` | Production: requests go to `/ingest/e/` (none to `*.posthog.com` from the page); events in PostHog live view from both hosts |
 | 15 | PostHog | `$autocapture.cta` | the 8 existing values (section 6) on equivalent CTAs, mapped per [G10](../open-questions.md); new values allowed | `Button.tsx:86` | DOM check that every money CTA carries `data-ph-capture-attribute-cta`; HogQL count by `cta` after deploy |
@@ -676,6 +738,7 @@ properties (method of §8.30-i, line 1403). "Production" means after the Gate B 
 | 25 | CSP | every tracking origin still allowed | origin list in section 14 | `security-headers.ts:107-185` | Header string equal to the old one or a reviewed superset; no new `csp-report` entries for tracking origins |
 | 26 | Verification | GSC, Meta domain | DNS TXT unchanged | DNS | `dig TXT kheelona.com` before and after; GSC and Meta Domains screens still "verified" |
 | 27 | Privacy disclosure | `/privacy` matches what is collected | same-commit rule §8.21-c | `privacy/page.tsx` | `analytics-tags.test.ts` green |
+| 28 | PostHog | early signals (added by D070): `store_arrived`, `preorder_payment_window_hidden`, `store_cta_tapped_early` | §17's parameters; no GA4, Meta or OpenAI send; `store_arrived` never on `/thanks`, localhost, a preview or the marketing host; `store_cta_tapped_early` only before PostHog has loaded, and no store link is ever `preventDefault`ed | `beacon.ts`, `StoreShell.tsx`, `payment-window.ts`, `tracking-shell.ts` | `test/tracking-beacon.test.ts`, `test/preorder-payment-window.test.tsx`, `test/site-pages-tracking.test.ts`; probe on a mapped store host with every collector aborted: one `store_arrived` body on `/`, none on `/thanks` or `kheelona.com/`; on `kheelona.com/` a first Pre-order tap navigates at once with one `store_cta_tapped_early`, a tap after PostHog loaded sends none |
 
 ## What the new site must not change
 

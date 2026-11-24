@@ -31,7 +31,7 @@ The copy is rewritten for clarity and every fact comes from the current site: ag
 wake-up button, the parent app, the prices and the delivery date. The dialogue lines are marked illustrative.
 
 ## v2 changes (UX researcher notes, 2026-10-21)
-- The name is **Khelu** everywhere it's visible. URLs stay `/products/kheelu`.
+- The name is **Khelu** everywhere it's visible. URLs stay `/products/khelu`.
 - Copy is short and simple, and "screen" appears only where it matters. Chapters are numbered 01–13 so the headings tell one story.
   Small connecting lines between chapters act as page breaks.
 - **F-pattern reading:** chapter copy always sits in the same top-left column, and the visual sits beside or below it.
@@ -87,7 +87,7 @@ wake-up button, the parent app, the prices and the delivery date. The dialogue l
 
 ## v11: the whole site (2026-10-22)
 Every page of betawebsite.kheelona.com, rebuilt in the home page's design language, word for word (Kheelu → Khelu):
-`/products/kheelu`, `/safety`, `/setup`, `/ai-toys-for-kids-in-india`, `/stories` + 20 guides, `/team`, `/contact`,
+`/products/khelu`, `/safety`, `/setup`, `/ai-toys-for-kids-in-india`, `/stories` + 20 guides, `/team`, `/contact`,
 `/privacy`, `/terms`, `/refund`, `/shipping`.
 - **How pages are made:** sources in `pages/` (see `pages/README.md`), wrapped in the shared shell (`pages/_shell/`: nav,
   footer, pre-order bar) by `python3 tools/build-pages.py` → `<route>/index.html`. Shared subpage components:

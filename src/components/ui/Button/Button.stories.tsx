@@ -43,7 +43,7 @@ export const SecondaryWithIcon: Story = {
 };
 
 export const Ghost: Story = {
-  args: { variant: "ghost", cta: "hero-learn", iconEnd: "arrow-right", href: "/products/kheelu", children: "See how it works" },
+  args: { variant: "ghost", cta: "hero-learn", iconEnd: "arrow-right", href: "/products/khelu", children: "See how it works" },
 };
 
 export const GhostLongLabel: Story = {

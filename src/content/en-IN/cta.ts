@@ -26,10 +26,10 @@ export interface CtaCopy {
 export const cta = {
   preorder: PREORDER_LABEL,
   secondary: {
-    "hero-learn": { label: "See how it works", href: "/products/kheelu", cta: "hero-learn", iconEnd: "arrow-right" },
+    "hero-learn": { label: "See how it works", href: "/products/khelu", cta: "hero-learn", iconEnd: "arrow-right" },
     "see-it-ask-learn": {
       label: "See what else it does",
-      href: "/products/kheelu",
+      href: "/products/khelu",
       cta: "see-it-ask-learn",
       iconEnd: "arrow-right",
     },
@@ -40,14 +40,14 @@ export const cta = {
       cta: "compare-learn",
       iconEnd: "arrow-right",
     },
-    "faq-more": { label: "See all questions", href: "/products/kheelu#faq", cta: "faq-more", iconEnd: "arrow-right" },
+    "faq-more": { label: "See all questions", href: "/products/khelu#faq", cta: "faq-more", iconEnd: "arrow-right" },
     "product-safety-learn": {
       label: "See how we built safety in",
       href: "/safety",
       cta: "product-safety-learn",
       icon: "shield-check",
     },
-    "refund-learn": { label: "Meet Kheelu", href: "/products/kheelu", cta: "refund-learn", iconEnd: "arrow-right" },
-    "shipping-learn": { label: "Meet Kheelu", href: "/products/kheelu", cta: "shipping-learn", iconEnd: "arrow-right" },
+    "refund-learn": { label: "Meet Kheelu", href: "/products/khelu", cta: "refund-learn", iconEnd: "arrow-right" },
+    "shipping-learn": { label: "Meet Kheelu", href: "/products/khelu", cta: "shipping-learn", iconEnd: "arrow-right" },
   },
 } as const satisfies CtaCopy;

@@ -43,7 +43,7 @@ type PlannedRoute = Pick<RouteEntry, "path" | "kind" | "module" | "priority">;
 
 const PAGES: readonly PlannedRoute[] = [
   { path: "/", kind: "page", module: "pages/home", priority: 1 },
-  { path: "/products/kheelu", kind: "product", module: "products/kheelu/page", priority: 0.9 },
+  { path: "/products/khelu", kind: "product", module: "products/kheelu/page", priority: 0.9 },
   { path: "/safety", kind: "page", module: "pages/safety", priority: 0.8 },
   { path: "/ai-toys-for-kids-in-india", kind: "page", module: "pages/ai-toys-for-kids-in-india", priority: 0.8 },
   { path: "/stories", kind: "hub", module: "stories/hub", priority: 0.7 },

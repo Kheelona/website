@@ -94,7 +94,7 @@ describe("the proxy matcher", () => {
 
   it("still runs on the pages that need it", () => {
     const re = new RegExp(`^${matcher}$`);
-    for (const path of ["/", "/products/kheelu", "/thanks", "/store/thanks"]) {
+    for (const path of ["/", "/products/khelu", "/thanks", "/store/thanks"]) {
       expect(re.test(path), `${path} stopped being routed`).toBe(true);
     }
   });

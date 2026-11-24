@@ -28,10 +28,10 @@ describe("src/proxy.ts restores the trailing-slash redirect", () => {
   });
 
   it("keeps the query string when it redirects", () => {
-    const response = proxy(request("https://kheelona.com/products/kheelu/?utm_source=meta"));
+    const response = proxy(request("https://kheelona.com/products/khelu/?utm_source=meta"));
     expect(response.status).toBe(308);
     const location = new URL(response.headers.get("location")!);
-    expect(location.pathname).toBe("/products/kheelu");
+    expect(location.pathname).toBe("/products/khelu");
     /* An untagged click is untagged forever (docs/utm-conventions.md), and ads
        are running. Dropping the query here would silently break attribution. */
     expect(location.search).toBe("?utm_source=meta");
@@ -91,7 +91,7 @@ describe("the proxy remembers which campaign a visit arrived on", () => {
   });
 
   it("sets nothing at all on an ordinary untagged page", () => {
-    expect(cookieOf(proxy(request("https://kheelona.com/products/kheelu")))).not.toContain(
+    expect(cookieOf(proxy(request("https://kheelona.com/products/khelu")))).not.toContain(
       CAMPAIGN_COOKIE,
     );
   });
@@ -152,7 +152,7 @@ describe("the proxy remembers the ad click a visit arrived on", () => {
 
   /* The control. Without it the test above proves very little. */
   it("sets nothing on an ordinary page with no click id", () => {
-    expect(cookieOf(proxy(request("https://kheelona.com/products/kheelu")))).not.toContain(
+    expect(cookieOf(proxy(request("https://kheelona.com/products/khelu")))).not.toContain(
       CLICK_ID_COOKIE,
     );
   });

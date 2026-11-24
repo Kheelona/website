@@ -58,7 +58,7 @@ export const Home: Story = {
     },
     modes: MODES,
     languages: LANGUAGES,
-    link: { label: "See what each mode does", href: "/products/kheelu" },
+    link: { label: "See what each mode does", href: "/products/khelu" },
   },
 };
 

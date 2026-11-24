@@ -289,7 +289,7 @@ describe("host.ts in a production build routes exactly as the tag's", () => {
     "/store/thanks",
     "/store/e/ideabaaz",
     "/thanks",
-    "/products/kheelu",
+    "/products/khelu",
     "/refund",
     "/ingest/e/",
     "/ingest-assets/static/recorder.js",

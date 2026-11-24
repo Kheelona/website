@@ -38,7 +38,7 @@ import { pathToFileURL } from "node:url";
 
 const PAGES = [
   "/",
-  "/products/kheelu",
+  "/products/khelu",
   "store:/",
   "/ai-toys-for-kids-in-india",
   "/team",

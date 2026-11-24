@@ -129,7 +129,7 @@ const EVENT_LIST = [
     status: "existing",
     firedBy: "ViewContentTracker (waits for fbq with whenFbqReady)",
     when:
-      "once per load of /products/kheelu, and of / (addedPlacements, B9: same payload); " +
+      "once per load of /products/khelu, and of / (addedPlacements, B9: same payload); " +
       "value is the offer headline in rupees (4999 in token mode)",
   },
 
@@ -338,6 +338,80 @@ const EVENT_LIST = [
     when:
       "once per paid order, beside the Meta and PostHog reports; email and phone are SHA-256 hashed; " +
       "skipped without a key, off production, for an order with no OpenAI reference, and after 7 days",
+  },
+
+  /* ── Early store signals (D070, B7c and B5): added after the tag, PostHog only, sent by beacon (src/lib/tracking/beacon.ts) with
+        their own code, never by the dispatcher and never to GA4, Meta or OpenAI. None carries anything a parent typed. ── */
+  {
+    name: "store_arrived",
+    destinations: ["posthog-browser"],
+    params: [
+      "$current_url",
+      "$host",
+      "$pathname",
+      "$referring_domain",
+      "$session_id",
+      "internal",
+      "env",
+      "$lib",
+      "$process_person_profile",
+    ],
+    fixed: { $lib: "kh-early", $process_person_profile: false },
+    status: "added",
+    decision: "D070",
+    firedBy: "storeArrivalScript (src/lib/tracking/beacon.ts), the inline script at the top of StoreShell",
+    when:
+      "once per full load of a store page, while the HTML is parsed (before hydration), on production and beta store hosts only, " +
+      "never on /thanks or under it, never for a bot; $current_url keeps only the campaign keys; distinct_id is the PostHog " +
+      "cookie's when there is one, else random (a plain count); $session_id only while the cookie's session is fresh; " +
+      "internal: true on a team device from its second load; env: beta on the beta store",
+  },
+  {
+    name: "preorder_payment_window_hidden",
+    destinations: ["posthog-browser"],
+    params: [
+      "tier",
+      "$current_url",
+      "$host",
+      "$pathname",
+      "$session_id",
+      "internal",
+      "env",
+      "$lib",
+      "$process_person_profile",
+    ],
+    fixed: { $lib: "kh-beacon", $process_person_profile: false },
+    status: "added",
+    decision: "D070",
+    firedBy: "watchPaymentWindow (src/lib/tracking/payment-window.ts), from PreorderForm, sent by beaconCapture",
+    when:
+      "the first time the page is hidden while the Razorpay sheet is open (opened, not yet paid or dismissed), once per opened " +
+      "sheet; a UPI payment also hides the page, so it means 'left with the sheet open', read with purchase_confirmed",
+  },
+
+  {
+    name: "store_cta_tapped_early",
+    destinations: ["posthog-browser"],
+    params: [
+      "cta",
+      "$current_url",
+      "$host",
+      "$pathname",
+      "$session_id",
+      "internal",
+      "env",
+      "$lib",
+      "$process_person_profile",
+    ],
+    fixed: { $lib: "kh-beacon", $process_person_profile: false },
+    status: "added",
+    decision: "D070",
+    firedBy: "reportEarlyStoreTaps (src/lib/site-pages/tracking-shell.ts), on the marketing pages, sent by beaconCapture",
+    when:
+      "a primary click on a link to the store (https://store.kheelona.com) that comes before PostHog has loaded on a marketing page " +
+      "(production and beta hosts only, never for a bot); the tap is never held, the store opens at once; `cta` is the link's " +
+      "data-ph-capture-attribute-cta value, else 'unknown'; once PostHog has loaded, autocapture reports the tap instead " +
+      "($autocapture with the same cta, flushed on pagehide), so a tap is reported once, by one or the other",
   },
 
   /* ── PostHog SDK events ──────────────────────────────────────────────── */

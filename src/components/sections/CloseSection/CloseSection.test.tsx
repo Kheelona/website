@@ -26,7 +26,7 @@ const FULL = buildOffer("full");
 const context = (offer = TOKEN): SellingContext => ({ offer, ctaLabel: cta.preorder, help: seller.help });
 const trust = (ids: readonly TrustId[]) => ids.map((id) => trustItems[id]);
 const COMPACT = trust(TRUST_COMPACT);
-const SEE_HOW: CtaSecondary = { label: "See how it works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" };
+const SEE_HOW: CtaSecondary = { label: "See how it works", href: "/products/khelu", variant: "ghost", iconEnd: "arrow-right" };
 
 const raster = (name: string) => ({ src: `/_next/static/media/${name}`, width: 800, height: 1000 }) as StaticImageData;
 const art = (tone: ArtBoardRef["tone"], label: string): ArtBoardRef => ({
@@ -122,7 +122,7 @@ const CASES: Case[] = [
       contact:
         "[WhatsApp](https://wa.me/919187546483) or email [hello@kheelona.com](mailto:hello@kheelona.com). Tell us your order number, and what you see on Kheelu and in the app.",
       action: { label: "All the ways to reach us", href: "/contact", variant: "secondary", icon: "chat-circle-dots" },
-      meet: { lead: "Don’t have Kheelu yet?", link: "[Meet Kheelu](/products/kheelu)" },
+      meet: { lead: "Don’t have Kheelu yet?", link: "[Meet Kheelu](/products/khelu)" },
     },
   ],
 ];
@@ -175,7 +175,7 @@ describe("CloseSection: every close of the approved mockup, exactly (art aside)"
     const config: CloseSectionConfig = {
       ...links,
       contact: { token: "Token-mode help.", full: "Full-mode help." },
-      meet: { lead: "{delivery}.", link: { token: "[Token link](/products/kheelu)", full: "[Full link](/products/kheelu)" } },
+      meet: { lead: "{delivery}.", link: { token: "[Token link](/products/khelu)", full: "[Full link](/products/khelu)" } },
     };
     const token = renderedElement(<CloseSection {...config} {...context(TOKEN)} />);
     expect(token.querySelector(".ks-setup-help")?.textContent).toContain("Token-mode help.");

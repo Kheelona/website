@@ -17,7 +17,7 @@
   "priority": 1.0
  },
  "crumbs": {
-  "/products/kheelu": "Meet Khelu",
+  "/products/khelu": "Meet Khelu",
   "/safety": "Safety",
   "/setup": "Setup",
   "/ai-toys-for-kids-in-india": "Choosing an AI toy",
@@ -30,7 +30,7 @@
   "/shipping": "Shipping"
  },
  "priority": {
-  "/products/kheelu": 0.9,
+  "/products/khelu": 0.9,
   "/safety": 0.8,
   "/ai-toys-for-kids-in-india": 0.8,
   "/stories": 0.7,
@@ -169,7 +169,7 @@
   },
   "description": "Khelu is a screen-free plush toy for ages 3 to 7 that holds a back-and-forth conversation. It answers your child, then asks a question back, so they do the thinking.",
   "category": "Screen-free AI toy",
-  "url": "https://kheelona.com/products/kheelu",
+  "url": "https://kheelona.com/products/khelu",
   "image": [
    "https://kheelona.com/media/kheelu-front.jpg"
   ],
@@ -231,7 +231,7 @@
   ],
   "offers": {
    "@type": "Offer",
-   "url": "https://kheelona.com/products/kheelu",
+   "url": "https://kheelona.com/products/khelu",
    "price": 4999,
    "priceCurrency": "INR",
    "availability": "https://schema.org/PreOrder",
@@ -294,7 +294,7 @@
  },
  "updated": {
   "_about": "The day each hand-written page's words last changed (sitemap lastmod, WebPage dateModified). Bump a page's date when its copy changes; never the build date. Guides take theirs from the dashboard post.",
-  "/products/kheelu": "2026-10-22",
+  "/products/khelu": "2026-10-22",
   "/safety": "2026-10-22",
   "/setup": "2026-10-22",
   "/ai-toys-for-kids-in-india": "2026-10-22",

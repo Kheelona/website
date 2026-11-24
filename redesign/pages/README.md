@@ -49,7 +49,7 @@ From home: `.faq` (use `<details name="faq">`), `.backed__row`/`.backed__card` (
 ## Content rules
 - Words come from the live beta site (betawebsite.kheelona.com), word for word. Legal pages are complete and verbatim.
 - The toy's visible name is **Khelu** everywhere (copy, titles, alt text, JSON-LD names). URLs and ids stay
-  `/products/kheelu`, `#…kheelu…`. "Lumi" stays where the old name is explained.
+  `/products/khelu`, `#…kheelu…`. "Lumi" stays where the old name is explained.
 - No invented claims, numbers or reviews. Ages 3 to 7. en-IN spelling.
 - Pre-order links go to `https://store.kheelona.com` (not betastore). Keep each button's `data-ph-capture-attribute-cta`
   value exactly as the beta page has it.

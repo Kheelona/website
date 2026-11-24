@@ -31,7 +31,7 @@ export const STORE_URL = STORE_ORIGIN;
 export const PREORDER_HREF = STORE_URL;
 
 export const NAV_LINKS = [
-  { label: "Meet Kheelu", href: "/products/kheelu" },
+  { label: "Meet Kheelu", href: "/products/khelu" },
   // R11 (founder): the tab is the platform's name — the page and Home both
   // say PlayOS, so the nav saying "How it works" read as a different place
   { label: "PlayOS", href: "/playos" },

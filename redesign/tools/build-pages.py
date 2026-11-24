@@ -96,7 +96,7 @@ def norm(s):
 def nav_for(path):
     """Mark the nav link for this page (and for a story, the Stories link) with aria-current."""
     out = NAV
-    for href in ("/products/kheelu", "/safety", "/stories", "/team"):
+    for href in ("/products/khelu", "/safety", "/stories", "/team"):
         if path == href or path.startswith(href + "/"):
             out = out.replace(f'<a href="{href}">', f'<a href="{href}" aria-current="page">')
     return out
@@ -111,7 +111,7 @@ WATCH_FILM = ('<button class="btn btn--ghost ctabar__watch" data-magnetic type="
 def after_for(path):
     """The bar after the footer: "Watch" only on the product page, where it plays the 0:30 film in place (home has its own
     bar, in index.html); every other page shows the price and Pre-order only."""
-    return AFTER.replace("<!--ctabar-watch-->", WATCH_FILM if path == "/products/kheelu" else "")
+    return AFTER.replace("<!--ctabar-watch-->", WATCH_FILM if path == "/products/khelu" else "")
 
 
 # ── the page model ─────────────────────────────────────────────────────────────────────────────────────────
@@ -246,7 +246,7 @@ def page_graph(page, img, items, extra=()):
         web["dateModified"] = meta["updated"]
     if meta.get("published"):
         web["datePublished"] = meta["published"]
-    if page["path"] == "/products/kheelu":
+    if page["path"] == "/products/khelu":
         web["mainEntity"] = {"@id": PRODUCT_ID}
     if page["path"] == "/team":
         web["about"] = {"@id": ORG_ID}
@@ -266,7 +266,7 @@ def page_graph(page, img, items, extra=()):
             if img["local"]:
                 n["image"] = {"@type": "ImageObject", "url": img["url"], "width": 1200, "height": 630}
     graph = [SEO["organization"], *SEO["people"], SEO["website"]]
-    if page["path"] == "/products/kheelu":
+    if page["path"] == "/products/khelu":
         graph.append(SEO["product"])
     graph += nodes + list(extra)
     if items:

@@ -32,6 +32,9 @@ type RazorpayOptions = {
   theme?: { color?: string };
   handler: (response: RazorpayHandlerResponse) => void;
   modal?: { ondismiss?: () => void };
+  /** Redirect flow (D070 / B2): Razorpay posts the result to this address instead of calling `handler`. */
+  callback_url?: string;
+  redirect?: boolean;
 };
 
 /** What Razorpay hands a `payment.failed` listener. Only `code` and `reason` are read (B11). */
@@ -82,6 +85,9 @@ export type StartCheckoutInput = {
   onDismiss: () => void;
   /** For the two payment-window events only (B11); never sent to Razorpay. */
   tier: string;
+  /** Only for in-app browsers (D070 / B2): where Razorpay posts the result. Given, the options also carry
+   *  `redirect: true`; absent, the options are exactly what they were. */
+  callbackUrl?: string;
 };
 
 /* B11 (task 6.2; architecture §8.2): two moments of the payment window, to GA4 and
@@ -126,6 +132,7 @@ export async function startCheckout(input: StartCheckoutInput): Promise<boolean>
     theme: { color: "#EF762F" },
     handler: input.onPaid,
     modal: { ondismiss: input.onDismiss },
+    ...(input.callbackUrl ? { callback_url: input.callbackUrl, redirect: true } : {}),
   });
 
   checkout.on?.("payment.failed", (response) =>

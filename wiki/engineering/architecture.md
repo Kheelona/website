@@ -407,7 +407,11 @@ Decision: [ADR-005](adr/ADR-005-offer-follows-live-mode.md).
   refuse (Next `generate-static-params.md:310`).
 - `lib/offer/offer.ts`: the view model (`mode`, `headlinePaise`, formatted amounts, `mrp`, the sentence
   and sticky lines from `content/en-IN/offer.ts`, `availabilityStarts`).
-- Pages that show a price export `revalidate = 300`; the store keeps `force-dynamic` and its own mode read.
+- Pages that show a price export `revalidate = 300`. The store did keep `force-dynamic` and its own per-request mode read; since
+  [D070](../decisions/D070-conversion-bug-fixes-2026-11-24.md) / B5 (24 Nov 2026) `/store` is prerendered too, with
+  `revalidate = 300` and the same mode read, so its first screen comes from cache (a mode flip reaches it within the window; the
+  price charged is always re-decided by `create-order` through `resolveTier`, which refuses a stale page both ways).
+  `/store/thanks` and `/store/e/[event]` stay `force-dynamic`.
 - In full mode: price sentence "₹7,999 (incl. GST), paid in full when you order."; the offer card hides
   the split; the sticky bar shows "₹7,999" and "incl. GST"; JSON-LD price 7999; `ViewContent` value 7999.
 - **Staleness bound (N14):** a page regenerates on the first request after its 300 s window and serves the
@@ -435,7 +439,7 @@ Decision: [ADR-006](adr/ADR-006-tracking-module-and-registry.md). IDs and parame
 | `src/features/preorder/lib/analytics.ts`, `src/lib/fbq.ts`, `src/lib/posthog.ts`, `src/lib/campaign.ts`, `src/lib/click-id.ts`, `src/proxy.ts`, `src/lib/store/{meta-capi,fulfil}.ts` | The proven funnel, cookies, server events | Frozen, byte-identical |
 | `src/components/tracking/GoogleAnalyticsGate.tsx`, `MetaPixel.tsx` | Gates | Moved from `components/molecules/` (2.6), bodies unchanged |
 | `src/components/tracking/PostHogGate.tsx` | Gate | Moved; on beta hosts adds only `before_send` stamping `env: "beta"` (no `register`, N3) and the internal flag; production init options equal the tag's (fixture test) |
-| `src/components/tracking/ViewContentTracker.tsx` | Meta `ViewContent` on mount | Moved; `valuePaise` from the page (offer); mounted on `/` and `/products/kheelu` |
+| `src/components/tracking/ViewContentTracker.tsx` | Meta `ViewContent` on mount | Moved; `valuePaise` from the page (offer); mounted on `/` and `/products/khelu` |
 | `src/lib/store/posthog-server.ts`, `src/lib/store/env.ts` | Server events | D048 diffs only (§15.3) |
 
 ### 8.2 Destinations and event registry
@@ -476,7 +480,7 @@ Rows 18 to 20 and the three OpenAI event rows below were added after the freeze 
 | pageview | Vercel WA, Ahrefs | automatic | their scripts in the root layout | Existing |
 | `page_view` | GA4 (config) | automatic | `GoogleAnalyticsGate` | Existing |
 | `PageView` | Meta | none; one per load, one per client route change | `MetaPixel` | Existing |
-| `ViewContent` | Meta | `content_name: "Kheelu"`, `content_ids: ["lumi"]`, `content_type: "product"`, `value` (offer headline, 4999 in token mode), `currency: "INR"` | `ViewContentTracker` on `/products/kheelu`; **also `/` (B9, new placement, same payload)** | Existing (+ Home) |
+| `ViewContent` | Meta | `content_name: "Kheelu"`, `content_ids: ["lumi"]`, `content_type: "product"`, `value` (offer headline, 4999 in token mode), `currency: "INR"` | `ViewContentTracker` on `/products/khelu`; **also `/` (B9, new placement, same payload)** | Existing (+ Home) |
 | `preorder_form_started` | GA4, PostHog | `tier` | `analytics.ts` | Existing, frozen |
 | `preorder_start` | GA4, PostHog | `tier` | `analytics.ts` | Existing, frozen |
 | `begin_checkout` / `InitiateCheckout` | GA4, PostHog / Meta | `currency`, `value` (rupees), `tier` / `content_category` | `analytics.ts` | Existing, frozen |
@@ -504,26 +508,26 @@ No event fires Meta for the three new names: Meta receives only its fixed conver
 | `navbar` | Existing | Laptop nav button (the nav sticks to the top from 900 px; G-06, D041; Q2.5, D064) | every marketing page |
 | `navbar-mobile` | Existing | Drawer button | every marketing page |
 | `finale` | Existing | Close button | `/`, `/safety`, `/ai-toys-for-kids-in-india`, `/stories`, articles with a close, `/team`, `/contact`, 404 (added after Gate A by D065, the selling update: /setup) |
-| `product-top` | Existing | Product hero button (no `id`, arrow) | `/products/kheelu` |
-| `product-foot` | Existing | Product close button | `/products/kheelu` |
+| `product-top` | Existing | Product hero button (no `id`, arrow) | `/products/khelu` |
+| `product-foot` | Existing | Product close button | `/products/khelu` |
 | `home-arc`, `compare` | Existing, **reserved** | No equivalent button (A16); never reused | none |
-| `sticky-bar` | New (the mid version's name) | Phone sticky bar | pages with the bar: `/`, `/products/kheelu`, `/safety`, `/ai-toys-for-kids-in-india`, `/stories`, articles with a close, `/team`, `/contact` |
+| `sticky-bar` | New (the mid version's name) | Phone sticky bar | pages with the bar: `/`, `/products/khelu`, `/safety`, `/ai-toys-for-kids-in-india`, `/stories`, articles with a close, `/team`, `/contact` |
 | `see-it-ask` | New | Home belief-fold button | `/` |
 | `safety` | New | Home safety-fold button | `/` |
-| `product-offer` | New | Product offer-card button | `/products/kheelu` |
-| `product-safety` | New | Product safety-fold button | `/products/kheelu` |
+| `product-offer` | New | Product offer-card button | `/products/khelu` |
+| `product-safety` | New | Product safety-fold button | `/products/khelu` |
 | `hero-learn`, `see-it-ask-learn`, `safety-learn`, `compare-learn`, `faq-more` | New, secondary | Home ghost and secondary links | `/` |
-| `product-safety-learn` | New, secondary | Product safety secondary link | `/products/kheelu` |
+| `product-safety-learn` | New, secondary | Product safety secondary link | `/products/khelu` |
 | `refund-learn`, `shipping-learn` | New, secondary | "Meet Kheelu" close links | `/refund`, `/shipping` |
 | `whatsapp-float` | New (D050) | The WhatsApp bubble (not a chilli button) | every page (with `ph-no-capture` on `/thanks`) |
-| `share-whatsapp` | New, secondary (D061, task 8c.2) | The "Share Kheelu on WhatsApp" ghost link under the offer card | `/`, `/products/kheelu` |
+| `share-whatsapp` | New, secondary (D061, task 8c.2) | The "Share Kheelu on WhatsApp" ghost link under the offer card | `/`, `/products/khelu` |
 | `hero-film`, `home-asks-learn` | New, secondary (D065, the selling update) | Home hero link "Watch Kheelu ask, in a 30-second film" (laptops only, from 900 px); the sticky-scroll link "See how it works" | `/` |
 | `home-why`, `home-asks`, `home-offer` | New (D065, the selling update) | Home buttons: "Why it matters", the sticky scroll, the offer card (moved up) | `/` |
-| `product-ask` | New (D065, the selling update) | Product button after "What asking back sounds like." | `/products/kheelu` |
+| `product-ask` | New (D065, the selling update) | Product button after "What asking back sounds like." | `/products/khelu` |
 | `safety-facts` | New (D065, the selling update) | `/safety` button after the four facts | `/safety` |
 | `guide-answers` | New (D065, the selling update) | Guide button after "How Kheelu meets each check." | `/ai-toys-for-kids-in-india` |
-| `product-compare` | New (D066 item 3, task Q2.17) | Product button after the comparison ("Other AI gives answers. Kheelu asks questions.") | `/products/kheelu` |
-| `film-viewer` | New (D070, K-180 / C5) | The full-screen films viewer's Pre-order button (a strip under the picture) | `/`, `/products/kheelu` |
+| `product-compare` | New (D066 item 3, task Q2.17) | Product button after the comparison ("Other AI gives answers. Kheelu asks questions.") | `/products/khelu` |
+| `film-viewer` | New (D070, K-180 / C5) | The full-screen films viewer's Pre-order button (a strip under the picture) | `/`, `/products/khelu` |
 
 **The selling update (D065; [plan §11](../site/d2c-conversion-plan-2026-10-15.md#11-tracking-values)):** `see-it-ask`,
 `see-it-ask-learn`, `compare-learn`, `faq-more`, `hero-learn` (Home) and `product-safety` (the product page) stop firing
@@ -574,7 +578,7 @@ link may preview the old image).
 | Page | Nodes (besides Organization and WebSite from the shell) |
 |---|---|
 | `/` | FAQPage (the six Home answers plus fold 4's "What is Kheelu?", as [home copy](../site/pages/home.md) fold 8 says; wave-4 close); the Product node lives on the product page only |
-| `/products/kheelu` | Product + Offer (+ return policy, shipping details, warranty), FAQPage |
+| `/products/khelu` | Product + Offer (+ return policy, shipping details, warranty), FAQPage |
 | `/safety`, `/ai-toys-for-kids-in-india` | FAQPage (on `/safety` also fold 2's four facts, as [safety copy](../site/pages/safety.md) says; wave-4 close) |
 | `/stories/<slug>` | BlogPosting (headline, description, image, `datePublished`, `dateModified` from the post's stored dates, author, publisher), BreadcrumbList (visible crumbs) |
 | `/setup` | HowTo (from the same steps) |
@@ -610,15 +614,15 @@ appears in the visible text of the same page.
 
 | Change | Rule | Source |
 |---|---|---|
-| `/playos` | 308 → `/products/kheelu` (from wave 1; the page file is deleted in 6.3) | D041 |
+| `/playos` | 308 → `/products/khelu` (from wave 1; the page file is deleted in 6.3) | D041 |
 | `/stories/brain-development-toys-for-a-2-year-old` | 308 → `/stories/learning-toys-for-a-three-year-old` | D041 |
-| `/kheelu`, `/products` | 308 → `/products/kheelu` | strategy §4.2; url-map §4d |
+| `/kheelu`, `/products` | 308 → `/products/khelu` | strategy §4.2; url-map §4d |
 | `/careers`, `/jobs` | 308 → `/team` | strategy §4.2; url-map §4d (`/jobs` 2 landings) |
-| `/pricing` | 308 → `/products/kheelu#offer` | url-map §4d |
+| `/pricing` | 308 → `/products/khelu#offer` | url-map §4d |
 | The 24 existing rules | unchanged | url-map §4b |
 | `www.kheelona.com/*` | host-matched twins of every rule, absolute apex destinations, then a catch-all; one hop once the founder switches `www` to serve the project | url-map §4c |
 | `www.kheelona.com/store/*` | 308 → `https://store.kheelona.com/*` directly, before the `www` catch-all (the apex's `/store` redirect lives in the frozen `host.ts` and runs in the proxy, so going via the apex would cost a second hop); added by 1.3, accepted by the main session 2026-10-12 | `src/config/redirects.ts` |
-| `/faq` | stays → `/products/kheelu#faq`; the product page keeps `#faq`, `#story-mode`, `#reserve`, `#offer` | url-map §4b, `docs/utm-conventions.md` |
+| `/faq` | stays → `/products/khelu#faq`; the product page keeps `#faq`, `#story-mode`, `#reserve`, `#offer` | url-map §4b, `docs/utm-conventions.md` |
 | `/stories/screen-time-rules-parents-swear-by` | 308 → `/stories#screen-time` (the 3-6-9-12 guide removed, task 6.5) | [D053](../decisions/D053-remove-the-3-6-9-12-article.md) |
 | `store.kheelona.com/ideabaaz` | no redirect: the store's not-found page (200, noindex, like every store dead end; task 6.6) | [D054](../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 7 |
 

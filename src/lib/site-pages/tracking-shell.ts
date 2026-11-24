@@ -16,6 +16,7 @@ import {
 import { loadOpenAiPixel, shouldLoadOpenAiPixel, startOpenAiAttribution } from "@/lib/ads/openai-pixel";
 import { fbTrack, whenFbqReady } from "@/lib/fbq";
 import { phSetReplay, registerPostHog } from "@/lib/posthog";
+import { STORE_CTA_TAPPED_EARLY, beaconCapture } from "@/lib/tracking/beacon";
 import { applyInternalFlag } from "@/lib/tracking/internal-flag";
 
 /**
@@ -39,6 +40,8 @@ import { applyInternalFlag } from "@/lib/tracking/internal-flag";
  *   server), with ViewContentTracker's payload, after fbq is ready.
  * - PostHog: POSTHOG_HOSTS only (production and the two beta hosts, which get the `env: "beta"` stamp through
  *   before_send); the gate's init options; replay by the page's path; the `?internal=` flag.
+ * - A tap on a Pre-order (store) link is never held (D070 / B5): the browser follows it at once. After PostHog has loaded,
+ *   autocapture reports it; before, `reportEarlyStoreTaps` sends `store_cta_tapped_early` by beacon (see below).
  * - Ahrefs is not here: it belongs in the server HTML's <head> (transform.ts), ungated except on beta, as the root
  *   layout writes it.
  */
@@ -201,20 +204,43 @@ export function whenEngaged(start: () => void, delayMs = 4000, win: Window = win
   else win.addEventListener("load", arm, { once: true });
 }
 
-/** A tap on a Pre-order link can come before PostHog has loaded (the tap is what starts it). That click is the CTA
- *  report (`cta` on $autocapture), so it waits for PostHog, at most `maxWaitMs`, and is then clicked again for
- *  autocapture to see; the store opens a moment later, as it would have. */
-export function holdStoreClicks(ready: () => Promise<void> | null, maxWaitMs = 2000, doc: Document = document): void {
-  let released = false;
-  doc.addEventListener("click", (e) => {
-    if (released || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    const link = (e.target as Element | null)?.closest?.<HTMLAnchorElement>('a[href^="https://store.kheelona.com"]');
-    const pending = link ? ready() : null;
-    if (!link || !pending) return;
-    e.preventDefault();
-    const again = () => { released = true; link.click(); };
-    Promise.race([pending, new Promise<void>((r) => setTimeout(r, maxWaitMs))]).then(again, again);
-  }, true);
+/** D070 / B5 (K-173): a tap on a store link is NEVER held. It used to be: `holdStoreClicks` stopped the tap for up to 2 s
+ *  while PostHog loaded, so autocapture could record the CTA (`cta` on $autocapture) before the store opened, and a parent
+ *  on a slow phone tapped "Pre-order" and saw nothing happen. Now the browser follows the link at once, and the tap is
+ *  reported one of two ways:
+ *   - PostHog has loaded (autocapture records clicks, see `remoteConfigLoaded`): nothing here. Autocapture queues the click
+ *     with its `cta`, and posthog-js (1.434.2) flushes its queue on `pagehide` by sendBeacon, which a same-tab navigation to
+ *     the store fires (read in node_modules/posthog-js: posthog-core `_handle_unload`, `RequestQueue.unload`).
+ *   - PostHog has not loaded yet (the tap came first): `store_cta_tapped_early`, sent at once by `beaconCapture`
+ *     (src/lib/tracking/beacon.ts), carrying the link's `cta` and the page's `$current_url` (campaign keys only), `$host`
+ *     and `$pathname`; nothing else. Host-gated by `beaconCapture` as PostHog is, off for bots, the team flag carried.
+ *  Registered with D070 (events.ts; tracking inventory §17). Never to GA4, Meta or OpenAI. */
+const STORE_LINK = 'a[href^="https://store.kheelona.com"]';
+
+/** The `cta` of a store link: its `data-ph-capture-attribute-cta` value (the one PostHog promotes to `cta` on $autocapture;
+ *  tracking inventory §6) when it is the shape of our fixed values, else "unknown". It is READ here, through `dataset`, never
+ *  written: the CTA registry guard (test/guards/cta-registry.test.ts) lets only the Button primitive write the attribute. */
+export function ctaOf(link: HTMLElement): string {
+  const value = link.dataset.phCaptureAttributeCta ?? "";
+  return /^[a-z0-9-]{1,40}$/.test(value) ? value : "unknown";
+}
+
+/** Reports a primary click on a store link that comes before PostHog records clicks (`loaded()` false). Never calls
+ *  `preventDefault`, never waits: the click is only observed, in the capture phase, as the old hold was. */
+export function reportEarlyStoreTaps(
+  loaded: () => boolean,
+  doc: Document = document,
+  send: (event: string, props: Record<string, unknown>) => unknown = beaconCapture,
+): void {
+  doc.addEventListener(
+    "click",
+    (e) => {
+      if (loaded() || e.defaultPrevented || e.button !== 0) return;
+      const link = (e.target as Element | null)?.closest?.<HTMLElement>(STORE_LINK);
+      if (link) send(STORE_CTA_TAPPED_EARLY, { cta: ctaOf(link) });
+    },
+    { capture: true, passive: true },
+  );
 }
 
 if (typeof document !== "undefined" && document.querySelector("script[data-kh-tracking]")) {
@@ -223,5 +249,5 @@ if (typeof document !== "undefined" && document.querySelector("script[data-kh-tr
   const start = () => (started ??= boot(config).then(() => { loaded = true; }));
   startOpenAiAttribution();
   whenEngaged(start);
-  if (shouldLoadPostHog(window.location.hostname)) holdStoreClicks(() => (loaded ? null : start()));
+  if (shouldLoadPostHog(window.location.hostname)) reportEarlyStoreTaps(() => loaded);
 }

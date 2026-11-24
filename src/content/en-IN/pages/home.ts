@@ -280,7 +280,7 @@ export const homePage = {
         ],
         line: "Other AI gives answers. Kheelu asks questions.",
       },
-      cta: centred("home-asks", { label: "See how it works", href: "/products/kheelu#modes", cta: "home-asks-learn", variant: "ghost", iconEnd: "arrow-right" }),
+      cta: centred("home-asks", { label: "See how it works", href: "/products/khelu#modes", cta: "home-asks-learn", variant: "ghost", iconEnd: "arrow-right" }),
     },
 
     /* Fold 6 · The expert clip, moved here from the product page (D064 item 8; D061 items 12-13): its own fold, on the

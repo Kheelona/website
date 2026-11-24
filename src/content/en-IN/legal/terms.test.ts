@@ -369,7 +369,7 @@ describe("the terms page: what the decisions require it to say", () => {
   });
 
   it("links back to the product page from the close, with no tracking value (strategy §5 policy row)", () => {
-    expect(termsPage.close.actions).toEqual([{ label: "Meet Kheelu", href: "/products/kheelu" }]);
+    expect(termsPage.close.actions).toEqual([{ label: "Meet Kheelu", href: "/products/khelu" }]);
   });
 });
 

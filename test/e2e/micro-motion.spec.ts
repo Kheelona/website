@@ -221,7 +221,7 @@ for (const [width, sticks] of [[899, false], [900, true], [1023, true], [1440, t
 }
 
 test("an in-page jump lands below the sticky nav on a laptop", async ({ harness }) => {
-  const { page } = await harness.open({ ...mockupRoute("meet-kheelu"), path: "/products/kheelu#faq" }, laptop, { reducedMotion: "reduce" });
+  const { page } = await harness.open({ ...mockupRoute("meet-kheelu"), path: "/products/khelu#faq" }, laptop, { reducedMotion: "reduce" });
   await page.waitForTimeout(800);
   const where = await page.evaluate(() => ({
     faq: Math.round(document.getElementById("faq")!.getBoundingClientRect().top),

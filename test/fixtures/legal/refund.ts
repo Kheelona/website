@@ -277,7 +277,7 @@ export const refundFixture = {
     actions: [
       {
         label: "Meet Kheelu",
-        href: "/products/kheelu",
+        href: "/products/khelu",
         cta: "refund-learn",
       },
       {

@@ -116,7 +116,7 @@ describe("Home: the folds, in the plan's order (D2C plan v2 §2)", () => {
       .map((a) => a.getAttribute("href")!)
       // In-page links, the store's buttons and the trust lines' policy links (refund, shipping, terms) are not exits.
       .filter((href) => !href.startsWith("#") && !href.startsWith("https://store") && !/^\/(?:refund|shipping|terms)#/.test(href));
-    expect(away).toEqual(["https://developingchild.harvard.edu/key-concept/serve-and-return/", "/products/kheelu#modes", expect.stringMatching(/^https:\/\/wa\.me\/\?text=/), "/safety"]);
+    expect(away).toEqual(["https://developingchild.harvard.edu/key-concept/serve-and-return/", "/products/khelu#modes", expect.stringMatching(/^https:\/\/wa\.me\/\?text=/), "/safety"]);
   });
 
   it("watches the hero button for the phone buy bar, which Home carries", () => {
@@ -331,7 +331,7 @@ describe("Home fold 5 · Kheelu asks, your child thinks (plan fold 5; the CMO's 
     expect(trustRow(asks)).toEqual(TRUST);
     const learn = asks.querySelector('[data-ph-capture-attribute-cta="home-asks-learn"]')!;
     expect(text(learn)).toBe("See how it works");
-    expect(learn.getAttribute("href")).toBe("/products/kheelu#modes");
+    expect(learn.getAttribute("href")).toBe("/products/khelu#modes");
   });
 });
 
