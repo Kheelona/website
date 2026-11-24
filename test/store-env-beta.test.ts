@@ -214,6 +214,7 @@ const REFUSALS: [build: string, key: string, line: string][] = [
   ["development", LIVE, "RAZORPAY_KEY_ID is a live key, which a development build refuses"],
   ["development", LIVE_SHOUTING, "RAZORPAY_KEY_ID is a live key, which a development build refuses"],
   ["no KH_SITE_ENV (a local build)", LIVE, "RAZORPAY_KEY_ID is a live key, which a development build refuses"],
+  ["no KH_SITE_ENV (a local build)", LIVE_SHOUTING, "RAZORPAY_KEY_ID is a live key, which a development build refuses"],
 ];
 
 const siteEnvOf = (label: string) => BUILDS.find(([l]) => l === label)![1];
@@ -544,7 +545,10 @@ describe("D071: every store API route answers 503 where the key is refused", () 
     for (const a of beta.answers) expect(a.status, `${a.method} on beta with a live key`).toBe(503);
     expect(beta.queries, "a refused route touched the database").toBe(0);
     expect(beta.fetches, "a refused route reached the network").toBe(0);
-    expect(beta.answers, "beta with a live key must answer as beta with none").toEqual((await callRoute(path, "beta", {})).answers);
+    /* The same answer as with no keys at all. /api/health alone differs, by design: it names what is missing (below). */
+    const bare = (await callRoute(path, "beta", {})).answers;
+    if (path === "src/app/api/health/route.ts") expect(beta.answers.map((a) => a.status)).toEqual(bare.map((a) => a.status));
+    else expect(beta.answers, "beta with a live key must answer as beta with none").toEqual(bare);
 
     const production = await callRoute(path, "production", EVERYTHING_TEST); // a test key on production
     for (const a of production.answers) expect(a.status, `${a.method} in production with a test key`).toBe(503);
