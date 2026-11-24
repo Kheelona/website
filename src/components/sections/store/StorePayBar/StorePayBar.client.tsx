@@ -13,8 +13,9 @@ import { isFieldIn, LAPTOP_QUERY } from "@/components/chrome/WhatsAppFloat/Whats
  * decided), and a tap submits that same form (`requestSubmit`: the same handler, the same validation, the same request).
  * Where the form is not complete, the first field that needs the parent is scrolled to and focused, the keyboard opens.
  *
- * Where the bar shows: once the first screen has gone (the first screen keeps what it has, nothing sits over it), and
- * never where it would cover the parent's work or be a second Pay button in the same view. It steps aside while
+ * Where the bar shows: from the visitor's first scroll (the first screen, what is on screen before they scroll, keeps
+ * what it has: nothing sits over it), and never where it would cover the parent's work or be a second Pay button in the
+ * same view. It steps aside while
  *   - a form field has focus (the keyboard is up),
  *   - the consent tick, a failure alert, B2's "still open" notice or the form's own pay button is on screen, or about to be
  *     (the viewport is read the bar's height further down, so the bar is gone before it can touch them),
@@ -31,8 +32,9 @@ import { isFieldIn, LAPTOP_QUERY } from "@/components/chrome/WhatsAppFloat/Whats
 /** The store's form (StoreDetails: the details section holds it) and its pay button. */
 const FORM = "#details form";
 const MIRROR = 'button[type="submit"]';
-/** The first screen (StoreTop): the bar waits for it to have gone. */
-const FIRST_SCREEN = ".ks-store-top";
+/** The first screen is what is on screen before the visitor scrolls; the bar waits for the first scroll, this far (one
+ *  drag of a finger, so a touch that merely brushes the page does not bring it in). */
+const FIRST_SCROLL_PX = 40;
 /** What the bar keeps clear of, inside the form: the consent row (Checkbox `consent`), every DS alert (the failure line,
  *  B2's notice) and the pay button itself; outside it, the store footer. */
 const KEEP_CLEAR_IN_FORM = ".ks-consent, .kh-alert";
@@ -77,8 +79,7 @@ function arm(bar: HTMLElement, report: { shown: (shown: boolean) => void; mirror
   const root = document.documentElement;
 
   const onScreen = new Set<Element>();
-  let firstScreen: Element | null = null;
-  let past = false;
+  let past = window.scrollY > FIRST_SCROLL_PX;
   let ready = false;
   let focused = false;
   let shown = false;
@@ -109,12 +110,10 @@ function arm(bar: HTMLElement, report: { shown: (shown: boolean) => void; mirror
     io?.disconnect();
     const keep = [...form.querySelectorAll(KEEP_CLEAR_IN_FORM), pay, ...document.querySelectorAll(KEEP_CLEAR_OUTSIDE)];
     for (const el of onScreen) if (!keep.includes(el)) onScreen.delete(el);
-    firstScreen = document.querySelector(FIRST_SCREEN);
     io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.target === firstScreen) past = !entry.isIntersecting && entry.boundingClientRect.bottom <= 0;
-          else if (entry.isIntersecting) onScreen.add(entry.target);
+          if (entry.isIntersecting) onScreen.add(entry.target);
           else onScreen.delete(entry.target);
         }
         ready = true;
@@ -123,8 +122,6 @@ function arm(bar: HTMLElement, report: { shown: (shown: boolean) => void; mirror
       // The screen reaches one bar's height further down, so the bar goes before the consent tick, an alert or the pay button can come under it.
       { rootMargin: `0px 0px ${bar.offsetHeight}px 0px` },
     );
-    if (firstScreen) io.observe(firstScreen);
-    else past = true;
     for (const el of keep) io.observe(el);
   };
 
@@ -160,6 +157,12 @@ function arm(bar: HTMLElement, report: { shown: (shown: boolean) => void; mirror
     focused = isFieldIn(form, event.relatedTarget);
     publish();
   };
+  const onScroll = () => {
+    const next = window.scrollY > FIRST_SCROLL_PX;
+    if (next === past) return;
+    past = next;
+    publish();
+  };
   const onResize = () => {
     watch();
     publish();
@@ -169,6 +172,7 @@ function arm(bar: HTMLElement, report: { shown: (shown: boolean) => void; mirror
   document.addEventListener("focusin", onFocusIn);
   document.addEventListener("focusout", onFocusOut);
   window.addEventListener("resize", onResize);
+  window.addEventListener("scroll", onScroll, { passive: true });
 
   /** A tap on the bar: the form's own submit. */
   const onTap = () => {
@@ -202,6 +206,7 @@ function arm(bar: HTMLElement, report: { shown: (shown: boolean) => void; mirror
     document.removeEventListener("focusin", onFocusIn);
     document.removeEventListener("focusout", onFocusOut);
     window.removeEventListener("resize", onResize);
+    window.removeEventListener("scroll", onScroll);
     bar.removeEventListener("click", onTap);
     delete root.dataset.buybar;
     root.style.removeProperty("--ks-buybar-h");

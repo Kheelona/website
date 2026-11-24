@@ -6,7 +6,7 @@ import { StorePayBar } from "./StorePayBar.client";
 
 /* StorePayBar (D070 / C1, K-176; D-top5-changes.md Change 1, items 1 and 9): the form's own pay button as the DS buy bar,
  * fixed to the bottom of a phone's screen. It reads its label and state from the form's button, submits that same form,
- * shows once the first screen has gone, and steps aside for a field's focus, the consent tick, the alerts, B2's notice, the
+ * shows from the first scroll, and steps aside for a field's focus, the consent tick, the alerts, B2's notice, the
  * form's own button and the footer. The page is the store's markup in miniature (the real ids and classes); the observer
  * is under test control. */
 
@@ -28,10 +28,10 @@ class FakeIO {
   unobserve = (el: Element) => void this.watched.delete(el);
   disconnect = () => this.watched.clear();
   takeRecords = () => [];
-  report(entries: Array<[Element, boolean, number?]>) {
+  report(entries: Array<[Element, boolean]>) {
     act(() =>
       this.callback(
-        entries.map(([target, isIntersecting, bottom = isIntersecting ? 200 : 2000]) => ({ target, isIntersecting, boundingClientRect: { bottom } }) as IntersectionObserverEntry),
+        entries.map(([target, isIntersecting]) => ({ target, isIntersecting }) as IntersectionObserverEntry),
         this as unknown as IntersectionObserver,
       ),
     );
@@ -62,6 +62,7 @@ afterEach(() => {
   delete (Element.prototype as unknown as Record<string, unknown>).scrollIntoView;
   html.removeAttribute("data-buybar");
   html.style.removeProperty("--ks-buybar-h");
+  Object.defineProperty(window, "scrollY", { configurable: true, value: 0 });
   vi.stubGlobal("matchMedia", baseMatchMedia);
   vi.stubGlobal("fetch", baseFetch);
 });
@@ -87,7 +88,6 @@ function page(label = "Pay ₹499 and reserve") {
   return {
     form,
     submitted,
-    first: document.querySelector(".ks-store-top")!,
     pay: form.querySelector<HTMLButtonElement>('button[type="submit"]')!,
     consent: form.querySelector(".ks-consent")!,
     footer: document.querySelector(".kh-footer")!,
@@ -99,9 +99,17 @@ const bar = () => document.querySelector(".ks-paybar") as HTMLElement;
 const isHidden = () => bar().classList.contains("is-hidden");
 const mount = () => render(<StorePayBar />);
 
-/** What the observer reports with the first screen gone and nothing to keep clear on screen: the bar shows. */
+/** The visitor scrolls to `y` (the page's own scroll event). */
+function scrollTo(y: number) {
+  Object.defineProperty(window, "scrollY", { configurable: true, value: y });
+  act(() => {
+    window.dispatchEvent(new Event("scroll"));
+  });
+}
+/** What the observer reports with the visitor past the first scroll and nothing to keep clear on screen: the bar shows. */
 function allClear(p: ReturnType<typeof page>) {
-  io().report([[p.first, false, -5], [p.pay, false], [p.consent, false], [p.footer, false]]);
+  scrollTo(300);
+  io().report([[p.pay, false], [p.consent, false], [p.footer, false]]);
 }
 
 describe("StorePayBar: what it is", () => {
@@ -145,24 +153,36 @@ describe("StorePayBar: what it is", () => {
 });
 
 describe("StorePayBar: where it shows", () => {
-  it("watches the first screen and everything it keeps clear of, the screen reaching one bar's height further down", () => {
+  it("watches everything it keeps clear of, the screen reaching one bar's height further down", () => {
     const p = page();
     mount();
     expect(io().options?.rootMargin).toBe("0px 0px 72px 0px");
-    expect([...io().watched]).toEqual(expect.arrayContaining([p.first, p.consent, p.pay, p.footer]));
+    expect([...io().watched]).toEqual([p.consent, p.pay, p.footer]);
   });
 
-  it("stays hidden until the first screen has gone, shows once it has and nothing it keeps clear of is on screen", () => {
+  it("stays hidden on the first screen, what is on screen before the visitor scrolls, and shows from the first scroll", () => {
     const p = page();
     mount();
-    io().report([[p.first, true], [p.pay, false], [p.consent, false], [p.footer, false]]);
+    io().report([[p.pay, false], [p.consent, false], [p.footer, false]]);
     expect(isHidden()).toBe(true);
-    // Below the first screen, not above it (the page opened at its end): not "gone".
-    io().report([[p.first, false, 900]]);
+    // A brush of the page is not the first scroll.
+    scrollTo(30);
     expect(isHidden()).toBe(true);
-    io().report([[p.first, false, -5]]);
+    scrollTo(60);
     expect(isHidden()).toBe(false);
     expect(bar()).not.toHaveAttribute("inert");
+    // Back to the top: the first screen is as it was.
+    scrollTo(0);
+    expect(isHidden()).toBe(true);
+    expect(bar()).toHaveAttribute("inert");
+  });
+
+  it("is shown at once on a page that opens scrolled (a reload, a link to an answer), once nothing it keeps clear of is on screen", () => {
+    Object.defineProperty(window, "scrollY", { configurable: true, value: 1500 });
+    const p = page();
+    mount();
+    io().report([[p.pay, false], [p.consent, false], [p.footer, false]]);
+    expect(isHidden()).toBe(false);
   });
 
   it.each([
@@ -190,7 +210,7 @@ describe("StorePayBar: where it shows", () => {
     p.form.insertBefore(alert, p.pay);
     await flush();
     expect(io().watched.has(alert)).toBe(true);
-    io().report([[p.first, false, -5], [alert, true], [p.pay, false], [p.consent, false], [p.footer, false]]);
+    io().report([[alert, true], [p.pay, false], [p.consent, false], [p.footer, false]]);
     expect(isHidden()).toBe(true);
     io().report([[alert, false]]);
     expect(isHidden()).toBe(false);
@@ -205,11 +225,11 @@ describe("StorePayBar: where it shows", () => {
     notice.setAttribute("role", "status");
     p.form.insertBefore(notice, p.pay);
     await flush();
-    io().report([[p.first, false, -5], [notice, false], [p.pay, false], [p.consent, false], [p.footer, false]]);
+    io().report([[notice, false], [p.pay, false], [p.consent, false], [p.footer, false]]);
     expect(isHidden()).toBe(true);
     notice.remove();
     await flush();
-    io().report([[p.first, false, -5], [p.pay, false], [p.consent, false], [p.footer, false]]);
+    io().report([[p.pay, false], [p.consent, false], [p.footer, false]]);
     expect(isHidden()).toBe(false);
   });
 
@@ -231,7 +251,7 @@ describe("StorePayBar: where it shows", () => {
     mount();
     expect(FakeIO.all).toHaveLength(0);
     expect(isHidden()).toBe(true);
-    expect(p.first).toBeTruthy();
+    expect(p.pay).toBeTruthy();
     expect(html.hasAttribute("data-buybar")).toBe(false);
   });
 });
