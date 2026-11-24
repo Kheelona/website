@@ -13,6 +13,7 @@ import { MARKETING_ORIGIN } from "@/config/env";
 import { preorderFormCopy } from "@/content/en-IN/store/preorder-form";
 import {
   validateContact,
+  normalisePhone,
   hasErrors,
   CHILD_AGE_MAX,
   type ContactInput,
@@ -25,6 +26,14 @@ import { CAMPAIGN_KEYS } from "@/lib/campaign";
 import { track } from "@/lib/tracking/track";
 import { watchPaymentWindow, type PaymentWindowWatch } from "@/lib/tracking/payment-window";
 import { clearFormDraft, useFormDraft } from "./form-draft";
+import {
+  clearPending,
+  confirmThenGoToThanks,
+  savePending,
+  usePendingPayment,
+} from "./pending-payment";
+import { PayRecoveryNotice } from "./PayRecoveryNotice";
+import { payReturnUrl, prefersRedirectCheckout } from "./redirect-checkout";
 
 /** The pre-order form (§8.25-s).
  *
@@ -93,6 +102,10 @@ export function PreorderForm({
   /* The name, phone and email stay in THIS tab (sessionStorage, 30 minutes, never the child's age) so a parent who
      leaves to pay in a UPI app finds them still filled in (D070 / B3; ./form-draft.ts). */
   const draftRef = useFormDraft();
+
+  /* A payment this tab started and left (an in-app browser, a UPI app) is asked after once, on arrival: paid goes to the
+     confirmation page, still open is offered back as Continue paying or Start again (D070 / B2; ./pending-payment.ts). */
+  const recovery = usePendingPayment(tier, () => setState("idle"));
 
   /* A parent who leaves the page with the payment sheet open (a UPI app, a locked phone) is reported once, by beacon,
      from the moment the sheet is up until it is paid, dismissed or this form goes (D070 / B7c; the explicit close is
@@ -175,6 +188,9 @@ export function PreorderForm({
 
       setState("paying");
       preorderAnalytics.beginCheckout(data.amountPaise!, tier);
+      /* Remember which order this tab is paying, with nothing personal in it, before the window opens (D070 / B2). */
+      savePending({ orderRef: data.orderRef!, rzpOrderId: data.razorpayOrderId!, tier });
+      recovery.dismiss();
 
       const sheet = watchPaymentWindow(tier);
       sheetWatch.current = sheet;
@@ -185,8 +201,12 @@ export function PreorderForm({
         orderRef: data.orderRef!,
         prefill: data.prefill ?? {},
         tier,
+        /* In-app browsers pay by redirect, to our own /pay/return (D070 / B2); every other browser gets no URL and
+           keeps the window and its handler. The current origin, never a fixed host. */
+        callbackUrl: prefersRedirectCheckout(navigator.userAgent) ? payReturnUrl(window.location.origin) : undefined,
         onDismiss: () => {
           sheet.close();
+          clearPending();
           preorderAnalytics.dismissed(tier);
           setState("idle");
           setFailure(
@@ -196,8 +216,9 @@ export function PreorderForm({
         onPaid: (paid) => {
           sheet.close();
           preorderAnalytics.purchase(data.orderRef!, data.amountPaise!, tier);
-          /* Paid: the saved name, phone and email have done their job (D070 / B3). */
+          /* Paid: the saved name, phone and email have done their job (D070 / B3), and so has the saved payment (B2). */
           clearFormDraft();
+          clearPending();
           /* Confirm in the background and move on. The parent should not wait on
              our bookkeeping, and the webhook covers us if this request never
              lands. `keepalive` because the navigation just below would otherwise
@@ -224,16 +245,71 @@ export function PreorderForm({
 
       if (opened) sheet.opened();
       if (!opened) {
+        clearPending();
         setState("idle");
         setFailure(
           "The payment window would not open, which usually means a blocked script or a shaky connection. Nothing was charged. Try again, or message us on WhatsApp and we will take it from there.",
         );
       }
     } catch {
+      clearPending();
       setState("idle");
       setFailure(
         "We could not reach our payment provider. Nothing was charged. Please try again in a moment.",
       );
+    }
+  }
+
+  /* Continue paying (D070 / B2): open Razorpay again for the order this tab already started, never a new one. The name,
+     phone and email come from the form's own fields (B3 put them back), and the events are those of a normal open, bar
+     the start of a checkout, which already happened. The notice is only hidden while the window is up (the form is
+     busy), so a window that will not open, or one that is closed again, leaves the parent with the same choice: the
+     order is still open. It goes when the payment is made or the parent starts again. */
+  async function onContinue(event: React.MouseEvent<HTMLButtonElement>) {
+    const resume = recovery.open;
+    if (!resume) return;
+    const typed = new FormData(event.currentTarget.form ?? undefined);
+    setFailure(null);
+    setState("paying");
+
+    const sheet = watchPaymentWindow(tier);
+    sheetWatch.current = sheet;
+    try {
+      const opened = await startCheckout({
+        keyId: resume.keyId,
+        razorpayOrderId: resume.rzpOrderId,
+        amountPaise: resume.amountPaise,
+        orderRef: resume.orderRef,
+        prefill: {
+          name: String(typed.get("parentName") ?? "").trim() || undefined,
+          email: String(typed.get("email") ?? "").trim().toLowerCase() || undefined,
+          contact: normalisePhone(String(typed.get("phone") ?? "")),
+        },
+        tier,
+        callbackUrl: prefersRedirectCheckout(navigator.userAgent) ? payReturnUrl(window.location.origin) : undefined,
+        onDismiss: () => {
+          sheet.close();
+          preorderAnalytics.dismissed(tier);
+          setState("idle");
+        },
+        onPaid: (paid) => {
+          sheet.close();
+          preorderAnalytics.purchase(resume.orderRef, resume.amountPaise, tier);
+          clearFormDraft();
+          clearPending();
+          recovery.dismiss();
+          void confirmThenGoToThanks(paid, resume);
+        },
+      });
+      if (opened) {
+        sheet.opened();
+      } else {
+        sheet.close();
+        setState("idle");
+      }
+    } catch {
+      sheet.close();
+      setState("idle");
     }
   }
 
@@ -311,6 +387,8 @@ export function PreorderForm({
           <p>{failure}</p>
         </Alert>
       ) : null}
+
+      {recovery.open && !busy ? <PayRecoveryNotice onContinue={onContinue} onStartAgain={recovery.startAgain} /> : null}
 
       <button
         type="submit"

@@ -62,8 +62,38 @@ B7c (D070, the founder's approval of the conversion bug fixes B1-B7, 24 Nov 2026
   - Proof: test/preorder-payment-window.test.tsx (a new file, because the frozen checkout tests take literal-only patches) and
     test/tracking-beacon.test.ts; registry rows in src/lib/tracking/events.ts (status added, D070) held to inventory §17.
 
+B2 (D070, the founder's approval of the conversion bug fixes B1-B7, 24 Nov 2026, checkout code signed off one by one; action 2026-W48-B2,
+  card K-172): a payment finished outside the page still reaches the address step. Additive; most of it is in new files
+  (./pending-payment.ts, ./redirect-checkout.ts, ./PayRecoveryNotice.tsx, src/content/en-IN/store/pay-recovery.ts, the two routes under
+  src/app/store/pay/, src/layouts/StoreShell/ThanksCleanup.client.tsx):
+  - Imports: `normalisePhone` (from ../lib/validate), `clearPending`, `confirmThenGoToThanks`, `savePending`, `usePendingPayment`,
+    `PayRecoveryNotice`, `payReturnUrl`, `prefersRedirectCheckout`.
+  - `const recovery = usePendingPayment(tier, () => setState("idle"));` asks the server ONCE on arrival about the order this tab started
+    (paid: /thanks; open: the notice; anything else: nothing) and again when the page is restored from the back-forward cache.
+  - In `onSubmit`, right after `beginCheckout` and before the window opens: `savePending({ orderRef, rzpOrderId, tier });` (no token, no
+    personal data, no amount) and `recovery.dismiss();`. In `startCheckout(...)`: `callbackUrl: prefersRedirectCheckout(navigator.userAgent)
+    ? payReturnUrl(window.location.origin) : undefined` (only in-app/WebView browsers get Razorpay's redirect flow, to this host's
+    /pay/return; every other browser keeps the window and its handler exactly as before). `clearPending();` in `onDismiss`, in `onPaid`
+    (after `clearFormDraft()`), when the window would not open, and in the catch. Nothing else in `onSubmit` moves: the request, the
+    amounts, the events, the confirm request (keepalive) and the navigation with the token are as they were.
+  - `onContinue` (new): "Continue paying" reopens Razorpay for the SAME order (`recovery.open`: reference, Razorpay order id, key and amount
+    from POST /pay/status), prefill from the form's own fields (B3 put them back), the window events and the B7c watch as a normal open
+    (not `beginCheckout`: no new checkout started); in a regular browser a payment made in the window confirms with keepalive and goes
+    to /thanks through `confirmThenGoToThanks` (the page has no address token: the server sets the cookie on /pay/status); in an in-app
+    browser it asks for the redirect flow too. Closing that window again leaves the same notice.
+  - JSX: one conditional block above the pay button, `{recovery.open && !busy ? <PayRecoveryNotice onContinue={onContinue}
+    onStartAgain={recovery.startAgain} /> : null}`; no existing element, attribute or class changes.
+  - The logic signature (checkout-signatures/...PreorderForm.tsx.json) gains exactly: the four import lines (the validate import with
+    `normalisePhone`), the `recovery` declaration, `savePending`, `recovery.dismiss()`, the `callbackUrl` property, the four `clearPending();`
+    lines, the `onContinue` function, and in `jsx` the conditional and its two handler props; nothing existing is removed or changed.
+  - Visible words: three new strings in src/content/en-IN/store/pay-recovery.ts ("Your payment is still open.", "Continue paying", "Start
+    again"); no existing string changes.
+  - Proof: test/preorder-pay-recovery.test.tsx, test/preorder-pending-payment.test.ts, test/preorder-redirect-checkout.test.ts,
+    test/pay-return-route.test.ts, test/pay-status-route.test.ts, test/store-thanks-cleanup.test.tsx (new files); the frozen
+    PreorderForm.test.tsx and the JSX contract fixtures are untouched and green.
+
 diff --git a/src/features/preorder/components/PreorderForm.tsx b/src/features/preorder/components/PreorderForm.tsx
-index 987fcc3..0b7ccee 100644
+index 987fcc3..613b8ec 100644
 --- a/src/features/preorder/components/PreorderForm.tsx
 +++ b/src/features/preorder/components/PreorderForm.tsx
 @@ -1,6 +1,6 @@
@@ -74,17 +104,33 @@ index 987fcc3..0b7ccee 100644
  import Link from "next/link";
  import { clsx } from "clsx";
  import { Alert } from "@/components/ui/Alert/Alert";
-@@ -22,6 +22,9 @@ import { startCheckout } from "../lib/checkout";
+@@ -13,6 +13,7 @@ import { MARKETING_ORIGIN } from "@/config/env";
+ import { preorderFormCopy } from "@/content/en-IN/store/preorder-form";
+ import {
+   validateContact,
++  normalisePhone,
+   hasErrors,
+   CHILD_AGE_MAX,
+   type ContactInput,
+@@ -22,6 +23,17 @@ import { startCheckout } from "../lib/checkout";
  import { preorderAnalytics } from "../lib/analytics";
  import { phDistinctId } from "@/lib/posthog";
  import { CAMPAIGN_KEYS } from "@/lib/campaign";
 +import { track } from "@/lib/tracking/track";
 +import { watchPaymentWindow, type PaymentWindowWatch } from "@/lib/tracking/payment-window";
 +import { clearFormDraft, useFormDraft } from "./form-draft";
++import {
++  clearPending,
++  confirmThenGoToThanks,
++  savePending,
++  usePendingPayment,
++} from "./pending-payment";
++import { PayRecoveryNotice } from "./PayRecoveryNotice";
++import { payReturnUrl, prefersRedirectCheckout } from "./redirect-checkout";
  
  /** The pre-order form (§8.25-s).
   *
-@@ -49,7 +52,9 @@ import { CAMPAIGN_KEYS } from "@/lib/campaign";
+@@ -49,7 +61,9 @@ import { CAMPAIGN_KEYS } from "@/lib/campaign";
   *  the store page hands in the rest (`beside`: the trust row, the payment window
   *  line, a person to reach), which a client island cannot draw itself. Every
   *  handler, field attribute and request below is the tag's
@@ -95,13 +141,17 @@ index 987fcc3..0b7ccee 100644
  export function PreorderForm({
    tier,
    signature,
-@@ -85,6 +90,16 @@ export function PreorderForm({
+@@ -85,6 +99,20 @@ export function PreorderForm({
    const [state, setState] = useState<"idle" | "working" | "paying">("idle");
    const [failure, setFailure] = useState<string | null>(null);
  
 +  /* The name, phone and email stay in THIS tab (sessionStorage, 30 minutes, never the child's age) so a parent who
 +     leaves to pay in a UPI app finds them still filled in (D070 / B3; ./form-draft.ts). */
 +  const draftRef = useFormDraft();
++
++  /* A payment this tab started and left (an in-app browser, a UPI app) is asked after once, on arrival: paid goes to the
++     confirmation page, still open is offered back as Continue paying or Start again (D070 / B2; ./pending-payment.ts). */
++  const recovery = usePendingPayment(tier, () => setState("idle"));
 +
 +  /* A parent who leaves the page with the payment sheet open (a UPI app, a locked phone) is reported once, by beacon,
 +     from the moment the sheet is up until it is paid, dismissed or this form goes (D070 / B7c; the explicit close is
@@ -112,7 +162,7 @@ index 987fcc3..0b7ccee 100644
    /* Fired once per mount, on the first change to any field (§8.40). A ref
       rather than state on purpose: this must not re-render the form a parent is
       typing into, and it must survive StrictMode's double-invoke in development
-@@ -123,6 +138,10 @@ export function PreorderForm({
+@@ -123,6 +151,10 @@ export function PreorderForm({
          behavior: "smooth",
          block: "center",
        });
@@ -123,9 +173,13 @@ index 987fcc3..0b7ccee 100644
        return;
      }
  
-@@ -157,13 +176,17 @@ export function PreorderForm({
+@@ -156,14 +188,25 @@ export function PreorderForm({
+ 
        setState("paying");
        preorderAnalytics.beginCheckout(data.amountPaise!, tier);
++      /* Remember which order this tab is paying, with nothing personal in it, before the window opens (D070 / B2). */
++      savePending({ orderRef: data.orderRef!, rzpOrderId: data.razorpayOrderId!, tier });
++      recovery.dismiss();
  
 +      const sheet = watchPaymentWindow(tier);
 +      sheetWatch.current = sheet;
@@ -136,19 +190,24 @@ index 987fcc3..0b7ccee 100644
          orderRef: data.orderRef!,
          prefill: data.prefill ?? {},
 +        tier,
++        /* In-app browsers pay by redirect, to our own /pay/return (D070 / B2); every other browser gets no URL and
++           keeps the window and its handler. The current origin, never a fixed host. */
++        callbackUrl: prefersRedirectCheckout(navigator.userAgent) ? payReturnUrl(window.location.origin) : undefined,
          onDismiss: () => {
 +          sheet.close();
++          clearPending();
            preorderAnalytics.dismissed(tier);
            setState("idle");
            setFailure(
-@@ -171,12 +194,19 @@ export function PreorderForm({
+@@ -171,12 +214,20 @@ export function PreorderForm({
            );
          },
          onPaid: (paid) => {
 +          sheet.close();
            preorderAnalytics.purchase(data.orderRef!, data.amountPaise!, tier);
-+          /* Paid: the saved name, phone and email have done their job (D070 / B3). */
++          /* Paid: the saved name, phone and email have done their job (D070 / B3), and so has the saved payment (B2). */
 +          clearFormDraft();
++          clearPending();
            /* Confirm in the background and move on. The parent should not wait on
               our bookkeeping, and the webhook covers us if this request never
 -             lands. */
@@ -162,15 +221,80 @@ index 987fcc3..0b7ccee 100644
              headers: { "content-type": "application/json" },
              body: JSON.stringify({
                razorpayOrderId: paid.razorpay_order_id,
-@@ -192,6 +222,7 @@ export function PreorderForm({
+@@ -192,13 +243,16 @@ export function PreorderForm({
          },
        });
  
 +      if (opened) sheet.opened();
        if (!opened) {
++        clearPending();
          setState("idle");
          setFailure(
-@@ -209,7 +240,7 @@ export function PreorderForm({
+           "The payment window would not open, which usually means a blocked script or a shaky connection. Nothing was charged. Try again, or message us on WhatsApp and we will take it from there.",
+         );
+       }
+     } catch {
++      clearPending();
+       setState("idle");
+       setFailure(
+         "We could not reach our payment provider. Nothing was charged. Please try again in a moment.",
+@@ -206,10 +260,63 @@ export function PreorderForm({
+     }
+   }
+ 
++  /* Continue paying (D070 / B2): open Razorpay again for the order this tab already started, never a new one. The name,
++     phone and email come from the form's own fields (B3 put them back), and the events are those of a normal open, bar
++     the start of a checkout, which already happened. The notice is only hidden while the window is up (the form is
++     busy), so a window that will not open, or one that is closed again, leaves the parent with the same choice: the
++     order is still open. It goes when the payment is made or the parent starts again. */
++  async function onContinue(event: React.MouseEvent<HTMLButtonElement>) {
++    const resume = recovery.open;
++    if (!resume) return;
++    const typed = new FormData(event.currentTarget.form ?? undefined);
++    setFailure(null);
++    setState("paying");
++
++    const sheet = watchPaymentWindow(tier);
++    sheetWatch.current = sheet;
++    try {
++      const opened = await startCheckout({
++        keyId: resume.keyId,
++        razorpayOrderId: resume.rzpOrderId,
++        amountPaise: resume.amountPaise,
++        orderRef: resume.orderRef,
++        prefill: {
++          name: String(typed.get("parentName") ?? "").trim() || undefined,
++          email: String(typed.get("email") ?? "").trim().toLowerCase() || undefined,
++          contact: normalisePhone(String(typed.get("phone") ?? "")),
++        },
++        tier,
++        callbackUrl: prefersRedirectCheckout(navigator.userAgent) ? payReturnUrl(window.location.origin) : undefined,
++        onDismiss: () => {
++          sheet.close();
++          preorderAnalytics.dismissed(tier);
++          setState("idle");
++        },
++        onPaid: (paid) => {
++          sheet.close();
++          preorderAnalytics.purchase(resume.orderRef, resume.amountPaise, tier);
++          clearFormDraft();
++          clearPending();
++          recovery.dismiss();
++          void confirmThenGoToThanks(paid, resume);
++        },
++      });
++      if (opened) {
++        sheet.opened();
++      } else {
++        sheet.close();
++        setState("idle");
++      }
++    } catch {
++      sheet.close();
++      setState("idle");
++    }
++  }
++
    const busy = state !== "idle";
  
    return (
@@ -179,3 +303,12 @@ index 987fcc3..0b7ccee 100644
        <Field
          label={copy.labels.parentName}
          name="parentName"
+@@ -281,6 +388,8 @@ export function PreorderForm({
+         </Alert>
+       ) : null}
+ 
++      {recovery.open && !busy ? <PayRecoveryNotice onContinue={onContinue} onStartAgain={recovery.startAgain} /> : null}
++
+       <button
+         type="submit"
+         disabled={busy}
