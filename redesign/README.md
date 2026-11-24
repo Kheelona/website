@@ -235,13 +235,21 @@ Measured on a 390px touch viewport with 4× and 10× CPU throttling (Chrome trac
   `(max-width: 699px)` chapter lengths (hero 160vh; how, films, asks, day 250vh; languages, privacy 230vh; app 200vh).
   Never toggle root `scroll-snap-type` from scroll position. "Skip section" stays.
 - **Films viewer:** every `[data-video]` opens a full-screen reel at that film, playing with sound; swipe up (or ↓) for
-  the next, which plays as it arrives, and a film that ends moves on; tap pauses; Back, Esc or × closes. One shared
+  the next, which plays as it arrives; tap pauses; Back, Esc or × closes. One shared
   `<video>` moves from slide to slide, so the first tap unlocks sound for every film. Markup: `#modal.reels` in
   `index.html` and `pages/_shell/after.html`.
   Since D070 / B1 it also keeps the page's place: opening remembers `scrollY` and sets `history.scrollRestoration =
   "manual"`; closing (×, Esc or Back) puts the page back at once (`scrollTo(..., "instant")`, or Lenis
   `scrollTo(y, { immediate: true })` on desktop), refocuses the film that opened it without scrolling, then gives the
   browser's scroll restoration back on the next frame. Home and the product page share this code.
+  Since D070 / K-180 (C5) the viewer also keeps Pre-order Khelu in reach: `initModal` copies the bar's own button (label,
+  arrow, link) and the footer's price line into the dialog, so no wording lives in the viewer. The button sits in a strip
+  of its own under the picture (`--reels-strip`; the picture and the caption sit above it, so it never covers a face, the
+  films' burned-in subtitles or the caption), as a quiet glass pill while a film plays, tracked `cta=film-viewer`. A film
+  that ends is no longer followed silently by the next one: the viewer holds on its last frame (`.is-end`), the button turns
+  solid, the price line shows beside it and the "Swipe up for the next film" cue stays in view (not after the last film);
+  a swipe, a step button or ↓ goes on, a tap on the picture plays the film again. Phones turned sideways have no strip: the
+  button waits at the bottom right, on the black beside the narrow picture.
 - **Tracking starts on engagement** (`src/lib/site-pages/tracking-shell.ts`): GA4, the Meta Pixel, PostHog and Vercel
   Analytics load on the first touch, click, key, scroll, wheel or mouse move, or 4 s after load. Same IDs and events.
   A Pre-order tap that comes first waits (≤ 2 s; measured 0.5-1.1 s) until PostHog's remote config has loaded, the

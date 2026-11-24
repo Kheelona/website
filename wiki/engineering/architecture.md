@@ -523,6 +523,7 @@ No event fires Meta for the three new names: Meta receives only its fixed conver
 | `safety-facts` | New (D065, the selling update) | `/safety` button after the four facts | `/safety` |
 | `guide-answers` | New (D065, the selling update) | Guide button after "How Kheelu meets each check." | `/ai-toys-for-kids-in-india` |
 | `product-compare` | New (D066 item 3, task Q2.17) | Product button after the comparison ("Other AI gives answers. Kheelu asks questions.") | `/products/khelu` |
+| `film-viewer` | New (D070, K-180 / C5) | The full-screen films viewer's Pre-order button (a strip under the picture) | `/`, `/products/khelu` |
 
 **The selling update (D065; [plan §11](../site/d2c-conversion-plan-2026-10-15.md#11-tracking-values)):** `see-it-ask`,
 `see-it-ask-learn`, `compare-learn`, `faq-more`, `hero-learn` (Home) and `product-safety` (the product page) stop firing
