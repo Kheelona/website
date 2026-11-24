@@ -8,6 +8,7 @@ import { MARKETING_ORIGIN } from "@/config/env";
 import { navigation } from "@/content/en-IN/navigation";
 import { seller } from "@/content/en-IN/seller";
 import { storeArrivalScript } from "@/lib/tracking/beacon";
+import { ThanksCleanup } from "./ThanksCleanup.client";
 
 /**
  * The store host's shell (architecture §16.1; structure §3.1), rendered by src/app/store/layout.tsx around the store
@@ -33,6 +34,9 @@ import { storeArrivalScript } from "@/lib/tracking/beacon";
  * src/lib/tracking/beacon.ts). It reports `store_arrived` to PostHog by beacon while the HTML is still being parsed, so a
  * visitor who leaves before hydration is still counted. It renders nothing, runs only on the store hosts that are PostHog
  * hosts, never on /thanks, and carries no query parameter but the campaign keys. The CSP allows inline scripts today.
+ *
+ * Last, `ThanksCleanup` (D070 / B2, K-172): on /thanks only, it forgets the payment and the typed details this tab kept
+ * for the pre-order form (`kh_preorder_pending`, `kh_preorder_draft`). It renders nothing.
  */
 export function StoreShell({ children }: { children: ReactNode }) {
   const { labels } = navigation;
@@ -64,6 +68,7 @@ export function StoreShell({ children }: { children: ReactNode }) {
         copyright={<RichText text={seller.copyright} />}
       />
       <MotionController />
+      <ThanksCleanup />
     </>
   );
 }
