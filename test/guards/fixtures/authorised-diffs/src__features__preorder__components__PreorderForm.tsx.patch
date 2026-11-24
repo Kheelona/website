@@ -16,8 +16,16 @@ B11 (task 6.2; wiki/site/gate-a-open-items.md §3 working default, confirmed by 
   - `tier` passed to `startCheckout` for the payment window's two events (checkout.ts patch); Razorpay never sees it.
   - The doc comment names the two additions. No JSX, attribute, label or handler changes.
 
+B4 (D070, the founder's approval of the conversion bug fixes B1-B7, 24 Nov 2026; action 2026-W48-B4, card K-170). Checkout code,
+  signed off one by one. One property:
+  - `keepalive: true` on `onPaid`'s `fetch("/api/preorder/confirm", ...)`, so the request survives the `location.assign("/thanks...")`
+    that follows at once (it was cancelled on iOS: "TypeError: Load failed", and only the Razorpay webhook confirmed the order).
+    Same method, headers and body; still not awaited; same order (events, confirm, navigate). The comment above the call says why.
+  - The logic signature (checkout-signatures/...PreorderForm.tsx.json) gains exactly one line, `keepalive: true,`; nothing in `jsx`.
+  - Proof: test/preorder-confirm-keepalive.test.tsx (a new file, because the frozen checkout tests take literal-only patches).
+
 diff --git a/src/features/preorder/components/PreorderForm.tsx b/src/features/preorder/components/PreorderForm.tsx
-index 987fcc3..3789ae4 100644
+index 987fcc3..2bb1b2a 100644
 --- a/src/features/preorder/components/PreorderForm.tsx
 +++ b/src/features/preorder/components/PreorderForm.tsx
 @@ -22,6 +22,7 @@ import { startCheckout } from "../lib/checkout";
@@ -58,3 +66,18 @@ index 987fcc3..3789ae4 100644
          onDismiss: () => {
            preorderAnalytics.dismissed(tier);
            setState("idle");
+@@ -174,9 +182,13 @@ export function PreorderForm({
+           preorderAnalytics.purchase(data.orderRef!, data.amountPaise!, tier);
+           /* Confirm in the background and move on. The parent should not wait on
+              our bookkeeping, and the webhook covers us if this request never
+-             lands. */
++             lands. `keepalive` because the navigation just below would otherwise
++             cancel this request (iOS logged "TypeError: Load failed" and only the
++             webhook confirmed the order): it lets the request finish after the
++             page is gone (D070 / B4). */
+           void fetch("/api/preorder/confirm", {
+             method: "POST",
++            keepalive: true,
+             headers: { "content-type": "application/json" },
+             body: JSON.stringify({
+               razorpayOrderId: paid.razorpay_order_id,

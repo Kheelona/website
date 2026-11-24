@@ -182,9 +182,13 @@ export function PreorderForm({
           preorderAnalytics.purchase(data.orderRef!, data.amountPaise!, tier);
           /* Confirm in the background and move on. The parent should not wait on
              our bookkeeping, and the webhook covers us if this request never
-             lands. */
+             lands. `keepalive` because the navigation just below would otherwise
+             cancel this request (iOS logged "TypeError: Load failed" and only the
+             webhook confirmed the order): it lets the request finish after the
+             page is gone (D070 / B4). */
           void fetch("/api/preorder/confirm", {
             method: "POST",
+            keepalive: true,
             headers: { "content-type": "application/json" },
             body: JSON.stringify({
               razorpayOrderId: paid.razorpay_order_id,
