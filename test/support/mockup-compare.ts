@@ -7,8 +7,9 @@ import { trustItems } from "@/content/en-IN/trust";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { PRICE_LINE } from "../e2e/support/deviations";
-import { withDeliveryDate } from "../e2e/support/mockup-text";
+import { withDeliveryDate, withStoreName } from "../e2e/support/mockup-text";
 import { readRepoFile } from "../e2e/support/repo";
+import { builtAddress } from "../e2e/support/url-move";
 
 /*
  * The one mockup comparison harness (task 3.6 items 5 and 14; wave-3 close, "One of each helper"). Test support, never
@@ -51,6 +52,47 @@ export const STORE = "https://store.kheelona.com";
  *  still reads the mockup files themselves, so the DS set stays checked against them. */
 const REDRAWN = Object.entries(SITE_DRAWINGS).map(([name, d]) => [ICON_PATHS[name as IconName], d] as const);
 
+/** The two store mockups: every word the store prints, so every "Kheelu" in them reads as the build's name (V71). */
+const STORE_SLUGS: ReadonlySet<string> = new Set(["store", "store-confirmation"]);
+
+/** The toy's name as the store prints it, in place (D070 / C1, deviations.md V71): the frozen mockups (D046) keep Gate A's
+ *  "Kheelu"; the store prints "Khelu" since the founder's decision of 24 Nov 2026. Every text node and the attributes a
+ *  reader sees (alt, aria-label, title, content, placeholder) read as the build's name; hrefs, src and class names
+ *  (kheelu-front.webp, the DS folder) are file names, not the name, and stay. Applied last, after the price lines, so
+ *  the readers above still match the mockup's own words. */
+export function readNameAsBuilt(root: ParentNode): void {
+  const doc = (root as Node).ownerDocument ?? (root as Document);
+  const walker = doc.createTreeWalker(root as Node, 4 /* NodeFilter.SHOW_TEXT */);
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) n.textContent = withStoreName(n.textContent ?? "");
+  for (const el of Array.from(root.querySelectorAll("[alt], [aria-label], [title], [content], [placeholder]"))) {
+    for (const attr of ["alt", "aria-label", "title", "content", "placeholder"]) {
+      const value = el.getAttribute(attr);
+      if (value !== null) el.setAttribute(attr, withStoreName(value));
+    }
+  }
+}
+
+/** The films strip's words as the build prints them, in place (D070 / C1, deviations.md V71): the strip (films.ts) is shared
+ *  by the store and the pages that still show it, and its captions, poster alts and list label read "Khelu" since the store
+ *  prints them so. Only inside the strip (`[data-films]`: the list, its films, their posters and play buttons); every other
+ *  "Kheelu" on a page that is not the store stays the mockup's. */
+export function readFilmsAsBuilt(root: ParentNode): void {
+  for (const strip of Array.from(root.querySelectorAll("[data-films]"))) {
+    readNameAsBuilt(strip);
+    for (const attr of ["alt", "aria-label", "title"]) {
+      const value = strip.getAttribute(attr);
+      if (value !== null) strip.setAttribute(attr, withStoreName(value));
+    }
+  }
+}
+
+/** What `parseMockup` does about the name for one page (V71): a store mockup reads the build's name throughout, every other
+ *  page only inside its films strip. */
+export function readNameForSlug(doc: Document, slug: string): void {
+  if (STORE_SLUGS.has(slug)) readNameAsBuilt(doc);
+  else readFilmsAsBuilt(doc);
+}
+
 /** A built mockup page, parsed fresh: for a test that changes what it reads (a stand-in in place of a slot). It carries
  *  the site's icon drawings (`REDRAWN`, task Q2.4), task Q2.8's price lines as the build prints them (`withPriceLine`)
  *  and the drawer's second note a line each (`withDrawerNoteLines`, task Q2.15). */
@@ -60,6 +102,7 @@ export function parseMockup(slug: string): Document {
   const doc = new DOMParser().parseFromString(html, "text/html");
   withPriceLine(doc);
   withDrawerNoteLines(doc);
+  readNameForSlug(doc, slug);
   return doc;
 }
 
@@ -245,10 +288,11 @@ export function mockupCtaRun(fold: Element): Element[] {
 export function mockupRoute(href: string): string {
   if (href === "store.html") return STORE;
   const match = /^([a-z0-9-]+)\.html(#.*)?$/.exec(href);
-  if (!match) return href;
+  /* The product page's old address, printed in a mockup as a route, is the address it moved to (D070 / C4; url-move.ts). */
+  if (!match) return builtAddress(href);
   const [, page, fragment = ""] = match;
   const path =
-    page === "home" ? "/" : page === "meet-kheelu" ? "/products/kheelu" : page.startsWith("story-") ? `/stories/${page.slice("story-".length)}` : `/${page}`;
+    page === "home" ? "/" : page === "meet-kheelu" ? "/products/khelu" : page.startsWith("story-") ? `/stories/${page.slice("story-".length)}` : `/${page}`;
   return path + fragment;
 }
 

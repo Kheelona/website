@@ -36,7 +36,7 @@ two are optional and only earn their place on paid search and on creative tests.
 2. **Never tag an internal link.** A UTM on a link from one page of kheelona.com to another
    restarts the session and destroys the original attribution. The site's own links stay clean.
 3. **Tag the destination a parent should land on**, not the home page. A Story-mode ad goes to
-   `/products/kheelu#story-mode`, not `/`.
+   `/products/khelu#story-mode`, not `/`.
 4. **Tag QR codes too.** The Ideabaaz event printed QR codes; anything printed is impossible to
    change later, so it must be tagged before it goes to print.
 5. **`utm_source=chatgpt.com` is theirs, not ours.** Do not create a campaign that collides with
@@ -46,13 +46,13 @@ two are optional and only earn their place on paid search and on creative tests.
 
 ```text
 Meta, paid, launch creative test, variant A
-https://kheelona.com/products/kheelu?utm_source=instagram&utm_medium=paid_social&utm_campaign=2026-10-launch&utm_content=rabbit-hero-a
+https://kheelona.com/products/khelu?utm_source=instagram&utm_medium=paid_social&utm_campaign=2026-10-launch&utm_content=rabbit-hero-a
 
 Instagram bio link
 https://kheelona.com/?utm_source=instagram&utm_medium=organic_social&utm_campaign=2026-09-bio
 
 Printed QR at an event
-https://kheelona.com/products/kheelu?utm_source=qr&utm_medium=print&utm_campaign=2026-09-ideabaaz
+https://kheelona.com/products/khelu?utm_source=qr&utm_medium=print&utm_campaign=2026-09-ideabaaz
 ```
 
 ## Building a link
@@ -62,7 +62,7 @@ than typing parameters by hand — the two mistakes that matter are both silent.
 
 ```text
 npm run utm -- --source=instagram --medium=paid_social \
-               --campaign=2026-10-launch --path=/products/kheelu \
+               --campaign=2026-10-launch --path=/products/khelu \
                --content=rabbit-hero-a
 ```
 
@@ -88,9 +88,11 @@ tagged, since rule 2 is the one whose breach destroys the data silently.
 ## What survives a redirect
 
 Next returns 308 for `permanent: true` and **preserves the query string**, so a UTM on
-`/products/lumi` still arrives on `/products/kheelu` with its parameters intact. Verified
+`/products/lumi` still arrived on `/products/kheelu` with its parameters intact. Verified
 2026-09-05 with `utm_source=rename-test`. Old tagged links therefore keep working after the rename,
-which is one reason the redirect is permanent rather than temporary.
+which is one reason the redirect is permanent rather than temporary. Since D070 / C4 (human, 24 Nov)
+the product page is `/products/khelu`: tag new links with it, and `/products/kheelu` and
+`/products/lumi` both reach it in one hop with their parameters intact.
 
 ## What this does not cover
 

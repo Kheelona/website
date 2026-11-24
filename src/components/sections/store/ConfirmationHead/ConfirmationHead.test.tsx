@@ -21,7 +21,7 @@ describe("ConfirmationHead", () => {
 
   it("is a section named by the page's one h1, the eyebrow's icon hidden", () => {
     render(<ConfirmationHead copy={confirmation.head.paid} amount="₹499" email="parent@example.com" />);
-    const section = screen.getByRole("region", { name: "Your Kheelu is reserved." });
+    const section = screen.getByRole("region", { name: "Your Khelu is reserved." });
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     expect(section.querySelector(".kh-eyebrow")!.className).toBe("kh-eyebrow ks-thanks__eyebrow");
     expect(section.querySelector(".kh-eyebrow svg")).toHaveAttribute("aria-hidden", "true");

@@ -24,7 +24,7 @@ import { TRUST_COMPACT, TRUST_OFFER_THIRD, trustItems, type TrustId } from "../.
 import { product, type Mode } from "./product";
 
 /**
- * The product page, /products/kheelu (task 5.2; structure §5): its meta and its nine folds in the approved order
+ * The product page, /products/khelu (task 5.2; structure §5): its meta and its nine folds in the approved order
  * (mockup/pages/meet-kheelu.html), rendered by PageTemplate from src/app/(site)/products/[slug]/page.tsx. Visible words
  * are the approved mockup's; meta, the full-mode variants and alt texts the copy page's (wiki/site/pages/meet-kheelu.md).
  * The product's facts (modes, languages, specs, the box, safety rows, declarations, schema identity) come from

@@ -91,7 +91,9 @@
     // first swipe, and a scroll doesn't count as a tap, so the voice stayed silent.
     const firstEvs = fine ? ["pointerdown", "keydown"] : ["click", "keydown"];
     const first = (e) => { if (e.target && e.target.closest && e.target.closest("[data-sound]")) return; firstEvs.forEach((ev) => removeEventListener(ev, first)); unlock(); };
-    firstEvs.forEach((ev) => addEventListener(ev, first, { passive: true }));
+    // Only the home page speaks (every consumer of Sound is in its `if (HOME)` block). Creating the AudioContext inside the
+    // first tap cost 85-100 ms of that tap on a throttled phone (C4 PR 2), so the other pages never create one.
+    if (document.getElementById("hero")) firstEvs.forEach((ev) => addEventListener(ev, first, { passive: true }));
     return { unlock, play, sfx, tone, level, stop, setMuted, nudge, playing, get on() { return ready(); }, get started() { return !!ctx; }, get muted() { return muted; } };
   })();
 
@@ -730,12 +732,14 @@
     syncMute();
   }
   /* ---------- Bottom bar: it steps aside (slides down) while an in-page Pre-order button or the footer is on screen, so
-     one view never shows two Pre-order buttons and the bar never covers the footer; WhatsApp hides in the footer. No
-     layout reads: IntersectionObserver only. Runs with reduced motion too (the slide is then a fade-free jump). ---------- */
+     one view never shows two main Pre-order buttons and the bar never covers the footer; WhatsApp hides in the footer. A
+     button marked data-cta-secondary (a ghost-style duplicate, product page) is not one the bar steps aside for: the bar
+     stays the one main button. No layout reads: IntersectionObserver only. Runs with reduced motion too (the slide is
+     then a fade-free jump). ---------- */
   function initBar() {
     const bar = document.querySelector(".ctabar"), wa = document.getElementById("wa"), foot = document.querySelector("[data-footer]");
     if (!bar || !("IntersectionObserver" in window)) return;
-    const targets = [...document.querySelectorAll('main a[href^="https://store.kheelona.com"]')];
+    const targets = [...document.querySelectorAll('main a[href^="https://store.kheelona.com"]:not([data-cta-secondary])')];
     if (foot) targets.push(foot);
     const seen = new Set();
     const io = new IntersectionObserver((es) => {

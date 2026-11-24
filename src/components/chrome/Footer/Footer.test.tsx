@@ -13,7 +13,7 @@ const PROPS: FooterProps = {
   promise: "Press to talk. No open internet. You read every conversation.",
   made: "Designed by parents in Bengaluru. Made in India.",
   columns: [
-    { id: "kheelu", title: "Kheelu", links: [{ label: "Meet Kheelu", href: "/products/kheelu" }] },
+    { id: "kheelu", title: "Kheelu", links: [{ label: "Meet Kheelu", href: "/products/khelu" }] },
     {
       id: "help",
       title: "Help",

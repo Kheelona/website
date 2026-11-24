@@ -172,7 +172,7 @@ export const faqs = {
     id: "after-six-months",
     question: "Will Kheelona+ charge me after the 6 months?",
     answer:
-      "No, not unless you sign up for it yourself. Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. Nothing renews without you.",
+      "No, not unless you sign up for it yourself. Every Khelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. Nothing renews without you.",
   },
   "returns-and-warranty": {
     id: "returns-and-warranty",
@@ -284,20 +284,20 @@ export const faqs = {
     question: "What am I paying today?",
     answer: {
       token:
-        "A refundable {price:token} today reserves your Kheelu, and it is part of the {price:headline} price (incl. GST), not an extra fee. The remaining {price:balance} is due before delivery, by a payment link we send on WhatsApp and by email. Nothing is ever charged automatically.",
-      full: "The whole price: {price:full} (incl. GST), with delivery anywhere in India included. There is nothing more to pay before dispatch: no balance link, and nothing charged automatically. Until we dispatch your Kheelu, all of it is refundable.",
+        "A refundable {price:token} today reserves your Khelu, and it is part of the {price:headline} price (incl. GST), not an extra fee. The remaining {price:balance} is due before delivery, by a payment link we send on WhatsApp and by email. Nothing is ever charged automatically.",
+      full: "The whole price: {price:full} (incl. GST), with delivery anywhere in India included. There is nothing more to pay before dispatch: no balance link, and nothing charged automatically. Until we dispatch your Khelu, all of it is refundable.",
     },
   },
   "change-my-mind": {
     id: "change-my-mind",
     question: "What if I change my mind?",
-    answer: `Until we dispatch your Kheelu, message us with your order number and you get all of your money back, with no fee and no reason needed. We start your refund within ${REFUND_START_WORKING_DAYS} working days of your request; your bank takes ${BANK_REFUND_WORKING_DAYS} working days. After delivery, you can still return it within ${RETURN_DAYS} days, no questions asked.`,
+    answer: `Until we dispatch your Khelu, message us with your order number and you get all of your money back, with no fee and no reason needed. We start your refund within ${REFUND_START_WORKING_DAYS} working days of your request; your bank takes ${BANK_REFUND_WORKING_DAYS} working days. After delivery, you can still return it within ${RETURN_DAYS} days, no questions asked.`,
   },
   "store-arrival": {
     id: "store-arrival",
-    question: "When will my Kheelu arrive?",
+    question: "When will my Khelu arrive?",
     answer: {
-      token: `${STORE_ARRIVAL} A reserved Kheelu is dispatched once the balance is paid.`,
+      token: `${STORE_ARRIVAL} A reserved Khelu is dispatched once the balance is paid.`,
       full: STORE_ARRIVAL,
     },
   },

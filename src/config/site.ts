@@ -31,7 +31,7 @@ export const STORE_URL = STORE_ORIGIN;
 export const PREORDER_HREF = STORE_URL;
 
 export const NAV_LINKS = [
-  { label: "Meet Kheelu", href: "/products/kheelu" },
+  { label: "Meet Kheelu", href: "/products/khelu" },
   // R11 (founder): the tab is the platform's name — the page and Home both
   // say PlayOS, so the nav saying "How it works" read as a different place
   { label: "PlayOS", href: "/playos" },
@@ -139,7 +139,7 @@ export const KHEELU_AGES = "3+";
 /* KHEELONA_PLUS_LINE, the legacy KheelonaPlusBand's sentence ("the stories, lessons, languages": claims §4 row 10,
    D027), was deleted with that band in task 6.3. */
 /** The Kheelona+ short form, for the finale's small print; the receipt email (frozen) still prints it. */
-export const KHEELONA_PLUS_SHORT = "Every Kheelu includes 6 months of Kheelona+.";
+export const KHEELONA_PLUS_SHORT = "Every Khelu includes 6 months of Kheelona+.";
 
 /** Ship date (founder, 2026-08-23: moved from 1 October). Render from these,
  *  never inline, so a logistics change is a one-file edit. */

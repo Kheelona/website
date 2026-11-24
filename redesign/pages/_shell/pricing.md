@@ -25,7 +25,7 @@ Khelu is ₹4,999 in total (incl. GST) for the first 500 units, with delivery an
 ## Where to pre-order
 
 - [Pre-order Khelu](https://store.kheelona.com)
-- [Meet Khelu](https://kheelona.com/products/kheelu)
+- [Meet Khelu](https://kheelona.com/products/khelu)
 
 ## About Khelu
 

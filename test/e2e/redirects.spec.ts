@@ -21,19 +21,19 @@ type Row = { from: string; to: string; host?: string };
 /** url-map §4b: the 24 existing rules (sources as the test plan's examples). */
 const EXISTING: Row[] = [
   { from: "/stories/why-three-to-six-matters-most", to: "/stories/why-three-to-six-are-the-years-that-matter-most" },
-  { from: "/products/lumi", to: "/products/kheelu" },
-  { from: "/product-page/x", to: "/products/kheelu" },
-  { from: "/product/x", to: "/products/kheelu" },
-  { from: "/shop", to: "/products/kheelu" },
-  { from: "/category/all-products", to: "/products/kheelu" },
-  { from: "/category/toys", to: "/products/kheelu" },
-  { from: "/accessibility-statement", to: "/products/kheelu" },
+  { from: "/products/lumi", to: "/products/khelu" },
+  { from: "/product-page/x", to: "/products/khelu" },
+  { from: "/product/x", to: "/products/khelu" },
+  { from: "/shop", to: "/products/khelu" },
+  { from: "/category/all-products", to: "/products/khelu" },
+  { from: "/category/toys", to: "/products/khelu" },
+  { from: "/accessibility-statement", to: "/products/khelu" },
   { from: "/post/x", to: "/stories" },
   { from: "/terms-conditions", to: "/terms" },
   { from: "/privacy-policy", to: "/privacy" },
   { from: "/for-the-parents", to: "/stories" },
-  { from: "/lumi", to: "/products/kheelu" },
-  { from: "/faq", to: "/products/kheelu#faq" },
+  { from: "/lumi", to: "/products/khelu" },
+  { from: "/faq", to: "/products/khelu#faq" },
   { from: "/sitemap", to: "/sitemap.xml" },
   { from: "/blog", to: "/stories" },
   { from: "/blog/x", to: "/stories" },
@@ -42,21 +42,23 @@ const EXISTING: Row[] = [
   { from: "/login", to: "/" },
   { from: "/signup", to: "/" },
   { from: "/account/x", to: "/" },
-  { from: "/cart", to: "/products/kheelu" },
-  { from: "/checkout/x", to: "/products/kheelu" },
+  { from: "/cart", to: "/products/khelu" },
+  { from: "/checkout/x", to: "/products/khelu" },
 ];
 
 /** url-map §4d and D041: added by task 1.3. */
 const ADDED: Row[] = [
-  { from: "/playos", to: "/products/kheelu" },
+  { from: "/playos", to: "/products/khelu" },
   { from: "/stories/brain-development-toys-for-a-2-year-old", to: "/stories/learning-toys-for-a-three-year-old" },
-  { from: "/kheelu", to: "/products/kheelu" },
-  { from: "/products", to: "/products/kheelu" },
+  { from: "/kheelu", to: "/products/khelu" },
+  { from: "/products", to: "/products/khelu" },
   { from: "/careers", to: "/team" },
   { from: "/jobs", to: "/team" },
-  { from: "/pricing", to: "/products/kheelu#offer" },
+  { from: "/pricing", to: "/products/khelu#offer" },
   /* D053 (task 6.5): the 3-6-9-12 article leaves the journal, to its hub topic. */
   { from: "/stories/screen-time-rules-parents-swear-by", to: "/stories#screen-time" },
+  /* D070 / C4: the product page moved to `/products/khelu`; the address it had keeps working in one hop. */
+  { from: "/products/kheelu", to: "/products/khelu" },
 ];
 
 const RULES_TABLE = existsSync(join(ROOT, "src/config/redirects.ts"));

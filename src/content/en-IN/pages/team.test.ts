@@ -417,7 +417,7 @@ describe("fold 6: the close", () => {
       cta: "finale",
       trust: TRUST_COMPACT.map((id) => trustItems[id]),
       helpLine: true,
-      secondary: { label: norm(ghost.textContent), href: "/products/kheelu", variant: "ghost", iconEnd: iconOf(ghost.querySelector("svg")) },
+      secondary: { label: norm(ghost.textContent), href: "/products/khelu", variant: "ghost", iconEnd: iconOf(ghost.querySelector("svg")) },
     });
     const button = el.querySelector(".kh-btn--cta")!;
     expect(button.getAttribute("data-ph-capture-attribute-cta")).toBe(config.cta.cta);
@@ -465,7 +465,7 @@ describe("the team page: page-wide rules", () => {
           return [c.link?.href, c.cta?.secondary?.href].filter((h): h is string => h !== undefined);
         }),
       );
-    expect(hrefs).toEqual(expect.arrayContaining(["/safety", "/products/kheelu"]));
+    expect(hrefs).toEqual(expect.arrayContaining(["/safety", "/products/khelu"]));
     for (const href of hrefs.filter((h) => h.startsWith("/"))) {
       expect(routeFor(href.replace(/#.*$/, "")), href).toBeDefined();
     }

@@ -31,7 +31,7 @@ describe("EmptyStateSection", () => {
     const nav = screen.getByRole("navigation", { name: "Where to go next" });
     expect(nav.className).toBe("ks-404__nav");
     const rows = screen.getAllByRole("link");
-    expect(rows.map((a) => a.getAttribute("href"))).toEqual(["/", "/products/kheelu", "/stories", "/contact"]);
+    expect(rows.map((a) => a.getAttribute("href"))).toEqual(["/", "/products/khelu", "/stories", "/contact"]);
     expect(rows[1].className).toBe("kh-listitem kh-tone-chilli");
     /* The row is named by its title and line (jsdom joins the two spans without the space a browser's layout adds). */
     expect(rows[1].querySelector(".kh-listitem__title")!.textContent).toBe("Meet Kheelu");

@@ -78,6 +78,10 @@ export type FaqSectionConfig =
       /** The store's section heading: the title only. */
       readonly heading: Pick<FaqHeading, "title" | "id">;
       readonly items: readonly FaqItem[];
+      /** The answers open at load (item ids): the store's three money answers (D070 / C1, K-176). */
+      readonly open?: readonly string[];
+      /** Gives each question a fragment, `<anchor>-<item id>`, so a link on the page opens it in place. */
+      readonly anchor?: string;
     };
 
 /** What the page passes besides the configuration. */

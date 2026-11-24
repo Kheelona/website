@@ -32,16 +32,26 @@ export interface FaqListProps {
   sign: ReactNode;
   /** Opens the first answer at load. */
   firstOpen?: boolean;
+  /** Opens these answers (item ids) at load: the store opens its three money answers (D070 / C1, K-176). */
+  open?: readonly string[];
+  /** Gives each question a fragment, `<anchor>-<item id>`, so a link on the page can name it and open it in place
+   *  (the store's refund and delivery links, StoreAnswerLinks). Without it the questions carry no id. */
+  anchor?: string;
   reveal?: boolean;
   /** The parent's composition class, added after the DS class. */
   className?: string;
 }
 
-export function FaqList({ items, sign, firstOpen = false, reveal = false, className }: FaqListProps) {
+export function FaqList({ items, sign, firstOpen = false, open = [], anchor, reveal = false, className }: FaqListProps) {
   return (
     <div className={clsx("kh-faq", className)} data-reveal={reveal ? "" : undefined}>
       {items.map((item, i) => (
-        <details key={item.id} className="kh-faq__item" open={firstOpen && i === 0}>
+        <details
+          key={item.id}
+          id={anchor === undefined ? undefined : `${anchor}-${item.id}`}
+          className="kh-faq__item"
+          open={(firstOpen && i === 0) || open.includes(item.id)}
+        >
           <summary className="kh-faq__q">
             <span>{item.question}</span>
             <span className="kh-faq__sign" aria-hidden="true">

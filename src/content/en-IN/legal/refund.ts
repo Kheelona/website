@@ -258,7 +258,7 @@ export const refundPage = {
     title: "Still {hand:deciding?}",
     lead: "See what Kheelu does, what you get and what you pay.",
     actions: [
-      { label: "Meet Kheelu", href: "/products/kheelu", cta: "refund-learn" },
+      { label: "Meet Kheelu", href: "/products/khelu", cta: "refund-learn" },
       { label: "Shipping and delivery", href: "/shipping" },
     ],
   },

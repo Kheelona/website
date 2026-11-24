@@ -39,7 +39,7 @@ import {
   TEXT_DEVIATIONS,
   VISUAL_HIDDEN,
 } from "../../../../test/e2e/support/deviations";
-import { htmlToText } from "../../../../test/e2e/support/mockup-text";
+import { htmlToText, withStoreName } from "../../../../test/e2e/support/mockup-text";
 import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../test/e2e/support/parity";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
@@ -308,9 +308,11 @@ describe.each(Object.keys(CLAIM_FIXES) as ClaimFixesSlug[])("%s: task 8b.1's cla
   const fixes = CLAIM_FIXES[slug];
   const base = withFacts(mockupFold(slug, "main"), editsBeforeClaimFixes(slug));
   const once = (lines: readonly string[]) => [...new Set(lines)];
+  /* The store's mockup is read as the build's name (V71, D070 / C1): its sentences that go are listed in it. */
+  const named = (lines: readonly string[]) => (slug === "store" ? lines.map(withStoreName) : [...lines]);
 
   it("lists exactly the sentences the edits change, against the frozen mockup with the page's earlier rules applied", () => {
-    expect(factSentences(base, fixes.edits)).toEqual({ missing: [...fixes.mockup], extra: [...fixes.build] });
+    expect(factSentences(base, fixes.edits)).toEqual({ missing: named(fixes.mockup), extra: [...fixes.build] });
     expect(fixes.mockup.length).toBeGreaterThan(0);
   });
 
@@ -324,7 +326,7 @@ describe.each(Object.keys(CLAIM_FIXES) as ClaimFixesSlug[])("%s: task 8b.1's cla
       [...Object.values(FAQ_FIXES), ...Object.values(SELLING_CLOSES), ...Object.values(CLOSES_ALIKE), ...Object.values(FOUNDER_ANSWERS)].map((f) => f.approvedBy),
     );
     expect(rules.slice(rules.indexOf(mine[0]) + 1).filter((r) => !later.has(r.approvedBy))).toEqual([]);
-    expect(ruleReach(base, fixes.edits, mine[0])).toEqual({ excused: once(fixes.mockup), accepted: once(fixes.build) });
+    expect(ruleReach(base, fixes.edits, mine[0])).toEqual({ excused: once(named(fixes.mockup)), accepted: once(fixes.build) });
     expect(mine[0].jsOff).toBeUndefined();
   });
 
@@ -351,9 +353,11 @@ describe.each(Object.keys(SELLING_CLOSES) as SellingClosesSlug[])("%s: task Q2.1
   const fixes = SELLING_CLOSES[slug];
   const base = passesBeforeSellingCloses(slug).reduce<Element>((el, pass) => withFacts(el, pass), mockupFold(slug, "main"));
   const once = (lines: readonly string[]) => [...new Set(lines)];
+  /* The store's mockup is read as the build's name (V71, D070 / C1): its sentences that go are listed in it. */
+  const named = (lines: readonly string[]) => (slug === "store" ? lines.map(withStoreName) : [...lines]);
 
   it("lists exactly the sentences the edits change, against the mockup with every earlier rule of the page applied", () => {
-    expect(factSentences(base, fixes.edits)).toEqual({ missing: [...fixes.mockup], extra: [...fixes.build] });
+    expect(factSentences(base, fixes.edits)).toEqual({ missing: named(fixes.mockup), extra: [...fixes.build] });
     expect(fixes.mockup.length + fixes.build.length).toBeGreaterThan(0);
   });
 
@@ -362,7 +366,7 @@ describe.each(Object.keys(SELLING_CLOSES) as SellingClosesSlug[])("%s: task Q2.1
     const mine = rules.filter((r) => r.approvedBy === fixes.approvedBy);
     expect(mine).toHaveLength(1);
     expect(rules.slice(rules.indexOf(mine[0]) + 1).map((r) => r.approvedBy)).toEqual(slug in CLOSES_ALIKE ? [CLOSES_ALIKE[slug as ClosesAlikeSlug].approvedBy] : []);
-    expect(ruleReach(base, fixes.edits, mine[0])).toEqual({ excused: once(fixes.mockup), accepted: once(fixes.build) });
+    expect(ruleReach(base, fixes.edits, mine[0])).toEqual({ excused: once(named(fixes.mockup)), accepted: once(fixes.build) });
     expect(mine[0].jsOff).toBeUndefined();
   });
 

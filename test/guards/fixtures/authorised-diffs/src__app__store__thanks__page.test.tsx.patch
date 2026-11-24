@@ -7,13 +7,21 @@ mockup/pages/store-confirmation.html fold 2), so the exact-text selector gains "
 unchanged once literals are masked: no assertion added, removed or weakened, and the balance is still derived from the
 row (₹4,999 minus the ₹499 paid).
 
+D070 / C1 (K-176; the founder's approval on 24 Nov 2026 of the store name "Kheelu" -> "Khelu"; decisions
+2026-11-13-a2-store-rename-approved and 2026-11-24-go-5-ui-ux-changes-keep-headline-rename-redirect), LITERAL-ONLY: the
+confirmation heading's exact-text selector follows the page's new words, "Your Khelu is reserved." (src/content/en-IN/store/
+confirmation.ts). One string literal; no assertion added, removed or weakened.
+
 diff --git a/src/app/store/thanks/page.test.tsx b/src/app/store/thanks/page.test.tsx
-index 1b07ee4..15f521b 100644
+index 1b07ee4..601ab52 100644
 --- a/src/app/store/thanks/page.test.tsx
 +++ b/src/app/store/thanks/page.test.tsx
-@@ -65,7 +65,7 @@ describe("the confirmation page", () => {
+@@ -63,9 +63,9 @@ describe("the confirmation page", () => {
+     paidOrder();
+     render(await ThanksPage());
  
-     expect(screen.getByRole("heading", { name: "Your Kheelu is reserved." })).toBeInTheDocument();
+-    expect(screen.getByRole("heading", { name: "Your Kheelu is reserved." })).toBeInTheDocument();
++    expect(screen.getByRole("heading", { name: "Your Khelu is reserved." })).toBeInTheDocument();
      expect(screen.getByText("₹499")).toBeInTheDocument();
 -    expect(screen.getByText("₹4,500, of the ₹4,999 price")).toBeInTheDocument();
 +    expect(screen.getByText("₹4,500, of the ₹4,999 price (incl. GST)")).toBeInTheDocument();

@@ -10,6 +10,7 @@ import { topics } from "../../../src/content/en-IN/stories/topics";
 import { isLegacyRoute } from "../../guards/legacy-paths";
 import { ORIGINS, SLUG_FILTER, type Host } from "./env";
 import { MOCKUP_SLUGS, type MockupSlug } from "./mockup-text";
+import { builtAddress } from "./url-move";
 import { ROOT, readRepoFile } from "./repo";
 
 export type Route = {
@@ -48,7 +49,7 @@ function templateOf(slug: MockupSlug): Route["template"] {
 
 export function mockupRoute(slug: MockupSlug): Route {
   const meta = metaOf(slug);
-  const url = meta.url ?? "/";
+  const url = builtAddress(meta.url ?? "/");
   const store = /^https:\/\/store\.kheelona\.com/.test(url);
   const path = slug === "404" ? NOT_FOUND_PATH : store ? new URL(url).pathname : url;
   return {

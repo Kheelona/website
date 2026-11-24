@@ -200,7 +200,7 @@ export const shippingPage = {
     title: "Still {hand:deciding?}",
     lead: "See what Kheelu does, what you get and what you pay.",
     actions: [
-      { label: "Meet Kheelu", href: "/products/kheelu", cta: "shipping-learn" },
+      { label: "Meet Kheelu", href: "/products/khelu", cta: "shipping-learn" },
       { label: "Refunds, returns and warranty", href: "/refund" },
     ],
   },

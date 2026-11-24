@@ -8,7 +8,7 @@ import type { Meta } from "@/content/types";
 import type { FaqId } from "../faqs";
 import { DEFAULT_OG } from "../organization";
 import { seller } from "../seller";
-import { TRUST_COMPACT, TRUST_FULL, trustItems } from "../trust";
+import { TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "../trust";
 import { paymentsLine } from "./payments-line";
 
 /**
@@ -37,6 +37,15 @@ export interface StorePageContent {
   readonly details: StoreDetailsConfig;
   readonly beside: PayBesideConfig;
   readonly questions: { readonly heading: Extract<FaqSectionConfig, { variant: "store" }>["heading"]; readonly items: readonly FaqId[] };
+  /** How the page lays its answers out (D070 / C1, K-176; no words, only which existing question does what): the
+   *  fragment prefix that makes each question linkable, the questions open at load (the three money answers: what is paid
+   *  today, the refund, the delivery date), and which trust links (trust.ts) open which question in place instead of
+   *  leaving for the marketing site. The warranty and payment-methods links have no question here and keep leaving. */
+  readonly answers: {
+    readonly anchor: string;
+    readonly open: readonly FaqId[];
+    readonly links: readonly { readonly trust: TrustId; readonly faq: FaqId }[];
+  };
   readonly films: Omit<FilmsStripConfig, "films" | "labels">;
   readonly payments: PaymentsLineConfig;
   /** The store before its keys are in place (and on beta, D051): it says "shortly" rather than failing. */
@@ -45,11 +54,11 @@ export interface StorePageContent {
 
 export const storePage = {
   meta: {
-    title: "Pre-order Kheelu · Kheelona",
+    title: "Pre-order Khelu · Kheelona",
     description: {
       token:
-        "Pre-order Kheelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7. {price:headline} (incl. GST); reserve yours today with a refundable {price:token}.",
-      full: "Pre-order Kheelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7. {price:full} (incl. GST), with delivery anywhere in India included.",
+        "Pre-order Khelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7. {price:headline} (incl. GST); reserve yours today with a refundable {price:token}.",
+      full: "Pre-order Khelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7. {price:full} (incl. GST), with delivery anywhere in India included.",
     },
     og: DEFAULT_OG,
   },
@@ -57,9 +66,9 @@ export const storePage = {
     /* The founder's eyebrow (D065 item 1; the D2C plan v2 §10; task Q2.12), the age band kept whole when it wraps beside
        the small Kheelu on a phone. Only the first screen's marketing words change: the checkout is untouched (ADR-013). */
     eyebrow: `Screen-free AI toy · {nowrap:${STORE_AGE_BAND}}`,
-    title: "Pre-order Kheelu.",
+    title: "Pre-order Khelu.",
     titleId: "store-title",
-    image: { src: kheeluFront, alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." },
+    image: { src: kheeluFront, alt: "Khelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." },
     priceId: "store-price",
     trust: TRUST_COMPACT.map((id) => trustItems[id]),
   },
@@ -73,10 +82,20 @@ export const storePage = {
     heading: { title: "Questions before you pay", id: "faq-title" },
     items: ["paying-today", "change-my-mind", "store-arrival", "how-to-pay"],
   },
+  answers: {
+    anchor: "faq",
+    open: ["paying-today", "change-my-mind", "store-arrival"],
+    links: [
+      { trust: "risk-reversal", faq: "change-my-mind" },
+      { trust: "returns-7-days", faq: "change-my-mind" },
+      { trust: "deliveries-start", faq: "store-arrival" },
+      { trust: "delivery-included", faq: "store-arrival" },
+    ],
+  },
   films: {
     /* D040: claim only what the films show; the live heading is banned, claims §4. Not every film was shot at home, so
        "in real homes" went (D057 item 2; the D2C plan v2 §10; task Q2.12). */
-    heading: { title: "See Kheelu {hand:ask.}", lead: "Real children, real families. Press play on any of them.", id: "ask-title" },
+    heading: { title: "See Khelu {hand:ask.}", lead: "Real children, real families. Press play on any of them.", id: "ask-title" },
     proof: { text: "Kids doing the talking. Parents, in their own words.", size: "body-s" },
     posters: "lazy",
     link: { label: "Back to your details", href: "#details", iconEnd: "caret-up" },

@@ -50,7 +50,7 @@ export const THANKS_STEPS: StepsSectionThanks = {
     {
       tone: "blue",
       title: "Pay the balance",
-      body: "When your Kheelu is ready to leave us, we send a payment link for the {price:balance} balance on WhatsApp and by email.",
+      body: "When your Khelu is ready to leave us, we send a payment link for the {price:balance} balance on WhatsApp and by email.",
     },
     { tone: "chilli", title: "Track your delivery", body: "When it is dispatched, we send you the courier and tracking details." },
   ],

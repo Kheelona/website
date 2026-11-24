@@ -13,7 +13,7 @@ import { cta } from "./cta";
 const doc = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const sitePath = (href: string) =>
-  `/${href.replace(/\.html/, "").replace(/^home$/, "").replace(/^meet-kheelu/, "products/kheelu")}`;
+  `/${href.replace(/\.html/, "").replace(/^home$/, "").replace(/^meet-kheelu/, "products/khelu")}`;
 
 describe("the one label (D041)", () => {
   it("is the checkout's own constant", () => {

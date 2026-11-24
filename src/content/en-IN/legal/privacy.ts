@@ -604,7 +604,7 @@ export const privacyPage = {
   /* The close: no pre-order button and no tracking value (strategy §5, policy row), the link back to the product page
    * and the related policies; the help line is the template's. */
   close: {
-    actions: [{ label: "Meet Kheelu", href: "/products/kheelu" }],
+    actions: [{ label: "Meet Kheelu", href: "/products/khelu" }],
     also: {
       label: "Also read:",
       links: [

@@ -123,7 +123,7 @@ export const AppScreensHome: Story = {
       { icon: "trash", body: RETENTION },
     ],
     screens: { images: [TRANSCRIPT, ACTIVITY], caption: CAPTION },
-    link: { label: "See what the app shows you", href: "/products/kheelu#app", icon: "eye" },
+    link: { label: "See what the app shows you", href: "/products/khelu#app", icon: "eye" },
   },
 };
 
@@ -166,7 +166,7 @@ export const AppScreensSafety: Story = {
       },
     ],
     screens: { images: [PRIVACY], caption: CAPTION },
-    link: { label: "See what the app shows you", href: "/products/kheelu#app", icon: "eye" },
+    link: { label: "See what the app shows you", href: "/products/khelu#app", icon: "eye" },
   },
 };
 
@@ -189,7 +189,7 @@ export const PhotoGuidePlush: Story = {
         ],
       },
     },
-    link: { label: "See what Kheelu does", href: "/products/kheelu" },
+    link: { label: "See what Kheelu does", href: "/products/khelu" },
   },
 };
 

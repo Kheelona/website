@@ -616,7 +616,7 @@ export const privacyFixture = {
     actions: [
       {
         label: "Meet Kheelu",
-        href: "/products/kheelu",
+        href: "/products/khelu",
       },
     ],
     also: {

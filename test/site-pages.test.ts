@@ -68,7 +68,7 @@ function sellingText(path: string, html: string): string {
 describe("the redesign's pages", () => {
   it("are all here: the 13 marketing routes and the stories", () => {
     const paths = PAGES.map((p) => p.path);
-    for (const p of ["/", "/products/kheelu", "/safety", "/setup", "/ai-toys-for-kids-in-india", "/stories", "/team", "/contact", "/privacy", "/terms", "/refund", "/shipping"]) {
+    for (const p of ["/", "/products/khelu", "/safety", "/setup", "/ai-toys-for-kids-in-india", "/stories", "/team", "/contact", "/privacy", "/terms", "/refund", "/shipping"]) {
       expect(paths).toContain(p);
     }
     expect(paths.filter((p) => p.startsWith("/stories/")).length).toBeGreaterThanOrEqual(4);
@@ -76,7 +76,7 @@ describe("the redesign's pages", () => {
 
   it("maps dist files to routes", () => {
     expect(routeOf("index.html")).toBe("/");
-    expect(routeOf("products/kheelu/index.html")).toBe("/products/kheelu");
+    expect(routeOf("products/khelu/index.html")).toBe("/products/khelu");
     expect(routeOf("stories/a.html")).toBe("/stories/a");
   });
 });
@@ -139,7 +139,7 @@ describe("tracking", () => {
       expect(head, path).toContain(`data-key="${AHREFS_ANALYTICS_KEY}"`);
       expect(out.match(/data-kh-tracking/g), path).toHaveLength(1);
       expect(out.indexOf("data-kh-tracking")).toBeGreaterThan(out.indexOf("</main>"));
-      expect(out.includes("data-view-content-paise"), path).toBe(path === "/" || path === "/products/kheelu");
+      expect(out.includes("data-view-content-paise"), path).toBe(path === "/" || path === "/products/khelu");
       expect(renderSitePage(html, ctx({ path, env: "beta" })), path).not.toContain("analytics.ahrefs.com");
     }
     expect(renderSitePage(page("/"), ctx({ path: "/", offer: FULL }))).toContain(`data-view-content-paise="${FULL_AMOUNT_PAISE}"`);
@@ -157,7 +157,7 @@ describe("the live offer", () => {
 
   it("token mode is the redesign as built, with the schema price from the checkout's constant", () => {
     for (const { path, html } of PAGES) expect(applyOffer(html, TOKEN), path).toBe(html);
-    expect(applyOffer(page("/products/kheelu"), TOKEN)).toContain(`"price":${LAUNCH_AMOUNT_PAISE / 100}`);
+    expect(applyOffer(page("/products/khelu"), TOKEN)).toContain(`"price":${LAUNCH_AMOUNT_PAISE / 100}`);
   });
 
   it("every amount the redesign prints is one of the checkout's", () => {
@@ -176,7 +176,7 @@ describe("the live offer", () => {
         expect(decodeURIComponent(encoded), path).not.toContain(TOKEN.prices.token);
       }
     }
-    const product = renderSitePage(page("/products/kheelu"), ctx({ path: "/products/kheelu", offer: FULL }));
+    const product = renderSitePage(page("/products/khelu"), ctx({ path: "/products/khelu", offer: FULL }));
     expect(product).toContain(`"price":${FULL_AMOUNT_PAISE / 100}`);
     expect(product).toContain("₹7,999 in total, paid in full when you order.");
   });
@@ -191,7 +191,7 @@ describe("the live offer", () => {
   });
 
   it("both Product blocks (Home and the product page) carry the schema date 2026-12-15", () => {
-    for (const path of ["/", "/products/kheelu"]) expect(page(path), path).toContain('"availabilityStarts":"2026-12-15"');
+    for (const path of ["/", "/products/khelu"]) expect(page(path), path).toContain('"availabilityStarts":"2026-12-15"');
   });
 });
 

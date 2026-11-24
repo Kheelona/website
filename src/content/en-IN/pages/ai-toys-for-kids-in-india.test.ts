@@ -322,7 +322,7 @@ describe("fold 4: AI robot or AI plush?", () => {
     expect(link.classList.contains("kh-btn--ghost")).toBe(true);
     expect(link.hasAttribute("data-ph-capture-attribute-cta")).toBe(false);
     expect(config.link).toEqual({ label: norm(link.textContent), href: mockupRoute(link.getAttribute("href")!) });
-    expect(config.link).toEqual({ label: "See what Kheelu does", href: "/products/kheelu" });
+    expect(config.link).toEqual({ label: "See what Kheelu does", href: "/products/khelu" });
   });
 });
 

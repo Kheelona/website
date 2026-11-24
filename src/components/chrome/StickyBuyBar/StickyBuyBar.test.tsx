@@ -44,7 +44,7 @@ const io = () => FakeIO.all.at(-1)!;
 
 /** The bar's laid-out height: 72 px, or 0 as at 900 px and up, where the bar is display: none. */
 let barHeight = 72;
-const PATHS = ["/", "/safety", "/products/kheelu"];
+const PATHS = ["/", "/safety", "/products/khelu"];
 const offer = buildOffer("token");
 const html = document.documentElement;
 
@@ -166,7 +166,7 @@ describe("StickyBuyBar: the page path as Vercel's runtime render gives it (task 
 
   it.each([
     ["/index", "/"],
-    ["/products/kheelu/index", "/products/kheelu"],
+    ["/products/khelu/index", "/products/khelu"],
   ])("renders on %s exactly as on %s: the bar is in the server HTML", (runtime, browser) => {
     const html = serverHtml(runtime);
     expect(html).toContain('class="kh-buybar');
@@ -238,14 +238,14 @@ describe("StickyBuyBar: behaviour (mockup.js §2)", () => {
   });
 
   it("shows from first paint on a page with no hero CTA, once the inline buttons are known to be off screen", () => {
-    const { main } = page(`<p>…</p><a class="kh-btn kh-btn--cta">offer</a>`, "/products/kheelu");
+    const { main } = page(`<p>…</p><a class="kh-btn kh-btn--cta">offer</a>`, "/products/khelu");
     expect(html.dataset.buybar).toBe("hidden");
     io().report([[main.querySelector("a")!, false]]);
     expect(html.dataset.buybar).toBe("shown");
   });
 
   it("never flashes up on a page whose inline button is on screen at load: aside from the first report", () => {
-    const { main } = page(`<a class="kh-btn kh-btn--cta">product top</a>`, "/products/kheelu");
+    const { main } = page(`<a class="kh-btn kh-btn--cta">product top</a>`, "/products/khelu");
     const seen = new Set<string>();
     new MutationObserver(() => seen.add(html.dataset.buybar ?? "")).observe(html, { attributes: true, attributeFilter: ["data-buybar"] });
     io().report([[main.querySelector("a")!, true]]);

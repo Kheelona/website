@@ -85,7 +85,7 @@ const photo = (name: string, width: number, height: number, alt: string) => ({
 describe("FaqSection: default (Home fold 8)", () => {
   const fold = mockup("home").querySelector('[aria-labelledby="faq-title"]')!;
   const items = itemsFrom(fold);
-  const more = { label: "See all questions", href: "/products/kheelu#faq", cta: "faq-more" as const };
+  const more = { label: "See all questions", href: "/products/khelu#faq", cta: "faq-more" as const };
 
   it("matches the approved fold: heading column, then the questions and the more link", () => {
     const { container } = render(<FaqSection heading={heading(fold)} items={items} more={more} offer={offer} />);
@@ -113,7 +113,7 @@ describe("FaqSection: default (Home fold 8)", () => {
   it("tags the more link with its secondary CTA value (architecture §8.3)", () => {
     render(<FaqSection heading={heading(fold)} items={items} more={more} offer={offer} />);
     const link = screen.getByRole("link", { name: "See all questions" });
-    expect(link).toHaveAttribute("href", "/products/kheelu#faq");
+    expect(link).toHaveAttribute("href", "/products/khelu#faq");
     expect(link).toHaveAttribute("data-ph-capture-attribute-cta", "faq-more");
     expect(link).toHaveClass("kh-btn", "kh-btn--ghost");
   });
@@ -252,5 +252,26 @@ describe("FaqSection: store (store.html fold 5)", () => {
     expect(shape(container.firstElementChild!)).toEqual(shape(fold));
     expect(words(container.textContent)).toBe(words(fold.textContent));
     expect(container.querySelector("[data-reveal]")).toBeNull();
+  });
+
+  // D070 / C1 (K-176): the store page opens its money answers and makes every question linkable; an event page, which
+  // passes neither, keeps the approved markup (every answer closed, no ids).
+  it("opens the answers it is told to and gives each question a fragment, only when asked", () => {
+    const items = [
+      { id: "paying-today", question: "What am I paying today?", answer: "A" },
+      { id: "change-my-mind", question: "What if I change my mind?", answer: "B" },
+      { id: "how-to-pay", question: "How can I pay?", answer: "C" },
+    ];
+    const heading = { title: "Questions before you pay", id: "faq-title" };
+    const plain = render(<FaqSection variant="store" heading={heading} items={items} offer={offer} />).container;
+    expect([...plain.querySelectorAll("details")].map((d) => [d.open, d.hasAttribute("id")])).toEqual([[false, false], [false, false], [false, false]]);
+    const opened = render(
+      <FaqSection variant="store" heading={heading} items={items} offer={offer} open={["paying-today", "change-my-mind"]} anchor="faq" />,
+    ).container;
+    expect([...opened.querySelectorAll("details")].map((d) => [d.id, d.open])).toEqual([
+      ["faq-paying-today", true],
+      ["faq-change-my-mind", true],
+      ["faq-how-to-pay", false],
+    ]);
   });
 });

@@ -189,10 +189,21 @@
 .pdp-msg--khelu::before { content: ""; position: absolute; left: -2.875rem; bottom: 0; width: 2.375rem; height: 2.375rem; border-radius: 50%; background: #fff url("/assets/img/kheelu-240.webp") 50% 12% / 165% no-repeat; box-shadow: 0 0 0 1px var(--line); }
 .pdp-msg--khelu b { font-weight: 650; }
 
-/* ---------- 7 · How it works: intro + photo, the three modes, languages, good to know ---------- */
-.pdp-modes__intro { display: grid; gap: 2rem; align-items: center; }
-@media (min-width: 900px) { .pdp-modes__intro { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 4rem; } }
-.pdp-modes__intro .lead { margin-top: 1.25rem; }
+/* ---------- Folds (C4 PR 2): details in full, comparison, modes ----------
+   Plain <details>, closed by default. The summary is the section's heading block (eyebrow, heading, lead), so the heading
+   text is the label and one tap anywhere on it opens the block. The toggle is the FAQ's round plus. */
+.pdp-fold > summary { position: relative; display: block; max-width: 52rem; margin-bottom: 0; padding-right: 3.5rem; list-style: none; cursor: pointer; }
+.pdp-fold > summary::-webkit-details-marker { display: none; }
+.pdp-fold > summary > .eyebrow, .pdp-fold > summary > .lead { display: block; }
+.pdp-fold > summary > .lead { margin-top: 1rem; }
+.pdp-fold > summary::after { content: ""; position: absolute; right: 0; top: 50%; width: 2.5rem; height: 2.5rem; margin-top: -1.25rem; border-radius: 50%; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231d1d1f' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M12 6v12M6 12h12'/%3E%3C/svg%3E") center / 1.125rem no-repeat; box-shadow: 0 0 0 1px var(--line); transition: transform 0.4s var(--ease-out), background-color 0.3s; }
+.pdp-fold > summary:hover::after { background-color: var(--p-mint); }
+.pdp-fold[open] > summary { margin-bottom: clamp(1.75rem, 4vw, 3rem); }
+.pdp-fold[open] > summary::after { transform: rotate(45deg); background-color: var(--p-mint); }
+/* A folded section needs less air than an open one: the heading block is all that shows. */
+.pdp-modes, .pdp-compare, .pdp-specs { padding-block: clamp(2.5rem, 5vw, 4rem); }
+
+/* ---------- 7 · How it works: heading, then (folded) the photo, the three modes, languages, good to know ---------- */
 .pdp-modes__photo { margin: 0; aspect-ratio: 960 / 536; border-radius: var(--radius-lg); overflow: hidden; background: #efe9e1; }
 .pdp-modes__photo img { width: 100%; height: 112%; margin-top: -6%; object-fit: cover; }
 .pdp-bento { display: grid; gap: 1rem; margin-top: clamp(2.5rem, 5vw, 4rem); }

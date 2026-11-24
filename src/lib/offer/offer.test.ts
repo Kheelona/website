@@ -148,7 +148,7 @@ describe("token mode", () => {
     const line = Array.from(home.querySelectorAll("p")).find((p) => p.textContent?.startsWith("Every Kheelu comes with"));
     expect(norm(line?.textContent)).toBe(KHEELONA_PLUS.mockup);
     expect(offer.plus).toBe(KHEELONA_PLUS.build);
-    expect(offer.plus).toBe("Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.");
+    expect(offer.plus).toBe("Every Khelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app."); /* the store prints "Khelu" (V71, D070 / C1) */
   });
 
   it("carries the delivery line and its schema date (D023, D037)", () => {

@@ -27,7 +27,7 @@ import {
   TEXT_DEVIATIONS,
   VISUAL_HIDDEN,
 } from "../../../test/e2e/support/deviations";
-import { withDeliveryDate } from "../../../test/e2e/support/mockup-text";
+import { withDeliveryDate, withStoreName } from "../../../test/e2e/support/mockup-text";
 import { readRepoFile } from "../../../test/e2e/support/repo";
 import { findBanned } from "../../../test/guards/banned-phrases.data";
 import { mockupFold } from "../../../test/support/mockup-compare";
@@ -179,9 +179,12 @@ describe.each(MOCKUP_PAGES)("mockup %s, token mode, word for word", (slug, ids) 
   it.each(ids.map((id, i) => [id, i] as const))("%s", (id, i) => {
     const item: FaqItem = faqs[id];
     const shown = items[i];
-    expect(plain(item.question, token)).toBe(norm(shown.querySelector(".kh-faq__q span")?.textContent));
+    /* The store's mockup keeps Gate A's "Kheelu"; the store's FAQs print "Khelu" (deviations.md V71, D070 / C1). The other
+       pages' FAQs are not served and keep the mockup's name. */
+    const named = slug === "store" ? withStoreName : (text: string) => text;
+    expect(plain(item.question, token)).toBe(named(norm(shown.querySelector(".kh-faq__q span")?.textContent)));
     /* The frozen mockups (D046) keep the old delivery line; the build prints D068's (deviations.md V69). */
-    const paragraphs = Array.from(shown.querySelectorAll(".kh-faq__a > p, .kh-faq__a > ul > li")).map((el) => withDeliveryDate(norm(el.textContent)));
+    const paragraphs = Array.from(shown.querySelectorAll(".kh-faq__a > p, .kh-faq__a > ul > li")).map((el) => named(withDeliveryDate(norm(el.textContent))));
     const rendered = [plain(item.answer, token), ...(item.detail ?? []).flatMap((b) => blockText(b, token))];
     if (id === P15.id) {
       // The approved answer, with P15's one sentence (the replacement is never vacuous: the mockup has the old line).
@@ -330,7 +333,7 @@ describe("task 8c.4: the FAQ wording and the languages answer (D061)", () => {
   });
 
   it("says only facts.md's languages row: switching mid-sentence (D017), in AI mode as film 6's caption says, with that film named", () => {
-    expect(filmSix.caption).toBe("In AI mode, Arha switches to English, and Kheelu switches with her.");
+    expect(filmSix.caption).toBe("In AI mode, Arha switches to English, and Khelu switches with her.");
     expect(answer()).toContain("In AI mode, it can switch between them mid-sentence: when your child changes language, Kheelu changes with them.");
     expect(answer()).toMatch(new RegExp(`You can watch it happen in the film “${filmSix.chip}”\\.$`));
     // No language the facts do not name (D058 item 7: not Marathi, not Punjabi), and no count but the ceiling.
@@ -570,10 +573,10 @@ describe("full mode (copy pages)", () => {
 
   it("the store's first answer pays the whole price; its delivery answer drops the balance sentence", () => {
     expect(plain(faqs["paying-today"].answer, full)).toBe(
-      "The whole price: ₹7,999 (incl. GST), with delivery anywhere in India included. There is nothing more to pay before dispatch: no balance link, and nothing charged automatically. Until we dispatch your Kheelu, all of it is refundable.",
+      "The whole price: ₹7,999 (incl. GST), with delivery anywhere in India included. There is nothing more to pay before dispatch: no balance link, and nothing charged automatically. Until we dispatch your Khelu, all of it is refundable.",
     );
     expect(plain(faqs["store-arrival"].answer, full)).toBe(
-      plain(faqs["store-arrival"].answer, token).replace(" A reserved Kheelu is dispatched once the balance is paid.", ""),
+      plain(faqs["store-arrival"].answer, token).replace(" A reserved Khelu is dispatched once the balance is paid.", ""),
     );
   });
 

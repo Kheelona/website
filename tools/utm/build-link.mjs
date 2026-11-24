@@ -15,7 +15,7 @@
  *
  *  Usage:
  *    npm run utm -- --source=instagram --medium=paid_social \
- *                   --campaign=2026-10-launch --path=/products/kheelu \
+ *                   --campaign=2026-10-launch --path=/products/khelu \
  *                   --content=rabbit-hero-a
  *
  *  The vocabulary lives in docs/utm-conventions.md and a test asserts this
@@ -101,7 +101,7 @@ function main(argv) {
   if (!args.source || !args.medium || !args.campaign) {
     console.error(
       "usage: npm run utm -- --source=<s> --medium=<m> --campaign=<yyyy-mm-slug>\n" +
-        "                     [--path=/products/kheelu] [--content=<creative>] [--term=<keyword>]\n\n" +
+        "                     [--path=/products/khelu] [--content=<creative>] [--term=<keyword>]\n\n" +
         `sources: ${SOURCES.join(" ")}\nmediums: ${MEDIUMS.join(" ")}\n\n` +
         "The scheme and the reasoning are in docs/utm-conventions.md.",
     );

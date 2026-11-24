@@ -116,7 +116,7 @@ describe("Home: the folds, in the plan's order (D2C plan v2 §2)", () => {
       .map((a) => a.getAttribute("href")!)
       // In-page links, the store's buttons and the trust lines' policy links (refund, shipping, terms) are not exits.
       .filter((href) => !href.startsWith("#") && !href.startsWith("https://store") && !/^\/(?:refund|shipping|terms)#/.test(href));
-    expect(away).toEqual(["https://developingchild.harvard.edu/key-concept/serve-and-return/", "/products/kheelu#modes", expect.stringMatching(/^https:\/\/wa\.me\/\?text=/), "/safety"]);
+    expect(away).toEqual(["https://developingchild.harvard.edu/key-concept/serve-and-return/", "/products/khelu#modes", expect.stringMatching(/^https:\/\/wa\.me\/\?text=/), "/safety"]);
   });
 
   it("watches the hero button for the phone buy bar, which Home carries", () => {
@@ -258,11 +258,11 @@ describe("Home fold 4 · languages (plan fold 4; D064 item 9)", () => {
     expect(all(langs, ".kh-lang")).toHaveLength(8);
     const figure = langs.querySelector("figure.ks-langs-film")!;
     const poster = figure.querySelector("img")!;
-    expect(poster.getAttribute("alt")).toBe("A girl on a sofa beside the cream Kheelu plush.");
+    expect(poster.getAttribute("alt")).toBe("A girl on a sofa beside the cream Khelu plush."); /* films.ts: the store prints "Khelu" (V71, D070 / C1) */
     expect(poster.getAttribute("loading")).toBe("lazy");
     expect(text(figure.querySelector(".ks-clip__chip"))).toBe("Two languages · 0:31");
-    expect(figure.querySelector("button")?.getAttribute("aria-label")).toBe("Play: Two languages. In AI mode, Arha switches to English, and Kheelu switches with her.");
-    expect(text(figure.querySelector("figcaption"))).toBe("In AI mode, Arha switches to English, and Kheelu switches with her.");
+    expect(figure.querySelector("button")?.getAttribute("aria-label")).toBe("Play: Two languages. In AI mode, Arha switches to English, and Khelu switches with her.");
+    expect(text(figure.querySelector("figcaption"))).toBe("In AI mode, Arha switches to English, and Khelu switches with her.");
     expect(chilli(langs)).toEqual([]);
     // The film and its poster are film 6's; the video's own poster is that still, never the animated .webp preview.
     const entry = homePage.sections.find((s) => s.kind === "languages-section");
@@ -331,7 +331,7 @@ describe("Home fold 5 · Kheelu asks, your child thinks (plan fold 5; the CMO's 
     expect(trustRow(asks)).toEqual(TRUST);
     const learn = asks.querySelector('[data-ph-capture-attribute-cta="home-asks-learn"]')!;
     expect(text(learn)).toBe("See how it works");
-    expect(learn.getAttribute("href")).toBe("/products/kheelu#modes");
+    expect(learn.getAttribute("href")).toBe("/products/khelu#modes");
   });
 });
 
@@ -599,7 +599,7 @@ describe("Home: search and share metadata (plan §2, title, meta)", () => {
     expect(toPlainText(homePage.meta.description, offer)).toBe(description);
     expect(description.length).toBeLessThanOrEqual(155);
     expect(pageMeta({ ...homePage.meta, path: "/", offer }).alternates?.canonical).toBe("/");
-    expect(homePage.meta.og).toEqual({ image: "/og/kheelu.jpg", alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." });
+    expect(homePage.meta.og).toEqual({ image: "/og/kheelu.jpg", alt: "Khelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." }); /* DEFAULT_OG: the store prints "Khelu" (V71, D070 / C1) */
   });
 });
 

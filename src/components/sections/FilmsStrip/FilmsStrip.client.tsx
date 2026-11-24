@@ -9,7 +9,7 @@ import { Glyph } from "@/components/ui/Icon/Glyph";
 import { IconButton } from "@/components/ui/IconButton/IconButton";
 import { imageSource } from "@/components/ui/Photo/image";
 import { useFilmPlayback } from "./film-playback";
-import { focusedTile, INITIAL_VIEW, positionText, stripView, type StripView } from "./films-view";
+import { filmName, focusedTile, INITIAL_VIEW, playLabel, positionText, stripView, type StripView } from "./films-view";
 import type { ClipFilm, FilmTile, FilmsStripConfig, FilmsStripLabels } from "./films-strip.types";
 
 /** The strip's central band, the root of the focus observer: the middle third of the track (D049 pick 8). */
@@ -164,7 +164,7 @@ export function FilmsStripIsland({ films, labels, posters, sizes, quotes, anchor
         {films.map((film, i) => {
           const isPlaying = playing?.id === film.id;
           const eager = posters === "eager-low" && i < 3;
-          const name = `${film.chip}. ${film.caption}`;
+          const name = filmName(film);
           return (
             <li key={film.id} id={anchored ? film.id : undefined} className={clsx("ks-film", focus === film.id && "is-focus")} data-video-id={film.id}>
               <p className="ks-film__meta">
@@ -190,7 +190,7 @@ export function FilmsStripIsland({ films, labels, posters, sizes, quotes, anchor
                 />
                 <IconButton
                   icon={ICON_PLAY}
-                  label={`${labels.play} ${name}`}
+                  label={playLabel(film, labels)}
                   variant="primary"
                   size="l"
                   className="ks-film__play"
