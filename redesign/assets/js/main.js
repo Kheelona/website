@@ -626,10 +626,13 @@
 
   /* ---------- Films viewer (shared with the static fallback) ----------
      Tapping any film opens it full screen, playing with sound, like a reel: swipe up (or scroll, or press ↓) for the
-     next film, which plays as it arrives; a film that ends moves on to the next by itself. Every [data-video] on the
+     next film, which plays as it arrives; a film that ends waits on its last frame (see below). Every [data-video] on the
      page is in the list, in page order. One <video> element is moved from slide to slide: phones only allow sound on
      an element a tap has started, so the first tap unlocks the voice for every film after it. Tap pauses; Back, Esc
-     or × closes. Opening remembers the page's scroll position and closing puts the page back there (home and product page, any device). */
+     or × closes. Opening remembers the page's scroll position and closing puts the page back there (home and product page, any device).
+     Pre-order Khelu stays in reach (K-180 / C5, D070): the page's own bar button sits in a strip of its own under the picture (so it covers no
+     face, subtitle or caption), and when a film ends the viewer holds on it (no silent move to the next film) with that button and the footer's
+     price line beside it. */
   function initModal() {
     const modal = document.getElementById("modal"); if (!modal) return;
     const track = modal.querySelector("[data-reels-track]"), count = modal.querySelector("[data-reels-count]"), hint = modal.querySelector("[data-reels-hint]");
@@ -654,6 +657,17 @@
       s.querySelector("h3").textContent = f.title; s.querySelector("p").textContent = f.line;
       track.appendChild(s); return s;
     });
+    // Pre-order Khelu inside the viewer (the full-screen dialog covers the page's bar): the bar's own button (label, arrow, link) and the footer's
+    // price line, copied from the page so no wording lives here. PostHog reports its taps as cta=film-viewer. The link has its real href from the
+    // moment it exists (a crawler or Lighthouse reads the page with the viewer closed: an <a> without href fails "links are crawlable").
+    const orderSrc = document.querySelector(".ctabar a.btn--primary"), priceSrc = document.querySelector(".footer__cta .price-line");
+    let order = null;
+    if (orderSrc) {
+      const cta = document.createElement("div"); cta.className = "reels__cta";
+      order = document.createElement("a"); order.className = "reels__order"; order.href = orderSrc.href; order.innerHTML = orderSrc.innerHTML; order.dataset.phCaptureAttributeCta = "film-viewer"; cta.appendChild(order);
+      if (priceSrc) { const p = document.createElement("p"); p.className = "reels__price"; p.innerHTML = priceSrc.innerHTML; cta.appendChild(p); }
+      modal.appendChild(cta); modal.classList.add("has-order");
+    }
     let cur = -1, isOpen = false, resume = [], swiped = false, opener = null, savedY = 0, oldRestore = null, restoreRaf = 0;
     const go = (i) => { if (i < 0 || i >= slides.length) return; track.scrollTo({ top: slides[i].offsetTop, behavior: reduced ? "auto" : "smooth" }); };
     const activate = (i) => {
@@ -661,14 +675,16 @@
       slides.forEach((s, j) => s.classList.toggle("is-on", j === i)); slides[i].classList.remove("is-paused");
       slides[i].insertBefore(video, slides[i].querySelector(".reels__cap"));
       video.src = films[i].src; video.currentTime = 0; video.play().catch(() => slides[i].classList.add("is-paused"));
-      count.textContent = `${i + 1} / ${films.length}`;
+      count.textContent = `${i + 1} / ${films.length}`; modal.classList.toggle("is-last", i === slides.length - 1);
       if (swiped) hint.classList.add("is-gone");
       const nxt = films[i + 1]; if (nxt) { const l = document.createElement("link"); l.rel = "prefetch"; l.href = nxt.src; l.as = "video"; document.head.appendChild(l); } // the next film starts loading
     };
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) activate(+e.target.dataset.i); }), { root: track, threshold: 0.6 });
     slides.forEach((s) => io.observe(s));
     video.addEventListener("timeupdate", () => { const b = slides[cur] && slides[cur].querySelector(".reels__bar b"); if (b && video.duration) b.style.transform = `scaleX(${video.currentTime / video.duration})`; });
-    video.addEventListener("ended", () => (cur < slides.length - 1 ? go(cur + 1) : (video.currentTime = 0, video.play().catch(() => {}))));
+    // A film that ends is held on its last frame with the button and the price line (CSS .is-end); a swipe or ↓ goes on to the next film, a tap plays it again.
+    video.addEventListener("ended", () => modal.classList.add("is-end"));
+    video.addEventListener("play", () => modal.classList.remove("is-end"));
     track.addEventListener("click", (e) => { const s = e.target.closest(".reels__slide"); if (!s || +s.dataset.i !== cur) return; if (video.paused) { video.play().catch(() => {}); s.classList.remove("is-paused"); } else { video.pause(); s.classList.add("is-paused"); } });
     const syncMute = () => { muteBtn.setAttribute("aria-pressed", String(video.muted)); muteBtn.setAttribute("aria-label", video.muted ? "Sound on" : "Mute"); };
     muteBtn.addEventListener("click", () => { video.muted = !video.muted; syncMute(); });
@@ -678,6 +694,7 @@
       if (isOpen) return; isOpen = true; cur = -1; swiped = false; hint.classList.remove("is-gone");
       // The page keeps its place: remember it, and stop the browser restoring a scroll position of its own when Back closes the films.
       opener = from; savedY = scrollY; cancelAnimationFrame(restoreRaf);
+      if (order) order.href = orderSrc.href; // the bar's link as it is now
       if ("scrollRestoration" in history) { if (oldRestore === null) oldRestore = history.scrollRestoration; history.scrollRestoration = "manual"; }
       // Films already playing on the page (the reel's previews) pause underneath and carry on afterwards.
       resume = [...document.querySelectorAll("video")].filter((v) => v !== video && !v.paused); resume.forEach((v) => v.pause());
@@ -685,7 +702,7 @@
       track.scrollTop = slides[i].offsetTop; activate(i); // played inside the tap, so it may play with sound
       history.pushState({ reels: true }, ""); // the phone's Back button closes the films, not the page
     }
-    const shut = () => { if (!isOpen) return; isOpen = false; video.pause(); video.removeAttribute("src"); video.load(); cur = -1; if (modal.open) modal.close(); root.classList.remove("reels-open"); resume.forEach((v) => v.play().catch(() => {})); document.dispatchEvent(new CustomEvent("khelu:reels", { detail: false }));
+    const shut = () => { if (!isOpen) return; isOpen = false; video.pause(); video.removeAttribute("src"); video.load(); cur = -1; modal.classList.remove("is-end", "is-last"); if (modal.open) modal.close(); root.classList.remove("reels-open"); resume.forEach((v) => v.play().catch(() => {})); document.dispatchEvent(new CustomEvent("khelu:reels", { detail: false }));
       // Closing never moves the page: back to the remembered place at once (Lenis has just restarted), the film that opened the viewer focused without scrolling, then the browser's own scroll restoration returns.
       if (lenis) lenis.scrollTo(savedY, { immediate: true }); else scrollTo({ top: savedY, behavior: "instant" });
       if (opener) opener.focus({ preventScroll: true });
@@ -693,6 +710,17 @@
     };
     const close = () => { if (history.state && history.state.reels) history.back(); else shut(); };
     addEventListener("popstate", shut);
+    // Pre-order from inside the viewer: close the viewer first (Back pops its history entry, the page returns to its place), then go to the store, so the store's
+    // Back button returns to this page where the visitor was, not to a top-of-page copy with a dead viewer entry. A click another handler has already taken over
+    // (the tracking shell holds the first tap until PostHog is ready, then clicks again) or one that opens a new tab is left alone.
+    if (order) order.addEventListener("click", (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || !isOpen || !(history.state && history.state.reels)) return;
+      e.preventDefault();
+      const href = order.href, leave = () => { clearTimeout(t); location.assign(href); };
+      const t = setTimeout(leave, 600); // Back never arrived: go anyway
+      addEventListener("popstate", () => requestAnimationFrame(() => requestAnimationFrame(leave)), { once: true });
+      history.back();
+    });
     modal.querySelector("[data-close]").addEventListener("click", close);
     modal.addEventListener("cancel", (e) => { e.preventDefault(); close(); }); // Esc
     syncMute();

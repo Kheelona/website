@@ -302,6 +302,14 @@ const CTA_TABLE = {
     pages: ["/ai-toys-for-kids-in-india"],
     note: "placed after Gate A (D065, the selling update): no approved mockup carries it (tracking inventory §6)",
   },
+  "film-viewer": {
+    status: "new",
+    reserved: false,
+    role: "preorder",
+    element: "The full-screen films viewer's Pre-order button (copied from the bar by redesign/assets/js/main.js, in a strip under the picture)",
+    pages: ["/", ...PRODUCT],
+    note: "placed after Gate A (D070, K-180 / C5): no approved mockup carries it (tracking inventory §6)",
+  },
 } as const satisfies Record<string, CtaSpec>;
 
 /** Every registered value, the reserved two included. */
