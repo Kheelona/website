@@ -217,7 +217,6 @@ const REFUSALS: [build: string, key: string, line: string][] = [
   ["no KH_SITE_ENV (a local build)", LIVE_SHOUTING, "RAZORPAY_KEY_ID is a live key, which a development build refuses"],
 ];
 
-const siteEnvOf = (label: string) => BUILDS.find(([l]) => l === label)![1];
 const loggedText = () => JSON.stringify(errorSpy.mock.calls);
 
 describe("D071: each build accepts only the Razorpay key mode that fits it", () => {
