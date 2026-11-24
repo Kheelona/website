@@ -14,7 +14,7 @@
      scroll triggers below once a fold has opened or closed, after the paint, so the tap itself never waits for it. */
   const folds = $$(".pdp-fold");
   if (folds.length) {
-    const byHash = (h) => { try { return document.getElementById(decodeURIComponent(h.slice(1))); } catch (e) { return null; } };
+    const byHash = (h) => { try { return document.getElementById(decodeURIComponent(h.slice(1))); } catch { return null; } };
     const openFor = (el) => { const d = el && el.closest(".pdp-fold"); if (d && !d.open) { d.open = true; return true; } return false; };
     document.addEventListener("click", (e) => { const a = e.target.closest && e.target.closest('a[href^="#"]'); if (a && a.hash.length > 1) openFor(byHash(a.hash)); }, true);
     if (location.hash.length > 1) openFor(byHash(location.hash));

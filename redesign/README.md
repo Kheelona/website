@@ -183,7 +183,7 @@ Every page of betawebsite.kheelona.com, rebuilt in the home page's design langua
 - **Selling on phones:** the hero says "Ages 3 to 7 · Reserve for ₹499 today, refundable · ₹4,999 in total."; the bottom
   bar shows the price on phones and drops "Watch" there; subpages' bar is price + Pre-order (tagged `sticky-bar` in the
   HTML), and only the product page adds "Watch", which plays the film in place. The bar slides away while an in-page
-  Pre-order button or the footer is on screen; WhatsApp hides in the footer. The nav has a "Pre-order Khelu" pill
+  main Pre-order button or the footer is on screen (the product page's secondary buttons don't count: see v18); WhatsApp hides in the footer. The nav has a "Pre-order Khelu" pill
   (`navbar`; `navbar-mobile` in the menu). Home has inline Pre-order blocks after the sky-blue chapter (`home-asks` +
   "See how Khelu works" `home-asks-learn`), after the safety facts (`safety` + `safety-learn`) and in `#why` (`home-why`).
   Every price string here is swapped by the live offer (`src/lib/site-pages/offer-swap.ts`).
@@ -244,3 +244,19 @@ Measured on a 390px touch viewport with 4× and 10× CPU throttling (Chrome trac
   stays in `<head>` (its install check reads the tag). Lighthouse mobile on the same Mac, trackers loaded but their
   hits blocked: Total Blocking Time ≈ 250 ms (live) → 17-63 ms.
 - Hero image preloaded before the fonts; the "No Wi-Fi" slash animates transform/opacity (was stroke-dashoffset).
+
+## v18: product page, decision content first (C4 PR 2, D070)
+`/products/khelu` (source `pages/products/khelu.html`), no new words, no URL change:
+- **Order:** hero, films, the safety summary, the FAQ, then what you get, logos, how it works, example conversations, modes,
+  comparison, details, close. The FAQ puts "What does Khelu cost, and what is the advance for?" and "What if my child
+  doesn't like it, or it stops working?" first (the FAQPage JSON-LD in `<head-extra>` lists the same questions in the same
+  order; `check-seo.py` checks they are visible). The first question is open on laptops (phones start closed, as before).
+- **Folds:** modes (`#modes`), comparison (`#compare`) and the details (`#specs`) are native `<details class="pdp-fold">`,
+  closed by default. The summary is the section's heading block (eyebrow, `<h2>`, lead), so the heading is the label and one
+  tap opens it; the declarations (MRP, origin, manufacturer, consumer care) stay open below the details. `product.js` opens a
+  fold when a link or the address points inside it and re-measures the scroll triggers after it opens or closes.
+- **One main button:** the hero button and the bar are the main ones; the offer, example, comparison and closing buttons
+  use `.btn--ghost` with `data-cta-secondary` (tracking attributes unchanged). `initBar` in `main.js` steps the bar aside
+  only for a main button or the footer, so the bar stays visible beside a secondary one.
+- **First tap:** `main.js` creates the AudioContext for Khelu's voice on the first tap only on the home page (the only page
+  that speaks); on other pages it cost 85-100 ms of the first tap on a throttled phone.
