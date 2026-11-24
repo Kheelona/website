@@ -148,6 +148,13 @@ const E5 = `"The four walls of loneliness"`;
 const E6 = `"The vocab deficiency"`;
 const E7 = `"A biological trade-off"`;
 const E8 = `"Speech is the ultimate brain exercise"`;
+/* The rows D070 / B7a added (2026-11-24): the home page's brain, statistic and language lines, one per idea. */
+const H1 = `"An AI toy that supports brain development." (the home H1)`;
+const H2 = `"Talking helps young brains grow." and "Khelu is built on the same idea"`;
+const H3 = `"Children ask hundreds of questions a day." (the home opening animation's caption)`;
+const H4 = `"10 languages, including English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French"`;
+const H5 = `"speaks in every language"`;
+const H6 = `"It speaks your home language."`;
 
 const APOS = "['’]";
 
@@ -304,9 +311,9 @@ export const BANNED_PHRASES: readonly BannedPhrase[] = [
   // ── Row 14 ──
   { id: "meet-on-date", kind: "claim", claimsRow: R14, pattern: /\bMeet Kheelu on \d{1,2} [A-Z][a-z]+/, planted: "Meet Kheelu on 20 October.", why: "20 October is when shipping starts; new orders deliver from 15 December 2026 (D023, D068)." },
   // ── Row 15 ──
-  { id: "kheelu-brain", kind: "claim", claimsRow: R15, pattern: /(?<![/.])\bKheelu\b[^.?!\n]{0,40}\b(?:helps|grows|builds|develops|supports|boosts|improves)\b[^.?!\n]{0,40}\bbrains?\b/i, planted: "Kheelu helps your child's brain grow.", why: "Founder decision 4; D016. \"Conversation helps a young brain grow\" is approved and passes." },
+  { id: "kheelu-brain", kind: "claim", claimsRow: R15, pattern: /(?<![/.])\bKheelu\b[^.?!\n]{0,40}\b(?:helps|grows|builds|develops|supports|boosts|improves)\b[^.?!\n]{0,40}\bbrains?\b/i, planted: "Kheelu helps your child's brain grow.", why: "Founder decision 4; D016. \"Conversation helps a young brain grow\" was the D016 form and still passes this entry, but it is no longer approved copy for the home page (the founder, 10 November; D070, B7a): it stays only in the unserved src/content and the frozen copy page." },
   { id: "brain-development-product", kind: "claim", claimsRow: R15, pattern: new RegExp(`\\bsupports? your child${APOS}s brain development\\b|\\b(?:a|the|our) brain[- ]development toy\\b`, "i"), planted: "Kheelu is a brain-development toy that supports your child's brain development.", why: "D016: brain development is a searched topic, never what Kheelu does." },
-  { id: "helps-child-brain-grow", kind: "claim", claimsRow: R15, pattern: new RegExp(`\\bhelps? your child${APOS}s brain grow\\b`, "i"), planted: "It helps your child’s brain grow.", why: "Claims §4 row 15 bans the exact phrase, with or without \"Kheelu\" nearby. \"Conversation helps a young brain grow\" is approved and passes." },
+  { id: "helps-child-brain-grow", kind: "claim", claimsRow: R15, pattern: new RegExp(`\\bhelps? your child${APOS}s brain grow\\b`, "i"), planted: "It helps your child’s brain grow.", why: "Claims §4 row 15 bans the exact phrase, with or without \"Kheelu\" nearby. \"Conversation helps a young brain grow\" was the D016 form and still passes this entry, but it is no longer approved copy for the home page (the founder, 10 November; D070, B7a): it stays only in the unserved src/content and the frozen copy page." },
   // ── Row 16 ──
   { id: "made-in-bengaluru", kind: "claim", claimsRow: R16, pattern: /\bmade in Bengaluru\b|\bbuilt in Bengaluru\b|\bdesigned and built here\b/i, planted: "The toy is designed and built here, made in Bengaluru.", why: "Where in India it is made was not stated: say \"Made in India\" (D034)." },
   // ── Row 17 ──
@@ -370,6 +377,20 @@ export const BANNED_PHRASES: readonly BannedPhrase[] = [
   { id: "vocab-deficiency", kind: "claim", claimsRow: E6, pattern: /\bvocab(?:ulary)? deficienc(?:y|ies)\b/i, planted: "First, there's the vocab deficiency.", why: "D061 item 12, D016, D025: an unanchored deficit claim about children's language from the part the cut leaves out." },
   { id: "biological-trade-off", kind: "claim", claimsRow: E7, pattern: /\bbiological trade[- ]?offs?\b/i, planted: "It's a biological trade-off.", why: "D061 item 12, D016: an unanchored brain claim about screen time from the part the cut leaves out." },
   { id: "ultimate-brain-exercise", kind: "claim", claimsRow: E8, pattern: /\bultimate brain (?:exercise|workout)s?\b/i, planted: "Speech is the ultimate brain exercise.", why: "D061 item 12, D016 (brain wording): an unanchored brain claim from the part the cut leaves out." },
+  // ── The home page's brain, statistic and language lines (D070 / B7a, 2026-11-24; claims §4) ──
+  // Each entry bans the rejected line as it was printed, never the topic ("brain development" stays a searched topic, D016;
+  // a parent's "speak your home language" and "every language you speak" are advice). The journal sync runs findBanned over
+  // every dashboard post and stops the production build on a hit, and the frozen mockups, the copy pages and the unserved
+  // src/content still print nearby words, so none of these is a bare phrase.
+  { id: "ai-toy-develops-brains", kind: "claim", claimsRow: H1, pattern: new RegExp(`\\bAI toys? (?:that|which) (?:develops?|supports?|builds?|grows?|boosts?) (?:(?:a |your |the )?child${APOS}s |young |little |kids${APOS} )?brains?(?: development)?\\b`, "i"), planted: "We make AI toys that develop brains.", why: "The founder, 10 November (no develop-brains claim; D070, B7a): the footer line, and the home H1 \"An AI toy that supports brain development.\". \"Brain development\" as a topic in a title, heading or article passes." },
+  { id: "talking-helps-young-brains-grow", kind: "claim", claimsRow: H2, pattern: /\btalking helps young brains grow\b/i, planted: "Talking helps young brains grow.", why: "The founder, 10 November (D070, B7a): the home chapter's heading. The conversation form of D016 (\"Conversation helps a young brain grow\") is not matched, since the unserved src/content and the frozen copy page still quote it; the home page no longer prints it." },
+  { id: "built-on-the-same-idea", kind: "claim", claimsRow: H2, pattern: /\b(?:Khelu|Kheelu) is built on the same idea\b/i, planted: "Khelu is built on the same idea.", why: "The founder, 10 November (D070, B7a): it tied the product to the rejected brain sentence above it." },
+  // ── The retired statistic ──
+  { id: "children-ask-hundreds-of-questions", kind: "claim", claimsRow: H3, pattern: /\b(?:children|kids|toddlers|preschoolers|little ones) ask (?:about |around |up to |over |nearly |more than )?(?:hundreds|thousands|\d[\d,]*) (?:of )?questions (?:a|an|per|each|every) (?:day|hour)\b|\b(?:hundreds|thousands) of questions (?:a|an|per|each|every) (?:day|hour)\b/i, planted: "Children ask hundreds of questions a day.", why: "CMO guardrail, 13 November (D070, B7a): an unverified statistic of questions per day or hour. \"Children ask a lot of questions\" has no rate and passes." },
+  // ── The language line ──
+  { id: "languages-list-spanish-french", kind: "claim", claimsRow: H4, pattern: /\b(?:10 languages|ten languages),? including\b[^.?!\n]{0,160}?\b(?:Spanish|French)\b|\bTen, including\b[^.?!\n]{0,160}?\b(?:Spanish|French)\b|\b(?:Khelu|Kheelu) speaks?\b[^.?!\n]{0,120}?\b(?:Spanish|French)\b/i, planted: "Khelu speaks 10 languages, including English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French.", why: "The founder, 17 November (D070, B7a): Khelu's approved line is \"English, Hindi, Kannada and 7 more Indian languages\"; a list naming Spanish or French among them is rejected. A parent's \"families who speak Spanish and French\" and the frozen mockups' \"Eight today: ...\" line pass." },
+  { id: "speaks-in-every-language", kind: "claim", claimsRow: H5, pattern: /\bspe[ae]ks in every language\b/i, planted: "A safe toy that speeks in every language.", why: "The founder, 10 November: an overclaim (the Instagram bio's line, spelling as typed). \"every language you speak\" in a parent's advice passes." },
+  { id: "speaks-your-home-language", kind: "claim", claimsRow: H6, pattern: /\b(?:it|Khelu|Kheelu) speaks your home language\b/i, planted: "It speaks your home language.", why: "D070, B7a (the founder's wording OK, K-75): the home languages heading was a promise to every family; \"speak your home language\" and \"in your home language\" in a parent's advice pass." },
   // ── en-IN spelling (N24): src/content strings and rendered text only ──
   { id: "us-color", kind: "spelling", claimsRow: "N24", pattern: /\bcolor(?:s|ed|ful|ing|way|ways)?\b/i, planted: "Pick a color.", why: "en-IN: colour." },
   { id: "us-center", kind: "spelling", claimsRow: "N24", pattern: /\bcent(?:er|ers|ered|ering)\b/, allowSentence: /^center$/, planted: "Put it in the center.", why: "en-IN: centre. Proper nouns (\"Center on the Developing Child\", \"Synergy Center\") are capitalised and pass. A string that is only \"center\" is a layout value (a CTA block's `align`), not copy." },
