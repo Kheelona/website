@@ -5,12 +5,14 @@
  * `beforeunload`. A phone does not fire `pagehide` when the parent switches to a UPI app, locks the screen or closes an
  * in-app browser, so an event queued just before that waits in memory and is lost if the tab is discarded. And the
  * store's own `$pageview` waits for hydration plus the SDK's dynamic import, so a visitor who leaves early is never
- * counted. Two signals therefore bypass the queue and go out at once, by `navigator.sendBeacon`:
+ * counted. Three signals therefore bypass the queue and go out at once, by `navigator.sendBeacon`:
  *
  *   - `store_arrived`: an inline script in the store's server HTML (`storeArrivalScript`, rendered by StoreShell), run
  *     while the HTML is parsed, before any bundle.
  *   - `preorder_payment_window_hidden`: `beaconCapture`, called when the page is hidden with the payment sheet open
  *     (./payment-window.ts).
+ *   - `store_cta_tapped_early` (D070 / B5): `beaconCapture`, called by the marketing pages' tracking shell when a Pre-order
+ *     link is tapped before PostHog has loaded, so the tap no longer waits for PostHog and the store opens at once.
  *
  * WHAT THEY ARE NOT. Not funnel events: `analytics.ts` (frozen, D069) and the dispatcher (`track.ts`) are untouched, and
  * nothing here reaches GA4, Meta or OpenAI. They are PostHog events only, sent to the same-origin proxy
@@ -37,6 +39,9 @@ import { INTERNAL_PROPERTY } from "./internal-flag";
 
 /** The event the inline script sends. */
 export const STORE_ARRIVED = "store_arrived";
+/** The event a Pre-order tap sends when it comes before PostHog has loaded (D070 / B5): `reportEarlyStoreTaps`, in
+ *  src/lib/site-pages/tracking-shell.ts, through `beaconCapture`. */
+export const STORE_CTA_TAPPED_EARLY = "store_cta_tapped_early";
 /** `$lib` of the inline script's event, and of every `beaconCapture` event: so an analyst can tell them from the SDK's. */
 export const EARLY_LIB = "kh-early";
 export const BEACON_LIB = "kh-beacon";

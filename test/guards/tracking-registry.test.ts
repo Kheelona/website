@@ -27,6 +27,7 @@ import {
   POSTHOG_PERSISTENCE_NAME,
   STORE_ARRIVAL_HOSTS,
   STORE_ARRIVED,
+  STORE_CTA_TAPPED_EARLY,
 } from "@/lib/tracking/beacon";
 import { INTERNAL_PROPERTY } from "@/lib/tracking/internal-flag";
 import { PAYMENT_WINDOW_HIDDEN } from "@/lib/tracking/payment-window";
@@ -52,7 +53,7 @@ import { PAYMENT_WINDOW_HIDDEN } from "@/lib/tracking/payment-window";
  * - The approved mockups: where each cta value sits.
  *
  * Rows and events a founder decision added AFTER the tag (OpenAI Ads measurement, D069: destinations 18 to 20, status
- * "added", and inventory §16; the two early PostHog signals sent by beacon, D070: inventory §17) are held to the same
+ * "added", and inventory §16; the early PostHog signals sent by beacon, D070: inventory §17) are held to the same
  * two-way proof, separately from the tag's own, which are untouched.
  *
  * So it fails when a name, an ID or a parameter is edited, or a row goes missing, on either
@@ -692,7 +693,7 @@ describe("events.ts: OpenAI Ads measurement, added by D069, equals inventory §1
   });
 });
 
-/* ── 3c. Early store signals (D070, B7c): added after the tag, held to inventory §17 ─────────── */
+/* ── 3c. Early store signals (D070, B7c and B5): added after the tag, held to inventory §17 ─────────── */
 
 const EARLY_SECTION = section(INVENTORY, "## 17. ");
 const EARLY_TABLE = table(EARLY_SECTION, ["Event", "Parameters", "Fired at", "When"]);
@@ -700,9 +701,9 @@ const EARLY_TABLE = table(EARLY_SECTION, ["Event", "Parameters", "Fired at", "Wh
 describe("events.ts: the early store signals, added by D070, equal inventory §17", () => {
   const added = () => EVENTS.filter((e) => e.status === "added" && e.decision === "D070");
 
-  it("registers exactly §17's two events, PostHog only, added, with the decision on file", () => {
+  it("registers exactly §17's three events, PostHog only, added, with the decision on file", () => {
     expect(sorted(added().map((e) => e.name))).toEqual(sorted(EARLY_TABLE.map(([e]) => code(e)[0])));
-    expect(sorted(added().map((e) => e.name))).toEqual(["preorder_payment_window_hidden", "store_arrived"]);
+    expect(sorted(added().map((e) => e.name))).toEqual(["preorder_payment_window_hidden", "store_arrived", "store_cta_tapped_early"]);
     for (const e of added()) {
       expect(e.destinations, `${e.name} destinations`).toEqual(["posthog-browser"]);
       expect(e.status).toBe("added");
@@ -744,6 +745,8 @@ describe("events.ts: the early store signals, added by D070, equal inventory §1
   it("their names are the ones the senders use", () => {
     expect(STORE_ARRIVED).toBe("store_arrived");
     expect(PAYMENT_WINDOW_HIDDEN).toBe("preorder_payment_window_hidden");
+    expect(STORE_CTA_TAPPED_EARLY).toBe("store_cta_tapped_early");
+    expect(only(added(), "store_cta_tapped_early").fixed?.$lib).toBe(BEACON_LIB); // beaconCapture's, the shell sends it
     expect(EARLY_LIB).toBe(only(added(), "store_arrived").fixed?.$lib);
     expect(BEACON_LIB).toBe(only(added(), "preorder_payment_window_hidden").fixed?.$lib);
   });

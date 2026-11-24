@@ -340,8 +340,8 @@ const EVENT_LIST = [
       "skipped without a key, off production, for an order with no OpenAI reference, and after 7 days",
   },
 
-  /* ── Early store signals (D070, B7c): added after the tag, PostHog only, sent by beacon (src/lib/tracking/beacon.ts) with their
-        own code, never by the dispatcher and never to GA4, Meta or OpenAI. Neither carries anything a parent typed. ── */
+  /* ── Early store signals (D070, B7c and B5): added after the tag, PostHog only, sent by beacon (src/lib/tracking/beacon.ts) with
+        their own code, never by the dispatcher and never to GA4, Meta or OpenAI. None carries anything a parent typed. ── */
   {
     name: "store_arrived",
     destinations: ["posthog-browser"],
@@ -387,6 +387,31 @@ const EVENT_LIST = [
     when:
       "the first time the page is hidden while the Razorpay sheet is open (opened, not yet paid or dismissed), once per opened " +
       "sheet; a UPI payment also hides the page, so it means 'left with the sheet open', read with purchase_confirmed",
+  },
+
+  {
+    name: "store_cta_tapped_early",
+    destinations: ["posthog-browser"],
+    params: [
+      "cta",
+      "$current_url",
+      "$host",
+      "$pathname",
+      "$session_id",
+      "internal",
+      "env",
+      "$lib",
+      "$process_person_profile",
+    ],
+    fixed: { $lib: "kh-beacon", $process_person_profile: false },
+    status: "added",
+    decision: "D070",
+    firedBy: "reportEarlyStoreTaps (src/lib/site-pages/tracking-shell.ts), on the marketing pages, sent by beaconCapture",
+    when:
+      "a primary click on a link to the store (https://store.kheelona.com) that comes before PostHog has loaded on a marketing page " +
+      "(production and beta hosts only, never for a bot); the tap is never held, the store opens at once; `cta` is the link's " +
+      "data-ph-capture-attribute-cta value, else 'unknown'; once PostHog has loaded, autocapture reports the tap instead " +
+      "($autocapture with the same cta, flushed on pagehide), so a tap is reported once, by one or the other",
   },
 
   /* ── PostHog SDK events ──────────────────────────────────────────────── */
