@@ -1,0 +1,44 @@
+# Test store sync (K-182, D071 (K-182)): keeps the branch `beta` equal to `main`.
+# Vercel builds `beta` as the test store (betastore.kheelona.com, betawebsite.kheelona.com, Razorpay Test
+# Mode, a separate test Supabase project). `beta` is a pointer, not a place to work: nobody commits on it,
+# this workflow overwrites it. It writes only refs/heads/beta and nothing else.
+#   - On every push to main, beta is set to that commit.
+#   - "Run workflow" (Actions -> test-store-sync) with `ref` = a PR's branch or a commit puts that code on the
+#     test store for a pre-merge test. The next merge to main (or a run with ref = main) puts main back.
+# The `ref` input is used only as the checkout's `ref:`, never inside a `run:` script. The repo is public:
+# this workflow uses no secrets. It uses the default token, and GitHub does not start other workflows (so not
+# verify.yml either) for a push made with that token. That token also cannot push a change to files under
+# .github/workflows: if a run is refused for that reason, beta stays where it was (wiki/engineering/architecture.md §15.7).
+name: test-store-sync
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch or commit to put on the test store: main, or a PR's branch"
+        type: string
+        required: true
+        default: main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: test-store-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.sha }}
+      - name: Point beta at the checked-out commit
+        run: |
+          git push --force origin HEAD:refs/heads/beta
+          echo "The test store branch beta now points at $(git rev-parse --short HEAD)." >> "$GITHUB_STEP_SUMMARY"
