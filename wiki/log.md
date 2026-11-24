@@ -1494,3 +1494,12 @@ sticky in its column from 900 px, the refund and delivery trust links opening th
 kept as the no-JavaScript fallback), the three money answers open at load, the questions directly under the pay block with the
 agreement card after them, and the small Khelu linking to the first film. No visible string, no design-system file, no URL changed.
 
+
+## [2026-11-24 21:45] decision | D071: the test store takes Razorpay Test Mode payments; the key mode must fit the build (T1, K-182)
+The founder's one-by-one sign-off of 24 November (a permanent Razorpay test environment) supersedes D051, "beta never takes a payment".
+`storeEnv()` now accepts a store configuration only when the Razorpay key's mode fits the build: production `rzp_live_` only, the
+test store (beta) `rzp_test_` only, preview and development anything but `rzp_live_`. A refused key reads as not configured (the
+store says "opening shortly", the routes answer 503, `missingStoreEnv()` names `RAZORPAY_KEY_ID`), never throws, and logs one line
+with the mode only. Email is off on beta. New `src/config/test-store.ts` lists the test Supabase projects (production refuses them,
+beta requires one once the list has one; empty for now, T1b adds the id). Frozen `src/lib/store/env.ts` changed only with its
+regenerated reviewed patch naming D071; D051 is marked superseded. Production with a live key answers as the tag does.
