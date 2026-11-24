@@ -1,0 +1,9 @@
+/* TestModeStrip (D071 (K-182), T2): the DS warning Alert as a full-width strip above the store header, on beta builds only.
+   The DS Alert is a 640 px card on the cream band (`.kh-alert`: max-width, radius, padding), so the strip lifts those
+   three: the cream band is the strip, the Alert inside takes the container's width with no card of its own. Side padding
+   is the store header's (space-4, then space-7 from 1024 px), so the strip lines up with the logo; the hairline under it
+   is the DS nav bar's. Normal flow, never fixed. */
+.ks-test-mode { padding-inline: var(--space-4); border-bottom: var(--stroke-hair) solid var(--border); background: var(--surface-band); }
+.ks-test-mode .kh-alert { align-items: center; max-width: none; padding: var(--space-2) 0; border-radius: 0; background: transparent; }
+
+@media (min-width: 1024px) { .ks-test-mode { padding-inline: var(--space-7); } }
