@@ -10,7 +10,7 @@ import { navigation } from "./navigation";
 const doc = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const sitePath = (href: string) =>
-  `/${href.replace(/\.html/, "").replace(/^home$/, "").replace(/^meet-kheelu/, "products/kheelu")}`;
+  `/${href.replace(/\.html/, "").replace(/^home$/, "").replace(/^meet-kheelu/, "products/khelu")}`;
 const links = (root: Element | null, selector = "a") =>
   Array.from(root?.querySelectorAll(selector) ?? []).map((a) => ({
     label: norm(a.textContent).replace(/ \(opens in a new tab\)$/, ""),

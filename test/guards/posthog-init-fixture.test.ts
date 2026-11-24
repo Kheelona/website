@@ -158,7 +158,7 @@ describe(`posthog-init-fixture: the fixture is the production options at ${FREEZ
 describe("posthog-init-fixture: today's gate on the production hosts", () => {
   it.each(PRODUCTION_HOSTS)("%s: the init options deep-equal the fixture, and nothing is registered", async (host) => {
     const fixture = JSON.parse(readRepoFile(FIXTURE)) as Fixture;
-    const calls = await runGate("today", `https://${host}/products/kheelu?utm_source=meta`);
+    const calls = await runGate("today", `https://${host}/products/khelu?utm_source=meta`);
     expect(calls.init).toHaveLength(1);
     expect(calls.init[0].key).toBe(fixture.key);
     expect(calls.init[0].options).toStrictEqual(fixture.options);

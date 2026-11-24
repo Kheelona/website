@@ -133,7 +133,7 @@ describe("the privacy page: its parts", () => {
 
   it("ends with the link back to Meet Kheelu and the related policies, no pre-order button and no tracking value", () => {
     expect(privacyPage.close).toEqual({
-      actions: [{ label: "Meet Kheelu", href: "/products/kheelu" }],
+      actions: [{ label: "Meet Kheelu", href: "/products/khelu" }],
       also: {
         label: "Also read:",
         links: [

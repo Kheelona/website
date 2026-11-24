@@ -127,10 +127,18 @@ describe("every link the content carries lands somewhere real", () => {
     expect(allLinks().filter((l) => isInternal(l.href)).length).toBeGreaterThan(20);
   });
 
+  /* D070 / C4: the product page is /products/khelu. The dashboard's guides, copied into journal.ts by the sync, still link it
+     by the address it had until then (they are edited in admin.kheelona.com, never here). The redirect answers that address
+     in one hop, and redesign/tools/generate-stories.mjs links the new one, so exactly that address is accepted, in the
+     journal's posts only (journal.ts and the registry that reads them). Any other link outside the plan still fails, and so does the old address in a module we write. */
+  const OLD_PRODUCT_ADDRESS = "/products/kheelu";
+  const inPosts = (from: string) => from === "src/content/en-IN/stories/journal.ts" || from === "src/content/en-IN/stories/articles/index.ts";
+
   it("points every internal link at a route of the URL plan", () => {
     const dead = allLinks()
       .filter((l) => isInternal(l.href))
       .filter((l) => !PLANNED.has(l.href.split(/[?#]/)[0].replace(/(.)\/$/, "$1")))
+      .filter((l) => !(inPosts(l.from) && l.href.split(/[?#]/)[0] === OLD_PRODUCT_ADDRESS))
       .map((l) => `${l.from} links ${l.href}, which is not a page of the plan (src/content/en-IN/routes.ts)`);
     expect(dead).toEqual([]);
   });

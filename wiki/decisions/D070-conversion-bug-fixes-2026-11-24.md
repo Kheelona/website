@@ -38,3 +38,22 @@ request on the current hosting. The founder merges every pull request; nothing i
 tracking IDs and every existing event. The frozen checkout files change only by reviewed patches that name this
 decision. The store rename (Kheelu to Khelu) and the five conversion changes of the same review wait for a separate
 founder decision.
+
+## Addendum 2026-11-24: the product page's address moves to `/products/khelu` (C4 PR 1; reverses the B7 redirect's direction)
+
+The founder's answer in chat on 2026-11-24 ("Don't drop kheelu. Redirect it.", with the store rename approved): the product
+page is served at `https://kheelona.com/products/khelu`, and `/products/kheelu` and every older product address keep
+working through one permanent redirect to it. This replaces B7's `/products/khelu` to `/products/kheelu` redirect (pull
+request 30 is reworked in place, so that direction never merges).
+
+- **Page:** canonical, `og:url`, sitemap entry, Product and Offer `url`, breadcrumb, navigation, footer, every closing
+  link, `llms.txt` and `pricing.md` links all use `/products/khelu`. Nothing visible changes: no heading, copy or link text.
+  The Product's `@id` stays `https://kheelona.com/products/lumi#product` (it is an identifier, never "fixed" to the route;
+  `src/lib/seo/urls.ts`, ADR-012).
+- **Redirects:** `/products/kheelu` is a new source; `/products/lumi`, `/lumi`, `/kheelu`, `/products`, `/shop`, `/cart`,
+  `/checkout/*`, `/product/*`, `/product-page/*`, `/category/*`, `/accessibility-statement`, `/playos`, `/faq` (to `#faq`)
+  and `/pricing` (to `#offer`) now point straight at `/products/khelu`, on the apex and on `www`, with the query and
+  fragment kept. Next answers 308, as for every rule on the site. No address is a chain.
+- **Tracking:** the OpenAI pixel's verified pages, ViewContent's paths and the CTA placements follow the page; event names
+  and payloads are unchanged (ViewContent still sends `content_name "Kheelu"`).
+- **Not changed here:** image file names containing "kheelu", the store's visible "Kheelu" wording (C1 PR 1), any page layout.

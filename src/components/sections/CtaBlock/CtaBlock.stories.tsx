@@ -10,7 +10,7 @@ import type { CtaSecondary } from "./cta-block.types";
    of what the pages print. Each sits in a DS section and container, under a heading as on its page. */
 
 const trust = (ids: readonly TrustId[]) => ids.map((id) => trustItems[id]);
-const seeHow: CtaSecondary = { label: "See how Kheelu works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" };
+const seeHow: CtaSecondary = { label: "See how Kheelu works", href: "/products/khelu", variant: "ghost", iconEnd: "arrow-right" };
 
 const meta = {
   title: "Sections/CtaBlock",

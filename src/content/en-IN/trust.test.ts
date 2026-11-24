@@ -28,7 +28,7 @@ const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").tr
 const offer = buildOffer("token");
 
 /** A mockup link as the site path it stands for (mockup/build.mjs: file names stand for the meta urls). */
-const sitePath = (href: string) => `/${href.replace(/\.html/, "").replace(/^home$/, "").replace(/^meet-kheelu/, "products/kheelu")}`;
+const sitePath = (href: string) => `/${href.replace(/\.html/, "").replace(/^home$/, "").replace(/^meet-kheelu/, "products/khelu")}`;
 
 /** The DS icon an inline mockup icon draws, read back from its path data. */
 function iconOf(svg: Element | null): IconName | undefined {

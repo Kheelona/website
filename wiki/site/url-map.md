@@ -38,6 +38,13 @@ sources:
 
 # URL map (live site inventory)
 
+> **Update 2026-11-24 (D070 addendum, C4 PR 1).** This inventory describes the site at the tag. Since then the product
+> page's address is **`/products/khelu`** (canonical, sitemap, schema `url`, internal links). Read every
+> `/products/kheelu` below as the page's address at the tag: it is now itself a permanent redirect (308) to
+> `/products/khelu`, and every rule in section 4 whose destination says `/products/kheelu` (`/products/lumi`, `/lumi`,
+> `/shop`, `/cart`, `/faq` to `#faq`, `/pricing` to `#offer`, and the rest) now points straight at `/products/khelu`, on
+> the apex and on `www`, one hop. The source is `src/config/redirects.ts`, proved by `test/guards/redirect-hops.test.ts`.
+
 Plain `path:line` citations on this page refer to tag `archive/pre-reset-2026-10-10`; `mid:path` refers to `archive/mid-version-2026-10-10`.
 
 What every public URL of kheelona.com does today, so the reset can keep each one working (brief

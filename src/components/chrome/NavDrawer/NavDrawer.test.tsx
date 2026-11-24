@@ -32,7 +32,7 @@ const PROPS: NavDrawerProps = {
   logo: { alt: "Kheelona, home", href: "/" },
   closeLabel: "Close menu",
   links: [
-    { label: "Meet Kheelu", href: "/products/kheelu" },
+    { label: "Meet Kheelu", href: "/products/khelu" },
     { label: "Safety", href: "/safety" },
   ],
   ctaLabel: "Pre-order Kheelu",
@@ -82,7 +82,7 @@ describe("NavDrawer", () => {
     expect(links).toHaveAttribute("aria-label", "Main");
     const anchors = Array.from(links.children);
     expect(anchors.map((a) => [a.tagName, a.className, a.getAttribute("href"), a.querySelector("span")?.textContent])).toEqual([
-      ["A", "kh-drawer__link", "/products/kheelu", "Meet Kheelu"],
+      ["A", "kh-drawer__link", "/products/khelu", "Meet Kheelu"],
       ["A", "kh-drawer__link", "/safety", "Safety"],
     ]);
     const chevron = anchors[0].querySelector("svg")!;

@@ -54,7 +54,7 @@ export interface Navigation {
 
 export const navigation = {
   main: [
-    { label: "Meet Kheelu", href: "/products/kheelu" },
+    { label: "Meet Kheelu", href: "/products/khelu" },
     { label: "Safety", href: "/safety" },
     { label: "Stories", href: "/stories" },
     { label: "Team", href: "/team" },
@@ -81,7 +81,7 @@ export const navigation = {
         id: "kheelu",
         title: "Kheelu",
         links: [
-          { label: "Meet Kheelu", href: "/products/kheelu" },
+          { label: "Meet Kheelu", href: "/products/khelu" },
           { label: "Safety", href: "/safety" },
           { label: "Setup", href: "/setup" },
         ],

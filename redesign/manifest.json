@@ -53,8 +53,8 @@
    "ogImage": "/og/kheelu.jpg"
   },
   {
-   "path": "/products/kheelu",
-   "file": "products/kheelu/index.html",
+   "path": "/products/khelu",
+   "file": "products/khelu/index.html",
    "type": "page",
    "indexable": true,
    "title": "Khelu by Kheelona: the toy that talks back, ages 3 to 7",
@@ -350,37 +350,42 @@
   },
   {
    "source": "/products/lumi",
-   "destination": "/products/kheelu",
+   "destination": "/products/khelu",
+   "permanent": true
+  },
+  {
+   "source": "/products/kheelu",
+   "destination": "/products/khelu",
    "permanent": true
   },
   {
    "source": "/product-page/:slug*",
-   "destination": "/products/kheelu",
+   "destination": "/products/khelu",
    "permanent": true
   },
   {
    "source": "/product/:slug([^.]+)",
-   "destination": "/products/kheelu",
+   "destination": "/products/khelu",
    "permanent": true
   },
   {
    "source": "/shop",
-   "destination": "/products/kheelu",
+   "destination": "/products/khelu",
    "permanent": true
   },
   {
    "source": "/category/all-products",
-   "destination": "/products/kheelu",
+   "destination": "/products/khelu",
    "permanent": true
   },
   {
    "source": "/category/:slug([^.]+)",
-   "destination": "/products/kheelu",
+   "destination": "/products/khelu",
    "permanent": true
   },
   {
    "source": "/accessibility-statement",
-   "destination": "/products/kheelu",
+   "destination": "/products/khelu",
    "permanent": true
   },
   {
@@ -405,12 +410,12 @@
   },
   {
    "source": "/lumi",
-   "destination": "/products/kheelu",
+   "destination": "/products/khelu",
    "permanent": true
   },
   {
    "source": "/faq",
-   "destination": "/products/kheelu#faq",
+   "destination": "/products/khelu#faq",
    "permanent": true
   },
   {
@@ -455,17 +460,17 @@
   },
   {
    "source": "/cart",
-   "destination": "/products/kheelu",
+   "destination": "/products/khelu",
    "permanent": true
   },
   {
    "source": "/checkout/:path*",
-   "destination": "/products/kheelu",
+   "destination": "/products/khelu",
    "permanent": true
   },
   {
    "source": "/playos",
-   "destination": "/products/kheelu",
+   "destination": "/products/khelu",
    "permanent": true
   },
   {
@@ -480,12 +485,12 @@
   },
   {
    "source": "/kheelu",
-   "destination": "/products/kheelu",
+   "destination": "/products/khelu",
    "permanent": true
   },
   {
    "source": "/products",
-   "destination": "/products/kheelu",
+   "destination": "/products/khelu",
    "permanent": true
   },
   {
@@ -500,7 +505,7 @@
   },
   {
    "source": "/pricing",
-   "destination": "/products/kheelu#offer",
+   "destination": "/products/khelu#offer",
    "permanent": true
   }
  ]

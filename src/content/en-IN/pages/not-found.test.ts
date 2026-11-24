@@ -89,7 +89,7 @@ describe("the 404's folds (structure §5: EmptyStateSection, then CloseSection)"
     expect(config.nav.label).toBe("Where to go next");
     expect(config.nav.links.map(({ title, href }) => [title, href])).toEqual([
       ["Home", "/"],
-      ["Meet Kheelu", "/products/kheelu"],
+      ["Meet Kheelu", "/products/khelu"],
       ["Stories", "/stories"],
       ["Contact", "/contact"],
     ]);

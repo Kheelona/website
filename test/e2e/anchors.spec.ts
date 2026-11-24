@@ -10,11 +10,11 @@ import { VIEWPORTS, type Viewport } from "./support/viewports";
  *     the fragment never glides through ten thousand pixels of half-revealed blocks; an in-page link still glides
  *     afterwards (the mockup's anchor scrolling), and Next 16 still reads the attribute to jump on route changes.
  *   - M2: a client navigation from Home to a part of the product page lands on it, with motion on and reduced, on a
- *     phone and a laptop. Home's "See all questions" (to /products/kheelu#faq) stopped 464 px (phone) or 394 px
+ *     phone and a laptop. Home's "See all questions" (to /products/khelu#faq) stopped 464 px (phone) or 394 px
  *     (laptop) past the questions' heading: the product details tabs collapsed after Next had scrolled. Since task Q2.9
  *     Home has no "See all questions" (`faq-more` stops firing on Home: the D2C plan v2 §2 fold 10, ruling 1), so the
  *     check follows Home's one remaining link into a part of the product page: the sticky scroll's "See how it works"
- *     (`home-asks-learn`, to /products/kheelu#modes). On a laptop the part lands just below the nav, which sticks from
+ *     (`home-asks-learn`, to /products/khelu#modes). On a laptop the part lands just below the nav, which sticks from
  *     900 px (task Q2.5; the page's scroll padding is the bar's height); on a phone, at the top. The check still crosses
  *     a collapsing tabs box (task Q2.13): the sample chats' DS Tabs (task Q2.10) sit above #modes and collapse to one
  *     panel once the page's script runs, after Next has scrolled, as the details tabs did above the questions.
@@ -27,9 +27,9 @@ requiresServer();
 
 const phone = VIEWPORTS.find((v) => v.width === 390)!;
 const laptop = VIEWPORTS.find((v) => v.width === 1440 && v.height === 900)!;
-const PRODUCT_FAQ = "/products/kheelu#faq";
+const PRODUCT_FAQ = "/products/khelu#faq";
 /** Home's link into a part of the product page (M2): the sticky scroll's "See how it works" (task Q2.9). */
-const HOME_TO_MODES = { cta: "home-asks-learn", href: "/products/kheelu#modes", id: "modes" } as const;
+const HOME_TO_MODES = { cta: "home-asks-learn", href: "/products/khelu#modes", id: "modes" } as const;
 
 /** Records the page's scroll position on every frame from before its first script (an init script). */
 function recordScroll(): void {

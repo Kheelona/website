@@ -62,7 +62,7 @@ describe("the words every article page shares (story-*.html)", () => {
     });
     expect(close.cta).toBe("finale");
     expect(close.trust).toBe(TRUST_COMPACT);
-    expect(close.secondary).toEqual({ label: "See how Kheelu works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" });
+    expect(close.secondary).toEqual({ label: "See how Kheelu works", href: "/products/khelu", variant: "ghost", iconEnd: "arrow-right" });
     expect(close.art.tone).toBe("sun");
     expect(close.art.layers.flatMap((layer) => ("doodle" in layer ? [layer.doodle.name] : []))).toEqual(["ink-heart"]);
   });

@@ -15,14 +15,14 @@ import { POSTHOG_ASSET_PROXY_PATH, POSTHOG_PROXY_PATH } from "@/config/site";
 describe("the trailing-slash redirect Next is no longer doing", () => {
   it("strips a trailing slash from an ordinary route", () => {
     expect(trailingSlashRedirectPath("/team/")).toBe("/team");
-    expect(trailingSlashRedirectPath("/products/kheelu/")).toBe("/products/kheelu");
+    expect(trailingSlashRedirectPath("/products/khelu/")).toBe("/products/khelu");
     expect(trailingSlashRedirectPath("/stories/how-children-learn-by-talking/")).toBe(
       "/stories/how-children-learn-by-talking",
     );
   });
 
   it("leaves a path that already has no trailing slash alone", () => {
-    for (const path of ["/team", "/products/kheelu", "/thanks", "/store/thanks"]) {
+    for (const path of ["/team", "/products/khelu", "/thanks", "/store/thanks"]) {
       expect(trailingSlashRedirectPath(path), path).toBeNull();
     }
   });

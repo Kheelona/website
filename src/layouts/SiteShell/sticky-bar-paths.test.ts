@@ -6,6 +6,7 @@ import { articles } from "@/content/en-IN/stories/articles";
 import { articleTopic } from "@/content/en-IN/stories/journal";
 import { topics } from "@/content/en-IN/stories/topics";
 import { CTAS } from "@/lib/tracking/cta";
+import { builtAddress } from "../../../test/e2e/support/url-move";
 import { ARTICLE_CLOSES, stickyBarPaths } from "./sticky-bar-paths";
 
 /* Where the phone buy bar shows (task 3.1; structure §5 "Sticky bar" column; architecture §8.3 `sticky-bar`). The
@@ -20,7 +21,7 @@ const mockupMeta = readdirSync("mockup/pages")
   .filter((f) => f.endsWith(".html") && f !== "index.html")
   .map((f) => {
     const meta = JSON.parse(/^<!--page (\{.*\}) -->/.exec(readFileSync(`mockup/pages/${f}`, "utf8"))![1]) as { url: string; buybar?: boolean };
-    return { file: f, url: meta.url, buybar: meta.buybar === true };
+    return { file: f, url: builtAddress(meta.url), buybar: meta.buybar === true };
   });
 
 describe("stickyBarPaths", () => {

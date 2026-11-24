@@ -28,6 +28,7 @@ import {
 } from "./mockup-compare";
 import { PRICE_LINE, PRICE_LINE_HIDDEN, PRICE_LINE_TEXT, priceLineText } from "../e2e/support/deviations";
 import { sentenceDiff, sentences } from "../e2e/support/parity";
+import { builtAddress } from "../e2e/support/url-move";
 import { ROOT, readRepoFile } from "../e2e/support/repo";
 import { blockSentences } from "./mockup-facts";
 
@@ -308,7 +309,7 @@ describe("mockupRoute: a mockup address read as the route it became (structure Â
   it.each([
     ["home.html", "/"],
     ["home.html#faq", "/#faq"],
-    ["meet-kheelu.html#faq", "/products/kheelu#faq"],
+    ["meet-kheelu.html#faq", "/products/khelu#faq"],
     ["story-talking-toys-and-late-talkers.html", "/stories/talking-toys-and-late-talkers"],
     ["stories.html#learning", "/stories#learning"],
     ["refund.html#returns", "/refund#returns"],
@@ -319,8 +320,18 @@ describe("mockupRoute: a mockup address read as the route it became (structure Â
   });
 
   it("keeps anything else as it is: fragments, other schemes, a route the build wrote", () => {
-    for (const kept of ["#src-1", "tel:+919187546483", "mailto:hello@kheelona.com", "https://wa.me/919187546483", "/products/kheelu#faq"]) {
+    for (const kept of ["#src-1", "tel:+919187546483", "mailto:hello@kheelona.com", "https://wa.me/919187546483", "/products/khelu#faq"]) {
       expect(mockupRoute(kept)).toBe(kept);
+    }
+  });
+
+  /* D070 / C4: the mockups (frozen, D046) print the product page's old address; the build serves the new one. */
+  it("reads the product page's old address, as a mockup prints it, as the address it moved to", () => {
+    expect(mockupRoute("/products/kheelu")).toBe("/products/khelu");
+    expect(mockupRoute("/products/kheelu#faq")).toBe("/products/khelu#faq");
+    expect(builtAddress("/products/kheelu?x=1")).toBe("/products/khelu?x=1");
+    for (const same of ["/products/khelu", "/products/lumi", "/products/kheeluX", "https://kheelona.com/products/kheelu", "/team"]) {
+      expect(builtAddress(same), same).toBe(same);
     }
   });
 });
@@ -417,9 +428,9 @@ describe("2. skeleton", () => {
   it("compares addresses by value, a mockup page read as the route it became", () => {
     const link = (href: string) => skeleton(html(`<a href="${href}"></a>`));
     expect(link("home.html")).toBe("a[href=/]");
-    expect(link("meet-kheelu.html#faq")).toBe("a[href=/products/kheelu#faq]");
+    expect(link("meet-kheelu.html#faq")).toBe("a[href=/products/khelu#faq]");
     expect(link("story-talking-toys-and-late-talkers.html")).toBe("a[href=/stories/talking-toys-and-late-talkers]");
-    expect(link("/products/kheelu#faq")).toBe("a[href=/products/kheelu#faq]");
+    expect(link("/products/khelu#faq")).toBe("a[href=/products/khelu#faq]");
   });
 
   it("is red when a link goes to another page (control)", () => {

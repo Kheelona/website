@@ -248,7 +248,7 @@ describe("MotionController", () => {
     document.body.querySelectorAll("section, svg, p").forEach((el) => el.remove());
     document.body.insertAdjacentHTML("afterbegin", NEXT_PAGE);
     const changes = recordClassChanges();
-    nav.pathname = "/products/kheelu";
+    nav.pathname = "/products/khelu";
     view.rerender(<MotionController />);
     await nextFrame();
     const log = changes();
@@ -322,7 +322,7 @@ describe("MotionController", () => {
 /* Smooth anchor scrolling once the page has loaded (task 7.1a; CMO built-page review A, M1). motion.css glides in-page
  * anchor jumps on <html data-scroll-behavior="smooth"> (the mockup's anchor scrolling; Next 16 reads the same attribute
  * to jump on a route change). Present in the server HTML, it made the browser's own jump to a URL's #fragment glide from
- * the top through 10,600 px of half-revealed blocks (/faq, /products/kheelu#faq). The controller sets it a frame after
+ * the top through 10,600 px of half-revealed blocks (/faq, /products/khelu#faq). The controller sets it a frame after
  * the page's load event instead, whatever the motion setting (motion.css turns smooth scrolling off under reduced
  * motion), once per page load: the shell outlives a client navigation, and the attribute with it. */
 describe("MotionController: smooth anchor scrolling once the page has loaded (task 7.1a)", () => {

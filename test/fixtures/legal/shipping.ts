@@ -220,7 +220,7 @@ export const shippingFixture = {
     actions: [
       {
         label: "Meet Kheelu",
-        href: "/products/kheelu",
+        href: "/products/khelu",
         cta: "shipping-learn",
       },
       {
