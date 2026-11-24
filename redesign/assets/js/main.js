@@ -43,6 +43,10 @@
     const near = new IntersectionObserver((es, o) => es.forEach((e) => { if (e.isIntersecting) { img.classList.add("is-near"); o.disconnect(); } }), { rootMargin: img.closest("#how") ? "0px" : "0px 0px 100% 0px" });
     near.observe(img.closest(".kheelu"));
   });
+  // C3b: the films come right after the demo, so their first poster is within Chrome's lazy-load distance too: same hold, released for all of them one
+  // screen before the section arrives. (The section is observed, not a poster: WebKit's observer ignores the margin for a target inside the sideways reel.)
+  const filmsSec = $("#films");
+  if (flat && filmsSec && "IntersectionObserver" in window) new IntersectionObserver((es, o) => es.forEach((e) => { if (e.isIntersecting) { $$(".film__play img", filmsSec).forEach((i) => i.classList.add("is-near")); o.disconnect(); } }), { rootMargin: "0px 0px 100% 0px" }).observe(filmsSec);
   // Phone chapters that used to follow the scroll cycle by time instead, only while on screen, and stop for good once the visitor taps one.
   const cycle = (el, n, ms, set, from = 0) => {
     let i = from, timer = 0, stopped = false;

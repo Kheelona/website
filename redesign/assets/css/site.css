@@ -904,9 +904,9 @@ html.reels-open { overflow: hidden; }
   /* un-pinned: each track is as tall as its stage; a skipped (off-screen) track keeps a one-screen placeholder so the page never changes length */
   body.page--home .track { height: auto; }
   body.page--home main > .track { contain-intrinsic-size: auto calc(100svh - var(--bar)); }
-  /* The demo's tummy and the offer's Khelu are lazy images that now sit near the top: not fetched in the first load, so the hero image
-     stays the only early request (main.js adds .is-near when the visitor scrolls close; the boxes keep their size from the aspect ratio). */
-  html.motion body.page--home #how .kheelu__img:not(.is-near), html.motion body.page--home #offer .kheelu__img:not(.is-near) { display: none; }
+  /* The demo's tummy, the offer's Khelu and (C3b) the films' posters are lazy images that now sit near the top: not fetched in the first load, so the
+     hero image stays the only early request (main.js adds .is-near when the visitor scrolls close; the boxes keep their size from the aspect ratio). */
+  html.motion body.page--home #how .kheelu__img:not(.is-near), html.motion body.page--home #offer .kheelu__img:not(.is-near), html.motion body.page--home #films .film__play img:not(.is-near) { display: none; }
   body.page--home #how { contain-intrinsic-size: auto calc(100svh - var(--bar) + 8rem); }
   body.page--home #privacy { contain-intrinsic-size: auto calc(100svh - var(--bar) + 13.5rem); }
   body.page--home #films { contain-intrinsic-size: auto calc(100svh - var(--bar) - 0.2rem); } /* C3b: films now sit above the FAQ, so a skipped films section must be its real height (390x844: 752.9px) or WebKit, which has no scroll anchoring, shifts the page by 3px when it first renders */
