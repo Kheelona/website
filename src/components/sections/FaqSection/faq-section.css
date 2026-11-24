@@ -86,3 +86,9 @@
 .ks-faq .kh-faq {
   max-width: none;
 }
+
+/* A question the store's refund and delivery links open in place scrolls to just under the screen's edge, not against it
+   (StoreAnswerLinks, D070 / C1). */
+.ks-faq .kh-faq__item {
+  scroll-margin-top: var(--space-5);
+}

@@ -22,7 +22,8 @@ export type { FaqSectionConfig, FaqSectionProps } from "./faq-section.types";
  *   heading on laptops (`ks-faq-photo`; safety.html fold 7, ai-toys-for-kids-in-india.html fold 5); the inline
  *   sources arrive in `notes`;
  * - `store`: the store's h2 (`ks-h2`, the store's section heading, StoreDetails) and the questions at the column's
- *   width (store.html fold 5).
+ *   width (store.html fold 5); the store page opens its three money answers at load and gives every question a
+ *   fragment (`open`, `anchor`), so its refund and delivery links open the matching answer in place (D070 / C1).
  * The questions open with the native `<details>` (D049 pick 7 animates them through FaqList's class contract).
  * The page keeps the `#faq` fragment ("See all questions" links to it). The FAQPage JSON-LD is the page
  * template's, built from the same items with `faqPlainItems`.
@@ -30,7 +31,7 @@ export type { FaqSectionConfig, FaqSectionProps } from "./faq-section.types";
 export function FaqSection(props: FaqSectionProps) {
   const { offer } = props;
   const markers = props.variant === "store" ? undefined : props.sourceMarker;
-  const list = (options: { reveal?: boolean; firstOpen?: boolean }) => (
+  const list = (options: { reveal?: boolean; firstOpen?: boolean; open?: readonly string[]; anchor?: string }) => (
     <FaqList items={faqItems(props.items, offer, markers ? { label: markers } : undefined)} sign={<Icon name="plus" />} {...options} />
   );
 
@@ -38,7 +39,7 @@ export function FaqSection(props: FaqSectionProps) {
     return (
       <section className="ks-faq" aria-labelledby={props.heading.id}>
         <RichText as="h2" className="kh-title ks-h2" id={props.heading.id} text={props.heading.title} offer={offer} />
-        {list({})}
+        {list({ open: props.open, anchor: props.anchor })}
       </section>
     );
   }

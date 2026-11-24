@@ -255,7 +255,10 @@ describe("checkout.ts hands Razorpay what the tag's checkout.ts handed it (ADR-0
     const now = lastRazorpay();
     expect(now).not.toBe(then);
     expect(nowAnswer).toBe(thenAnswer);
-    expect(now.options).toEqual(then.options);
+    /* D070 / C1: the one deliberate difference from the tag, the sheet's description reads "Khelu pre-order <ref>" (the
+       store's name, K-176); every other option is the tag's, byte for byte. */
+    expect(now.options).toEqual({ ...then.options, description: "Khelu pre-order KH-A2B3-C4D5" });
+    expect(then.options.description).toBe("Kheelu pre-order KH-A2B3-C4D5");
     expect(now.options.handler).toBe(input.onPaid);
     expect((now.options.modal as { ondismiss: unknown }).ondismiss).toBe(input.onDismiss);
     expect([then.opened, now.opened]).toEqual([1, 1]);
@@ -267,7 +270,7 @@ describe("checkout.ts hands Razorpay what the tag's checkout.ts handed it (ADR-0
       amount: 49_900,
       currency: "INR",
       name: "Kheelona",
-      description: "Kheelu pre-order KH-A2B3-C4D5",
+      description: "Khelu pre-order KH-A2B3-C4D5",
       notes: { order_ref: "KH-A2B3-C4D5" },
       theme: { color: "#EF762F" },
     });

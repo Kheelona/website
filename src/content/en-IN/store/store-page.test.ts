@@ -7,7 +7,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { CLAIM_FIXES, KHEELONA_PLUS, SELLING_CLOSES, STORE_WORDS } from "../../../../test/e2e/support/deviations";
-import { withDeliveryDate } from "../../../../test/e2e/support/mockup-text";
+import { withDeliveryDate, withStoreName } from "../../../../test/e2e/support/mockup-text";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
 import { mockupRoute, parseMockup, trustLinkHref } from "../../../../test/support/mockup-compare";
@@ -65,19 +65,20 @@ const trustOf = (ul: Element) =>
 describe("store page module: meta (store.md, At a glance)", () => {
   it("title, both descriptions and the default card, through pageMeta (which refuses a typed amount)", () => {
     const tokenMeta = pageMeta({ ...storePage.meta, path: "/", offer: token });
-    expect(tokenMeta.title).toEqual({ absolute: "Pre-order Kheelu · Kheelona" });
+    expect(tokenMeta.title).toEqual({ absolute: "Pre-order Khelu · Kheelona" });
     expect(tokenMeta.description).toBe(
-      "Pre-order Kheelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7. ₹4,999 (incl. GST); reserve yours today with a refundable ₹499.",
+      "Pre-order Khelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7. ₹4,999 (incl. GST); reserve yours today with a refundable ₹499.",
     );
     expect(pageMeta({ ...storePage.meta, path: "/", offer: full }).description).toBe(
-      "Pre-order Kheelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7. ₹7,999 (incl. GST), with delivery anywhere in India included.",
+      "Pre-order Khelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7. ₹7,999 (incl. GST), with delivery anywhere in India included.",
     );
     expect(storePage.meta.og).toBe(DEFAULT_OG);
   });
 
   it("the token description equals the approved mockup's", () => {
     const description = /<meta name="description" content="([^"]*)"/.exec(readRepoFile("mockup/store.html"))![1];
-    expect(toPlainText(storePage.meta.description, token)).toBe(description);
+    /* The mockup keeps Gate A's "Kheelu"; the store prints "Khelu" (V71, D070 / C1). */
+    expect(toPlainText(storePage.meta.description, token)).toBe(withStoreName(description));
   });
 });
 
@@ -156,9 +157,9 @@ describe("store page module: fold 3, the form and what sits beside the pay butto
        block (architecture §16.3; the JSX contract), so it follows in the store FAQ's full-mode words (store.md fold 5). */
     expect(preorderFormCopy.price.full.startsWith(offerCopy.sentence.full)).toBe(true);
     expect(checkoutWords(preorderFormCopy.price.full, checkoutPrices("full", FULL_PRICE, BALANCE_PRICE))).toBe(
-      "₹7,999 (incl. GST), paid in full when you order. Until we dispatch your Kheelu, all of it is refundable.",
+      "₹7,999 (incl. GST), paid in full when you order. Until we dispatch your Khelu, all of it is refundable.",
     );
-    expect(toPlainText(faqs["paying-today"].answer, full)).toContain("Until we dispatch your Kheelu, all of it is refundable.");
+    expect(toPlainText(faqs["paying-today"].answer, full)).toContain("Until we dispatch your Khelu, all of it is refundable.");
   });
 
   it("the full trust row, the payment window line and the help line, as the mockup", () => {
@@ -198,7 +199,7 @@ describe("store page module: fold 4, what you are agreeing to", () => {
      mockup keeps the approved small print, and the claim fixes turn it into the build's. */
   it("the token small print as the mockup, with task 8b.1's claim fixes (D058 item 3; CMO review m10 (a))", () => {
     const fixed = withFacts(main, CLAIM_FIXES.store.edits);
-    expect(norm(the(".mk-agree__fine", card).textContent).startsWith(`${KHEELONA_PLUS.mockup} The price is `)).toBe(true);
+    expect(norm(the(".mk-agree__fine", card).textContent).startsWith(withStoreName(`${KHEELONA_PLUS.mockup} The price is `))).toBe(true);
     expect(checkoutWords(orderSummaryCopy.fine.token, tokenPrices)).toBe(norm(the("section.mk-agree .mk-agree__fine", fixed).textContent));
   });
 
@@ -210,7 +211,7 @@ describe("store page module: fold 4, what you are agreeing to", () => {
       [orderSummaryCopy.rows.token[2].head, orderSummaryCopy.rows.token[2].note],
     ]);
     expect(checkoutWords(orderSummaryCopy.fine.full, prices)).toBe(
-      "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. The first 500 units at ₹4,999 have been reserved, and this order is at the ₹7,999 price (incl. GST). Delivery anywhere in India is included, and every order comes with a GST invoice.",
+      "Every Khelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. The first 500 units at ₹4,999 have been reserved, and this order is at the ₹7,999 price (incl. GST). Delivery anywhere in India is included, and every order comes with a GST invoice.",
     );
   });
 
@@ -248,9 +249,9 @@ describe("store page module: fold 6, films", () => {
   });
 
   /* D057 item 2: not every film was shot at home, so "in real homes" goes (the D2C plan v2 §10). */
-  it("the heading and lede say “See Kheelu ask.” and “Real children, real families.”, never “in real homes”", () => {
+  it("the heading and lede say “See Khelu ask.” and “Real children, real families.”, never “in real homes”", () => {
     const { heading } = storePage.films;
-    expect(heading.title).toBe("See Kheelu {hand:ask.}");
+    expect(heading.title).toBe("See Khelu {hand:ask.}");
     expect([plain(heading.title), plain(heading.lead!)]).toEqual([STORE_WORDS.filmsTitle.build, STORE_WORDS.filmsLead.build]);
     expect(`${plain(heading.title)} ${plain(heading.lead!)}`).not.toMatch(/real homes/);
   });

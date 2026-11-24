@@ -39,7 +39,7 @@ describe("TierCheckout: the store page's folds for an event tier", () => {
     // alone since task Q2.12, whose "Screen-free AI toy" opens the store's own eyebrow).
     expect(top.querySelector(".kh-eyebrow")!.textContent).toBe(`Bangalore expo price · ${STORE_AGE_BAND}`);
     expect(top.querySelector(".kh-eyebrow")!.textContent).toBe("Bangalore expo price · Ages 3 to 7");
-    expect(within(top as HTMLElement).getByRole("heading", { level: 1 }).textContent).toBe("Pre-order Kheelu.");
+    expect(within(top as HTMLElement).getByRole("heading", { level: 1 }).textContent).toBe("Pre-order Khelu.");
     expect(container.querySelectorAll("h1")).toHaveLength(1);
     expect(Array.from(container.querySelectorAll("h2")).map((h) => h.textContent)).toEqual([
       "Your details",
@@ -62,7 +62,7 @@ describe("TierCheckout: the store page's folds for an event tier", () => {
     const heads = Array.from(card.querySelectorAll(".kh-label")).map((p) => p.textContent);
     expect(heads).toEqual(["₹99 today", "₹4,900 before delivery", "Refundable in full", DELIVERY_TEXT]);
     expect(container.textContent).not.toMatch(/Ships|20 October/);
-    expect(container.querySelector(".ks-store__side")!.textContent).toContain("A refundable ₹99 today reserves your Kheelu");
+    expect(container.querySelector(".ks-store__side")!.textContent).toContain("A refundable ₹99 today reserves your Khelu");
   });
 
   it("puts the store's trust row, payment window line and help line beside the pay button", () => {

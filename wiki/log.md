@@ -1478,3 +1478,19 @@ the order a tab started (B2); a per-tab form draft without the child's age (B3);
 a Pre-order tap that goes at once and a cached store page (B5); approved wording for the rejected lines, a permanent
 redirect for `/products/khelu`, an early store page view and a payment-window-left signal (B7). Each is its own pull
 request with the Lighthouse gate; the founder merges.
+
+## [2026-11-24 15:00] decision | D070 addendum: the store says "Khelu" (C1 PR 1, K-176)
+The founder approved the store name in chat ("The store name: 'Kheelu' → 'Khelu'"). Every buyer-visible "Kheelu" on the store (the
+page, `/thanks`, the event page, the not-found page, titles, descriptions, share-card alt), the order email and the Razorpay payment
+sheet now reads "Khelu"; event names and payloads, IDs, database values, image file names, CSS classes and URLs did not change. The
+frozen mockups keep Gate A's word: deviations.md V71. Frozen files changed only by reviewed patches naming D070 / C1.
+
+## [2026-11-24 17:00] build | D070 addendum: the reservation page, Pay always on screen, no new words (C1 PR 2, K-176)
+The founder's "Go" of 24 November covered five UI/UX changes; this is the store layout (Change 1, items 1 to 7 and 9; the three
+safety lines stay out until Q24). On the store page only (the event pages pass none of the new props): a pay bar below 900 px
+(the DS buy bar, fixed; the form's own button mirrored; a tap submits the same form; it shows from the first scroll and steps aside
+for a field's focus, the consent tick, the alerts, B2's notice, the form's own button and the footer), the form's own pay button
+sticky in its column from 900 px, the refund and delivery trust links opening the store's own question in place (their `href`s
+kept as the no-JavaScript fallback), the three money answers open at load, the questions directly under the pay block with the
+agreement card after them, and the small Khelu linking to the first film. No visible string, no design-system file, no URL changed.
+

@@ -1,0 +1,24 @@
+Reviewed diff of src/lib/store/tiers.ts against archive/pre-reset-2026-10-10 (checkout-freeze, ADR-013 class 1).
+Regenerate with: git diff archive/pre-reset-2026-10-10 -- src/lib/store/tiers.ts (keep this header above it).
+
+D070 / C1 (K-176; output/2026-W48/engineering/C1a-rename-spec.md; the founder's approval in chat on 24 Nov 2026 of "The store
+  name: 'Kheelu' -> 'Khelu'", decisions 2026-11-13-a2-store-rename-approved and
+  2026-11-24-go-5-ui-ux-changes-keep-headline-rename-redirect): the one buyer-visible "Kheelu" in this file, the refusal
+  sentence create-order returns when the 500-unit price has just run out ("The first 500 units have all been reserved,
+  and Khelu is now the full price. Refresh this page..."), which the pre-order form prints under the button. One template
+  literal, a like-for-like word swap. Reviewed here because the approval covers every place the store says the name; the
+  file has no other change. Proof: test/store-rename-khelu.test.tsx.
+
+diff --git a/src/lib/store/tiers.ts b/src/lib/store/tiers.ts
+index 05c8dc1..9a21acf 100644
+--- a/src/lib/store/tiers.ts
++++ b/src/lib/store/tiers.ts
+@@ -133,7 +133,7 @@ export async function resolveTier(
+ export function tierRefusalMessage(reason: Exclude<TierResult, { ok: true }>["reason"]): string {
+   switch (reason) {
+     case "cap-reached":
+-      return `The ${CAP_UNITS_TEXT} have all been reserved, and Kheelu is now ${FULL_PRICE}. Refresh this page and it will show the current price.`;
++      return `The ${CAP_UNITS_TEXT} have all been reserved, and Khelu is now ${FULL_PRICE}. Refresh this page and it will show the current price.`;
+     case "not-yet":
+       return `Good news: one of the ${CAP_UNITS_TEXT} has opened up again. Refresh this page and reserve it for ${TOKEN_PRICE}.`;
+     case "expired":

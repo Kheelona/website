@@ -198,7 +198,7 @@ describe("Field", () => {
           type="text"
           maxLength={20}
           required
-          hint="Kheelu is made for children aged 3 to 7. Just the number is fine, like 4."
+          hint="Khelu is made for children aged 3 to 7. Just the number is fine, like 4."
         />,
       );
       expectSameMarkup(age.container.firstElementChild!, mockupElement("store", ".kh-field:has(#childAge)"));

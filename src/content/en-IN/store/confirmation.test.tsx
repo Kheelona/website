@@ -8,10 +8,10 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { signAddressToken } from "@/lib/store/signing";
 import { formatThanksSession } from "@/lib/store/thanks-session";
 import { fakeClient, fakeEnv } from "../../../../test/helpers/fake-supabase";
-import { withDeliveryDate } from "../../../../test/e2e/support/mockup-text";
+import { withDeliveryDate, withStoreName } from "../../../../test/e2e/support/mockup-text";
 import { readRepoFile, tagText } from "../../../../test/e2e/support/repo";
 import { withSellerFacts } from "../../../../test/e2e/support/seller-facts";
-import { skeleton, words } from "../../../../test/support/mockup-compare";
+import { readNameAsBuilt, skeleton, words } from "../../../../test/support/mockup-compare";
 import { DELIVERY_TEXT } from "../delivery";
 import { navigation } from "../navigation";
 import { DEFAULT_OG } from "../organization";
@@ -30,6 +30,8 @@ import { storePage } from "./store-page";
  * the help lines from seller.ts, the return window from policies.ts, the delivery lines from delivery.ts and config. */
 
 const mockup = new DOMParser().parseFromString(readRepoFile("mockup/store-confirmation.html"), "text/html");
+/* The mockup keeps Gate A's "Kheelu"; /thanks prints "Khelu" (V71, D070 / C1). */
+readNameAsBuilt(mockup);
 const main = mockup.querySelector("main")!;
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const fold = (labelledBy: string) => {
@@ -55,8 +57,9 @@ const SAMPLE = {
   balance: "₹4,500",
   price: "₹4,999",
 };
-/** The live page at the freeze tag, white space collapsed: where the other states' words come from. */
-const live = norm(tagText("src/app/store/thanks/page.tsx"));
+/** The live page at the freeze tag, white space collapsed: where the other states' words come from. It says "Kheelu", as
+ *  the mockup does; /thanks prints "Khelu" (V71, D070 / C1), so it is read as the build's name. */
+const live = withStoreName(norm(tagText("src/app/store/thanks/page.tsx")));
 
 describe("/thanks meta", () => {
   it("is the copy page's title and description, with the site's default share card", () => {
@@ -64,8 +67,8 @@ describe("/thanks meta", () => {
       title: string;
       description: string;
     };
-    expect(confirmation.meta.title).toBe(meta.title);
-    expect(confirmation.meta.description).toBe(meta.description);
+    expect(confirmation.meta.title).toBe(withStoreName(meta.title));
+    expect(confirmation.meta.description).toBe(withStoreName(meta.description));
     expect(confirmation.meta.og).toBe(DEFAULT_OG);
   });
 
@@ -78,12 +81,12 @@ describe("/thanks meta", () => {
       const m = new RegExp(`^\\|\\s*${label.source} \\((\\d+) characters\\)[^|]*\\|\\s*(.+?)\\s*\\|\\s*$`, "m").exec(glance);
       if (!m) throw new Error(`store-confirmation.md has no "${label.source}" row`);
       expect(m[2].length, label.source).toBe(Number(m[1]));
-      return m[2];
+      return withStoreName(m[2]);
     };
     expect(confirmation.titles.paid).toBe(row(/Title, paid state/));
     expect(confirmation.titles.paid).toBe(confirmation.meta.title);
     expect(confirmation.titles.other).toBe(row(/Title, every other state/));
-    expect(confirmation.titles.other).toBe("Your Kheelu pre-order · Kheelona");
+    expect(confirmation.titles.other).toBe("Your Khelu pre-order · Kheelona");
     expect(confirmation.titles.other).not.toMatch(/reserved/i);
   });
 });

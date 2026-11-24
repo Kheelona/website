@@ -88,9 +88,40 @@ describe("StoreDetails", () => {
   it("keeps the phone order: first screen, the form, then the agreement card and the questions", () => {
     const { container } = render(composed());
     const order = Array.from(container.querySelectorAll("h1, h2")).map((h) => h.textContent);
-    expect(order).toEqual(["Pre-order Kheelu.", "Your details", "What you are agreeing to", "Questions before you pay"]);
+    expect(order).toEqual(["Pre-order Khelu.", "Your details", "What you are agreeing to", "Questions before you pay"]);
     const card = screen.getByRole("region", { name: "What you are agreeing to" });
     expect(screen.getByRole("button", { name: "Pay ₹499 and reserve" }).compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  // D070 / C1 (K-176): the store page asks for the questions first and hands in its pay bar; an event page asks for neither.
+  describe("the store page's reservation layout (questionsFirst, bar)", () => {
+    const withBar = () => {
+      const base = composed();
+      return <StoreDetails {...base.props} questionsFirst bar={<div className="ks-paybar" data-bar="" />} />;
+    };
+
+    it("puts the questions before the agreement card in the second column, which is the phone order too: form, questions, card", () => {
+      const { container } = render(withBar());
+      const side = container.querySelector(".ks-store__side")!;
+      expect(Array.from(side.children).map((c) => c.className)).toEqual(["ks-faq", "kh-card ks-agree"]);
+      const order = Array.from(container.querySelectorAll("h1, h2")).map((h) => h.textContent);
+      expect(order).toEqual(["Pre-order Khelu.", "Your details", "Questions before you pay", "What you are agreeing to"]);
+    });
+
+    it("holds the bar last in the details section, after the form, so the slot sits at the form's end and takes no room of its own", () => {
+      const { container } = render(withBar());
+      const details = container.querySelector("#details")!;
+      expect(details.lastElementChild!.matches("[data-bar]")).toBe(true);
+      expect(details.lastElementChild!.previousElementSibling!.tagName).toBe("FORM");
+      expect(container.firstElementChild!.className).toBe("kh-section ks-store");
+    });
+
+    it("keeps the mockup's order and its class on the event pages, which pass neither", () => {
+      const { container } = render(composed());
+      expect(container.firstElementChild!.className).toBe("kh-section ks-store");
+      expect(Array.from(container.querySelector(".ks-store__side")!.children).map((c) => c.className)).toEqual(["kh-card ks-agree", "ks-faq"]);
+      expect(container.querySelector("[data-bar]")).toBeNull();
+    });
   });
 
   it("names the details section by its heading and keeps the #details fragment the films link back to", () => {

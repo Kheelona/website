@@ -57,3 +57,23 @@ request 30 is reworked in place, so that direction never merges).
 - **Tracking:** the OpenAI pixel's verified pages, ViewContent's paths and the CTA placements follow the page; event names
   and payloads are unchanged (ViewContent still sends `content_name "Kheelu"`).
 - **Not changed here:** image file names containing "kheelu", the store's visible "Kheelu" wording (C1 PR 1), any page layout.
+
+## Addendum 2026-11-24: the store says "Khelu" (C1 PR 1; the store rename the founder approved in chat)
+
+The founder's answer in chat on 2026-11-24, "Approved: The store name: 'Kheelu' → 'Khelu'" (decision notes
+`2026-11-13-a2-store-rename-approved` and `2026-11-24-go-5-ui-ux-changes-keep-headline-rename-redirect`): every place the
+store shows the toy's name reads "Khelu", as the marketing pages already do ("Khelu by Kheelona").
+
+- **Changed (a like-for-like word swap, nothing else):** the store page and its titles, descriptions and share-card alt;
+  `/thanks` in every state; the event page; the store's not-found page; the films strip, the FAQ answers and the Kheelona+
+  sentence the store reads; the order email (subject, heading, body, plain text); the Razorpay payment sheet's description
+  (`Khelu pre-order KH-…`); the refusal create-order returns when the 500-unit price has just run out.
+- **Frozen files, by reviewed patches that name this decision:** `src/lib/email/templates.ts`,
+  `src/features/preorder/lib/checkout.ts`, `src/lib/store/tiers.ts`, the literal-only patch of `src/app/store/thanks/page.test.tsx`;
+  the store layout's signature fixture. No logic changes.
+- **Not changed on purpose:** event names and payloads (ViewContent still sends `content_name "Kheelu"`, `content_ids ["lumi"]`),
+  product and tier IDs, database values, image file names and the `Kheelu/` asset folder, CSS class names, every URL, code
+  comments, and the marketing `src/content` pages the redesign replaced (not served).
+- **Mockups:** the frozen mockups keep Gate A's "Kheelu"; the comparisons read their name as the build's (deviations.md V71).
+- **Guard:** `test/store-rename-khelu.test.tsx` renders every store surface and fails on any "Kheelu" a buyer could see.
+

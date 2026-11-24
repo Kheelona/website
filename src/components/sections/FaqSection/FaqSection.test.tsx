@@ -253,4 +253,25 @@ describe("FaqSection: store (store.html fold 5)", () => {
     expect(words(container.textContent)).toBe(words(fold.textContent));
     expect(container.querySelector("[data-reveal]")).toBeNull();
   });
+
+  // D070 / C1 (K-176): the store page opens its money answers and makes every question linkable; an event page, which
+  // passes neither, keeps the approved markup (every answer closed, no ids).
+  it("opens the answers it is told to and gives each question a fragment, only when asked", () => {
+    const items = [
+      { id: "paying-today", question: "What am I paying today?", answer: "A" },
+      { id: "change-my-mind", question: "What if I change my mind?", answer: "B" },
+      { id: "how-to-pay", question: "How can I pay?", answer: "C" },
+    ];
+    const heading = { title: "Questions before you pay", id: "faq-title" };
+    const plain = render(<FaqSection variant="store" heading={heading} items={items} offer={offer} />).container;
+    expect([...plain.querySelectorAll("details")].map((d) => [d.open, d.hasAttribute("id")])).toEqual([[false, false], [false, false], [false, false]]);
+    const opened = render(
+      <FaqSection variant="store" heading={heading} items={items} offer={offer} open={["paying-today", "change-my-mind"]} anchor="faq" />,
+    ).container;
+    expect([...opened.querySelectorAll("details")].map((d) => [d.id, d.open])).toEqual([
+      ["faq-paying-today", true],
+      ["faq-change-my-mind", true],
+      ["faq-how-to-pay", false],
+    ]);
+  });
 });

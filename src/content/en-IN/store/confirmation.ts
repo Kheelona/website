@@ -60,7 +60,7 @@ export interface ConfirmationContent {
 
 const email = seller.support.email;
 /** The mockup's title (the paid state): the share card's too. */
-const reservedTitle = "Your Kheelu is reserved · Kheelona";
+const reservedTitle = "Your Khelu is reserved · Kheelona";
 /** The store's dead end's words, which this state printed as its muted line until task 7.1c. */
 const deadEndHelp = storeNotFound.panel.help;
 const checkEmail = { tone: "sun", title: "Check your email", body: ["Your confirmation has your order number and a link back to this page."] } as const;
@@ -69,15 +69,15 @@ const trackDelivery = { tone: "chilli", title: "Track your delivery", body: ["Wh
 export const confirmation = {
   meta: {
     title: reservedTitle,
-    description: "Your Kheelu pre-order: order number, what you paid, what is still due and where to deliver it.",
+    description: "Your Khelu pre-order: order number, what you paid, what is still due and where to deliver it.",
     og: DEFAULT_OG,
   },
-  titles: { paid: reservedTitle, other: "Your Kheelu pre-order · Kheelona" },
+  titles: { paid: reservedTitle, other: "Your Khelu pre-order · Kheelona" },
   head: {
     paid: {
       icon: "check-circle",
       eyebrow: "Pre-order confirmed",
-      heading: "Your Kheelu is reserved.",
+      heading: "Your Khelu is reserved.",
       lede: [
         "We have your ",
         { slot: "amount" },
@@ -138,7 +138,7 @@ export const confirmation = {
     },
     saved: {
       heading: "Your delivery address",
-      intro: "This is where your Kheelu will go. Change it any time before dispatch.",
+      intro: "This is where your Khelu will go. Change it any time before dispatch.",
     },
   },
   next: {
@@ -149,7 +149,7 @@ export const confirmation = {
         tone: "blue",
         title: "Pay the balance",
         body: [
-          "When your Kheelu is ready to leave us, we send a payment link for the ",
+          "When your Khelu is ready to leave us, we send a payment link for the ",
           { slot: "balance" },
           " balance on WhatsApp and by email.",
         ],
@@ -165,7 +165,7 @@ export const confirmation = {
   help: {
     heading: "Need anything?",
     contact: `${seller.support.message}, quoting your order number, or email [${email}](mailto:${email}).`,
-    undo: `Changed your mind? Until we dispatch your Kheelu, message us with your order number and we refund everything you paid, with no fee and no reason needed. After delivery, you can still return it within ${RETURN_DAYS} days, no questions asked. Nothing is ever charged automatically.`,
+    undo: `Changed your mind? Until we dispatch your Khelu, message us with your order number and we refund everything you paid, with no fee and no reason needed. After delivery, you can still return it within ${RETURN_DAYS} days, no questions asked. Nothing is ever charged automatically.`,
     refund: { label: "Refunds and returns", href: "/refund" },
   },
   payments: paymentsLine,

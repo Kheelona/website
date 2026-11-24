@@ -58,3 +58,15 @@ export function focusedTile(widths: ReadonlyMap<string, number>, order: readonly
   }
   return best;
 }
+
+/** A film's name as the strip words it, "{chip}. {caption}" (D040): the label of its play button and of the film once it
+ *  plays. */
+export function filmName(film: { readonly chip: string; readonly caption: string }): string {
+  return `${film.chip}. ${film.caption}`;
+}
+
+/** What a film's play button says, "{play} {chip}. {caption}" ("Play: Learning by asking. ..."). The store's small
+ *  Kheelu, a link to the first film, takes the same words (D070 / C1), so no label of its own is written. */
+export function playLabel(film: { readonly chip: string; readonly caption: string }, labels: { readonly play: string }): string {
+  return `${labels.play} ${filmName(film)}`;
+}

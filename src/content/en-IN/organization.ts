@@ -96,5 +96,5 @@ export const TEAM_BYLINE = "The Kheelona team";
  *  copy pages' words for it (home.md). For every page whose copy names no card of its own. */
 export const DEFAULT_OG = {
   image: organization.image,
-  alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy.",
+  alt: "Khelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy.",
 } as const satisfies Meta["og"];
