@@ -811,15 +811,19 @@ button { font: inherit; color: inherit; }
 @media (max-width: 699px) { .incta { text-align: center; } .incta__row { justify-content: center; } }
 .reduced .ctabar { transition: none; }
 
-/* Home on phones: each pinned chapter is at most 2.5 screens tall (laptops keep their lengths). Every timeline is driven
-   by its track's progress, so each one still plays from start to end, just over a shorter scroll. Phones scroll freely:
-   no scroll-snap stops (D070 / B1 removed the 23 Oct "one swipe, one beat" snap, which fought the films viewer). */
+/* Home on phones: each pinned chapter is at most 2.5 screens tall (laptops keep their lengths; the hero is 1.6 screens in a
+   narrow window and 2.3 on a touch phone, see the next rule). Every timeline is driven by its track's progress, so each one
+   still plays from start to end, just over a shorter scroll. Phones scroll freely: no scroll-snap stops (D070 / B1 removed
+   the 23 Oct "one swipe, one beat" snap, which fought the films viewer). */
 @media (max-width: 699px) {
   #hero { --len: 160vh !important; }
   #how, #films, #asks, #day { --len: 250vh !important; }
   #languages, #privacy { --len: 230vh !important; }
   #app { --len: 200vh !important; }
 }
+/* Touch phones keep today's hero length (230vh) so the next section's lazy image stays outside the browser's lazy-load
+   distance during the first load (Lighthouse gate, D070 / B1); every other phone chapter uses the shorter length above. */
+@media (max-width: 699px) and (hover: none) { #hero { --len: 230vh !important; } }
 
 /* ===================== Phone smoothness (2026-10-23) =====================
    Touch screens draw every frame on a phone GPU, so the costly effects are swapped for ones that look the same:
