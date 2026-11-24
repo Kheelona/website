@@ -228,15 +228,20 @@ Measured on a 390px touch viewport with 4× and 10× CPU throttling (Chrome trac
   filter; the invisible tiny blurs (motes, privacy blob) are gone there; no grey tap flash, buttons press in slightly.
 
 ## v17: phones, films and speed (owner's notes and Lighthouse reports, 2026-10-23)
-- **One swipe, one beat (touch phones):** a scroll-snap stop at every beat of each pinned chapter and at each section's
-  top (`.beats`, placed at page coordinates by main.js), hard (`mandatory`, `scroll-snap-stop: always`) only while a
-  chapter is pinned (`html.in-chapter`), so the sections between scroll freely. Phone chapter lengths keep neighbouring
-  beats ~0.6 screen apart (more than a thumb's drag); the beats are `BEATS` in main.js. Chrome still lets a very hard
-  flick cross two stops; it no longer crosses a whole chapter.
+- **One swipe, one beat (touch phones): REMOVED on 2026-11-24 (D070 / B1).** It put a scroll-snap stop at every beat of
+  each pinned chapter (`.beats`, `html.in-chapter`, `BEATS` in main.js) and made the chapters 230-430vh long on phones.
+  Switching root snap on and off from the scroll position fought the films viewer and made the page jump and bounce
+  after a film was closed, and it forced about 45 stops to reach the price. Phones now scroll freely with the shorter
+  `(max-width: 699px)` chapter lengths (hero 160vh; how, films, asks, day 250vh; languages, privacy 230vh; app 200vh).
+  Never toggle root `scroll-snap-type` from scroll position. "Skip section" stays.
 - **Films viewer:** every `[data-video]` opens a full-screen reel at that film, playing with sound; swipe up (or ↓) for
   the next, which plays as it arrives, and a film that ends moves on; tap pauses; Back, Esc or × closes. One shared
   `<video>` moves from slide to slide, so the first tap unlocks sound for every film. Markup: `#modal.reels` in
   `index.html` and `pages/_shell/after.html`.
+  Since D070 / B1 it also keeps the page's place: opening remembers `scrollY` and sets `history.scrollRestoration =
+  "manual"`; closing (×, Esc or Back) puts the page back at once (`scrollTo(..., "instant")`, or Lenis
+  `scrollTo(y, { immediate: true })` on desktop), refocuses the film that opened it without scrolling, then gives the
+  browser's scroll restoration back on the next frame. Home and the product page share this code.
 - **Tracking starts on engagement** (`src/lib/site-pages/tracking-shell.ts`): GA4, the Meta Pixel, PostHog and Vercel
   Analytics load on the first touch, click, key, scroll, wheel or mouse move, or 4 s after load. Same IDs and events.
   A Pre-order tap that comes first waits (≤ 2 s; measured 0.5-1.1 s) until PostHog's remote config has loaded, the
@@ -244,3 +249,24 @@ Measured on a 390px touch viewport with 4× and 10× CPU throttling (Chrome trac
   stays in `<head>` (its install check reads the tag). Lighthouse mobile on the same Mac, trackers loaded but their
   hits blocked: Total Blocking Time ≈ 250 ms (live) → 17-63 ms.
 - Hero image preloaded before the fonts; the "No Wi-Fi" slash animates transform/opacity (was stroke-dashoffset).
+
+## Phone home page (K-178 / C3, D070, 24 Nov)
+- **Order (phones, `max-width: 699px`, home only):** hero, statement, how (the demo), offer, safety, privacy, faq, then the story
+  in today's order (backed, films, asks, asks-cta, day, languages, remembers, modes, app, why). The HTML is not reordered:
+  `main` is a flex column on phones and `order` in the "C3" block at the end of `site.css` sets the sequence. Laptops keep
+  the DOM order.
+- **No pinned chapters on phones:** `.track` is `height: auto` and `.stage` is `position: relative` (about one screen each).
+  `main.js` calls this `flat` (home, `max-width: 699px` at load). Both read the same marker, `<body class="page page--home">`
+  (`site.css` selects `body.page--home …` inside the media query; `main.js` checks the class), so they always agree. No `:has()`
+  anywhere: a `html:has(#hero)` selector made first paint slower (gate round 0). In `flat` mode nothing is scrubbed by scroll
+  (the statement heading is not split into word spans, so it stays fully opaque; the on-body `.ctrl` hotspots stay `aria-hidden`
+  with `tabindex="-1"`, the named list buttons are the keyboard route): the hero is its opening
+  screen; the demo (`#how`) is its live state in normal flow; the sky conversation plays once, by time, when it comes into view;
+  day, languages, app and privacy cycle by time while on screen until a tap; the films reel is a sideways swipe list
+  (`scroll-snap-type: x` on the reel only; the page never snaps); "Skip section" is hidden. Crossing 700px (a phone turned
+  sideways) reloads the page once, after the films viewer is closed.
+- **First screen and bar:** the ages and price line (`.hero__offer`) shows on phones again; the bottom bar keeps "Pre-order
+  Khelu" as the main button with "Watch" beside it as a quiet text link (>= 44px).
+- **Lazy images:** the demo's tummy and the offer's Khelu images are `display: none` until the visitor scrolls near them
+  (`.is-near`, set by `main.js`), so the first load still fetches only the hero image (a layout that puts a lazy image within
+  ~3 screens of the top makes Chrome fetch it early and costs LCP; see `memory/engineering/website-gotchas.md`).
