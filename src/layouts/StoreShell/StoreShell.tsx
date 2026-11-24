@@ -7,6 +7,7 @@ import { RichText } from "@/components/ui/RichText/RichText";
 import { MARKETING_ORIGIN } from "@/config/env";
 import { navigation } from "@/content/en-IN/navigation";
 import { seller } from "@/content/en-IN/seller";
+import { storeArrivalScript } from "@/lib/tracking/beacon";
 
 /**
  * The store host's shell (architecture §16.1; structure §3.1), rendered by src/app/store/layout.tsx around the store
@@ -27,11 +28,17 @@ import { seller } from "@/content/en-IN/seller";
  * seller's lines from seller.ts. The store prints no GSTIN and no number (D063 items 2-3, D064 item 11; task Q2.3): the
  * header's help line and the footer's contact line are WhatsApp (and the email), the grievance line the D032 line
  * without the number (`seller.grievance.footerLine`).
+ *
+ * First in the shell, before the skip link, sits one inline script (D070 / B7c, K-174: `storeArrivalScript`,
+ * src/lib/tracking/beacon.ts). It reports `store_arrived` to PostHog by beacon while the HTML is still being parsed, so a
+ * visitor who leaves before hydration is still counted. It renders nothing, runs only on the store hosts that are PostHog
+ * hosts, never on /thanks, and carries no query parameter but the campaign keys. The CSP allows inline scripts today.
  */
 export function StoreShell({ children }: { children: ReactNode }) {
   const { labels } = navigation;
   return (
     <>
+      <script dangerouslySetInnerHTML={{ __html: storeArrivalScript() }} />
       <SkipLink label={labels.skip} />
       <StoreHeader
         logo={{ alt: labels.logo, href: MARKETING_ORIGIN, linkLabel: labels.storeLogoLink }}

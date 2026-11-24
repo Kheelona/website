@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { clsx } from "clsx";
 import { Alert } from "@/components/ui/Alert/Alert";
@@ -23,6 +23,7 @@ import { preorderAnalytics } from "../lib/analytics";
 import { phDistinctId } from "@/lib/posthog";
 import { CAMPAIGN_KEYS } from "@/lib/campaign";
 import { track } from "@/lib/tracking/track";
+import { watchPaymentWindow, type PaymentWindowWatch } from "@/lib/tracking/payment-window";
 import { clearFormDraft, useFormDraft } from "./form-draft";
 
 /** The pre-order form (§8.25-s).
@@ -92,6 +93,12 @@ export function PreorderForm({
   /* The name, phone and email stay in THIS tab (sessionStorage, 30 minutes, never the child's age) so a parent who
      leaves to pay in a UPI app finds them still filled in (D070 / B3; ./form-draft.ts). */
   const draftRef = useFormDraft();
+
+  /* A parent who leaves the page with the payment sheet open (a UPI app, a locked phone) is reported once, by beacon,
+     from the moment the sheet is up until it is paid, dismissed or this form goes (D070 / B7c; the explicit close is
+     still `preorder_dismissed`, below, unchanged). */
+  const sheetWatch = useRef<PaymentWindowWatch | null>(null);
+  useEffect(() => () => sheetWatch.current?.close(), []);
 
   /* Fired once per mount, on the first change to any field (§8.40). A ref
      rather than state on purpose: this must not re-render the form a parent is
@@ -169,6 +176,8 @@ export function PreorderForm({
       setState("paying");
       preorderAnalytics.beginCheckout(data.amountPaise!, tier);
 
+      const sheet = watchPaymentWindow(tier);
+      sheetWatch.current = sheet;
       const opened = await startCheckout({
         keyId: data.keyId!,
         razorpayOrderId: data.razorpayOrderId!,
@@ -177,6 +186,7 @@ export function PreorderForm({
         prefill: data.prefill ?? {},
         tier,
         onDismiss: () => {
+          sheet.close();
           preorderAnalytics.dismissed(tier);
           setState("idle");
           setFailure(
@@ -184,6 +194,7 @@ export function PreorderForm({
           );
         },
         onPaid: (paid) => {
+          sheet.close();
           preorderAnalytics.purchase(data.orderRef!, data.amountPaise!, tier);
           /* Paid: the saved name, phone and email have done their job (D070 / B3). */
           clearFormDraft();
@@ -211,6 +222,7 @@ export function PreorderForm({
         },
       });
 
+      if (opened) sheet.opened();
       if (!opened) {
         setState("idle");
         setFailure(
