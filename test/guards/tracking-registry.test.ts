@@ -20,6 +20,17 @@ import { CTAS, CTA_IDS, CTA_VALUES, RESERVED_CTA_VALUES, type CtaValue } from "@
 import { DESTINATIONS, type DestinationKey } from "@/lib/tracking/destinations";
 import { EVENTS, STAMPED_PROPERTIES, type TrackedEvent } from "@/lib/tracking/events";
 import { NEW_EVENTS } from "@/lib/tracking/new-events";
+import {
+  BEACON_LIB,
+  BEACON_URL,
+  EARLY_LIB,
+  POSTHOG_PERSISTENCE_NAME,
+  STORE_ARRIVAL_HOSTS,
+  STORE_ARRIVED,
+  STORE_CTA_TAPPED_EARLY,
+} from "@/lib/tracking/beacon";
+import { INTERNAL_PROPERTY } from "@/lib/tracking/internal-flag";
+import { PAYMENT_WINDOW_HIDDEN } from "@/lib/tracking/payment-window";
 
 /**
  * TRACKING REGISTRY GUARD (task 1.4; ADR-006; architecture §8.2-8.3; QA review N2).
@@ -42,7 +53,8 @@ import { NEW_EVENTS } from "@/lib/tracking/new-events";
  * - The approved mockups: where each cta value sits.
  *
  * Rows and events a founder decision added AFTER the tag (OpenAI Ads measurement, D069: destinations 18 to 20, status
- * "added", and inventory §16) are held to the same two-way proof, separately from the tag's own, which are untouched.
+ * "added", and inventory §16; the early PostHog signals sent by beacon, D070: inventory §17) are held to the same
+ * two-way proof, separately from the tag's own, which are untouched.
  *
  * So it fails when a name, an ID or a parameter is edited, or a row goes missing, on either
  * side. When the inventory changes for a real reason (a founder decision), change the
@@ -618,12 +630,13 @@ describe("events.ts: OpenAI Ads measurement, added by D069, equals inventory §1
   const pixel = () => eventsTo("openai-pixel");
   const capi = () => only(eventsTo("openai-capi"), "order_created");
 
-  it("registers exactly the added events: §16's three browser events and its one server event, each with its decision on file", () => {
+  it("registers exactly D069's added events: §16's three browser events and its one server event, each with its decision on file", () => {
     expect(sorted(pixel().map((e) => e.name))).toEqual(sorted(OPENAI_TABLE.map(([e]) => code(e)[0])));
     expect(sorted(pixel().map((e) => e.name))).toEqual(["checkout_started", "order_created", "page_viewed"]);
     expect(eventsTo("openai-capi").map((e) => [e.name, e.status])).toEqual([["order_created", "added"]]);
     expect(code(OPENAI_EVENT)).toContain("order_created");
-    const added = EVENTS.filter((e) => e.status === "added");
+    /* D070's two PostHog events are added events too, held to inventory §17 below: this list is D069's. */
+    const added = EVENTS.filter((e) => e.status === "added" && e.decision === "D069");
     expect(sorted(added.flatMap((e) => e.destinations.map((d) => `${d}:${e.name}`)))).toEqual([
       "openai-capi:order_created",
       "openai-pixel:checkout_started",
@@ -634,6 +647,8 @@ describe("events.ts: OpenAI Ads measurement, added by D069, equals inventory §1
       expect(e.decision, `${e.name} decision`).toBe("D069");
       expect(decisionFiles().some((f) => f.startsWith(`${e.decision}-`)), `${e.decision} has no file in wiki/decisions`).toBe(true);
     }
+    /* Every added event belongs to one of the two decisions that added events; a third needs its own section here. */
+    expect(sorted([...new Set(EVENTS.filter((e) => e.status === "added").map((e) => e.decision ?? "none"))])).toEqual(["D069", "D070"]);
   });
 
   it("browser events: the parameters in §16's order, its literals as fixed values, its dedup key", () => {
@@ -675,6 +690,65 @@ describe("events.ts: OpenAI Ads measurement, added by D069, equals inventory §1
   it("the registry's cookie row names kh_oppref, and §9 lists it as a carrier", () => {
     expect(destination(20)?.ids).toEqual(["kh_oppref"]);
     expect(CARRIERS.map(([carrier]) => code(carrier)[0])).toContain("kh_oppref");
+  });
+});
+
+/* ── 3c. Early store signals (D070, B7c and B5): added after the tag, held to inventory §17 ─────────── */
+
+const EARLY_SECTION = section(INVENTORY, "## 17. ");
+const EARLY_TABLE = table(EARLY_SECTION, ["Event", "Parameters", "Fired at", "When"]);
+
+describe("events.ts: the early store signals, added by D070, equal inventory §17", () => {
+  const added = () => EVENTS.filter((e) => e.status === "added" && e.decision === "D070");
+
+  it("registers exactly §17's three events, PostHog only, added, with the decision on file", () => {
+    expect(sorted(added().map((e) => e.name))).toEqual(sorted(EARLY_TABLE.map(([e]) => code(e)[0])));
+    expect(sorted(added().map((e) => e.name))).toEqual(["preorder_payment_window_hidden", "store_arrived", "store_cta_tapped_early"]);
+    for (const e of added()) {
+      expect(e.destinations, `${e.name} destinations`).toEqual(["posthog-browser"]);
+      expect(e.status).toBe("added");
+      expect(decisionFiles().some((f) => f.startsWith("D070-")), "D070 has a file in wiki/decisions").toBe(true);
+    }
+  });
+
+  it("their parameters and fixed values are §17's, in its order", () => {
+    for (const [event, ps] of EARLY_TABLE) {
+      const e = only(added(), code(event)[0]);
+      expect([...e.params], `${e.name} parameters`).toEqual(paramsOf(ps).map((p) => p.name));
+      expect(e.fixed ?? {}, `${e.name} fixed values`).toEqual(literalsOf(paramsOf(ps)));
+      expect(e.eventId, `${e.name} has no dedup key`).toBeUndefined();
+    }
+  });
+
+  it("they never go to GA4, Meta or OpenAI, and carry nothing a parent typed", () => {
+    expect(plain(EARLY_SECTION)).toContain("never to GA4, Meta or OpenAI");
+    for (const e of added()) {
+      expect(e.destinations.filter((d) => d !== "posthog-browser"), e.name).toEqual([]);
+      for (const forbidden of ["email", "phone", "parentName", "childAge", "orderRef", "transaction_id", "address"]) {
+        expect(e.params, `${e.name} must not carry ${forbidden}`).not.toContain(forbidden);
+      }
+    }
+  });
+
+  it("§17 states the transport, the hosts and the deny paths as the code holds them", () => {
+    const text = plain(EARLY_SECTION);
+    expect(text).toContain(BEACON_URL.replace("?compression=base64", ""));
+    expect(text).toContain("compression=base64");
+    for (const host of STORE_ARRIVAL_HOSTS) expect(text, host).toContain(host);
+    expect(text).toContain("STORE_ARRIVAL_HOSTS");
+    expect(text).toContain("POSTHOG_REPLAY_DENY_PATHS");
+    expect(text).toContain("CAMPAIGN_KEYS");
+    expect(text).toContain(POSTHOG_PERSISTENCE_NAME.replace(POSTHOG_KEY, "<key>"));
+    expect(code(EARLY_SECTION)).toContain(INTERNAL_PROPERTY); // the team flag's name, as applyInternalFlag registers it
+  });
+
+  it("their names are the ones the senders use", () => {
+    expect(STORE_ARRIVED).toBe("store_arrived");
+    expect(PAYMENT_WINDOW_HIDDEN).toBe("preorder_payment_window_hidden");
+    expect(STORE_CTA_TAPPED_EARLY).toBe("store_cta_tapped_early");
+    expect(only(added(), "store_cta_tapped_early").fixed?.$lib).toBe(BEACON_LIB); // beaconCapture's, the shell sends it
+    expect(EARLY_LIB).toBe(only(added(), "store_arrived").fixed?.$lib);
+    expect(BEACON_LIB).toBe(only(added(), "preorder_payment_window_hidden").fixed?.$lib);
   });
 });
 
