@@ -154,6 +154,8 @@ const LEGACY: [string, string][] = [
   ["/pricing", "/products/kheelu#offer"],
   /* D053 (task 6.5): the 3-6-9-12 article leaves the journal, to its hub topic. */
   ["/stories/screen-time-rules-parents-swear-by", "/stories#screen-time"],
+  /* D070 / B7 (b): the toy's visible name as a path, one hop to the page that stays canonical. */
+  ["/products/khelu", "/products/kheelu"],
 ];
 
 /* Each sample plain, with a trailing slash, and with a campaign query that must

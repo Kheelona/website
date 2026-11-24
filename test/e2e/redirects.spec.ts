@@ -57,6 +57,8 @@ const ADDED: Row[] = [
   { from: "/pricing", to: "/products/kheelu#offer" },
   /* D053 (task 6.5): the 3-6-9-12 article leaves the journal, to its hub topic. */
   { from: "/stories/screen-time-rules-parents-swear-by", to: "/stories#screen-time" },
+  /* D070 / B7 (b): `/products/khelu`, the toy's visible name, to the canonical product page. */
+  { from: "/products/khelu", to: "/products/kheelu" },
 ];
 
 const RULES_TABLE = existsSync(join(ROOT, "src/config/redirects.ts"));

@@ -51,6 +51,14 @@ const RULES: readonly RedirectRule[] = [
      printed QR codes, old WhatsApp forwards and two weeks of Ahrefs-recorded
      inbound links all point at the old path. */
   { source: "/products/lumi", destination: "/products/kheelu", permanent: true },
+  /* THE NAME PEOPLE NOW GUESS (D070 / B7 (b), 2026-11-24). The toy is shown as
+     "Khelu" (offer-swap.ts, the redesign's copy), so `/products/khelu` is the
+     address a parent or an AI assistant builds from the name, and it was a 404.
+     The human chose Q11 = a: redirect it now; which spelling becomes the main
+     URL is decided after the peak. Until then the page and its canonical stay
+     `/products/kheelu`, so this is a plain one-hop 308 to it, with no page,
+     sitemap or canonical change. The `www` twin below comes from the map. */
+  { source: "/products/khelu", destination: "/products/kheelu", permanent: true },
 
   /* Legacy Wix-site URLs (2026-07-28). This site replaces the old
      kheelona.com store, whose pages are still in Google's index — including
