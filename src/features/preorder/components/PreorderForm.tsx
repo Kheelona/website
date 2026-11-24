@@ -23,6 +23,7 @@ import { preorderAnalytics } from "../lib/analytics";
 import { phDistinctId } from "@/lib/posthog";
 import { CAMPAIGN_KEYS } from "@/lib/campaign";
 import { track } from "@/lib/tracking/track";
+import { clearFormDraft, useFormDraft } from "./form-draft";
 
 /** The pre-order form (§8.25-s).
  *
@@ -87,6 +88,10 @@ export function PreorderForm({
   const [errors, setErrors] = useState<FieldErrors<ContactInput>>({});
   const [state, setState] = useState<"idle" | "working" | "paying">("idle");
   const [failure, setFailure] = useState<string | null>(null);
+
+  /* The name, phone and email stay in THIS tab (sessionStorage, 30 minutes, never the child's age) so a parent who
+     leaves to pay in a UPI app finds them still filled in (D070 / B3; ./form-draft.ts). */
+  const draftRef = useFormDraft();
 
   /* Fired once per mount, on the first change to any field (§8.40). A ref
      rather than state on purpose: this must not re-render the form a parent is
@@ -180,6 +185,8 @@ export function PreorderForm({
         },
         onPaid: (paid) => {
           preorderAnalytics.purchase(data.orderRef!, data.amountPaise!, tier);
+          /* Paid: the saved name, phone and email have done their job (D070 / B3). */
+          clearFormDraft();
           /* Confirm in the background and move on. The parent should not wait on
              our bookkeeping, and the webhook covers us if this request never
              lands. `keepalive` because the navigation just below would otherwise
@@ -221,7 +228,7 @@ export function PreorderForm({
   const busy = state !== "idle";
 
   return (
-    <form onSubmit={onSubmit} onChange={onFirstChange} noValidate className="ks-form">
+    <form ref={draftRef} onSubmit={onSubmit} onChange={onFirstChange} noValidate className="ks-form">
       <Field
         label={copy.labels.parentName}
         name="parentName"
