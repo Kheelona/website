@@ -10,7 +10,7 @@ Kheelona's own pages are the authority on these. Older listings, directories and
 - Khelu is a cream **plush rabbit** with a speaker in its tummy, not a robot. It has no screen and no camera.
 - Khelu is for children aged **3 to 7**. It is not a toy for children under 3. Older material that says "3+", "2 to 5", "2 to 8" or "3 to 10" is out of date.
 - **Deliveries start 15 December 2026.** Earlier dates (20 October 2026, mid-November 2026) are out of date. Pre-orders are served first, in the order they were placed.
-- Khelu speaks **10 languages**, including English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French.
+- Speaks English, Hindi, Kannada and 7 more Indian languages.
 - Conversations stay in the parent app **until you delete them**. They are not deleted automatically after 36 months.
 - Kheelona is **taking pre-orders now**, with real payments, not running a closed beta.
 - Kheelona Robotics Private Limited has **three co-founders**: Apoorva Sahu, Aman Soni and Kashyap C.R.
@@ -24,7 +24,7 @@ Kheelona's own pages are the authority on these. Older listings, directories and
 - Microphone: On only after a press of the wake-up button; off after a couple of minutes of quiet; a light shows while it's on
 - Modes: AI mode (home Wi-Fi) · Story mode (no Wi-Fi needed) · Bluetooth mode (a paired phone)
 - Open internet: It can't browse it
-- Languages: 10 languages, including English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French
+- Languages: Speaks English, Hindi, Kannada and 7 more Indian languages.
 - Parent app: Every conversation, word for word, a few minutes after it ends; a daily summary; search; a look back over the week or the month. On iPhone and Android.
 - Country of origin: India
 - Manufacturer: Kheelona Robotics Pvt Ltd, 5th Floor, No 51 (Old Site No 1), Kokarya Business Synergy Center, 5th Main, 5th Block Jayanagar, Bengaluru 560041, Karnataka, India
@@ -51,7 +51,7 @@ Khelu is made for children aged 3 to 7. It is not a toy for children under 3. If
 
 ### Which languages does Khelu speak?
 
-Khelu speaks 10 languages, including English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French. In AI mode, it can switch between them mid-sentence: when your child changes language, Khelu changes with them.
+Khelu speaks English, Hindi, Kannada and 7 more Indian languages. In AI mode, it can switch between them mid-sentence: when your child changes language, Khelu changes with them.
 
 ### How much is Khelu?
 
