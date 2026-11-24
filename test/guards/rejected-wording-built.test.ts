@@ -7,7 +7,8 @@ import { findBanned } from "./banned-phrases.data";
 /* rejected-wording-built (D070 / B7a, 2026-11-24; the founder's narrow scope, claims §4 row "10 languages, including
  * English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French").
  *
- * Khelu's approved language line is "Speaks English, Hindi, Kannada and 7 more Indian languages." The list that named
+ * Khelu's approved language line is "Speaks English, Hindi, Kannada and 7 more Indian languages." (24 Nov: where it
+ * follows a question and would read as a fragment, "Khelu speaks English, ..." is approved). The list that named
  * Spanish and French is rejected. banned-phrases.data.ts bans that list as printed (its findBanned also reads every
  * dashboard post, so it cannot ban the bare words); here the broad words are read on the committed built output: the
  * marketing pages that are not articles (home, product, pillar, legal, shipping, contact, setup, safety, team, the
@@ -47,6 +48,7 @@ describe("the guard entry: the language list as the site printed it (B7a)", () =
   it.each([
     "Speaks English, Hindi, Kannada and 7 more Indian languages.",
     "Speaks English, Hindi, Kannada and 7 more Indian languages. In AI mode, it can switch between them mid-sentence.",
+    "Khelu speaks English, Hindi, Kannada and 7 more Indian languages. In AI mode, it can switch between them mid-sentence.",
     "Families who speak Spanish and French at home can still choose the language of bedtime stories.",
     "Eight today: English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French, with up to 10 at launch.",
     "Speaking your home language will not stop your child learning English.",
@@ -69,6 +71,7 @@ describe("the built pages and llms.txt print no Spanish or French language list,
 
   it("is green on the approved line", () => {
     expect(rejectedIn("Speaks English, Hindi, Kannada and 7 more Indian languages.")).toEqual([]);
+    expect(rejectedIn("Khelu speaks English, Hindi, Kannada and 7 more Indian languages.")).toEqual([]);
   });
 
   it("reads the home page, the product page, the pillar page, the 404 page and llms.txt", () => {

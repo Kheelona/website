@@ -51,7 +51,7 @@ Khelu is made for children aged 3 to 7. It is not a toy for children under 3. If
 
 ### Which languages does Khelu speak?
 
-Speaks English, Hindi, Kannada and 7 more Indian languages. In AI mode, it can switch between them mid-sentence: when your child changes language, Khelu changes with them.
+Khelu speaks English, Hindi, Kannada and 7 more Indian languages. In AI mode, it can switch between them mid-sentence: when your child changes language, Khelu changes with them.
 
 ### How much is Khelu?
 
