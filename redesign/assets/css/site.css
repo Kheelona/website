@@ -911,8 +911,8 @@ html.reels-open { overflow: hidden; }
 
 /* ===================== C3 (D070 / K-178): the phone home page ===================== */
 /* Phones (home only): short, ordinary scrolling, the decision sections first. Nothing is moved in the HTML (another change edits
-   its links): `order` puts the existing sections in the new sequence, hero, statement, how (the demo), offer, safety, privacy, faq,
-   then the story in today's order. The chapters stop being pinned scroll tracks and become ordinary sections of about one screen;
+   its links): `order` puts the existing sections in the new sequence, hero, statement, how (the demo), films (C3b: the real families come
+   right after the demo), offer, safety, privacy, faq, then the story in today's order. The chapters stop being pinned scroll tracks and become ordinary sections of about one screen;
    main.js (`flat`: the same `.page--home` class on <body> and the same query) then shows each chapter's complete state instead of
    scrubbing it. Laptops, tablets and anything 700px or wider are untouched. No :has(): a selector on the root that looks down into
    the page makes the browser re-check the whole document on every style change, and this page's first paint is what it must not slow. */
@@ -922,18 +922,20 @@ html.reels-open { overflow: hidden; }
   body.page--home #hero { order: 1; }
   body.page--home .statement { order: 2; }
   body.page--home #how { order: 3; }
-  body.page--home #offer { order: 4; }
-  body.page--home #safety { order: 5; }
-  body.page--home #privacy { order: 6; }
-  body.page--home #faq { order: 7; }
+  body.page--home #films { order: 4; }
+  body.page--home #offer { order: 5; }
+  body.page--home #safety { order: 6; }
+  body.page--home #privacy { order: 7; }
+  body.page--home #faq { order: 8; }
   /* un-pinned: each track is as tall as its stage; a skipped (off-screen) track keeps a one-screen placeholder so the page never changes length */
   body.page--home .track { height: auto; }
   body.page--home main > .track { contain-intrinsic-size: auto calc(100svh - var(--bar)); }
-  /* The demo's tummy and the offer's Khelu are lazy images that now sit near the top: not fetched in the first load, so the hero image
-     stays the only early request (main.js adds .is-near when the visitor scrolls close; the boxes keep their size from the aspect ratio). */
-  html.motion body.page--home #how .kheelu__img:not(.is-near), html.motion body.page--home #offer .kheelu__img:not(.is-near) { display: none; }
+  /* The demo's tummy, the offer's Khelu and (C3b) the films' posters are lazy images that now sit near the top: not fetched in the first load, so the
+     hero image stays the only early request (main.js adds .is-near when the visitor scrolls close; the boxes keep their size from the aspect ratio). */
+  html.motion body.page--home #how .kheelu__img:not(.is-near), html.motion body.page--home #offer .kheelu__img:not(.is-near), html.motion body.page--home #films .film__play img:not(.is-near) { display: none; }
   body.page--home #how { contain-intrinsic-size: auto calc(100svh - var(--bar) + 8rem); }
   body.page--home #privacy { contain-intrinsic-size: auto calc(100svh - var(--bar) + 13.5rem); }
+  body.page--home #films { contain-intrinsic-size: auto calc(100svh - var(--bar) - 0.2rem); } /* C3b: films now sit above the FAQ, so a skipped films section must be its real height (390x844: 752.9px) or WebKit, which has no scroll anchoring, shifts the page by 3px when it first renders */
   body.page--home .stage { position: relative; }
   body.page--home .skipdemo { display: none; } /* nothing is left to skip on phones */
 
