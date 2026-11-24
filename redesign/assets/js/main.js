@@ -658,12 +658,13 @@
       track.appendChild(s); return s;
     });
     // Pre-order Khelu inside the viewer (the full-screen dialog covers the page's bar): the bar's own button (label, arrow, link) and the footer's
-    // price line, copied from the page so no wording lives here. PostHog reports its taps as cta=film-viewer.
+    // price line, copied from the page so no wording lives here. PostHog reports its taps as cta=film-viewer. The link has its real href from the
+    // moment it exists (a crawler or Lighthouse reads the page with the viewer closed: an <a> without href fails "links are crawlable").
     const orderSrc = document.querySelector(".ctabar a.btn--primary"), priceSrc = document.querySelector(".footer__cta .price-line");
     let order = null;
     if (orderSrc) {
       const cta = document.createElement("div"); cta.className = "reels__cta";
-      order = document.createElement("a"); order.className = "reels__order"; order.innerHTML = orderSrc.innerHTML; order.dataset.phCaptureAttributeCta = "film-viewer"; cta.appendChild(order);
+      order = document.createElement("a"); order.className = "reels__order"; order.href = orderSrc.href; order.innerHTML = orderSrc.innerHTML; order.dataset.phCaptureAttributeCta = "film-viewer"; cta.appendChild(order);
       if (priceSrc) { const p = document.createElement("p"); p.className = "reels__price"; p.innerHTML = priceSrc.innerHTML; cta.appendChild(p); }
       modal.appendChild(cta); modal.classList.add("has-order");
     }
