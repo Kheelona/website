@@ -252,8 +252,31 @@ describe("store page: metadata", () => {
 });
 
 describe("store page: source", () => {
-  it("stays a per-request page, as at the tag (the live mode decides the tier)", () => {
-    expect(SOURCE).toContain('export const dynamic = "force-dynamic";');
+  /* D070 / B5 (K-173): the store's first screen comes from cache. The page was per-request at the tag (`force-dynamic`: every
+     visit waited for the paid-count query); it is now revalidated on the ADR-005 offer window. The live mode still decides
+     the tier, but `create-order` re-decides it on the server (resolveTier refuses a stale page both ways). */
+  it("is revalidated every 300 seconds, the ADR-005 offer window, and no longer rendered per request", async () => {
+    expect(SOURCE).toContain("export const revalidate = 300;"); // a literal: Next reads a segment config statically
+    expect(SOURCE).not.toMatch(/export const dynamic\b/);
+    const route = (await import("./page")) as Record<string, unknown>;
+    expect(route.revalidate).toBe(300);
+    expect(route.dynamic).toBeUndefined();
+    // The same 300 as OFFER_REVALIDATE_SECONDS (get-offer.test.ts holds that one) and the marketing route handler.
+  });
+
+  it("says why a window of staleness is safe: the tier is re-decided on the server (resolveTier), both directions", () => {
+    const comment = SOURCE.slice(0, SOURCE.indexOf("export const revalidate"));
+    expect(comment).toContain("resolveTier");
+    expect(comment).toContain("create-order");
+    expect(comment).toContain("cap-reached");
+    expect(comment).toContain("not-yet");
+  });
+
+  it("reads nothing per request, so it can be cached: no headers(), cookies() or searchParams in the page, the layout or the shell", () => {
+    for (const file of ["src/app/store/page.tsx", "src/app/store/layout.tsx", "src/layouts/StoreShell/StoreShell.tsx"]) {
+      const code = readFileSync(file, "utf8").replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
+      expect(code, file).not.toMatch(/next\/headers|\bheaders\(|\bcookies\(|searchParams|unstable_noStore|connection\(/);
+    }
   });
 
   it("the check below finds a deleted path in every way a file can name a module, and only there", () => {

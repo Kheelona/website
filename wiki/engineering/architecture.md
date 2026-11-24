@@ -407,7 +407,11 @@ Decision: [ADR-005](adr/ADR-005-offer-follows-live-mode.md).
   refuse (Next `generate-static-params.md:310`).
 - `lib/offer/offer.ts`: the view model (`mode`, `headlinePaise`, formatted amounts, `mrp`, the sentence
   and sticky lines from `content/en-IN/offer.ts`, `availabilityStarts`).
-- Pages that show a price export `revalidate = 300`; the store keeps `force-dynamic` and its own mode read.
+- Pages that show a price export `revalidate = 300`. The store did keep `force-dynamic` and its own per-request mode read; since
+  [D070](../decisions/D070-conversion-bug-fixes-2026-11-24.md) / B5 (24 Nov 2026) `/store` is prerendered too, with
+  `revalidate = 300` and the same mode read, so its first screen comes from cache (a mode flip reaches it within the window; the
+  price charged is always re-decided by `create-order` through `resolveTier`, which refuses a stale page both ways).
+  `/store/thanks` and `/store/e/[event]` stay `force-dynamic`.
 - In full mode: price sentence "₹7,999 (incl. GST), paid in full when you order."; the offer card hides
   the split; the sticky bar shows "₹7,999" and "incl. GST"; JSON-LD price 7999; `ViewContent` value 7999.
 - **Staleness bound (N14):** a page regenerates on the first request after its 300 s window and serves the

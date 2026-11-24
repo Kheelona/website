@@ -2,7 +2,16 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
 import { afterEach, vi } from "vitest";
 
-afterEach(() => cleanup());
+afterEach(() => {
+  cleanup();
+  // Every test is a new tab. jsdom's sessionStorage outlives a test, so without this the pre-order form's saved name,
+  // phone and email (D070 / B3) would be put back into the next test's form.
+  try {
+    sessionStorage.clear();
+  } catch {
+    /* a test that makes storage throw */
+  }
+});
 
 // ---------------------------------------------------------------------------
 // Browser APIs jsdom lacks (components touch these on mount)
