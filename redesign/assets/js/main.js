@@ -630,8 +630,9 @@
      page is in the list, in page order. One <video> element is moved from slide to slide: phones only allow sound on
      an element a tap has started, so the first tap unlocks the voice for every film after it. Tap pauses; Back, Esc
      or × closes. Opening remembers the page's scroll position and closing puts the page back there (home and product page, any device).
-     Pre-order Khelu stays in reach (K-180 / C5, D070): the page's own bar button sits small on the bottom edge under the caption, and
-     when a film ends the viewer holds on it (no silent move to the next film) with that button and the footer's price line beside it. */
+     Pre-order Khelu stays in reach (K-180 / C5, D070): the page's own bar button sits in a strip of its own under the picture (so it covers no
+     face, subtitle or caption), and when a film ends the viewer holds on it (no silent move to the next film) with that button and the footer's
+     price line beside it. */
   function initModal() {
     const modal = document.getElementById("modal"); if (!modal) return;
     const track = modal.querySelector("[data-reels-track]"), count = modal.querySelector("[data-reels-count]"), hint = modal.querySelector("[data-reels-hint]");
