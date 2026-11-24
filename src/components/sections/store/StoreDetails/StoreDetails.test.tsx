@@ -88,7 +88,7 @@ describe("StoreDetails", () => {
   it("keeps the phone order: first screen, the form, then the agreement card and the questions", () => {
     const { container } = render(composed());
     const order = Array.from(container.querySelectorAll("h1, h2")).map((h) => h.textContent);
-    expect(order).toEqual(["Pre-order Kheelu.", "Your details", "What you are agreeing to", "Questions before you pay"]);
+    expect(order).toEqual(["Pre-order Khelu.", "Your details", "What you are agreeing to", "Questions before you pay"]);
     const card = screen.getByRole("region", { name: "What you are agreeing to" });
     expect(screen.getByRole("button", { name: "Pay ₹499 and reserve" }).compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });

@@ -1,5 +1,6 @@
 import type { TextDeviation } from "../e2e/support/deviations";
 import type { FactEdit, PageFacts } from "../e2e/support/page-facts";
+import { withMockupName, withStoreName } from "../e2e/support/mockup-text";
 import { normaliseText, sentenceDiff, sentences } from "../e2e/support/parity";
 
 /*
@@ -50,7 +51,9 @@ export function withFacts(source: Element, edits: readonly FactEdit[], { built =
   const markup = built ? asBuilt : (text: string) => text;
   for (const edit of edits) {
     const at = markup(edit.at);
-    const match = Array.from(root.querySelectorAll(at)).find((el) => !used.has(el) && wordsOf(el) === edit.was);
+    /* An edit's `was` is the mockup's own words ("Kheelu"); a store mockup is read as the build's name (parseMockup, V71), so
+       the two are compared by the build's name, the raw `was` itself never rewritten. */
+    const match = Array.from(root.querySelectorAll(at)).find((el) => !used.has(el) && withStoreName(wordsOf(el)) === withStoreName(edit.was));
     if (!match) throw new Error(`no unused ${at} reads "${edit.was}" in the ${built ? "page" : "mockup"}`);
     used.add(match);
     const target = edit.scope ? match.closest(edit.scope) : match;
@@ -88,7 +91,8 @@ export function factSentences(source: Element, edits: readonly FactEdit[]): { mi
 export function ruleReach(source: Element, edits: readonly FactEdit[], rule: TextDeviation): { excused: string[]; accepted: string[] } {
   const once = (lines: string[]) => [...new Set(lines)];
   return {
-    excused: once(blockSentences(source).filter((line) => rule.mockup.test(line))),
+    /* A store mockup is read as the build's name (V71); a rule names the mockup's own words, so a line is also tried in them. */
+    excused: once(blockSentences(source).filter((line) => rule.mockup.test(line) || rule.mockup.test(withMockupName(line)))),
     accepted: once(blockSentences(withFacts(source, edits)).filter((line) => rule.build?.test(line) ?? false)),
   };
 }
@@ -120,7 +124,8 @@ export function hiddenProblems(source: Element, facts: Pick<PageFacts, "edits" |
   return checks.flatMap(([side, selector, listed]) => {
     const found = sides[side].querySelectorAll(selector);
     if (found.length !== 1) return [`${side}: ${selector} finds ${found.length} elements`];
-    if (listed && !blockSentences(found[0]).some((line) => listed.includes(line))) return [`${side}: ${selector} holds no changed sentence`];
+    const lines = blockSentences(found[0]);
+    if (listed && !lines.some((line) => listed.includes(line) || (side === "mockup" && listed.includes(withMockupName(line))))) return [`${side}: ${selector} holds no changed sentence`];
     return [];
   });
 }

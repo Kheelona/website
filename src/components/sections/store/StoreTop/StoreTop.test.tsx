@@ -48,7 +48,7 @@ describe("StoreTop", () => {
 
   it("is the page's one h1, named by its id, and labels the section with it", () => {
     render(<StoreTop content={content} offer={token} newTabNote={NOTE} />);
-    const h1 = screen.getByRole("heading", { level: 1, name: "Pre-order Kheelu." });
+    const h1 = screen.getByRole("heading", { level: 1, name: "Pre-order Khelu." });
     expect(h1.closest("section")).toHaveAttribute("aria-labelledby", h1.id);
   });
 

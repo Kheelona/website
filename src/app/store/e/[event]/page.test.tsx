@@ -53,7 +53,7 @@ describe("event page: a signed, live tier", () => {
     const { container } = await visit("bangalore-expo", SIG);
     expect(calls.find((c) => c.table === "event_tiers" && c.method === "eq")?.args).toEqual(["id", "bangalore-expo"]);
     expect(container.querySelector(".ks-store-top .kh-eyebrow")!.textContent).toBe("Bangalore expo price · Ages 3 to 7");
-    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Pre-order Kheelu.");
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Pre-order Khelu.");
     expect(screen.getByRole("button", { name: "Pay ₹99 and reserve" })).toBeInTheDocument();
     expect(container.querySelector(".ks-store-top__price")!.textContent).toContain("₹99 today");
     expect(container.querySelector(".ks-store-top__price")!.textContent).toContain("₹4,900 before delivery");
@@ -163,7 +163,7 @@ describe("event page: the store before its keys are in place (and on beta, D051)
 describe("event page: metadata", () => {
   it("title, description, Open Graph and Twitter through pageMeta; no robots, no canonical, no og:url (the link is the address)", () => {
     const base = pageMeta({ ...eventPage.meta, path: "/" });
-    expect(metadata.title).toEqual({ absolute: "Pre-order Kheelu · Kheelona" });
+    expect(metadata.title).toEqual({ absolute: "Pre-order Khelu · Kheelona" });
     expect(metadata.description).toBe(eventPage.meta.description);
     expect(metadata.twitter).toEqual(base.twitter);
     expect(metadata.openGraph).toEqual({ ...base.openGraph, url: undefined });

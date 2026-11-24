@@ -28,7 +28,7 @@ describe("event page: the tier checkout's words are the store page's (store.md; 
   it("first screen: the store's h1, image, price id and compact trust line; the eyebrow is composed per tier", () => {
     expect(eventPage.checkout.top).toEqual({ ...storePage.top, eyebrow: undefined });
     expect(eventPage.checkout.top).not.toHaveProperty("eyebrow");
-    expect(eventPage.checkout.top.title).toBe("Pre-order Kheelu.");
+    expect(eventPage.checkout.top.title).toBe("Pre-order Khelu.");
   });
 
   /* CMO review C m2 (task 7.1c): the tier's price name took the eyebrow's place, so the age band left the first screen.
@@ -164,7 +164,7 @@ describe("meta (description, Open Graph and Twitter through pageMeta; the store 
   it("event page: the store's title, and the first sentence of its description, which names no amount", () => {
     expect(eventPage.meta.title).toBe(storePage.meta.title);
     expect(toPlainText(storePage.meta.description, token).startsWith(eventPage.meta.description)).toBe(true);
-    expect(eventPage.meta.description).toBe("Pre-order Kheelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7.");
+    expect(eventPage.meta.description).toBe("Pre-order Khelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7.");
     expect(eventPage.meta.og).toBe(DEFAULT_OG);
     // An event link sets its own price, so its preview never names the store's (D028; tiers.ts).
     expect(eventPage.meta.description).not.toMatch(TYPED_AMOUNT);

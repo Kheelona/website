@@ -75,6 +75,6 @@ describe("what every page by the team shares", () => {
   it("shares the organization's default card, a file that exists, in the copy pages' words (home.md)", () => {
     expect(DEFAULT_OG.image).toBe(organization.image);
     expect(existsSync(join(ROOT, "public", DEFAULT_OG.image))).toBe(true);
-    expect(DEFAULT_OG.alt).toBe("Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy.");
+    expect(DEFAULT_OG.alt).toBe("Khelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy."); /* the store prints "Khelu" (V71, D070 / C1) */
   });
 });

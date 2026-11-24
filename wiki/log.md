@@ -1478,3 +1478,10 @@ the order a tab started (B2); a per-tab form draft without the child's age (B3);
 a Pre-order tap that goes at once and a cached store page (B5); approved wording for the rejected lines, a permanent
 redirect for `/products/khelu`, an early store page view and a payment-window-left signal (B7). Each is its own pull
 request with the Lighthouse gate; the founder merges.
+
+## [2026-11-24 15:00] decision | D070 addendum: the store says "Khelu" (C1 PR 1, K-176)
+The founder approved the store name in chat ("The store name: 'Kheelu' → 'Khelu'"). Every buyer-visible "Kheelu" on the store (the
+page, `/thanks`, the event page, the not-found page, titles, descriptions, share-card alt), the order email and the Razorpay payment
+sheet now reads "Khelu"; event names and payloads, IDs, database values, image file names, CSS classes and URLs did not change. The
+frozen mockups keep Gate A's word: deviations.md V71. Frozen files changed only by reviewed patches naming D070 / C1.
+

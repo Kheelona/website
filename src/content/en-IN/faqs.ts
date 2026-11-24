@@ -172,7 +172,7 @@ export const faqs = {
     id: "after-six-months",
     question: "Will Kheelona+ charge me after the 6 months?",
     answer:
-      "No, not unless you sign up for it yourself. Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. Nothing renews without you.",
+      "No, not unless you sign up for it yourself. Every Khelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. Nothing renews without you.",
   },
   "returns-and-warranty": {
     id: "returns-and-warranty",
