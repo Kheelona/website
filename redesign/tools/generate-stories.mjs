@@ -133,7 +133,7 @@ const COPY = {
       { label: "{delivery}", href: "/shipping#when" },
     ],
     help: { before: "Questions? ", label: "Message us on WhatsApp", href: "https://wa.me/919187546483" },
-    secondary: { label: "See how Kheelu works", href: "/products/kheelu" },
+    secondary: { label: "See how Kheelu works", href: "/products/khelu" },
     art: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy.",
   },
 };
@@ -185,6 +185,10 @@ function fmt(text, ctx) {
 const plain = (text) => khelu(text.replace(/\{(?:nowrap|hand):([^{}]*)\}/g, "$1").replace(/\{price:([a-z]+)\}/g, (_, k) => PRICES[k] ?? "").replace(/\{delivery\}/g, DELIVERY));
 
 const PITCH_PATH = /^\/(products|store)(\/|$|[?#])/;
+/* The product page's address moved to /products/khelu (D070 / C4, human 24 Nov). A post still written with the old one
+   (or its full address) links the new one, so no guide ships a link that costs a redirect hop. Only the path changes. */
+const OLD_PRODUCT_HREF = /^(https:\/\/(?:www\.)?kheelona\.com)?\/products\/kheelu(?=$|[/?#])/i;
+const productHref = (href) => href.replace(OLD_PRODUCT_HREF, "$1/products/khelu");
 const isPitchLink = (href) => {
   if (PITCH_PATH.test(href)) return true;
   if (!/^https:\/\//i.test(href)) return false;
@@ -212,7 +216,7 @@ function richText(w, nodes) {
     if (w.pitchFree && isPitchLink(href)) fail(w.slug, `a guide on the talking topic never links "${href}" (no pitch, B5)`, 18);
     let label = "";
     while (i < nodes.length && nodes[i].type === "text" && linkOf(nodes[i]) === href) label += nodes[i++].text;
-    const to = /^https:\/\/(beta)?store\.kheelona\.com/i.test(href) ? STORE : href;
+    const to = /^https:\/\/(beta)?store\.kheelona\.com/i.test(href) ? STORE : productHref(href);
     const a = `<a href="${attr(to)}">${fmt(nowrapAges(label), w.ctx)}</a>`;
     out += href.startsWith("tel:") ? `<span class="nowrap">${a}</span>` : a;
   }
