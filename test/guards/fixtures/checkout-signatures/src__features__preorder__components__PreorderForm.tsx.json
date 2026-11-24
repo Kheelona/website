@@ -100,6 +100,7 @@
     "                    preorderAnalytics.purchase(data.orderRef!, data.amountPaise!, tier);",
     "                    void fetch(\"/api/preorder/confirm\", {",
     "                        method: \"POST\",",
+    "                        keepalive: true,",
     "                        headers: { \"content-type\": \"application/json\" },",
     "                        body: JSON.stringify({",
     "                            razorpayOrderId: paid.razorpay_order_id,",
