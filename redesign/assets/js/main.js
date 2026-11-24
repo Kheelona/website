@@ -420,7 +420,7 @@
     const track = $("#languages"); const stage = $(".stage", track); const words = $$(".lg__word", track); const items = $$(".lg__list li", track); const list = $(".lg__list", track);
     const cap = $("[data-lg-caption]", track); const k = $(".lg__khelu .kheelu", track); const ripples = $$(".kheelu__ripple", k);
     const L = [["Hello", "English", "#ffe6d3", "#e5793d"], ["Namaste", "Hindi", "#fff1c4", "#c98e0c"], ["Nomoskar", "Bengali", "#d8f2e7", "#1f9d6b"], ["Namaskaram", "Telugu", "#dcedfc", "#3b8fd9"],
-      ["Vanakkam", "Tamil", "#fde4ee", "#d9578a"], ["Namaskara", "Kannada", "#ebe4fd", "#7c62e0"], ["Hola", "Spanish", "#ffe6d3", "#e0663a"], ["Bonjour", "French", "#dcedfc", "#4f7fd9"]];
+      ["Vanakkam", "Tamil", "#fde4ee", "#d9578a"], ["Namaskara", "Kannada", "#ebe4fd", "#7c62e0"]];
     let cur = -1;
     const show = (i) => {
       if (i === cur) return; const prev = cur; cur = i; const [say, name, glow, ink] = L[i];
