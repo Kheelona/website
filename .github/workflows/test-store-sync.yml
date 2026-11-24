@@ -5,10 +5,11 @@
 #   - On every push to main, beta is set to that commit.
 #   - "Run workflow" (Actions -> test-store-sync) with `ref` = a PR's branch or a commit puts that code on the
 #     test store for a pre-merge test. The next merge to main (or a run with ref = main) puts main back.
-# The `ref` input is used only as the checkout's `ref:`, never inside a `run:` script. The repo is public:
-# this workflow uses no secrets. It uses the default token, and GitHub does not start other workflows (so not
-# verify.yml either) for a push made with that token. That token also cannot push a change to files under
-# .github/workflows: if a run is refused for that reason, beta stays where it was (wiki/engineering/architecture.md §15.7).
+# The `ref` input is used only as the checkout's `ref:`, never inside a `run:` script. It runs only on pushes
+# to main and on a manual run, never for pull requests, so the optional secret below is never exposed to forks.
+# With the default token GitHub starts no other workflow (so not verify.yml) for the push, and the push cannot
+# carry changes to .github/workflows: such a run fails and beta stays where it was, unless the optional
+# TEST_STORE_SYNC_TOKEN secret is set (wiki/engineering/architecture.md §15.7).
 name: test-store-sync
 
 on:
@@ -38,6 +39,9 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.sha }}
+          # Optional repo secret: a fine-grained token (this repo only; Contents and Workflows: read and write) lets a
+          # sync carry workflow-file changes, which the default token may not push. Without it, the default token is used.
+          token: ${{ secrets.TEST_STORE_SYNC_TOKEN || github.token }}
       - name: Point beta at the checked-out commit
         run: |
           git push --force origin HEAD:refs/heads/beta

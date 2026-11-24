@@ -1072,8 +1072,11 @@ script, so a branch name cannot inject a command.
   `beta` after a sync. It already ran on `main` for the same commit, and a PR's own CI runs on the PR.
 - The default token cannot push a change to files under `.github/workflows/`. If a sync is refused for that
   reason (for example the first one, which brings in workflow files `beta` has never had), `beta` stays where
-  it was and the run fails loudly; someone with write access then sets `beta` by hand
-  (`git push --force origin <commit>:refs/heads/beta`).
+  it was and the run fails loudly. Fix: someone with write access sets `beta` by hand (a fast-forward
+  `git push origin <main commit>:refs/heads/beta` works whenever `beta` is not pointing at an unmerged PR), or the
+  founder adds the optional repo secret `TEST_STORE_SYNC_TOKEN` (a fine-grained token for this repo only, Contents and
+  Workflows: read and write), which the workflow then uses instead of the default token. Pushes made with that
+  token do start `verify.yml` on `beta`.
 
 **Environment variables, scoped to Preview + branch `beta` (names only, never values).**
 - Set to Test Mode / test values: `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET` (the Test Mode pair),
