@@ -148,6 +148,8 @@ const E5 = `"The four walls of loneliness"`;
 const E6 = `"The vocab deficiency"`;
 const E7 = `"A biological trade-off"`;
 const E8 = `"Speech is the ultimate brain exercise"`;
+/* The row D070 / B7a added (2026-11-24): the language list that named Spanish and French. */
+const H4 = `"10 languages, including English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French"`;
 
 const APOS = "['’]";
 
@@ -370,6 +372,11 @@ export const BANNED_PHRASES: readonly BannedPhrase[] = [
   { id: "vocab-deficiency", kind: "claim", claimsRow: E6, pattern: /\bvocab(?:ulary)? deficienc(?:y|ies)\b/i, planted: "First, there's the vocab deficiency.", why: "D061 item 12, D016, D025: an unanchored deficit claim about children's language from the part the cut leaves out." },
   { id: "biological-trade-off", kind: "claim", claimsRow: E7, pattern: /\bbiological trade[- ]?offs?\b/i, planted: "It's a biological trade-off.", why: "D061 item 12, D016: an unanchored brain claim about screen time from the part the cut leaves out." },
   { id: "ultimate-brain-exercise", kind: "claim", claimsRow: E8, pattern: /\bultimate brain (?:exercise|workout)s?\b/i, planted: "Speech is the ultimate brain exercise.", why: "D061 item 12, D016 (brain wording): an unanchored brain claim from the part the cut leaves out." },
+  // ── The language list that named Spanish and French (D070 / B7a, 2026-11-24; claims §4) ──
+  // The entry bans the list as the site printed it, never the topic: the journal sync runs findBanned over every dashboard
+  // post and stops the production build on a hit, and the frozen mockups, the copy pages and the unserved src/content still
+  // print nearby words. The built pages and llms.txt are read for the broad words by rejected-wording-built.test.ts.
+  { id: "languages-list-spanish-french", kind: "claim", claimsRow: H4, pattern: /\b(?:10 languages|ten languages),? including\b[^.?!\n]{0,160}?\b(?:Spanish|French)\b|\bTen, including\b[^.?!\n]{0,160}?\b(?:Spanish|French)\b/i, planted: "Khelu speaks 10 languages, including English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French.", why: "The founder, 17 November (D070, B7a): Khelu's approved line is \"Speaks English, Hindi, Kannada and 7 more Indian languages.\"; the list as the site printed it (\"10 languages, including ... Spanish and French\", \"Ten, including ...\") is red. A parent's \"families who speak Spanish and French\", the frozen mockups' \"Eight today: ...\" line and the unserved src/content's beta wording (\"up to 10 languages at launch, including ...\") pass; the built-page guard (rejected-wording-built.test.ts) catches the words on the pages that ship." },
   // ── en-IN spelling (N24): src/content strings and rendered text only ──
   { id: "us-color", kind: "spelling", claimsRow: "N24", pattern: /\bcolor(?:s|ed|ful|ing|way|ways)?\b/i, planted: "Pick a color.", why: "en-IN: colour." },
   { id: "us-center", kind: "spelling", claimsRow: "N24", pattern: /\bcent(?:er|ers|ered|ering)\b/, allowSentence: /^center$/, planted: "Put it in the center.", why: "en-IN: centre. Proper nouns (\"Center on the Developing Child\", \"Synergy Center\") are capitalised and pass. A string that is only \"center\" is a layout value (a CTA block's `align`), not copy." },
