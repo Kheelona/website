@@ -1,11 +1,16 @@
 ---
 title: "D051: The beta runs without store integrations (no Supabase, Razorpay or email); no PostHog filter"
 type: decision
-updated: 2026-10-12
+updated: 2026-11-24
+status: superseded by D071
 sources: ["founder's message in the build session, 2026-10-12, answering the beta runbook (architecture §15.4)", D048-beta-deployment.md, ../engineering/architecture.md, ../qa/architecture-review-2026-10-12.md, src/lib/store/env.ts (storeEnv), src/app/store/page.tsx (NotConfiguredState)]
 ---
 
 # D051: The beta runs without store integrations
+
+> **Superseded 2026-11-24 by [D071](D071-test-store-razorpay-test-mode.md):** the founder decided that the test store (the beta build)
+> takes Razorpay Test Mode payments into a separate test database, with email off. The code now refuses the wrong key mode on each
+> build instead of blanking every store value on beta. Kept below as history.
 
 ## Context
 

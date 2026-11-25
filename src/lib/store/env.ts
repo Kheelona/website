@@ -13,6 +13,7 @@
  *  failing or a parent meeting a stack trace. */
 
 import { SITE_ENV } from "@/config/env";
+import { TEST_SUPABASE_PROJECT_REFS } from "@/config/test-store";
 
 export type StoreEnv = {
   razorpayKeyId: string;
@@ -46,14 +47,74 @@ export type StoreEnv = {
  *  that a placeholder which passes a truthiness check is worse than no value:
  *  the Tally form silently rendered a placeholder card in production. */
 function real(value: string | undefined): string | null {
-  /* D051: BETA NEVER TAKES A PAYMENT. On a beta build every store value reads
-     as absent, whatever Vercel passes in (a Preview-scoped production key
-     reaches every preview branch): `storeEnv()` is null, `missingStoreEnv()`
-     names all six, the store shows "opening shortly" and the routes answer 503. */
-  if (SITE_ENV === "beta") return null;
   if (!value) return null;
   const v = value.trim();
   if (!v || v.includes("DUMMY") || v.startsWith("<")) return null;
+  return v;
+}
+
+/** D071 (K-182): the Razorpay mode and the Supabase project must fit the build. Supersedes D051, which blanked every
+ *  value on beta. The test store (the `beta` build) takes Test Mode payments and writes to its own test database, and
+ *  nothing else may touch either:
+ *    - production:         `rzp_live_` keys only, and never a project on TEST_SUPABASE_PROJECT_REFS;
+ *    - beta (test store):  `rzp_test_` keys only, and, once that list is not empty, only a project on it;
+ *    - preview, development: anything but `rzp_live_` (a local `rzp_placeholder` keeps working), no Supabase rule.
+ *  A refused value reads as absent: `storeEnv()` is null, `missingStoreEnv()` names it, the store shows "opening
+ *  shortly" and the routes answer 503. Never a throw, so a wrong key can never crash a page. One log line names the
+ *  rule and the mode, never a value. */
+const said = new Set<string>();
+
+function refuse(reason: string): null {
+  /* A server asks on every request: say it once per process, not once per call. */
+  if (!said.has(reason)) {
+    said.add(reason);
+    console.error(reason);
+  }
+  return null;
+}
+
+/** The id at the start of a `https://<id>.supabase.co` URL, lower-cased; null for any other host or a value that is
+ *  not a URL. */
+function supabaseProjectId(url: string): string | null {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    const id = host.endsWith(".supabase.co") ? host.slice(0, -".supabase.co".length) : "";
+    return id && !id.includes(".") ? id : null;
+  } catch {
+    return null;
+  }
+}
+
+/** The value for `name` if this build accepts it, else null (and one line said why). Only `RAZORPAY_KEY_ID` and
+ *  `SUPABASE_URL` have a rule; every other name is `real()` and nothing more. */
+function accepted(name: string, value: string | undefined): string | null {
+  const v = real(value);
+  if (v === null) return null;
+
+  if (name === "RAZORPAY_KEY_ID") {
+    const live = v.startsWith("rzp_live_");
+    const test = v.startsWith("rzp_test_");
+    if (SITE_ENV === "production") {
+      return live ? v : refuse(`RAZORPAY_KEY_ID is ${test ? "a test key" : "not a live key"}, which a production build refuses`);
+    }
+    if (SITE_ENV === "beta") {
+      return test ? v : refuse(`RAZORPAY_KEY_ID is ${live ? "a live key" : "not a test key"}, which a beta build refuses`);
+    }
+    /* Elsewhere (a preview, a local build) only a live key is refused, and for that one the match ignores case: the one
+       thing a build that is not production must never take. */
+    return /^rzp_live_/i.test(v) ? refuse(`RAZORPAY_KEY_ID is a live key, which a ${SITE_ENV} build refuses`) : v;
+  }
+
+  if (name === "SUPABASE_URL") {
+    const id = supabaseProjectId(v);
+    const tests = TEST_SUPABASE_PROJECT_REFS.map((ref) => ref.toLowerCase());
+    if (SITE_ENV === "production" && id !== null && tests.includes(id)) {
+      return refuse("SUPABASE_URL is a test project, which a production build refuses");
+    }
+    if (SITE_ENV === "beta" && tests.length > 0 && (id === null || !tests.includes(id))) {
+      return refuse("SUPABASE_URL is not the test project, which a beta build refuses");
+    }
+  }
   return v;
 }
 
@@ -74,15 +135,15 @@ export function missingStoreEnv(): string[] {
     ["SUPABASE_SERVICE_ROLE_KEY", process.env.SUPABASE_SERVICE_ROLE_KEY],
     ["STORE_SIGNING_SECRET", process.env.STORE_SIGNING_SECRET],
   ];
-  return required.filter(([, value]) => real(value) === null).map(([name]) => name);
+  return required.filter(([name, value]) => accepted(name, value) === null).map(([name]) => name);
 }
 
 /** The required set, or null when any of it is missing. */
 export function storeEnv(): StoreEnv | null {
-  const razorpayKeyId = real(process.env.RAZORPAY_KEY_ID);
+  const razorpayKeyId = accepted("RAZORPAY_KEY_ID", process.env.RAZORPAY_KEY_ID);
   const razorpayKeySecret = real(process.env.RAZORPAY_KEY_SECRET);
   const razorpayWebhookSecret = real(process.env.RAZORPAY_WEBHOOK_SECRET);
-  const supabaseUrl = real(process.env.SUPABASE_URL);
+  const supabaseUrl = accepted("SUPABASE_URL", process.env.SUPABASE_URL);
   const supabaseServiceKey = real(process.env.SUPABASE_SERVICE_ROLE_KEY);
   const signingSecret = real(process.env.STORE_SIGNING_SECRET);
 
@@ -105,7 +166,7 @@ export function storeEnv(): StoreEnv | null {
     supabaseServiceKey,
     signingSecret,
     alertEmail: real(process.env.ORDER_ALERT_EMAIL) ?? "hello@kheelona.com",
-    resendApiKey: real(process.env.RESEND_API_KEY),
+    resendApiKey: SITE_ENV === "beta" ? null : real(process.env.RESEND_API_KEY),
     emailFrom: real(process.env.EMAIL_FROM) ?? "Kheelona <hello@send.kheelona.com>",
     metaCapiToken: SITE_ENV === "beta" ? null : real(process.env.META_CAPI_TOKEN),
     metaCapiTestCode: SITE_ENV === "beta" ? null : real(process.env.META_CAPI_TEST_CODE),
