@@ -549,7 +549,7 @@ frozen checkout tests):
 |---|---|
 | Form | One `<form>` with `noValidate` and a single `onChange` (typing in any field first fires `preorder_form_started` once) |
 | Fields | `parentName` text maxLength 80 `autocomplete=name`; `phone` `type=tel` `inputMode=tel` `autocomplete=tel`; `email` `type=email` `inputMode=email` `autocomplete=email`; `childAge` text maxLength 20; `accepted` checkbox not pre-ticked; all required; inputs ≥ 16 px; the +91 decoration not part of the value |
-| Address | `line1` `address-line1` (5-120), `line2` `address-line2` optional, `pincode` `inputMode=numeric` max 6 `postal-code`, `city` `address-level2`, `state` select of 36 |
+| Address | `line1` `address-line1` (1-120, D072), `line2` `address-line2` optional, `pincode` `inputMode=numeric` max 6 `postal-code`, `city` `address-level2`, `state` select of 36 |
 | Money | The browser never sends an amount (request bodies inspected); the amount shown equals the server's; balance derived |
 | Flow | Create-order before the sheet; `checkout.js` only on first submit; redirect `/thanks?ref&t` then the 303 claim |
 | Labels | "Pay ₹499 and reserve" / "Pay ₹7,999 and pre-order", "Setting up your payment…", "Opening the payment window…" |

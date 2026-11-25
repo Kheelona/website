@@ -1,0 +1,24 @@
+Reviewed diff of src/features/preorder/lib/validate.test.ts against archive/pre-reset-2026-10-10 (checkout-freeze, ADR-013 frozen tests).
+Regenerate with: git diff --abbrev=7 archive/pre-reset-2026-10-10 -- src/features/preorder/lib/validate.test.ts (keep this header above it).
+
+D072 (K-184 B8; the human's one-by-one sign-off on 25 Nov 2026, memory decision
+  2026-11-25-address-form-open-ended-pin-state-check), LITERAL-ONLY: "holds the PIN code to six digits" ends by proving a
+  good PIN passes with goodAddress, whose state is Karnataka. Its PIN literal was a Delhi one ("110001"), which the new
+  PIN-belongs-to-the-state check in validate.ts now refuses for Karnataka, so the literal becomes a Karnataka one
+  ("560001"). One string literal; the token stream is unchanged once literals are masked, so no assertion is added,
+  removed or weakened. The new rules (house and street "10", the mismatch line) are asserted in new test files outside the
+  frozen folders (test/address-validation-d072.test.ts, src/lib/address/pin-state.test.ts and others).
+
+diff --git a/src/features/preorder/lib/validate.test.ts b/src/features/preorder/lib/validate.test.ts
+index e0fd176..ccdb330 100644
+--- a/src/features/preorder/lib/validate.test.ts
++++ b/src/features/preorder/lib/validate.test.ts
+@@ -95,7 +95,7 @@ describe("address validation", () => {
+     for (const pincode of ["56004", "0560041", "5600411", "abcdef"]) {
+       expect(validateAddress({ ...goodAddress, pincode }).pincode, pincode).toBeTruthy();
+     }
+-    expect(validateAddress({ ...goodAddress, pincode: "110001" }).pincode).toBeUndefined();
++    expect(validateAddress({ ...goodAddress, pincode: "560001" }).pincode).toBeUndefined();
+   });
+ 
+   it("only accepts a state from the list, so a courier can read it", () => {

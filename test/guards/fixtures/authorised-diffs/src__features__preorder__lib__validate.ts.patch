@@ -1,0 +1,66 @@
+Reviewed diff of src/features/preorder/lib/validate.ts against archive/pre-reset-2026-10-10 (checkout-freeze, ADR-013 class 1).
+Regenerate with: git diff --abbrev=7 archive/pre-reset-2026-10-10 -- src/features/preorder/lib/validate.ts (keep this header above it).
+
+D072 (K-184 B8; the human's one-by-one sign-off on 25 Nov 2026, memory decision
+  2026-11-25-address-form-open-ended-pin-state-check, "open-ended house/street + PIN must match the state"): the address
+  form is asked after the parent has paid, so a blocked form leaves a paid order with no address (K-165), and the K-182
+  iPhone test showed a house called "10" refused. validateAddress() changes in three places, and the same function still
+  runs in the form and in the address route:
+    line1   valid when non-empty after trim (was 5 or more characters); both messages and the 120 maximum are unchanged
+    city    valid when non-empty after trim (was 2 or more); both messages and the 60 maximum are unchanged
+    PIN     after the unchanged six-digit format check, an else-if: when the state is valid, the PIN's first three digits
+            must belong to the picked state, else errors.pincode is exactly "This PIN code belongs to a different state.
+            Please check your PIN code and state." (approved word for word). The table is the new, non-frozen
+            src/lib/address/pin-state.ts (a new file inside this frozen folder would fail checkout-freeze); a prefix no
+            state lists is unknown and always allowed, and a prefix shared by several states accepts all of them.
+  One new import (pinMatchesState). Nothing else in the file changes: line2, state, the phone, name, email, age and terms
+  checks, the types and the exports are the tag's. The frozen validate.test.ts follows by one literal (its own patch).
+
+diff --git a/src/features/preorder/lib/validate.ts b/src/features/preorder/lib/validate.ts
+index a032bbc..ecc52bb 100644
+--- a/src/features/preorder/lib/validate.ts
++++ b/src/features/preorder/lib/validate.ts
+@@ -1,3 +1,4 @@
++import { pinMatchesState } from "@/lib/address/pin-state";
+ import { INDIAN_STATES } from "./india";
+ 
+ /** Validation for the pre-order form (§8.25-h).
+@@ -94,14 +95,19 @@ export function validateContact(input: ContactInput): FieldErrors<ContactInput>
+ export function validateAddress(input: AddressInput): FieldErrors<AddressInput> {
+   const errors: FieldErrors<AddressInput> = {};
+ 
++  /* Anything typed is enough for the house and street, and for the city. This
++     is asked after the parent has paid, so a stricter bar can only ever leave
++     a paid order with no address (K-165). A house called "10" was refused when
++     the minimum was five characters (K-182). An address that looks odd can be
++     checked with the parent later; one that was never saved cannot (D072). */
+   const line1 = input.line1.trim();
+-  if (line1.length < 5) errors.line1 = "We need the flat or house and the street.";
++  if (line1.length < 1) errors.line1 = "We need the flat or house and the street.";
+   else if (line1.length > 120) errors.line1 = "Please shorten this a little.";
+ 
+   if (input.line2.trim().length > 120) errors.line2 = "Please shorten this a little.";
+ 
+   const city = input.city.trim();
+-  if (city.length < 2) errors.city = "Which city or town?";
++  if (city.length < 1) errors.city = "Which city or town?";
+   else if (city.length > 60) errors.city = "Please shorten this a little.";
+ 
+   if (!(INDIAN_STATES as readonly string[]).includes(input.state)) {
+@@ -112,6 +118,16 @@ export function validateAddress(input: AddressInput): FieldErrors<AddressInput>
+      here saves a parcel from going to a sorting office that does not exist. */
+   if (!/^[1-9]\d{5}$/.test(input.pincode.trim())) {
+     errors.pincode = "A PIN code is six digits, and never starts with a zero.";
++  } else if (!errors.state && !pinMatchesState(input.pincode, input.state)) {
++    /* A well-formed PIN whose first three digits belong to another state is
++       nearly always a mistyped digit or the wrong state in the list, and either
++       one sends the parcel to the wrong sorting office. The table behind this
++       (src/lib/address/pin-state.ts) is deliberately generous: a prefix it does
++       not know always passes, and a prefix shared by several states accepts all
++       of them, so a parent who has paid is never blocked by a gap in our list
++       (D072). Only the format message above wins over this one, and nothing is
++       said about the PIN while the state itself is still invalid. */
++    errors.pincode = "This PIN code belongs to a different state. Please check your PIN code and state.";
+   }
+ 
+   return errors;

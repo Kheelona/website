@@ -1,3 +1,4 @@
+import { pinMatchesState } from "@/lib/address/pin-state";
 import { INDIAN_STATES } from "./india";
 
 /** Validation for the pre-order form (§8.25-h).
@@ -94,14 +95,19 @@ export function validateContact(input: ContactInput): FieldErrors<ContactInput> 
 export function validateAddress(input: AddressInput): FieldErrors<AddressInput> {
   const errors: FieldErrors<AddressInput> = {};
 
+  /* Anything typed is enough for the house and street, and for the city. This
+     is asked after the parent has paid, so a stricter bar can only ever leave
+     a paid order with no address (K-165). A house called "10" was refused when
+     the minimum was five characters (K-182). An address that looks odd can be
+     checked with the parent later; one that was never saved cannot (D072). */
   const line1 = input.line1.trim();
-  if (line1.length < 5) errors.line1 = "We need the flat or house and the street.";
+  if (line1.length < 1) errors.line1 = "We need the flat or house and the street.";
   else if (line1.length > 120) errors.line1 = "Please shorten this a little.";
 
   if (input.line2.trim().length > 120) errors.line2 = "Please shorten this a little.";
 
   const city = input.city.trim();
-  if (city.length < 2) errors.city = "Which city or town?";
+  if (city.length < 1) errors.city = "Which city or town?";
   else if (city.length > 60) errors.city = "Please shorten this a little.";
 
   if (!(INDIAN_STATES as readonly string[]).includes(input.state)) {
@@ -112,6 +118,16 @@ export function validateAddress(input: AddressInput): FieldErrors<AddressInput> 
      here saves a parcel from going to a sorting office that does not exist. */
   if (!/^[1-9]\d{5}$/.test(input.pincode.trim())) {
     errors.pincode = "A PIN code is six digits, and never starts with a zero.";
+  } else if (!errors.state && !pinMatchesState(input.pincode, input.state)) {
+    /* A well-formed PIN whose first three digits belong to another state is
+       nearly always a mistyped digit or the wrong state in the list, and either
+       one sends the parcel to the wrong sorting office. The table behind this
+       (src/lib/address/pin-state.ts) is deliberately generous: a prefix it does
+       not know always passes, and a prefix shared by several states accepts all
+       of them, so a parent who has paid is never blocked by a gap in our list
+       (D072). Only the format message above wins over this one, and nothing is
+       said about the PIN while the state itself is still invalid. */
+    errors.pincode = "This PIN code belongs to a different state. Please check your PIN code and state.";
   }
 
   return errors;
