@@ -4,8 +4,8 @@
  *  Supabase project, never production's. `storeEnv()` (src/lib/store/env.ts) uses this list to keep the two apart:
  *    - a production build refuses a `SUPABASE_URL` whose project is on the list,
  *    - a beta build, once the list is not empty, refuses a `SUPABASE_URL` whose project is not on it.
- *  With the list empty (as now), neither rule applies and only Vercel's per-environment variables keep the databases
- *  apart.
+ *  With the list empty, neither rule applies and only Vercel's per-environment variables keep the databases apart.
+ *  Since T1b (25 Nov 2026) it holds the test store's project.
  *
  *  Each entry is the id at the start of a test project's URL (`https://<id>.supabase.co`): 20 lower-case letters and
  *  digits. It is an identifier, not a key. It gives no access to anything and is safe to publish; the founder said
@@ -14,4 +14,4 @@
  *
  *  This file sits outside the frozen checkout folders on purpose (a new file inside `src/lib/store/` fails the
  *  checkout-freeze guard), and has no imports so that `env.ts` and any script can read it. */
-export const TEST_SUPABASE_PROJECT_REFS: readonly string[] = [];
+export const TEST_SUPABASE_PROJECT_REFS: readonly string[] = ["yiihxztphkuhxadmfrdb"];
