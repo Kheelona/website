@@ -78,7 +78,9 @@ that, a dedicated route (`src/app/store/<partner>/page.tsx`, reached as
 `store.kheelona.com/<partner>`) signs its own tier server-side and renders the
 same form — plus the partner's logo chip and the struck-through public price.
 First use: `/ideabaaz` for Ideabaaz Startup Fest (₹99, expires 2026-08-31,
-capless by founder decision, closed by hand after the fest).
+capless by founder decision, closed by hand after the fest). That page was
+retired in task 6.6 (wiki D054 item 7): `store.kheelona.com/ideabaaz` now shows
+the store's not-found page, so no partner page exists today.
 
 What changes against a QR link: the URL is public, so signing no longer
 contains anything — the expiry, any cap, and your manual close are the whole
@@ -115,6 +117,18 @@ measurement tags and every one of them reports the URL it loaded on. So if you a
 a 303 with a `Set-Cookie` where you expected a rendered page, that is correct.
 
 Two consequences for anyone operating this. A bare `/thanks` with no cookie is now a real page saying
-"We need your link again" rather than a 404, so it appears in `qa:sweep`. And rotating
+"We need your link again" rather than a 404. And rotating
 `STORE_SIGNING_SECRET` invalidates every address link already emailed — the runbook step for that is
 `security-review.md` section 5b.
+
+## Tracking events are not on this page (2026-11-25)
+
+This page is about event PRICES. What the store reports to PostHog, GA4, Meta
+and OpenAI, event by event, has one source in code, the registry
+`src/lib/tracking/events.ts` (held by `test/guards/tracking-registry.test.ts`),
+and two wiki pages: `wiki/engineering/architecture.md` §8.2 (the funnel events,
+their destinations and parameters, for example `preorder_payment_window_opened`
+and `preorder_address_saved`) and `wiki/site/tracking-inventory.md` (how each
+tool is set up; its §17 holds the early store signals added on 2026-11-24 by
+D070: `store_arrived`, `preorder_payment_window_hidden` and
+`store_cta_tapped_early`).

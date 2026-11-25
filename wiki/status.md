@@ -1,45 +1,41 @@
 ---
 title: Status
 type: status
-updated: 2026-10-15
-sources: [log.md, open-questions.md]
+updated: 2026-11-25
+sources: [log.md, open-questions.md, decisions/D070-conversion-bug-fixes-2026-11-24.md, decisions/D071-test-store-razorpay-test-mode.md, decisions/D072-address-open-ended-pin-matches-state.md]
 ---
 
-# Status (2026-10-16 03:10 IST)
+# Status (2026-11-25 22:36 IST)
 
-**NOW: the selling update (D064, D065), in the quick-changes phase (D062): quick checks per batch, detailed QA and the
-integrations once the founder calls the site final.** Summary to resume from: [project summary](engineering/project-summary.md).
-Copy: [D2C plan v2](site/d2c-conversion-plan-2026-10-15.md) ([CMO review](qa/cmo-review-d2c-plan-v2-2026-10-15.md)).
-**Wave q2a merged** (Q2.1 Kabir hero, films order, offer alignment; Q2.3 GSTIN and phone off; Q2.4 WhatsApp logo, footer
-gaps; Q2.5 motion and the sticky laptop nav; Q2.6 the clip without burned words; Q2.8 the short price line): verify 6728
-tests, build green; rows V49-V57. **The new cta values are registered** (`ffa029da`).
-**Wave 2 (q2b) merged** (2026-10-15 19:10: Q2.9 Home end to end, Q2.10 the product page, Q2.11 `/safety`, Q2.12 every
-other page's close and the footer's laptop rows; rows V58-V64; verify 6894 passed and 2 product-page parity tests red,
-the build green). **Fix wave q2c merged** (verify 6917, build green; `5b245a26`): Q2.13 the offer cards, the product page,
-the guide; Q2.14 the help line's words and tap target, the footer's parity rule, `/privacy` against G26. **Consistency review done** (`wf_78365aa5-dfe`: 16 serious findings, all confirmed;
-rulings R1 Home's length accepted and guarded, R2 one CTA shape). **Fix wave q2d merged** (Q2.16 `1c615207`, Q2.15 `0f438089`). **D066** (the founder's
-answers, 2026-10-16) **is being built as Q2.17** (`wf_c035e7f1-354`). **Next:** merge, verify and build, push `beta`,
-check the deploy, report to the founder.
-**Branch:** `reset/website-v2` (`0f438089`). **Beta (public, D060):** `beta` at `398c5ee` (wave 8c); betawebsite and
-betastore.kheelona.com. **Production:** `main` `8c4718a`, untouched until Gate B. Beta QA (task 7.2) on hold.
+**NOW: conversion is the priority this week (the founder, 24 Nov).** Every change is its own pull request; the founder
+merges, and a merge to `main` is live on Vercel. **Live since 24 Nov:** the bug fixes B1-B7 and the UI/UX changes C1-C6
+and C3b, pull requests #29-#44 ([D070](decisions/D070-conversion-bug-fixes-2026-11-24.md) and its addenda; one
+[log](log.md) entry each). The product page's address is `/products/khelu`; `/products/kheelu` and every older product
+address answer one 308 to it. **Live since 25 Nov:** the address fix ([D072](decisions/D072-address-open-ended-pin-matches-state.md), #50).
+**Test store:** betastore.kheelona.com takes Razorpay Test Mode payments only, on its own Supabase project, with email
+off ([D071](decisions/D071-test-store-razorpay-test-mode.md); #45-#49). Branch `beta` follows `main` through the
+`test-store-sync` workflow (#45). `verify` runs green on `main` again since #48 (25 Nov).
+**Phone tests on the test store:** the iPhone rows passed on 25 Nov (Safari, inside LinkedIn, inside Instagram); the
+Android rows, the back-out and the app switch are pending.
+**Next:** the Android rows, then C2's last step: the in-app browser notice goes, app by app, only for the apps whose
+test passes. A revert of B2 is prepared in case a must-pass row fails.
+**Branch:** `main` `8945216b` (production, Vercel). Pull request branches `growth/<week>/<ID>-<slug>`.
 
-**Overnight rulings, answered by the founder in D066:** the bubble after the hero on Home's phones (overturned); the
-share text signed; one more button after the product compare table; only "See how Kheelu works" of three wordings;
-Home's length kept; the pre-launch test line removed; G28's two lines added.
+**On hold until Monday 30 November (the founder, 24 Nov; rediscussed then):** the move to AWS (CLAUDE.md "Hosting"),
+the claims, safety and legal review (the legal pages' "pilot families" wording waits for it), and workspace housekeeping.
 
-**Waiting on the founder:** F7 (what keeps working after the 6 months of Kheelona+, and its price; asked again before
-Gate B); G18, G21, G32; for Aman G25, G31 and G33 (`/privacy` after G26); the Vercel toolbar off for the beta project;
-sign V1-V64+ and the legal pages at Gate B; forward [For the advisor](brand/for-the-advisor.md) and
-[For Aman](engineering/for-aman.md); Meta automatic events off (D056); F4 values before dispatch; the WhatsApp ₹ check.
-**Deferred to the final pass (D062):** full Playwright re-based on the approved beta (cta.spec, parity), Lighthouse on
-mains power, the CMO's built-page review, beta QA, tracking evidence, accessibility, store and payment sandbox,
-production integrations, legal sign-off, the Gate B pack; the buy bar's small line wraps at 360 (Q2.8 notes).
+**Waiting on the founder:** the Android phone tests, then C2 app by app; the 30 November review of the holds; the older
+items in [open questions](open-questions.md).
 
-**Founder decisions so far:** D010-D066 + R1-R10 (see [index](index.md)). Latest: **D066 the founder's answers on the built selling update**; **D065 the site sells (promise, ages,
-button and price line; G26, G28, G29, G30)**; D064 quick batch 2 (landing page, motion); D063; D062 quick changes until
-final; D061 the advisor's proposal; D060 beta public.
+**Founder decisions so far:** D010-D072 + R1-R10 (see [index](index.md)). Latest: **D072** the address form takes any
+house/street and city, and the PIN code must belong to the picked state; **D071** the test store takes Razorpay Test
+Mode payments (D051 superseded); **D070** the conversion fixes B1-B7, with addenda for `/products/khelu`, the store's
+"Khelu" and the reservation page, and the 24 November UI/UX changes in the [log](log.md); D069 OpenAI's measurement;
+D068 deliveries start 15 December 2026; D067 the legal pages final.
 
-**Traps:** read legacy files at tag `archive/pre-reset-2026-10-10` (D008); never `git add -A`; push only
-`git push origin reset/website-v2:refs/heads/beta` (with the http buffer flags, build-runbook §5); the beta deploy check
-waits ≥ 5 min after Ready (§5); raw screenshots and captures stay local (D039); the advisor's files stay local.
-**Due:** production still shows 20 Oct (held, D011); new orders mid-Nov (D023); schema 2026-11-15 (D037).
+**Traps:** the repo is public: stage files by name, never `git add -A`; push only with an explicit destination; a
+merge to `main` deploys, so only the founder merges; never test-buy from a pull request preview (its Pre-order opens
+the live store): pay on the test store; frozen checkout and tracking files change only by reviewed patches
+(`test/guards/fixtures/authorised-diffs/`); built redesign pages are committed; the Lighthouse gate holds, apart from
+the founder's two one-time exceptions (B5b, C3; see the [log](log.md)).
+**Due:** the holds are rediscussed on 30 November 2026; deliveries start 15 December 2026 (D068).

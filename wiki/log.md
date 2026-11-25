@@ -1513,3 +1513,92 @@ table is the new `src/lib/address/pin-state.ts` (a new file inside the frozen `s
 built from the Department of Posts' All India Pincode Directory: a shared prefix accepts every one of its states, an unknown prefix
 (and 9xx) is always allowed. Frozen `validate.ts` changed only with its regenerated reviewed patch naming D072; frozen `validate.test.ts`
 by one literal (a Karnataka PIN). New assertions in new test files. `site/checkout.md`, `qa/test-plan.md` and `engineering/structure.md` updated.
+
+## [2026-11-25 22:30] decision | D070 addendum, recorded a day late: the founder's "Go" of 24 Nov on five UI/UX changes, UI/UX only
+In chat on 24 November the founder approved five UI/UX changes from the same customer-journey review as D070, in this
+order: (C1) the reservation page as one clean page with Pay always on screen; (C2) a payment that can't lose a parent:
+B2 to B4, then the in-app browser notice goes once the test payments pass; (C3) a short, normally scrolling phone home
+page with the existing decision sections moved up; (C4) decision content first on the product page; (C5) the Pre-order
+button kept with engaged visitors (the films viewer; Team, Safety, Privacy). The rule that came with it: UI/UX only, no
+new copy, no design-system edit; the approved content changes were the store's "Khelu" and B7a's language line. C2's "UPI first" was skipped
+because it needed a new label; the Razorpay prefill already existed; B2 to B4 merged on 24 November (#29, #31, #36), and
+the notice stays until the phone tests on the test store pass, then goes app by app (D071). The home headline stays as
+it is (the same message); later that day the founder also kept the footer line and the "Talking helps young brains grow"
+chapter, and asked for C6 (the home films lead removed) and C3b (the films right after the demo, on phones only). Each change is its own
+pull request, one entry each below (C1's are the entries of 24 Nov 15:00 and 17:00). Merge times are IST.
+
+## [2026-11-25 22:30] build | C3 (#40): the phone home page: decision sections first, nothing pinned (one-time Lighthouse exception)
+Merged 24 Nov 16:00 (`263de09e`), stacked on B1 (#32), after the founder checked the preview on a phone. Phones under
+700 px only, by CSS `order` on the home page (a `page--home` body class is the only HTML change), so every section and
+every word stay: hero, statement, the demo, then the offer, safety, privacy and the FAQ, then the story as before.
+Nothing is pinned on phones any more: chapters that advanced by scrolling advance by time while on screen, the films are
+a sideways list, and crossing 700 px reloads the page once. The first screen shows the existing ages and price line
+again (hidden on phones since 22 Oct); the hero's two scroll-animated lines are not shown on phones; the bottom bar
+keeps "Pre-order Khelu" as the main button. On a 390 x 844 phone the page went from 28.0 to 16.6 screens and the offer
+from 89% to 14% of the way down. No visible string changed. Gate: the founder's one-time exception (entry below);
+accessibility 100 = 100, product 91 = 91.
+
+## [2026-11-25 22:30] build | C6 (#41): the home films lead removed at the founder's request
+Merged 24 Nov 16:08 (`e341a827`). "Seven short films with our pilot families, and a word from an expert." is removed,
+not rewritten, from the films section of `/` (`redesign/index.html`); it appeared nowhere else as visible copy. The
+founder's reason (24 Nov): that stage is over, so customers are no longer called "pilot families" or "pilot parents" in
+new wording. The legal and privacy pages' "pilot families" wording is left for the legal review, on hold until
+30 November. Gate passed (home 93 = 93, LCP 3.21 to 3.10 s).
+
+## [2026-11-25 22:30] build | C5 (#43): "Pre-order Khelu" stays in the films viewer and at a film's end
+Merged 24 Nov 17:02 (`c3949767`). In the full-screen films viewer on `/` and the product page, the bar's own "Pre-order
+Khelu" button sits in a strip under the film, never over the picture; a tap closes the viewer first, then opens the
+store, so Back returns to the page. A film that ends holds on its last frame with the button solid and the footer's
+existing price line beside it (before, it moved on to the next film by itself); a tap replays, a swipe goes on. Team,
+Safety and Privacy already carry the same sticky bar, so they needed no change. Taps on the viewer's button report
+`cta=film-viewer` ([tracking inventory](site/tracking-inventory.md)). No visible string changed (existing text in a new
+place). Gate passed (home 94 = 94, product 91 = 91, team 94 to 95).
+
+## [2026-11-25 22:30] build | C4 PR 1 (#30): the product page is served at /products/khelu; /products/kheelu and every older product address answer one 308
+Merged 24 Nov 17:14 (`f1c6d2f3`); the rules are in [D070](decisions/D070-conversion-bug-fixes-2026-11-24.md)'s addendum
+of 24 Nov. Canonical, `og:url`, the sitemap, the Product and Offer `url`, WebPage, BreadcrumbList, the navigation, the
+footer, the 133 internal links, `llms.txt` and `pricing.md` use `/products/khelu`; the old URL is in no sitemap.
+`/products/kheelu` and every older product address reach it in one permanent hop (Next answers 308 for `permanent:
+true`, the same effect as a 301) on the apex and `www`, query kept; a test forbids chains. The Product `@id` stays
+`https://kheelona.com/products/lumi#product` (ADR-012). No visible text changed. Gate passed (product 91 = 91, home
+95 = 95).
+
+## [2026-11-25 22:30] build | C4 PR 2 (#42): the product page puts the decision content first
+Merged 24 Nov 17:23 (`d3850af0`), `/products/khelu` only, layout only. Order: hero, films, the safety summary, the FAQ,
+then what you get, logos, how it works, example conversations, modes, comparison, details and the close (a DOM move, so
+keyboard and screen-reader order follow; 17,452 to 11,727 px tall at 390 px). The cost and the refund questions lead
+the FAQ, and the FAQPage JSON-LD follows in the same order with the same text (there is no delivery question, so none
+was added). Modes, comparison and the details fold into closed `<details>`; the declarations (MRP, origin,
+manufacturer, consumer care) stay open. The hero button and the sticky bar are the main buttons; the other buttons use
+`.btn--ghost`. The home page's sound engine no longer starts inside the first tap on every page (a FAQ tap 160 to 96 ms,
+local, 4x CPU). No visible string changed. Gate passed (product 91 = 91, home 95 = 95).
+
+## [2026-11-25 22:30] build | B7a (#33): the Spanish/French language list replaced with the approved line
+Merged 24 Nov 18:16 (`7db9ce1a`). The founder narrowed B7 part (a) on 24 Nov to this one change. Wherever the site
+listed "10 languages, including ... Spanish and French" (the product page's spec row, the product FAQ answer and its
+FAQPage text, the Product structured data on home and the product page, row 5 of the buyer's guide's table, three
+`llms.txt` lines, and the blog sentence that `facts.json` rewrites at build), it now reads "Speaks English, Hindi,
+Kannada and 7 more Indian languages." word for word; where the line answers a question it reads "Khelu speaks English,
+Hindi, Kannada and 7 more Indian languages." (the founder's OK, 24 Nov). The Spanish and French chips are gone from the
+home languages chapter and the product page's language card. Guards: `languages-list-spanish-french`
+([claims](product/claims.md) section 4) and `test/guards/rejected-wording-built.test.ts`. Unchanged by the founder's
+choice: the home headline, the footer line and the "Talking helps young brains grow" chapter. Gate passed (home 94 to
+95, product 91 = 91, buyer's guide 96 = 96). Left for the founder (PR #33): the same line in the blog dashboard's copy
+of "The hard questions parents ask about AI toys".
+
+## [2026-11-25 22:30] build | C3b (#44): on phones, the films come right after the demo
+Merged 24 Nov 18:58 (`2abedb0e`), at the founder's request of 24 Nov (phones only). The phone home order is now hero,
+statement, demo, films, offer, safety, privacy, FAQ, then the rest as C3 left it; the films start at 14% of the page
+instead of 49%. Layout only: CSS `order`, the films' placeholder sized like the section, and the posters held until the
+visitor is one screen away (one IntersectionObserver on `#films`), so the first load requests the same 10 files as C3.
+Desktop unchanged (0 differences over 903 elements at 700, 1024 and 1440 px). No visible string changed. Gate passed
+against C3's numbers (home 94 = 94, LCP 2.97 to 2.94 s): C3's exception is not used further.
+
+## [2026-11-25 22:30] gate | The founder's two one-time exceptions to the Lighthouse gate (24 Nov): B5b (#37) and C3 (#40)
+**B5b** (merged 24 Nov 17:07, `c03fe27a`): the store page is served from the cache and refreshed every 300 s (the
+ADR-005 window) instead of rendered per visitor (1.0 to 2.2 s before the first byte in production, 24 Nov); a stale page
+can't mischarge, because create-order re-decides the tier on the server. Store performance 100 = 100, but lab LCP 0.78
+to 0.91 s: a cached response carries no `Link: preload` header, so Lighthouse's model starts the stylesheet only after
+the HTML. Tried and rejected: a fonts-only `Link` header (no gain) and `experimental.inlineCss` (LCP 1.08 s). **C3**
+(entry above): home performance 95 to 94 and lab LCP 2.83 to 2.97 s, for a phone page of 16.6 screens instead of 28
+with the offer at 14%. Both were granted once; every other pull request keeps the gate.
