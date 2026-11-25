@@ -310,7 +310,7 @@ proxy; §17 is their section.
 | `safety-facts` | `/safety`'s button after the four facts (Q2.11) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
 | `guide-answers` | The buyer's guide's button after "How Kheelu meets each check." (Q2.12) | [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md) |
 | `product-compare` | The product page's button after the comparison, "Other AI gives answers. Kheelu asks questions." (Q2.17) | [D066](../decisions/D066-selling-update-founder-answers-2026-10-16.md) |
-| `film-viewer` | The "Pre-order Khelu" button inside the full-screen films viewer on `/` and `/products/kheelu` (K-180, C5; `redesign/assets/js/main.js` copies the bar's button into the viewer) | [D070](../decisions/D070-conversion-bug-fixes-2026-11-24.md) |
+| `film-viewer` | The "Pre-order Khelu" button inside the full-screen films viewer on `/` and `/products/khelu` (K-180, C5; `redesign/assets/js/main.js` copies the bar's button into the viewer) | [D070](../decisions/D070-conversion-bug-fixes-2026-11-24.md) |
 
 - **A placement added after Gate A to an existing value:** `finale` on `/setup` (its new close, the selling update,
   task Q2.12; [D065](../decisions/D065-selling-site-founder-answers-2026-10-15.md)). The value and its meaning are unchanged; `src/lib/tracking/cta.ts` holds it under `finale.added`.

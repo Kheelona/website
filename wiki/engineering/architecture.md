@@ -1,7 +1,7 @@
 ---
 title: "Architecture of the new kheelona.com (Phase 4 plan, revised after QA round 1)"
 type: engineering
-updated: 2026-10-15
+updated: 2026-11-25
 sources:
   - ../raw/brief/kickoff-brief.md (§4, §6 Architect, §7 Phase 4-5, §9)
   - phase-4-kickoff.md, lessons.md
@@ -471,7 +471,8 @@ registry test fails if a row is missing, N2):
 | 20 | OpenAI ad-click cookie | `kh_oppref` | cookie | `.kheelona.com`, production hosts, not a team device | none (set by `rememberOppref`) |
 
 Rows 18 to 20 and the three OpenAI event rows below were added after the freeze by D069 (the founder's request of
-2026-11-13); they are the only registry entries with status "Added".
+2026-11-13). The only other registry entries with status "Added" are D070's three early store signals (2026-11-24, B7c
+and B5), held to inventory §17 rather than to this table.
 
 **Events:**
 

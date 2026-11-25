@@ -1,5 +1,11 @@
 # Technical TODO — the one open-items list
 
+> **2026-11-25: this is the list from before the October 2026 reset (last updated 2026-09-20), kept for its history;
+> it is no longer the open-items list.** Open items are in `wiki/open-questions.md` and the state in `wiki/status.md`.
+> The file goes once its open items reach open questions (`wiki/legacy/cleanup.md`). The settled decisions it names are
+> summarised in `wiki/legacy/settled-decisions.md`; `FOUNDER-TODO.md` and the `docs/checkpoints/` files it links exist
+> only at tag `archive/pre-reset-2026-10-10`.
+
 **Nothing on this page blocks the site.** kheelona.com is live, indexed, and taking paid pre-orders.
 
 Created **2026-08-23**, merging the founder-gated queue that was `FOUNDER-TODO.md` (now a pointer)
