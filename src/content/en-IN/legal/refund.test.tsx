@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { ICON_PATHS } from "@/assets/icons.generated";
 import { GSTIN } from "@/config/site";
-import type { Copy, LegalBlock, LegalPage, Offer } from "@/content/types";
+import type { Copy, IsoDate, LegalBlock, LegalPage, Offer } from "@/content/types";
 import { LegalTemplate } from "@/layouts/LegalTemplate/LegalTemplate";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
@@ -134,7 +134,8 @@ describe("the refund module through LegalTemplate (notice) against the approved 
   it("is the markup of the template's parity fixture (test/fixtures/legal/refund.ts) with the founder's facts, character for character", () => {
     // The complaint-reference line is the template's (legal/shared.ts), so the fixture's render already lacks it.
     const documentFacts = PAGE_FACTS.refund.edits.filter((edit) => edit !== GRIEVANCE_NOTE);
-    const approvedFixture = { ...refundFixture, status: "approved" } as LegalPage;
+    // The fixture is a draft, so its `approvedOn` is a placeholder; only the status is flipped here, and that one field is cast.
+    const approvedFixture: LegalPage = { ...refundFixture, status: "approved", approvedOn: refundFixture.approvedOn as unknown as IsoDate };
     expect(mainOf(refundPage).outerHTML).toBe(withFacts(mainOf(approvedFixture), documentFacts, { built: true }).outerHTML);
   });
 
