@@ -95,7 +95,7 @@ describe("address validation", () => {
     for (const pincode of ["56004", "0560041", "5600411", "abcdef"]) {
       expect(validateAddress({ ...goodAddress, pincode }).pincode, pincode).toBeTruthy();
     }
-    expect(validateAddress({ ...goodAddress, pincode: "110001" }).pincode).toBeUndefined();
+    expect(validateAddress({ ...goodAddress, pincode: "560001" }).pincode).toBeUndefined();
   });
 
   it("only accepts a state from the list, so a courier can read it", () => {
