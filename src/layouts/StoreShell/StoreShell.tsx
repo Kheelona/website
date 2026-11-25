@@ -4,10 +4,11 @@ import { StoreFooter } from "@/components/chrome/StoreFooter/StoreFooter";
 import { StoreHeader } from "@/components/chrome/StoreHeader/StoreHeader";
 import { MotionController } from "@/components/ui/MotionController/MotionController.client";
 import { RichText } from "@/components/ui/RichText/RichText";
-import { MARKETING_ORIGIN } from "@/config/env";
+import { MARKETING_ORIGIN, SITE_ENV } from "@/config/env";
 import { navigation } from "@/content/en-IN/navigation";
 import { seller } from "@/content/en-IN/seller";
 import { storeArrivalScript } from "@/lib/tracking/beacon";
+import { TestModeStrip } from "./TestModeStrip";
 import { ThanksCleanup } from "./ThanksCleanup.client";
 
 /**
@@ -35,6 +36,11 @@ import { ThanksCleanup } from "./ThanksCleanup.client";
  * visitor who leaves before hydration is still counted. It renders nothing, runs only on the store hosts that are PostHog
  * hosts, never on /thanks, and carries no query parameter but the campaign keys. The CSP allows inline scripts today.
  *
+ * On a beta build only (`SITE_ENV === "beta"`, the test store, betastore.kheelona.com, which takes Razorpay Test Mode
+ * payments), `TestModeStrip` sits right after the skip link and above the header: "TEST MODE: no real payments" (D071
+ * (K-182), T2). The skip link stays first in tab order. On production, preview and development the strip is not rendered:
+ * no markup, and no client code for it.
+ *
  * Last, `ThanksCleanup` (D070 / B2, K-172): on /thanks only, it forgets the payment and the typed details this tab kept
  * for the pre-order form (`kh_preorder_pending`, `kh_preorder_draft`). It renders nothing.
  */
@@ -44,6 +50,7 @@ export function StoreShell({ children }: { children: ReactNode }) {
     <>
       <script dangerouslySetInnerHTML={{ __html: storeArrivalScript() }} />
       <SkipLink label={labels.skip} />
+      {SITE_ENV === "beta" ? <TestModeStrip /> : null}
       <StoreHeader
         logo={{ alt: labels.logo, href: MARKETING_ORIGIN, linkLabel: labels.storeLogoLink }}
         help={{ lead: seller.storeHelp.lead, contact: <RichText text={seller.storeHelp.contact} /> }}
