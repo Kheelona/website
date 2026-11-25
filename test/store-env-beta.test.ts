@@ -85,7 +85,8 @@ const ALL_NAMES = [...Object.keys(REQUIRED), ...Object.keys(OPTIONAL)];
 
 /** Every store variable stubbed (set or removed), so nothing from the shell leaks in, and the build's
  *  site environment forced the way `next.config.ts` inlines it. Then a fresh copy of the modules.
- *  `refs` stands in for the list of test Supabase project ids in `src/config/test-store.ts`. */
+ *  `refs` stands in for the list of test Supabase project ids in `src/config/test-store.ts` (an empty list when not
+ *  given, so the key-mode table does not depend on the committed ids; the committed list has its own test below). */
 async function under<T>(
   siteEnv: string | undefined,
   vars: Vars,
@@ -94,7 +95,7 @@ async function under<T>(
 ): Promise<T> {
   vi.resetModules();
   vi.doUnmock("@/config/test-store");
-  if (refs) vi.doMock("@/config/test-store", () => ({ TEST_SUPABASE_PROJECT_REFS: refs }));
+  vi.doMock("@/config/test-store", () => ({ TEST_SUPABASE_PROJECT_REFS: refs ?? [] }));
   vi.stubEnv("KH_SITE_ENV", siteEnv);
   for (const name of ALL_NAMES) vi.stubEnv(name, vars[name]);
   return load();
@@ -420,6 +421,15 @@ describe("D071: production refuses the test Supabase project; the test store req
     expect(Array.isArray(TEST_SUPABASE_PROJECT_REFS)).toBe(true);
     for (const id of TEST_SUPABASE_PROJECT_REFS) expect(id).toMatch(/^[a-z0-9]{20}$/);
     expect(new Set(TEST_SUPABASE_PROJECT_REFS).size).toBe(TEST_SUPABASE_PROJECT_REFS.length);
+    expect(TEST_SUPABASE_PROJECT_REFS).toContain("yiihxztphkuhxadmfrdb"); // T1b: the test store's project (founder, 25 Nov)
+  });
+
+  it("with the committed list (T1b): production refuses the test store's project, beta accepts only it", async () => {
+    const { TEST_SUPABASE_PROJECT_REFS } = await import("@/config/test-store");
+    const testStore = supabaseUrl("yiihxztphkuhxadmfrdb");
+    expect(ask(await under("production", everything(LIVE, testStore), envModule, TEST_SUPABASE_PROJECT_REFS)).missing).toEqual(["SUPABASE_URL"]);
+    expect(ask(await under("beta", everything(TEST, testStore), envModule, TEST_SUPABASE_PROJECT_REFS)).ready).toBe(true);
+    expect(ask(await under("beta", everything(TEST, supabaseUrl(TEST_PROJECT)), envModule, TEST_SUPABASE_PROJECT_REFS)).missing).toEqual(["SUPABASE_URL"]);
   });
 });
 
