@@ -1,7 +1,7 @@
 ---
 title: Checkout journey (store.kheelona.com)
 type: inventory
-updated: 2026-10-11
+updated: 2026-11-25
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - src/app/store/page.tsx
@@ -131,13 +131,18 @@ captured with the order: campaign cookie or URL UTMs, Meta `_fbp`/`_fbc`/IP/UA, 
 
 | Label | `name` | Input | `autocomplete` | Required | Validation |
 |---|---|---|---|---|---|
-| Flat or house, and street | `line1` | text, max 120 | `address-line1` | yes | 5-120 chars |
+| Flat or house, and street | `line1` | text, max 120 | `address-line1` | yes | 1-120 chars after trim (was 5-120; D072) |
 | Landmark or area | `line2` | text, max 120 | `address-line2` | no | ≤120 |
-| PIN code | `pincode` | text, `inputMode=numeric`, max 6 | `postal-code` | yes | `^[1-9]\d{5}$` |
-| City or town | `city` | text, max 60 | `address-level2` | yes | 2-60 |
+| PIN code | `pincode` | text, `inputMode=numeric`, max 6 | `postal-code` | yes | `^[1-9]\d{5}$`; first three digits must belong to the picked state, unknown prefixes allowed (D072) |
+| City or town | `city` | text, max 60 | `address-level2` | yes | 1-60 chars after trim (was 2-60; D072) |
 | State | `state` | select of 36 states and UTs | none | yes | must be in the list |
 
-Sources: `AddressForm.tsx:117-163`; `validate.ts:94-118`; `india.ts:6-43`.
+Sources: `AddressForm.tsx:117-163`; `validate.ts:95-134` (the tag's was 94-118); `india.ts:6-43`; the PIN table is
+`src/lib/address/pin-state.ts`. D072 (25 Nov 2026) changed three rules here: a house or street and a city need only be
+non-empty (the form is asked after payment, so a blocked form leaves a paid order with no address), and a PIN code whose
+first three digits belong to another state is refused with "This PIN code belongs to a different state. Please check your
+PIN code and state." under the PIN field and in the address route (same `validateAddress`). The table lists every state a
+prefix belongs to and never blocks a prefix it does not know.
 
 ## Failure and edge states (all render a page, none throw)
 

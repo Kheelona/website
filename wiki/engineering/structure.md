@@ -87,6 +87,7 @@ src/
   lib/
     tracking/                destination, event and CTA registries, dispatcher, internal flag
     seo/                     metadata, JSON-LD escaping, schema builders
+    address/                 PIN code prefix → state table (D072)
     offer/                   cached live mode, offer view model, the order's delivery row (delivery-line.ts, used by /thanks and the receipt)
     content/                 rich-text parser, plain-text serialiser, placeholder helper
     journal/                 the dashboard post contract (post.ts) and its validator (validate.ts, no imports) (8b.2b);

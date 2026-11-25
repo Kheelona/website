@@ -1503,3 +1503,13 @@ store says "opening shortly", the routes answer 503, `missingStoreEnv()` names `
 with the mode only. Email is off on beta. New `src/config/test-store.ts` lists the test Supabase projects (production refuses them,
 beta requires one once the list has one; empty for now, T1b adds the id). Frozen `src/lib/store/env.ts` changed only with its
 regenerated reviewed patch naming D071; D051 is marked superseded. Production with a live key answers as the tag does.
+
+## [2026-11-25 15:30] decision | D072: the address form takes any house/street and city, and the PIN code must belong to the picked state (K-184 B8)
+The founder's one-by-one sign-off of 25 November (checkout code). The address is asked after payment, so a blocked form leaves a
+paid order with no address, and an iPhone test of the test store showed a house called "10" refused. `validateAddress` now takes any
+non-empty house/street (1 to 120) and city (1 to 60), and refuses a PIN code whose first three digits belong to another state with
+"This PIN code belongs to a different state. Please check your PIN code and state." under the PIN field and in the address route. The
+table is the new `src/lib/address/pin-state.ts` (a new file inside the frozen `src/features/preorder/lib/` would fail checkout-freeze),
+built from the Department of Posts' All India Pincode Directory: a shared prefix accepts every one of its states, an unknown prefix
+(and 9xx) is always allowed. Frozen `validate.ts` changed only with its regenerated reviewed patch naming D072; frozen `validate.test.ts`
+by one literal (a Karnataka PIN). New assertions in new test files. `site/checkout.md`, `qa/test-plan.md` and `engineering/structure.md` updated.
