@@ -1525,7 +1525,8 @@ because it needed a new label; the Razorpay prefill already existed; B2 to B4 me
 the notice stays until the phone tests on the test store pass, then goes app by app (D071). The home headline stays as
 it is (the same message); later that day the founder also kept the footer line and the "Talking helps young brains grow"
 chapter, and asked for C6 (the home films lead removed) and C3b (the films right after the demo, on phones only). Each change is its own
-pull request, one entry each below (C1's are the entries of 24 Nov 15:00 and 17:00). Merge times are IST.
+pull request, one entry each below (C1's are the entries of 24 Nov 15:00 and 17:00). Merge times are IST. The same
+answers are recorded as an addendum in [D070](decisions/D070-conversion-bug-fixes-2026-11-24.md).
 
 ## [2026-11-25 22:30] build | C3 (#40): the phone home page: decision sections first, nothing pinned (one-time Lighthouse exception)
 Merged 24 Nov 16:00 (`263de09e`), stacked on B1 (#32), after the founder checked the preview on a phone. Phones under
