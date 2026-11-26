@@ -94,8 +94,10 @@ describe("root layout: the document", () => {
 });
 
 describe("root layout: environments (D048, D051; architecture §15.3)", () => {
-  it("loads Ahrefs in the head, async, with its key, except on beta", async () => {
-    for (const env of ["production", "development"] as const) {
+  /* K-187 (2026-11-26): on a production build only. Development and preview builds write no Ahrefs tag either: that is
+     pinned, with every other tag, in src/app/layout-analytics-env.test.tsx. */
+  it("loads Ahrefs in the head, async, with its key, on a production build, and never on beta", async () => {
+    for (const env of ["production"] as const) {
       const { doc } = await layoutFor(env);
       const script = doc.head.querySelector('script[src="https://analytics.ahrefs.com/analytics.js"]');
       expect(script, env).not.toBeNull();

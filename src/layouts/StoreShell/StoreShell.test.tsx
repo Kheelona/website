@@ -33,6 +33,26 @@ function shell() {
   );
 }
 
+/* K-187 (2026-11-26): the early-arrival script is written on a production or beta build only (buildLoadsPostHog), and a
+   vitest run reads a development build, so the tests that pin the script render the shell as a production build does:
+   afresh, with KH_SITE_ENV stubbed (the shell reads SITE_ENV once, when src/config/env.ts loads). The development and
+   preview cases are in "StoreShell: the early-arrival script by build environment" below. */
+async function shellAsBuilt(env: "production" | "beta" | "preview" | "development") {
+  vi.resetModules();
+  vi.stubEnv("KH_SITE_ENV", env);
+  const Shell = (await import("./StoreShell")).StoreShell;
+  return render(
+    <Shell>
+      <p>store page</p>
+    </Shell>,
+  );
+}
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+  vi.resetModules();
+});
+
 describe("StoreShell: the store chrome equals the approved mockup's (mockup/store.html)", () => {
   it("skip link", () => {
     const { container } = shell();
@@ -69,8 +89,8 @@ describe("StoreShell: the store chrome equals the approved mockup's (mockup/stor
     expect(container.querySelector('a[href*="#chargeback"]')).toBeNull();
   });
 
-  it("keeps the order: the early-arrival script, skip link, header, main, footer, and adds no bubble and no site navigation", () => {
-    const { container } = shell();
+  it("keeps the order: the early-arrival script, skip link, header, main, footer, and adds no bubble and no site navigation", async () => {
+    const { container } = await shellAsBuilt("production");
     expect(Array.from(container.children).map((el) => el.tagName.toLowerCase() + (el.className ? `.${el.className.split(" ")[0]}` : ""))).toEqual([
       "script",
       "a.kh-btn",
@@ -85,8 +105,8 @@ describe("StoreShell: the store chrome equals the approved mockup's (mockup/stor
   /* D070 / B7c (K-174): the store's early page view is one inline script, first in the shell, so it runs while the HTML is
      parsed. It is exactly storeArrivalScript() (test/tracking-beacon.test.ts holds what that sends), appears once, has no
      src (nothing to wait for), prints nothing, and sits before every other element. */
-  it("renders the early-arrival script once, first, inline, and visible to nobody", () => {
-    const { container } = shell();
+  it("renders the early-arrival script once, first, inline, and visible to nobody", async () => {
+    const { container } = await shellAsBuilt("production");
     const scripts = container.querySelectorAll("script");
     expect(scripts).toHaveLength(1);
     const [script] = Array.from(scripts);
@@ -124,6 +144,40 @@ describe("StoreShell: the store chrome equals the approved mockup's (mockup/stor
       .getAllByRole("link")
       .map((a) => a.getAttribute("href"));
     expect(hrefs).toEqual(["terms", "refund", "shipping", "privacy", "contact"].map((p) => `${MARKETING_ORIGIN}/${p}`));
+  });
+});
+
+/* K-187: a development or preview build has no early-arrival script at all, whatever hostname it is opened under; beta keeps
+   it (PostHog runs there, stamped env=beta). Nothing else about the shell moves. */
+describe("StoreShell: the early-arrival script by build environment (K-187)", () => {
+  const ORDER = ["a.kh-btn", "header.kh-nav", "main", "footer.kh-footer"];
+  const order = (container: HTMLElement) =>
+    Array.from(container.children).map((el) => el.tagName.toLowerCase() + (el.className ? `.${el.className.split(" ")[0]}` : ""));
+
+  it.each(["production", "beta"] as const)("a %s build writes it once, first", async (env) => {
+    const { container } = await shellAsBuilt(env);
+    expect(container.querySelectorAll("script")).toHaveLength(1);
+    expect(container.firstElementChild!.tagName).toBe("SCRIPT");
+    expect(container.firstElementChild!.textContent).toBe(storeArrivalScript());
+    expect(container.innerHTML).toContain("store_arrived");
+  });
+
+  it.each(["development", "preview"] as const)("a %s build writes no script, no beacon code and no store_arrived at all", async (env) => {
+    const { container } = await shellAsBuilt(env);
+    expect(container.querySelectorAll("script")).toHaveLength(0);
+    expect(container.innerHTML).not.toContain("store_arrived");
+    expect(container.innerHTML).not.toContain("sendBeacon");
+    expect(container.innerHTML).not.toContain("/ingest");
+    expect(order(container)).toEqual(ORDER);
+  });
+
+  it("leaves the rest of the shell as it was in every environment: skip link, header, main, footer", async () => {
+    for (const env of ["production", "preview", "development"] as const) {
+      const { container, unmount } = await shellAsBuilt(env);
+      expect(order(container).filter((n) => n !== "script"), env).toEqual(ORDER);
+      expect(screen.getByRole("main")).toHaveTextContent("store page");
+      unmount();
+    }
   });
 });
 
