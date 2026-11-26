@@ -105,6 +105,10 @@ proxy; §17 is their section.
 [D074](../decisions/D074-refund-event.md) (K-124) adds no destination either: one PostHog server event, `purchase_refunded`, reaches
 row 7's project from the Razorpay refund webhook; the end of §7 is its section.
 
+[D076](../decisions/D076-store-db-nightly-sheet-copy.md) (K-189) adds no destination either: one PostHog server event,
+`db_backup_completed`, reaches row 7's project from the Supabase Edge Function that copies the store tables into a Google
+Sheet each night; the end of §7 is its section.
+
 ---
 
 ## 1. Vercel Web Analytics
@@ -376,6 +380,20 @@ row 7's project from the Razorpay refund webhook; the end of §7 is its section.
   referrer, landing path, click ids and UTMs. The Payload bullet above is otherwise unchanged. `purchase_refunded` never
   carries it (a refund days later would stretch the sale's session). No new cookie, no client change, and nothing new to
   Meta, GA4 or OpenAI.
+- **Backup run event, [D076](../decisions/D076-store-db-nightly-sheet-copy.md) (K-189, 26 November 2026): `db_backup_completed`.**
+  A third PostHog server event, sent to the same project and key as `purchase_confirmed`, but by the Supabase Edge Function
+  `db-backup` (`supabase/functions/db-backup/posthog.ts`), not by the store: once per run of the nightly copy of `preorders`,
+  `event_tiers` and `webhook_events` into a private Google Sheet (02:00 India time, and every run by hand), so a missing or
+  failed night shows in the daily pulse. Direct to `https://us.i.posthog.com/batch/` (the endpoint posthog-node uses), not
+  through `/ingest`; never sent to GA4, Meta or OpenAI and not through the dispatcher (`track.ts`); a failure to send never
+  fails the run. Nothing in the bullets above changes.
+- **Backup payload** (`backupEventBody`, `supabase/functions/db-backup/posthog.ts`): `distinct_id` is the fixed `kh-db-backup`;
+  properties `$lib: "kh-db-backup"`, `$lib_version: "1"`, `$process_person_profile: false`, `$geoip_disable: true`, `result`
+  (ok, ok_truncated or failed), `duration_ms`, `failed_reason` (only when a step before the tables failed), and for each of the three
+  tables `<table>_db_rows`, `<table>_sheet_rows`, `<table>_not_in_db_rows`, `<table>_truncated_cells` and `<table>_failed_reason`
+  (only when that table failed; a failed table's counts are left out), plus `env: "beta"` only when the function runs on the
+  test store's Supabase project, never on production. Counts and failure codes only: no name, phone, email, address, child age,
+  row value or free text can reach it. The Google Sheet itself holds that data (founder-approved, D076); this event does not.
 
 ## 8. PostHog reverse proxy and routing
 
