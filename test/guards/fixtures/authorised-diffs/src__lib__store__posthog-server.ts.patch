@@ -14,8 +14,15 @@ D074 (founder sign-off, chat 26 Nov 2026; K-124; wiki/decisions/D074-refund-even
   production, `env`. Its distinctId is the order's ph_distinct_id, else the order reference, as `purchase_confirmed`'s.
   No name, phone, email, address, child age, payment id or refund id; nothing goes to Meta, GA4 or OpenAI.
 
+D075 (founder's choice, chat 26 Nov 2026; K-124 part b; wiki/decisions/D075-session-id-on-orders.md): `purchaseConfirmedEvent`
+adds `$session_id: order.ph_session_id` to the properties, and ONLY when the order stored one (an absent key, never an empty
+one), so PostHog attributes the sale to that session's own entry referrer, landing path, click ids and UTMs. Nothing else in
+the payload changes; `purchase_refunded` does NOT carry it (a refund days later would stretch the sale's session). The
+session id is the same class of random, pseudonymous id as the `ph_distinct_id` already used; no name, phone, email, address
+or child detail, and nothing goes to Meta, GA4 or OpenAI.
+
 diff --git a/src/lib/store/posthog-server.ts b/src/lib/store/posthog-server.ts
-index 11d42f0..a409318 100644
+index 11d42f0..39e79a6 100644
 --- a/src/lib/store/posthog-server.ts
 +++ b/src/lib/store/posthog-server.ts
 @@ -1,5 +1,6 @@
@@ -25,15 +32,20 @@ index 11d42f0..a409318 100644
  import type { PreorderRow } from "./db";
  
  /** The paid order, reported to PostHog BY THE SERVER (§8.40, 2026-09-20).
-@@ -77,6 +78,7 @@ export function purchaseConfirmedEvent(order: PreorderRow): Event {
+@@ -77,6 +78,12 @@ export function purchaseConfirmedEvent(order: PreorderRow): Event {
           perfectly without a person profile; creating one would weld a billable
           identity to a parent, which the 2026-09-19 round declined on purpose. */
        $process_person_profile: false,
++      /* The visit this sale belongs to (D075, K-124b). With `$session_id` PostHog attributes the sale to that session's own
++         entry referrer, landing path, click ids and UTMs. Only when the order stored one (orders before migration 0005,
++         and a visitor with PostHog blocked, have none): an absent key, never an empty one. NOT on `purchase_refunded`,
++         where a refund days later would stretch the sale's session. */
++      ...(order.ph_session_id ? { $session_id: order.ph_session_id } : {}),
 +      ...(SITE_ENV !== "production" ? { env: SITE_ENV } : {}),
      },
      /* When the money actually arrived, not when the webhook happened to be
         processed. A retried webhook must not move the sale in time. */
-@@ -84,13 +86,70 @@ export function purchaseConfirmedEvent(order: PreorderRow): Event {
+@@ -84,13 +91,70 @@ export function purchaseConfirmedEvent(order: PreorderRow): Event {
    };
  }
  
@@ -109,7 +121,7 @@ index 11d42f0..a409318 100644
      return "skipped";
    }
  
-@@ -104,7 +163,8 @@ export async function reportPurchaseToPostHog(
+@@ -104,7 +168,8 @@ export async function reportPurchaseToPostHog(
    });
  
    try {
@@ -119,7 +131,7 @@ index 11d42f0..a409318 100644
      /* 🔴 THE FLUSH IS THE WHOLE THING. posthog-node QUEUES; a serverless
         function returns long before any timer fires, and the event dies with it.
         The SDK's own comment on flush() says it is "concurrent so a serverless
-@@ -112,7 +172,7 @@ export async function reportPurchaseToPostHog(
+@@ -112,7 +177,7 @@ export async function reportPurchaseToPostHog(
         reintroduce, one layer down, the exact silent loss this file exists to
         fix. */
      await client.flush();
@@ -128,7 +140,7 @@ index 11d42f0..a409318 100644
      return "sent";
    } catch (error) {
      /* The payment path never fails because an analytics call did. */
-@@ -120,3 +180,32 @@ export async function reportPurchaseToPostHog(
+@@ -120,3 +185,32 @@ export async function reportPurchaseToPostHog(
      return "failed";
    }
  }

@@ -53,6 +53,14 @@ export type PreorderRow = {
    *  invert the point. It is a device id, never a person: the server event sets
    *  `$process_person_profile: false` so no profile is created. */
   ph_distinct_id: string | null;
+  /** PostHog's own anonymous SESSION id, read on the server from the visitor's PostHog cookie at order time (D075,
+   *  K-124b, migration 0005). The server-sent `purchase_confirmed` event carries it as `$session_id`, so PostHog attributes
+   *  the sale to that visit's own entry referrer, landing path, click ids and UTMs.
+   *
+   *  Nullable AND optional: the column arrived in migration 0005, so every order before it has none (and a visitor with
+   *  PostHog blocked legitimately has none), and the tests that build a whole row by hand predate it. A random id, never a
+   *  person. */
+  ph_session_id?: string | null;
   created_at: string;
   paid_at: string | null;
 };

@@ -11,18 +11,29 @@ inserted a new column ahead of it would answer every pre-order with a 500); Meta
 `fb_attrib` stays null only when both are empty. The amount, the tier, the validation, the order of operations, the rate
 limit, the Razorpay call and every response are unchanged.
 
+D075 (founder's choice, chat 26 Nov 2026; K-124 part b; wiki/decisions/D075-session-id-on-orders.md): the order remembers the
+PostHog session id. One import (`readPhSessionId`, new file src/lib/tracking/ph-session-id.ts) and the `ph_session_id:` line
+beside `ph_distinct_id:`: the id is read ON THE SERVER from the PostHog cookie the browser already sent (`$sesid`, validated
+UUID-shaped and at most 64 characters, else null), so `purchase_confirmed` can carry it as `$session_id` and PostHog attributes
+the sale to the visit's own entry referrer, landing path, click ids and UTMs. A missing, malformed or oversized cookie stores
+null and never refuses an order. No client change, no new cookie, nothing new to Meta, GA4 or OpenAI. It needs the NEW column
+from supabase/migrations/0005_ph_session_id.sql, applied by hand BEFORE this deploys (as 0004 was): code that inserted it
+ahead of the migration would answer every pre-order with a 500. The amount, the tier, the validation, the order of operations,
+the rate limit, the Razorpay call and every response are unchanged.
+
 diff --git a/src/app/api/preorder/create-order/route.ts b/src/app/api/preorder/create-order/route.ts
 --- a/src/app/api/preorder/create-order/route.ts
 +++ b/src/app/api/preorder/create-order/route.ts
-@@ -8,6 +8,7 @@ import { signAddressToken, ADDRESS_TOKEN_TTL_MS } from "@/lib/store/signing";
+@@ -8,6 +8,8 @@ import { signAddressToken, ADDRESS_TOKEN_TTL_MS } from "@/lib/store/signing";
  import { rateLimit, clientKey } from "@/lib/store/rate-limit";
  import { json, str, NOT_CONFIGURED } from "@/lib/store/http";
  import { readFbAttrib } from "@/lib/store/meta-capi";
 +import { withOpenAiAttrib } from "@/lib/ads/openai-capi";
++import { readPhSessionId } from "@/lib/tracking/ph-session-id";
  import {
    validateContact,
    normalisePhone,
-@@ -110,7 +111,9 @@ export async function POST(request: Request) {
+@@ -110,13 +112,20 @@ export async function POST(request: Request) {
           Razorpay webhook that later reports the purchase server-side is called
           by Razorpay, so it has none of this. Read entirely from the request the
           browser already sent, so the client gained no new say in it. */
@@ -33,3 +44,14 @@ diff --git a/src/app/api/preorder/create-order/route.ts b/src/app/api/preorder/c
        /* PostHog's device id, so the SERVER-sent purchase_confirmed event can
           join this person's funnel (§8.40). Same reasoning as fb_attrib above,
           from the other direction: the webhook knows the payment is real but has
+          no idea whose browser it belongs to, and this is the last moment anyone
+          does. */
+       ph_distinct_id: readPhDistinctId(body.phDistinctId),
++      /* PostHog's SESSION id, so purchase_confirmed can carry $session_id and PostHog attributes the sale to the visit's own
++         entry referrer, landing path, click ids and UTMs (D075, K-124b). Read on the server from the PostHog cookie the
++         browser already sent, validated hard (UUID-shaped, at most 64 characters), null otherwise, and never a reason to
++         refuse an order. Migration 0005 adds the column and is applied by hand BEFORE this deploys. */
++      ph_session_id: readPhSessionId(request),
+     })
+     .select("id, order_ref")
+     .single();

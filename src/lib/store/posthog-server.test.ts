@@ -139,6 +139,55 @@ describe("purchaseConfirmedEvent", () => {
   });
 });
 
+/* D075 (K-124b): the session the order was placed in, so PostHog attributes the sale to that visit's own entry referrer,
+   landing path, click ids and UTMs. Only when the order stored one; the cases above build orders without the column and
+   prove an absent value changes nothing. */
+describe("purchaseConfirmedEvent carries $session_id when the order stored one (D075)", () => {
+  const SID = "0199a2f1-7c3e-7b4a-9c10-0123456789ab";
+
+  it("sends the stored session id as $session_id", () => {
+    expect(purchaseConfirmedEvent(order({ ph_session_id: SID })).properties.$session_id).toBe(SID);
+  });
+
+  it("leaves the key out, rather than sending an empty one, when the order has none", () => {
+    for (const none of [null, undefined, ""]) {
+      expect(Object.keys(purchaseConfirmedEvent(order({ ph_session_id: none })).properties)).not.toContain("$session_id");
+    }
+    expect(Object.keys(purchaseConfirmedEvent(order()).properties)).not.toContain("$session_id");
+  });
+
+  it("changes nothing else in the payload: the same event with and without it differs by that one key", () => {
+    const utm = { utm_source: "meta", utm_campaign: "2026-11-launch", placement: "feed" };
+    const without = purchaseConfirmedEvent(order({ utm, ph_distinct_id: "0199-abc" }));
+    const withId = purchaseConfirmedEvent(order({ utm, ph_distinct_id: "0199-abc", ph_session_id: SID }));
+    const { $session_id, ...rest } = withId.properties;
+    expect($session_id).toBe(SID);
+    expect(rest).toEqual(without.properties);
+    expect({ ...withId, properties: undefined }).toEqual({ ...without, properties: undefined });
+  });
+
+  it("is still anonymous and carries no personal data beside it", () => {
+    const event = purchaseConfirmedEvent(order({ ph_session_id: SID }));
+    expect(event.properties.$process_person_profile).toBe(false);
+    const text = JSON.stringify(event);
+    for (const personal of ["Shweta", "9187546483", "parent@example.com", "pay_x", "order_x"]) {
+      expect(text, personal).not.toContain(personal);
+    }
+  });
+
+  it("a campaign key cannot overwrite it", () => {
+    const hostile = { $session_id: "forged" } as unknown as Record<string, string>;
+    expect(purchaseConfirmedEvent(order({ utm: hostile, ph_session_id: SID })).properties.$session_id).toBe(SID);
+  });
+
+  it("goes out through the real report, flushed, as the one event", async () => {
+    await expect(reportPurchaseToPostHog(order({ ph_session_id: SID }))).resolves.toBe("sent");
+    expect(captured).toHaveLength(1);
+    expect(captured[0]).toMatchObject({ event: "purchase_confirmed", properties: { $session_id: SID } });
+    expect(flushes.count).toBe(1);
+  });
+});
+
 describe("reportPurchaseToPostHog", () => {
   it("sends the event and returns sent", async () => {
     await expect(reportPurchaseToPostHog(order())).resolves.toBe("sent");
@@ -273,6 +322,19 @@ describe("purchaseRefundedEvent", () => {
     for (const personal of ["Shweta", "9187546483", "parent@example.com", "pay_x", "order_x"]) {
       expect(text, personal).not.toContain(personal);
     }
+  });
+
+  /* D075 (K-124b): the session id belongs to the SALE. A refund days later carrying it would stretch the purchase's session
+     in PostHog (a session lasts from its first event to its last), so purchase_refunded never has it, even for an order
+     that stored one, and whatever the caller hands in. */
+  it("never carries $session_id, even for an order that stored one (D075)", () => {
+    const SID = "0199a2f1-7c3e-7b4a-9c10-0123456789ab";
+    const stored = order({ ph_session_id: SID });
+    expect(Object.keys(purchaseRefundedEvent(stored, full).properties)).not.toContain("$session_id");
+    expect(JSON.stringify(purchaseRefundedEvent(stored, full))).not.toContain(SID);
+    expect(Object.keys(purchaseRefundedEvent(stored, { refundedPaise: 100, partial: true }).properties)).not.toContain("$session_id");
+    // the same payload as for an order with no session id
+    expect(purchaseRefundedEvent(stored, full)).toEqual(purchaseRefundedEvent(order(), full));
   });
 
   it("has no timestamp, so PostHog stamps the moment the webhook processes the refund", () => {

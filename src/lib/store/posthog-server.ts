@@ -78,6 +78,11 @@ export function purchaseConfirmedEvent(order: PreorderRow): Event {
          perfectly without a person profile; creating one would weld a billable
          identity to a parent, which the 2026-09-19 round declined on purpose. */
       $process_person_profile: false,
+      /* The visit this sale belongs to (D075, K-124b). With `$session_id` PostHog attributes the sale to that session's own
+         entry referrer, landing path, click ids and UTMs. Only when the order stored one (orders before migration 0005,
+         and a visitor with PostHog blocked, have none): an absent key, never an empty one. NOT on `purchase_refunded`,
+         where a refund days later would stretch the sale's session. */
+      ...(order.ph_session_id ? { $session_id: order.ph_session_id } : {}),
       ...(SITE_ENV !== "production" ? { env: SITE_ENV } : {}),
     },
     /* When the money actually arrived, not when the webhook happened to be
