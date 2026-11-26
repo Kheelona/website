@@ -35,6 +35,14 @@ anyone remembering to.
 Insert a row in `event_tiers` from the dashboard, then generate its signed link
 with `npm run event-link -- <id>`. See `docs/preorder-events.md`.
 
+## The nightly copy into a Google Sheet (D076, K-189)
+
+The free project has no backups, so `functions/db-backup/` copies all three tables into a private Google Sheet every night
+and sends one PostHog event about it. It only reads, never deletes a sheet row, and holds the sheet's data private (it
+contains parents' and children's details). It is NOT a migration: it is deployed and scheduled by hand, test project first,
+with the guide in the pull request. See `functions/db-backup/README.md`, and `functions/db-backup/setup-cron.sql` for the
+schedule. The sheet can be put back into the tables with the restore runbook.
+
 ## `webhook_events.payload` holds a summary, not the event (2026-08-23, F-05)
 
 The column used to store each Razorpay delivery verbatim and keep it forever, which meant a second
