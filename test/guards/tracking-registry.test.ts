@@ -16,6 +16,8 @@ import { OPENAI_AAM_POLICY, OPENAI_PIXEL_PAGES } from "@/lib/ads/openai-pixel";
 import type { PreorderRow } from "@/lib/store/db";
 import { purchasePayload } from "@/lib/store/meta-capi";
 import { purchaseConfirmedEvent, purchaseRefundedEvent } from "@/lib/store/posthog-server";
+import { POSTHOG_DISTINCT_ID, POSTHOG_EVENT, POSTHOG_LIB, TABLES as BACKUP_TABLE_LIST } from "../../supabase/functions/db-backup/config";
+import { backupEventBody } from "../../supabase/functions/db-backup/posthog";
 import { CTAS, CTA_IDS, CTA_VALUES, RESERVED_CTA_VALUES, type CtaValue } from "@/lib/tracking/cta";
 import { DESTINATIONS, type DestinationKey } from "@/lib/tracking/destinations";
 import { EVENTS, STAMPED_PROPERTIES, type TrackedEvent } from "@/lib/tracking/events";
@@ -655,8 +657,8 @@ describe("events.ts: OpenAI Ads measurement, added by D069, equals inventory §1
       expect(e.decision, `${e.name} decision`).toBe("D069");
       expect(decisionFiles().some((f) => f.startsWith(`${e.decision}-`)), `${e.decision} has no file in wiki/decisions`).toBe(true);
     }
-    /* Every added event belongs to one of the decisions that added events; each needs its own section here (D074: 3d). */
-    expect(sorted([...new Set(EVENTS.filter((e) => e.status === "added").map((e) => e.decision ?? "none"))])).toEqual(["D069", "D070", "D074"]);
+    /* Every added event belongs to one of the decisions that added events; each needs its own section here (D074: 3d, D076: 3f). */
+    expect(sorted([...new Set(EVENTS.filter((e) => e.status === "added").map((e) => e.decision ?? "none"))])).toEqual(["D069", "D070", "D074", "D076"]);
   });
 
   it("browser events: the parameters in §16's order, its literals as fixed values, its dedup key", () => {
@@ -777,6 +779,7 @@ describe("events.ts: the server refund event, added by D074, equals inventory §
     expect(eventsTo("posthog-server").map((e) => [e.name, e.status, e.decision])).toEqual([
       ["purchase_confirmed", "existing", undefined],
       ["purchase_refunded", "added", "D074"],
+      ["db_backup_completed", "added", "D076"],
     ]);
     expect(refunded().destinations).toEqual(["posthog-server"]);
     expect(decisionFiles().some((f) => f.startsWith("D074-")), "D074 has a file in wiki/decisions").toBe(true);
@@ -872,6 +875,92 @@ describe("events.ts: $session_id on purchase_confirmed, added by D075, equals in
     expect(confirmed().destinations).toEqual(["posthog-server"]);
     expect(purchaseConfirmedEvent(withSession()).properties.$process_person_profile).toBe(false);
     expect(Object.keys(purchaseConfirmedEvent(withSession()).properties).filter((k) => /payment|email|phone|parent|child|address/i.test(k))).toEqual([]);
+  });
+});
+
+/* ── 3f. The nightly backup's run event (D076, K-189): added after the tag, sent by the Supabase Edge Function db-backup, held to inventory §7 ─────────── */
+
+const BACKUP_EVENT_BULLET = bullet(REFUND_SECTION, "Backup run event");
+const BACKUP_PAYLOAD_BULLET = bullet(REFUND_SECTION, "Backup payload");
+/** The backup bullet's property list: from "properties " to "plus " (the `env` addition is registered separately). */
+const BACKUP_PROPERTIES = BACKUP_PAYLOAD_BULLET.split("properties ")[1]?.split("plus ")[0] ?? "";
+const backupTables = BACKUP_TABLE_LIST.map((t) => t.name as string);
+const okOutcome = { status: "ok" as const, dbRows: 3, sheetRows: 3, notInDbRows: 0, truncatedCells: 0, truncatedColumns: [] };
+const failedOutcome = { status: "failed" as const, truncatedCells: 0, truncatedColumns: [], failedReason: "db_http_401" };
+const backupInput = { durationMs: 1234, now: new Date("2026-11-25T20:30:00Z"), uuid: "00000000-0000-4000-8000-000000000000" };
+const backupKeys = (tables: Record<string, typeof okOutcome | typeof failedOutcome>, extra: { runFailure?: string; env?: "beta"; result?: "ok" | "failed" } = {}) => {
+  const body = backupEventBody({ ...backupInput, result: extra.result ?? "ok", runFailure: extra.runFailure, env: extra.env, tables: tables as never }) as {
+    batch: { properties: Record<string, unknown> }[];
+  };
+  return body.batch[0].properties;
+};
+const allOk = () => Object.fromEntries(backupTables.map((t) => [t, okOutcome]));
+const allFailed = () => Object.fromEntries(backupTables.map((t) => [t, failedOutcome]));
+
+describe("events.ts: the nightly backup's run event, added by D076, equals inventory §7", () => {
+  const backup = () => only(eventsTo("posthog-server"), "db_backup_completed");
+
+  it("registers one added event beside purchase_confirmed and purchase_refunded, PostHog server only, with the decision on file", () => {
+    expect(code(BACKUP_EVENT_BULLET)).toContain("db_backup_completed");
+    expect(backup()).toMatchObject({ status: "added", decision: "D076", destinations: ["posthog-server"] });
+    expect(decisionFiles().some((f) => f.startsWith("D076-")), "D076 has a file in wiki/decisions").toBe(true);
+    expect(POSTHOG_EVENT).toBe("db_backup_completed");
+  });
+
+  it("parameters are exactly inventory §7's backup payload, in order (<table>_ names expanded for the three tables)", () => {
+    const named = code(BACKUP_PROPERTIES).map((t) => param(t).name);
+    const perTable = named.filter((n) => n.startsWith("<table>_"));
+    const flat = named.filter((n) => !n.startsWith("<table>_"));
+    expect(perTable.length, "inventory §7 names the per-table counts as <table>_...").toBeGreaterThan(0);
+    expect(backup().params).toEqual([...flat, ...backupTables.flatMap((t) => perTable.map((n) => n.replace("<table>", t)))]);
+  });
+
+  it("fixed values equal the sender's and the inventory's", () => {
+    const fixed = backup().fixed ?? {};
+    expect(fixed).toEqual(literalsOf(code(BACKUP_PROPERTIES).map(param)));
+    const properties = backupKeys(allOk());
+    for (const [k, v] of Object.entries(fixed)) expect(properties[k], k).toEqual(v);
+    expect(POSTHOG_LIB).toBe(fixed.$lib);
+    expect(POSTHOG_DISTINCT_ID).toBe("kh-db-backup");
+    expect(plain(BACKUP_PAYLOAD_BULLET)).toContain(`distinct_id is the fixed ${POSTHOG_DISTINCT_ID}`);
+  });
+
+  it("the sender sends exactly the registered parameters (env as the registered addition), nothing else, on a good run and a bad one", () => {
+    const added = (backup().added ?? []).map((a) => a.name);
+    const good = Object.keys(backupKeys(allOk())).filter((k) => !added.includes(k));
+    const bad = Object.keys(backupKeys(allFailed(), { result: "failed", runFailure: "google_token_http_400" })).filter((k) => !added.includes(k));
+    expect(sorted([...new Set([...good, ...bad])])).toEqual(sorted(backup().params));
+    for (const key of [...good, ...bad]) expect(backup().params, key).toContain(key);
+    // A good run leaves the failure codes out; a bad one leaves the counts out.
+    expect(good.filter((k) => k.endsWith("failed_reason"))).toEqual([]);
+    expect(bad.filter((k) => /_(db_rows|sheet_rows|not_in_db_rows)$/.test(k))).toEqual([]);
+  });
+
+  it("env beta is the one registered addition: sent only for the test store's project, as inventory §7 says", () => {
+    expect(backup().added?.map((a) => [a.name, a.value, a.status])).toEqual([["env", "beta", "new"]]);
+    expect("env" in backupKeys(allOk())).toBe(false);
+    expect(backupKeys(allOk(), { env: "beta" }).env).toBe("beta");
+    expect(plain(BACKUP_PAYLOAD_BULLET)).toContain(`env: "beta" only when the function runs on the test store's Supabase project, never on production`);
+  });
+
+  it("goes to PostHog server only, anonymous, and carries counts and codes, never anything a parent typed", () => {
+    expect(plain(BACKUP_EVENT_BULLET)).toContain("never sent to GA4, Meta or OpenAI");
+    expect(backup().destinations.filter((d) => d !== "posthog-server")).toEqual([]);
+    expect(backupKeys(allOk()).$process_person_profile).toBe(false);
+    for (const forbidden of ["email", "phone", "parent_name", "parentName", "child_age", "childAge", "address", "payment_id", "transaction_id", "order_ref"]) {
+      expect(backup().params, `db_backup_completed must not carry ${forbidden}`).not.toContain(forbidden);
+    }
+    expect(Object.keys(backupKeys(allFailed(), { result: "failed" })).filter((k) => /payment|email|phone|parent|child|address|order_ref/i.test(k))).toEqual([]);
+    expect(plain(BACKUP_PAYLOAD_BULLET)).toContain("no name, phone, email, address, child age, row value or free text can reach it");
+  });
+
+  it("architecture §8.2 lists it as an added PostHog server event and keeps destination 7's list", () => {
+    const row = table(section(ARCHITECTURE, "### 8.2 "), ["Event", "Destinations", "Parameters (unchanged)", "Fired by", "Status"]).find(([event]) => code(event)[0] === "db_backup_completed");
+    expect(row, "architecture §8.2 has a db_backup_completed row").toBeDefined();
+    expect(plain(row![4])).toContain("Added (D076)");
+    expect(plain(row![1])).toBe("PostHog server");
+    const destination7 = ARCH_DESTINATIONS.find(([n]) => n === "7");
+    expect(code(destination7![5])).toEqual(["purchase_confirmed", "purchase_refunded", "db_backup_completed"]);
   });
 });
 

@@ -455,7 +455,7 @@ registry test fails if a row is missing, N2):
 | 4 | Meta Pixel | `1051265191046395` | browser | `META_PIXEL_HOSTS` | `PageView`, `ViewContent`, `InitiateCheckout`, `Purchase` |
 | 5 | Meta Conversions API | same pixel, Graph `v21.0` | server | token present (absent on beta) | `Purchase` |
 | 6 | PostHog browser | project `617632` | browser | `POSTHOG_HOSTS` | SDK events and the funnel below |
-| 7 | PostHog server | same project | server | none | `purchase_confirmed`, `purchase_refunded` |
+| 7 | PostHog server | same project | server | none | `purchase_confirmed`, `purchase_refunded`, `db_backup_completed` |
 | 8 | PostHog reverse proxy | `/ingest`, `/ingest-assets` | proxy | n/a | carries 6 |
 | 9 | PostHog ← Meta Ads warehouse sync | ad account `1195520716116929` | dashboard | n/a | none (not in code) |
 | 10 | Edge attribution cookies | `kh_utm`, `kh_fbclid` | cookie | `.kheelona.com` | none (set by `proxy.ts`) |
@@ -472,8 +472,9 @@ registry test fails if a row is missing, N2):
 
 Rows 18 to 20 and the three OpenAI event rows below were added after the freeze by D069 (the founder's request of
 2026-11-13). The only other registry entries with status "Added" are D070's three early store signals (2026-11-24, B7c
-and B5), held to inventory §17 rather than to this table, and D074's server refund event `purchase_refunded`
-(2026-11-26, K-124), the last row below, held to inventory §7.
+and B5), held to inventory §17 rather than to this table, D074's server refund event `purchase_refunded`
+(2026-11-26, K-124), and D076's `db_backup_completed` (2026-11-26, K-189), sent by the Supabase Edge Function that copies
+the store tables into a Google Sheet: the last two rows below, both held to inventory §7.
 
 **Events:**
 
@@ -500,6 +501,7 @@ and B5), held to inventory §17 rather than to this table, and D074's server ref
 | `order_created` | OpenAI (eventID `<order ref>`) | `type`, `amount` (paise), `currency`, `contents` | `analytics.ts`, beside `purchase` | **Added (D069)**, frozen file under a reviewed patch |
 | `order_created` (CAPI) | OpenAI server | as inventory §16 | `openai-capi.ts` via `notifyPaid` | **Added (D069)**; off without `OPENAI_ADS_CAPI_KEY` and off production |
 | `purchase_refunded` | PostHog server | as inventory §7, refund payload (+ `env: SITE_ENV` on every non-production build) | `posthog-server.ts` via `markRefunded`, frozen files under reviewed patches | **Added (D074)** |
+| `db_backup_completed` | PostHog server | as inventory §7, backup payload (+ `env: "beta"` only on the test store's Supabase project) | `supabase/functions/db-backup/backup.ts`, the Edge Function; no store file | **Added (D076)** |
 
 No event fires Meta for the three new names: Meta receives only its fixed conversion events.
 

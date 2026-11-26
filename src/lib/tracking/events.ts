@@ -120,6 +120,18 @@ const SESSION_ID_ADDITION = {
   status: "new",
 } as const satisfies AddedParam;
 
+/** The nightly backup's per-table counts, flat on the event (D076, K-189): inventory §7 lists them as `<table>_<suffix>`. */
+const BACKUP_TABLES = ["preorders", "event_tiers", "webhook_events"] as const;
+const BACKUP_TABLE_SUFFIXES = ["db_rows", "sheet_rows", "not_in_db_rows", "truncated_cells", "failed_reason"] as const;
+const BACKUP_TABLE_PARAMS = BACKUP_TABLES.flatMap((table) => BACKUP_TABLE_SUFFIXES.map((suffix) => `${table}_${suffix}`));
+/** `env: "beta"` on the db-backup event only when the function runs on the test store's Supabase project; nothing on production. */
+const BACKUP_ENV_STAMP = {
+  name: "env",
+  value: "beta",
+  when: "only when the function runs on the test store's Supabase project (TEST_SUPABASE_PROJECT_REFS); never on production (D076, K-189)",
+  status: "new",
+} as const satisfies AddedParam;
+
 const EVENT_LIST = [
   /* ── Automatic pageviews ─────────────────────────────────────────────── */
   {
@@ -311,6 +323,31 @@ const EVENT_LIST = [
       "once per refund.processed the webhook applies to a known order, after the status update (full refund) or " +
       "instead of one (partial: partial is true); distinct id is the order's ph_distinct_id, else the order " +
       "reference; timestamp is when the webhook processes it; never for a refund of no money",
+  },
+
+  /* ── The nightly database backup's run event (D076, K-189): added after the tag, sent by the Supabase Edge Function db-backup, never by the dispatcher ── */
+  {
+    name: "db_backup_completed",
+    destinations: ["posthog-server"],
+    params: [
+      "$lib",
+      "$lib_version",
+      "$process_person_profile",
+      "$geoip_disable",
+      "result",
+      "duration_ms",
+      "failed_reason",
+      ...BACKUP_TABLE_PARAMS,
+    ],
+    fixed: { $lib: "kh-db-backup", $lib_version: "1", $process_person_profile: false, $geoip_disable: true },
+    added: [BACKUP_ENV_STAMP],
+    status: "added",
+    decision: "D076",
+    firedBy: "runBackup (supabase/functions/db-backup/backup.ts), the Supabase Edge Function db-backup",
+    when:
+      "once per run of the nightly copy of the store tables into the Google Sheet (02:00 IST, and every run by hand); " +
+      "distinct id is the fixed kh-db-backup; result is ok, ok_truncated or failed; counts and failure codes only, " +
+      "never a name, phone, email, address, child age or row value; a failure to send never fails the run",
   },
 
   /* ── OpenAI Ads measurement (D069, F6): added after the tag, sent by their own code, never by the dispatcher ── */
