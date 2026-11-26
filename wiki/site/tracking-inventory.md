@@ -102,6 +102,9 @@ Rows 18 to 20 were added after the tag by [D069](../decisions/D069-openai-ads-me
 `store_arrived`, `preorder_payment_window_hidden` and `store_cta_tapped_early`, reach row 6's project by beacon through row 8's
 proxy; §17 is their section.
 
+[D074](../decisions/D074-refund-event.md) (K-124) adds no destination either: one PostHog server event, `purchase_refunded`, reaches
+row 7's project from the Razorpay refund webhook; the end of §7 is its section.
+
 ---
 
 ## 1. Vercel Web Analytics
@@ -351,6 +354,19 @@ proxy; §17 is their section.
   awaited `flush()` (`posthog-server.ts:97-114`; §8.40-d).
 - **Fires from:** `notifyPaid()` beside the Meta CAPI call (`fulfil.ts:350`), so it has the same
   exactly-once guarantee.
+- **Added after the tag, [D074](../decisions/D074-refund-event.md) (K-124, 26 November 2026): `purchase_refunded`.** The same
+  server, project and key as `purchase_confirmed`, direct to PostHog and flushed before the webhook answers; nothing in the
+  bullets above changes. It is never sent to GA4, Meta or OpenAI, and not through the dispatcher (`track.ts`).
+- **Refund payload** (`purchaseRefundedEvent`, `src/lib/store/posthog-server.ts`): `distinctId` = stored `ph_distinct_id`, else
+  the order ref (as `purchase_confirmed`); properties `transaction_id` (the order ref, the join key to purchase_confirmed),
+  `currency: "INR"`, `value` (rupees of this refund), `tier`, `partial` (false when the refund covers the whole order),
+  `source: "webhook"`, the order's campaign keys spread flat (`utm_*`, `utm_id`, `placement`), and
+  `$process_person_profile: false`, plus `env: SITE_ENV` off production. No `timestamp`: PostHog stamps the time the webhook
+  processes the refund. No name, phone, email, address, child age, payment id or refund id.
+- **Refund fires from:** `markRefunded()` (`fulfil.ts`), when the Razorpay `refund.processed` webhook matches an order by
+  payment id: after the status update for a full refund (`status = 'refunded'`), and for a partial refund too (the status is
+  left for a human; `partial: true`). Once per delivery (the webhook's event-id claim stops repeats); no event when no order
+  matches or the refund carries no amount; it never throws and never changes the webhook's answer.
 
 ## 8. PostHog reverse proxy and routing
 
