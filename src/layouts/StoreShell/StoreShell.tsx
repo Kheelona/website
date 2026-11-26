@@ -4,6 +4,7 @@ import { StoreFooter } from "@/components/chrome/StoreFooter/StoreFooter";
 import { StoreHeader } from "@/components/chrome/StoreHeader/StoreHeader";
 import { MotionController } from "@/components/ui/MotionController/MotionController.client";
 import { RichText } from "@/components/ui/RichText/RichText";
+import { buildLoadsPostHog } from "@/config/analytics-env";
 import { MARKETING_ORIGIN, SITE_ENV } from "@/config/env";
 import { navigation } from "@/content/en-IN/navigation";
 import { seller } from "@/content/en-IN/seller";
@@ -35,6 +36,8 @@ import { ThanksCleanup } from "./ThanksCleanup.client";
  * src/lib/tracking/beacon.ts). It reports `store_arrived` to PostHog by beacon while the HTML is still being parsed, so a
  * visitor who leaves before hydration is still counted. It renders nothing, runs only on the store hosts that are PostHog
  * hosts, never on /thanks, and carries no query parameter but the campaign keys. The CSP allows inline scripts today.
+ * It is written on a production or beta build only (K-187, `buildLoadsPostHog`): a development or preview build has no such
+ * script, whatever hostname it is opened under, and no `/ingest` rewrite for it to reach (next.config.ts).
  *
  * On a beta build only (`SITE_ENV === "beta"`, the test store, betastore.kheelona.com, which takes Razorpay Test Mode
  * payments), `TestModeStrip` sits right after the skip link and above the header: "TEST MODE: no real payments" (D071
@@ -48,7 +51,7 @@ export function StoreShell({ children }: { children: ReactNode }) {
   const { labels } = navigation;
   return (
     <>
-      <script dangerouslySetInnerHTML={{ __html: storeArrivalScript() }} />
+      {buildLoadsPostHog(SITE_ENV) ? <script dangerouslySetInnerHTML={{ __html: storeArrivalScript() }} /> : null}
       <SkipLink label={labels.skip} />
       {SITE_ENV === "beta" ? <TestModeStrip /> : null}
       <StoreHeader

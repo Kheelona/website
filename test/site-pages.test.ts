@@ -42,12 +42,13 @@ const LEGAL = ["/terms", "/refund", "/shipping", "/privacy"];
 const TOKEN = buildOffer("token");
 const FULL = buildOffer("full");
 
+const TRACKING_SRC = "/_site/_kh/tracking-ABCDEFGH.js";
 const ctx = (over: Partial<SitePageContext> = {}): SitePageContext => ({
   path: "/safety",
   env: "production",
   storeOrigin: "https://store.kheelona.com",
   offer: TOKEN,
-  trackingSrc: "/_site/_kh/tracking-ABCDEFGH.js",
+  trackingSrc: TRACKING_SRC,
   ahrefsKey: AHREFS_ANALYTICS_KEY,
   ...over,
 });
@@ -143,6 +144,47 @@ describe("tracking", () => {
       expect(renderSitePage(html, ctx({ path, env: "beta" })), path).not.toContain("analytics.ahrefs.com");
     }
     expect(renderSitePage(page("/"), ctx({ path: "/", offer: FULL }))).toContain(`data-view-content-paise="${FULL_AMOUNT_PAISE}"`);
+  });
+
+  /* K-187 (2026-11-26; src/config/analytics-env.ts): which builds write the tags is decided here, on the server. Ahrefs on a
+     production build only; the tracking shell (PostHog's loader, which carries GA4, Meta, OpenAI and Vercel Web Analytics
+     behind their own host gates) on production and beta. A development or preview build gets neither, so no tag or beacon
+     can reach a vendor from it, whatever hostname it is opened under. */
+  it("a production build writes Ahrefs and the shell, and a beta build the shell only (the same pages as before)", () => {
+    for (const { path, html } of PAGES) {
+      const production = renderSitePage(html, ctx({ path, env: "production" }));
+      expect(production, path).toContain("analytics.ahrefs.com");
+      expect(production.match(/data-kh-tracking/g), path).toHaveLength(1);
+      const beta = renderSitePage(html, ctx({ path, env: "beta" }));
+      expect(beta, path).not.toContain("analytics.ahrefs.com");
+      expect(beta.match(/data-kh-tracking/g), path).toHaveLength(1);
+    }
+  });
+
+  it.each(["development", "preview"] as const)("a %s build writes no Ahrefs and no tracking shell, on every page", (env) => {
+    for (const { path, html } of PAGES) {
+      const out = renderSitePage(html, ctx({ path, env }));
+      expect(out, path).not.toContain("analytics.ahrefs.com");
+      expect(out, path).not.toContain("data-kh-tracking");
+      expect(out, path).not.toContain(TRACKING_SRC);
+      expect(out, path).not.toContain("data-view-content-paise");
+      expect(out, path).not.toContain("<!--tracking-");
+    }
+    expect(renderSitePage(page("/"), ctx({ path: "/", env, notFound: false }))).toContain("</main>");
+  });
+
+  it("differs from a production build only by the two tags: nothing else on the page moves", () => {
+    for (const { path, html } of PAGES) {
+      const production = renderSitePage(html, ctx({ path, env: "production" }));
+      const withoutTags = production
+        .replace(/<script src="https:\/\/analytics\.ahrefs\.com[^>]*><\/script>/, "")
+        .replace(/<script type="module" src="[^"]*" data-kh-tracking[^>]*><\/script>/, "");
+      // robots differs by environment (noindex off production), so compare with the robots tag taken out of both.
+      const bare = (text: string) => text.replace(/<meta name="robots" content="noindex">/g, "").replace(/\s+/g, " ");
+      for (const env of ["development", "preview"] as const) {
+        expect(bare(renderSitePage(html, ctx({ path, env }))), `${path} ${env}`).toBe(bare(withoutTags));
+      }
+    }
   });
 
   it("uses the markers when the page has them", () => {

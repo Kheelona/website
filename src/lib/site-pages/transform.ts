@@ -1,3 +1,4 @@
+import { buildLoadsAdTags, buildLoadsPostHog } from "@/config/analytics-env";
 import type { SiteEnv } from "@/config/env";
 import type { Offer } from "@/content/types";
 import { applyOffer } from "./offer-swap";
@@ -19,8 +20,13 @@ import { applyOffer } from "./offer-swap";
  *    the footer's pre-order button reports `finale` on a page that has no other `finale`, so every pre-order button
  *    carries a value.
  * 4. The live offer (offer-swap.ts): the schema price, and full mode's words once the first 500 are gone.
- * 5. Tracking: Ahrefs in <head> (`<!--tracking-head-->`), ungated except on beta, as the root layout writes it; the
- *    tracking shell last in <body> (`<!--tracking-body-->`), with the ViewContent value on Home and the product page.
+ * 5. Tracking: Ahrefs in <head> (`<!--tracking-head-->`), as the root layout writes it; the tracking shell last in <body>
+ *    (`<!--tracking-body-->`), with the ViewContent value on Home and the product page. Which builds write them is
+ *    decided here, on the server, from the build's environment (K-187, src/config/analytics-env.ts): Ahrefs on a
+ *    production build only, the shell on production and beta (the shell is PostHog's loader and carries GA4, Meta,
+ *    OpenAI and Vercel Web Analytics behind their own host gates). A development or preview build gets neither, so
+ *    nothing of it can reach a vendor whatever hostname the build is opened under (Vercel Web Analytics goes with the
+ *    shell there; it answers on Vercel deployments only).
  */
 
 export interface SitePageContext {
@@ -98,12 +104,11 @@ function applyCtaValues(html: string, ctx: SitePageContext): string {
 
 function applyTracking(html: string, ctx: SitePageContext): string {
   const cleaned = html.replace(/\s*<!--\s*Tracking \(unchanged at integration\)[\s\S]*?-->/g, "");
-  const head =
-    ctx.env === "beta"
-      ? ""
-      : `<script src="https://analytics.ahrefs.com/analytics.js" data-key="${ctx.ahrefsKey}" async></script>`;
+  const head = buildLoadsAdTags(ctx.env)
+    ? `<script src="https://analytics.ahrefs.com/analytics.js" data-key="${ctx.ahrefsKey}" async></script>`
+    : "";
   const withHead = place(cleaned, "<!--tracking-head-->", head, "</head>");
-  if (!ctx.trackingSrc) return place(withHead, "<!--tracking-body-->", "", "</body>");
+  if (!ctx.trackingSrc || !buildLoadsPostHog(ctx.env)) return place(withHead, "<!--tracking-body-->", "", "</body>");
   const view =
     VIEW_CONTENT_PATHS.includes(ctx.path) && !ctx.notFound
       ? ` data-view-content-paise="${ctx.offer.headlinePaise}"`

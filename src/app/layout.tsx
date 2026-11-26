@@ -6,6 +6,7 @@ import { GoogleAnalyticsGate } from "@/components/tracking/GoogleAnalyticsGate";
 import { MetaPixel } from "@/components/tracking/MetaPixel";
 import { OpenAiPixel } from "@/components/tracking/OpenAiPixel";
 import { PostHogGate } from "@/components/tracking/PostHogGate";
+import { buildLoadsAdTags, buildLoadsPostHog } from "@/config/analytics-env";
 import { CANONICAL_ORIGIN, SITE_ENV } from "@/config/env";
 import { AHREFS_ANALYTICS_KEY } from "@/config/site";
 import { organization } from "@/content/en-IN/organization";
@@ -41,6 +42,12 @@ import { FONT_PRELOADS } from "@/styles/generated/fonts.generated";
  *   first paint; not on beta (D048, D051). Vercel Web Analytics, GA4, the Meta Pixel and PostHog last in the body, so
  *   none competes with the hero image; GA4 and Meta load on production hosts only and PostHog on production and
  *   beta (their gates). What each collects is stated on /privacy, which changes in the same commit as any tool.
+ * - WHICH BUILDS WRITE THEM (K-187, 2026-11-26; src/config/analytics-env.ts). The gates above decide by hostname in the
+ *   browser, so a build opened under a production hostname used to reach the live accounts. The server now decides
+ *   first, from `SITE_ENV`: Ahrefs, GA4, the Meta Pixel and OpenAI's pixel are written on a production build only,
+ *   PostHog on production and beta, and a development or preview build writes none of them (Vercel Web Analytics,
+ *   which answers on Vercel deployments only, stays). A production build writes exactly what it always did: the gates,
+ *   their order and the client bundles are unchanged; only the server renders them conditionally.
  */
 
 export const metadata: Metadata = {
@@ -53,18 +60,20 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, view
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   for (const font of FONT_PRELOADS) preload(font.href, { as: "font", type: font.type, crossOrigin: "anonymous" });
+  const adTags = buildLoadsAdTags(SITE_ENV);
+  const postHog = buildLoadsPostHog(SITE_ENV);
   return (
     <html lang="en-IN" suppressHydrationWarning>
       <head>
-        {SITE_ENV !== "beta" && <script src="https://analytics.ahrefs.com/analytics.js" data-key={AHREFS_ANALYTICS_KEY} async />}
+        {adTags && <script src="https://analytics.ahrefs.com/analytics.js" data-key={AHREFS_ANALYTICS_KEY} async />}
       </head>
       <body className="kh-page ks-has-float" data-theme="light">
         {children}
         <Analytics />
-        <GoogleAnalyticsGate />
-        <MetaPixel />
-        <OpenAiPixel />
-        <PostHogGate />
+        {adTags && <GoogleAnalyticsGate />}
+        {adTags && <MetaPixel />}
+        {adTags && <OpenAiPixel />}
+        {postHog && <PostHogGate />}
       </body>
     </html>
   );

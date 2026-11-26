@@ -8,6 +8,7 @@ import {
 } from "./src/config/site";
 /* Relative paths only: Next resolves no `@/` alias in this file's own import
    graph (structure §2). */
+import { buildLoadsPostHog } from "./src/config/analytics-env";
 import { resolveSiteEnv } from "./src/config/env";
 import { JOURNAL_IMAGES, VIDEO_STILLS } from "./src/config/journal";
 import { REDIRECTS } from "./src/config/redirects";
@@ -87,7 +88,25 @@ const nextConfig: NextConfig = {
        recorder must load on store.kheelona.com/ and NOT on /thanks, because a
        change that killed replay everywhere would pass the negative check alone.
        The other production check is geography: PostHog reads the visitor's
-       country from the request IP, which it now sees via `x-forwarded-for`. */
+       country from the request IP, which it now sees via `x-forwarded-for`.
+
+       ONLY ON A PRODUCTION OR BETA BUILD (K-187, 2026-11-26). A development or preview build has no PostHog tag, so it
+       has no use for these rules, and a build that did have them could forward a stray client beacon (a local check
+       opened under a production hostname) to the real project, as our own checks did on 24 Nov. Without the rules
+       `/ingest/**` and `/ingest-assets/**` answer 404 there. Asked of `resolveSiteEnv(process.env)` at the moment Next
+       calls rewrites(), as headers() does for beta: inside this file the inlined `SITE_ENV` still reads "development". */
+    const postHogRewrites = buildLoadsPostHog(resolveSiteEnv(process.env))
+      ? [
+          {
+            source: `${POSTHOG_ASSET_PROXY_PATH}/:path*`,
+            destination: `${POSTHOG_ASSET_HOST}/:path*`,
+          },
+          {
+            source: `${POSTHOG_PROXY_PATH}/:path*`,
+            destination: `${POSTHOG_API_HOST}/:path*`,
+          },
+        ]
+      : [];
     return {
       /* THE REDESIGN'S STATIC FILES (2026-10-22). prebuild step 40 copies everything of redesign/dist that is not a
          page into public/_site/, so no file of it can collide with public/ or an app route. A request for a file
@@ -99,14 +118,7 @@ const nextConfig: NextConfig = {
         /* Where the redesign has its own version of a file the app also serves (/og.png, /og/kheelu.jpg), the
            redesign's wins: one exact rule per file, listed by prebuild step 40 (src/lib/site-pages/overrides.ts). */
         ...siteOverrideRewrites(),
-        {
-          source: `${POSTHOG_ASSET_PROXY_PATH}/:path*`,
-          destination: `${POSTHOG_ASSET_HOST}/:path*`,
-        },
-        {
-          source: `${POSTHOG_PROXY_PATH}/:path*`,
-          destination: `${POSTHOG_API_HOST}/:path*`,
-        },
+        ...postHogRewrites,
       ],
     };
   },
