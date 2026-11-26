@@ -90,6 +90,24 @@ const CAMPAIGN_PARAMS = {
   names: ["utm_id", "placement"],
 } as const satisfies SdkParams;
 
+/** The order's campaign keys, spread flat into both server PostHog events: inventory §9's kh_utm list, written out as data. */
+const ORDER_CAMPAIGN_KEYS = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_content",
+  "utm_term",
+  "utm_id",
+  "placement",
+] as const;
+/** The `env` stamp both server PostHog events carry off production. */
+const SERVER_ENV_STAMP = {
+  name: "env",
+  value: "SITE_ENV",
+  when: "every non-production build: beta, preview and development (D048, N4)",
+  status: "new",
+} as const satisfies AddedParam;
+
 const EVENT_LIST = [
   /* ── Automatic pageviews ─────────────────────────────────────────────── */
   {
@@ -246,30 +264,41 @@ const EVENT_LIST = [
       "value",
       "tier",
       "source",
-      /* The order's campaign keys, spread flat: inventory §9's kh_utm list, written out as data. */
-      "utm_source",
-      "utm_medium",
-      "utm_campaign",
-      "utm_content",
-      "utm_term",
-      "utm_id",
-      "placement",
+      ...ORDER_CAMPAIGN_KEYS,
       "$process_person_profile",
     ],
     fixed: { currency: "INR", source: "webhook", $process_person_profile: false },
-    added: [
-      {
-        name: "env",
-        value: "SITE_ENV",
-        when: "every non-production build: beta, preview and development (D048, N4)",
-        status: "new",
-      },
-    ],
+    added: [SERVER_ENV_STAMP],
     status: "existing",
     firedBy: "reportPurchaseToPostHog (src/lib/store/posthog-server.ts), from notifyPaid",
     when:
       "once per paid order, beside the CAPI Purchase; distinct id is the order's ph_distinct_id, " +
       "else the order reference; timestamp is paid_at",
+  },
+
+  /* ── The server refund event (D074, K-124): added after the tag, sent by its own code, never by the dispatcher ── */
+  {
+    name: "purchase_refunded",
+    destinations: ["posthog-server"],
+    params: [
+      "transaction_id",
+      "currency",
+      "value",
+      "tier",
+      "partial",
+      "source",
+      ...ORDER_CAMPAIGN_KEYS,
+      "$process_person_profile",
+    ],
+    fixed: { currency: "INR", source: "webhook", $process_person_profile: false },
+    added: [SERVER_ENV_STAMP],
+    status: "added",
+    decision: "D074",
+    firedBy: "reportRefundToPostHog (src/lib/store/posthog-server.ts), from markRefunded",
+    when:
+      "once per refund.processed the webhook applies to a known order, after the status update (full refund) or " +
+      "instead of one (partial: partial is true); distinct id is the order's ph_distinct_id, else the order " +
+      "reference; timestamp is when the webhook processes it; never for a refund of no money",
   },
 
   /* ── OpenAI Ads measurement (D069, F6): added after the tag, sent by their own code, never by the dispatcher ── */
