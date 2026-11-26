@@ -1043,7 +1043,7 @@ kheelona.com's DNS is on Cloudflare (nameservers `abby` and `yichun.ns.cloudflar
 ### 15.6 Supabase move to Mumbai (D047)
 
 Founder, before Gate B (decision: [ADR-009](adr/ADR-009-region-and-supabase-move.md)): new project in
-`ap-south-1` → migrations 0001-0004 by hand → pause orders (remove `RAZORPAY_KEY_ID` in Production,
+`ap-south-1` → migrations 0001-0005 by hand → pause orders (remove `RAZORPAY_KEY_ID` in Production,
 redeploy) → copy `preorders`, `event_tiers`, `webhook_events` (data only) → compare row counts and the paid
 non-full count → set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` → restore `RAZORPAY_KEY_ID` → redeploy →
 `/api/health` shows `store: ready` and the same mode → keep the old project paused 30 days. The main session
