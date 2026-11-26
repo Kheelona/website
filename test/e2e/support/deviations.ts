@@ -2081,12 +2081,12 @@ const bothSides = (mockup: string, build: string, reason: string): VisualHide[] 
   { side: "build", selector: build, reason, approvedBy: TEAM_V7 },
 ];
 
-/* The in-app browser note ships switched on (D056 item 3, task 7.1c; deviation V4, "built but off", retired). It shows
-   only inside the Instagram, Facebook or WhatsApp browser, and the parity browser is plain Chromium, so the build there
-   shows no fold 2, as a parent in Chrome or Safari sees it; the mockup prints it as an example (store.md fold 2). */
-const IN_APP_ONLY = "deviations.md V25, D056 item 3 (founder, 2026-10-14; task 7.1c): the note ships, shown only in the in-app browsers";
+/* The in-app browser note is built but switched off for every browser (C2, D073, 26 Nov 2026; it shipped switched on in
+   task 7.1c, D056 item 3, deviation V25, now retired), so the build shows no fold 2 in any browser, plain Chromium
+   included; the mockup prints it as an example (store.md fold 2). */
+const IN_APP_ONLY = "deviations.md V73, D073 (founder, 2026-11-26; C2): the note is built but switched off for every browser";
 const IN_APP_REASON =
-  "the in-app browser note (fold 2) shows only inside the Instagram, Facebook or WhatsApp browser, and the parity browser is plain Chromium, so the build shows no fold 2";
+  "the in-app browser note (fold 2) is switched off for every browser (C2), so the build shows no fold 2";
 
 /* Wave 8c, task 8c.3 (D061 item 4 and the main session's rulings on the advisor's proposal, 2026-10-15): blocks the
    approved pages do not have, added on purpose. On Home and the product page, parents' own words under the films (two

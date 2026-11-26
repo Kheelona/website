@@ -1,7 +1,7 @@
 ---
 title: "D070: Fix the conversion bugs B1 to B7 on the current hosting, one pull request each"
 type: decision
-updated: 2026-11-25
+updated: 2026-11-26
 sources: ["the founder's approval in chat, 2026-11-24 (\"Yes, push to vercel. All major bugs, from B1 to B7 is approved.\")", D051-beta-without-store-integrations.md, D067-legal-pages-approved-final-2026-10-22.md, D069-openai-ads-measurement.md]
 ---
 
@@ -93,6 +93,9 @@ Each change shipped as its own pull request; the details and merge times are in 
   with engaged visitors (the films viewer; Team, Safety, Privacy). UI/UX only: no new copy and no design-system edit,
   apart from the store's "Khelu" and B7a's language line. Later the same day: on phones only, the films right after the
   demo (C3b).
+  **Update, 2026-11-26:** C2's notice step did not go "app by app". The test payments passed, and the founder chose to
+  switch the in-app browser note off for every in-app browser at once ([D073](D073-in-app-note-off-all-browsers.md)),
+  which supersedes the "app by app" part of the C2 sentence above.
 - **Kept, as the founder's informed exception on kheelona.com only:** the home H1 "An AI toy that supports brain
   development.", the footer line "We make AI toys that develop brains." and the home section "Talking helps young
   brains grow.". The founder was told they are rejected wording ([claims](../product/claims.md) §4) and kept them;

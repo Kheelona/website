@@ -15,10 +15,10 @@ import { paymentsLine } from "./payments-line";
  * pass hides on each side, and which sentences the text pass accepts, each read from content and held to exactly the
  * lines it names, so a rule can never excuse a sentence it was not written for.
  *
- * The in-app note's rules: V4 ("built but off") retired in task 7.1c, when the note shipped (D056 item 3). The note
- * still shows only inside the Instagram, Facebook or WhatsApp browser, and the parity browser is plain Chromium, so the
- * build there shows no fold 2, as a parent in Chrome or Safari sees it: the same rules, now under D056. */
-const IN_APP_ONLY = /V25, D056 item 3/;
+ * The in-app note's rules: V4 ("built but off") retired in task 7.1c, when the note shipped (D056 item 3, V25), and V25
+ * retired in C2 (D073, V73), when the note was switched off for every browser. The note is built but off, so the build
+ * shows no fold 2 in any browser, the parity browser's plain Chromium included: the same two rules, now under V73. */
+const IN_APP_ONLY = /V73, D073/;
 /** The order summary's small print (task 8b.1, V34): D058's Kheelona+ sentence and "Kheelu's price is", proven with the
  *  other pages' claim fixes (src/content/en-IN/pages/parity-deviations.test.ts). */
 const CLAIMS = CLAIM_FIXES.store.approvedBy;
@@ -41,8 +41,8 @@ const NEW_TAB = navigation.labels.newTabNote.trim();
 /** The payments line where each side prints it: the mockups' store footer, the build's main. */
 const MOCKUP_LINE = 'footer p:has(> a[href$="#chargeback"])';
 
-describe("store parity deviations: the visual pass (D056 item 3, V1)", () => {
-  it("store: hides the mockup's in-app note (shown only in the in-app browsers, D056 item 3) and the payments line on both sides, the mockup's footer line and the build's line in main (V1), then the small print (V34), then the eyebrow and the films heading (task Q2.12)", () => {
+describe("store parity deviations: the visual pass (D073, V1)", () => {
+  it("store: hides the mockup's in-app note (switched off for every browser, D073) and the payments line on both sides, the mockup's footer line and the build's line in main (V1), then the small print (V34), then the eyebrow and the films heading (task Q2.12)", () => {
     expect([EYEBROW, FILMS_HEADING]).toEqual(['section[aria-labelledby="store-title"] .kh-eyebrow', 'section[aria-labelledby="ask-title"] .kh-heading']);
     expect(VISUAL_HIDDEN.store).toEqual([
       expect.objectContaining({ side: "mockup", selector: ".mk-inapp", approvedBy: expect.stringMatching(IN_APP_ONLY) }),
@@ -87,23 +87,24 @@ describe("store parity deviations: the visual pass (D056 item 3, V1)", () => {
     for (const rule of Object.values(VISUAL_HIDDEN).flat()) expect(rule.reason.length, rule.selector).toBeGreaterThan(20);
   });
 
-  it("V4 is retired: no store rule cites it, and the note's rule says why the build lacks it now (the in-app browsers only)", () => {
-    for (const rule of [...(VISUAL_HIDDEN.store ?? []), ...(TEXT_DEVIATIONS.store ?? [])]) expect(rule.approvedBy).not.toMatch(/\bV4\b/);
+  it("V4 and V25 are retired: no store rule cites either, and the note's rule says why the build lacks it now (switched off for every browser)", () => {
+    for (const rule of [...(VISUAL_HIDDEN.store ?? []), ...(TEXT_DEVIATIONS.store ?? [])]) expect(rule.approvedBy).not.toMatch(/\bV(?:4|25)\b/);
     const [note] = VISUAL_HIDDEN.store ?? [];
-    expect(note.reason).toMatch(/Instagram, Facebook or WhatsApp browser/);
-    expect(note.reason).not.toMatch(/built but off|device check/);
+    expect(note.reason).toMatch(/switched off for every browser/);
+    expect(note.reason).not.toMatch(/Instagram, Facebook or WhatsApp browser|built but off|device check/);
   });
 });
 
-describe("store parity deviations: the text pass (D056 item 3, V1)", () => {
+describe("store parity deviations: the text pass (D073, V1)", () => {
   const [note, payments] = TEXT_DEVIATIONS.store ?? [];
 
-  it("four rules: the in-app note's lines missing outside the in-app browsers (D056 item 3), the payments line moved (V1), the small print (V34), the marketing words (task Q2.12)", () => {
+  it("four rules: the in-app note's lines missing in every browser (D073), the payments line moved (V1), the small print (V34), the marketing words (task Q2.12)", () => {
     expect(TEXT_DEVIATIONS.store).toHaveLength(4);
     expect(TEXT_DEVIATIONS.store[2].approvedBy).toBe(CLAIMS);
     expect(TEXT_DEVIATIONS.store[3].approvedBy).toBe(SELLING);
     expect(note.approvedBy).toMatch(IN_APP_ONLY);
-    expect(note.reason).toMatch(/Instagram, Facebook or WhatsApp browser/);
+    expect(note.reason).toMatch(/switched off for every browser/);
+    expect(note.reason).not.toMatch(/Instagram, Facebook or WhatsApp browser/);
     expect(note.build).toBeUndefined();
     expect(payments.approvedBy).toContain("V1");
     expect(note.jsOff).toBeUndefined();

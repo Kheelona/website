@@ -1,10 +1,11 @@
 ---
 title: "Store (store.kheelona.com): page copy for the Gate A mockup"
 type: page-copy
-updated: 2026-10-14
+updated: 2026-11-26
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - ../../qa/cmo-review-built-c-2026-10-14.md (m1; "Needs the founder" 2), task 7.1c (see "Changes after approval (task 7.1c)")
+  - ../../decisions/D073-in-app-note-off-all-browsers.md (C2, 2026-11-26: the in-app note is switched off for every browser; see "Changes after approval (C2)")
   - "wt (task 7.1c, worktree w8-7.1c, read 2026-10-14): src/lib/store/tiers.ts:42-47, 64-121, 133-145; src/app/store/e/[event]/page.tsx:53-58; src/content/en-IN/store/event-page.ts:44-45, 70-76; src/app/api/preorder/create-order/route.ts:54-62; src/content/en-IN/store/in-app-note.ts:8-12"
   - ../strategy.md (§2 stage 7, §3.2, §3.3 store row, §5 store row, §6 issues 2, 3, 4, 9, 10)
   - ../checkout.md (step by step, form fields, failure states, what must not change, copy the new checkout carries)
@@ -138,11 +139,19 @@ you order." The micro-line is unchanged.
 - Wording from the founder-facing item G13 ("Paying by UPI? Open in Chrome or Safari", with copy link;
   [open questions](../../open-questions.md) G13), working default B12: presentation only, shipped once QA's
   sandbox test confirms the failure ([gate-a-open-items](../gate-a-open-items.md#3-other-website-items-on-working-defaults)).
-- **Ships switched on (task 7.1c).** The founder chose to show it now, on the PostHog audit's evidence (strategy §6
-  issue 2), without the device check that beta cannot run ([D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md)
-  item 3, superseding the B12 condition above; [CMO review C](../../qa/cmo-review-built-c-2026-10-14.md), "Needs the
-  founder" 2). The words above are unchanged, and it still shows only when the store opens inside the Instagram,
-  Facebook or WhatsApp browser. Deviation V4 retires when it ships (D056).
+- **Switched off for every browser (C2, 2026-11-26).** The founder's test payments on the test store passed (iPhone and
+  Android; Safari or Chrome, the Instagram and LinkedIn browsers), B2's redirect checkout carries in-app payments, and the
+  founder chose to switch the note off for every in-app browser, not only the tested ones
+  ([D073](../../decisions/D073-in-app-note-off-all-browsers.md), superseding D056 item 3 for this note). The note is still
+  built, with the words above unchanged, but `enabled` is `false`, so no browser shows this fold; the mockup keeps it as an
+  example. If B2 is ever reverted, switch it back on in the same release. Deviation V25 retires; V73 replaces it
+  ([deviations](../../qa/deviations.md)).
+- *History, superseded by the bullet above:* **Ships switched on (task 7.1c).** The founder chose to show it now, on the
+  PostHog audit's evidence (strategy §6 issue 2), without the device check that beta cannot run
+  ([D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 3, superseding the B12 condition
+  above; [CMO review C](../../qa/cmo-review-built-c-2026-10-14.md), "Needs the founder" 2). The words above are unchanged,
+  and it showed only when the store opened inside the Instagram, Facebook or WhatsApp browser. Deviation V4 retired when
+  it shipped (D056).
 - The address is printed in full so the note works without JavaScript; the button is a secondary button with the
   `copy` icon, never orange. Confirmation follows the DS pattern "say what happened" (`01-writing.md:106`).
 - It sits above the form on purpose: a parent who switches browser after typing loses what they typed.
@@ -467,7 +476,7 @@ pre-order, with no amount anywhere on the screen.
 
 ## Phone order and laptop layout
 
-- **Phone (360 px first):** header → fold 1 → fold 2 (only in in-app browsers; shown in the mockup) → fold 3 →
+- **Phone (360 px first):** header → fold 1 → fold 2 (switched off since C2, D073; shown in the mockup) → fold 3 →
   fold 4 → fold 5 → fold 6 → footer. The first screen holds the eyebrow, H1, price sentence and micro-line.
 - **Laptop:** two columns as live (`wt:src/app/store/page.tsx:54`): left, folds 1 to 3; right, fold 4 then fold 5,
   sticky. Films and footer span the width below.
@@ -538,7 +547,7 @@ Plain `path:line` = wiki file; `wt:` = working tree of `reset/website-v2` (see f
 | Event link refused: H1, button "Pre-order at the usual price" to `/`, WhatsApp line (as live) | `wt:src/content/en-IN/store/event-page.ts:44-45, 70-76`; [checkout.md:167-168](../checkout.md#variants) |
 | An event token is always the token shape; the store page's price follows the live mode | [checkout.md:162-164](../checkout.md#variants); [pricing](../../product/pricing.md#where-price-text-appears-and-whether-it-follows-the-mode) |
 | The form shows create-order's 409 refusal words (frozen) | `wt:src/app/api/preorder/create-order/route.ts:58-62` |
-| In-app browser note ships switched on, words unchanged | [D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 3; `wt:src/content/en-IN/store/in-app-note.ts:8-12` (the switch); [deviations](../../qa/deviations.md) V4 |
+| In-app browser note: switched on in task 7.1c, switched off for every browser in C2, words unchanged | [D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 3 (on); [D073](../../decisions/D073-in-app-note-off-all-browsers.md) (off, 2026-11-26); `wt:src/content/en-IN/store/in-app-note.ts` (the switch, `enabled: false`); [deviations](../../qa/deviations.md) V4 and V25 retired, V73 |
 
 ## Placeholders
 
@@ -644,3 +653,16 @@ signs it at Gate B ([D015](../../decisions/D015-founder-signs-off-copy.md)).
 Full mode is unchanged. Builder: `src/content/en-IN/store/order-summary.ts:33` (the `token` small print, after
 `offerCopy.plus`) takes "Kheelu's price is"; no test pins "The price is" (grep of `test/` and `src/**/*.test.*`,
 2026-10-14). The mockup keeps the approved line, one more text-parity row under the `store` key.
+
+## Changes after approval (C2)
+
+The founder's [D073](../../decisions/D073-in-app-note-off-all-browsers.md) (2026-11-26, action C2, K-177): after the test
+payments passed, the in-app browser note is switched off for every in-app browser. One flag changed
+(`src/content/en-IN/store/in-app-note.ts`, `enabled: false`). Every word of the Copy blocks is as approved (D046, then
+task 7.1c and task 8b.1 above); no amount, promise, pay-button label or keyword placement changed.
+
+| Where | What changed | Why |
+|---|---|---|
+| Fold 2, in-app browser note | The Copy block is unchanged. A new note bullet records that the note is switched off for every browser; the 7.1c bullet stays as history, marked superseded. No browser shows the fold; the mockup still prints it as an example | D073: the founder's test payments passed on iPhone and Android, B2 carries in-app payments, and the founder chose all in-app browsers over the tested ones only. If B2 is reverted, the note comes back in the same release. Deviation V25 retires; V73 replaces it |
+| Phone order and laptop layout | The phone order's fold 2 reads "switched off since C2, D073; shown in the mockup" (it read "only in in-app browsers") | So the page stays true |
+| Sources, front matter | The in-app note's sources row and the front matter cite D073 | So every new line has its source |

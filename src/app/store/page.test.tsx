@@ -70,9 +70,23 @@ function deletedPathsNamedIn(text: string): string[] {
  *  the store is noindex everywhere, so this only keeps a shared beta link from naming beta as the page's home). */
 const PRODUCTION_STORE = "https://store.kheelona.com/";
 
-/** Instagram's in-app browser on an iPhone: one of the browsers the in-app note is for (B12; in-app-browser.ts). */
+/** Instagram's in-app browser on an iPhone: one of the browsers the in-app note was for (B12; in-app-browser.ts). */
 const INSTAGRAM =
   "Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 310.0.0.27.110 (iPhone14,5; iOS 17_1; en_IN; en; scale=3.00; 1170x2532; 541635890)";
+
+/** The in-app browsers the note was built for, and LinkedIn's, by the tokens their apps put in the user agent (C2, D073:
+ *  the note is switched off for every one of them). */
+const ANDROID_WEBVIEW = "Mozilla/5.0 (Linux; Android 14; Pixel 7 Build/UP1A.231105.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/119.0.6045.193 Mobile Safari/537.36";
+const IN_APP_USER_AGENTS: Record<string, string> = {
+  "Instagram on iPhone": INSTAGRAM,
+  "Instagram on Android": `${ANDROID_WEBVIEW} Instagram 310.0.0.37.109 Android (34/14; 420dpi; 1080x2400; Google/google; Pixel 7; panther; panther; en_IN; 543812345)`,
+  "Facebook on iPhone (FBAN)":
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 [FBAN/FBIOS;FBAV/440.0.0.35.108;FBBV/563912345;FBDV/iPhone14,5;FBMD/iPhone;FBSN/iOS;FBSV/17.1;FBSS/3;FBID/phone;FBLC/en_IN;FBOP/5]",
+  "Facebook on Android (FB_IAB, FBAV)": `${ANDROID_WEBVIEW} [FB_IAB/FB4A;FBAV/440.0.0.35.108;]`,
+  "WhatsApp on Android": `${ANDROID_WEBVIEW} WhatsApp/2.23.20.0`,
+  "LinkedIn on iPhone":
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 [LinkedInApp]/9.30.1234",
+};
 
 /** The page as the store layout holds it: the route's output inside <main>. */
 async function renderPage() {
@@ -202,24 +216,26 @@ describe("store page: the configured store (token mode)", () => {
     expect(bubble.classList.contains("ph-no-capture")).toBe(false);
   });
 
-  /* The note ships switched on (D056 item 3, task 7.1c; deviation V4 retired). Its gate reads the user agent on the
-     client only (the server HTML never holds it), so this renders in the browser's way. */
-  it("shows the in-app note above the form inside Instagram's browser once hydrated (D056 item 3), and never in the server HTML", async () => {
-    const agent = vi.spyOn(navigator, "userAgent", "get").mockReturnValue(INSTAGRAM);
+  /* The note is switched off for every browser (C2, D073; it shipped switched on in task 7.1c, D056 item 3). Its gate reads
+     the user agent on the client only, so this renders in the browser's way, once per in-app browser. */
+  it.each(Object.entries(IN_APP_USER_AGENTS))("shows no in-app note inside %s, hydrated, with the form there (C2, D073)", async (_name, userAgent) => {
+    const agent = vi.spyOn(navigator, "userAgent", "get").mockReturnValue(userAgent);
     try {
       const { default: StorePage } = await import("./page");
       const page = render((await StorePage()) as ReactElement);
-      const note = page.container.querySelector(".ks-inapp")!;
-      expect(note).not.toBeNull();
-      expect(note.textContent).toContain(inAppNote.title);
-      expect(note.textContent).toContain(new URL(STORE_ORIGIN).host);
-      expect(note.compareDocumentPosition(page.container.querySelector("form")!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(page.container.querySelector("form")).not.toBeNull();
+      expect(page.container.querySelector(".ks-inapp")).toBeNull();
+      expect(page.container.textContent).not.toContain(inAppNote.title);
       page.unmount();
     } finally {
       agent.mockRestore();
     }
+  });
+
+  it("holds no in-app note in the server HTML either: neither its mark nor its words", async () => {
     const { main } = await renderPage();
     expect(main.querySelector(".ks-inapp")).toBeNull();
+    expect(main.textContent).not.toContain(inAppNote.title);
   });
 
   it("keeps the in-app note out of any other browser: Chrome or Safari need no note", async () => {
@@ -227,12 +243,16 @@ describe("store page: the configured store (token mode)", () => {
     const page = render((await StorePage()) as ReactElement);
     expect(page.container.querySelector("form")).not.toBeNull();
     expect(page.container.querySelector(".ks-inapp")).toBeNull();
-    // Not vacuous: the same note, inside Instagram's browser, renders its mark.
+    // Not vacuous: the same note with its switch on, inside Instagram's browser, renders its mark (the gate still works,
+    // so switching the note back on is the one flag), and the same note as shipped renders nothing there.
     const agent = vi.spyOn(navigator, "userAgent", "get").mockReturnValue(INSTAGRAM);
     try {
-      const on = render(<InAppBrowserNote content={inAppNote} storeUrl={STORE_ORIGIN} />);
+      const on = render(<InAppBrowserNote content={{ ...inAppNote, enabled: true }} storeUrl={STORE_ORIGIN} />);
       expect(on.container.querySelector(".ks-inapp")).not.toBeNull();
       on.unmount();
+      const off = render(<InAppBrowserNote content={inAppNote} storeUrl={STORE_ORIGIN} />);
+      expect(off.container.querySelector(".ks-inapp")).toBeNull();
+      off.unmount();
     } finally {
       agent.mockRestore();
     }
