@@ -329,6 +329,11 @@ PostHog tag, and `/ingest/**` answers 404 there, even when it is opened under a 
 - **Values that stop firing with the selling update** (they stay registered and are never reused): `see-it-ask`,
   `see-it-ask-learn`, `compare-learn`, `faq-more`, `hero-learn` (Home) and `product-safety` (the product page);
   [architecture §8.3](../engineering/architecture.md#83-cta-values-data-ph-capture-attribute-cta-reconciled-from-the-mockups).
+- **A separate autocapture attribute, not a `cta` value (K-197, approved by the founder 26 Nov 2026):** the "Guides for
+  parents" links at the end of `/`, `/products/khelu` and `/ai-toys-for-kids-in-india` (redesign pages, `#guides`) carry
+  `data-ph-capture-attribute-guides` = `home`, `product` or `pillar`, which PostHog promotes to a `guides` property on
+  `$autocapture` (the link's `href` says which guide). These links go to guides, never to the store, so they are not in
+  the CTA registry, and `$autocapture` in `src/lib/tracking/events.ts` still lists only `cta`.
 
 - **Custom funnel events:** the same six names and parameters as GA4 (table in section 3), fired by
   `phCapture` beside each `track()` call (`analytics.ts:66`, `:72`, `:78`, `:113-118`, `:128`, `:133`).
