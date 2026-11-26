@@ -101,6 +101,13 @@
   .gd-table td { padding: 0 1rem 1rem 3.25rem; }
   .gd-table tbody tr + tr { border-top: 1px solid var(--line); }
   .gd-table tbody tr > * { border-bottom: 0; }
+  /* Tables with 3+ columns (.gd-table--grid, K-206) keep their columns on a phone and scroll sideways inside their own
+     box; the long read may shrink below its widest table, so the page itself never scrolls sideways. */
+  .gd-prose { min-width: 0; }
+  .gd-table--grid table { min-width: 34rem; }
+  .gd-table--grid thead { display: table-header-group; }
+  .gd-table--grid tr { display: table-row; }
+  .gd-table--grid tbody th, .gd-table--grid td { display: table-cell; padding: 0.75rem 0.875rem; }
   .gd-buy { padding: 1.125rem; }
   .gd-buy__art { display: none; }
   .gd-buy .btn { width: 100%; }

@@ -1,0 +1,46 @@
+# IndexNow ping (K-206, the founder's decision of 27 Nov 2026: "Bing now + IndexNow in PR B").
+# After Vercel reports a successful PRODUCTION deployment of kheelona.com, tell Bing and the other IndexNow engines
+# which URLs changed: those in the live sitemap whose <lastmod> is today or yesterday (India time).
+# No secret: the IndexNow key is public by design (public/<key>.txt). It reads nothing but the public site and only
+# POSTs URL lists to api.indexnow.org. Preview and test-store (beta) deployments are skipped. "Run workflow" runs it
+# by hand, e.g. after a blog-dashboard publish (those rebuilds may not report a GitHub deployment).
+name: indexnow
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "Ping URLs whose sitemap lastmod is within this many days"
+        type: string
+        required: false
+        default: "2"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexnow
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /scripts/seo/
+            /public/*.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Ping IndexNow
+        env:
+          DAYS: ${{ inputs.days || '2' }}
+        run: node scripts/seo/indexnow-ping.mjs --days "$DAYS"
