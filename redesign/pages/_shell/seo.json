@@ -13,7 +13,7 @@
  "home": {
   "path": "/",
   "title": "Khelu by Kheelona: a screen-free plush toy that talks",
-  "updated": "2026-10-22",
+  "updated": "2026-11-24",
   "priority": 1.0
  },
  "crumbs": {
@@ -294,7 +294,7 @@
  },
  "updated": {
   "_about": "The day each hand-written page's words last changed (sitemap lastmod, WebPage dateModified). Bump a page's date when its copy changes; never the build date. Guides take theirs from the dashboard post.",
-  "/products/khelu": "2026-10-22",
+  "/products/khelu": "2026-11-24",
   "/safety": "2026-10-22",
   "/setup": "2026-10-22",
   "/ai-toys-for-kids-in-india": "2026-10-22",
