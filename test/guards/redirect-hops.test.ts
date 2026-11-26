@@ -148,6 +148,7 @@ const LEGACY: [string, string][] = [
   ["/playos", "/products/khelu"],
   ["/stories/brain-development-toys-for-a-2-year-old", "/stories/learning-toys-for-a-three-year-old"],
   ["/kheelu", "/products/khelu"],
+  ["/khelu", "/products/khelu"],
   ["/products", "/products/khelu"],
   ["/careers", "/team"],
   ["/jobs", "/team"],
