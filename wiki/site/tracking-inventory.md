@@ -109,6 +109,11 @@ row 7's project from the Razorpay refund webhook; the end of §7 is its section.
 `db_backup_completed`, reaches row 7's project from the Supabase Edge Function that copies the store tables into a Google
 Sheet each night; the end of §7 is its section.
 
+K-187 (#56, merged 26 Nov 2026) adds no destination and changes nothing in production: on top of the host gates above, the
+server now writes the tags only in production builds (`src/config/analytics-env.ts`). A beta build (the test store) keeps
+PostHog only, tagged `env=beta`; a development or preview build writes no Ahrefs, GA4, Meta Pixel, OpenAI pixel or
+PostHog tag, and `/ingest/**` answers 404 there, even when it is opened under a production host name.
+
 ---
 
 ## 1. Vercel Web Analytics

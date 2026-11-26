@@ -1616,3 +1616,58 @@ and the design system are untouched. Real in-app payments are watched after the 
 comes back in the same release. Records: [D073](decisions/D073-in-app-note-off-all-browsers.md) (supersedes D056 item 3 for this
 note), a dated line in D070, deviation V25 retired and V73 added, `site/pages/store.md` (Fold 2 notes, phone order, sources,
 "Changes after approval (C2)"), and the in-app rules in `test/e2e/support/deviations.ts` and their tests.
+
+## [2026-11-26 19:40] build | K-66 (#53): `/khelu` answers one 308 to `/products/khelu`
+Merged 26 Nov 10:55 (`dc38e6b6`). People type the toy's name as an address, and `/khelu` answered 404 while `/kheelu` and
+`/products/kheelu` already redirected. One permanent rule beside the `/kheelu` one in `src/config/redirects.ts`, its row in
+`test/guards/redirect-hops.test.ts` and in [url-map](site/url-map.md) §4d; the query string passes through, so tagged links
+keep their campaign. Next answers 308 for `permanent: true` (the same effect as a 301, as for every product redirect since
+the rename). No page, sitemap, canonical, robots or schema change. Checked live 26 Nov 19:33: `https://kheelona.com/khelu`
+answers 308 to `/products/khelu` (query kept); `www.kheelona.com/khelu` first gets Vercel's domain-level 308 to the apex,
+as every `www` address does (P10), then this one. Gate passed (product 91 = 91, home 94 = 94).
+
+## [2026-11-26 19:40] decision | D074: each refund reaches PostHog as `purchase_refunded` (K-124, #54)
+The founder's one-by-one sign-off of 26 November (store code). Merged 26 Nov 12:39, together with #55, which was stacked on
+it. When the Razorpay webhook applies a `refund.processed` to a known order (full or partial), the server sends one PostHog
+event joined to the sale by `transaction_id` and the same distinct id as `purchase_confirmed`; no personal data, nothing to
+Meta, GA4 or OpenAI. Frozen `fulfil.ts` and `posthog-server.ts` changed only through their reviewed patches; the registry
+lists the event as added (`decision: "D074"`) and the tracking-registry guard has its own section. The production Razorpay
+webhook had no refund events ticked until the founder added them on 26 Nov, so refunds before that never reached the store.
+Record: [D074](decisions/D074-refund-event.md).
+
+## [2026-11-26 19:40] decision | D075: the order keeps the PostHog session id, and `purchase_confirmed` carries it (K-124 part b, #55)
+The founder's explicit sign-off of 26 November (store code; option 1 of three). Merged 26 Nov 12:39 (`8d2031f1`).
+`create-order` reads the session id from the visitor's existing PostHog cookie on the server and stores it in
+`preorders.ph_session_id`; `purchase_confirmed` sends it as `$session_id` when the order has one, so PostHog attributes the
+sale to that session's own entry referrer, landing path, click ids and UTMs. Not sent with refunds. **Migration
+`0005_ph_session_id.sql` was applied by hand in the SQL editor on the test project and on production before the merge**
+(the order the decision requires: the code inserts the column on every order). Record: [D075](decisions/D075-session-id-on-orders.md).
+
+## [2026-11-26 19:40] build | K-187 (#56): analytics tags only in production builds
+Merged 26 Nov 12:40 (`fd6100f5`). On 24 Nov a local build opened under the production host names sent the team's own test
+visits to the live PostHog project. Since #56 the server decides from the build's environment (`SITE_ENV`,
+`src/config/analytics-env.ts`) whether to write the tags at all: production builds as before; beta (the test store)
+PostHog only, tagged `env=beta`; development and preview builds no Ahrefs, GA4, Meta Pixel, OpenAI pixel or PostHog, and
+`/ingest/**` answers 404 there. Production output byte-identical to `main` before it; no guard changed. Noted in
+[tracking inventory](site/tracking-inventory.md) "At a glance".
+
+## [2026-11-26 19:40] decision | D076: a nightly copy of the store database into a private Google Sheet (K-189, #57)
+The founder's explicit sign-off of 26 November, including that the sheet holds parents' and children's data. Merged
+26 Nov 18:55 (`4ca1d1b5`). The Edge Function `db-backup` copies every column of `preorders`, `event_tiers` and
+`webhook_events` into the sheet at 02:00 IST (pg_cron + pg_net, URL and secret from Vault), reads only, never deletes a
+sheet row, and reports `db_backup_completed` to PostHog. The website's output is byte-identical. Record:
+[D076](decisions/D076-store-db-nightly-sheet-copy.md); how it runs: `supabase/functions/db-backup/README.md`.
+
+## [2026-11-26 19:40] deploy | D076 live on production: `db-backup` deployed, scheduled and run; test round and restore drill skipped
+The founder set it up on production on 26 Nov from a fresh clone of `main` with Supabase CLI 3.4.0
+(`functions deploy db-backup --remote=<project-ref> --no-verify-jwt --use-api`: no `link` step, no `config.toml`, no
+Docker). A request without the secret got the function's own 401, so JWT verification is off. With the three Edge Function
+secrets set, the first run by hand (dashboard Test, 19:12:55) was OK in 6 s: every row of the three tables copied, 0 cut
+cells, `Status` filled, `db_backup_completed` in PostHog with no `env`. `setup-cron.sql`: block 1 OK, the two Vault secrets
+added in the Vault screen (block 2: two rows), block 3 created `kheelona-db-backup` (`30 20 * * *`). Block 4 first failed
+with `invalid URL " https://…"`: `db_backup_url` had been pasted with a leading space, which would have stopped every
+nightly run before it reached the function. Fixed with `vault.update_secret` (the URL is not a secret) and checked with a
+length query (URL 63 characters; the secret's length matched `BACKUP_CRON_SECRET`); block 4 then answered 200 ok in 4.6 s
+(19:24). **The founder skipped the test-project round and the restore drill (accepted risk): no restore from the sheet has
+been tried, so the restore runbook is unproven.** The README's "As deployed" section and `setup-cron.sql` block 2 now carry
+the CLI v3 command and the length check. The first scheduled run is 27 Nov 02:00 IST.
