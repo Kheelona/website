@@ -286,6 +286,7 @@ is also matched by the `/category/:slug` rule below it; harmless.
 | `/jobs` | 404 | yes, 2 sessions (direct) |
 | `/careers` | 404 | yes, 1 session (direct) |
 | `/kheelu` | 404 | no. The product's own name; `/lumi` redirects but `/kheelu` does not. The CMO mockup proposed it as a route (`mid:test/cmo-merge-routes.test.ts:9-10`) |
+| `/khelu` | 404 until K-66 (26 Nov 2026), now 308 → `/products/khelu` | no. The toy's name typed as a URL, like `/kheelu`; founder approved the redirect 26 Nov 2026 (`src/config/redirects.ts`, `test/guards/redirect-hops.test.ts`) |
 | `/products` | 404 | no |
 | `/pricing` | 404 | no (`/pricing.md` exists) |
 | `/how`, `/story` | 404 | no (mid-version routes, section 7) |

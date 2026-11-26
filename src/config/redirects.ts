@@ -172,6 +172,8 @@ const RULES: readonly RedirectRule[] = [
      opens the offer card; `/pricing.md` (the machine file) is a different
      path and is not matched. */
   { source: "/kheelu", destination: "/products/khelu", permanent: true },
+  /* The toy's name typed as a URL (K-66, founder 26 Nov 2026); `/khelu` answered 404. */
+  { source: "/khelu", destination: "/products/khelu", permanent: true },
   { source: "/products", destination: "/products/khelu", permanent: true },
   { source: "/careers", destination: "/team", permanent: true },
   { source: "/jobs", destination: "/team", permanent: true },
