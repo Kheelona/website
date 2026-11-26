@@ -5,7 +5,7 @@ import { preorderAckEmail, internalAlertEmail } from "@/lib/email/templates";
 import { STORE_URL } from "@/config/site";
 import type { StoreEnv } from "./env";
 import { reportPurchaseToMeta } from "./meta-capi";
-import { reportPurchaseToPostHog } from "./posthog-server";
+import { reportPurchaseToPostHog, reportRefundToPostHog } from "./posthog-server";
 import { reportOrderToOpenAi } from "@/lib/ads/openai-capi";
 
 /** Marking a pre-order paid, once (§8.25-p).
@@ -258,7 +258,7 @@ export async function markRefunded(
   const client = db(env);
   const { data: order } = await client
     .from("preorders")
-    .select("order_ref, amount_paise, status")
+    .select("order_ref, amount_paise, status, tier, utm, ph_distinct_id")
     .eq("rzp_payment_id", input.paymentId)
     .maybeSingle();
 
@@ -271,6 +271,7 @@ export async function markRefunded(
     console.warn(
       `[refund] PARTIAL refund on ${order.order_ref}: ${input.refundedPaise} of ${order.amount_paise} paise. Left as ${order.status} for a human to decide.`,
     );
+    await reportRefund(order, input.refundedPaise, true);
     return "partial";
   }
 
@@ -280,7 +281,25 @@ export async function markRefunded(
     .eq("order_ref", order.order_ref);
 
   console.warn(`[refund] ${order.order_ref} refunded in full and removed from the dispatch queue`);
+  await reportRefund(order, input.refundedPaise, false);
   return "refunded";
+}
+
+/** The refund, reported to PostHog as `purchase_refunded` (D074, K-124): after the
+ *  status update for a full refund, and for a partial one too (where nothing else
+ *  happens). `reportRefundToPostHog` never throws; the try is for the same reason
+ *  as in `notifyPaid`: a property of this function, not a fact about that one, so
+ *  an analytics call can never change the webhook's answer or the order. */
+async function reportRefund(
+  order: Parameters<typeof reportRefundToPostHog>[0],
+  refundedPaise: number,
+  partial: boolean,
+): Promise<void> {
+  try {
+    await reportRefundToPostHog(order, { refundedPaise, partial });
+  } catch (error) {
+    console.error(`[refund] could not report ${order.order_ref} to PostHog`, error);
+  }
 }
 
 /** A payment attempt failed. Worth recording: it separates "tried to pay us and

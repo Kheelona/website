@@ -455,7 +455,7 @@ registry test fails if a row is missing, N2):
 | 4 | Meta Pixel | `1051265191046395` | browser | `META_PIXEL_HOSTS` | `PageView`, `ViewContent`, `InitiateCheckout`, `Purchase` |
 | 5 | Meta Conversions API | same pixel, Graph `v21.0` | server | token present (absent on beta) | `Purchase` |
 | 6 | PostHog browser | project `617632` | browser | `POSTHOG_HOSTS` | SDK events and the funnel below |
-| 7 | PostHog server | same project | server | none | `purchase_confirmed` |
+| 7 | PostHog server | same project | server | none | `purchase_confirmed`, `purchase_refunded` |
 | 8 | PostHog reverse proxy | `/ingest`, `/ingest-assets` | proxy | n/a | carries 6 |
 | 9 | PostHog ← Meta Ads warehouse sync | ad account `1195520716116929` | dashboard | n/a | none (not in code) |
 | 10 | Edge attribution cookies | `kh_utm`, `kh_fbclid` | cookie | `.kheelona.com` | none (set by `proxy.ts`) |
@@ -472,7 +472,8 @@ registry test fails if a row is missing, N2):
 
 Rows 18 to 20 and the three OpenAI event rows below were added after the freeze by D069 (the founder's request of
 2026-11-13). The only other registry entries with status "Added" are D070's three early store signals (2026-11-24, B7c
-and B5), held to inventory §17 rather than to this table.
+and B5), held to inventory §17 rather than to this table, and D074's server refund event `purchase_refunded`
+(2026-11-26, K-124), the last row below, held to inventory §7.
 
 **Events:**
 
@@ -489,7 +490,7 @@ and B5), held to inventory §17 rather than to this table.
 | `preorder_address_saved` | GA4, PostHog | `transaction_id` | `analytics.ts` | Existing, frozen |
 | `preorder_dismissed` | GA4, PostHog | `tier` | `analytics.ts` | Existing, frozen |
 | `Purchase` (CAPI) | Meta server | as inventory §5 | `meta-capi.ts` via `notifyPaid` | Existing, frozen; off on beta |
-| `purchase_confirmed` | PostHog server | as inventory §7 (+ `env: SITE_ENV` on every non-production build) | `posthog-server.ts` via `notifyPaid` | Existing |
+| `purchase_confirmed` | PostHog server | as inventory §7 (+ `env: SITE_ENV` on every non-production build, and `$session_id` when the order stored one: D075) | `posthog-server.ts` via `notifyPaid` | Existing |
 | `$pageview`, `$pageleave`, `$autocapture`, `$exception`, `$web_vitals`, replay | PostHog | SDK; `cta` promoted from `data-ph-capture-attribute-cta` | `PostHogGate` | Existing |
 | `preorder_payment_window_opened` | GA4, PostHog | `tier` | right after `checkout.open()` in `checkout.ts` (line 97 at the tag) | **New (B11), task 6.2** |
 | `preorder_payment_failed` | GA4, PostHog | `tier`, `reason_code`, `reason` (Razorpay `error.code`, `error.reason`; no free text) | `checkout.on("payment.failed", …)` before `open()` | **New (B11), task 6.2** |
@@ -498,6 +499,7 @@ and B5), held to inventory §17 rather than to this table.
 | `checkout_started` | OpenAI | `type`, `amount` (paise), `currency`, `contents` | `analytics.ts`, beside `begin_checkout` | **Added (D069)**, frozen file under a reviewed patch |
 | `order_created` | OpenAI (eventID `<order ref>`) | `type`, `amount` (paise), `currency`, `contents` | `analytics.ts`, beside `purchase` | **Added (D069)**, frozen file under a reviewed patch |
 | `order_created` (CAPI) | OpenAI server | as inventory §16 | `openai-capi.ts` via `notifyPaid` | **Added (D069)**; off without `OPENAI_ADS_CAPI_KEY` and off production |
+| `purchase_refunded` | PostHog server | as inventory §7, refund payload (+ `env: SITE_ENV` on every non-production build) | `posthog-server.ts` via `markRefunded`, frozen files under reviewed patches | **Added (D074)** |
 
 No event fires Meta for the three new names: Meta receives only its fixed conversion events.
 
@@ -1041,7 +1043,7 @@ kheelona.com's DNS is on Cloudflare (nameservers `abby` and `yichun.ns.cloudflar
 ### 15.6 Supabase move to Mumbai (D047)
 
 Founder, before Gate B (decision: [ADR-009](adr/ADR-009-region-and-supabase-move.md)): new project in
-`ap-south-1` → migrations 0001-0004 by hand → pause orders (remove `RAZORPAY_KEY_ID` in Production,
+`ap-south-1` → migrations 0001-0005 by hand → pause orders (remove `RAZORPAY_KEY_ID` in Production,
 redeploy) → copy `preorders`, `event_tiers`, `webhook_events` (data only) → compare row counts and the paid
 non-full count → set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` → restore `RAZORPAY_KEY_ID` → redeploy →
 `/api/health` shows `store: ready` and the same mode → keep the old project paused 30 days. The main session

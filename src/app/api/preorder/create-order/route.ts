@@ -9,6 +9,7 @@ import { rateLimit, clientKey } from "@/lib/store/rate-limit";
 import { json, str, NOT_CONFIGURED } from "@/lib/store/http";
 import { readFbAttrib } from "@/lib/store/meta-capi";
 import { withOpenAiAttrib } from "@/lib/ads/openai-capi";
+import { readPhSessionId } from "@/lib/tracking/ph-session-id";
 import {
   validateContact,
   normalisePhone,
@@ -120,6 +121,11 @@ export async function POST(request: Request) {
          no idea whose browser it belongs to, and this is the last moment anyone
          does. */
       ph_distinct_id: readPhDistinctId(body.phDistinctId),
+      /* PostHog's SESSION id, so purchase_confirmed can carry $session_id and PostHog attributes the sale to the visit's own
+         entry referrer, landing path, click ids and UTMs (D075, K-124b). Read on the server from the PostHog cookie the
+         browser already sent, validated hard (UUID-shaped, at most 64 characters), null otherwise, and never a reason to
+         refuse an order. Migration 0005 adds the column and is applied by hand BEFORE this deploys. */
+      ph_session_id: readPhSessionId(request),
     })
     .select("id, order_ref")
     .single();

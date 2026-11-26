@@ -11,18 +11,76 @@ inherits the two guarantees the Meta and PostHog reports beside it rely on: it r
 secret, read inside the function), off production, or for an order that carries no OpenAI click or browser reference.
 `markPaid`, the refund, failure and not-payable paths, the emails and every other line of this file are unchanged.
 
+D074 (founder sign-off, chat 26 Nov 2026; K-124; wiki/decisions/D074-refund-event.md): a refund the webhook applies is
+reported to PostHog (`purchase_refunded`) from the server, beside the sale it undoes. The D069 paragraph above leaves the
+refund path alone; D074 changes it, and only as follows. In `markRefunded`: the existing import line also takes
+`reportRefundToPostHog` (src/lib/store/posthog-server.ts, itself under a reviewed patch); the order SELECT also reads
+`tier, utm, ph_distinct_id`; and an `await reportRefund(...)` follows the full-refund UPDATE and the partial branch's log
+line. `reportRefund` is a small local function whose try/catch is the never-throw rule (the frozen fulfil.test.ts mocks
+./posthog-server without the new export, and its three markRefunded tests must stay green). `markRefunded`'s return
+values and its status update, the webhook route, `markPaid`, `notifyPaid`, the emails and every other line of this file
+are unchanged. Nothing goes to Meta, GA4 or OpenAI, and no name, phone, email, address, child age, payment id or refund id
+is sent.
+
 diff --git a/src/lib/store/fulfil.ts b/src/lib/store/fulfil.ts
 --- a/src/lib/store/fulfil.ts
 +++ b/src/lib/store/fulfil.ts
-@@ -6,6 +6,7 @@ import { STORE_URL } from "@/config/site";
+@@ -5,7 +5,8 @@ import { preorderAckEmail, internalAlertEmail } from "@/lib/email/templates";
+ import { STORE_URL } from "@/config/site";
  import type { StoreEnv } from "./env";
  import { reportPurchaseToMeta } from "./meta-capi";
- import { reportPurchaseToPostHog } from "./posthog-server";
+-import { reportPurchaseToPostHog } from "./posthog-server";
++import { reportPurchaseToPostHog, reportRefundToPostHog } from "./posthog-server";
 +import { reportOrderToOpenAi } from "@/lib/ads/openai-capi";
  
  /** Marking a pre-order paid, once (§8.25-p).
   *
-@@ -348,6 +349,10 @@ export async function notifyPaid(env: StoreEnv, order: PreorderRow): Promise<voi
+@@ -257,7 +258,7 @@ export async function markRefunded(
+   const client = db(env);
+   const { data: order } = await client
+     .from("preorders")
+-    .select("order_ref, amount_paise, status")
++    .select("order_ref, amount_paise, status, tier, utm, ph_distinct_id")
+     .eq("rzp_payment_id", input.paymentId)
+     .maybeSingle();
+ 
+@@ -270,6 +271,7 @@ export async function markRefunded(
+     console.warn(
+       `[refund] PARTIAL refund on ${order.order_ref}: ${input.refundedPaise} of ${order.amount_paise} paise. Left as ${order.status} for a human to decide.`,
+     );
++    await reportRefund(order, input.refundedPaise, true);
+     return "partial";
+   }
+ 
+@@ -279,9 +281,27 @@ export async function markRefunded(
+     .eq("order_ref", order.order_ref);
+ 
+   console.warn(`[refund] ${order.order_ref} refunded in full and removed from the dispatch queue`);
++  await reportRefund(order, input.refundedPaise, false);
+   return "refunded";
+ }
+ 
++/** The refund, reported to PostHog as `purchase_refunded` (D074, K-124): after the
++ *  status update for a full refund, and for a partial one too (where nothing else
++ *  happens). `reportRefundToPostHog` never throws; the try is for the same reason
++ *  as in `notifyPaid`: a property of this function, not a fact about that one, so
++ *  an analytics call can never change the webhook's answer or the order. */
++async function reportRefund(
++  order: Parameters<typeof reportRefundToPostHog>[0],
++  refundedPaise: number,
++  partial: boolean,
++): Promise<void> {
++  try {
++    await reportRefundToPostHog(order, { refundedPaise, partial });
++  } catch (error) {
++    console.error(`[refund] could not report ${order.order_ref} to PostHog`, error);
++  }
++}
++
+ /** A payment attempt failed. Worth recording: it separates "tried to pay us and
+  *  the card was declined" from "filled the form and never came back", and those
+  *  are two different follow-up conversations. Only ever moves a row that is still
+@@ -348,6 +368,10 @@ export async function notifyPaid(env: StoreEnv, order: PreorderRow): Promise<voi
           knows a payment is real, and a second call site would mean earning the
           never-throw rule twice and forgetting it once. */
        reportPurchaseToPostHog(order),

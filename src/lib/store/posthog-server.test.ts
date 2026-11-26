@@ -25,9 +25,14 @@ vi.mock("posthog-node", () => ({
   },
 }));
 
-const { purchaseConfirmedEvent, reportPurchaseToPostHog, PURCHASE_CONFIRMED } = await import(
-  "./posthog-server"
-);
+const {
+  purchaseConfirmedEvent,
+  reportPurchaseToPostHog,
+  PURCHASE_CONFIRMED,
+  purchaseRefundedEvent,
+  reportRefundToPostHog,
+  PURCHASE_REFUNDED,
+} = await import("./posthog-server");
 const { POSTHOG_API_HOST } = await import("@/config/site");
 
 function order(over: Partial<PreorderRow> = {}): PreorderRow {
@@ -134,6 +139,55 @@ describe("purchaseConfirmedEvent", () => {
   });
 });
 
+/* D075 (K-124b): the session the order was placed in, so PostHog attributes the sale to that visit's own entry referrer,
+   landing path, click ids and UTMs. Only when the order stored one; the cases above build orders without the column and
+   prove an absent value changes nothing. */
+describe("purchaseConfirmedEvent carries $session_id when the order stored one (D075)", () => {
+  const SID = "0199a2f1-7c3e-7b4a-9c10-0123456789ab";
+
+  it("sends the stored session id as $session_id", () => {
+    expect(purchaseConfirmedEvent(order({ ph_session_id: SID })).properties.$session_id).toBe(SID);
+  });
+
+  it("leaves the key out, rather than sending an empty one, when the order has none", () => {
+    for (const none of [null, undefined, ""]) {
+      expect(Object.keys(purchaseConfirmedEvent(order({ ph_session_id: none })).properties)).not.toContain("$session_id");
+    }
+    expect(Object.keys(purchaseConfirmedEvent(order()).properties)).not.toContain("$session_id");
+  });
+
+  it("changes nothing else in the payload: the same event with and without it differs by that one key", () => {
+    const utm = { utm_source: "meta", utm_campaign: "2026-11-launch", placement: "feed" };
+    const without = purchaseConfirmedEvent(order({ utm, ph_distinct_id: "0199-abc" }));
+    const withId = purchaseConfirmedEvent(order({ utm, ph_distinct_id: "0199-abc", ph_session_id: SID }));
+    const { $session_id, ...rest } = withId.properties;
+    expect($session_id).toBe(SID);
+    expect(rest).toEqual(without.properties);
+    expect({ ...withId, properties: undefined }).toEqual({ ...without, properties: undefined });
+  });
+
+  it("is still anonymous and carries no personal data beside it", () => {
+    const event = purchaseConfirmedEvent(order({ ph_session_id: SID }));
+    expect(event.properties.$process_person_profile).toBe(false);
+    const text = JSON.stringify(event);
+    for (const personal of ["Shweta", "9187546483", "parent@example.com", "pay_x", "order_x"]) {
+      expect(text, personal).not.toContain(personal);
+    }
+  });
+
+  it("a campaign key cannot overwrite it", () => {
+    const hostile = { $session_id: "forged" } as unknown as Record<string, string>;
+    expect(purchaseConfirmedEvent(order({ utm: hostile, ph_session_id: SID })).properties.$session_id).toBe(SID);
+  });
+
+  it("goes out through the real report, flushed, as the one event", async () => {
+    await expect(reportPurchaseToPostHog(order({ ph_session_id: SID }))).resolves.toBe("sent");
+    expect(captured).toHaveLength(1);
+    expect(captured[0]).toMatchObject({ event: "purchase_confirmed", properties: { $session_id: SID } });
+    expect(flushes.count).toBe(1);
+  });
+});
+
 describe("reportPurchaseToPostHog", () => {
   it("sends the event and returns sent", async () => {
     await expect(reportPurchaseToPostHog(order())).resolves.toBe("sent");
@@ -214,5 +268,153 @@ describe("purchase_confirmed names the build that is not production", () => {
     vi.spyOn(console, "warn").mockImplementation(() => {});
     await expect(report(order())).resolves.toBe("sent");
     expect((captured.at(-1) as { properties: { env: string } }).properties.env).toBe("beta");
+  });
+});
+
+/** `purchase_refunded` (D074, K-124): a refund, reported by the server beside the sale it undoes. The webhook path that
+ *  sends it is proved in test/store-refund-event.test.ts; these are the pure builder and the reporter. */
+describe("purchaseRefundedEvent", () => {
+  const full = { refundedPaise: 49_900, partial: false };
+
+  it("is named distinctly, and is not the paid event or the browser's purchase", () => {
+    expect(PURCHASE_REFUNDED).toBe("purchase_refunded");
+    expect(PURCHASE_REFUNDED).not.toBe(PURCHASE_CONFIRMED);
+    expect(purchaseRefundedEvent(order(), full).event).toBe("purchase_refunded");
+  });
+
+  it("joins the sale it undoes: the order reference as transaction_id, and the same distinct id as purchase_confirmed", () => {
+    for (const ph_distinct_id of ["0199-abc", null]) {
+      const o = order({ ph_distinct_id });
+      expect(purchaseRefundedEvent(o, full).distinctId).toBe(purchaseConfirmedEvent(o).distinctId);
+      expect(purchaseRefundedEvent(o, full).properties.transaction_id).toBe("KH-KZYJ-PEHT");
+    }
+    expect(purchaseRefundedEvent(order({ ph_distinct_id: "0199-abc" }), full).distinctId).toBe("0199-abc");
+    expect(purchaseRefundedEvent(order({ ph_distinct_id: null }), full).distinctId).toBe("KH-KZYJ-PEHT");
+  });
+
+  it("reports the rupees of THIS refund, not the order's amount, and says whether it is partial", () => {
+    expect(purchaseRefundedEvent(order(), full).properties).toMatchObject({ value: 499, partial: false });
+    expect(purchaseRefundedEvent(order(), { refundedPaise: 48_900, partial: true }).properties).toMatchObject({
+      value: 489,
+      partial: true,
+    });
+  });
+
+  it("carries the currency, the tier and the webhook source", () => {
+    expect(purchaseRefundedEvent(order(), full).properties).toMatchObject({
+      currency: "INR",
+      tier: "launch",
+      source: "webhook",
+    });
+  });
+
+  it("spreads the campaign flat as purchase_confirmed does, and sends none when there is none", () => {
+    const utm = { utm_source: "meta", utm_medium: "paid-social", utm_campaign: "2026-11-launch", placement: "feed" };
+    const { properties } = purchaseRefundedEvent(order({ utm }), full);
+    expect(properties).toMatchObject(utm);
+    expect("utm_source" in purchaseRefundedEvent(order({ utm: null }), full).properties).toBe(false);
+  });
+
+  it("never creates a person profile, and carries nothing personal from a full order row", () => {
+    const { properties } = purchaseRefundedEvent(order(), full);
+    expect(properties.$process_person_profile).toBe(false);
+    const text = JSON.stringify(purchaseRefundedEvent(order(), full));
+    for (const personal of ["Shweta", "9187546483", "parent@example.com", "pay_x", "order_x"]) {
+      expect(text, personal).not.toContain(personal);
+    }
+  });
+
+  /* D075 (K-124b): the session id belongs to the SALE. A refund days later carrying it would stretch the purchase's session
+     in PostHog (a session lasts from its first event to its last), so purchase_refunded never has it, even for an order
+     that stored one, and whatever the caller hands in. */
+  it("never carries $session_id, even for an order that stored one (D075)", () => {
+    const SID = "0199a2f1-7c3e-7b4a-9c10-0123456789ab";
+    const stored = order({ ph_session_id: SID });
+    expect(Object.keys(purchaseRefundedEvent(stored, full).properties)).not.toContain("$session_id");
+    expect(JSON.stringify(purchaseRefundedEvent(stored, full))).not.toContain(SID);
+    expect(Object.keys(purchaseRefundedEvent(stored, { refundedPaise: 100, partial: true }).properties)).not.toContain("$session_id");
+    // the same payload as for an order with no session id
+    expect(purchaseRefundedEvent(stored, full)).toEqual(purchaseRefundedEvent(order(), full));
+  });
+
+  it("has no timestamp, so PostHog stamps the moment the webhook processes the refund", () => {
+    expect(purchaseRefundedEvent(order(), full).timestamp).toBeUndefined();
+  });
+});
+
+describe("reportRefundToPostHog", () => {
+  const full = { refundedPaise: 49_900, partial: false };
+
+  it("sends the event, FLUSHES before returning, and returns sent", async () => {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    await expect(reportRefundToPostHog(order(), full)).resolves.toBe("sent");
+    expect(captured).toHaveLength(1);
+    expect((captured[0] as { event: string }).event).toBe("purchase_refunded");
+    expect(flushes.count, "no flush means the event never left the function").toBe(1);
+  });
+
+  it("returns failed rather than throwing when the network is down", async () => {
+    shouldFlushThrow.value = true;
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    await expect(reportRefundToPostHog(order(), full)).resolves.toBe("failed");
+  });
+
+  it.each([0, -1, Number.NaN])("sends nothing for a refund of %s paise", async (refundedPaise) => {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    await expect(reportRefundToPostHog(order(), { refundedPaise, partial: true })).resolves.toBe("skipped");
+    expect(captured).toHaveLength(0);
+    expect(flushes.count).toBe(0);
+  });
+
+  it("sends nothing, and says so, when the build has no PostHog project key", async () => {
+    vi.resetModules();
+    vi.doMock("@/config/site", async (importOriginal) => ({
+      ...(await importOriginal<typeof import("@/config/site")>()),
+      POSTHOG_KEY: "",
+    }));
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      const { reportRefundToPostHog: report, reportPurchaseToPostHog: reportPaid } = await import("./posthog-server");
+      await expect(report(order(), full)).resolves.toBe("skipped");
+      /* The paid report still says what it always said when it has no key. */
+      await expect(reportPaid(order())).resolves.toBe("skipped");
+      expect(captured).toHaveLength(0);
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining("SKIPPED KH-KZYJ-PEHT: no project key, so no refund event was sent"));
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining("SKIPPED KH-KZYJ-PEHT: no project key, so only the browser event was sent"),
+      );
+    } finally {
+      vi.doUnmock("@/config/site");
+      vi.resetModules();
+    }
+  });
+});
+
+describe("purchase_refunded names the build that is not production, as purchase_confirmed does", () => {
+  async function serverModuleUnder(value: string | undefined) {
+    vi.resetModules();
+    vi.stubEnv("KH_SITE_ENV", value);
+    return import("./posthog-server");
+  }
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  it("adds no env property in production", async () => {
+    const { purchaseRefundedEvent: event } = await serverModuleUnder("production");
+    expect("env" in event(order(), { refundedPaise: 49_900, partial: false }).properties).toBe(false);
+  });
+
+  it.each(["beta", "preview", "development"])("stamps env=%s on that build", async (value) => {
+    const { purchaseRefundedEvent: event } = await serverModuleUnder(value);
+    expect(event(order(), { refundedPaise: 49_900, partial: false }).properties.env).toBe(value);
+  });
+
+  it("keeps the stamp when the order's campaign carries an env key of its own", async () => {
+    const { purchaseRefundedEvent: event } = await serverModuleUnder("beta");
+    const utm = { utm_source: "meta", env: "production" } as unknown as PreorderRow["utm"];
+    expect(event(order({ utm }), { refundedPaise: 49_900, partial: false }).properties.env).toBe("beta");
   });
 });

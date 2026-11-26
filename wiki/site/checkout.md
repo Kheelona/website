@@ -125,7 +125,9 @@ message is manual. Whether any is sent: [open questions](../open-questions.md) F
 
 Sources: `PreorderForm.tsx:194-241`; `validate.ts:41-92`; `create-order/route.ts:65-99`. Silently
 captured with the order: campaign cookie or URL UTMs, Meta `_fbp`/`_fbc`/IP/UA, PostHog device id
-(`create-order/route.ts:100-119`; columns from migrations 0003, 0004).
+(`create-order/route.ts:100-119`; columns from migrations 0003, 0004), and, since D075 (26 November 2026), the PostHog
+session id read on the server from the visitor's PostHog cookie (`ph_session_id`, migration 0005, applied by hand before
+the code that writes it).
 
 ### Address fields (`/thanks`)
 

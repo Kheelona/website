@@ -15,7 +15,7 @@ import { OPENAI_PIXEL_ID } from "@/lib/ads/openai-events";
 import { OPENAI_AAM_POLICY, OPENAI_PIXEL_PAGES } from "@/lib/ads/openai-pixel";
 import type { PreorderRow } from "@/lib/store/db";
 import { purchasePayload } from "@/lib/store/meta-capi";
-import { purchaseConfirmedEvent } from "@/lib/store/posthog-server";
+import { purchaseConfirmedEvent, purchaseRefundedEvent } from "@/lib/store/posthog-server";
 import { CTAS, CTA_IDS, CTA_VALUES, RESERVED_CTA_VALUES, type CtaValue } from "@/lib/tracking/cta";
 import { DESTINATIONS, type DestinationKey } from "@/lib/tracking/destinations";
 import { EVENTS, STAMPED_PROPERTIES, type TrackedEvent } from "@/lib/tracking/events";
@@ -552,7 +552,11 @@ describe("events.ts: server events", () => {
 
   it("PostHog server sends one event, purchase_confirmed (inventory §7)", () => {
     expect(code(POSTHOG_SERVER_EVENT)).toContain("purchase_confirmed");
-    expect(eventsTo("posthog-server").map((e) => [e.name, e.status])).toEqual([["purchase_confirmed", "existing"]]);
+    /* The tag's one server event. D074's added refund event is held to inventory §7's added bullets in 3d below, which also
+       pins this destination's whole list. */
+    expect(eventsTo("posthog-server").filter((e) => e.status === "existing").map((e) => [e.name, e.status])).toEqual([
+      ["purchase_confirmed", "existing"],
+    ]);
   });
 
   it("purchase_confirmed: parameters are exactly the frozen builder's (env only as the registered addition)", () => {
@@ -604,7 +608,11 @@ describe("events.ts: server events", () => {
       "Status",
     ]).find(([event]) => code(event)[0] === "purchase_confirmed");
     expect(row?.[2]).toContain("`env: SITE_ENV`");
-    expect(confirmed().added?.map((a) => [a.name, a.value, a.status])).toEqual([["env", "SITE_ENV", "new"]]);
+    /* The registered additions, exactly: `env` (N4) and D075's optional `$session_id`, which section 3e holds to inventory §7. */
+    expect(confirmed().added?.map((a) => [a.name, a.value, a.status])).toEqual([
+      ["env", "SITE_ENV", "new"],
+      ["$session_id", "ph_session_id", "new"],
+    ]);
   });
 });
 
@@ -635,7 +643,7 @@ describe("events.ts: OpenAI Ads measurement, added by D069, equals inventory §1
     expect(sorted(pixel().map((e) => e.name))).toEqual(["checkout_started", "order_created", "page_viewed"]);
     expect(eventsTo("openai-capi").map((e) => [e.name, e.status])).toEqual([["order_created", "added"]]);
     expect(code(OPENAI_EVENT)).toContain("order_created");
-    /* D070's two PostHog events are added events too, held to inventory §17 below: this list is D069's. */
+    /* D070's PostHog events and D074's refund event are added events too, held to inventory §17 and §7 below: this list is D069's. */
     const added = EVENTS.filter((e) => e.status === "added" && e.decision === "D069");
     expect(sorted(added.flatMap((e) => e.destinations.map((d) => `${d}:${e.name}`)))).toEqual([
       "openai-capi:order_created",
@@ -647,8 +655,8 @@ describe("events.ts: OpenAI Ads measurement, added by D069, equals inventory §1
       expect(e.decision, `${e.name} decision`).toBe("D069");
       expect(decisionFiles().some((f) => f.startsWith(`${e.decision}-`)), `${e.decision} has no file in wiki/decisions`).toBe(true);
     }
-    /* Every added event belongs to one of the two decisions that added events; a third needs its own section here. */
-    expect(sorted([...new Set(EVENTS.filter((e) => e.status === "added").map((e) => e.decision ?? "none"))])).toEqual(["D069", "D070"]);
+    /* Every added event belongs to one of the decisions that added events; each needs its own section here (D074: 3d). */
+    expect(sorted([...new Set(EVENTS.filter((e) => e.status === "added").map((e) => e.decision ?? "none"))])).toEqual(["D069", "D070", "D074"]);
   });
 
   it("browser events: the parameters in §16's order, its literals as fixed values, its dedup key", () => {
@@ -749,6 +757,121 @@ describe("events.ts: the early store signals, added by D070, equal inventory §1
     expect(only(added(), "store_cta_tapped_early").fixed?.$lib).toBe(BEACON_LIB); // beaconCapture's, the shell sends it
     expect(EARLY_LIB).toBe(only(added(), "store_arrived").fixed?.$lib);
     expect(BEACON_LIB).toBe(only(added(), "preorder_payment_window_hidden").fixed?.$lib);
+  });
+});
+
+/* ── 3d. The server refund event (D074, K-124): added after the tag, held to inventory §7's added bullets ─────────── */
+
+const REFUND_SECTION = section(INVENTORY, "## 7. ");
+const REFUND_EVENT = bullet(REFUND_SECTION, "Added after the tag");
+const REFUND_PAYLOAD = bullet(REFUND_SECTION, "Refund payload");
+/** The refund bullet's property list: from "properties " to "plus " (the `env` addition is registered separately). */
+const REFUND_PROPERTIES = REFUND_PAYLOAD.split("properties ")[1]?.split("plus ")[0] ?? "";
+const refundDetail = { refundedPaise: 49_900, partial: false };
+
+describe("events.ts: the server refund event, added by D074, equals inventory §7", () => {
+  const refunded = () => only(eventsTo("posthog-server"), "purchase_refunded");
+
+  it("registers one added event beside purchase_confirmed, PostHog server only, with the decision on file", () => {
+    expect(code(REFUND_EVENT)).toContain("purchase_refunded");
+    expect(eventsTo("posthog-server").map((e) => [e.name, e.status, e.decision])).toEqual([
+      ["purchase_confirmed", "existing", undefined],
+      ["purchase_refunded", "added", "D074"],
+    ]);
+    expect(refunded().destinations).toEqual(["posthog-server"]);
+    expect(decisionFiles().some((f) => f.startsWith("D074-")), "D074 has a file in wiki/decisions").toBe(true);
+  });
+
+  it("parameters are exactly the builder's (env only as the registered addition) and inventory §7's, in order", () => {
+    const event = purchaseRefundedEvent(order(), refundDetail);
+    expect(event.event).toBe("purchase_refunded");
+    const added = (refunded().added ?? []).map((a) => a.name);
+    expect(sorted(Object.keys(event.properties).filter((k) => !added.includes(k)))).toEqual(sorted(refunded().params));
+    const named = code(REFUND_PROPERTIES).map((t) => param(t).name);
+    for (const literal of ["utm_*", "utm_id", "placement"]) {
+      expect(named, `inventory §7 names ${literal} literally`).toContain(literal);
+    }
+    const utm = SECTION9_KEYS.filter((k) => k.startsWith("utm_"));
+    const expanded = [...new Set(named.flatMap((n) => (n === "utm_*" ? utm : [n])))];
+    expect(refunded().params).toEqual(expanded);
+    /* The campaign keys sit between source and $process_person_profile, as purchase_confirmed's do, and are §9's. */
+    const params = refunded().params;
+    expect(params.slice(params.indexOf("source") + 1, params.indexOf("$process_person_profile"))).toEqual(SECTION9_KEYS);
+  });
+
+  it("fixed values equal the builder and the inventory", () => {
+    const { properties } = purchaseRefundedEvent(order(), refundDetail);
+    const fixed = refunded().fixed ?? {};
+    for (const [k, v] of Object.entries(fixed)) expect(properties[k], k).toEqual(v);
+    expect(fixed).toEqual(literalsOf(code(REFUND_PROPERTIES).map(param)));
+  });
+
+  it("env (SITE_ENV) on non-production builds is registered as new, as purchase_confirmed's is", () => {
+    expect(refunded().added?.map((a) => [a.name, a.value, a.status])).toEqual([["env", "SITE_ENV", "new"]]);
+    expect(plain(REFUND_PAYLOAD)).toContain("env: SITE_ENV off production");
+  });
+
+  it("goes to PostHog server only, and carries nothing a parent typed, no payment id and no refund id", () => {
+    expect(plain(REFUND_EVENT)).toContain("never sent to GA4, Meta or OpenAI");
+    expect(refunded().destinations.filter((d) => d !== "posthog-server")).toEqual([]);
+    for (const forbidden of ["email", "phone", "parent_name", "parentName", "child_age", "childAge", "address", "payment_id", "refund_id"]) {
+      expect(refunded().params, `purchase_refunded must not carry ${forbidden}`).not.toContain(forbidden);
+    }
+    expect(Object.keys(purchaseRefundedEvent(order(), refundDetail).properties).filter((k) => /payment|refund_id|email|phone|parent|child|address/i.test(k))).toEqual([]);
+  });
+});
+
+/* ── 3e. The session id on the sale (D075, K-124b): an optional addition to purchase_confirmed, held to inventory §7 ─────────── */
+
+const SESSION_ID_BULLET = bullet(REFUND_SECTION, "Session id on the sale");
+const SESSION_ID = "0199a2f1-7c3e-7b4a-9c10-0123456789ab";
+
+describe("events.ts: $session_id on purchase_confirmed, added by D075, equals inventory §7", () => {
+  const confirmed = () => only(eventsTo("posthog-server"), "purchase_confirmed");
+  const refunded = () => only(eventsTo("posthog-server"), "purchase_refunded");
+  const withSession = () => ({ ...order(), ph_session_id: SESSION_ID });
+
+  it("registers $session_id as an optional addition to purchase_confirmed, beside env, with the decision on file", () => {
+    expect(code(SESSION_ID_BULLET)).toContain("$session_id");
+    expect(confirmed().status, "purchase_confirmed stays the tag's event: the session id is an addition to it").toBe("existing");
+    expect(confirmed().added?.find((a) => a.name === "$session_id")).toMatchObject({ value: "ph_session_id", status: "new" });
+    expect(confirmed().params, "an addition is not a parameter of the tag's payload (as env is not)").not.toContain("$session_id");
+    expect(decisionFiles().some((f) => f.startsWith("D075-")), "D075 has a file in wiki/decisions").toBe(true);
+  });
+
+  it("the builder sends exactly that key beyond the registered parameters, and only when the order stored a session id", () => {
+    const added = (confirmed().added ?? []).map((a) => a.name);
+    const keys = (o: Parameters<typeof purchaseConfirmedEvent>[0]) =>
+      sorted(Object.keys(purchaseConfirmedEvent(o).properties).filter((k) => !added.includes(k) || k === "$session_id"));
+    expect(keys(order())).toEqual(sorted(confirmed().params));
+    expect(keys(withSession())).toEqual(sorted([...confirmed().params, "$session_id"]));
+    expect(purchaseConfirmedEvent(withSession()).properties.$session_id).toBe(SESSION_ID);
+    for (const none of [null, undefined, ""]) {
+      expect(Object.keys(purchaseConfirmedEvent({ ...order(), ph_session_id: none }).properties)).not.toContain("$session_id");
+    }
+  });
+
+  it("inventory §7 says when it is sent, where it is read, and that a refund never carries it", () => {
+    const text = plain(SESSION_ID_BULLET);
+    expect(text).toContain("purchase_confirmed also carries $session_id");
+    expect(text).toContain("$session_id: order.ph_session_id");
+    expect(text).toContain("only when the order has one");
+    expect(text).toContain("on the server");
+    expect(text).toContain("migration 0005_ph_session_id.sql, applied by hand before the deploy");
+    expect(text).toContain("purchase_refunded never carries it");
+    expect(text).toContain("No new cookie, no client change, and nothing new to Meta, GA4 or OpenAI");
+  });
+
+  it("purchase_refunded does not carry it: not registered, not built, whatever the order stored", () => {
+    expect(refunded().params).not.toContain("$session_id");
+    expect((refunded().added ?? []).map((a) => a.name)).toEqual(["env"]);
+    expect(Object.keys(purchaseRefundedEvent(withSession(), refundDetail).properties)).not.toContain("$session_id");
+  });
+
+  it("goes to PostHog server only, and is a random id, not a person: the other properties stay as registered", () => {
+    expect(confirmed().destinations).toEqual(["posthog-server"]);
+    expect(purchaseConfirmedEvent(withSession()).properties.$process_person_profile).toBe(false);
+    expect(Object.keys(purchaseConfirmedEvent(withSession()).properties).filter((k) => /payment|email|phone|parent|child|address/i.test(k))).toEqual([]);
   });
 });
 
