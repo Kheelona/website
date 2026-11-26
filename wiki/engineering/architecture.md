@@ -490,7 +490,7 @@ and B5), held to inventory §17 rather than to this table, and D074's server ref
 | `preorder_address_saved` | GA4, PostHog | `transaction_id` | `analytics.ts` | Existing, frozen |
 | `preorder_dismissed` | GA4, PostHog | `tier` | `analytics.ts` | Existing, frozen |
 | `Purchase` (CAPI) | Meta server | as inventory §5 | `meta-capi.ts` via `notifyPaid` | Existing, frozen; off on beta |
-| `purchase_confirmed` | PostHog server | as inventory §7 (+ `env: SITE_ENV` on every non-production build) | `posthog-server.ts` via `notifyPaid` | Existing |
+| `purchase_confirmed` | PostHog server | as inventory §7 (+ `env: SITE_ENV` on every non-production build, and `$session_id` when the order stored one: D075) | `posthog-server.ts` via `notifyPaid` | Existing |
 | `$pageview`, `$pageleave`, `$autocapture`, `$exception`, `$web_vitals`, replay | PostHog | SDK; `cta` promoted from `data-ph-capture-attribute-cta` | `PostHogGate` | Existing |
 | `preorder_payment_window_opened` | GA4, PostHog | `tier` | right after `checkout.open()` in `checkout.ts` (line 97 at the tag) | **New (B11), task 6.2** |
 | `preorder_payment_failed` | GA4, PostHog | `tier`, `reason_code`, `reason` (Razorpay `error.code`, `error.reason`; no free text) | `checkout.on("payment.failed", …)` before `open()` | **New (B11), task 6.2** |

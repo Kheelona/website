@@ -608,7 +608,11 @@ describe("events.ts: server events", () => {
       "Status",
     ]).find(([event]) => code(event)[0] === "purchase_confirmed");
     expect(row?.[2]).toContain("`env: SITE_ENV`");
-    expect(confirmed().added?.map((a) => [a.name, a.value, a.status])).toEqual([["env", "SITE_ENV", "new"]]);
+    /* The registered additions, exactly: `env` (N4) and D075's optional `$session_id`, which section 3e holds to inventory §7. */
+    expect(confirmed().added?.map((a) => [a.name, a.value, a.status])).toEqual([
+      ["env", "SITE_ENV", "new"],
+      ["$session_id", "ph_session_id", "new"],
+    ]);
   });
 });
 
@@ -814,6 +818,60 @@ describe("events.ts: the server refund event, added by D074, equals inventory §
       expect(refunded().params, `purchase_refunded must not carry ${forbidden}`).not.toContain(forbidden);
     }
     expect(Object.keys(purchaseRefundedEvent(order(), refundDetail).properties).filter((k) => /payment|refund_id|email|phone|parent|child|address/i.test(k))).toEqual([]);
+  });
+});
+
+/* ── 3e. The session id on the sale (D075, K-124b): an optional addition to purchase_confirmed, held to inventory §7 ─────────── */
+
+const SESSION_ID_BULLET = bullet(REFUND_SECTION, "Session id on the sale");
+const SESSION_ID = "0199a2f1-7c3e-7b4a-9c10-0123456789ab";
+
+describe("events.ts: $session_id on purchase_confirmed, added by D075, equals inventory §7", () => {
+  const confirmed = () => only(eventsTo("posthog-server"), "purchase_confirmed");
+  const refunded = () => only(eventsTo("posthog-server"), "purchase_refunded");
+  const withSession = () => ({ ...order(), ph_session_id: SESSION_ID });
+
+  it("registers $session_id as an optional addition to purchase_confirmed, beside env, with the decision on file", () => {
+    expect(code(SESSION_ID_BULLET)).toContain("$session_id");
+    expect(confirmed().status, "purchase_confirmed stays the tag's event: the session id is an addition to it").toBe("existing");
+    expect(confirmed().added?.find((a) => a.name === "$session_id")).toMatchObject({ value: "ph_session_id", status: "new" });
+    expect(confirmed().params, "an addition is not a parameter of the tag's payload (as env is not)").not.toContain("$session_id");
+    expect(decisionFiles().some((f) => f.startsWith("D075-")), "D075 has a file in wiki/decisions").toBe(true);
+  });
+
+  it("the builder sends exactly that key beyond the registered parameters, and only when the order stored a session id", () => {
+    const added = (confirmed().added ?? []).map((a) => a.name);
+    const keys = (o: Parameters<typeof purchaseConfirmedEvent>[0]) =>
+      sorted(Object.keys(purchaseConfirmedEvent(o).properties).filter((k) => !added.includes(k) || k === "$session_id"));
+    expect(keys(order())).toEqual(sorted(confirmed().params));
+    expect(keys(withSession())).toEqual(sorted([...confirmed().params, "$session_id"]));
+    expect(purchaseConfirmedEvent(withSession()).properties.$session_id).toBe(SESSION_ID);
+    for (const none of [null, undefined, ""]) {
+      expect(Object.keys(purchaseConfirmedEvent({ ...order(), ph_session_id: none }).properties)).not.toContain("$session_id");
+    }
+  });
+
+  it("inventory §7 says when it is sent, where it is read, and that a refund never carries it", () => {
+    const text = plain(SESSION_ID_BULLET);
+    expect(text).toContain("purchase_confirmed also carries $session_id");
+    expect(text).toContain("$session_id: order.ph_session_id");
+    expect(text).toContain("only when the order has one");
+    expect(text).toContain("on the server");
+    expect(text).toContain("migration 0005_ph_session_id.sql, applied by hand before the deploy");
+    expect(text).toContain("purchase_refunded never carries it");
+    expect(text).toContain("No new cookie, no client change, and nothing new to Meta, GA4 or OpenAI");
+  });
+
+  it("purchase_refunded does not carry it: not registered, not built, whatever the order stored", () => {
+    expect(refunded().params).not.toContain("$session_id");
+    expect((refunded().added ?? []).map((a) => a.name)).toEqual(["env"]);
+    expect(Object.keys(purchaseRefundedEvent(withSession(), refundDetail).properties)).not.toContain("$session_id");
+  });
+
+  it("goes to PostHog server only, and is a random id, not a person: the other properties stay as registered", () => {
+    expect(confirmed().destinations).toEqual(["posthog-server"]);
+    expect(purchaseConfirmedEvent(withSession()).properties.$process_person_profile).toBe(false);
+    expect(Object.keys(purchaseConfirmedEvent(withSession()).properties).filter((k) => /payment|email|phone|parent|child|address/i.test(k))).toEqual([]);
   });
 });
 

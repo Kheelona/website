@@ -367,6 +367,15 @@ row 7's project from the Razorpay refund webhook; the end of §7 is its section.
   payment id: after the status update for a full refund (`status = 'refunded'`), and for a partial refund too (the status is
   left for a human; `partial: true`). Once per delivery (the webhook's event-id claim stops repeats); no event when no order
   matches or the refund carries no amount; it never throws and never changes the webhook's answer.
+- **Session id on the sale, [D075](../decisions/D075-session-id-on-orders.md) (K-124 part b, 26 November 2026): `purchase_confirmed`
+  also carries `$session_id`.** `create-order` reads the visitor's PostHog session id on the server, from the PostHog cookie
+  the browser already sends (`ph_<project key>_posthog`, its `$sesid`), validates it (UUID-shaped, at most 64 characters, else
+  none) and stores it in `preorders.ph_session_id` (migration `0005_ph_session_id.sql`, applied by hand before the deploy).
+  `purchaseConfirmedEvent` adds `$session_id: order.ph_session_id` only when the order has one (orders from before the
+  migration, and visitors with PostHog blocked, have none), so PostHog attributes the sale to that session's own entry
+  referrer, landing path, click ids and UTMs. The Payload bullet above is otherwise unchanged. `purchase_refunded` never
+  carries it (a refund days later would stretch the sale's session). No new cookie, no client change, and nothing new to
+  Meta, GA4 or OpenAI.
 
 ## 8. PostHog reverse proxy and routing
 

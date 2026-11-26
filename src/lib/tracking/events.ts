@@ -108,6 +108,18 @@ const SERVER_ENV_STAMP = {
   status: "new",
 } as const satisfies AddedParam;
 
+/** `$session_id` on `purchase_confirmed` only (D075, K-124b): the PostHog session the order was placed in, so PostHog
+ *  attributes the sale to that visit's own entry referrer, landing path, click ids and UTMs. An optional addition, as
+ *  `env` is: sent only when the order stored one, and never on `purchase_refunded`. */
+const SESSION_ID_ADDITION = {
+  name: "$session_id",
+  value: "ph_session_id",
+  when:
+    "only when the order stored a PostHog session id, read on the server from the visitor's PostHog cookie at " +
+    "create-order (D075, K-124b); orders from before migration 0005 and visitors with PostHog blocked have none",
+  status: "new",
+} as const satisfies AddedParam;
+
 const EVENT_LIST = [
   /* ── Automatic pageviews ─────────────────────────────────────────────── */
   {
@@ -268,7 +280,7 @@ const EVENT_LIST = [
       "$process_person_profile",
     ],
     fixed: { currency: "INR", source: "webhook", $process_person_profile: false },
-    added: [SERVER_ENV_STAMP],
+    added: [SERVER_ENV_STAMP, SESSION_ID_ADDITION],
     status: "existing",
     firedBy: "reportPurchaseToPostHog (src/lib/store/posthog-server.ts), from notifyPaid",
     when:
