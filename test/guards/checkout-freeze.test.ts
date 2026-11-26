@@ -18,8 +18,12 @@ import { parseSource } from "../e2e/support/source";
  *     so a selector may follow approved copy but no assertion can be added, removed or weakened;
  *   - a DELETION (`+++ /dev/null`) retires a frozen file whose subject a founder decision removed:
  *     accepted only for a path listed in RETIRED below, only when the patch's header cites that
- *     path's own decision, and the file must then stay deleted.
- * A frozen folder that gains a file fails too. Presentation files are not byte-frozen: their
+ *     path's own decision, and the file must then stay deleted;
+ *   - an ADDITION: a frozen folder may gain exactly the file ADDED lists, each with its founder decision (D075: the
+ *     migration that adds a nullable column). It is the mirror of RETIRED and narrower: the path must be listed exactly,
+ *     the file's own header must cite the decision, the decision must have its note in wiki/decisions, and a migration
+ *     may only ADD a nullable column and comment on it.
+ * A frozen folder that gains any other file fails too. Presentation files are not byte-frozen: their
  * proofs are checkout-signature and checkout-jsx-contract; a patch stored for one is a review
  * record and is printed, not applied.
  */
@@ -57,6 +61,12 @@ const AUTHORISED = ["src/lib/store/host.ts", "src/lib/store/env.ts", "src/lib/st
 const RETIRED: Readonly<Record<string, string>> = {
   "src/app/store/ideabaaz/page.tsx": "D054",
   "src/app/store/ideabaaz/page.test.tsx": "D054",
+};
+/** Files a founder decision ADDED to a frozen folder after the tag: the only additions accepted, each with that decision
+ *  (the mirror of RETIRED). D075 (K-124b, 2026-11-26): migration 0005 adds `preorders.ph_session_id`, applied by hand
+ *  BEFORE the code that writes it deploys. Listing a path here accepts that one path and nothing near it. */
+const ADDED: Readonly<Record<string, string>> = {
+  "supabase/migrations/0005_ph_session_id.sql": "D075",
 };
 /** Inside a frozen folder but owned by a task (guard-test ownership): 1.3 changes it with posthog-server.ts. */
 const NOT_FROZEN = ["src/lib/store/posthog-server.test.ts"];
@@ -119,6 +129,27 @@ function applyPatch(original: string, patch: string): string {
 const isDeletion = (patch: string) => /^\+\+\+ \/dev\/null$/m.test(patch);
 /** The reviewed patch's own words, above the diff: where it must cite its decision. */
 const patchHeader = (patch: string) => patch.slice(0, Math.max(0, patch.search(/^diff --git /m)));
+
+/** The files a frozen folder gained that no founder decision added: ADDED accepts a path only by exact match. */
+const unauthorisedAdditions = (added: readonly string[]) => added.filter((p) => !Object.hasOwn(ADDED, p));
+
+/** The statements of a migration, comments stripped, whitespace collapsed. (A `;` inside a quoted string would split
+ *  one; the checks below then fail loudly rather than pass, so keep one out of an additive migration's comment text.) */
+const sqlStatements = (sql: string) =>
+  sql
+    .split("\n")
+    .filter((l) => !l.trim().startsWith("--"))
+    .join("\n")
+    .split(";")
+    .map((st) => st.replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+const ADD_COLUMN = /^alter table public\.[a-z_]+ add column if not exists [a-z_]+ (?:text|jsonb|boolean|integer|timestamptz)$/i;
+const COMMENT_COLUMN = /^comment on column public\.[a-z_]+\.[a-z_]+ is '(?:[^']|'')*'$/i;
+/** An additive migration adds a nullable column (no default, no constraint) and comments on a column: nothing else. */
+const additiveOnly = (sql: string) => {
+  const statements = sqlStatements(sql);
+  return statements.length > 0 && statements.every((st) => ADD_COLUMN.test(st) || COMMENT_COLUMN.test(st));
+};
 
 /* ── Literal-only: token streams equal once literals are masked ───────────────────────────── */
 
@@ -189,6 +220,34 @@ describe("checkout-freeze instruments", () => {
     expect(isDeletion(deletion)).toBe(true);
     expect(isDeletion("--- a/x\n+++ b/x\n@@ -2,2 +2,2 @@\n b\n-c\n+C\n")).toBe(false);
     expect(patchHeader(deletion)).toBe("Why: D054 item 7.\n\n");
+  });
+
+  it("accepts only the added file the guard lists, by exact path, and nothing next to it", () => {
+    const listed = Object.keys(ADDED);
+    expect(listed.length).toBeGreaterThan(0);
+    expect(unauthorisedAdditions(listed)).toEqual([]);
+    expect(unauthorisedAdditions(["supabase/migrations/0006_other.sql"])).toEqual(["supabase/migrations/0006_other.sql"]);
+    expect(unauthorisedAdditions([`${listed[0]}.bak`, `x/${listed[0]}`, "src/lib/store/new-file.ts"])).toHaveLength(3);
+  });
+
+  it("calls a migration additive only when it adds a nullable column and comments on it", () => {
+    const add = "alter table public.preorders\n  add column if not exists ph_session_id text;\n";
+    const note = "comment on column public.preorders.ph_session_id is 'it''s a note';\n";
+    expect(additiveOnly(`-- header\n${add}\n${note}`)).toBe(true);
+    expect(additiveOnly(add)).toBe(true);
+    for (const bad of [
+      "drop table public.preorders;",
+      "alter table public.preorders drop column email;",
+      "alter table public.preorders add column ph_session_id text;",
+      "alter table public.preorders add column if not exists ph_session_id text not null;",
+      "alter table public.preorders add column if not exists ph_session_id text default 'x';",
+      "update public.preorders set status = 'paid';",
+      "grant select on public.preorders to anon;",
+      `${add}\ndelete from public.preorders;`,
+      "-- only a comment",
+    ]) {
+      expect(additiveOnly(bad), bad).toBe(false);
+    }
   });
 
   it("finds the money block at the tag", () => {
@@ -265,10 +324,28 @@ describe(`checkout-freeze: frozen logic equals ${FREEZE_TAG}`, () => {
     console.log(`[checkout-freeze] ${path}: retired by its reviewed deletion (${decision})`);
   });
 
-  it("no frozen folder has gained a file", () => {
+  it("no frozen folder has gained a file, except the ones a founder decision added (ADDED)", () => {
     const then = new Set(tagFiles(FROZEN_DIRS));
-    const added = listFiles(FROZEN_DIRS).filter((p) => !then.has(p));
+    const added = unauthorisedAdditions(listFiles(FROZEN_DIRS).filter((p) => !then.has(p)));
     expect(added, `new files inside frozen folders: ${added.join(", ")}`).toEqual([]);
+  });
+
+  it.each(Object.entries(ADDED))("%s is added by its founder decision, %s, and is only additive", (path, decision) => {
+    expect(FROZEN_DIRS.some((d) => path.startsWith(d)), `${path} is not inside a frozen folder, so it needs no allowance`).toBe(true);
+    expect(tagBytes(path), `${path} is in ${FREEZE_TAG}: a file the tag has is frozen, not added`).toBeNull();
+    expect(existsSync(join(ROOT, path)), `${path} is listed in ADDED but is not there: drop the allowance with the file`).toBe(true);
+    const text = readRepoFile(path);
+    const header = text
+      .split("\n")
+      .filter((l) => l.startsWith("--"))
+      .join("\n");
+    expect(header, `${path}: its own header must cite ${decision}, the founder decision that added it`).toMatch(new RegExp(`\\b${decision}\\b`));
+    expect(
+      readdirSync(join(ROOT, "wiki/decisions")).some((f) => f.startsWith(`${decision}-`)),
+      `${decision} has no note in wiki/decisions`,
+    ).toBe(true);
+    expect(additiveOnly(text), `${path} may only add a nullable column and comment on it`).toBe(true);
+    console.log(`[checkout-freeze] ${path}: added by its founder decision (${decision})`);
   });
 
   it("keeps the money block of src/config/site.ts byte-identical", () => {
