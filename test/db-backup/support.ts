@@ -7,7 +7,7 @@ import type { DbRow } from "../../supabase/functions/db-backup/merge";
    the key is a throwaway RSA key generated at run time (never a file), and the "personal data" is obviously fake. */
 
 export const SUPABASE_URL = "https://abcdefghijklmnopqrst.supabase.co";
-export const TEST_SECRET_KEY = "sb_secret_FAKE_for_tests_only";
+export const TEST_SECRET_KEY = "sb_secret_fake"; // short on purpose: nothing here may look like a real key
 export const SHEET_ID = "FAKE_SHEET_ID_1234";
 export const ACCESS_TOKEN = "fake-access-token-for-tests";
 export const SERVICE_ACCOUNT_EMAIL = "backup-test@fake-project.iam.gserviceaccount.com";

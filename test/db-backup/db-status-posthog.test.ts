@@ -50,7 +50,7 @@ describe("db: reads the table in full, by GET only", () => {
 
   it("a new-format secret key goes on apikey only; a legacy JWT goes on both headers", () => {
     expect(dbHeaders("sb_secret_x")).toEqual({ apikey: "sb_secret_x", accept: "application/json" });
-    expect(dbHeaders("eyJhbGciOi.legacy.jwt")).toEqual({ apikey: "eyJhbGciOi.legacy.jwt", authorization: "Bearer eyJhbGciOi.legacy.jwt", accept: "application/json" });
+    expect(dbHeaders("legacy-style-key")).toEqual({ apikey: "legacy-style-key", authorization: "Bearer legacy-style-key", accept: "application/json" });
   });
 
   it("a refused or failing read is a status code or a short word, never a body", async () => {
