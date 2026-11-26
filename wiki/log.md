@@ -1603,3 +1603,16 @@ to 0.91 s: a cached response carries no `Link: preload` header, so Lighthouse's 
 the HTML. Tried and rejected: a fonts-only `Link` header (no gain) and `experimental.inlineCss` (LCP 1.08 s). **C3**
 (entry above): home performance 95 to 94 and lab LCP 2.83 to 2.97 s, for a phone page of 16.6 screens instead of 28
 with the offer at 14%. Both were granted once; every other pull request keeps the gate.
+
+## [2026-11-26 10:05] decision | D073: the store's in-app browser note is switched off for every in-app browser (C2, K-177)
+The founder's one-by-one sign-off of 26 November (store code). The note "Paying by UPI? Open this page in Chrome or Safari."
+(with "Copy link") shipped switched on in task 7.1c (D056 item 3) for the Instagram, Facebook/Messenger and WhatsApp browsers.
+B2 (#36) now sends those browsers through Razorpay's own return route, and the founder's test payments on the test store
+passed: an iPhone on 25 November (Safari, the LinkedIn browser, the Instagram browser) and an Android phone on 26 November
+(Chrome, the Instagram browser, the LinkedIn browser), the rest accepted on the founder's basic test. The growth team
+recommended switching the note off only for the tested apps; the founder chose all in-app browsers. `inAppNote.enabled` in
+`src/content/en-IN/store/in-app-note.ts` is now `false` (the words stay); `isInAppBrowser`, the page, the checkout, tracking
+and the design system are untouched. Real in-app payments are watched after the merge, and if B2 is ever reverted the note
+comes back in the same release. Records: [D073](decisions/D073-in-app-note-off-all-browsers.md) (supersedes D056 item 3 for this
+note), a dated line in D070, deviation V25 retired and V73 added, `site/pages/store.md` (Fold 2 notes, phone order, sources,
+"Changes after approval (C2)"), and the in-app rules in `test/e2e/support/deviations.ts` and their tests.
