@@ -39,9 +39,11 @@ with `npm run event-link -- <id>`. See `docs/preorder-events.md`.
 
 The free project has no backups, so `functions/db-backup/` copies all three tables into a private Google Sheet every night
 and sends one PostHog event about it. It only reads, never deletes a sheet row, and holds the sheet's data private (it
-contains parents' and children's details). It is NOT a migration: it is deployed and scheduled by hand, test project first,
-with the guide in the pull request. See `functions/db-backup/README.md`, and `functions/db-backup/setup-cron.sql` for the
-schedule. The sheet can be put back into the tables with the restore runbook.
+contains parents' and children's details). It is NOT a migration: it is deployed and scheduled by hand, with the guide in
+the pull request (#57). See `functions/db-backup/README.md`, and `functions/db-backup/setup-cron.sql` for the schedule.
+The sheet can be put back into the tables with the restore runbook (#57's description). **Live on production since
+26 Nov 2026**; the test round and the restore drill were skipped, so a restore is not yet proven (the README's "As
+deployed" section).
 
 ## `webhook_events.payload` holds a summary, not the event (2026-08-23, F-05)
 
