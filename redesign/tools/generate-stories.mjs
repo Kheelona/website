@@ -19,6 +19,9 @@
  *     redirect sources dropped (rule 17), related guides filled from the ring (ring.ts), read time (read-minutes.ts),
  *     no-wrap ages (nowrap.ts), hub curation from src/content/en-IN/stories/hub.ts. An unknown block, mark, icon, photo,
  *     topic or byline fails loudly.
+ *   - One exception to "words are the post's" (K-215, the founder, 27 Nov 2026): pages/_shell/story-overrides.ts sets
+ *     named fields, body inserts (by exact anchor text; a missing anchor fails the run) and a repo head image for named
+ *     posts, over the dashboard's data and before the gate. Delete an entry to hand the post back to the dashboard.
  * The generator owns pages/stories.html and pages/stories/*.html (each carries the GENERATED marker): a post that left
  * the dashboard loses its page source and its built folder stories/<slug>/ on the next run.
  *
@@ -96,6 +99,11 @@ function founders() {
 function redirectedSlugs() {
   return new Set([...readSrc("src/config/redirects.ts").matchAll(/source:\s*"\/stories\/([a-z0-9]+(?:-[a-z0-9]+)*)"/g)].map((m) => m[1]));
 }
+
+/* Per-post overrides over the dashboard (K-215, pages/_shell/story-overrides.ts): fields and body inserts are applied
+   before the gate (applyOverrides), the head image in adapt(). No file, no overrides. */
+const OVERRIDES_FILE = "redesign/pages/_shell/story-overrides.ts";
+const OVERRIDES = existsSync(join(SITE, OVERRIDES_FILE)) ? (await imp(OVERRIDES_FILE)).storyOverrides : {};
 
 const PHOTOS = photoTable();
 const PEOPLE = founders();
@@ -322,6 +330,18 @@ function imageRef(w, key, src, width, height, alt, where) {
   }
   return { src, width, height, alt: khelu(alt), shape: width / height >= 1.6 ? "wide" : width === height ? "square" : "tall", upload: true };
 }
+/** An override's head image (K-215): a WebP in the repo (its size from its header, `<name>-640.webp` for phones when
+ *  present) and its share card, both on disk or the post is refused. */
+function headImage(w, { image: src, alt, card, cardSize }) {
+  const onDisk = (p) => typeof p === "string" && p.startsWith("/") && existsSync(join(ROOT, p.slice(1)));
+  if (!onDisk(src) || !src.endsWith(".webp") || !onDisk(card) || !alt) fail(w.slug, `the override's head image "${src}" (a .webp), its alt and its card "${card}" must be set and on disk (${OVERRIDES_FILE})`);
+  const [width, height] = webpSize(join(ROOT, src.slice(1)));
+  const small = src.replace(/\.webp$/, "-640.webp");
+  return {
+    src, ...(onDisk(small) && { srcset: `${small} 640w, ${src} ${width}w` }), width, height, alt: khelu(alt),
+    shape: width / height >= 1.6 ? "wide" : width === height ? "square" : "tall", card: `${SITE_URL}${card}`, cardSize,
+  };
+}
 /** A WebP file's pixel size, from its header (VP8, VP8L or VP8X). */
 function webpSize(path) {
   const b = readFileSync(path);
@@ -435,7 +455,9 @@ function adapt(post, published, offers, n, warn) {
   const person = PEOPLE.find((p) => p.name === post.author);
   if (!person && post.author !== TEAM.author) fail(post.slug, `the byline "${post.author}" is not one the site lists (${[TEAM.author, ...PEOPLE.map((p) => p.name)].join(", ")})`, 11);
   let image;
-  if (post.photo) {
+  const head = OVERRIDES[post.slug]?.head;
+  if (head) image = headImage(w, head);
+  else if (post.photo) {
     const entry = PHOTOS[post.photo] ?? fail(post.slug, `photo "${post.photo}" is not in the photo table`, 12);
     if (TOY_CLOSEUP_KEYS.has(post.photo)) fail(post.slug, `photo "${post.photo}" cannot head a guide`, 12);
     image = imageRef(w, post.photo, null, null, null, entry.alt, "photo");
@@ -566,13 +588,14 @@ ${closer(COPY.close.topicHeadings[topic.id] ?? COPY.close.heading, ctx)}`;
     },
   ]);
   /* Search meta for tools/build-pages.py: the dates (sitemap lastmod, article:* tags), the byline, the topic (the
-     breadcrumb Home › Stories › topic › guide), the share card (og/<photo>.jpg, 1200×630) and its words. */
+     breadcrumb Home › Stories › topic › guide), the share card (og/<photo>.jpg, 1200×630, or an override's card and
+     its size) and its words. */
   const card = a.image ? (a.image.card.startsWith(SITE_URL) ? a.image.card.slice(SITE_URL.length) : a.image.card) : undefined;
   return front({
     path: `/stories/${a.slug}`, title: khelu(a.metaTitle), description: khelu(post.description), css: ["stories"], js: ["stories"], ogType: "article", slug: "story",
     published: post.published, updated: post.updated ?? post.published, author: a.person ? a.person.name : TEAM.byline,
     topic: { id: topic.id, title: topic.title }, crumb: plain(post.title),
-    ...(card && { ogImage: card, ogImageAlt: khelu(a.image.alt ?? COPY.close.art) }),
+    ...(card && { ogImage: card, ogImageAlt: khelu(a.image.alt ?? COPY.close.art), ...(a.image.cardSize && { ogImageSize: a.image.cardSize }) }),
   })
     + `<head-extra>\n${ld}\n</head-extra>
 <div class="readbar" aria-hidden="true"></div>
@@ -681,6 +704,40 @@ function hubGroups(articles, warn) {
   });
 }
 
+/* ── per-post overrides (K-215) ──────────────────────────────────────────────────────────────────────── */
+const blockText = (n) => (n.type === "text" ? n.text : n.type === "hardBreak" ? "\n" : (n.content ?? []).map(blockText).join(""));
+
+/** The posts with each override's fields and body inserts applied (new objects; the inputs are not changed). An anchor
+ *  that is not exactly one block of the post fails the run, so an insert never lands in the wrong place or vanishes. */
+function applyOverrides(posts, notes) {
+  if (!Array.isArray(posts)) return posts;
+  const out = posts.map((p) => (p && typeof p === "object" ? { ...p } : p));
+  const bySlug = new Map(out.map((p) => [p?.slug, p]));
+  for (const [slug, o] of Object.entries(OVERRIDES)) {
+    const at = (what) => `override "${slug}" (${OVERRIDES_FILE}): ${what}`;
+    const post = bySlug.get(slug);
+    if (!post) { notes.push(at("no published post has this slug, so it changes nothing; remove it")); continue; }
+    for (const [key, value] of Object.entries(o.fields ?? {})) {
+      if (key === "slug" || key === "body") throw new Error(at(`"${key}" cannot be overridden`));
+      post[key] = key === "updated" && typeof post.updated === "string" && post.updated > value ? post.updated : structuredClone(value);
+    }
+    (o.insert ?? []).forEach((ins, i) => {
+      const content = post.body?.content ?? [];
+      const texts = content.map(blockText);
+      const present = ins.nodes.filter((n) => texts.includes(blockText(n))).length;
+      if (present === ins.nodes.length) return notes.push(at(`insert ${i + 1} is already in the dashboard's post, so it is skipped; remove it`));
+      if (present) throw new Error(at(`insert ${i + 1}: ${present} of its ${ins.nodes.length} blocks are already in the post (the dashboard's text changed); update or remove the override`));
+      const anchor = ins.after ?? ins.before;
+      if ((ins.after === undefined) === (ins.before === undefined)) throw new Error(at(`insert ${i + 1} needs exactly one of "after" and "before"`));
+      const hits = texts.flatMap((t, k) => (t === anchor ? [k] : []));
+      if (hits.length !== 1) throw new Error(at(`insert ${i + 1}: ${hits.length ? `${hits.length} blocks` : "no block"} of the post read exactly "${anchor}" (the dashboard's text changed?); update or remove the override`));
+      const k = ins.after !== undefined ? hits[0] + 1 : hits[0];
+      post.body = { ...post.body, content: [...content.slice(0, k), ...structuredClone(ins.nodes), ...content.slice(k)] };
+    });
+  }
+  return out;
+}
+
 /* ── run ─────────────────────────────────────────────────────────────────────────────────────────────── */
 async function loadPosts(args) {
   if (args.api) {
@@ -704,12 +761,13 @@ export async function run(argv) {
   const { posts: raw, from } = await loadPosts(args);
   const drafts = Array.isArray(raw) ? raw.filter((p) => p && ((p.status !== undefined && p.status !== "published") || p.draft === true)) : [];
   for (const d of drafts) console.log(`stories: skipping draft "${d.slug}"`);
-  const posts = Array.isArray(raw) ? raw.filter((p) => !drafts.includes(p)).map(({ status, draft, ...p }) => p) : raw;
+  const overrideNotes = [];
+  const posts = applyOverrides(Array.isArray(raw) ? raw.filter((p) => !drafts.includes(p)).map(({ status, draft, ...p }) => p) : raw, overrideNotes);
   const rules = { themes: topics.map((t) => t.title), imagesBase: JOURNAL_IMAGES, findBanned };
   const problems = validatePosts(posts, rules);
   const count = Array.isArray(posts) ? countProblem(posts.length) : null;
   if (problems.length || count) throw new Error(`the posts from ${from} would not pass the journal gate, so nothing was written:\n  ${[...problems, ...(count ? [count] : [])].join("\n  ")}`);
-  const warnings = [];
+  const warnings = [...overrideNotes];
   const warn = (m) => warnings.push(m);
   for (const m of editorialWarnings(posts, rules)) warn(m);
 

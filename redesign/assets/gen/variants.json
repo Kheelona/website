@@ -229,6 +229,56 @@
   "sha": "558616b06b20d610",
   "args": "cwebp -q 80 -alpha_q 90 -resize 880 0"
  },
+ "assets/img/stories/covers/screen-free-does-not-mean-silent-240w.webp": {
+  "from": "assets/img/stories/covers/screen-free-does-not-mean-silent.webp",
+  "sha": "7b2e5c1982d66f0a",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/stories/covers/screen-free-does-not-mean-silent-320w.webp": {
+  "from": "assets/img/stories/covers/screen-free-does-not-mean-silent.webp",
+  "sha": "7b2e5c1982d66f0a",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/stories/covers/screen-free-does-not-mean-silent-400w.webp": {
+  "from": "assets/img/stories/covers/screen-free-does-not-mean-silent.webp",
+  "sha": "7b2e5c1982d66f0a",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/stories/covers/screen-free-does-not-mean-silent-480w.webp": {
+  "from": "assets/img/stories/covers/screen-free-does-not-mean-silent.webp",
+  "sha": "7b2e5c1982d66f0a",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/stories/covers/screen-free-does-not-mean-silent-880w.webp": {
+  "from": "assets/img/stories/covers/screen-free-does-not-mean-silent.webp",
+  "sha": "7b2e5c1982d66f0a",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 880 0"
+ },
+ "assets/img/stories/covers/the-gentle-way-off-the-phone-240w.webp": {
+  "from": "assets/img/stories/covers/the-gentle-way-off-the-phone.webp",
+  "sha": "a81794d23cc4a5b6",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 240 0"
+ },
+ "assets/img/stories/covers/the-gentle-way-off-the-phone-320w.webp": {
+  "from": "assets/img/stories/covers/the-gentle-way-off-the-phone.webp",
+  "sha": "a81794d23cc4a5b6",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 320 0"
+ },
+ "assets/img/stories/covers/the-gentle-way-off-the-phone-400w.webp": {
+  "from": "assets/img/stories/covers/the-gentle-way-off-the-phone.webp",
+  "sha": "a81794d23cc4a5b6",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 400 0"
+ },
+ "assets/img/stories/covers/the-gentle-way-off-the-phone-480w.webp": {
+  "from": "assets/img/stories/covers/the-gentle-way-off-the-phone.webp",
+  "sha": "a81794d23cc4a5b6",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 480 0"
+ },
+ "assets/img/stories/covers/the-gentle-way-off-the-phone-880w.webp": {
+  "from": "assets/img/stories/covers/the-gentle-way-off-the-phone.webp",
+  "sha": "a81794d23cc4a5b6",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 880 0"
+ },
  "assets/img/stories/ira-01-story-on-the-bed-240w.webp": {
   "from": "assets/img/stories/ira-01-story-on-the-bed.webp",
   "sha": "adc63f490489eb23",

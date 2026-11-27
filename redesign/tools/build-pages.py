@@ -8,13 +8,14 @@ the contents of <main>:
 
     <!--page
     {"path": "/team", "title": "…", "description": "…", "css": ["team"], "js": ["team"], "updated": "2026-10-22",
-     "ogImage": "/og/….jpg", "ogImageAlt": "…"}
+     "ogImage": "/og/….jpg", "ogImageAlt": "…", "ogImageSize": [1200, 675]}
     -->
     <head-extra><script type="application/ld+json">…</script></head-extra>
     <section class="ph">…</section>
 
 Optional meta: "updated" (the day the page's words last changed: sitemap lastmod and the WebPage's dateModified),
-"crumb" (its breadcrumb name; default from seo.json "crumbs"), "ogImage"/"ogImageAlt", "ogType", "output" (a file name
+"crumb" (its breadcrumb name; default from seo.json "crumbs"), "ogImage"/"ogImageAlt", "ogImageSize" ([width, height] of
+a local share image that is not the usual 1200×630), "ogType", "output" (a file name
 at the root instead of <route>/index.html, e.g. 404.html), "noindex" and "sitemap": false. Generated stories also carry
 "published", "author" and "topic" (tools/generate-stories.mjs).
 
@@ -161,7 +162,8 @@ def share_image(page):
     local = not img.startswith("http")
     if local and not os.path.isfile(os.path.join(ROOT, img.lstrip("/"))):
         errors.append(f"{page['path']}: share image {img} is not on disk (run bash tools/build-seo-images.sh)")
-    return {"path": img, "url": absolute(img), "local": local, "alt": meta.get("ogImageAlt") or SEO["defaultOg"]["alt"]}
+    w, h = meta.get("ogImageSize") or (1200, 630)
+    return {"path": img, "url": absolute(img), "local": local, "alt": meta.get("ogImageAlt") or SEO["defaultOg"]["alt"], "w": w, "h": h}
 
 
 def crumbs_for(page):
@@ -239,7 +241,7 @@ def page_graph(page, img, items, extra=()):
         nodes.insert(0, web)
     web.update({"@id": url + "#webpage", "url": url, "name": re.sub(r"\s*·\s*Kheelona$", "", meta["title"]),
                 "description": meta["description"], "isPartOf": {"@id": WEBSITE_ID}, "inLanguage": SEO["locale"],
-                "primaryImageOfPage": {"@type": "ImageObject", "url": img["url"], **({"width": 1200, "height": 630} if img["local"] else {})}})
+                "primaryImageOfPage": {"@type": "ImageObject", "url": img["url"], **({"width": img["w"], "height": img["h"]} if img["local"] else {})}})
     if items:
         web["breadcrumb"] = {"@id": url + "#breadcrumb"}
     if meta.get("updated"):
@@ -264,7 +266,7 @@ def page_graph(page, img, items, extra=()):
             if isinstance(n.get("author"), dict):
                 n["author"] = person(n["author"])
             if img["local"]:
-                n["image"] = {"@type": "ImageObject", "url": img["url"], "width": 1200, "height": 630}
+                n["image"] = {"@type": "ImageObject", "url": img["url"], "width": img["w"], "height": img["h"]}
     graph = [SEO["organization"], *SEO["people"], SEO["website"]]
     if page["path"] == "/products/khelu":
         graph.append(SEO["product"])
@@ -302,7 +304,7 @@ def icons():
 def head_meta(meta, url, img, canonical=True):
     t, d = html.escape(meta["title"]), html.escape(meta["description"])
     alt = html.escape(img["alt"])
-    dims = '\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">' if img["local"] else ""
+    dims = f'\n<meta property="og:image:width" content="{img["w"]}">\n<meta property="og:image:height" content="{img["h"]}">' if img["local"] else ""
     article = ""
     if meta.get("ogType") == "article":
         article = "".join(f'\n<meta property="article:{k}" content="{html.escape(v)}">' for k, v in (
