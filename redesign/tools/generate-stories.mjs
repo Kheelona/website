@@ -120,6 +120,17 @@ const COPY = {
     written: "Written by the Kheelona team in Bengaluru.",
     topicsLabel: "Topics",
     readGuide: (m) => `Read the guide · ${m} min read`,
+    /* K-216: the static buying guides (redesign pages, not dashboard posts), each linked by its page's H1; the K-197
+       "Guides for parents" pattern (site.css classes only), tagged like it with data-ph-capture-attribute-guides. */
+    buying: {
+      heading: "Buying guides",
+      links: [
+        ["/ai-toys-for-kids-in-india", "AI toys for kids in India: five checks before you buy"],
+        ["/talking-toys-that-talk-back", "Talking toys: a toy that repeats, or a toy that talks back?"],
+        ["/talking-soft-toys-and-bunnies", "Talking soft toys and bunnies: recorded voice or real conversation?"],
+        ["/ai-robot-or-ai-plush", "AI robot or AI plush for a 3 to 7 year old?"],
+      ],
+    },
   },
   published: "First published",
   updated: "Updated",
@@ -675,6 +686,14 @@ function hubPage(articles, groups) {
 <div class="topics" data-topics>
 ${sections.join("\n")}
 </div>
+<section class="section faqs" id="buying-guides" aria-labelledby="buying-guides-title">
+  <div class="wrap faqs__grid">
+    <h2 class="h3" id="buying-guides-title">${esc(H.buying.heading)}</h2>
+    <ul class="faq splitrows">
+${H.buying.links.map(([href, text]) => `      <li><a class="link" href="${href}" data-ph-capture-attribute-guides="stories"><span>${esc(text)}&nbsp;<span aria-hidden="true">→</span></span></a></li>`).join("\n")}
+    </ul>
+  </div>
+</section>
 ${closer(COPY.close.heading, ctx)}
 `;
 }
