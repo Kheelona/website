@@ -1,4 +1,19 @@
 {
+ "assets/img/guide/ai-robot-or-ai-plush-1200-960w.webp": {
+  "from": "assets/img/guide/ai-robot-or-ai-plush-1200.webp",
+  "sha": "ad82a67cf2fa4a57",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 960 0"
+ },
+ "assets/img/guide/talking-soft-toys-and-bunnies-1200-960w.webp": {
+  "from": "assets/img/guide/talking-soft-toys-and-bunnies-1200.webp",
+  "sha": "ee993e7889c2b6e3",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 960 0"
+ },
+ "assets/img/guide/talking-toys-that-talk-back-1200-960w.webp": {
+  "from": "assets/img/guide/talking-toys-that-talk-back-1200.webp",
+  "sha": "775c4faa024afc23",
+  "args": "cwebp -q 80 -alpha_q 90 -resize 960 0"
+ },
  "assets/img/karnataka-seal.webp": {
   "from": "assets/img/karnataka-seal.png",
   "sha": "d9dd37963a01793b",
