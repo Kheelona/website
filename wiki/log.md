@@ -1671,3 +1671,13 @@ length query (URL 63 characters; the secret's length matched `BACKUP_CRON_SECRET
 (19:24). **The founder skipped the test-project round and the restore drill (accepted risk): no restore from the sheet has
 been tried, so the restore runbook is unproven.** The README's "As deployed" section and `setup-cron.sql` block 2 now carry
 the CLI v3 command and the length check. The first scheduled run is 27 Nov 02:00 IST.
+
+## [2026-11-27 17:00] build | Films reel and big-screen sizing on wide, short and ultra-wide windows (PR open)
+The founder asked for a check of the home page across screen sizes, starting with the films ("Real children. Real
+questions."). Measured with Playwright at 15 viewports (1024x768 to 5120x1440, 820x1180, 390x844). Cause: the root size
+grows with the width only (`100vw / 90` from 1600px), and the reel sized its cards from `100svh - 20rem`, so on a wide but
+not tall window the rem-sized heading and captions ate the height: 1920x600 films 28px wide, heading off screen on
+2560x1080, 3440x1440 and 5120x1440; 1280x720 films 156px. Fix, `redesign/assets/css/site.css` only (+ `site.min.css`):
+the root size is also capped at `100vh / 45` (unchanged on 16:9 screens; 21:9 and 32:9 get the size of a 16:9 screen of the
+same height), and from 700px the reel's track is a size container whose cards take the height left under the heading
+(`100cqh`), with spacers so the first film starts and the expert's video ends centred. Phones (<700px) unchanged.
