@@ -1671,3 +1671,29 @@ length query (URL 63 characters; the secret's length matched `BACKUP_CRON_SECRET
 (19:24). **The founder skipped the test-project round and the restore drill (accepted risk): no restore from the sheet has
 been tried, so the restore runbook is unproven.** The README's "As deployed" section and `setup-cron.sql` block 2 now carry
 the CLI v3 command and the length check. The first scheduled run is 27 Nov 02:00 IST.
+
+## [2026-11-27 17:00] build | Films reel and big-screen sizing on wide, short and ultra-wide windows (PR open)
+The founder asked for a check of the home page across screen sizes, starting with the films ("Real children. Real
+questions."). Measured with Playwright at 15 viewports (1024x768 to 5120x1440, 820x1180, 390x844). Cause: the root size
+grows with the width only (`100vw / 90` from 1600px), and the reel sized its cards from `100svh - 20rem`, so on a wide but
+not tall window the rem-sized heading and captions ate the height: 1920x600 films 28px wide, heading off screen on
+2560x1080, 3440x1440 and 5120x1440; 1280x720 films 156px. Fix, `redesign/assets/css/site.css` only (+ `site.min.css`):
+the root size is also capped at `100vh / 45` (unchanged on 16:9 screens; 21:9 and 32:9 get the size of a 16:9 screen of the
+same height), and from 700px the reel's track is a size container whose cards take the height left under the heading
+(`100cqh`), with spacers so the first film starts and the expert's video ends centred. Phones (<700px) unchanged.
+
+## [2026-11-27 18:30] build | Films reel: sideways swipe on laptops and tablets; less video churn (flicker) on every screen (local, not pushed)
+The founder asked that a sideways swipe also slides the films (not only scrolling down), and reported flicker in the films
+on iPhone, Android and a laptop browser. `redesign/assets/js/main.js` + `site.css` (and both min files):
+- From 700px a sideways swipe moves the reel: a trackpad's two-finger swipe or shift+wheel over the pinned films, and a finger
+  or pen dragged sideways on the reel (touch-action: pan-y, so up/down stays native; glides on after the finger lifts; a drag
+  never opens a film). The swipe is turned into the page scroll that moves the reel that far, so scroll and swipe always agree.
+  Measured in Chrome device emulation: tablets moved 0 px on a sideways swipe before, 2,300-3,300 px after; laptop trackpad
+  about 60 px before, about 1,600 px after.
+- Flicker sources removed: the hover preview no longer runs on the reel's cards (cards sliding under a resting pointer
+  started/stopped previews), the middle card's preview starts only once the reel has settled on it for 220 ms, a preview
+  fades in on its first decoded frame (`video.is-on`, never a black/blank box over the poster), and phones no longer rescale
+  every card on every scroll frame (the middle card is sized by class with a short transition).
+- Small phones (iPhone SE): film cards never below 9.5rem (were about 108px wide).
+Not reproduced on a real device: no iPhone/iPad or WebKit build here (download declined); the Android emulator was too
+unstable to give a usable recording. Checked in Chrome emulation on 12 phone/tablet presets and 2 laptop sizes.

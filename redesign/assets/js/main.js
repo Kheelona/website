@@ -561,47 +561,93 @@
   /* ---------- Backed by: cards rise in, one after another ---------- */
   (() => { const cards = $$("[data-backed] .backed__card"); if (cards.length) gsap.from(cards, { y: 40, opacity: 0, stagger: 0.1, duration: 0.8, ease: "power3.out", onComplete: glide(cards), scrollTrigger: { trigger: "[data-backed]", start: "top 85%", once: true } }); })();
 
-  /* ---------- Real families: scroll moves the reel sideways; the card in the middle grows and plays ---------- */
+  /* ---------- Real families: scroll moves the reel sideways; the card in the middle grows and plays ----------
+     Laptops and tablets: the page's scroll moves the reel, and so does a sideways swipe on it (a trackpad's two-finger swipe, a mouse's
+     shift+wheel, a finger on a touch screen). The swipe is turned into the page scroll that moves the reel that far, so the two never
+     disagree and the bar follows. Phones (`flat`): the reel is an ordinary sideways swipe list (its own scroll).
+     No flicker (2026-11-27): the middle card's preview starts only once the reel settles on it (a fast swipe used to start and stop a
+     video on every card it passed), a preview fades in over its poster on its first decoded frame (a video with no frame yet can paint
+     black on phones), and on phones the cards no longer rescale on every scroll frame (site.css sets the middle card's size). */
   (() => {
     const track = $("#films"); const reel = $("[data-reel]", track); if (!reel) return;
     const items = $$(".reel__item", reel); const bar = $("[data-reel-bar]", track);
     const dist = () => Math.max(0, reel.scrollWidth - innerWidth);
-    let playing = null, best = null, centres = [], left0 = 0, st = null;
+    let playing = null, best = null, centres = [], left0 = 0, st = null, settle = 0;
     // Each card's centre is measured once per layout, so the reel never reads layout while it moves: the distance to
     // the middle comes from the reel's own x. (A card's centre doesn't move when it scales, so its current scale is fine.)
-    // Phones (`flat`): the reel is an ordinary sideways swipe list (its own scroll), not moved by the page's scroll; x is minus its scrollLeft.
+    // Phones (`flat`): x is minus the reel's scrollLeft.
     const rx = () => (flat ? -reel.scrollLeft : gsap.getProperty(reel, "x"));
     const measure = () => { const r = reel.getBoundingClientRect(); left0 = r.left - (flat ? 0 : rx()); centres = items.map((it) => { const b = it.getBoundingClientRect(); return b.left + b.width / 2 - r.left + (flat ? reel.scrollLeft : 0); }); };
+    // A preview shows (site.css: .is-on) once its first frame is decoded; until then the poster underneath stays in view.
+    $$("video", reel).forEach((v) => v.addEventListener("playing", () => { if (v.classList.contains("is-on")) return; if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(() => v.classList.add("is-on")); else v.classList.add("is-on"); }));
     // The loops are small: the card in the middle and its neighbours load ahead, so a film is ready when it arrives.
     const load = (it) => { const v = it && it.matches(".film") ? $("video", it) : null; if (v && !v.src) { v.preload = "auto"; v.src = v.dataset.loop; } return v; };
     const play = (v) => { if (v !== playing && playing) playing.pause(); playing = v; if (v) v.play().catch(() => {}); };
+    // The preview starts when the middle card has stayed the middle one for a moment.
+    const playSoon = () => { clearTimeout(settle); settle = setTimeout(() => { if (st && st.isActive && best) play(load(best)); }, 220); };
     const focus = () => {
       const mid = innerWidth / 2, x = rx(); let next = null, bestD = 1e9;
-      items.forEach((it, j) => { const d = Math.abs(left0 + x + centres[j] - mid), k = Math.max(0, 1 - d / (innerWidth * 0.6)); gsap.set(it, { scale: 0.86 + 0.14 * k }); if (d < bestD) { bestD = d; next = it; } });
+      items.forEach((it, j) => { const d = Math.abs(left0 + x + centres[j] - mid); if (!flat) gsap.set(it, { scale: 0.86 + 0.14 * Math.max(0, 1 - d / (innerWidth * 0.6)) }); if (d < bestD) { bestD = d; next = it; } });
       if (next === best) return; best = next;
       items.forEach((it) => it.classList.toggle("is-center", it === best));
       if (!st || !st.isActive) return; // only the reel on screen plays
       const j = items.indexOf(best); load(items[j - 1]); load(items[j + 1]); load(items[j + 2]);
-      play(load(best));
+      if (playing && !best.contains(playing)) { playing.pause(); playing = null; }
+      playSoon();
     };
-    // The cards scale and the bar fills on every frame the reel moves, including the scrub's glide after the finger stops.
+    const onToggle = (s) => { if (s.isActive) { best = null; focus(); } else { clearTimeout(settle); play(null); } };
     if (flat) {
       // Phones: swiping the reel itself moves the bar and the middle card; the page's own scroll only starts and stops the preview while the section is on screen.
       let raf = 0; const move = () => { raf = 0; const m = reel.scrollWidth - reel.clientWidth; bar.style.transform = `scaleX(${m > 0 ? reel.scrollLeft / m : 0})`; focus(); };
       reel.addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(move); }, { passive: true });
-      st = ScrollTrigger.create({ trigger: track, start: "top bottom", end: "bottom top", onToggle: (s) => { if (s.isActive) { best = null; focus(); } else play(null); } });
-    } else
-    st = gsap.to(reel, { x: () => -dist(), ease: "none", onUpdate() { bar.style.transform = `scaleX(${this.progress()})`; focus(); },
-      scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6, invalidateOnRefresh: true,
-        onToggle: (s) => { if (s.isActive) { best = null; focus(); } else play(null); } } }).scrollTrigger;
+      st = ScrollTrigger.create({ trigger: track, start: "top bottom", end: "bottom top", onToggle });
+    } else {
+      st = gsap.to(reel, { x: () => -dist(), ease: "none", onUpdate() { bar.style.transform = `scaleX(${this.progress()})`; focus(); },
+        scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: 0.6, invalidateOnRefresh: true, onToggle } }).scrollTrigger;
+      // Sideways swipes. `ratio`: page scroll per pixel of reel travel; the page is held inside the films while the swipe moves the reel.
+      const ratio = () => { const d = dist(); return d > 0 ? (st.end - st.start) / d : 0; };
+      const clamp = (y) => Math.min(st.end, Math.max(st.start, y));
+      const go = (y) => (lenis ? lenis.scrollTo(clamp(y), { programmatic: false }) : scrollTo(0, clamp(y)));
+      // Trackpad two-finger swipe (and shift+wheel): a mostly-sideways wheel over the films moves the reel. It is kept from the page
+      // (and from the browser's swipe-back gesture) only while the films are pinned on screen.
+      track.addEventListener("wheel", (e) => {
+        if (e.ctrlKey || !st.isActive || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+        e.preventDefault(); e.stopPropagation();
+        go((lenis ? lenis.targetScroll : scrollY) + e.deltaX * (e.deltaMode === 1 ? 16 : 1) * ratio());
+      }, { passive: false });
+      // A finger or pen dragged sideways on the reel (site.css gives the reel touch-action: pan-y, so up/down still scrolls the page
+      // natively): the reel follows the finger and glides on after it lifts.
+      let id = null, sx = 0, sy = 0, s0 = 0, lock = 0, vx = 0, lx = 0, lt = 0, glide = 0, dragged = false;
+      const stopGlide = () => { cancelAnimationFrame(glide); glide = 0; };
+      reel.addEventListener("pointerdown", (e) => { if (e.pointerType === "mouse") return; stopGlide(); id = e.pointerId; sx = lx = e.clientX; sy = e.clientY; s0 = scrollY; lock = 0; vx = 0; lt = e.timeStamp; dragged = false; });
+      reel.addEventListener("pointermove", (e) => {
+        if (e.pointerId !== id) return;
+        const dx = e.clientX - sx, dy = e.clientY - sy;
+        if (!lock) { if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return; lock = Math.abs(dx) > Math.abs(dy) ? 1 : 2; if (lock === 1) dragged = true; }
+        if (lock !== 1) return;
+        const dt = Math.max(1, e.timeStamp - lt); vx = 0.7 * ((e.clientX - lx) / dt) + 0.3 * vx; lx = e.clientX; lt = e.timeStamp;
+        scrollTo(0, clamp(s0 - dx * ratio()));
+      });
+      const lift = (e) => {
+        if (e.pointerId !== id) return; id = null; if (lock !== 1) return;
+        let v = vx * ratio(), last = performance.now(); // page px per ms
+        const step = (t) => { const dt = Math.min(32, t - last); last = t; v *= Math.pow(0.996, dt); if (Math.abs(v) < 0.03) { glide = 0; return; } scrollTo(0, clamp(scrollY - v * dt)); glide = requestAnimationFrame(step); };
+        if (Math.abs(v) > 0.1) glide = requestAnimationFrame(step);
+      };
+      reel.addEventListener("pointerup", lift); reel.addEventListener("pointercancel", lift);
+      addEventListener("touchstart", stopGlide, { passive: true });
+      reel.addEventListener("click", (e) => { if (dragged) { e.preventDefault(); e.stopPropagation(); dragged = false; } }, true); // a drag never opens a film
+    }
     // The first film starts loading a screen before the reel arrives.
     ScrollTrigger.create({ trigger: track, start: "top 200%", once: true, onEnter: () => load(items.find((it) => it.matches(".film"))) });
     measure(); focus(); onResize(() => requestAnimationFrame(() => { measure(); focus(); })); ScrollTrigger.addEventListener("refresh", () => { measure(); best = null; focus(); });
   })();
 
-  /* ---------- Films: preview on hover (touch: in view) ---------- */
+  /* ---------- Films: preview on hover (touch: in view) ----------
+     Not the reel's films: the reel plays its middle card itself, and cards sliding under a resting pointer used to start and stop
+     previews many times a second while scrolling (flicker on laptops). */
   const startLoop = (v) => { if (!v.src) v.src = v.dataset.loop; v.play().catch(() => {}); };
-  if (fine) $$(".film__play").forEach((f) => { const v = $("video", f); f.addEventListener("pointerenter", () => startLoop(v)); f.addEventListener("pointerleave", () => v.pause()); });
+  if (fine) $$(".film__play").forEach((f) => { if (f.closest("[data-reel]")) return; const v = $("video", f); f.addEventListener("pointerenter", () => startLoop(v)); f.addEventListener("pointerleave", () => v.pause()); });
   else { const io = new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? startLoop(e.target) : e.target.pause())), { threshold: 0.6 }); $$(".film__play video").forEach((v) => { if (!v.closest("[data-reel]")) io.observe(v); }); }
 
   }

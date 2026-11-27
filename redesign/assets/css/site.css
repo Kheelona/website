@@ -15,7 +15,9 @@
 @font-face { font-family: "Instrument Sans Fallback"; src: local("Arial"), local("Helvetica"); size-adjust: 100.48%; ascent-override: 96.54%; descent-override: 24.88%; line-gap-override: 0%; }
 
 html { font-size: 100%; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-@media (min-width: 1600px) { html { font-size: min(calc(100vw / 90), 2.4rem); } }
+/* Big screens step the root size up with the width, but never past what the height can hold: an ultra-wide (21:9, 32:9) or
+   short window keeps the size of a 16:9 screen of the same height, so pinned chapters never spill under the bar (2026-11-27). */
+@media (min-width: 1600px) { html { font-size: max(1rem, min(calc(100vw / 90), calc(100vh / 45), 2.4rem)); } }
 
 :root {
   --bg: #ffffff; --bg-soft: #f5f5f7;
@@ -747,7 +749,27 @@ button { font: inherit; color: inherit; }
 .reel__quote p { font-size: clamp(1rem, calc(var(--fw) * 0.08), 1.375rem); }
 .reel__expert { width: min(30rem, calc(var(--fw) * 1.75)); }
 .reel__head { padding-top: clamp(3.5rem, 9vh, 4.5rem); }
-@media (max-width: 899px) { .reel { --fw: min(58vw, calc((100svh - var(--bar) - 19rem) * 0.5)); } .reel__quote { width: 78vw; } .reel__expert { width: 84vw; } }
+@media (max-width: 899px) { .reel { --fw: clamp(min(9.5rem, 58vw), calc((100svh - var(--bar) - 19rem) * 0.5), 58vw); } /* small phones (iPhone SE): never below 9.5rem, the section may then scroll a little */ .reel__quote { width: 78vw; } .reel__expert { width: 84vw; } }
+/* Real families, any window 700px and wider (2026-11-27): the cards size from the height actually left under the heading
+   (the track is a size container, 100cqh), not from a fixed guess. A short, wide or ultra-wide window used to push the
+   heading off the top and squeeze the films to slivers (1920x600: 28px wide). Spacers before and after the cards (the
+   track's ::before/::after, inside the container) centre the first and last card. */
+@media (min-width: 700px) {
+  .reel__stage { justify-content: flex-start; gap: clamp(0.75rem, 3.5vh, 2rem); padding-bottom: clamp(0.75rem, 3vh, 1.75rem); }
+  .reel__head { padding-top: 4.75rem; } /* clears the nav, which slides back in when the visitor scrolls up */
+  .reel__head .h2 { font-size: min(clamp(2.125rem, 4.8vw, 4.25rem), 9vh); }
+  .reel__track { --fw: clamp(8.5rem, (100cqh - 5rem) * 0.5625, min(24rem, 58vw)); flex: 1 1 0; min-height: 0; container-type: size; gap: 1.5rem; padding: 0; }
+  .reel__track::before, .reel__track::after { content: ""; flex: none; align-self: stretch; width: max(0px, calc(50vw - var(--fw) / 2 - 1.5rem)); } /* full height: an empty box with no height is left out of the reel's scrollWidth */
+  .reel__track::after { width: max(0px, calc(50vw - var(--fw) * 0.925 - 1.5rem)); } /* the reel ends with the expert's video (1.85 cards wide) in the middle */
+  .reel__quote { width: clamp(16rem, var(--fw) * 1.45, 26rem); padding: clamp(1.125rem, var(--fw) * 0.1, 2rem); }
+  .reel__quote p { font-size: clamp(0.9375rem, var(--fw) * 0.075, 1.375rem); }
+  .reel__quote p::before { font-size: clamp(2.25rem, var(--fw) * 0.18, 3.5rem); }
+  .reel__expert { width: calc(var(--fw) * 1.85); }
+  .reel__track { touch-action: pan-y; } /* up/down stays the page's own scroll; a sideways drag moves the reel (main.js) */
+}
+/* A reel preview shows only once its first frame is decoded (main.js adds .is-on), so the poster never flashes to black or blank */
+.motion #films .film__play video { opacity: 0; transition: opacity 0.3s; }
+.motion #films .film__play video.is-on { opacity: 1; }
 .reduced [data-bluesky], .no-js [data-bluesky] { opacity: 1; }
 .reduced [data-zig], .no-js [data-zig] { opacity: 0; }
 
@@ -950,7 +972,8 @@ html.reels-open { overflow: hidden; }
   body.page--home #films .reel__head { padding-top: 0; }
   body.page--home #films .reel__track { overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; will-change: auto; }
   body.page--home #films .reel__track::-webkit-scrollbar { display: none; }
-  body.page--home #films .reel__item { scroll-snap-align: center; }
+  body.page--home #films .reel__item { scroll-snap-align: center; scale: 0.92; transition: scale 0.35s var(--ease-out); }
+  body.page--home #films .reel__item.is-center { scale: 1; } /* the middle card is set by class, not rescaled on every scroll frame (main.js) */
 
   /* Chapters that kept their one-screen stage: nothing sits under the nav any more, so the pinned top offsets shrink. */
   body.page--home #asks .talk__grid { padding-top: 2.5rem; }
